@@ -139,7 +139,7 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
       core::Cons_sp features = cl::_sym_STARfeaturesSTAR->symbolValue().as<core::Cons_O>();
       cl::_sym_STARfeaturesSTAR->defparameter(core::Cons_O::create(mpi, features));
     } else {
-      SIMPLE_ERROR(("USE_MPI is true but mpiEnabled is false!!!!"));
+      SIMPLE_ERROR("USE_MPI is true but mpiEnabled is false!!!!");
     }
 #endif
     core::List_sp features = gc::As<List_sp>(cl::_sym_STARfeaturesSTAR->symbolValue());

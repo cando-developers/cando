@@ -172,7 +172,7 @@ CandoDatabase_sp getCandoDatabase() {
   if (_sym_STARcandoDatabaseSTAR->symbolValue().notnilp()) {
     return gc::As<CandoDatabase_sp>(_sym_STARcandoDatabaseSTAR->symbolValue());
   }
-  SIMPLE_ERROR(("*cando-database* is not defined"));
+  SIMPLE_ERROR("*cando-database* is not defined");
 }
 
 core::Symbol_sp chemkw_intern(const string &symName) {

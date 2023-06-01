@@ -177,15 +177,15 @@ namespace omm
     {
 	if ( index <0 ) 
 	{
-	    SIMPLE_ERROR(("Index must be positive"));
+	    SIMPLE_ERROR("Index must be positive");
 	}
 	if ( index >= (int)this->wrappedPtr()->getNumForces() )
 	{
-	    SIMPLE_ERROR(("Illegal index[%d] for force - must be less than[%d]")
+	    SIMPLE_ERROR("Illegal index[{}] for force - must be less than[{}]"
 			       , index , this->wrappedPtr()->getNumForces() );
 	}
 	OpenMM::Force* rawForce = &(this->wrappedPtr()->getForce(index));
-        core::writeln_bf_stream(fmt::sprintf("Getting force[%d] = %p" , index , rawForce));
+        core::clasp_write_string(fmt::format("Getting force[{}] = {}\n" , index , rawForce));
 	return Force_O::nil(_lisp);
     }
 
@@ -201,7 +201,7 @@ namespace omm
     int System_O::addRawForce(OpenMM::Force* rawForce)
     {
 	int idx = this->wrappedPtr()->addForce(rawForce);
-        core::writeln_bf_stream(fmt::sprintf("Added force[%d] = %p" , idx , rawForce ));
+        core::clasp_write_string(fmt::format("Added force[{}] = {}\n" , idx , rawForce ));
 	return idx;
     }
 
@@ -294,7 +294,7 @@ namespace omm
 		return result;
 	    }
 	}
-	SIMPLE_ERROR(("Unknown integrator"));
+	SIMPLE_ERROR("Unknown integrator");
     }
 	
 
@@ -449,7 +449,7 @@ namespace omm
 	string t4 = a4->getTypeString();
 	if ( !forceField->getPtorDb()->hasBestTerm(t1,t2,t3,t4) )
 	{
-	    SIMPLE_ERROR(("Could not find torsion term for [%s-%s-%s-%s]")
+	    SIMPLE_ERROR("Could not find torsion term for [{}-{}-{}-{}]"
 			       , t1 , t2 %t3 %t4 );
 	}
 	chem::FFPtor_sp ffPtor = forceField->getPtorDb()->findBestTerm(t1,t2,t3,t4);
@@ -460,7 +460,7 @@ namespace omm
 	{
 	    if ( ffPtor->hasPeriodicity(period) )
 	    {
-		LOG("Adding Proper Torsion period[%d] %s/%s-%s/%s-%s/%s-%s/%s"
+		LOG("Adding Proper Torsion period[{}] {}/{}-{}/{}-{}/{}-{}/{}"
 		    , period
 		    , a1->getName() , t1
 		    , a2->getName() , t2
@@ -501,7 +501,7 @@ namespace omm
 	    {
 		if ( ffItor->hasPeriodicity(n) )
 		{
-		    LOG("Adding Improper Torsion period[%d] %s/%s-%s/%s-%s/%s-%s/%s"
+		    LOG("Adding Improper Torsion period[{}] {}/{}-{}/{}-{}/{}-{}/{}"
 			% n
 			% a1->getName() , t1
 			% a2->getName() , t2
@@ -542,7 +542,7 @@ namespace omm
 	string ty = atom->getTypeString();
 	if ( !forceField->getNonbondDb()->hasType(ty) )
 	{
-	    SIMPLE_ERROR(("Could not find nonbond type[%s]") , ty );
+	    SIMPLE_ERROR("Could not find nonbond type[{}]" , ty );
 	}
 	double charge = atom->getCharge();
 	chem::FFNonbond_sp nonbond = forceField->getNonbondDb()->findType(ty);
@@ -550,7 +550,7 @@ namespace omm
 	double epsilon = nonbond->getEpsilon_kj();
 	int idx = this->wrappedPtr()->addParticle(charge,sigma,epsilon);
 	int recordedIdx = atom->getProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex)).as<core::Fixnum_O>()->get();
-	ASSERTF(idx==recordedIdx,("There was a problem, you added a particle to the NonbondedForce and it returned index[%d] but it should have been the index[%d] for atom[%s] - make sure you add atoms to the NonbondForce immediately after you add them to the System") , idx , recordedIdx , atom->description() );
+	ASSERTF(idx==recordedIdx,("There was a problem, you added a particle to the NonbondedForce and it returned index[{}] but it should have been the index[{}] for atom[{}] - make sure you add atoms to the NonbondForce immediately after you add them to the System") , idx , recordedIdx , atom->description() );
 	return idx;
     }
 
@@ -580,7 +580,7 @@ namespace omm
 	    return _sym_PME;
 	}
 	}
-	SIMPLE_ERROR(("Illegal NonbondedMethod"));
+	SIMPLE_ERROR("Illegal NonbondedMethod");
     }
 
 
@@ -610,7 +610,7 @@ namespace omm
 	    nbm = OpenMM::NonbondedForce::PME;
 	} else
 	{
-          SIMPLE_ERROR(("Illegal NonbondedMethod[%s]") , _rep_(sym) );
+          SIMPLE_ERROR("Illegal NonbondedMethod[{}]" , _rep_(sym) );
 	}
 	this->wrappedPtr()->setNonbondedMethod(nbm);
     }

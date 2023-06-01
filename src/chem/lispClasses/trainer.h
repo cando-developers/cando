@@ -131,7 +131,7 @@ namespace       chem
 	string getTrainerUniquePathName()
 	{
 	    stringstream ss;
-	    ss << (fmt::sprintf("trainer%08d" , this->getUniqueIndex() );
+	    ss << (fmt::format("trainer{:08d}" , this->getUniqueIndex() );
 	    return ss.str();
 	}
 

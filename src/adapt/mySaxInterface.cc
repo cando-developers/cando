@@ -134,7 +134,7 @@ namespace adapt {
     {   
 	MySaxParser*	parser = (MySaxParser*)userData;
 	
-	LOG("myExpatStartElement local name = %s" , (name ) );
+	LOG("myExpatStartElement local name = {}" , (name ) );
 	parser->handler->setLocalName(name);
 	parser->handler->setLineNumber(XML_GetCurrentLineNumber(parser->getXMLParser()));
 	parser->handler->setAttributes(atts);
@@ -148,7 +148,7 @@ namespace adapt {
     {
 	MySaxParser*	parser = (MySaxParser*)userData;
 	
-	LOG("myExpatEndElement local name = %s" , (name ) );
+	LOG("myExpatEndElement local name = {}" , (name ) );
 	parser->handler->setLocalName(name);
 	parser->handler->setLineNumber(XML_GetCurrentLineNumber(parser->getXMLParser()));
 	parser->handler->endElement();
@@ -166,7 +166,7 @@ namespace adapt {
 	myBuffer = (char*)malloc(len+1);
 	strncpy( myBuffer, data, len );
 	myBuffer[len] = '\0';
-	LOG("myExpatCharacterDataHandler characters: |%s|" , (myBuffer ) );
+	LOG("myExpatCharacterDataHandler characters: |{}|" , (myBuffer ) );
 	parser->handler->setData(myBuffer);
 	parser->handler->setDataLength(len);
 	parser->handler->characters();
@@ -282,21 +282,21 @@ namespace adapt {
 	int			done;
 	long		filePos;
 
-	LOG("MySaxParser::expat:: opening file: %s" , (fileName.c_str() ) );
+	LOG("MySaxParser::expat:: opening file: {}" , (fileName.c_str() ) );
 
 //    this->_Progress.setMax(fileSize);
 //    this->_Progress.setSteps(fileSize/10000);
 	filePos = 0;
 	while ( core::clasp_peek_char(fIn) != EOF )
 	{
-	    LOG("MySaxParser::expat:: reading/parsing block of data asking for buffer with up to %d bytes" , sizeof(buffer) );
+	    LOG("MySaxParser::expat:: reading/parsing block of data asking for buffer with up to {} bytes" , sizeof(buffer) );
             sz = core::clasp_read_byte8(fIn,buffer,sizeof(buffer));
 	    filePos = filePos + sz;
 	    done = sz < sizeof(buffer);
-	    LOG("Read line from buffer - hit eof=%d read[%d bytes]" , done , sz );
+	    LOG("Read line from buffer - hit eof={} read[{} bytes]" , done , sz );
 	    xmlStatus = XML_Parse( this->parser, (char*)buffer, sz, done );
 	    if ( xmlStatus == XML_STATUS_ERROR ) {
-              SIMPLE_ERROR(("Parse failed for stream: %s") , _rep_(fIn));
+              SIMPLE_ERROR("Parse failed for stream: {}" , _rep_(fIn));
 	    }
 	}
 //    this->_Progress.finish();

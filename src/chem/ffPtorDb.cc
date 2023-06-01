@@ -104,7 +104,7 @@ void    FFPtorDb_O::cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbo
 {
     stringstream ss;
     ss << "Can't find ptor term for ("<<t1<<")-("<<t2<<")-("<<t3<<")-("<<t4<<")";
-    SIMPLE_ERROR(("%s") , ss.str());
+    SIMPLE_ERROR("{}" , ss.str());
 }
 
 
@@ -148,7 +148,7 @@ CL_DEFMETHOD
 bool	FFPtor_O::hasPeriodicity(int idx ) const
 {
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal periodicity (%d) for hasPeriodicity") , idx);
+        SIMPLE_ERROR("Illegal periodicity ({}) for hasPeriodicity" , idx);
     }
     return this->_HasPeriodicity[idx-1];
 }
@@ -170,7 +170,7 @@ CL_DEFMETHOD
 int FFPtor_O::getIdivf(int idx) const
 {
   if ( idx < 1 || idx > MaxPeriodicity ) {
-    SIMPLE_ERROR(("Illegal periodicity (%d) for getIdivf") , idx);
+    SIMPLE_ERROR("Illegal periodicity ({}) for getIdivf" , idx);
   }
   return this->_idivf[idx-1];
 }
@@ -180,7 +180,7 @@ CL_DEFMETHOD
 void FFPtor_O::setIdivf(int idx, int idivf)
 {
   if ( idx < 1 || idx > MaxPeriodicity ) {
-    SIMPLE_ERROR(("Illegal periodicity (%d) for getIdivf") , idx);
+    SIMPLE_ERROR("Illegal periodicity ({}) for getIdivf" , idx);
   }
   this->_idivf[idx-1] = idivf;
 }
@@ -192,7 +192,7 @@ CL_DEFMETHOD
 double  FFPtor_O::getV_kj(int idx) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal periodicity (%d) for getV") , idx);
+        SIMPLE_ERROR("Illegal periodicity ({}) for getV" , idx);
     }
     return this->_Vs_kj[idx-1];
 }
@@ -202,7 +202,7 @@ CL_DEFMETHOD
 void    FFPtor_O::setV_kj(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal periodicity (%d) for setV") , idx);
+        SIMPLE_ERROR("Illegal periodicity ({}) for setV" , idx);
     }
     this->_HasPeriodicity[idx-1] = true;
     this->_Vs_kj[idx-1] = val;
@@ -228,7 +228,7 @@ CL_DEFMETHOD
 double  FFPtor_O::getPhaseRadians(int idx) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal periodicity[%d] for getPhaseRadians - must be in [1,%d]") , idx , MaxPeriodicity );
+        SIMPLE_ERROR("Illegal periodicity[{}] for getPhaseRadians - must be in [1,{}]" , idx , MaxPeriodicity );
     }
     return this->_PhaseDegrees[idx-1]*0.0174533;
 }
@@ -238,7 +238,7 @@ CL_DEFMETHOD
 void    FFPtor_O::setPhaseRadians(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal periodicity (%d) for setPhaseRadians") , idx);
+        SIMPLE_ERROR("Illegal periodicity ({}) for setPhaseRadians" , idx);
     }
     this->_PhaseDegrees[idx-1] = val/0.0174533;
 }
@@ -249,7 +249,7 @@ CL_DEFMETHOD
 double  FFPtor_O::getPhaseDegrees(int idx) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal periodicity[%d] for getPhaseDegrees - must be in [1,%d]") , idx , MaxPeriodicity );
+        SIMPLE_ERROR("Illegal periodicity[{}] for getPhaseDegrees - must be in [1,{}]" , idx , MaxPeriodicity );
     }
     return this->_PhaseDegrees[idx-1];
 }
@@ -259,7 +259,7 @@ CL_DEFMETHOD
 void    FFPtor_O::setPhaseDegrees(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal periodicity (%d) for setPhaseDegrees") , idx);
+        SIMPLE_ERROR("Illegal periodicity ({}) for setPhaseDegrees" , idx);
     }
     this->_PhaseDegrees[idx-1] = val;
 }

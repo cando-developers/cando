@@ -132,7 +132,7 @@ CL_DEFMETHOD core::T_sp Kmeans_O::GetPoint(size_t idx) {
   if (idx<this->_Points->length()) {
     return (*(this->_Points))[idx];
   }
-  SIMPLE_ERROR("Index %ud out of range of number of points %ud", idx, this->_Points->length());
+  SIMPLE_ERROR("Index {}d out of range of number of points {}d", idx, this->_Points->length());
 }
 
 CL_DOCSTRING("Return all the points");

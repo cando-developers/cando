@@ -227,7 +227,7 @@ CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_
           ASSERT(bdb->recognizesEntityName(ni));
           Entity_sp entity = bdb->getEntity(ni);
           RepresentativeList_sp objs = entity->expandedRepresentativeList();
-          LOG("Expanded representative list for entity[%s] is: %s" , _rep_(entity)
+          LOG("Expanded representative list for entity[{}] is: {}" , _rep_(entity)
               , _rep_(objs) );
           allRepresentatives->vectorPushExtend(objs);
         } );
@@ -332,7 +332,7 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 	expanded = this->expandedNameSet();
 	ASSERTF(expanded->size()>0,
 		("There must be at least one monomer name in the EntityNameSet"
-                 " %s but it is completely empty") , this->description() );
+                 " {} but it is completely empty") , this->description() );
         expanded->map( [&keys] (core::Symbol_sp si) {
 	    keys.insert((si)->symbolNameAsString());
           } );
@@ -376,7 +376,7 @@ CL_DEFMETHOD     core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	if ( names->size() != 1 ) {
-	    SIMPLE_ERROR(("There must be only one equivalent name"));
+	    SIMPLE_ERROR("There must be only one equivalent name");
 	}
 	return names->first();
     }
@@ -390,20 +390,20 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp m
     {
       core::T_sp db = getCandoDatabase();
 //    this->setName(mn);
-//    LOG("Set name of EntityNameSetBase to: %s" , mn.c_str()  );
+//    LOG("Set name of EntityNameSetBase to: {}" , mn.c_str()  );
       core::T_sp found = core::eval::funcall(_sym_recognizesNameOrPdb,getCandoDatabase(),mn);
 	if ( found.isTrue() ) {
 	    LOG("status" );
 	    core::Symbol_sp full = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_getMonomerNameForNameOrPdb, db, mn));
 	    this->_EntityNames->clear();
 	    this->_EntityNames->insert(full);
-	    LOG("Added monomer name(%s) to EntityNameSetBase" , _rep_(mn)  );
+	    LOG("Added monomer name({}) to EntityNameSetBase" , _rep_(mn)  );
 	} else {
 	    stringstream serr;
 	    serr << "setMonomerNameOrPdb"
 		 << " trying to add monomer but it isn't recognized: "
 		 << _rep_(mn);
-	    LOG("%s" , serr.str() );
+	    LOG("{}" , serr.str() );
 	}
     }
 

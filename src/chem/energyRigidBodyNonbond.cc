@@ -92,7 +92,7 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
   }
   this->_NumberOfTypes = next_type_index;
   if (verbose) {
-    core::write_bf_stream(fmt::sprintf("There are %d types\n" , this->_NumberOfTypes));
+    core::clasp_write_string(fmt::format("There are {} types\n" , this->_NumberOfTypes));
   }
   this->_CrossTerms.resize(next_type_index*next_type_index);
   double vdwScale = this->getVdwScale();
@@ -109,10 +109,10 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
       double dC = 2.0*epsilonij*rStar6*vdwScale;
       RigidBodyNonbondCrossTerm crossTerm(dA,dC);
       if (verbose) {
-        core::write_bf_stream(fmt::sprintf("Cross term for types %d - %d\n" , xi , yi ));
-        core::write_bf_stream(fmt::sprintf("    type: %d   radius-> %f   epsilon-> %f\n" , xi , ea1._Radius , ea1._Epsilon));
-        core::write_bf_stream(fmt::sprintf("    type: %d   radius-> %f   epsilon-> %f\n" , yi , ea2._Radius , ea2._Epsilon));
-        core::write_bf_stream(fmt::sprintf("    dA -> %f      dC -> %f\n" , dA , dC ));
+        core::clasp_write_string(fmt::format("Cross term for types {} - {}\n" , xi , yi ));
+        core::clasp_write_string(fmt::format("    type: {}   radius-> {}   epsilon-> {}\n" , xi , ea1._Radius , ea1._Epsilon));
+        core::clasp_write_string(fmt::format("    type: {}   radius-> {}   epsilon-> {}\n" , yi , ea2._Radius , ea2._Epsilon));
+        core::clasp_write_string(fmt::format("    dA -> {}      dC -> {}\n" , dA , dC ));
       }
       this->crossTerm(xi,yi) = crossTerm;
       this->crossTerm(yi,xi) = crossTerm;
@@ -122,7 +122,7 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
           
 EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atoms) {
   if (end_atoms->length()<1) {
-    SIMPLE_ERROR(("You must provide a vector of end atom indices with at least one end atom"));
+    SIMPLE_ERROR("You must provide a vector of end atom indices with at least one end atom");
   }
   core::SimpleVector_byte32_t_sp sv = core::SimpleVector_byte32_t_O::make(end_atoms->length());
   // Copy the atom indices
@@ -130,7 +130,7 @@ EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atom
   for ( size_t i(0), iEnd(end_atoms->length()); i<iEnd; ++i ) {
     Fixnum f = core::clasp_to_fixnum(end_atoms->rowMajorAref(i));
     if (istart>=f) {
-      SIMPLE_ERROR(("The list of atom indices must be strictly increasing"));
+      SIMPLE_ERROR("The list of atom indices must be strictly increasing");
     }
     (*sv)[i] = f;
   }
@@ -155,10 +155,10 @@ double	EnergyRigidBodyNonbond_O::getEnergy()
 
  void EnergyRigidBodyNonbond_O::energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp atom, double radius, double epsilon, double charge, const Vector3& position) {
   if (index < 0 || index >= this->_AtomInfoTable.size()) {
-    SIMPLE_ERROR(("Index out of range %d - max is %d") , index , this->_AtomInfoTable.size());
+    SIMPLE_ERROR("Index out of range {} - max is {}" , index , this->_AtomInfoTable.size());
   }
   if (this->_AtomInfoTable[index]._Object.boundp()) {
-    SIMPLE_ERROR(("The rigid body nonbond term at %d has already been set to object %s") , index , _rep_(this->_AtomInfoTable[index]._Object));
+    SIMPLE_ERROR("The rigid body nonbond term at {} has already been set to object {}" , index , _rep_(this->_AtomInfoTable[index]._Object));
   }
   RigidBodyAtomInfo info(atom,radius,epsilon,charge,position);
   this->_AtomInfoTable[index] = info;
@@ -171,7 +171,7 @@ Vector3 EnergyRigidBodyNonbond_O::getPosition(size_t index)
   if (index < this->_AtomInfoTable.size()) {
     return this->_AtomInfoTable[index]._Position;
   }
-  SIMPLE_ERROR(("index %lu is out of bounds") , index);
+  SIMPLE_ERROR("index {} is out of bounds" , index);
 }
 
 
@@ -181,7 +181,7 @@ void	EnergyRigidBodyNonbond_O::dumpTerms(core::HashTable_sp atomTypes)
   for ( size_t rb = 0; rb<this->_RigidBodyEndAtom->length(); ++rb) {
     for ( size_t i = istart; i<(*this->_RigidBodyEndAtom)[rb]; ++i ) {
       RigidBodyAtomInfo& ai = this->_AtomInfoTable[i];
-      core::write_bf_stream(fmt::sprintf("I1 = %3d  %s  %lf %lf %lf %s\n" , (rb*7) , _rep_(ai._Object) , ai._Radius , ai._Epsilon , ai._Charge , ai._Position.asString()));
+      core::clasp_write_string(fmt::format("I1 = {:3}  {}  {:f} {:f} {:f} {}\n" , (rb*7) , _rep_(ai._Object) , ai._Radius , ai._Epsilon , ai._Charge , ai._Position.asString()));
     }
     istart = (*this->_RigidBodyEndAtom)[rb];
   }
@@ -274,15 +274,15 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
       output->vectorPushExtend((float)plabmz);
 #if 0
       if (coordIndex==0) {
-        core::write_bf_stream(fmt::sprintf("fill_pointer -> %d\n" , output->fillPointer() ));
-        core::write_bf_stream(fmt::sprintf("&plabmx -> %p\n" , (void*)&plabmx));
-        core::write_bf_stream(fmt::sprintf("&output[0] -> %p\n" , (void*)&(*output)[0]));
-        core::write_bf_stream(fmt::sprintf("Point[0] -> %f, %f, %f\n" , plabmx , plabmy , plabmz));
-        core::write_bf_stream(fmt::sprintf("output[0] -> %f\n" , (*output)[0]));
-        core::write_bf_stream(fmt::sprintf("hex dump output[0] -> %lX\n" , *(unsigned int*)&(*output)[0]));
+        core::clasp_write_string(fmt::format("fill_pointer -> {}\n" , output->fillPointer() ));
+        core::clasp_write_string(fmt::format("&plabmx -> {}\n" , (void*)&plabmx));
+        core::clasp_write_string(fmt::format("&output[0] -> {}\n" , (void*)&(*output)[0]));
+        core::clasp_write_string(fmt::format("Point[0] -> {}, {}, {}\n" , plabmx , plabmy , plabmz));
+        core::clasp_write_string(fmt::format("output[0] -> {}\n" , (*output)[0]));
+        core::clasp_write_string(fmt::format("hex dump output[0] -> {}X\n" , *(unsigned int*)&(*output)[0]));
         (*output)[0] = plabmx;
-        core::write_bf_stream(fmt::sprintf("after output[0] -> %f\n" , (*output)[0]));
-        core::write_bf_stream(fmt::sprintf("hex dump output[0] -> %lX\n" , *(unsigned int*)&(*output)[0]));
+        core::clasp_write_string(fmt::format("after output[0] -> {}\n" , (*output)[0]));
+        core::clasp_write_string(fmt::format("hex dump output[0] -> {}X\n" , *(unsigned int*)&(*output)[0]));
       }
       coordIndex += 3;
 #endif
@@ -313,7 +313,7 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
     size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
 #if 0
     if (iI1<3) {
-      core::write_bf_stream(fmt::sprintf("%s:%d I1start -> %d  I1end -> %d\n" , __FILE__ , __LINE__ , I1start , I1end));
+      core::clasp_write_string(fmt::format("{}:{} I1start -> {}  I1end -> {}\n" , __FILE__ , __LINE__ , I1start , I1end));
     }
 #endif
     for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
@@ -336,9 +336,9 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
       parts->vectorPushExtend(plabmz);
 #if 0
       if (iI1<3) {
-        core::write_bf_stream(fmt::sprintf("%s:%d  I1cur[%d] I1[%d] -> Pos         %f %f %f\n" , __FILE__ , __LINE__ , I1cur , I1 , ea1._Position.getX() , ea1._Position.getY() , ea1._Position.getZ() ));
-        core::write_bf_stream(fmt::sprintf("%s:%d  I1cur[%d] I1[%d] -> pxm,pym,pzm %f %f %f\n" , __FILE__ , __LINE__ , I1cur , I1 , pxm , pym , pzm ));
-        core::write_bf_stream(fmt::sprintf("%s:%d               point -> %f %f %f\n" , __FILE__ , __LINE__ , plabmx , plabmy %plabmz ));
+        core::clasp_write_string(fmt::format("{}:{}  I1cur[{}] I1[{}] -> Pos         {} {} {}\n" , __FILE__ , __LINE__ , I1cur , I1 , ea1._Position.getX() , ea1._Position.getY() , ea1._Position.getZ() ));
+        core::clasp_write_string(fmt::format("{}:{}  I1cur[{}] I1[{}] -> pxm,pym,pzm {} {} {}\n" , __FILE__ , __LINE__ , I1cur , I1 , pxm , pym , pzm ));
+        core::clasp_write_string(fmt::format("{}:{}               point -> {} {} {}\n" , __FILE__ , __LINE__ , plabmx , plabmy {}labmz ));
       }
 #endif
     }
@@ -381,7 +381,7 @@ void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
                                                     AbstractLargeSquareMatrix_sp m )
 {
-  SIMPLE_ERROR(("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
+  SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }
 
 
@@ -415,7 +415,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   RigidBodyEnergyFunction_sp rigidBodyEnergyFunction = gc::As<RigidBodyEnergyFunction_sp>(score);
   BoundingBox_sp boundingBox = rigidBodyEnergyFunction->boundingBox();
   if (boundingBox.unboundp()) {
-    SIMPLE_ERROR(("The rigid-body-energy-function bounding-box is unbound - it must be defined"));
+    SIMPLE_ERROR("The rigid-body-energy-function bounding-box is unbound - it must be defined");
   }
   Vector3 rwidths = boundingBox->get_bounding_box_rwidths();
   double x_rsize = rwidths.getX();
@@ -504,16 +504,16 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 #include <cando/chem/energy_functions/_NONBONDRBPB_termCode.cc>
 #if 0
           if (Energy > 1.0) {
-            core::write_bf_stream(fmt::sprintf("Energy iHelix1 iHelix2 I1cur I2cur\n"));
-            core::write_bf_stream(fmt::sprintf("Energy= %f %d %d %d %d\n" , Energy , iHelix1 , iHelix2 %I1cur , I2cur));
-            core::write_bf_stream(fmt::sprintf("am,bm,cm,dm,xm,ym,zm,pxm,pym,pzm -> %f,%f,%f,%f,%f,%f,%f %f,%f,%f\n" , am , bm , cm , dm , xm , ym , zm , pxm , pym , pzm));
-            core::write_bf_stream(fmt::sprintf("an,bn,cn,dn,xn,yn,zn,pxn,pyn,pzn -> %f,%f,%f,%f,%f,%f,%f %f,%f,%f\n" , an , bn , cn , dn , xn , yn , zn , pxn , pyn , pzn));
-            core::write_bf_stream(fmt::sprintf("DeltaX, DeltaY, DeltaZ  -> %f, %f, %f\n" , DeltaX , DeltaY , DeltaZ ));
-            core::write_bf_stream(fmt::sprintf("dA, dC -> %f, %f\n" , dA , dC ));
+            core::clasp_write_string(fmt::format("Energy iHelix1 iHelix2 I1cur I2cur\n"));
+            core::clasp_write_string(fmt::format("Energy= {} {} {} {} {}\n" , Energy , iHelix1 , iHelix2 %I1cur , I2cur));
+            core::clasp_write_string(fmt::format("am,bm,cm,dm,xm,ym,zm,pxm,pym,pzm -> {},{},{},{},{},{},{} {},{},{}\n" , am , bm , cm , dm , xm , ym , zm , pxm , pym , pzm));
+            core::clasp_write_string(fmt::format("an,bn,cn,dn,xn,yn,zn,pxn,pyn,pzn -> {},{},{},{},{},{},{} {},{},{}\n" , an , bn , cn , dn , xn , yn , zn , pxn , pyn , pzn));
+            core::clasp_write_string(fmt::format("DeltaX, DeltaY, DeltaZ  -> {}, {}, {}\n" , DeltaX , DeltaY , DeltaZ ));
+            core::clasp_write_string(fmt::format("dA, dC -> {}, {}\n" , dA , dC ));
           }
           
           if (std::isnan(Energy)) {
-            SIMPLE_ERROR(("Energy is nan"));
+            SIMPLE_ERROR("Energy is nan");
           }
 #endif
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
@@ -580,10 +580,10 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   printf("%s:%d NonbondRigidBody    TotalEnergy -> %lf\n", __FILE__, __LINE__, this->_TotalEnergy );
 #endif
   if (std::isnan(this->_TotalEnergy)) {
-    SIMPLE_ERROR(("Returning nan"));
+    SIMPLE_ERROR("Returning nan");
   }
 #if 0  
-  core::write_bf_stream(fmt::sprintf("Total-energy %e\n" , this->_TotalEnergy ));
+  core::clasp_write_string(fmt::format("Total-energy {}\n" , this->_TotalEnergy ));
 #endif
   return this->_TotalEnergy;
 }

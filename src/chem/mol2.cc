@@ -103,13 +103,13 @@ void	Mol2File::advanceLine() {
     }
   }
   if (chem__verbose(2)) {
-    core::write_bf_stream(fmt::sprintf("advanceLine mLine = %s\n" , this->mLine.str()));
+    core::clasp_write_string(fmt::format("advanceLine mLine = {}\n" , this->mLine.str()));
   }
 };
 std::queue<string>	Mol2File::splitLine() {
   std::queue<string>	qWords;
   if (chem__verbose(1)) {
-    core::write_bf_stream(fmt::sprintf("Splitting read line: %s\n" , this->mLine.str()));
+    core::clasp_write_string(fmt::format("Splitting read line: {}\n" , this->mLine.str()));
   }
   core::queueSplitString(this->mLine.str(), qWords, " \t" );
   return qWords;
@@ -124,7 +124,7 @@ void	Mol2File::openFileName(core::T_sp pn)
 {
   this->fIn = core::clasp_openRead(pn);
   if ( this->fIn.nilp() ) {
-    SIMPLE_ERROR(("Mol2 file doesn't exist: %s" ) , _rep_(pn) );
+    SIMPLE_ERROR("Mol2 file doesn't exist: {}" , _rep_(pn) );
   }
   this->advanceLine();
 }
@@ -295,10 +295,10 @@ core::T_mv mol2Read(Mol2File& fIn)
   while ( !fIn.eof() ) {
     line = fIn.line().str();
     if ( fIn.hasDataLine() ) {
-      SIMPLE_ERROR(("Mol2 file encountered data line when expecting command line in top level: %s") , fIn.line().str() );
+      SIMPLE_ERROR("Mol2 file encountered data line when expecting command line in top level: {}" , fIn.line().str() );
     }
     if (chem__verbose(1)) {
-      core::write_bf_stream(fmt::sprintf("Read mol2 line: %s\n" , line));
+      core::clasp_write_string(fmt::format("Read mol2 line: {}\n" , line));
     }
     if ( line == "@<TRIPOS>MOLECULE" ) {
       if (!firstMolecule) break; // Read only one @<TRIPOS>MOLECULE
@@ -306,7 +306,7 @@ core::T_mv mol2Read(Mol2File& fIn)
     }
     fIn.advanceLine();
     if ( line.size() == 0 ) continue;
-//	LOG("line: %s" , line.c_str()  );
+//	LOG("line: {}" , line.c_str()  );
     if ( line[0] == '#' ) continue;
     if ( line == "@<TRIPOS>MOLECULE" ) {
       LOG("Got @TRIPOS.MOLECULE" );
@@ -317,15 +317,15 @@ core::T_mv mol2Read(Mol2File& fIn)
       words = fIn.splitLine();
       if ( words.empty() ) continue;
       mol.mAtoms = atoi(words.front().c_str()); words.pop();
-      LOG("Got num_atoms=%d" , mol.mAtoms  );
+      LOG("Got num_atoms={}" , mol.mAtoms  );
       if ( words.empty() ) continue;
       mol.mBonds = atoi(words.front().c_str()); words.pop();
-      LOG("Got num_bonds=%d" , mol.mBonds  );
+      LOG("Got num_bonds={}" , mol.mBonds  );
       if ( words.empty() ) continue;
       mol.mBonds = atoi(words.front().c_str()); words.pop();
       fIn.advanceLine(); // mol_type
       if ( !fIn.hasDataLine() ) {
-        SIMPLE_ERROR(("Mol2 file encountered cmd line when expecting data line: %s") , fIn.line().str() );
+        SIMPLE_ERROR("Mol2 file encountered cmd line when expecting data line: {}" , fIn.line().str() );
       }
       fIn.advanceLine(); // charge_type
       while ( fIn.hasDataLine() ) {
@@ -353,33 +353,33 @@ core::T_mv mol2Read(Mol2File& fIn)
         oneAtom.mSubstName = "";
         if ( !words.empty() ) {
           oneAtom.mSubstId = atoi(words.front().c_str());
-          LOG("Read mSubstId=%d" , oneAtom.mSubstId  );
+          LOG("Read mSubstId={}" , oneAtom.mSubstId  );
           words.pop();
           if ( !words.empty() ) {
             oneAtom.mSubstName = words.front();
             if (chem__verbose(1)) {
-              core::write_bf_stream(fmt::sprintf("Read atom mSubstName: %s\n" , oneAtom.mSubstName));
+              core::clasp_write_string(fmt::format("Read atom mSubstName: {}\n" , oneAtom.mSubstName));
             }
-            LOG("Read mSubstName=%s" , oneAtom.mSubstName.c_str() );
+            LOG("Read mSubstName={}" , oneAtom.mSubstName.c_str() );
             words.pop();
             if ( !words.empty() ) {
               oneWord = words.front();
-              LOG("Charge word = |%s|" , oneWord.c_str()  );
+              LOG("Charge word = |{}|" , oneWord.c_str()  );
               oneAtom.mCharge = atof(oneWord.c_str());
-              LOG("Read charge =%lf" , oneAtom.mCharge  );
+              LOG("Read charge ={}" , oneAtom.mCharge  );
             }
           }
         }
         atoms[oneAtom.mIndex] = oneAtom;
         //        printf("%s:%d Adding atom[%lu] -> %s\n", __FILE__, __LINE__, oneAtom.mArrayIndex, oneAtom.atom_name.c_str());
-        LOG("Added atom with id: %d name: %s" , oneAtom.mArrayIndex , oneAtom.atom_name.c_str()  );
+        LOG("Added atom with id: {} name: {}" , oneAtom.mArrayIndex , oneAtom.atom_name.c_str()  );
         fIn.advanceLine();
       }
     } else if ( line == "@<TRIPOS>BOND" ) {
       
       while ( fIn.hasDataLine() ) {
         line = fIn.line().str();
-        LOG("line len(%d) line: %s" , line.size() , line.c_str()  );
+        LOG("line len({}) line: {}" , line.size() , line.c_str()  );
         if ( line[0] == '#' ) {
           fIn.advanceLine();
           continue;
@@ -395,13 +395,13 @@ core::T_mv mol2Read(Mol2File& fIn)
     } else if ( line == "@<TRIPOS>FF_PBC" ) {
       line = fIn.line().str();
       if (chem__verbose(1)) {
-        core::write_bf_stream(fmt::sprintf("@<TRIPOSE>FF_PBC\n"));
-        core::write_bf_stream(fmt::sprintf("%s\n" , line));
+        core::clasp_write_string(fmt::format("@<TRIPOSE>FF_PBC\n"));
+        core::clasp_write_string(fmt::format("{}\n" , line));
       }
       words = fIn.splitLine();
       fIn.advanceLine();
       if (words.empty()) {
-        SIMPLE_ERROR(("No data followed @<TRIPOSE>FF_PBC"));
+        SIMPLE_ERROR("No data followed @<TRIPOSE>FF_PBC");
       }
       words.pop(); // get rid of version
       int pbc_type = atoi(words.front().c_str());
@@ -421,7 +421,7 @@ core::T_mv mol2Read(Mol2File& fIn)
                                                core::clasp_make_double_float(values[4]-values[1]),
                                                core::clasp_make_double_float(values[5]-values[2]));
       } else {
-        SIMPLE_ERROR(("Unknown solvent box type in FF_PBC: %s") , line);
+        SIMPLE_ERROR("Unknown solvent box type in FF_PBC: {}" , line);
       }
       // Now get the solvent name
       if (words.size()>0) {
@@ -435,7 +435,7 @@ core::T_mv mol2Read(Mol2File& fIn)
       string	nameNum;
       while ( fIn.hasDataLine() ) {
         line = fIn.line().str();
-        LOG("line = (%s)" , line.c_str()  );
+        LOG("line = ({})" , line.c_str()  );
         if ( line[0] == '#' ) {
           fIn.advanceLine();
           continue;
@@ -443,12 +443,12 @@ core::T_mv mol2Read(Mol2File& fIn)
         words = fIn.splitLine();
         oneSubst.mId = atoi(words.front().c_str()); words.pop();
         if ( oneSubst.mId == lastmId ) {
-          SIMPLE_ERROR(("First entry of SUBSTRUCTURE records are not valid"));
+          SIMPLE_ERROR("First entry of SUBSTRUCTURE records are not valid");
         }
         lastmId = oneSubst.mId;
         nameNum = words.front(); words.pop();
         splitStringIntoNameAndNumber( nameNum, oneSubst.subst_name,oneSubst.file_sequence_number);
-        LOG("oneSubst.root_atom str(%s)" , words.front().c_str()  );
+        LOG("oneSubst.root_atom str({})" , words.front().c_str()  );
         oneSubst.root_atom = atoi(words.front().c_str()); words.pop();
         oneSubst.dict_type = 0;
         oneSubst.chain = "";
@@ -465,7 +465,7 @@ core::T_mv mol2Read(Mol2File& fIn)
               oneSubst.chain = words.front(); words.pop();
               if ( !words.empty() ) {
                 oneSubst.sub_type = words.front();
-                LOG("Got sub_type = %s" , oneSubst.sub_type.c_str()  );
+                LOG("Got sub_type = {}" , oneSubst.sub_type.c_str()  );
                 words.pop();
                 if ( !words.empty() ) {
                   oneSubst.mInterBonds = atoi(words.front().c_str());
@@ -485,12 +485,12 @@ core::T_mv mol2Read(Mol2File& fIn)
           }
         }
         fIn.advanceLine();
-        LOG("Read substituent  mId=%d subst_type(%s)" , oneSubst.mId , oneSubst.subst_type.c_str() );
+        LOG("Read substituent  mId={} subst_type({})" , oneSubst.mId , oneSubst.subst_type.c_str() );
         substructures.push_back(oneSubst);
       }
     } else
     {
-      core::writeln_bf_stream(fmt::sprintf("Ignoring mol2 command: %s" , line ));
+      core::clasp_write_string(fmt::format("Ignoring mol2 command: {}\n" , line ));
       while ( fIn.hasDataLine() ) {
         fIn.advanceLine();
       }
@@ -519,16 +519,16 @@ core::T_mv mol2Read(Mol2File& fIn)
     auto  tempa  = gctools::GC<Atom_O>::allocate_with_default_constructor();
     a = tempa;
     a->setName(chemkw_intern(ai->second.atom_name));
-    LOG("Creating atom with id: %d name: %s element: %s charge: %8.2f" , ai->second.mIndex , ai->second.atom_name.c_str() , el.c_str() , ai->second.mCharge  );
+    LOG("Creating atom with id: {} name: {} element: {} charge: %8.2f" , ai->second.mIndex , ai->second.atom_name.c_str() , el.c_str() , ai->second.mCharge  );
     pos.set(ai->second.mX,ai->second.mY,ai->second.mZ);
     a->setPosition(pos);
     atom_types->setf_gethash(a,chemkw_intern(ai->second.mType));
     a->setCharge(ai->second.mCharge);
-    LOG(" atom info: %s" , a->description().c_str()  );
+    LOG(" atom info: {}" , a->description().c_str()  );
     if (ai->second.mArrayIndex<atoms.size()) {
       (*atoms_sv)[ai->second.mArrayIndex] = a;
     } else {
-      SIMPLE_ERROR(("Bad index %u for atom atoms.size() -> %lu\n") , ai->second.mArrayIndex , atoms.size());
+      SIMPLE_ERROR("Bad index {} for atom atoms.size() -> {}\n" , ai->second.mArrayIndex , atoms.size());
     }
 	//
 	// If we haven't seen this residue before
@@ -544,20 +544,20 @@ core::T_mv mol2Read(Mol2File& fIn)
 	    // But I'll set them here incase there isn't 
 	    // a substructure entry
       if (chem__verbose(1)) {
-        core::write_bf_stream(fmt::sprintf("Setting residue name: %s with id %d\n" , ai->second.mSubstName , ai->second.mSubstId ));
+        core::clasp_write_string(fmt::format("Setting residue name: {} with id {}\n" , ai->second.mSubstName , ai->second.mSubstId ));
       }
       res->setName(chemkw_intern(ai->second.mSubstName));
       res->setPdbName(chemkw_intern(ai->second.mSubstName));
 //            printf("%s:%d setFileSequenceNumber --> %d\n", __FILE__, __LINE__, ai->second.mSubstId);
       res->setFileSequenceNumber(ai->second.mSubstId);
-      LOG("Creating residue with id(%d) and name(%s)" , ai->second.mSubstId , ai->second.mSubstName.c_str()  );
+      LOG("Creating residue with id({}) and name({})" , ai->second.mSubstId , ai->second.mSubstName.c_str()  );
       residues[ai->second.mSubstId] = res;
-      LOG("New residue %s" , res->description().c_str()  );
+      LOG("New residue {}" , res->description().c_str()  );
     } else {
       res = residues[ai->second.mSubstId];
-      LOG("Reusing residue with mSubstId=%d %s" , ai->second.mSubstId , res->description().c_str()  );
+      LOG("Reusing residue with mSubstId={} {}" , ai->second.mSubstId , res->description().c_str()  );
     }
-    LOG("Adding atom(%s) to residue(%s) SubstId(%d)" , a->getName().c_str() , res->getPdbName().c_str() , ai->second.mSubstId  );
+    LOG("Adding atom({}) to residue({}) SubstId({})" , a->getName().c_str() , res->getPdbName().c_str() , ai->second.mSubstId  );
     res->addAtom(a);
   }
 
@@ -568,13 +568,13 @@ core::T_mv mol2Read(Mol2File& fIn)
   Atom_sp				a1,a2;
   BondOrder				bo;
   for ( bi=bonds.begin(); bi!=bonds.end(); bi++ ) {
-    LOG("Creating bond between atom id: %d - %d" , bi->mAtom1Id , bi->mAtom2Id  );
+    LOG("Creating bond between atom id: {} - {}" , bi->mAtom1Id , bi->mAtom2Id  );
     TriposAtom& at1 = atoms[bi->mAtom1Id];
     TriposAtom& at2 = atoms[bi->mAtom2Id];
     a1 = gc::As<Atom_sp>((*atoms_sv)[at1.mArrayIndex]);
     a2 = gc::As<Atom_sp>((*atoms_sv)[at2.mArrayIndex]);
     // printf("%s:%d Bonding atom[%lu] to atom[%lu]\n", __FILE__, __LINE__, bi->mAtom1Id, bi->mAtom2Id);
-    LOG("Creating bond between %s - %s" , a1->description().c_str() , a2->description().c_str()  );
+    LOG("Creating bond between {} - {}" , a1->description().c_str() , a2->description().c_str()  );
     if ( bi->mOrder=="1" ) bo = singleBond;
     else if ( bi->mOrder=="2" ) bo = doubleBond;
     else if ( bi->mOrder=="3" ) bo = tripleBond;
@@ -593,23 +593,23 @@ core::T_mv mol2Read(Mol2File& fIn)
       for ( si=substructures.begin(); si!=substructures.end(); si++ ) {
         core::Symbol_sp schain = chemkw_intern(si->chain);
         if ( chains.count(schain) == 0 ) {
-          LOG("Creating molecule: %s" , si->chain.c_str()  );
+          LOG("Creating molecule: {}" , si->chain.c_str()  );
           auto  tempm  = gctools::GC<Molecule_O>::allocate_with_default_constructor();
           m = tempm;
           LOG("Setting name" );
           m->setName(schain);
           LOG("Adding molecule to aggregate" );
           aggregate->addMolecule(m);
-          LOG("setting chains index=%s" , si->chain.c_str() );
+          LOG("setting chains index={}" , si->chain.c_str() );
           chains[schain] = m;
           LOG("Done with molecule" );
         }
         m = chains[schain];
         if ( m.nilp() )
         {
-          SIMPLE_ERROR(("Could not find molecule with chain=%s") , _rep_(schain));
+          SIMPLE_ERROR("Could not find molecule with chain={}" , _rep_(schain));
         }
-        LOG("Looking up residue with mId=%d" , si->mId );
+        LOG("Looking up residue with mId={}" , si->mId );
         if (!residues.contains(si->mId)) {
           if (residues.size()==1) {
             // If there is only one residue - then use that.
@@ -623,24 +623,24 @@ core::T_mv mol2Read(Mol2File& fIn)
               }
               ss << it->first;
             }
-            SIMPLE_ERROR(("Could not find residue with subst_id %d - there are %d total residues with subst_ids %s") , si->mId , residues.size() , ss.str());
+            SIMPLE_ERROR("Could not find residue with subst_id {} - there are {} total residues with subst_ids {}" , si->mId , residues.size() , ss.str());
           }
         } else {
           res = residues[si->mId];
         }
         if (chem__verbose(1)) {
-          core::write_bf_stream(fmt::sprintf("About to add residue id %d to molecule - number of residues %d\n" , si->mId , residues.size()));
-          core::write_bf_stream(fmt::sprintf("About to add residue %s to molecule\n" , _rep_(res)));
+          core::clasp_write_string(fmt::format("About to add residue id {} to molecule - number of residues {}\n" , si->mId , residues.size()));
+          core::clasp_write_string(fmt::format("About to add residue {} to molecule\n" , _rep_(res)));
         }
         m->addMatter(res);
-        LOG("Setting residue name at index: %d" , si->mId  );
-        LOG("Setting residue name to: %s" , si->subst_name.c_str()  );
+        LOG("Setting residue name at index: {}" , si->mId  );
+        LOG("Setting residue name to: {}" , si->subst_name.c_str()  );
         core::T_sp sub_name = chemkw_intern(si->subst_name);
         if (chem__verbose(1)) {
-          core::write_bf_stream(fmt::sprintf("Setting substructure residue name: %s\n" , _rep_(sub_name)));
+          core::clasp_write_string(fmt::format("Setting substructure residue name: {}\n" , _rep_(sub_name)));
         }
         res->setName(sub_name);
-        LOG("Setting residue PDB name to: %s" , si->sub_type.c_str()  );
+        LOG("Setting residue PDB name to: {}" , si->sub_type.c_str()  );
         core::T_sp sub_type = chemkw_intern(si->sub_type);
         res->setPdbName(sub_type);
         if (solventName.notnilp() && (sub_name==solventName || sub_type==solventName))
@@ -648,7 +648,7 @@ core::T_mv mol2Read(Mol2File& fIn)
           //          printf("%s:%d Setting molecule %s to solvent\n", __FILE__, __LINE__, _rep_(m).c_str());
           m->setf_molecule_type(kw::_sym_solvent);
         }
-        LOG("Adding residue number: %d name(%s) pdbName(%s) to molecule: %s" , si->mId , res->getName().c_str() , res->getPdbName().c_str() , si->chain.c_str()  );
+        LOG("Adding residue number: {} name({}) pdbName({}) to molecule: {}" , si->mId , res->getName().c_str() , res->getPdbName().c_str() , si->chain.c_str()  );
       }
     }
   } else
@@ -680,7 +680,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
 
 core::HashTable_sp assignSybylTypes( Matter_sp matter) {
   if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
-    SIMPLE_ERROR(("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types"));
+    SIMPLE_ERROR("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types");
   }
   FFTypesDb_sp sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
   core::HashTableEq_sp atom_types = core::HashTableEq_O::create_default();
@@ -819,7 +819,7 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
         out << bb->get_y_width() << " ";
         out << bb->get_z_width() << " ";
       } else {
-        SIMPLE_WARN("Mol2 only supports cuboid bounding-box - you have %s", _rep_(bb));
+        SIMPLE_WARN("Mol2 only supports cuboid bounding-box - you have {}", _rep_(bb));
       }
     }
     if (solventName.notnilp()) {
@@ -860,14 +860,14 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
     out << atom_temp_int << " ";
     out << a->getName()->symbolNameAsString() << " ";
     pos = a->getPosition();
-    out << fmt::sprintf("%5.3lf %5.3lf %5.3lf " , pos.getX() , pos.getY() , pos.getZ() );
-    LOG("Writing mol2 atom(%s) pos(%s)" , a->description() , a->getPosition().asString() );
+    out << fmt::format("{:5.3f} {:5.3f} {:5.3f} " , pos.getX() , pos.getY() , pos.getZ() );
+    LOG("Writing mol2 atom({}) pos({})" , a->description() , a->getPosition().asString() );
     out << ai->_Type->symbolNameAsString() << " ";
     int residue_temp_int = ht->gethash(ai->_Residue).unsafe_fixnum();
     out << residue_temp_int << " ";
     out << residue_molecule_name(*ai);
 
-    out << fmt::sprintf("%5.4lf" , a->getCharge()) << std::endl;
+    out << fmt::format("{:5.4}" , a->getCharge()) << std::endl;
   }
 	//
 	// Write out the bonds
@@ -944,7 +944,7 @@ void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, core::Hash
     mol2WriteAggregateToFileName(agg,fileName,atom_types);
     return;
   }
-  SIMPLE_ERROR(("You must pass a Molecule or Aggregate"));
+  SIMPLE_ERROR("You must pass a Molecule or Aggregate");
 }
 
 

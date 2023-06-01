@@ -98,8 +98,8 @@ using namespace core;
 #define	LEXDEBUG	1
 
 #ifdef	LEXDEBUG
-#define	LEXPRINT(x) {LOG("Token: %s" , x );}
-#define	LEXDPRINT(x) { LOG("%s" , (x));}
+#define	LEXPRINT(x) {LOG("Token: {}" , x );}
+#define	LEXDPRINT(x) { LOG("{}" , (x));}
 #else
 #define	LEXPRINT(x)
 #define	LEXDPRINT(x)
@@ -2352,11 +2352,11 @@ char	ichar;
 		    // Handle special characters that are two or three 
 		    // characters long
 		    //
-    LOG("peek(%c)" , (acLexStream->peek() ) ); // vp0(( "peek(%c)", acLexStream->peek() ));
+    LOG("peek({})" , (acLexStream->peek() ) ); // vp0(( "peek(%c)", acLexStream->peek() ));
     LOG("Checking ATD" ); // vp0(("Checking ATD"));
     if ( ichar == 'A' && data->acLexStream->peek() == 'T' ) {
         data->acLexStream->get();
-        LOG("peek2(%c)" , (acLexStream->peek() ) ); // vp0(( "peek2(%c)", acLexStream->peek() ));
+        LOG("peek2({})" , (acLexStream->peek() ) ); // vp0(( "peek2(%c)", acLexStream->peek() ));
         if ( data->acLexStream->peek() != 'D' ) {
             return APError;
         }
@@ -2371,7 +2371,7 @@ char	ichar;
         int aridx = data->acLexStream->get()-'0';
         if ( aridx >=1 && aridx <=5 ) {
             gaff_lval->ival = aridx;
-	    LOG("AR level=%d" , (aridx ) ); // vp0(( "AR level=%d", aridx ));
+	    LOG("AR level={}" , (aridx ) ); // vp0(( "AR level=%d", aridx ));
             return APAntechamberARLevel;
         }
         LEXPRINT("APAntechamberARLevel");
@@ -2488,7 +2488,7 @@ char	ichar;
             tagStr += ichar;
         }
         strcpy(gaff_lval->carr,tagStr.c_str());
-        LOG("Got tag(%s)" , (gaff_lval->carr) ); // vp0(( "Got tag(%s)",gaff_lval->carr));
+        LOG("Got tag({})" , (gaff_lval->carr) ); // vp0(( "Got tag(%s)",gaff_lval->carr));
         LEXPRINT("APTag");
         return APTag;
     }
@@ -2536,7 +2536,7 @@ chem::AntechamberRoot_sp gaff_compile(const string& input,
     LOG("Entering gaffparse");
     if ( gaff_parse(&p) )
     {
-	SIMPLE_ERROR(("%s") , (p.gaffErrorStream->str()));
+	SIMPLE_ERROR("{}" , (p.gaffErrorStream->str()));
     }
     return p.expression;
 }

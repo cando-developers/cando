@@ -444,7 +444,7 @@ namespace chem {
     void	addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
     void	addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
 
-    core::HashTable_sp atomToResidueMap() { SIMPLE_ERROR(("You cannot call atomToResidueMap with an atom")); };
+    core::HashTable_sp atomToResidueMap() { SIMPLE_ERROR("You cannot call atomToResidueMap with an atom"); };
 	//! Downgrade this
 //	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(adapt::QDomNode_sp node);
 	//! Downgrade this

@@ -164,7 +164,7 @@ CL_DEFMETHOD bool StringSet_O::containsSubset(StringSet_sp sub) {
 CL_LISPIFY_NAME("clear");
 CL_DEFMETHOD void StringSet_O::clear() {
   
-  LOG("StringSet::clear size=%d" , (this->strs.size()));
+  LOG("StringSet::clear size={}" , (this->strs.size()));
   if (this->strs.size() == 0)
     return;
   this->strs.clear();
@@ -196,7 +196,7 @@ void StringSet_O::remove(const string &s) {
   
 #ifdef DEBUG_ON
   if (this->strs.count(s) != 1) {
-    SIMPLE_ERROR(("The string: %s was not found in StringSet") , s);
+    SIMPLE_ERROR("The string: {} was not found in StringSet" , s);
   }
 #endif
   this->strs.erase(s);
@@ -243,7 +243,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::intersection(StringSet_sp b) {
   set<string>::iterator si;
   nset = StringSet_O::create();
   for (si = this->strs.begin(); si != this->strs.end(); si++) {
-    LOG("Looking for(%s)" , (*si).c_str());
+    LOG("Looking for({})" , (*si).c_str());
     if (b->contains(*si)) {
       LOG("Found it!!!");
       nset->insert(*si);
@@ -344,7 +344,7 @@ boost::python::list StringSet_O::python_asList() {
 
   for ( vi=this->strs.begin(); vi!=this->strs.end(); vi++ ) {
     i = *vi;
-    LOG("Appending %s to list" , (i.c_str() ) );
+    LOG("Appending {} to list" , (i.c_str() ) );
     lval = boost::python::str(i);
     res.append(lval);
   }

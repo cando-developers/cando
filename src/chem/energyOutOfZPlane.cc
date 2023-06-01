@@ -242,7 +242,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 
   {
     if (chem__verbose(1)) {
-      core::write_bf_stream(fmt::sprintf("Evaluating Oozp component %d terms\n" , this->_Terms.size()));
+      core::clasp_write_string(fmt::format("Evaluating Oozp component {} terms\n" , this->_Terms.size()));
     }
     double x1,y1,z1,za,kb;
     int	I1, i;
@@ -264,16 +264,16 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 //#include <cando/chem/energy_functions/_Oozp_termCode.cc>
 #if 1
       if (chem__verbose(2)) {
-        core::write_bf_stream(fmt::sprintf("I1,kb,za -> %d, %f, %f\n" , I1 , kb , za ));
-        core::write_bf_stream(fmt::sprintf("x1,y1,z1 = %f, %f, %f\n" , x1 , y1 , z1 ));
-        core::write_bf_stream(fmt::sprintf("Oopz Energy = %f\n" , Energy ));
-        core::write_bf_stream(fmt::sprintf("fx1,fy1,fz1 = %f, %f, %f\n" , force->getElement(I1+0) , force->getElement(I1+1) , force->getElement(I1+2)));
+        core::clasp_write_string(fmt::format("I1,kb,za -> {}, {}, {}\n" , I1 , kb , za ));
+        core::clasp_write_string(fmt::format("x1,y1,z1 = {}, {}, {}\n" , x1 , y1 , z1 ));
+        core::clasp_write_string(fmt::format("Oopz Energy = {}\n" , Energy ));
+        core::clasp_write_string(fmt::format("fx1,fy1,fz1 = {}, {}, {}\n" , force->getElement(I1+0) , force->getElement(I1+1) , force->getElement(I1+2)));
       }
 #endif
     }
   }
   if (chem__verbose(1)) {
-    core::write_bf_stream(fmt::sprintf("Oopz Total Energy = %f\n" , this->_TotalEnergy ));
+    core::clasp_write_string(fmt::format("Oopz Total Energy = {}\n" , this->_TotalEnergy ));
   }
   return this->_TotalEnergy;
 }
@@ -330,9 +330,9 @@ bool	calcOffDiagonalHessian = true;
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
 #include <cando/chem/energy_functions/_Oozp_termCode.cc>
-		LOG("fx1 = %le" , fx1 );
-		LOG("fy1 = %le" , fy1 );
-		LOG("fz1 = %le" , fz1 );
+		LOG("fx1 = {}" , fx1 );
+		LOG("fy1 = {}" , fy1 );
+		LOG("fz1 = {}" , fz1 );
 		int index = i;
 #if !USE_EXPLICIT_DECLARES
 		double fx1 = 0.0;

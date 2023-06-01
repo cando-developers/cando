@@ -163,7 +163,7 @@ Matrix			mat;
     mat = segment->relative*(*(segment->rotation));
     segment->accumulated = parent->accumulated*mat;
 
-    LOG("Updated accumulated transform for segment: %d" , (start ) );
+    LOG("Updated accumulated transform for segment: {}" , (start ) );
 #ifdef	DEBUG_ON //[
     LOG("    rotation = " );
 	segment->rotation->dump();
@@ -212,7 +212,7 @@ int		spanningIndex;
 	}
     }
     if ( !gotRoot ) {
-	SIMPLE_ERROR(("Could not find atom name: %s in aggregate") , rootName );
+	SIMPLE_ERROR("Could not find atom name: {} in aggregate" , rootName );
     }
 
 		//
@@ -254,18 +254,18 @@ Atom_sp	atom, a1, a2;
 Atom_sp	fixed, movable, backSpan;
 
     if ( this->driveMode ) {
-	SIMPLE_ERROR(("You can't add torsions once you've started driving torsions" ));
+	SIMPLE_ERROR("You can't add torsions once you've started driving torsions");
     }
     ANN(this->aggregate);
     if ( this->aggregate.nilp() )
     {
-	SIMPLE_ERROR(("You must have defined the aggregate and root before adding torsions to drive."));
+	SIMPLE_ERROR("You must have defined the aggregate and root before adding torsions to drive.");
     }
     if ( this->countOfAtomsWithName(this->aggregate,atom1 ) != 1 ) {
-	SIMPLE_ERROR(("There must be a unique atom with the name: %s") , atom1 );
+	SIMPLE_ERROR("There must be a unique atom with the name: {}" , atom1 );
     }
     if ( this->countOfAtomsWithName(this->aggregate,atom2 ) != 1 ) {
-	SIMPLE_ERROR(("There must be a unique atom with the name: ") , atom2 );
+	SIMPLE_ERROR("There must be a unique atom with the name: " , atom2 );
     }
     a1 = this->aggregate->firstAtomWithName(atom1);
     a2 = this->aggregate->firstAtomWithName(atom2);
@@ -277,7 +277,7 @@ Atom_sp	fixed, movable, backSpan;
     if ( a2 == a1->getBackSpan() ) {
 	this->insertTorsion( a2, a1, steps );
     }
-    SIMPLE_ERROR(("Movable atom has to point back to the fixed atom" ));
+    SIMPLE_ERROR("Movable atom has to point back to the fixed atom");
 }
 
 
@@ -306,7 +306,7 @@ Matrix					toCanonical;
 CoordinateSystem_sp			coord;
 
     if ( this->driveMode ) {
-	SIMPLE_ERROR(("You can't prepare to drive torsions when you're already driving them" ));
+	SIMPLE_ERROR("You can't prepare to drive torsions when you're already driving them");
     }
 	//
 	// Break the bonds around which we are rotating the torsions
@@ -318,7 +318,7 @@ CoordinateSystem_sp			coord;
 		pos++ ) {
 	bo = pos->movable->bondOrderTo(pos->fixed);
 	if ( bo==noBond ) {
-	    SIMPLE_ERROR(("The two atoms of a torsion must be bonded. Atom: %s is not bonded to %s") , pos->fixed->getName() , pos->movable->getName() );
+	    SIMPLE_ERROR("The two atoms of a torsion must be bonded. Atom: {} is not bonded to {}" , pos->fixed->getName() , pos->movable->getName() );
 	}
 	pos->order = bo;
 	pos->fixed->removeBondBetween(pos->movable,pos->fixed);
@@ -409,7 +409,7 @@ CoordinateSystem_sp			coord;
 	    zDir = pos->movable->getPosition()-pos->fixed->getPosition();
 	    zDir = zDir.normalized(_lisp);
 	    if ( pos->movable->numberOfBonds() == 0 ) {
-		SIMPLE_ERROR(("The torsion around %s and %s won't roate anything. Please remove it") 
+		SIMPLE_ERROR("The torsion around {} and {} won't roate anything. Please remove it" 
 					% pos->fixed->getName() % pos->movable->getName() );
 	    }
 	    vTemp = pos->movable->bondedNeighbor(0)->getPosition()
@@ -437,8 +437,8 @@ CoordinateSystem_sp			coord;
     for ( pos=this->torsions.begin()+1;
 		pos!=this->torsions.end();
 		pos++ ) {
-	LOG("  for pos=%d" , (pos-this->torsions.begin() ) );
-	LOG("  Parent =%d" , (pos->parent ) );
+	LOG("  for pos={}" , (pos-this->torsions.begin() ) );
+	LOG("  Parent ={}" , (pos->parent ) );
 	parent = this->torsions.begin()+pos->parent;
 	LOG("  Calculating transform" );
 	coord = parent->coord;
@@ -454,10 +454,10 @@ CoordinateSystem_sp			coord;
     for ( pos=this->torsions.begin();
 		pos!=this->torsions.end();
 		pos++ ) {
-	LOG("Generating rotation matrices for segment: %d" , (pos-this->torsions.begin() ) );
+	LOG("Generating rotation matrices for segment: {}" , (pos-this->torsions.begin() ) );
 	for ( i=0; i<pos->steps; i++ ) {
 	    angle = i*(0.0174533*360.0/pos->steps);
-	    LOG("Rotating by %lf radians" , (angle ) );
+	    LOG("Rotating by {} radians" , (angle ) );
 	    rot.rightHandedRotationZ(-angle);
 	    pos->rotations.push_back(rot);
 	}
@@ -516,7 +516,7 @@ vector<TorsionAtom>::iterator		tai;
 
 
     if ( !this->driveMode ) {
-	SIMPLE_ERROR(("TorsionDriver must be in drive mode to render graphics" )));
+	SIMPLE_ERROR("TorsionDriver must be in drive mode to render graphics"));
     }
 
     graphics = xmlGraphics("torsions");
@@ -571,12 +571,12 @@ vector<TorsionAtom>::iterator		tai;
 Vector3					trans;
 
     for ( pos=this->torsions.begin()+start; pos!=this->torsions.end(); pos++ ) {
-	LOG("Applying matrix at segment: %d" , (pos-this->torsions.begin() ) );
+	LOG("Applying matrix at segment: {}" , (pos-this->torsions.begin() ) );
 #ifdef	DEBUG_ON
 	pos->accumulated.dump();
 #endif
 	for ( tai=pos->atoms.begin(); tai!=pos->atoms.end(); tai++ ) {
-	    LOG("Transforming atom: %s" , (tai->getAtom()->getName().c_str() ) );
+	    LOG("Transforming atom: {}" , (tai->getAtom()->getName().c_str() ) );
 	    trans = pos->accumulated*(tai->getUntransformed());
 	    tai->getAtom()->setPosition(trans);
 	}
@@ -597,12 +597,12 @@ int	Dumb_TorsionDriver::advanceToNextConformationStartFromSegment(int segment)
 vector<TorsionSegment>::iterator	pos;
 vector<int>::iterator			cpos;
 
-    LOG("----Advancing from segment: %d highest: %d" , (segment) , (this->torsions.end()-this->torsions.begin()-1) );
+    LOG("----Advancing from segment: {} highest: {}" , (segment) , (this->torsions.end()-this->torsions.begin()-1) );
     if (segment > this->highestSegmentIndex() ) {
 	segment = this->highestSegmentIndex();
-	LOG("Trimmed to start at segment: %d" , (segment ) );
+	LOG("Trimmed to start at segment: {}" , (segment ) );
     } else if ( segment < this->highestSegmentIndex()) {
-	LOG("Resetting rotations for segments after %d" , (segment ) );
+	LOG("Resetting rotations for segments after {}" , (segment ) );
 	for ( pos=this->torsions.begin()+segment+1;
 		pos!=this->torsions.end();
 		pos++ ) {
@@ -619,17 +619,17 @@ vector<int>::iterator			cpos;
 
     pos = this->torsions.begin()+segment; // this->torsions.end()-1;
     while ( pos > this->torsions.begin() ) {
-	LOG("Incrementing segment: %d" , (pos-this->torsions.begin() ) );
+	LOG("Incrementing segment: {}" , (pos-this->torsions.begin() ) );
 	// Increment the current torsionSegment rotation
 	pos->rotation++;
-	LOG("Incremented rotation %d of %d" , (pos->rotation-pos->rotations.begin()) , (pos->rotations.end()-pos->rotations.begin() ) );
+	LOG("Incremented rotation {} of {}" , (pos->rotation-pos->rotations.begin()) , (pos->rotations.end()-pos->rotations.begin() ) );
 	if ( pos->rotation != pos->rotations.end() ) break;
 	LOG("Carried" );
 	pos->rotation = pos->rotations.begin();
 	pos--;
     }
     if ( pos > this->torsions.begin() ) {
-	LOG("Updating transforms and coordinates from segment: %d" , (pos-this->torsions.begin() ) );
+	LOG("Updating transforms and coordinates from segment: {}" , (pos-this->torsions.begin() ) );
 	this->updateAccumulatedTransforms(pos-this->torsions.begin());
 	this->calculateNewCoordinates(pos-this->torsions.begin());
 	return pos-this->torsions.begin();
@@ -653,38 +653,38 @@ vector<int>::iterator			ip;
 vector<Matrix>::iterator		mp;
 
     if ( this->driveMode ) {
-      core::writeln_bf_stream(fmt::sprintf( "Torsion driver in DRIVE mode" ));
+      core::clasp_write_string(fmt::format( "Torsion driver in DRIVE mode\n" ));
     } else {
-      core::writeln_bf_stream(fmt::sprintf( "Torsion driver in ADD_TORSION mode" ));
+      core::clasp_write_string(fmt::format( "Torsion driver in ADD_TORSION mode\n" ));
     }
     for ( pos=this->torsions.begin(); pos != this->torsions.end(); pos++ ) {
 //	printf( "Driven torsion #%lX\n", (pos-this->torsions.begin() );
 	if ( pos!=this->torsions.begin() ) {
-          core::writeln_bf_stream(fmt::sprintf( "  Parent: %d" , pos->parent ));
-          core::writeln_bf_stream(fmt::sprintf( "      Fixed: %s" , pos->fixed->getName().c_str() ));
-          core::writeln_bf_stream(fmt::sprintf( "    Movable: %s" , pos->movable->getName().c_str() ));
-          core::writeln_bf_stream(fmt::sprintf( "      Steps: %d" , pos->steps ));
-          core::writeln_bf_stream(fmt::sprintf("      Atoms: " ));
+          core::clasp_write_string(fmt::format( "  Parent: {}\n" , pos->parent ));
+          core::clasp_write_string(fmt::format( "      Fixed: {}\n" , pos->fixed->getName().c_str() ));
+          core::clasp_write_string(fmt::format( "    Movable: {}\n" , pos->movable->getName().c_str() ));
+          core::clasp_write_string(fmt::format( "      Steps: {}\n" , pos->steps ));
+          core::clasp_write_string(fmt::format("      Atoms:\n" ));
           for ( ap=pos->atoms.begin(); ap!=pos->atoms.end(); ap++ ) {
-            core::writeln_bf_stream(fmt::sprintf(" %s", ap->getAtom()->getName() ));
+            core::clasp_write_string(fmt::format(" {}\n", ap->getAtom()->getName() ));
           }
-          core::writeln_bf_stream(fmt::sprintf( "" ));
-          core::writeln_bf_stream(fmt::sprintf("      Children: " ));
+          core::clasp_terpri();
+          core::clasp_write_string(fmt::format("      Children:\n" ));
           for ( ip=pos->children.begin(); ip!=pos->children.end(); ip++ ) {
-            core::writeln_bf_stream(fmt::sprintf(" %3d", *ip ));
+            core::clasp_write_string(fmt::format(" {:3}\n", *ip ));
           }
-          core::writeln_bf_stream(fmt::sprintf( "" ));
-          core::writeln_bf_stream(fmt::sprintf( "      coordinate system:" ));
+          core::clasp_write_string(fmt::format( "" ));
+          core::clasp_write_string(fmt::format( "      coordinate system:\n" ));
           pos->coord->dump();
-          core::writeln_bf_stream(fmt::sprintf( "      relative matrix: " ));
+          core::clasp_write_string(fmt::format( "      relative matrix:\n" ));
           pos->relative.dump();
           for (mp=pos->rotations.begin(); mp!=pos->rotations.end(); mp++ ) {
             mp->dump();
           }
 	}
-        core::writeln_bf_stream(fmt::sprintf( "      accumulated matrix: " ));
+        core::clasp_write_string(fmt::format( "      accumulated matrix:\n" ));
 	pos->accumulated.dump();
-        core::writeln_bf_stream(fmt::sprintf( "" ));
+        core::clasp_terpri();
     }
 }
 

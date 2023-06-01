@@ -37,7 +37,7 @@
 
 (defun fwrite (val &optional (ff *fortran-file*))
   "Write _val_ using the current format"
-  (core:bformat1 (fof-stream ff) (fof-format ff) val)
+  (core:fmt (fof-stream ff) (fof-format ff) val)
   (incf (fof-number-on-line ff))
   (setf (fof-wrote-nothing ff) nil)
   (when (>= (fof-number-on-line ff) (fof-per-line ff))

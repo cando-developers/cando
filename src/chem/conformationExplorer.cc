@@ -167,7 +167,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 	    dlAll->append(dlMatter);
 #ifdef DEBUG_ON
 	    core::SymbolVector_sp sv = dlMatter->getFullName();
-	    LOG("At time of creation dlMatter fullName=%s" , _rep_(sv) );
+	    LOG("At time of creation dlMatter fullName={}" , _rep_(sv) );
 #endif
 	}
 	{
@@ -243,7 +243,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
     void	ConformationExplorerEntryStage_O::setFinalCoordinates(geom::SimpleVectorCoordinate_sp ac)
     {
 	ASSERTNOTNULL(ac);
-	LOG("setFinalCoordinates:%s" , (ac->asXmlString().c_str() ) );
+	LOG("setFinalCoordinates:{}" , (ac->asXmlString().c_str() ) );
 	LOG("The address of the geom::SimpleVectorCoordinate_sp is in o" );
 	this->_FinalCoordinates = ac;
     }
@@ -353,7 +353,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntry_O::setSelectedStage(Conformation
 CL_LISPIFY_NAME("createEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::createEntryStage(core::T_sp name)
     {
-	ASSERTF(!this->hasEntryStageWithName(name), ("Stage with key[%s] already exists!") , name );
+	ASSERTF(!this->hasEntryStageWithName(name), ("Stage with key[{}] already exists!") , name );
 	auto  stage  = gctools::GC<ConformationExplorerEntryStage_O>::allocate_with_default_constructor();
 	stage->setConformationExplorerEntry(this->sharedThis<ConformationExplorerEntry_O>());
 	stage->setStageName(name);
@@ -439,7 +439,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 	{
 	    return this->_Stages[idx];
 	}
-	SIMPLE_ERROR(("Only the last stage can be incomplete"));
+	SIMPLE_ERROR("Only the last stage can be incomplete");
     }
 
 
@@ -471,7 +471,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 		return (*si);
 	    }
 	}
-	SIMPLE_ERROR(("Could not find key: %s") , core::_rep_(key));
+	SIMPLE_ERROR("Could not find key: {}" , core::_rep_(key));
     }
 
 
@@ -484,7 +484,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 	stageIterator		si;
 	dlAll = geom::DisplayList_O::create();
 	FIX_ME(); dlAll->setName(_lisp->internKeyword("stages"));
-	LOG("Rendering %d stages"%this->_Stages.size());
+	LOG("Rendering {} stages"%this->_Stages.size());
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
 	{
 	    if ( (*si)->isComplete() )
@@ -554,9 +554,9 @@ CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
 	uint aidx = 0;
 	for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
 	{
-	    LOG("Getting position of ATOM(%d) %s" , aidx , (*ai)->description().c_str() );
+	    LOG("Getting position of ATOM({}) {}" , aidx , (*ai)->description().c_str() );
 	    *ci = (*ai)->getPosition();
-	    LOG("Position = %s" , (*ci).asString() );
+	    LOG("Position = {}" , (*ci).asString() );
 	    aidx++;
 	}
 	LOG("Done");
@@ -659,11 +659,11 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsList()
 	    }
 	} else
 	{
-	    LOG("FLAG! There are %d entries" , this->_Entries.size());
+	    LOG("FLAG! There are {} entries" , this->_Entries.size());
 	    for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
 	    {
 		dlEntry = (*si)->rendered(opts);
-		LOG("The name of the Frame entry is[%s]" , _rep_(dlEntry->getName()) );
+		LOG("The name of the Frame entry is[{}]" , _rep_(dlEntry->getName()) );
 		frames->append(dlEntry);
 	    }
 	}
@@ -701,7 +701,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
 		return;
 	    }
 	}
-	SIMPLE_ERROR(("You cannot add superpose atom: "+a->description()+" because it isn't in the ConformationCollection"));
+	SIMPLE_ERROR("You cannot add superpose atom: {} because it isn't in the ConformationCollection", a->description());
     }
 
 
@@ -811,7 +811,7 @@ CL_DEFMETHOD     unsigned ConformationExplorer_O::getEntryIndex(ConformationExpl
 		return i;
 	    }
 	}
-	SIMPLE_ERROR(("Could not find entry in ConformationExplorer"));
+	SIMPLE_ERROR("Could not find entry in ConformationExplorer");
     }
 
 
@@ -886,7 +886,7 @@ bool	ConformationExplorer_O::hasStageNameInAllEntries(core::T_sp stageKey)
 	uint numSuperposeAtoms = this->numberOfSuperposeAtoms();
 	if ( numSuperposeAtoms == 0 )
 	{
-	    SIMPLE_ERROR(("There must be at least one superpose atom"));
+	    SIMPLE_ERROR("There must be at least one superpose atom");
 	} else if ( numSuperposeAtoms == 1 || numSuperposeAtoms == 2 )
 	{
 	    uint entryIndex = 0;
@@ -971,7 +971,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 	}
 	if ( bestRms < rms )
 	{
-	    LOG("The best match had an rms(%lf) and we are looking for one better than(%lf)" , bestRms , rms  );
+	    LOG("The best match had an rms({}) and we are looking for one better than({})" , bestRms , rms  );
 	    match->setMatches(true);
 	}
 	match->setClosestMatchRms(bestRms);
@@ -993,11 +993,11 @@ CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstFor
     {
 	if ( !this->hasStageNameInAllEntries(stageName) )
 	{
-          SIMPLE_ERROR(("You have to have the stageName(%s) in all entries") , stageName);
+          SIMPLE_ERROR("You have to have the stageName({}) in all entries" , stageName);
 	}
 	if ( this->_Entries.size() == 0 )
 	{
-	    SIMPLE_ERROR(("You have to have at least one entry"));
+	    SIMPLE_ERROR("You have to have at least one entry");
 	}
 	if ( this->_Entries.size() < 2 ) return;
 	ConformationExplorer_O::entryIterator first = this->_Entries.begin();

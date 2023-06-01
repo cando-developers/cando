@@ -508,7 +508,7 @@ string isolateElementName(const string& name, bool caseInsensitive)
 {
   char firstChar = convertCase(name[0],caseInsensitive);
   if (name == "" ) {
-    SIMPLE_ERROR(("Cannot isolate element name from empty string"));
+    SIMPLE_ERROR("Cannot isolate element name from empty string");
   } else if (name.size() == 1) {
     goto ONE_CHAR_ELEMENT;
   }
@@ -605,7 +605,7 @@ CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
 {
   ElementsInfo_sp ei = elementsInfo();
   if (atomicNumber<0 || atomicNumber>element_MAX || ei->_atomicNumberToAtomicInfoIndex[atomicNumber] ==-1 ) {
-    SIMPLE_ERROR(("Could not determine element for atomic number %d") , atomicNumber);
+    SIMPLE_ERROR("Could not determine element for atomic number {}" , atomicNumber);
   }
   return ei->_atomicInfo[ei->_atomicNumberToAtomicInfoIndex[atomicNumber]]._ElementEnum;
 }
@@ -615,7 +615,7 @@ CL_DEFUN chem::Element elementForIntegerAtomicMass(int atomicMass)
 {
   ElementsInfo_sp ei = elementsInfo();
   if (atomicMass<0 || atomicMass>element_mass_MAX || ei->_atomicMassToAtomicInfoIndex[atomicMass] ==-1 ) {
-    SIMPLE_ERROR(("Could not determine element for integer atomic mass %d") , atomicMass);
+    SIMPLE_ERROR("Could not determine element for integer atomic mass {}" , atomicMass);
   }
   return ei->_atomicInfo[ei->_atomicMassToAtomicInfoIndex[atomicMass]]._ElementEnum;
 }

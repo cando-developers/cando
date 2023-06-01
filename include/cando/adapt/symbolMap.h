@@ -78,7 +78,7 @@ template <typename OT>
       this->_v.clear();
       return;
     }
-    SIMPLE_ERROR(("Could not convert object to SymbolMap, object: %s") , _rep_(o));
+    SIMPLE_ERROR("Could not convert object to SymbolMap, object: {}" , _rep_(o));
   }
  };
 

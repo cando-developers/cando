@@ -120,7 +120,7 @@ void	StepReport_O::initialize()
     ANN(this->_LineSearchPosition);
     if ( this->_LineSearchPosition.notnilp() )
     {
-	LOG("this->_LineSearchPosition size=%d" , this->_LineSearchPosition->size()  );
+	LOG("this->_LineSearchPosition size={}" , this->_LineSearchPosition->size()  );
     }
 #endif
     LOG("Status" );

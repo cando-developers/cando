@@ -97,7 +97,7 @@ void Molecule_O::fields(core::Record_sp node)
     BondList_sp bondList = BondList_O::create();
     node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
-    RECORD_LOG("residue bondList = %s" , _rep_(bondList));
+    RECORD_LOG("residue bondList = {}" , _rep_(bondList));
     bondList->imposeYourself();
 #endif
   }
@@ -127,7 +127,7 @@ Molecule_O::Molecule_O(const Molecule_O& mol)
 void Molecule_O::addResidue( Matter_sp r )
 {
   this->addMatter( r );
-  LOG("Added %s to %s" , r->description().c_str() , this->description().c_str()  );
+  LOG("Added {} to {}" , r->description().c_str() , this->description().c_str()  );
 }
 
 //
@@ -137,7 +137,7 @@ void Molecule_O::addResidue( Matter_sp r )
 //
 void Molecule_O::addResidueRetainId( Matter_sp r )
 {
-  LOG("Adding %s to %s" , r->description().c_str() , this->description().c_str()  );
+  LOG("Adding {} to {}" , r->description().c_str() , this->description().c_str()  );
   this->addMatterRetainId( r );
 }
 
@@ -159,7 +159,7 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
       return;
     }
   }
-  SIMPLE_ERROR(("removeResidue: Molecule does not contain residue: %s") , _rep_(a->getName()) );
+  SIMPLE_ERROR("removeResidue: Molecule does not contain residue: {}" , _rep_(a->getName()) );
 }
 
 #if 0
@@ -186,12 +186,12 @@ void Molecule_O::transferCoordinates(Matter_sp obj)
     {
 	if ( !obj.isA<Molecule_O>() ) 
 	{
-	    SIMPLE_ERROR(("You can only transfer coordinates to a Molecule from another Molecule"));
+	    SIMPLE_ERROR("You can only transfer coordinates to a Molecule from another Molecule");
 	}
 	Molecule_sp other = obj.as<Molecule_O>();
 	if ( other->length() != this->length() )
 	{
-	    SIMPLE_ERROR(("You can only transfer coordinates if the two Molecules have the same number of contents"));
+	    SIMPLE_ERROR("You can only transfer coordinates if the two Molecules have the same number of contents");
 	}
 	Matter_O::contentIterator tit,oit;
 	for ( tit=this->_Contents.begin(), oit=other->_Contents.begin();
@@ -203,7 +203,7 @@ void Molecule_O::transferCoordinates(Matter_sp obj)
 CL_LISPIFY_NAME("moveAllAtomsIntoFirstResidue");
 CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
 {
-  SIMPLE_ERROR(("Reimplement moveAllAtomsIntoFirstResidue()"));
+  SIMPLE_ERROR("Reimplement moveAllAtomsIntoFirstResidue()");
 #if 0
   contentIterator	a;
   contentIterator	r;
@@ -319,7 +319,7 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 	if ( residues.size() > 0 ) {
 	    return *(residues.begin());
 	}
-	SIMPLE_ERROR(("getFirstResidueWithName: Molecule does not contain residues with name: %s") , _rep_(name) );
+	SIMPLE_ERROR("getFirstResidueWithName: Molecule does not contain residues with name: {}" , _rep_(name) );
     }
 
 
@@ -359,13 +359,13 @@ AtomIdMap_sp Molecule_O::buildAtomIdMap() const
   for ( int rid =0; rid<numResidues; rid++ )
   {
     int numAtoms = this->_Contents[rid]->_Contents.size();
-    core::write_bf_stream(fmt::sprintf("%s:%d rid %d of %d  numAtoms-> %d\n" , __FILE__ , __LINE__ , rid , numResidues , numAtoms ));
+    core::clasp_write_string(fmt::format("{}:{} rid {} of {}  numAtoms-> {}\n" , __FILE__ , __LINE__ , rid , numResidues , numAtoms ));
     atomIdMap->resizeResidue(mid,rid,numAtoms);
     for ( int aid=0; aid<numAtoms; aid++ )
     {
       AtomId atomId(mid,rid,aid);
       Atom_sp atom = this->_Contents[rid]->_Contents[aid].as<Atom_O>();
-      core::write_bf_stream(fmt::sprintf("%s:%d Adding %d %d %d -> %s\n" , __FILE__ , __LINE__ , mid , rid , aid , _rep_(atom)));
+      core::clasp_write_string(fmt::format("{}:{} Adding {} {} {} -> {}\n" , __FILE__ , __LINE__ , mid , rid , aid , _rep_(atom)));
       atomIdMap->set(atomId,atom);
     }
   }
@@ -380,7 +380,7 @@ AtomIdMap_sp Molecule_O::buildAtomIdMap() const
 	    Residue_sp residue = this->_Contents[resId].as<Residue_O>();
 	    return residue->atomWithAtomId(atomId);
 	}
-	SIMPLE_ERROR(("Illegal residueId[%d] must be less than %d") , resId , this->_Contents.size() );
+	SIMPLE_ERROR("Illegal residueId[{}] must be less than {}" , resId , this->_Contents.size() );
     }
 
 

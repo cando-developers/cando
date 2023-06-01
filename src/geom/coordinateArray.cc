@@ -75,7 +75,7 @@ CL_DEF_CLASS_METHOD SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::make(cor
 {
   if ( fnsize.notnilp() && vals.notnilp() )
   {
-    SIMPLE_ERROR(("You can only pass size or vals"));
+    SIMPLE_ERROR("You can only pass size or vals");
   }
   auto me = gctools::GC<SimpleVectorCoordinate_O>::allocate_with_default_constructor();
   if ( fnsize.notnilp() )
@@ -97,7 +97,7 @@ void ArrayCoordinate_fillFromList(ArrayCoordinate_sp array, core::List_sp vals)
   IMPLEMENT_MEF("Come up with a loop invariant way of filling array");
 #if 0
   if ( this->size() != 0 ) {
-    SIMPLE_ERROR(("Coordinate array must be empty to fillFromCons"));
+    SIMPLE_ERROR("Coordinate array must be empty to fillFromCons");
   }
   if ( vals.notnilp() ) {
     for ( auto cur : vals ) {
@@ -111,7 +111,7 @@ void ArrayCoordinate_fillFromList(ArrayCoordinate_sp array, core::List_sp vals)
       } else if ( OVector3_sp ovec = obj.asOrNull<OVector3_O>()) {
         this->appendElement(ovec->value());
       } else {
-        SIMPLE_ERROR(("Cannot convert value[%s] to Vector3") , _rep_(obj) );
+        SIMPLE_ERROR("Cannot convert value[{}] to Vector3" , _rep_(obj) );
       }
     }
   }
@@ -215,8 +215,8 @@ void SimpleVectorCoordinate_O::fields(core::Record_sp node)
 CL_LISPIFY_NAME("write-to-stream");
 CL_DEFMETHOD     void SimpleVectorCoordinate_O::writeToStream(string const& info, core::T_sp sout)
 {
-  core::clasp_write_string(fmt::sprintf(("+++SimpleVectorCoordinate %d\n") , this->_Points.size() ),sout);
-  core::clasp_write_string(fmt::sprintf(("+ %s\n") , info),sout);
+  core::clasp_write_string(fmt::format("+++SimpleVectorCoordinate {}\n", this->_Points.size() ),sout);
+  core::clasp_write_string(fmt::format("+ {}\n", info),sout);
   for (int i=0; i<(int)this->_Points.size(); i++ )
   {
     this->_Points[i].write(sout);
@@ -266,7 +266,7 @@ string SimpleVectorCoordinate_O::parseFromStream(core::Stream_sp sin)
   sin->readLine(line,hitEof);
   if ( !hitEof )
   {
-    SIMPLE_ERROR(("Could not read header for SimpleVectorCoordinate - got[%s] eof[%d] ")
+    SIMPLE_ERROR("Could not read header for SimpleVectorCoordinate - got[{}] eof[{}] "
                  , line , hitEof );
   }
   if ( line.substr(0,18)=="+++SimpleVectorCoordinate")
@@ -280,7 +280,7 @@ string SimpleVectorCoordinate_O::parseFromStream(core::Stream_sp sin)
 //	    getline(sin->stream(),line);
     if ( !hitEof )
     {
-      SIMPLE_ERROR(("Could not read info - got[%s]") , line );
+      SIMPLE_ERROR("Could not read info - got[{}]" , line );
     }
     info = line.substr(2,9999);
     for ( int i=0; i<numLines; i++ )
@@ -290,7 +290,7 @@ string SimpleVectorCoordinate_O::parseFromStream(core::Stream_sp sin)
 //		getline(sin->stream(),line);
       if ( !hitEof )
       {
-        SIMPLE_ERROR(("Error reading relative line[%d] contents[%s] for SimpleVectorCoordinate") , i , line );
+        SIMPLE_ERROR("Error reading relative line[{}] contents[{}] for SimpleVectorCoordinate" , i , line );
       }
       pos.parseFromString(line);
       this->getElement(i)=pos;
@@ -298,7 +298,7 @@ string SimpleVectorCoordinate_O::parseFromStream(core::Stream_sp sin)
   } else
   {
     sin->seek(spos);
-    SIMPLE_ERROR(("Could not read SimpleVectorCoordinate - header was[%s]") , line );
+    SIMPLE_ERROR("Could not read SimpleVectorCoordinate - header was[{}]" , line );
   }
   return info;
 }

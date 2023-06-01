@@ -112,7 +112,7 @@ double	Vector2::get(int i) const
 {
     node->attribute("x",this->coords[0]);
     node->attribute("y",this->coords[1]);
-    LOG("Serialized vector@%X = %lf, %lf" , this , this->coords[0] , this->coords[1]  );
+    LOG("Serialized vector@{} = {}, {}" , this , this->coords[0] , this->coords[1]  );
 };
 #endif
 

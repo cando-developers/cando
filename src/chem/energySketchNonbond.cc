@@ -56,7 +56,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #define DEBUG_NONBOND_TERM 1
 #define LOG_ENERGY(x)
-//#define LOG_ENERGY core::write_bf_stream
+//#define LOG_ENERGY core::clasp_write_string
 
 namespace chem
 {
@@ -69,7 +69,7 @@ core::List_sp EnergySketchNonbond::encode() const {
 }
 
 void EnergySketchNonbond::decode(core::List_sp alist) {
-  SIMPLE_ERROR(("Implement decode of EnergySketchNonbond"));
+  SIMPLE_ERROR("Implement decode of EnergySketchNonbond");
 }
 
 CL_DEFMETHOD void EnergySketchNonbond_O::setScaleSketchNonbond(double d) { this->_ScaleSketchNonbond = d; };
@@ -105,7 +105,7 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
                                                           NVector_sp nvPosition,
                                                           AbstractLargeSquareMatrix_sp m )
 {
-  SIMPLE_ERROR(("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
+  SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }
 
 double	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
@@ -205,22 +205,22 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 //#include <cando/chem/energy_functions/_Erep_termCode.cc>
 #if 0
     if (chem__verbose(2)) {
-      core::write_bf_stream(fmt::sprintf("(defparameter v1 (geom:vec %f %f %f))\n" , x1 , y1 , z1 ));
-      core::write_bf_stream(fmt::sprintf("(defparameter v2 (geom:vec %f %f %f))\n" , x2 , y2 , z2 ));
-      core::write_bf_stream(fmt::sprintf("crep = %f\n" , crep ));
-      core::write_bf_stream(fmt::sprintf("ErepDistance = %f\n" , ErepDistance ));
-      core::write_bf_stream(fmt::sprintf("Erep = %f\n" , Erep ));
-      core::write_bf_stream(fmt::sprintf("fx1 fy1 fz1 = %f %f %f\n" , fx1 , fy1 , fz1 ));
-      core::write_bf_stream(fmt::sprintf("fx2 fy2 fz2 = %f %f %f\n" , fx2 , fy2 , fz2 ));
+      core::clasp_write_string(fmt::format("(defparameter v1 (geom:vec {} {} {}))\n" , x1 , y1 , z1 ));
+      core::clasp_write_string(fmt::format("(defparameter v2 (geom:vec {} {} {}))\n" , x2 , y2 , z2 ));
+      core::clasp_write_string(fmt::format("crep = {}\n" , crep ));
+      core::clasp_write_string(fmt::format("ErepDistance = {}\n" , ErepDistance ));
+      core::clasp_write_string(fmt::format("Erep = {}\n" , Erep ));
+      core::clasp_write_string(fmt::format("fx1 fy1 fz1 = {} {} {}\n" , fx1 , fy1 , fz1 ));
+      core::clasp_write_string(fmt::format("fx2 fy2 fz2 = {} {} {}\n" , fx2 , fy2 , fz2 ));
     }
 #endif
     goto CONTINUE;
   TOO_FAR:
 #if 0
     if (chem__verbose(2)) {
-      core::write_bf_stream(fmt::sprintf("x1 y1 z1 = %f %f %f\n" , x1 , y1 , z1 ));
-      core::write_bf_stream(fmt::sprintf("x2 y2 z2 = %f %f %f\n" , x2 , y2 , z2 ));
-      core::write_bf_stream(fmt::sprintf("Too far ErepDistance = %f\n" , ErepDistance ));
+      core::clasp_write_string(fmt::format("x1 y1 z1 = {} {} {}\n" , x1 , y1 , z1 ));
+      core::clasp_write_string(fmt::format("x2 y2 z2 = {} {} {}\n" , x2 , y2 , z2 ));
+      core::clasp_write_string(fmt::format("Too far ErepDistance = {}\n" , ErepDistance ));
     }
 #endif
         // Do nothing
@@ -228,9 +228,9 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
   TOO_CLOSE:
 #if 0
     if (chem__verbose(2)) {
-      core::write_bf_stream(fmt::sprintf("x1 y1 z1 = %f %f %f\n" , x1 , y1 , z1 ));
-      core::write_bf_stream(fmt::sprintf("x2 y2 z2 = %f %f %f\n" , x2 , y2 , z2 ));
-      core::write_bf_stream(fmt::sprintf("Too close ErepDistance = %f\n" , ErepDistance ));
+      core::clasp_write_string(fmt::format("x1 y1 z1 = {} {} {}\n" , x1 , y1 , z1 ));
+      core::clasp_write_string(fmt::format("x2 y2 z2 = {} {} {}\n" , x2 , y2 , z2 ));
+      core::clasp_write_string(fmt::format("Too close ErepDistance = {}\n" , ErepDistance ));
     }
 #endif
     EREP_FORCE_ACCUMULATE(I1,0,0.5+core::randomNumber01());
@@ -286,7 +286,7 @@ CL_DEFMETHOD void EnergySketchNonbond_O::modifySketchNonbondTermConstant(size_t 
     entry._Constant = constant;
     return;
   }
-  SIMPLE_ERROR(("index %d is out of bounds as a energy-sketch-nonbond term index (#entries %d)") , index , this->_Terms.size() );
+  SIMPLE_ERROR("index {} is out of bounds as a energy-sketch-nonbond term index (#entries {})" , index , this->_Terms.size() );
 }
 
 void EnergySketchNonbond_O::reset()

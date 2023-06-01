@@ -216,7 +216,7 @@ CL_DEFMETHOD void	Twister_O::rotate(double angle)
     Matrix	transform, tm;
     Vector3	rotVec, tv;
 
-    LOG("Rotating by %lf degrees" , (angle/0.0174533) );
+    LOG("Rotating by {} degrees" , (angle/0.0174533) );
     ASSERTNOTNULLP(this->_Fixed,"Fixed atom undefined");
     ASSERTNOTNULLP(this->_Movable,"Movable atom is undefined");
     ASSERTP(this->_Atoms.size()>0,"There must be atoms to rotate");
@@ -225,21 +225,21 @@ CL_DEFMETHOD void	Twister_O::rotate(double angle)
     tv = this->_Movable->getPosition();
     tv = tv.multiplyByScalar(-1.0);
     transform.translate(tv);
-    LOG("To origin transform matrix: %s" , (transform.asString().c_str()) );
+    LOG("To origin transform matrix: {}" , (transform.asString().c_str()) );
     tm.rotationAxis(angle,&rotVec);
     transform = tm*transform;
     tv = this->_Movable->getPosition();
     tm.translate(tv);
-    LOG("From origin transform matrix: %s" , (tm.asString().c_str()) );
+    LOG("From origin transform matrix: {}" , (tm.asString().c_str()) );
     transform = tm*transform;
-    LOG("Complete transform matrix: %s" , (transform.asString().c_str()) );
+    LOG("Complete transform matrix: {}" , (transform.asString().c_str()) );
     for ( gctools::Vec0<Atom_sp>::iterator ai=this->_Atoms.begin();
 	  ai!=this->_Atoms.end(); ai++ ) {
-	LOG("Perturbing atom(%s)  start position = %lf, %lf, %lf" , (*ai)->description().c_str() , (*ai)->getPosition().getX() , (*ai)->getPosition().getY() , (*ai)->getPosition().getZ()  );
+	LOG("Perturbing atom({})  start position = {}, {}, {}" , (*ai)->description().c_str() , (*ai)->getPosition().getX() , (*ai)->getPosition().getY() , (*ai)->getPosition().getZ()  );
 	tv = (*ai)->getPosition();
 	tv = transform*tv;
 	(*ai)->setPosition(tv);
-	LOG("                     pert. position = %lf, %lf, %lf" , (*ai)->getPosition().getX() , (*ai)->getPosition().getY() , (*ai)->getPosition().getZ()  );
+	LOG("                     pert. position = {}, {}, {}" , (*ai)->getPosition().getX() , (*ai)->getPosition().getY() , (*ai)->getPosition().getZ()  );
     }
 }
 
@@ -251,7 +251,7 @@ CL_DEFMETHOD double Twister_O::currentDihedralAngleRadians()
 {
   if (this->_FixedRef.nilp() )
   {
-    SIMPLE_ERROR(("For absolute rotations the reference atoms of the twister must be defined"));
+    SIMPLE_ERROR("For absolute rotations the reference atoms of the twister must be defined");
   }
   Vector3 v1 = this->_FixedRef->getPosition();
   Vector3 v2 = this->_Fixed->getPosition();
@@ -272,7 +272,7 @@ CL_DEFMETHOD void Twister_O::rotateAbsolute(double angle)
   double currentAngle = this->currentDihedralAngleRadians();
   double delta = angle - currentAngle;
   if (chem__verbose(1)) {
-    core::writeln_bf_stream(fmt::sprintf("current dihedral = %8.3lf  desired dihedral = %8.3lf delta=%8.3lf" , (currentAngle/0.0174533) , (angle/0.0174533) , (delta/0.0174533) ));
+    core::clasp_write_string(fmt::format("current dihedral = {:8.3f}  desired dihedral = {:8.3f} delta={:8.3f}\n" , (currentAngle/0.0174533) , (angle/0.0174533) , (delta/0.0174533) ));
   }
   this->rotate(delta);
 #ifdef DEBUG_ON
@@ -281,7 +281,7 @@ CL_DEFMETHOD void Twister_O::rotateAbsolute(double angle)
   v3 = this->_Movable->getPosition();
   v4 = this->_MovableRef->getPosition();
   double resultAngle = geom::calculateDihedral(v1,v2,v3,v4);
-  core::writeln_bf_stream(fmt::sprintf("      result dihedral = %8.3lf" , (resultAngle/0.0174533) ));
+  core::clasp_write_string(fmt::format("      result dihedral = {:8.3f}\n" , (resultAngle/0.0174533) ));
 #endif
 }
 
@@ -321,7 +321,7 @@ CL_DEFMETHOD Twister_sp	TwisterDriver_O::getTwister(uint i)
 {
     ASSERT_lessThan(i,this->_Twisters.size());
     if (i>=0 && i<this->_Twisters.size()) return this->_Twisters[i];
-    SIMPLE_ERROR(("Illegal twister index %d there are only %d twisters") , i , this->_Twisters.size());
+    SIMPLE_ERROR("Illegal twister index {} there are only {} twisters" , i , this->_Twisters.size());
 }
 
 CL_LAMBDA(twister-driver);
@@ -339,7 +339,7 @@ double	ang;
     it = core::randomNumber01()*this->_Twisters.size();
     ia = (int)(core::randomNumber01()*12.0);
     ang = (30.0*ia)*0.0174533+(core::randomNumberNormal01()*15);
-    LOG("Perturbing twister#%d of %d by %lf degrees" , it , this->_Twisters.size() , (ang/0.0174533)  );
+    LOG("Perturbing twister#{} of {} by {} degrees" , it , this->_Twisters.size() , (ang/0.0174533)  );
     this->_Twisters[it]->rotate(ang);
 }
 

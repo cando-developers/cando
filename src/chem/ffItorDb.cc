@@ -112,7 +112,7 @@ CL_DEFMETHOD
 double  FFItor_O::getV_kj(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for getV"));
+        SIMPLE_ERROR("Illegal index for getV");
     }
     return this->_Vs_kj[period-1];
 }
@@ -122,7 +122,7 @@ CL_DEFMETHOD
 void    FFItor_O::setV_kj(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for setV"));
+        SIMPLE_ERROR("Illegal index for setV");
     }
     this->_Vs_kj[period-1] = val;
     this->_hasPeriodicity[period-1] = true;
@@ -143,7 +143,7 @@ CL_LISPIFY_NAME(FFItor/hasPeriodicity);
 CL_DEFMETHOD
 bool FFItor_O::hasPeriodicity(int period) const
 {
-    ASSERTF(period>=1 && period<=FFItor_O::IMaxPeriodicity, ("hasPeriodicityperiod[%d] must be in [1,%d]") , period , IMaxPeriodicity );
+    ASSERTF(period>=1 && period<=FFItor_O::IMaxPeriodicity, ("hasPeriodicityperiod[{}] must be in [1,{}]") , period , IMaxPeriodicity );
     return this->_hasPeriodicity[period-1];
 }
 
@@ -168,7 +168,7 @@ CL_DEFMETHOD
 double  FFItor_O::getPhaseRadians(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for getPhaseRadians"));
+        SIMPLE_ERROR("Illegal index for getPhaseRadians");
     }
     return this->_PhaseDegrees[period-1]*0.0174533;
 }
@@ -178,7 +178,7 @@ CL_DEFMETHOD
 void    FFItor_O::setPhaseRadians(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for setPhaseRadians"));
+        SIMPLE_ERROR("Illegal index for setPhaseRadians");
     }
     this->_PhaseDegrees[period-1] = val/0.0174533;
     this->_hasPeriodicity[period-1] = true;
@@ -189,7 +189,7 @@ CL_DEFMETHOD
 double  FFItor_O::getPhaseDegrees(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for getPhaseDegrees"));
+        SIMPLE_ERROR("Illegal index for getPhaseDegrees");
     }
     return this->_PhaseDegrees[period-1];
 }
@@ -199,7 +199,7 @@ CL_DEFMETHOD
 void    FFItor_O::setPhaseDegrees(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for setPhaseDegrees"));
+        SIMPLE_ERROR("Illegal index for setPhaseDegrees");
     }
     this->_PhaseDegrees[period-1] = val;
     this->_hasPeriodicity[period-1] = true;
@@ -249,7 +249,7 @@ void	FFItorDb_O::add( FFItor_sp itor )
     this->_Parameters->setf_gethash(key,itor);
 #ifdef DEBUG_ON
     if ( itor->_T3=="c" && itor->_T4=="o" ) {
-      LOG("FFItorDb::add adding term with key: %s" , key.c_str()  );
+      LOG("FFItorDb::add adding term with key: {}" , key.c_str()  );
     }
 #endif
   }
@@ -324,19 +324,19 @@ core::T_sp FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, cor
  DONE:
 #ifdef	DEBUG_ON
   if ( t3=="c" && t4=="o" ) {
-    LOG("FFITorDb::findBestTerm for types %s-%s-%s-%s" , t1.c_str() , t2.c_str() , t3.c_str() , t4.c_str()  );
+    LOG("FFITorDb::findBestTerm for types {}-{}-{}-{}" , t1.c_str() , t2.c_str() , t3.c_str() , t4.c_str()  );
     if ( itor.notnilp() )
     {
-      LOG("Found term with key: %s" , key.c_str()  );
+      LOG("Found term with key: {}" , key.c_str()  );
     } else {
-      LOG("Could not find term with key: %s" , key4.c_str()  );
-      LOG("Could not find term with key: %s" , key3.c_str()  );
-      LOG("Could not find term with key: %s" , key2.c_str()  );
-      LOG("Could not find term with key: %s" , key1.c_str()  );
+      LOG("Could not find term with key: {}" , key4.c_str()  );
+      LOG("Could not find term with key: {}" , key3.c_str()  );
+      LOG("Could not find term with key: {}" , key2.c_str()  );
+      LOG("Could not find term with key: {}" , key1.c_str()  );
       {
         for ( gctools::SmallMap<string,FFItor_sp>::iterator ii=this->_Lookup.begin();
               ii!=this->_Lookup.end();ii++ ) {
-          LOG("Entry key=%s" , ii->first.c_str()  );
+          LOG("Entry key={}" , ii->first.c_str()  );
         }
       }
     }
@@ -351,7 +351,7 @@ void    FFItorDb_O::cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbo
 {
     stringstream ss;
     ss << "Can't find itor term for ("<<t1<<")-("<<t2<<")-("<<t3<<")-("<<t4<<")";
-    SIMPLE_ERROR(("%s") , ss.str());
+    SIMPLE_ERROR("{}" , ss.str());
 }
 
 

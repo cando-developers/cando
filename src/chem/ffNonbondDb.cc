@@ -289,7 +289,7 @@ CL_DEFMETHOD void FFNonbondDb_O::FFNonbondDb_concatenate(FFNonbondDb_sp other, c
     core::T_sp type = term->_Type;
     core::T_sp found = terms_ht->gethash(type,_Nil<core::T_O>());
     if (found.notnilp()) {
-      SIMPLE_ERROR(("The type %s exists in the force-field %s and another force-field - there can be only one") , _rep_(type) , _rep_(other_name));
+      SIMPLE_ERROR("The type {} exists in the force-field {} and another force-field - there can be only one" , _rep_(type) , _rep_(other_name));
     }
     this->_Terms.push_back(term);
   }
@@ -313,7 +313,7 @@ CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global
       core::T_sp type = term->_Type;
       core::T_sp found = terms_ht->gethash(type,nil<core::T_O>());
       if (found.notnilp()) {
-        SIMPLE_ERROR(("The type %s exists in the force-field %s and %s - there can be only one") , _rep_(type) , _rep_(nb_name) , _rep_(found));
+        SIMPLE_ERROR("The type {} exists in the force-field {} and {} - there can be only one" , _rep_(type) , _rep_(nb_name) , _rep_(found));
       }
       terms_ht->setf_gethash(type,nb_name);
       conc->add(term);
@@ -380,7 +380,7 @@ CL_DEFMETHOD uint FFNonbondDb_O::findTypeIndex(core::Symbol_sp type)
 {
   core::T_sp index = this->_Parameters->gethash(type);
   if (index.fixnump()) return static_cast<uint>(index.unsafe_fixnum());
-  SIMPLE_ERROR(("Could not find FFNonbondDb type index for type %s") , _rep_(type));
+  SIMPLE_ERROR("Could not find FFNonbondDb type index for type {}" , _rep_(type));
 }
 
 CL_DEFMETHOD size_t FFNonbondDb_O::ffnonbond_find_atom_type_position(core::Symbol_sp type)
@@ -388,7 +388,7 @@ CL_DEFMETHOD size_t FFNonbondDb_O::ffnonbond_find_atom_type_position(core::Symbo
   size_t ti = this->findTypeIndex(type);
   if ( ti == UndefinedUnsignedInt )
   {
-    SIMPLE_ERROR(("Unknown type %s") , _rep_(type));
+    SIMPLE_ERROR("Unknown type {}" , _rep_(type));
   }
   return ti;
 }

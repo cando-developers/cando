@@ -684,7 +684,7 @@ int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::
     case OCT_PARTIAL:
         break;
     default:
-        SIMPLE_ERROR(("bad type\n"));
+        SIMPLE_ERROR("bad type\n");
 //        fprintf(stderr, "bad type\n");
 //        exit(1);
     }
@@ -751,7 +751,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
   Vector3                vCenter;
 //  OctNode_sp	         PonChildren[8];
 
-  if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("iBuildInteriorOctant PonNode->iDepth -> %d   iAtoms -> %d\n" , PonNode->iDepth , iAtoms));
+  if (chem__verbose(2)) core::clasp_write_string(fmt::format("iBuildInteriorOctant PonNode->iDepth -> {}   iAtoms -> {}\n" , PonNode->iDepth , iAtoms));
 
 #ifdef OCTDEBUG
   depth[PonNode->iDepth]++;
@@ -801,7 +801,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
     }
   }
   if (!iNewAtoms) {
-    if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("There were no new atoms added - OCT_EXCLUDED - returning\n"));
+    if (chem__verbose(2)) core::clasp_write_string(fmt::format("There were no new atoms added - OCT_EXCLUDED - returning\n"));
 		/*
 		 *  No atoms w/in box-enclosing sphere
 		 */
@@ -823,7 +823,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
 	 *	linear search.
 	 */
   if ( PonNode->iDepth == this->_iMaxDepth || ( iNewAtoms && iNewAtoms < 10 )) {
-    if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("PonNode->iDepth == this->_iMaxDepth || (iNewAtoms && iNewAtoms<10) | PonNode->iDepth -> %d  iNewAtoms->%d\n" , PonNode->iDepth , iNewAtoms ));
+    if (chem__verbose(2)) core::clasp_write_string(fmt::format("PonNode->iDepth == this->_iMaxDepth || (iNewAtoms && iNewAtoms<10) | PonNode->iDepth -> {}  iNewAtoms->{}\n" , PonNode->iDepth , iNewAtoms ));
 //    iTreeGridPoints += PiDensities[PonNode->iDepth]; 
     this->iTreePoints += this->PiDensities[PonNode->iDepth]; 
     PonNode->iStatus = OCT_INCLUDED;
@@ -852,7 +852,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
         iExcluded++;
         break;
     default:
-        SIMPLE_ERROR(("bad type\n"));
+        SIMPLE_ERROR("bad type\n");
 //        fprintf(stderr, "bad type\n");
 //        exit(1);
     }
@@ -875,7 +875,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
 		//PonNode->PaAtomList = NULL;
    // PonNode->PaAtomList = _Nil<core::T_O>();
   }
-  if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("Dropped out of bottom\n"));  
+  if (chem__verbose(2)) core::clasp_write_string(fmt::format("Dropped out of bottom\n"));  
   PonNode->iStatus = OCT_INCLUDED;
   return(OCT_INCLUDED);
 }
@@ -999,7 +999,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
   }
       break;
   default:
-      SIMPLE_ERROR(("AddIonOctree type not implemented\n"));
+      SIMPLE_ERROR("AddIonOctree type not implemented\n");
 //      printf("AddIonOctree type not implemented\n");
 //      exit(1);
   }
@@ -1026,7 +1026,7 @@ return(octTree);
     //FREE( octTree );
     //return(NULL);
 //    return(_Nil<core::T_O>());
-    SIMPLE_ERROR(("There are not atoms, iAtoms==0"));
+    SIMPLE_ERROR("There are not atoms, iAtoms==0");
   }
 
 //  octTree->vaAtoms = vaAtoms;
@@ -1102,15 +1102,15 @@ return(octTree);
       vMaxCorner.getZ() += dMaxRadius;
       break;
   default:
-      SIMPLE_ERROR(("Octtree type %d is not implemented") , type);
+      SIMPLE_ERROR("Octtree type {} is not implemented" , (int)type);
   }
 
   if (bVerbose) {
-    core::write_bf_stream(fmt::sprintf("Total solute charge:  %5.2f  Max atom radius:  %5.2f\n" , dCharge , dMaxRadius ));
+    core::clasp_write_string(fmt::format("Total solute charge:  {:5.2f}  Max atom radius:  {:5.2f}\n" , dCharge , dMaxRadius ));
     if ( type == Shell )
-      core::write_bf_stream(fmt::sprintf("Grid extends from solute vdw + %.2f  to  %.2f\n" , dAddExtent , dShellRadius ));
-    core::write_bf_stream(fmt::sprintf("Box:\n" ));
-    core::write_bf_stream(fmt::sprintf("   enclosing:  %5.2f %5.2f %5.2f   %5.2f %5.2f %5.2f\n" ,  vMinCorner.getX() , vMinCorner.getY() , vMinCorner.getZ()
+      core::clasp_write_string(fmt::format("Grid extends from solute vdw + {:.2f}  to  {:.2f}\n" , dAddExtent , dShellRadius ));
+    core::clasp_write_string(fmt::format("Box:\n" ));
+    core::clasp_write_string(fmt::format("   enclosing:  {:5.2f} {:5.2f} {:5.2f}   {:5.2f} {:5.2f} {:5.2f}\n" ,  vMinCorner.getX() , vMinCorner.getY() , vMinCorner.getZ()
                                        , vMaxCorner.getX() , vMaxCorner.getY() , vMaxCorner.getZ()));
   }
 
@@ -1161,8 +1161,8 @@ return(octTree);
 		/* diagonal = sqrt( 3 * side^2 ) */
     this->PdHalfDiagonals[i] = sqrt( 3.0 * (dTmp * dTmp) );
     if(bVerbose){
-      core::write_bf_stream(fmt::sprintf("PdHalfEdges:        %5.2f\n" , this->PdHalfEdges[i] ));
-      core::write_bf_stream(fmt::sprintf("PdHalfDiagonals:     %5.2f Angstrom.\n" , this->PdHalfDiagonals[i] ));
+      core::clasp_write_string(fmt::format("PdHalfEdges:        {:5.2f}\n" , this->PdHalfEdges[i] ));
+      core::clasp_write_string(fmt::format("PdHalfDiagonals:     {:5.2f} Angstrom.\n" , this->PdHalfDiagonals[i] ));
     }
 
   }
@@ -1178,10 +1178,10 @@ return(octTree);
     this->PiDensities[i] = j;
   
   if (bVerbose) {
-    core::write_bf_stream(fmt::sprintf("   sized:\t\t\t      %5.2f %5.2f %5.2f\n" , vMaxCorner.getX() , vMaxCorner.getY() , vMaxCorner.getZ()));
-    core::write_bf_stream(fmt::sprintf("   edge:        %5.2f\n" , dTmax ));
-    core::write_bf_stream(fmt::sprintf("Resolution:     %5.2f Angstrom.\n" , this->dGridSize ));
-    core::write_bf_stream(fmt::sprintf("Tree depth: %d\n" , imd));
+    core::clasp_write_string(fmt::format("   sized:\t\t\t      {:5.2f} {:5.2f} {:5.2f}\n" , vMaxCorner.getX() , vMaxCorner.getY() , vMaxCorner.getZ()));
+    core::clasp_write_string(fmt::format("   edge:        {:5.2f}\n" , dTmax ));
+    core::clasp_write_string(fmt::format("Resolution:     {:5.2f} Angstrom.\n" , this->dGridSize ));
+    core::clasp_write_string(fmt::format("Tree depth: {}\n" , imd));
   }
 	/*
 	 *  Build head node w/ all atoms in list.
@@ -1218,12 +1218,12 @@ return(octTree);
   case InteriorSolute:
   case InteriorSolvent:
       if (bVerbose) {
-        core::write_bf_stream(fmt::sprintf( "About to build interior octant iAtoms -> %lu\n" , iAtoms ));
+        core::clasp_write_string(fmt::format( "About to build interior octant iAtoms -> {}\n" , iAtoms ));
       }
       iBuild = iBuildInteriorOctant( this->onHead, iAtoms, vaAtoms ); //PaAtoms );
       break;
   default:
-      SIMPLE_ERROR(("bad switch\n"));
+      SIMPLE_ERROR("bad switch\n");
 //      printf(("bad switch\n"));
 //      exit(1);
   }
@@ -1234,7 +1234,7 @@ return(octTree);
 //        time((time_t *)0) - time_start );
   if (bVerbose) {
     volumePercentage = 100 * this->fVolume / ( dTmax * dTmax * dTmax );
-    core::write_bf_stream(fmt::sprintf( "Volume = %5.2f of box, grid points %d\n" , volumePercentage , this->iTreePoints )); //iTreeGridPoints );
+    core::clasp_write_string(fmt::format( "Volume = {:5.2f} of box, grid points {}\n" , volumePercentage , this->iTreePoints )); //iTreeGridPoints );
   }
 #ifdef OCTDEBUG
   printf(stderr, "depth  r_inc   r_inex  r_out  multin  multout \n");
@@ -1411,13 +1411,13 @@ CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeInitCharges( /*AddIonOctree_sp oct
   Atom_sp	PaAtom;
   
   if ( this->type != Shell ) {
-    SIMPLE_ERROR(("InitCharges: wrong tree type\n"));
+    SIMPLE_ERROR("InitCharges: wrong tree type\n");
 //    printf(( "InitCharges: wrong tree type\n" ));
 //    exit(1);
   }
 
   if ( !this->iTreePoints ) {
-    SIMPLE_ERROR(("InitCharges: no grid (?)\n"));
+    SIMPLE_ERROR("InitCharges: no grid (?)\n");
 //    printf(( "InitCharges: no grid (?)\n" ));
 //    exit(1);
   }
@@ -1439,7 +1439,7 @@ CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeInitCharges( /*AddIonOctree_sp oct
     iChargeAtoms = this->vaAtoms.size(); //iVarArrayElementCount( octTree->vaAtoms );
     //PaChargeAtoms = this->vaAtoms; //PVAI( octTree->vaAtoms, ATOM, 0 );
   } else
-    SIMPLE_ERROR(("iAtomOption != AT_OCTREE"));
+    SIMPLE_ERROR("iAtomOption != AT_OCTREE");
     //exit(1);
   this->fMaxCharge = -FLT_MAX;
   this->fMinCharge = FLT_MAX;
@@ -1564,40 +1564,40 @@ CL_DEFMETHOD void AddIonOctree_O::OctNodePrintGrid( OctNode_sp PonNode, int iCol
 //        }
         switch ( iColor ) {//switch ( iColorMethod ) {
         case COLOR_RANGE:
-            core::write_bf_stream(fmt::sprintf(".color %d\n" , 
+            core::clasp_write_string(fmt::format(".color {}\n" , 
                                   (int)floor( 5 + 60 *
                                               (PfCharge-this->fMinCharge) / 
                                               (this->fMaxCharge-this->fMinCharge) ) ));
-            core::write_bf_stream(fmt::sprintf(".dot %f %f %f\n" , 
+            core::clasp_write_string(fmt::format(".dot {} {} {}\n" , 
                                                vPoint.getX() , vPoint.getY() , vPoint.getZ()));
             break;
         case COLOR_CUT:
             if ( PfCharge < -0.1 ){
-              core::write_bf_stream(fmt::sprintf(".color yellow\n"));
+              core::clasp_write_string(fmt::format(".color yellow\n"));
             } else if ( PfCharge > 0.1 ){
-              core::write_bf_stream(fmt::sprintf(".color cyan\n"));
+              core::clasp_write_string(fmt::format(".color cyan\n"));
             } else
-              core::write_bf_stream(fmt::sprintf(".color black\n"));
-            core::write_bf_stream(fmt::sprintf(".dot %f %f %f\n" , 
+              core::clasp_write_string(fmt::format(".color black\n"));
+            core::clasp_write_string(fmt::format(".dot {} {} {}\n" , 
                                                vPoint.getX() , vPoint.getY() , vPoint.getZ()));
             break;
         case COLOR_DEPTH:
             if ( PonNode->iDepth == this->_iMaxDepth ){
-              core::write_bf_stream(fmt::sprintf(".color white\n"));
+              core::clasp_write_string(fmt::format(".color white\n"));
             }else if ( (PonNode->iDepth % 2) != 0 ){
-              core::write_bf_stream(fmt::sprintf(".color red\n"));
+              core::clasp_write_string(fmt::format(".color red\n"));
             } else
-              core::write_bf_stream(fmt::sprintf(".color cyan\n"));
-            core::write_bf_stream(fmt::sprintf(".dot %f %f %f\n" , 
+              core::clasp_write_string(fmt::format(".color cyan\n"));
+            core::clasp_write_string(fmt::format(".dot {} {} {}\n" , 
                                                vPoint.getX() , vPoint.getY() , vPoint.getZ()));
             break;
         case COLOR_NONE:
-            core::write_bf_stream(fmt::sprintf("%f   %f %f %f\n" , 
+            core::clasp_write_string(fmt::format("{}   {} {} {}\n" , 
                                   PfCharge ,  
                                                vPoint.getX() ,  vPoint.getY() ,  vPoint.getZ()));
             break;
         default:
-            core::write_bf_stream(fmt::sprintf(".color white\n"));
+            core::clasp_write_string(fmt::format(".color white\n"));
         }
         ccharge++ ; //PfCharge++;
       }
@@ -1608,7 +1608,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctNodePrintGrid( OctNode_sp PonNode, int iCol
 //void AddIonOctree_O::AddIonOctreePrintGrid( AddIonOctree_sp octTree, core::T_sp stream, int iColor ) //char *sFileName, int iColor )
 //{
 //  BFORMAT(stream,BF("x = %d y = %d\n") , x , y );
-//  core::write_bf_stream(fmt::sprintf("x = %d y = %d\n" , x , y ));
+//  core::clasp_write_string(fmt::format("x = {} y = {}\n" , x , y ));
 //  
 //  if ( iColor != COLOR_DEPTH  && octTree->PfCharges.size() == 0 ) { //!octTree->PfCharges ) {
 //    printf(( "charge coloring but no charges\n" ));
@@ -1660,7 +1660,7 @@ void AddIonOctree_O::SplitIncludedNode( OctNode_sp PonNode)
 //  for (i=0; i<8; i++){ 
 //    if ( PonNode->PonChildren[i] && PonNode->PonChildren[i].notnilp())
 //      printf("depth %d nodenum  %d status %d \n", PonNode->iDepth, PonNode->iNodeNum, PonNode->iStatus);
-//      SIMPLE_ERROR(( "Programming error\n"));
+//      SIMPLE_ERROR("Programming error\n");
 //  }
 	/*
 	 *  Subdivide this node: set up children array
@@ -1870,7 +1870,7 @@ int AddIonOctree_O::OctNodeDeleteSphere( OctNode_sp PonNode,  double dDeleteRadi
     case OCT_PARTIAL:
         break;
     default:
-        SIMPLE_ERROR(("bad type\n"));
+        SIMPLE_ERROR("bad type\n");
     }
 //        perror("bad type\n");
 //        exit(1);
@@ -2056,10 +2056,10 @@ CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeUpdateCharge( /*AddIonOctree_sp oc
   int iChargeAtoms = this->vaAtoms.size();
 
   if ( this->type != Shell ) {
-    SIMPLE_ERROR(("UpdateCharge: wrong tree type\n"));
+    SIMPLE_ERROR("UpdateCharge: wrong tree type\n");
   }
   if ( this->_PfCharges.size()==0 ) {//( !octTree->PfCharges ) {
-    SIMPLE_ERROR(("UpdateCharge: charges not initted\n"));
+    SIMPLE_ERROR("UpdateCharge: charges not initted\n");
   }
   
 	/*
@@ -2204,7 +2204,7 @@ core::T_sp AddIonOctree_O::rOctreeCheckSolvent( /*AddIonOctree_sp octTree,*/ Vec
 {
   //Atom_sp	PaAtom;
   if ( this->type != InteriorSolvent ) {
-    SIMPLE_ERROR(("CheckSolvent: wrong octree type\n"));
+    SIMPLE_ERROR("CheckSolvent: wrong octree type\n");
 //    printf( "CheckSolvent: wrong octree type\n" );
 //    exit(1);
   }
@@ -2258,7 +2258,7 @@ core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vect
 {
   //Atom_sp	PaAtom;
   if ( oct_tree->type != AddIonOctree_O::InteriorSolute) {
-    SIMPLE_ERROR(("CheckSolvent: wrong octree type - expected :interior-solute\n"));
+    SIMPLE_ERROR("CheckSolvent: wrong octree type - expected :interior-solute\n");
   }
 	/*
 	 *  Set up globals for octree.
@@ -2326,7 +2326,7 @@ bool GenericOctree_O::isLeafNode() const {
 SYMBOL_EXPORT_SC_(ChemPkg,STARdebug_octreeSTAR);
 
 #ifdef DEBUG_OCTREE
-#define DEBUG_OCTREE_WRITE(...) if(_sym_STARdebug_octreeSTAR->symbolValue().notnilp() {core::write_bf_stream(fmt::sprintf(__VA_ARGS__));}
+#define DEBUG_OCTREE_WRITE(...) if(_sym_STARdebug_octreeSTAR->symbolValue().notnilp() {core::clasp_write_string(fmt::format(__VA_ARGS__));}
 #else
 #define DEBUG_OCTREE_WRITE(...)
 #endif
@@ -2452,7 +2452,7 @@ DOCGROUP(cando);
 CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp octree, double cutoff, core::T_sp query_data, const Vector3& querypoint, core::ComplexVector_sp results, core::T_sp bounding_box, bool bounding_box_p, core::T_sp octree_transform, bool octree_transform_p) {
   if (bounding_box_p) {
     if (!gc::IsA<BoundingBox_sp>(bounding_box)) {
-      SIMPLE_ERROR(("bounding-box must be a valid bounding box or nil"));
+      SIMPLE_ERROR("bounding-box must be a valid bounding box or nil");
     }
     BoundingBox_sp rbounding_box = gc::As_unsafe<BoundingBox_sp>(bounding_box);
     double x_size,  y_size,  z_size,  x_rsize,  y_rsize,  z_rsize;
@@ -2464,14 +2464,14 @@ CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp oct
     z_rsize = 1.0/z_size;
     if (octree_transform_p) {
       if (!gc::IsA<geom::OMatrix_sp>(octree_transform)) {
-        SIMPLE_ERROR(("octree-transform must be a valid geom:matrix"));
+        SIMPLE_ERROR("octree-transform must be a valid geom:matrix");
       }
       octree->getPointsWithinCutoff(cutoff*cutoff,cutoff,query_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,gc::As_unsafe<geom::OMatrix_sp>(octree_transform)->_Value,results);
     } else {
       octree->getPointsWithinCutoffNoTransform(cutoff*cutoff,cutoff,query_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,results);
     }
   } else {
-    SIMPLE_ERROR(("Add support for getPointsWithinCutoff with no bounding-box with and without an octree-transform"));
+    SIMPLE_ERROR("Add support for getPointsWithinCutoff with no bounding-box with and without an octree-transform");
   }
 }
 
@@ -2548,7 +2548,7 @@ core::T_sp GenericOctree_O::data() const
   if (this->_data.boundp()) {
     return this->_data;
   }
-  SIMPLE_ERROR(("The generic-octree data is unbound"));
+  SIMPLE_ERROR("The generic-octree data is unbound");
 }
 
 CL_LISPIFY_NAME(generic-octree-position);

@@ -104,7 +104,7 @@ CL_DEFMETHOD BoundingBox_sp RigidBodyEnergyFunction_O::boundingBox() const
   if (this->_BoundingBox.boundp()) {
     return this->_BoundingBox;
   }
-  SIMPLE_ERROR(("The bounding-box slot is unbound"));
+  SIMPLE_ERROR("The bounding-box slot is unbound");
 }
 
 CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx");
@@ -128,7 +128,7 @@ CL_DEFMETHOD void RigidBodyEnergyFunction_O::makUnboundBoundingBox() {
 
 CL_DEFMETHOD void RigidBodyEnergyFunction_O::set_coordinates(NVector_sp pos) {
   if (pos->length() != this->_RigidBodies*7) {
-    SIMPLE_ERROR(("The coordinates you pass do not have enough components - there are %d rigid bodies with 7 (a,b,c,d,x,y,z) coordinates each - total %d are needed") , this->_RigidBodies , (this->_RigidBodies*7));
+    SIMPLE_ERROR("The coordinates you pass do not have enough components - there are {} rigid bodies with 7 (a,b,c,d,x,y,z) coordinates each - total {} are needed" , this->_RigidBodies , (this->_RigidBodies*7));
   }
   this->_SavedCoordinates = pos;
 }
@@ -197,7 +197,7 @@ void	RigidBodyEnergyFunction_O::setOption( core::Symbol_sp option, core::T_sp va
   {
     return;
   }
-  SIMPLE_ERROR(("Unknown option"));
+  SIMPLE_ERROR("Unknown option");
 }
 
 
@@ -224,21 +224,21 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
 
 #ifdef	DEBUG_ON //[
 	// Summarize entry state for debugging
-  LOG("calcForce = %d" , calcForce  );
-  LOG("calcDiagonalHessian = %d" , calcDiagonalHessian  );
-  LOG("calcOffDiagonalHessian = %d" , calcOffDiagonalHessian  );
-  LOG("hasForce = %d" , hasForce  );
-  LOG("hasHdAndD = %d" , hasHdAndD  );
+  LOG("calcForce = {}" , calcForce  );
+  LOG("calcDiagonalHessian = {}" , calcDiagonalHessian  );
+  LOG("calcOffDiagonalHessian = {}" , calcOffDiagonalHessian  );
+  LOG("hasForce = {}" , hasForce  );
+  LOG("hasHdAndD = {}" , hasHdAndD  );
   if ( hasForce && force->size() < pos->size() ) {
-    SIMPLE_ERROR(("Force does not have the necessary dimensions"));
+    SIMPLE_ERROR("Force does not have the necessary dimensions");
   }
 #endif //]
 
   if ( !calcForce && ( calcDiagonalHessian || calcOffDiagonalHessian ) ) {
-    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce"));
+    SIMPLE_ERROR("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce");
   }
   if ( !calcDiagonalHessian & calcOffDiagonalHessian ) {
-    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian"));
+    SIMPLE_ERROR("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian");
   }
 
 ////    _lisp->profiler().pushTimerStates();
@@ -284,7 +284,7 @@ size_t RigidBodyEnergyFunction_O::numberOfRigidBodies() const {
 
 void RigidBodyEnergyFunction_O::setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z) {
   if (index>= this->_RigidBodies) {
-    SIMPLE_ERROR(("set-position at index %d out of range <= %d for coordinate") , index , this->_RigidBodies);
+    SIMPLE_ERROR("set-position at index {} out of range <= {} for coordinate" , index , this->_RigidBodies);
   }
   double*  p = &(*this->_SavedCoordinates)[0];
   size_t base = index*7;
@@ -298,7 +298,7 @@ void RigidBodyEnergyFunction_O::setPosition(size_t index, double a, double b, do
 }
 core::T_mv RigidBodyEnergyFunction_O::getPosition(size_t index) {
   if (index>= this->_RigidBodies) {
-    SIMPLE_ERROR(("set-position at index %d out of range <= %d for coordinate") , index , this->_RigidBodies);
+    SIMPLE_ERROR("set-position at index {} out of range <= {} for coordinate" , index , this->_RigidBodies);
   }
   double*  p = &(*this->_SavedCoordinates)[0];
   size_t base = index*7;
@@ -373,10 +373,10 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
     if (frozen->length() != (position->length()/7)) {
-      SIMPLE_ERROR(("frozen must be a simple-bit-vector of length %d or NIL - it is %s") , (position->length()/7) , _rep_(position));
+      SIMPLE_ERROR("frozen must be a simple-bit-vector of length {} or NIL - it is {}" , (position->length()/7) , _rep_(position));
     }
   } else if (tfrozen.notnilp()) {
-    SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
+    SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
   }
   double delta_tsquared = delta_t*delta_t;
   double delta_tsquared_div2 = delta_tsquared/2.0;

@@ -185,7 +185,7 @@ mps_addr_t obj_skip(mps_addr_t client) {
 #undef GC_OBJ_SKIP_TABLE
 #endif
   gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(ClientPtrToBasePtr(client));
-  MPS_LOG("obj_skip client = %p   header=%p  header-desc: %s" , client , header , header->description());
+  MPS_LOG("obj_skip client = {}   header={}  header-desc: {}" , client , header , header->description());
   if (header->kindP()) {
     gctools::GCKindEnum kind = header->kind();
 #ifndef RUNNING_GC_BUILDER
@@ -225,7 +225,7 @@ void obj_dump_base(mps_addr_t base) {
   }
   gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(base);
   void *client = BasePtrToMostDerivedPtr<void>(base);
-  MPS_LOG("obj_dump base=%p header-desc: %s" , base , header->description());
+  MPS_LOG("obj_dump base={} header-desc: {}" , base , header->description());
   stringstream sout;
   if (header->kindP()) {
     gctools::GCKindEnum kind = header->kind();
@@ -279,7 +279,7 @@ GC_RESULT obj_scan(mps_ss_t ss, mps_addr_t client, mps_addr_t limit) {
   MPS_SCAN_BEGIN(GC_SCAN_STATE) {
     while (client < limit) {
       gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(ClientPtrToBasePtr(client));
-      MPS_LOG("obj_skip client = %p   header=%p  header-desc: %s" , client , header , header->description());
+      MPS_LOG("obj_skip client = {}   header={}  header-desc: {}" , client , header , header->description());
       if (header->kindP()) {
         GCKindEnum kind = header->kind();
 #ifndef RUNNING_GC_BUILDER

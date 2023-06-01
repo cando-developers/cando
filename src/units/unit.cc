@@ -81,16 +81,16 @@ void Unit_O::parseUnitList(double &amountScale, SimpleRational powers[NumBaseDim
       int power = 1;
       if (core::oCadr(dimCur).isA<core::Rational_O>()) {
         power = core::clasp_to_fixnum(core::oCadr(dimCur));
-        LOG("Got power[%d]", power);
+        LOG("Got power[{}]", power);
         dimCur = core::oCdr(dimCur);
       }
       u->adjustPowersAndAmountScale(power, powers, amountScale);
     } else {
-      SIMPLE_ERROR(("Unknown unit[%s]"), _rep_(odim));
+      SIMPLE_ERROR("Unknown unit[{}]", _rep_(odim));
     }
     dimCur = core::oCdr(dimCur);
   }
-  LOG("The amountScale[%lf]", amountScale);
+  LOG("The amountScale[{}]", amountScale);
 }
 
 void Unit_O::fields(core::Record_sp node) {
@@ -215,7 +215,7 @@ CL_DEFMETHOD double Unit_O::conversion_factor_to(Unit_sp other, int power) const
     double conversion = this->_Amount / ::pow(other->_Amount, power);
     return conversion;
   }
-  SIMPLE_ERROR(("Units[%s] are not compatible with Unit[%s]^%d"), this->__repr__(), _rep_(other), power);
+  SIMPLE_ERROR("Units[{}] are not compatible with Unit[{}]^{}", this->__repr__(), _rep_(other), power);
 }
 
 Unit_sp Unit_O::copyWithoutName() const {
@@ -239,9 +239,9 @@ CL_DEFMETHOD core::T_sp Unit_O::operator*(core::T_sp obj) const {
   } else if (obj.isA<core::Number_O>() || obj.isA<geom::OVector3_O>() || obj.isA<core::Array_O>()) {
     result = Quantity_O::create(obj, this->const_sharedThis<Unit_O>());
   } else if (obj.isA<Quantity_O>()) {
-    SIMPLE_ERROR(("Handle Unit*Quantity"));
+    SIMPLE_ERROR("Handle Unit*Quantity");
   } else {
-    SIMPLE_ERROR(("Handle Unit*XXX where XXX=%s"), core::cl__class_of(obj)->_classNameAsString());
+    SIMPLE_ERROR("Handle Unit*XXX where XXX={}", core::cl__class_of(obj)->_classNameAsString());
   }
   return result;
 }
@@ -257,7 +257,7 @@ CL_DEFMETHOD core::T_sp Unit_O::operator/(core::T_sp obj) const {
     result->_Amount /= other->_Amount;
     return result;
   } else {
-    SIMPLE_ERROR(("Handle Unit/XXX where XXX=%s"), core::cl__class_of(obj)->_classNameAsString());
+    SIMPLE_ERROR("Handle Unit/XXX where XXX={}", core::cl__class_of(obj)->_classNameAsString());
   }
 }
 

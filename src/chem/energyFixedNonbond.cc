@@ -132,34 +132,27 @@ double	e;
 
 SYMBOL_EXPORT_SC_(ChemPkg,find_atom_type_position)
 
-void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp fa, core::HashTable_sp atomTypes)
-{
+void EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp fa, core::HashTable_sp atomTypes) {
     FixedNonbondRestraint entry;
     entry._FixedAtom = fa;
     entry._FixedCharge = fa->getCharge();
-    try
-    {
+    try {
       if (fa->getType(atomTypes).nilp()) {
-        SIMPLE_ERROR(("In EnergyFixedNonbondRestraint_O::addFixedAtom - the atom type of %s is NIL!") , _rep_(fa));
+        SIMPLE_ERROR("In EnergyFixedNonbondRestraint_O::addFixedAtom - the atom type of {} is NIL!", _rep_(fa));
       }
-      core::T_sp pos = core::eval::funcall(_sym_find_atom_type_position,nonbondDb,fa->getType(atomTypes));
+      core::T_sp pos = core::eval::funcall(_sym_find_atom_type_position, nonbondDb, fa->getType(atomTypes));
       if (pos.fixnump()) {
         entry._FixedType = pos.unsafe_fixnum();
       } else {
-        TYPE_ERROR(pos,cl::_sym_fixnum);
+        TYPE_ERROR(pos, cl::_sym_fixnum);
       }
-    } catch (UnknownType& err)
-    {
-	stringstream serr;
-	serr << "Unknown type("<<fa->getType(atomTypes)<<") for fixed atom: " << fa->description() << std::endl;
-	serr << "Were types assigned for the fixed molecule?" << std::endl;
-	SIMPLE_ERROR((serr.str()));
+    } catch (UnknownType &err) {
+      SIMPLE_ERROR("Unknown type({}) for fixed atom: {}\nWere types assigned for the fixed molecule?",
+                   fa->getType(atomTypes), fa->description());
     }
     entry._FixedPosition = fa->getPosition();
     this->_Terms.push_back(entry);
 }
-
-
 
 void	EnergyFixedNonbondRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
@@ -170,7 +163,7 @@ string					str1, str2, str3, str4;
 	    eni!=this->_Terms.end(); eni++ ) 
     {
 	as1 = atomLabel(eni->_FixedAtom);
-        core::writeln_bf_stream(fmt::sprintf( "TERM 6FIXED_NONBOND %-9s" , as1.c_str() ));
+        core::clasp_write_string(fmt::format( "TERM 6FIXED_NONBOND {:<9}\n" , as1.c_str() ));
     }
 }
 
@@ -220,9 +213,9 @@ Vector3				v1,v2;
 	distSquared = dx*dx+dy*dy+dz*dz;
 	if ( distSquared<cutoff )
 	{
-	    LOG("Found a close contact with distance = %lf and cutoff %lf" , sqrt(distSquared) , sqrt(cutoff)  );
-	    LOG("Atom1 = %s" , eni->_Atom1->description().c_str()  );
-	    LOG("Atom2 = %s" , eni->_Atom2->description().c_str()  );
+	    LOG("Found a close contact with distance = {} and cutoff {}" , sqrt(distSquared) , sqrt(cutoff)  );
+	    LOG("Atom1 = {}" , eni->_Atom1->description().c_str()  );
+	    LOG("Atom2 = {}" , eni->_Atom2->description().c_str()  );
 	    if ( render )
 	    {
 	        v1.set(x1,y1,z1);

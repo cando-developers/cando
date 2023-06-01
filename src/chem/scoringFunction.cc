@@ -223,10 +223,10 @@ CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
     if (frozen->length() != (position->length())) {
-      SIMPLE_ERROR(("frozen must be a simple-bit-vector of length %d or NIL - got %s") , (position->length()) , _rep_(tfrozen));
+      SIMPLE_ERROR("frozen must be a simple-bit-vector of length {} or NIL - got {}" , (position->length()) , _rep_(tfrozen));
     }
   } else if (tfrozen.notnilp()) {
-    SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
+    SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
   }
   double delta_tsquared = delta_t*delta_t;
   double delta_tsquared_div2 = delta_tsquared/2.0;
@@ -309,10 +309,10 @@ CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
     if (frozen->length() != (position->length())) {
-      SIMPLE_ERROR(("frozen must be a simple-bit-vector of length %d or NIL - got %s") , (position->length()) , _rep_(tfrozen));
+      SIMPLE_ERROR("frozen must be a simple-bit-vector of length {} or NIL - got {}" , (position->length()) , _rep_(tfrozen));
     }
   } else if (tfrozen.notnilp()) {
-    SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
+    SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
   }
   double delta_tsquared = delta_t*delta_t;
   double delta_tsquared_div2 = delta_tsquared/2.0;

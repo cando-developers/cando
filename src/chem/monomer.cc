@@ -111,7 +111,7 @@ Residue_sp Monomer_O::createResidue()
   Constitution_sp residueConstitution = res->getConstitution();
   if ( residueConstitution != con )
   {
-    SIMPLE_ERROR(("Residue created with a different constitution(%s) from the one it was created from constitution(%s)") , _rep_(residueConstitution) , _rep_(con) );
+    SIMPLE_ERROR("Residue created with a different constitution({}) from the one it was created from constitution({})" , _rep_(residueConstitution) , _rep_(con) );
   }
     	//
 	// WORKING WORKING WORKING
@@ -151,7 +151,7 @@ Residue_sp Monomer_O::createResidue()
         ss << "    The monomer name is ("<<this->getName()<<")"<<std::endl;
         ss << "    The atoms interesting atom names are ("<<monomerPack->getInterestingAtomNamesForMonomerName(this->getName())<<")"<<std::endl;
         ss << "    The atom aliases are ("<<monomerPack->getInterestingAtomAliasesAsString() <<")"<<std::endl;
-        core::writeln_bf_stream(fmt::sprintf("%s", ss.str() ));
+        core::clasp_write_string(fmt::format("{}\n", ss.str() ));
       }
 #endif
     }
@@ -175,7 +175,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
   context = nil<MonomerContext_O>();
   if ( !this->isMonomerContextValid() )
   {
-    SIMPLE_ERROR(("Monomer context is invalid: %s") , this->sharedThis<Monomer_O>()->description() );
+    SIMPLE_ERROR("Monomer context is invalid: {}" , this->sharedThis<Monomer_O>()->description() );
   }
   db = getCandoDatabase();
   context = MonomerContext_O::create();
@@ -245,7 +245,7 @@ CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
   Coupling_sp		coup;
   bool			badConnections;
   badConnections = false;
-  LOG("Check for bad connections %s" , this->description().c_str() );
+  LOG("Check for bad connections {}" , this->description().c_str() );
   for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ )
   {
     if ( it->second.nilp() )
@@ -272,8 +272,8 @@ CL_DEFMETHOD     void	Monomer_O::throwIfBadConnections()
 #if 0
   if ( this->checkForBadConnections() )
   {
-    LOG("Found bad connections in %s  error: %s" , this->description().c_str() , this->getStatusMessage().c_str()  );
-    SIMPLE_ERROR(("Bad connections for monomer: %s") , this->sharedThis<Monomer_O>()->description());
+    LOG("Found bad connections in {}  error: {}" , this->description().c_str() , this->getStatusMessage().c_str()  );
+    SIMPLE_ERROR("Bad connections for monomer: {}" , this->sharedThis<Monomer_O>()->description());
   }
 #endif
 }
@@ -294,7 +294,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
   context = nil<MonomerContext_O>();
   if ( !this->isMonomerContextValid() )
   {
-    SIMPLE_ERROR(("Monomer context is invalid: %s") , this->sharedThis<Monomer_O>()->description() );
+    SIMPLE_ERROR("Monomer context is invalid: {}" , this->sharedThis<Monomer_O>()->description() );
   }
   db = getCandoDatabase();
   context = MonomerContext_O::create();
@@ -314,7 +314,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
     {
       RingCoupling_sp rc = coupling.as<RingCoupling_O>();
       (void)rc;
-      LOG("Ignoring out coupling for RingCoupling: %s" , _rep_(rc->getName()) );
+      LOG("Ignoring out coupling for RingCoupling: {}" , _rep_(rc->getName()) );
     }
   }
   return context;
@@ -358,7 +358,7 @@ CL_DEFMETHOD     Coupling_sp	Monomer_O::getInCoupling()
       if ( dc->isInCouplingToMonomer(this->sharedThis<Monomer_O>()) ) return it->second;
     }
   }
-  SIMPLE_ERROR(("There is no in coupling"));
+  SIMPLE_ERROR("There is no in coupling");
 };
 
 
@@ -412,7 +412,7 @@ CL_DEFMETHOD Plug_sp	Monomer_O::getPlugNamed(core::Symbol_sp pn)
     stringstream ss;
     ss << _rep_(topology);
     ss << " does not have plug named(" << _rep_(pn) << ")";
-    SIMPLE_ERROR(("%s") , ss.str());
+    SIMPLE_ERROR("{}" , ss.str());
   }
   Plug_sp plug = topology->plugNamed(pn);
   return plug;
@@ -432,7 +432,7 @@ Coupling_sp Monomer_O::getCouplingWithPlugName( core::Symbol_sp s) {
     ASSERTNOTNULL(coup);
     return coup;
   }
-  SIMPLE_ERROR(("Could not find coupling %s") , _rep_(s));
+  SIMPLE_ERROR("Could not find coupling {}" , _rep_(s));
 }
 
 bool	Monomer_O::hasCouplingWithPlugName( core::Symbol_sp s ) {
@@ -447,7 +447,7 @@ bool	Monomer_O::hasMatchingPlugNameAndCoupling( core::Symbol_sp plugName, Coupli
   int					count;
   Coupling_sp				myCoup;
   bool					foundIt;
-  LOG("Looking for plug name: %s and coupling: %s" , _rep_(plugName) , coup->description() );
+  LOG("Looking for plug name: {} and coupling: {}" , _rep_(plugName) , coup->description() );
   count = 0;
   foundIt = false;
   range = this->_Couplings.equal_range(plugName);
@@ -456,7 +456,7 @@ bool	Monomer_O::hasMatchingPlugNameAndCoupling( core::Symbol_sp plugName, Coupli
     count++;
     ASSERTNOTNULLP(it->second,"Coupling is undefined");
     myCoup = it->second;
-    LOG("Looking at coupling: %s" , myCoup->description().c_str()  );
+    LOG("Looking at coupling: {}" , myCoup->description().c_str()  );
     if ( myCoup == coup )
     {
       LOG("Found match,setting foundIt to true" );
@@ -464,7 +464,7 @@ bool	Monomer_O::hasMatchingPlugNameAndCoupling( core::Symbol_sp plugName, Coupli
       break;
     }
   }
-  LOG("There were %d couplings with that plug name" , count );
+  LOG("There were {} couplings with that plug name" , count );
   return foundIt;
 }
 
@@ -482,17 +482,17 @@ void Monomer_O::eraseCouplings()
 CL_LISPIFY_NAME("addCoupling");
 CL_DEFMETHOD     void	Monomer_O::addCoupling( core::Symbol_sp plugName,  Coupling_sp coup)
 {
-  LOG("add coupling to %s" , this->description() );
-  LOG("Adding plug(%s) coupling: %s" , _rep_(plugName) , coup->description() );
+  LOG("add coupling to {}" , this->description() );
+  LOG("Adding plug({}) coupling: {}" , _rep_(plugName) , coup->description() );
   this->_Couplings.insert2(plugName, coup->sharedThis<Coupling_O>());
-  LOG("After add monomer is %s" , this->description() );
+  LOG("After add monomer is {}" , this->description() );
 };
 
 
 
 void	Monomer_O::resetInCoupling( )
 {
-  LOG("resetting in coupling of %s" , this->description() );
+  LOG("resetting in coupling of {}" , this->description() );
   Coupling_sp inCoup;
   if ( this->hasInCoupling() ) {
     LOG("Had to remove old coupling" );
@@ -507,10 +507,10 @@ CL_LISPIFY_NAME("setInCoupling");
 CL_DEFMETHOD     void	Monomer_O::setInCoupling( Coupling_sp coup)
 {
   core::Symbol_sp inCoupName;
-  LOG("setting in coupling of %s" , this->description() );
+  LOG("setting in coupling of {}" , this->description() );
   ASSERTNOTNULL(coup);
   this->resetInCoupling();
-  LOG("Adding in coupling: %s" , coup->description() );
+  LOG("Adding in coupling: {}" , coup->description() );
   inCoupName = DirectionalCoupling_O::inPlugName(coup->getName());
   this->addCoupling( inCoupName, coup );
 }
@@ -521,9 +521,9 @@ CL_LISPIFY_NAME("addOutCoupling");
 CL_DEFMETHOD     void	Monomer_O::addOutCoupling( Coupling_sp coup )
 {
   ASSERTNOTNULL(coup);
-  LOG("adding out coupling to %s" , this->description()  );
+  LOG("adding out coupling to {}" , this->description()  );
   core::Symbol_sp outPlugName = DirectionalCoupling_O::outPlugName(coup->getName());
-  LOG("Adding out coupling: %s" , coup->description() );
+  LOG("Adding out coupling: {}" , coup->description() );
   this->addCoupling( outPlugName, coup );
 }
 
@@ -548,9 +548,9 @@ CL_DEFMETHOD     void	Monomer_O::removeCouplingToMonomer(Monomer_sp mon )
   }
   if ( !foundIt )
   {
-    SIMPLE_ERROR(("Could not find coupling to monomer: %s %s") , mon->description() , this->sharedThis<Monomer_O>()->description() );
+    SIMPLE_ERROR("Could not find coupling to monomer: {} {}" , mon->description() , this->sharedThis<Monomer_O>()->description() );
   }
-  LOG("Removing coupling: %s" , coup->description() );
+  LOG("Removing coupling: {}" , coup->description() );
   this->_Couplings.erase(wci);
 };
 
@@ -572,15 +572,15 @@ void	Monomer_O::fixPlugNameForCoupling(Coupling_sp coup)
     {
       foundIt = true;
       isInPlug = DirectionalCoupling_O::isInPlugName(wci->first);
-      LOG("Original plug name: %s" , _rep_(wci->first) );
+      LOG("Original plug name: {}" , _rep_(wci->first) );
       break;
     }
   }
   if ( !foundIt )
   {
-    SIMPLE_ERROR(("Could not find coupling : %s %s") , coup->description() , this->sharedThis<Monomer_O>()->description() );
+    SIMPLE_ERROR("Could not find coupling : {} {}" , coup->description() , this->sharedThis<Monomer_O>()->description() );
   }
-  LOG("Fixing the PlugName key for coupling: %s" , coup->description().c_str()  );
+  LOG("Fixing the PlugName key for coupling: {}" , coup->description().c_str()  );
   this->_Couplings.erase(wci);
   if ( isInPlug)
   {
@@ -589,7 +589,7 @@ void	Monomer_O::fixPlugNameForCoupling(Coupling_sp coup)
   {
     plugName = DirectionalCoupling_O::outPlugName(coup->getName());
   }
-  LOG("Changing plug name to: %s" , _rep_(plugName) );
+  LOG("Changing plug name to: {}" , _rep_(plugName) );
   this->addCoupling( plugName, coup );
 }
 
@@ -621,9 +621,9 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
   }
   if ( !foundIt )
   {
-    SIMPLE_ERROR(("Could not find coupling: %s %s") , coup->description() , this->sharedThis<Monomer_O>()->description() );
+    SIMPLE_ERROR("Could not find coupling: {} {}" , coup->description() , this->sharedThis<Monomer_O>()->description() );
   }
-  LOG("Removing coupling: %s" , myCoup->description().c_str()  );
+  LOG("Removing coupling: {}" , myCoup->description().c_str()  );
   this->_Couplings.erase(wci);
 }
 
@@ -720,7 +720,7 @@ CL_DEFMETHOD core::Symbol_sp Monomer_O::currentStereoisomerName() const
 Fixnum Monomer_O::getIsomer() const
 {
   if ( this->_Monomers.size() == 0 ) {
-    SIMPLE_ERROR(("There are no monomers"));
+    SIMPLE_ERROR("There are no monomers");
   }
   return this->_CurrentStereoisomerOffset;
 }
@@ -741,11 +741,11 @@ CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_
   this->Monomer_O::checkForErrorsAndUnknownContexts(cdb);
   if ( this->numberOfStereoisomers() == 0 )
   {
-    SIMPLE_ERROR(("Empty MultiMonomer"));
+    SIMPLE_ERROR("Empty MultiMonomer");
   }
   if ( !this->isMonomerContextValid() )
   {
-    SIMPLE_ERROR(("The MonomerContext is invalid"));
+    SIMPLE_ERROR("The MonomerContext is invalid");
   }
   context = this->getGeneralMonomerContext();
   allSpecificContextKeys = context->getAllSpecificKeys();
@@ -781,7 +781,7 @@ CL_DEFMETHOD void	Monomer_O::addIsoname(Isoname_sp name)
   if (this->_Monomers.size()!=0) {
     Topology_sp topology0 = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[0]));
     if (!topology0->matchesPlugs(topology)) {
-      SIMPLE_ERROR(("The first topology %s in this monomer does not match all of the plugs in the one you are trying to add %s") , _rep_(topology0) , _rep_(topology));
+      SIMPLE_ERROR("The first topology {} in this monomer does not match all of the plugs in the one you are trying to add {}" , _rep_(topology0) , _rep_(topology));
     }
   }
   this->_Monomers.push_back(name);
@@ -795,7 +795,7 @@ CL_DEFMETHOD void Monomer_O::addTopologyName(core::Symbol_sp name)
   if (this->_Monomers.size()!=0) {
     Topology_sp topology0 = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[0]));
     if (!topology0->matchesPlugs(topology)) {
-      SIMPLE_ERROR(("The first topology %s in this monomer does not match all of the plugs in the one you are trying to add %s") , _rep_(topology0) , _rep_(topology));
+      SIMPLE_ERROR("The first topology {} in this monomer does not match all of the plugs in the one you are trying to add {}" , _rep_(topology0) , _rep_(topology));
     }
   }
   this->_Monomers.push_back(name);
@@ -841,7 +841,7 @@ CL_DEFMETHOD void Monomer_O::setMonomerIndex(size_t index) {
     offset -= numberOfStereoisomers;
     ++mindex;
   }
-  SIMPLE_ERROR(("The index %lu is beyond the number of stereoisomers in this monomer %lu") , index , this->numberOfStereoisomers());
+  SIMPLE_ERROR("The index {} is beyond the number of stereoisomers in this monomer {}" , index , this->numberOfStereoisomers());
 }
 
 CL_DEFMETHOD size_t Monomer_O::getMonomerIndex() const {
@@ -922,14 +922,14 @@ core::List_sp Monomer_O::allAtomAliases()
   ASSERTP(bdb.notnilp(),"Can't get atom aliases because the CandoDatabase is undefined");
   if ( bdb->recognizesEntityNameSetName(this->getGroupName()) )
   {
-    LOG("Recognized the EntityNameSetName(%s)"% this->getGroupName() );
+    LOG("Recognized the EntityNameSetName({})"% this->getGroupName() );
     entityNameSet = bdb->getEntityNameSet(this->getGroupName());
     core::List_sp aliases = entityNameSet->getInterestingAtomAliases();
-    LOG("Returning with aliases(%s)"% aliases->asString() );
+    LOG("Returning with aliases({})"% aliases->asString() );
     return aliases;
   } else 
   {
-    LOG("Did not recognize the EntityNameSetName(%s)"% this->getGroupName());
+    LOG("Did not recognize the EntityNameSetName({})"% this->getGroupName());
   }
   LOG("Returning with nothing");
   return _Nil<core::T_O>();
@@ -955,7 +955,7 @@ adapt::ObjectSet_sp Monomer_O::getAllAliases()
   {
     if ( core::cl__length(this->allAtomAliases()) != 0 )
     {
-      SIMPLE_ERROR(("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") , this->getStereoisomerName() , _rep_(this->allAtomAliases()) );
+      SIMPLE_ERROR("The monomer[{}] doesn't have monomer aliases but it has atom aliases({}) - this should never happen" , this->getStereoisomerName() , _rep_(this->allAtomAliases()) );
     }
     return _Nil<adapt::ObjectSet_O>();
   }
@@ -977,26 +977,26 @@ bool Monomer_O::recognizesAlias(Alias_sp alias)
   AtomIndexer_sp		atomIndexer;
   EntityNameSet_sp		entityNameSet;
   CandoDatabase_sp	bdb;
-  LOG("Checking if %s recognizes alias(%s)" , this->description().c_str() , _rep_(alias).c_str()  );
+  LOG("Checking if {} recognizes alias({})" , this->description().c_str() , _rep_(alias).c_str()  );
   if ( !this->_Aliases->contains(alias->getMonomerAlias()) )
   {
     LOG("It does not" );
-    LOG("The monomer aliases that it recognizes are: %s" , this->_Aliases->asString().c_str()  );
+    LOG("The monomer aliases that it recognizes are: {}" , this->_Aliases->asString().c_str()  );
     return false;
   }
-  LOG("%s does recognize monomer alias(%s)" , this->description().c_str() , _rep_(alias).c_str() );
+  LOG("{} does recognize monomer alias({})" , this->description().c_str() , _rep_(alias).c_str() );
   bdb = getCandoDatabase();
   if ( bdb->recognizesEntityNameSetName(this->getGroupName()) )
   {
-    LOG("Checking if represents a EntityNameSet with interesting atom alias(%s)" , _rep_(alias->getAtomAlias())  );
+    LOG("Checking if represents a EntityNameSet with interesting atom alias({})" , _rep_(alias->getAtomAlias())  );
     entityNameSet = bdb->getEntityNameSet(this->getGroupName());
     if ( entityNameSet->hasInterestingAtomAlias( alias ) )
     {
-      LOG("EntityNameSet does have interesting atom with alias(%s)" , _rep_(alias->getAtomAlias())  );
+      LOG("EntityNameSet does have interesting atom with alias({})" , _rep_(alias->getAtomAlias())  );
       return true;
     } else
     {
-      LOG("EntityNameSet does not have interesting atom with alias(%s)" , _rep_(alias->getAtomAlias())  );
+      LOG("EntityNameSet does not have interesting atom with alias({})" , _rep_(alias->getAtomAlias())  );
     }
 
   }

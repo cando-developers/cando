@@ -94,10 +94,10 @@ CL_LISPIFY_NAME("assignType");
 CL_LAMBDA((types-db !) atom);
 CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
   LOG("Got atom" );
-  LOG("atom name: %s" , atom->getName().c_str() );
-  LOG("Assigning type for atom: %s" , atom->description().c_str()  );
+  LOG("atom name: {}" , atom->getName().c_str() );
+  LOG("Assigning type for atom: {}" , atom->description().c_str()  );
   if (chem__verbose(0)) {
-    core::write_bf_stream(fmt::sprintf("Assigning type for atom: %s\n" , _rep_(atom)));
+    core::clasp_write_string(fmt::format("Assigning type for atom: {}\n" , _rep_(atom)));
   }
 
   {
@@ -110,10 +110,10 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
       ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(matches_mv.number_of_values()));
       if ( matches_mv.notnilp() ) {
         LOG("Rule MATCH!!!" );
-        if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("Matched %s type-> %s\n" , _rep_(root) , _rep_((*it)->_Type)));
+        if (chem__verbose(2)) core::clasp_write_string(fmt::format("Matched {} type-> {}\n" , _rep_(root) , _rep_((*it)->_Type)));
         return (*it)->_Type;
       } else {
-        if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("Did not match %s type-> %s\n" , _rep_(root) , _rep_((*it)->_Type)));
+        if (chem__verbose(2)) core::clasp_write_string(fmt::format("Did not match {} type-> {}\n" , _rep_(root) , _rep_((*it)->_Type)));
       }
       LOG("Rule does not match, keep going" );
     }
@@ -145,7 +145,7 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
   // Now assign the types first checking for residues and then
   // applying atom type rules for missing types.
   if (chem__verbose(2)) {
-    core::write_bf_stream(fmt::sprintf("Assigning atom types to %s\n" , _rep_(matter)));
+    core::clasp_write_string(fmt::format("Assigning atom types to {}\n" , _rep_(matter)));
   }
   Loop lRes;
   lRes.loopTopGoal(matter,RESIDUES);
@@ -154,19 +154,20 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
     Residue_sp res = lRes.getResidue();
     core::T_sp name = res->getName();
     if (chem__verbose(2)) {
-      core::write_bf_stream(fmt::sprintf("Looking for residue: %s\n" , _rep_(name)));
+      core::clasp_write_string(fmt::format("Looking for residue: {}\n" , _rep_(name)));
     }
     if (name.notnilp()) {
       core::T_mv result_mv = chem__findTopology(name,false);
       core::T_sp topology = result_mv;
       core::T_sp found = values.second(result_mv.number_of_values());
       if (chem__verbose(2)) {
-        core::write_bf_stream(fmt::sprintf("chem__findTopology -> %s %s\n" , _rep_(result_mv) , _rep_(found)));
+        core::clasp_write_string(fmt::format("chem__findTopology -> {} {}\n" , _rep_(result_mv) , _rep_(found)));
       }
       if (found.notnilp()) {
         if (chem__verbose(2)) {
-          core::write_bf_stream(fmt::sprintf("Found topology for residue name: %s\n" , _rep_(name)));
+          core::clasp_write_string(fmt::format("Found topology for residue name: {}\n" , _rep_(name)));
         }
+        SIMPLE_WARN("Getting stereoisomerAtoms for {}\n", _rep_(name) );
         core::T_sp stereoisomerAtoms = core::eval::funcall(_sym_stereoisomer_atoms, topology );
         // StereoisomerAtoms_sp stereoisomerAtoms = topology->getStereoisomerAtoms(name);
         // Use the Topology to assign atom types
@@ -175,7 +176,7 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
           atom = lAtoms.getAtom();
           core::T_sp atom_name = atom->getName();
           if (chem__verbose(2)) {
-            core::write_bf_stream(fmt::sprintf("Looking for atom with name: %s\n" , _rep_(atom_name)));
+            core::clasp_write_string(fmt::format("Looking for atom with name: {}\n" , _rep_(atom_name)));
           }
           core::T_mv stereoisomer_atom_mv = core::eval::funcall(_sym_stereoisomer_atom_with_name, stereoisomerAtoms, atom_name );
           if (values.second(stereoisomer_atom_mv.number_of_values()).notnilp()) {
@@ -183,11 +184,11 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
             core::T_sp type = core::eval::funcall(_sym_stereoisomer_atom_type, stereoisomer_atom);
             atom_types->setf_gethash(atom,type);
             if (chem__verbose(2)) {
-              core::write_bf_stream(fmt::sprintf("Assigned atom type %s using topology %s\n" , _rep_(type) , _rep_(name)));
+              core::clasp_write_string(fmt::format("Assigned atom type {} using topology {}\n" , _rep_(type) , _rep_(name)));
             }
           } else {
             if (chem__verbose(2)) {
-              core::write_bf_stream(fmt::sprintf("   Not found\n"));
+              core::clasp_write_string(fmt::format("   Not found\n"));
             }
           }
         }
@@ -200,7 +201,7 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
         if (this->_TypeAssignmentRules.size()!=0) {
           core::T_sp type = this->assignType(atom);
           if (chem__verbose(2)) {
-            core::write_bf_stream(fmt::sprintf("Assigned atom type %s using type rules\n" , _rep_(type)));
+            core::clasp_write_string(fmt::format("Assigned atom type {} using type rules\n" , _rep_(type)));
           }
           atom_types->setf_gethash(atom,type);
         }
@@ -212,7 +213,7 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
     }
   }
   if (missing_types>0) {
-    SIMPLE_WARN("There were %lu missing types of %lu atoms - %s" ,missing_types ,total_atoms ,_rep_(atoms_with_no_types));
+    SIMPLE_WARN("There were {} missing types of {} atoms - {}" ,missing_types ,total_atoms ,_rep_(atoms_with_no_types));
   }
   return atom_types;
 }
@@ -257,7 +258,7 @@ CL_DEFMETHOD chem::FFTypeRule_sp FFTypesDb_O::getRule(uint index)
   if ( index < this->_TypeAssignmentRules.size() ) {
     return this->_TypeAssignmentRules[index];
   }
-  SIMPLE_ERROR(("Rule index is out of bounds"));
+  SIMPLE_ERROR("Rule index is out of bounds");
 }
 
 

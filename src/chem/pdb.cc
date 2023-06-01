@@ -124,17 +124,11 @@ void AtomPdbRec::write(core::T_sp fout)
   {
     name = " " + this->_name->symbolName()->get_std_string();
   }
-  core::clasp_write_string(fmt::sprintf( "ATOM%7d ", this->_serial), fout);
-  core::clasp_write_string(fmt::sprintf( "%-4s ", name ), fout);
-  core::clasp_write_string(fmt::sprintf( "%3s ", this->_resName->symbolNameAsString() ), fout);
-  core::clasp_write_string(fmt::sprintf( "%1s", this->_chainId ), fout);
-  core::clasp_write_string(fmt::sprintf( "%4d    ", this->_resSeq ), fout );
-  core::clasp_write_string(fmt::sprintf( "%8.3f", this->_x ), fout );
-  core::clasp_write_string(fmt::sprintf( "%8.3f", this->_y ), fout );
-  core::clasp_write_string(fmt::sprintf( "%8.3f ", this->_z ), fout );
-  core::clasp_write_string(fmt::sprintf( "%5.2f ", this->_occupancy ), fout );
-  core::clasp_write_string(fmt::sprintf( "%5.2f           ", this->_tempFactor ), fout );
-  core::clasp_write_string(fmt::sprintf( "%2s\n", this->_element ), fout );
+  core::clasp_write_string(fmt::format("ATOM  {:5d} {:<4} {:3} {:1}{:4}    {:8.3f}{:8.3f}{:8.3f}{:6.2f}{:6.2f}           {:2}\n",
+                                       this->_serial, name, /* altLoc, */ this->_resName->symbolNameAsString(), this->_chainId,
+                                       this->_resSeq, /* iCode, */ this->_x, this->_y, this->_z, this->_occupancy,
+                                       this->_tempFactor, this->_element /* charge */),
+                           fout);
 }
 
 void	EntirePdbRec::addAtomPdbRec(AtomPdbRec& atom)
@@ -253,7 +247,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
 		// If the residueSeq has not been seen then
 		// create a new residue entry and assign its residueIdx
 		// and put it in its molecule
-      LOG("residueSeq(%d)   ai->_resSeq(%d)" , residueSeq , ai->_resSeq  );
+      LOG("residueSeq({})   ai->_resSeq({})" , residueSeq , ai->_resSeq  );
       if ( residueSeq != ai->_resSeq)
       { 
         residueSeq = ai->_resSeq;
@@ -271,8 +265,8 @@ Aggregate_sp	EntirePdbRec::createAggregate()
 	    	// Now create the atom and put it in its residue
       Atom_sp atom = ai->createAtom();
       ai->_atom = atom;
-      LOG("currentResidueIdx = %d" , currentResidueIdx  );
-      ASSERTF(currentResidueIdx>=0,("residue index must be positive - line--> %s") , ai->_line );
+      LOG("currentResidueIdx = {}" , currentResidueIdx  );
+      ASSERTF(currentResidueIdx>=0,("residue index must be positive - line--> {}") , ai->_line );
       ASSERT_lessThan(currentResidueIdx,(int)(this->_residues.size()));
       ai->_residueIdx = currentResidueIdx;
       Residue_sp res = this->_residues[ai->_residueIdx];
@@ -280,25 +274,25 @@ Aggregate_sp	EntirePdbRec::createAggregate()
     }
   }
   {
-    LOG("There are %d bonds" , this->_connects.size()  );
+    LOG("There are {} bonds" , this->_connects.size()  );
     for ( unsigned ci=0; ci<this->_connects.size(); ci++ )
     { 
-      LOG("CONECT indices: %d %d %d %d %d" , this->_connects[ci]._atom1 , this->_connects[ci]._bonded[0] , this->_connects[ci]._bonded[1] , this->_connects[ci]._bonded[2] , this->_connects[ci]._bonded[3]  );
+      LOG("CONECT indices: {} {} {} {} {}" , this->_connects[ci]._atom1 , this->_connects[ci]._bonded[0] , this->_connects[ci]._bonded[1] , this->_connects[ci]._bonded[2] , this->_connects[ci]._bonded[3]  );
       AtomPdbRec*	atomPtr;
       AtomPdbRec*	bondedPtr;
       int bondedIdx, bondedAtomRecIdx;
-      LOG("Looking atom with index: %d" , this->_connects[ci]._atom1  );
+      LOG("Looking atom with index: {}" , this->_connects[ci]._atom1  );
       int atomRecIndex = this->_atomRecIndexFromSerial[this->_connects[ci]._atom1];
       atomPtr = &(this->_atoms[atomRecIndex]);
-      LOG("Found atomPdbRec pointer at %X" , atomPtr  );
-      LOG("Found atom entry with serial#%d" , atomPtr->_serial  );
-      LOG("Atom.get = %X" , atomPtr->_atom.get()  );
+      LOG("Found atomPdbRec pointer at {}" , atomPtr  );
+      LOG("Found atom entry with serial#{}" , atomPtr->_serial  );
+      LOG("Atom.get = {}" , atomPtr->_atom.get()  );
       ANN(atomPtr->_atom);
       ASSERTP(atomPtr->_atom.notnilp(), "Atom is nil");
       bondedIdx = this->_connects[ci]._bonded[0];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond2 between atoms with indices %d-%d" , atomRecIndex , bondedIdx );
+        LOG("Creating bond2 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
@@ -308,7 +302,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       bondedIdx = this->_connects[ci]._bonded[1];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond3 between atoms with indices %d-%d" , atomRecIndex , bondedIdx );
+        LOG("Creating bond3 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
@@ -318,7 +312,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       bondedIdx = this->_connects[ci]._bonded[2];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond4 between atoms with indices %d-%d" , atomRecIndex , bondedIdx );
+        LOG("Creating bond4 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
@@ -328,7 +322,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       bondedIdx = this->_connects[ci]._bonded[3];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond5 between atoms with indices %d-%d" , atomRecIndex , bondedIdx );
+        LOG("Creating bond5 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
@@ -421,7 +415,7 @@ Aggregate_sp PdbReader_O::parse(core::T_sp stream)
       core::T_mv line = cl__read_line(stream,nil<core::T_O>(),nil<core::T_O>(),nil<core::T_O>());
       if (line.nilp()) break;
       string oneLine = gc::As<core::String_sp>(line)->get_std_string();
-      LOG("PDB line |%s|" , oneLine.c_str()  );
+      LOG("PDB line |{}|" , oneLine.c_str()  );
       string recordName = pdb_substr(oneLine,1,6);
       if ( recordName == "ATOM" ) {
         AtomPdbRec atomRec;
@@ -573,7 +567,7 @@ CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 {
   this->_Out = core::clasp_openWrite(pathDesignator);
   if ( this->_Out.nilp() ) {
-    SIMPLE_ERROR(("Could not open file: %s") , _rep_(pathDesignator));
+    SIMPLE_ERROR("Could not open file: {}" , _rep_(pathDesignator));
   }
 }
 
@@ -608,7 +602,7 @@ void	PdbWriter_O::write(Matter_sp matter)
 CL_LISPIFY_NAME("writeModel");
 CL_DEFMETHOD     void PdbWriter_O::writeModel(Matter_sp matter, int model)
 {
-  core::clasp_write_string(fmt::sprintf("MODEL     %d\n" , model ), this->_Out);
+  core::clasp_write_string(fmt::format("MODEL     {}\n" , model ), this->_Out);
   this->write(matter);
   core::clasp_write_string("ENDMDL\n",this->_Out);
 }

@@ -82,13 +82,13 @@ void	Structure_Old_ListEntry_O::initialize()
     if ( node->loading() )
     {
         LOG("Serialized object loaded from file" );
-	LOG("allCoords =%s" , (this->_AllCoordinates->asXmlString().c_str() ) );
-	LOG("superposeCoords =%s" , (this->_SuperposeCoordinates->asXmlString().c_str() ) );
+	LOG("allCoords ={}" , (this->_AllCoordinates->asXmlString().c_str() ) );
+	LOG("superposeCoords ={}" , (this->_SuperposeCoordinates->asXmlString().c_str() ) );
     } else
     {
         LOG("Serialized object output to file" );
-	LOG("allCoords =%s" , (this->_AllCoordinates->asXmlString().c_str() ) );
-	LOG("superposeCoords =%s" , (this->_SuperposeCoordinates->asXmlString().c_str() ) );
+	LOG("allCoords ={}" , (this->_AllCoordinates->asXmlString().c_str() ) );
+	LOG("superposeCoords ={}" , (this->_SuperposeCoordinates->asXmlString().c_str() ) );
     }
 }
 #endif
@@ -96,14 +96,14 @@ void	Structure_Old_ListEntry_O::initialize()
 void	Structure_Old_ListEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     ASSERTNOTNULL(ac);
-    LOG("setAllCoordinates:%s" , (ac->asXmlString().c_str() ) );
+    LOG("setAllCoordinates:{}" , (ac->asXmlString().c_str() ) );
     LOG("The address of the geom::SimpleVectorCoordinate_sp is in o" );
     this->_AllCoordinates = ac;
 }
 
 void	Structure_Old_ListEntry_O::setSuperposeCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
-    LOG("setSuperposeCoordinates:%s" , (ac->asXmlString().c_str() ) );
+    LOG("setSuperposeCoordinates:{}" , (ac->asXmlString().c_str() ) );
     this->_SuperposeCoordinates = ac;
 }
 
@@ -215,14 +215,14 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
   Structure_Old_ListEntry_sp			entry;
   if ( matter != this->_Matter )
   {
-    SIMPLE_ERROR(("The Matter passed must be the same as the one defined for the StructureList"));
+    SIMPLE_ERROR("The Matter passed must be the same as the one defined for the StructureList");
   }
 
   if ( this->_SuperposeAtoms.size() < 4 )
   {
-    SIMPLE_ERROR(("You must have defined at least three atoms to superpose"));
+    SIMPLE_ERROR("You must have defined at least three atoms to superpose");
   }
-  LOG("Number of superpose atoms = %d" , this->_SuperposeAtoms.size()  );
+  LOG("Number of superpose atoms = {}" , this->_SuperposeAtoms.size()  );
 
 
 	//
@@ -233,14 +233,14 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
   for ( ai=this->_SuperposeAtoms.begin(), i=0;
         ai!=this->_SuperposeAtoms.end(); ai++, i++)
   {
-    LOG("Extracting coordinate for superpose atom(%s)" , (*ai)->getName().c_str()  );
+    LOG("Extracting coordinate for superpose atom({})" , (*ai)->getName().c_str()  );
     (*newConf)[i] = (*ai)->getPosition();
   }
-  LOG("There are %d superposable atoms" , this->_SuperposeAtoms.size()  );
+  LOG("There are {} superposable atoms" , this->_SuperposeAtoms.size()  );
 
   {
 
-    LOG("Fixed points at the start of superposer: %s" , (newConf->asXmlString().c_str() ) );
+    LOG("Fixed points at the start of superposer: {}" , (newConf->asXmlString().c_str() ) );
 
     {
 
@@ -259,24 +259,24 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
       for ( auto ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
       {
         moveable = (*ci)->getSuperposeCoordinates();
-        LOG("Moveable points before superpose:%s" , (moveable->asXmlString().c_str() ) );
+        LOG("Moveable points before superpose:{}" , (moveable->asXmlString().c_str() ) );
         superposer->setMoveableAllPoints(moveable);
         transform = superposer->superpose();
         rms = superposer->rootMeanSquareDifference();
-        LOG("The rms difference(%lf) with structure(%d) " "compared to _RmsCutOff(%lf)" , rms , i , this->_RmsCutOff  );
+        LOG("The rms difference({}) with structure({}) " "compared to _RmsCutOff(%lf)" , rms , i , this->_RmsCutOff  );
         if ( rms < this->_RmsCutOff )
         {
-          LOG("Found an identical minimum with rms(%lf)" , rms );
+          LOG("Found an identical minimum with rms({})" , rms );
           LOG("Entry will not be added" );
           (*ci)->setMembers((*ci)->getMembers()+1);
           Structure_Old_ListEntry_sp zilch;
           zilch = nil<Structure_Old_ListEntry_O>();
-          LOG("Fixed points at the end of superposer: %s" , (newConf->asXmlString().c_str() ) );
+          LOG("Fixed points at the end of superposer: {}" , (newConf->asXmlString().c_str() ) );
           return zilch;
         }
-        LOG("Moveable points after superpose:%s" , (moveable->asXmlString().c_str() ) );
+        LOG("Moveable points after superpose:{}" , (moveable->asXmlString().c_str() ) );
       }
-      LOG("Fixed points at the end of superposer: %s" , (newConf->asXmlString().c_str() ) );
+      LOG("Fixed points at the end of superposer: {}" , (newConf->asXmlString().c_str() ) );
     }
   }
 
@@ -306,7 +306,7 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
   {
     (*newConf)[i] = (*ai)->getPosition();
   }
-  LOG("Writing superpose coordinates to entry:%s" , (newConf->asXmlString().c_str() ) );
+  LOG("Writing superpose coordinates to entry:{}" , (newConf->asXmlString().c_str() ) );
   entry->setSuperposeCoordinates(newConf);
   return entry;
 }

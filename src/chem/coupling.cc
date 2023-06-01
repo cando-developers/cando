@@ -57,10 +57,10 @@ void Coupling_O::fields(core::Record_sp node)
 
 bool	Coupling_O::containsMonomer(Monomer_sp mon)
 {
-    LOG("checking if coupling(%s) contains monomer: %s" , this->description().c_str() , mon->description().c_str() );
-    LOG("About to check monomer1: %s" , this->getMonomer1()->description().c_str() );
+    LOG("checking if coupling({}) contains monomer: {}" , this->description().c_str() , mon->description().c_str() );
+    LOG("About to check monomer1: {}" , this->getMonomer1()->description().c_str() );
     if ( mon == this->getMonomer1() ) { return true; };
-    LOG("About to check out monomer: %s" , this->getMonomer2()->description().c_str() );
+    LOG("About to check out monomer: {}" , this->getMonomer2()->description().c_str() );
     if ( mon == this->getMonomer2() ) { return true; };
     LOG("Its neither monomer" );
     return false;
@@ -123,10 +123,10 @@ CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp na
   string sname = name->symbolNameAsString();
   if (sname[0] == IN_PLUG_PREFIX) {
     if (sname.find(IN_PLUG_WILDCARD) != std::string::npos) {
-      SIMPLE_ERROR(("The coupling name cannot be determined from %s") , _rep_(name));
+      SIMPLE_ERROR("The coupling name cannot be determined from {}" , _rep_(name));
     }
   } else if (sname[0] != OUT_PLUG_PREFIX) {
-    SIMPLE_ERROR(("The argument %s must be an in-plug-name or out-plug-name") , _rep_(name));
+    SIMPLE_ERROR("The argument {} must be an in-plug-name or out-plug-name" , _rep_(name));
   }
   std::string rest = sname.substr(1,sname.size());
   return chemkw_intern(rest);
@@ -138,7 +138,7 @@ CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
   if (!isalpha(sname[0])) {
-    SIMPLE_ERROR(("You cannot pass a plug name %s to in-plug-name") , _rep_(name));
+    SIMPLE_ERROR("You cannot pass a plug name {} to in-plug-name" , _rep_(name));
   }
   size_t dpos = std::string::npos;
   for ( size_t i=0; i<sname.size(); ++i ) {
@@ -162,10 +162,10 @@ CL_DEFUN bool DirectionalCoupling_O::outPlugNameMatchesInPlugName(core::Symbol_s
   core::SimpleString_sp out = outPlugName->symbolName();
   core::SimpleString_sp in = inPlugName->symbolName();
   if (out->length()<1 || out->rowMajorAref(0).unsafe_character() != OUT_PLUG_PREFIX) {
-    SIMPLE_ERROR(("The name %s must be an out-plug-name") , _rep_(outPlugName));
+    SIMPLE_ERROR("The name {} must be an out-plug-name" , _rep_(outPlugName));
   }
   if (in->length()<1 || in->rowMajorAref(0).unsafe_character() != IN_PLUG_PREFIX) {
-    SIMPLE_ERROR(("The name %s must be an out-plug-name") , _rep_(outPlugName));
+    SIMPLE_ERROR("The name {} must be an out-plug-name" , _rep_(outPlugName));
   }
   if (out->length() != in->length()) return false;
   size_t pos = 1;
@@ -182,10 +182,10 @@ CL_DEFUN core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name
 {
   string sname = name->symbolNameAsString();
   if (!isalpha(sname[0])) {
-    SIMPLE_ERROR(("You cannot pass a plug name %s to out-plug-name") , _rep_(name));
+    SIMPLE_ERROR("You cannot pass a plug name {} to out-plug-name" , _rep_(name));
   }
   if (sname.find(IN_PLUG_WILDCARD)!=std::string::npos) {
-    SIMPLE_ERROR(("You cannot have a wildcard %s in the input to out-plug-name") , _rep_(name));
+    SIMPLE_ERROR("You cannot have a wildcard {} in the input to out-plug-name" , _rep_(name));
   }
   stringstream	ss;
   ss << OUT_PLUG_PREFIX;
@@ -256,7 +256,7 @@ CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
     goto BAD;
   }
   mon = this->_SourceMonomer;
-  LOG("SourceMonomer is: %s" , mon->description().c_str()  );
+  LOG("SourceMonomer is: {}" , mon->description().c_str()  );
   if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::outPlugName(this->getName())))
   {
     LOG("SourceMonomer does not have outPlug with correct name" );
@@ -275,7 +275,7 @@ CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
     goto BAD;
   }
   mon = this->_TargetMonomer;
-  LOG("TargetMonomer is: %s" , mon->description().c_str()  );
+  LOG("TargetMonomer is: {}" , mon->description().c_str()  );
   if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::inPlugName(this->getName())))
   {
     LOG("TargetMonomer does not have inPlug with correct name" );
@@ -289,7 +289,7 @@ CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
   }
   return;
  BAD:
-  SIMPLE_ERROR(("Bad coupling %s") , this->sharedThis<DirectionalCoupling_O>()->description() );
+  SIMPLE_ERROR("Bad coupling {}" , this->sharedThis<DirectionalCoupling_O>()->description() );
 }
 
 
@@ -403,14 +403,14 @@ void	DirectionalCoupling_O::setSourceMonomer_NoSignal(Monomer_sp m)
 {
     ASSERTNOTNULLP(m,"above monomer is undefined");
     this->_SourceMonomer = m->sharedThis<Monomer_O>();
-    LOG("Setting in monomer to (%s)" , m->description().c_str()  );
+    LOG("Setting in monomer to ({})" , m->description().c_str()  );
 }
 
 void	DirectionalCoupling_O::setTargetMonomer_NoSignal(Monomer_sp m)
 {
     ASSERTNOTNULLP(m,"below monomer is undefined");
     this->_TargetMonomer = m->sharedThis<Monomer_O>();
-    LOG("Setting out monomer to (%s)" , m->description().c_str()  );
+    LOG("Setting out monomer to ({})" , m->description().c_str()  );
 }
 
 
@@ -453,7 +453,7 @@ CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOtherSideMonomer(Monomer_sp mo
     LOG("About to check out monomer" );
     if ( mon == this->getTargetMonomer() ) { return this->getSourceMonomer(); };
     LOG("Its neither monomer" );
-    SIMPLE_ERROR(("Monomer is not in coupling %s") , mon->description());
+    SIMPLE_ERROR("Monomer is not in coupling {}" , mon->description());
 }
 
 
@@ -537,7 +537,7 @@ Plug_sp	DirectionalCoupling_O::getPlugForOtherMonomer(Monomer_sp mon)
 void	DirectionalCoupling_O::couple( Monomer_sp sin, Monomer_sp sout )
 {
 DirectionalCoupling_sp	me;
-SIMPLE_ERROR(("I wasn't sure if this was ever called.  Take out this THROW if it is"));
+SIMPLE_ERROR("I wasn't sure if this was ever called.  Take out this THROW if it is");
     this->setSourceMonomer_NoSignal(sin);
     this->setTargetMonomer_NoSignal(sout);
     me = this->sharedThis<DirectionalCoupling_O>();
@@ -637,7 +637,7 @@ CL_DEFMETHOD Monomer_sp	RingCoupling_O::getOtherSideMonomer(Monomer_sp mon)
     LOG("About to check out monomer" );
     if ( mon == this->getMonomer2() ) { return this->getMonomer1(); };
     LOG("Its neither monomer" );
-    SIMPLE_ERROR(("Monomer is not in coupling %s" ) , mon->description());
+    SIMPLE_ERROR("Monomer is not in coupling {}" , mon->description());
 }
 
 
@@ -672,7 +672,7 @@ RingCoupling_sp	coup;
         goto BAD;
     }
     mon = this->_Monomer1;
-    LOG("Monomer1 is: %s" , mon->description().c_str()  );
+    LOG("Monomer1 is: {}" , mon->description().c_str()  );
     if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::outPlugName(this->getPlug1())))
     {
         LOG("Monomer1 does not have outPlug with correct name" );
@@ -691,7 +691,7 @@ RingCoupling_sp	coup;
         goto BAD;
     }
     mon = this->_Monomer2;
-    LOG("Monomer2 is: %s" , mon->description().c_str()  );
+    LOG("Monomer2 is: {}" , mon->description().c_str()  );
     if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::outPlugName(this->getPlug2())))
     {
         LOG("Monomer2 does not have outPlug with correct name" );
@@ -705,7 +705,7 @@ RingCoupling_sp	coup;
     }
     return;
 BAD:
-    SIMPLE_ERROR(("Bad coupling %s" ) , this->sharedThis<RingCoupling_O>()->description() );
+    SIMPLE_ERROR("Bad coupling {}" , this->sharedThis<RingCoupling_O>()->description() );
 }
 
 

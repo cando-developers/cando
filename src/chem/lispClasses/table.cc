@@ -477,7 +477,7 @@ namespace chem
     string Table_O::__repr__() const
     {
 	stringstream sout;
-	sout << (fmt::sprintf("Table number of fields: %d" , this->_FieldSymbols.size() ) << std::endl;
+	sout << (fmt::format("Table number of fields: {}" , this->_FieldSymbols.size() ) << std::endl;
 	sout << "Symbols: ";
 	uint currentIdx=0;
 	for ( gctools::Vec0<core::Symbol_sp>::const_iterator it = this->_FieldSymbols.begin(); it!=this->_FieldSymbols.end(); it++ )

@@ -73,11 +73,11 @@ Loop	l;
 	sum = sum + a->getPosition();
 	count++;
     }
-    LOG("geometricCenterOfMatter number of atoms = %d" , (count ) );
+    LOG("geometricCenterOfMatter number of atoms = {}" , (count ) );
     if ( count != 0 ) {
         sum = sum*(1.0/count);
     }
-    LOG("Geometric center = %f, %f, %f" , (sum.getX()) , (sum.getY()) , (sum.getZ() ) );
+    LOG("Geometric center = {}, {}, {}" , (sum.getX()) , (sum.getY()) , (sum.getZ() ) );
     return sum;
 }
 
@@ -193,7 +193,7 @@ Residue_sp		res;
     uint connectVdwOverlappingUnconnectedAtoms(gctools::Vec0<Atom_sp>& atoms)
     {
 	uint connected = 0;
-	LOG("There are %d unconnected atoms to connect together" , atoms.size()  );
+	LOG("There are {} unconnected atoms to connect together" , atoms.size()  );
 	for ( gctools::Vec0<Atom_sp>::iterator i1 = atoms.begin(); i1!=atoms.end()-1; i1++ )
 	{
 	    Vector3 v1 = (*i1)->getPosition();
@@ -209,14 +209,14 @@ Residue_sp		res;
 		{
 		    if (!(*i1)->isBondedTo(*i2))
 		    {
-			LOG("Forming bond between atom(%s) and atom(%s) - they were %lf angstroms apart < max(%lf)" , (*i1)->description() , (*i2)->description() , len , maxLen );
+			LOG("Forming bond between atom({}) and atom({}) - they were {} angstroms apart < max({})" , (*i1)->description() , (*i2)->description() , len , maxLen );
 			(*i1)->bondToSingle(*i2);
 			connected++;
 		    }
 		}
 	    }
 	}
-	LOG("Connected %d bonds" , connected );
+	LOG("Connected {} bonds" , connected );
 	return connected;
     }
 
@@ -233,7 +233,7 @@ CL_DEFUN void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter)
 	}
 #ifdef DEBUG_ON
 	uint numVdwConnected = connectVdwOverlappingUnconnectedAtoms(atoms);
-	LOG("Number of atoms connected using vdw overlap: %d"  , numVdwConnected );
+	LOG("Number of atoms connected using vdw overlap: {}"  , numVdwConnected );
 #endif
     }
 
@@ -244,7 +244,7 @@ CL_DEFUN void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter)
 DOCGROUP(cando);
 CL_DEFUN adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius )
     {
-	LOG("Looking for atoms in sphere with center(%s) and radius(%lf)" , center.asString() , radius );
+	LOG("Looking for atoms in sphere with center({}) and radius({})" , center.asString() , radius );
 	adapt::ObjectSet_sp result = adapt::ObjectSet_O::create();
 	Loop lAtoms;
 	lAtoms.loopTopGoal(matter,ATOMS);
@@ -254,7 +254,7 @@ CL_DEFUN adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matte
 	    Vector3 pos = a->getPosition();
 	    Vector3 delta = pos.sub(center);
 	    double dist = delta.length();
-	    LOG("Looking at atom at position(%s) distance(%lf) insphere(%d)" , pos.asString() , dist , (dist < radius ) );
+	    LOG("Looking at atom at position({}) distance({}) insphere({})" , pos.asString() , dist , (dist < radius ) );
 	    if ( dist < radius )
 	    {
 		result->insert(a);

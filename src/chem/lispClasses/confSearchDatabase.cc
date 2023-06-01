@@ -179,7 +179,7 @@ uint					i;
 	(*ei)->extractCoordinatesFromMatter(this->_Matter);
 	if ( this->_DisplayProgress)
 	{
-          core::writeln_bf_stream(fmt::sprintf("CONFSEARCH: Entry %d  energy(%lf) rms(%lf)" , i , energy , rms ));
+          core::clasp_write_string(fmt::format("CONFSEARCH: Entry {}  energy({}) rms({})\n" , i , energy , rms ));
 	}
     }
 
@@ -187,7 +187,7 @@ uint					i;
     {
 	if ( this->_DisplayProgress )
 	{
-          core::writeln_bf_stream(fmt::sprintf( "CONFSEARCH: Trimming search entry table to %d elements" , (lastUsefulEntry+1) ));
+          core::clasp_write_string(fmt::format( "CONFSEARCH: Trimming search entry table to {} elements\n" , (lastUsefulEntry+1) ));
 	}
 	LOG("CONFSEARCH: Trimming search entry table to %d elements" , (lastUsefulEntry+1 ) );
 	this->_Entries.resize(lastUsefulEntry+1);

@@ -194,7 +194,7 @@ bool inAtomSet(core::T_sp activeSet, Atom_sp a)
     }
     return false;
   }
-  SIMPLE_ERROR(("Add support to search %s as a set\n") , _rep_(activeSet));
+  SIMPLE_ERROR("Add support to search {} as a set\n" , _rep_(activeSet));
 }
 
 
@@ -285,7 +285,7 @@ CL_DEFMETHOD BoundingBox_sp EnergyFunction_O::boundingBox() const
   if (this->_BoundingBox.boundp()) {
     return this->_BoundingBox;
   }
-  SIMPLE_ERROR(("The bounding-box slot is unbound"));
+  SIMPLE_ERROR("The bounding-box slot is unbound");
 }
 
 CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx");
@@ -353,7 +353,7 @@ void	EnergyFunction_O::setOption( core::Symbol_sp option, core::T_sp val)
 #endif
   } else
   {
-    SIMPLE_ERROR(("Unknown EnergyFunction setOption keyword[%s]") , _rep_(option) );
+    SIMPLE_ERROR("Unknown EnergyFunction setOption keyword[{}]" , _rep_(option) );
   }
 }
 
@@ -486,7 +486,7 @@ uint	EnergyFunction_O::countTermsBeyondThreshold()
 {
   int		terms;
   terms = 0;
-  SIMPLE_ERROR(("Should there be something here?"));
+  SIMPLE_ERROR("Should there be something here?");
 //    node = rawAccumulateTermsBeyondThresholdAsXml(terms);
   return terms;
 }
@@ -520,21 +520,21 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 
 #ifdef	DEBUG_ON //[
 	// Summarize entry state for debugging
-  LOG("calcForce = %d" , calcForce  );
-  LOG("calcDiagonalHessian = %d" , calcDiagonalHessian  );
-  LOG("calcOffDiagonalHessian = %d" , calcOffDiagonalHessian  );
-  LOG("hasForce = %d" , hasForce  );
-  LOG("hasHdAndD = %d" , hasHdAndD  );
+  LOG("calcForce = {}" , calcForce  );
+  LOG("calcDiagonalHessian = {}" , calcDiagonalHessian  );
+  LOG("calcOffDiagonalHessian = {}" , calcOffDiagonalHessian  );
+  LOG("hasForce = {}" , hasForce  );
+  LOG("hasHdAndD = {}" , hasHdAndD  );
   if ( hasForce && force->size() < pos->size() ) {
-    SIMPLE_ERROR(("Force does not have the necessary dimensions"));
+    SIMPLE_ERROR("Force does not have the necessary dimensions");
   }
 #endif //]
 
   if ( !calcForce && ( calcDiagonalHessian || calcOffDiagonalHessian ) ) {
-    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce"));
+    SIMPLE_ERROR("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce");
   }
   if ( !calcDiagonalHessian & calcOffDiagonalHessian ) {
-    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian"));
+    SIMPLE_ERROR("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian");
   }
 
 ////    _lisp->profiler().pushTimerStates();
@@ -656,20 +656,20 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 string EnergyFunction_O::energyComponentsAsString()
 {
   stringstream ss;
-  ss << fmt::sprintf("Stretch(%lf)" , this->_Stretch->getEnergy() ) << std::endl;
+  ss << fmt::format("Stretch({})" , this->_Stretch->getEnergy() ) << std::endl;
 #if USE_ALL_ENERGY_COMPONENTS
-  ss << fmt::sprintf("Angle(%lf)" , this->_Angle->getEnergy() ) << std::endl;
-  ss << fmt::sprintf("Dihedral(%lf)" , this->_Dihedral->getEnergy() ) << std::endl;
-  ss << fmt::sprintf("Nonbond(%lf)" , this->_Nonbond->getEnergy() ) << std::endl;
-  ss << fmt::sprintf("ChiralRestraint(%lf)" , this->_ChiralRestraint->getEnergy() ) << std::endl;
-  ss << fmt::sprintf("DihedralRestraint(%lf)" , this->_DihedralRestraint->getEnergy() ) << std::endl;
-  ss << fmt::sprintf("AnchorRestraint(%lf)" , this->_AnchorRestraint->getEnergy() ) << std::endl;
-  ss << fmt::sprintf("FixedNonbondRestraint(%lf)" , this->_FixedNonbondRestraint->getEnergy() ) << std::endl;
+  ss << fmt::format("Angle({})" , this->_Angle->getEnergy() ) << std::endl;
+  ss << fmt::format("Dihedral({})" , this->_Dihedral->getEnergy() ) << std::endl;
+  ss << fmt::format("Nonbond({})" , this->_Nonbond->getEnergy() ) << std::endl;
+  ss << fmt::format("ChiralRestraint({})" , this->_ChiralRestraint->getEnergy() ) << std::endl;
+  ss << fmt::format("DihedralRestraint({})" , this->_DihedralRestraint->getEnergy() ) << std::endl;
+  ss << fmt::format("AnchorRestraint({})" , this->_AnchorRestraint->getEnergy() ) << std::endl;
+  ss << fmt::format("FixedNonbondRestraint({})" , this->_FixedNonbondRestraint->getEnergy() ) << std::endl;
 #endif
   for ( auto cur : this->_OtherEnergyComponents ) {
     core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
     EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
-    ss << fmt::sprintf("%s(%lf)" , _rep_(oCar(pair)) , component->getEnergy()) <<std::endl;
+    ss << fmt::format("{}({})" , _rep_(oCar(pair)) , component->getEnergy()) <<std::endl;
   }
   return ss.str();
 }
@@ -845,16 +845,16 @@ double	EnergyFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, doub
     fmimj = this->evaluateEnergy(pos);
     pos->setElement(i,x);
     pos->setElement(j,y);
-    LOG("fpipj = %le" , fpipj  );
-    LOG("fpimj = %le" , fpimj  );
-    LOG("fmipj = %le" , fmipj  );
-    LOG("fmimj = %le" , fmimj  );
+    LOG("fpipj = {}" , fpipj  );
+    LOG("fpimj = {}" , fpimj  );
+    LOG("fmipj = {}" , fmipj  );
+    LOG("fmimj = {}" , fmimj  );
     fp = (fpipj-fpimj)/delta;
     fm = (fmipj-fmimj)/delta;
-    LOG("fp = %le" , fp  );
-    LOG("fm = %le" , fm  );
+    LOG("fp = {}" , fp  );
+    LOG("fm = {}" , fm  );
     f2 = (fp-fm)/delta;
-    LOG("f2 = %le" , f2  );
+    LOG("f2 = {}" , f2  );
   }
   return f2;
 }
@@ -884,7 +884,7 @@ void	EnergyFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSqu
   uint		c, r;
 
   if ( hessian->columns() != pos->size() || hessian->rows()!=pos->size() ) {
-    SIMPLE_ERROR(("evaluateNumericalHessian must have the right size"));
+    SIMPLE_ERROR("evaluateNumericalHessian must have the right size");
   }
   hessian->zero();
   for ( c=0; c<pos->size(); c++ ) {
@@ -984,10 +984,10 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
 void	EnergyFunction_O::summarizeTerms()
 {
-  core::write_bf_stream(fmt::sprintf("Number of atom terms: %d\n" , this->_AtomTable->getNumberOfAtoms() ));
-  core::write_bf_stream(fmt::sprintf("Number of Stretch terms: %d\n" , this->_Stretch->numberOfTerms() ));
-  core::write_bf_stream(fmt::sprintf("Number of Angle terms: %d\n" , this->_Angle->numberOfTerms() ));
-  core::write_bf_stream(fmt::sprintf("Number of Dihedral terms: %d\n" , this->_Dihedral->numberOfTerms() ));
+  core::clasp_write_string(fmt::format("Number of atom terms: {}\n" , this->_AtomTable->getNumberOfAtoms() ));
+  core::clasp_write_string(fmt::format("Number of Stretch terms: {}\n" , this->_Stretch->numberOfTerms() ));
+  core::clasp_write_string(fmt::format("Number of Angle terms: {}\n" , this->_Angle->numberOfTerms() ));
+  core::clasp_write_string(fmt::format("Number of Dihedral terms: {}\n" , this->_Dihedral->numberOfTerms() ));
 };
 
 
@@ -1058,7 +1058,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       Atom_sp a1 = anchor->getAtom();
       if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) goto CONT;
       EnergyAtom* ea1 = this->getEnergyAtomPointer(a1);
-      LOG("Create an anchor restraint for %s" , a1->description()  );
+      LOG("Create an anchor restraint for {}" , a1->description()  );
       anchorPos = anchor->getAnchorPos();
       iterm.term.xa = anchorPos.getX();
       iterm.term.ya = anchorPos.getY();
@@ -1092,7 +1092,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       EnergyStretch   energyStretch(rd->_A,rd->_B,ea1->coordinateIndexTimes3(),ea2->coordinateIndexTimes3(),rd->_K,rd->_R0);
       this->_Stretch->addTerm(energyStretch);
     } else {
-      SIMPLE_ERROR(("Handle restraint: %s") , _rep_(restraint));
+      SIMPLE_ERROR("Handle restraint: {}" , _rep_(restraint));
     }
   CONT:
     restraintIterator->next();
@@ -1143,17 +1143,17 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
         ay1 = ay2;
         ay2 = azz;
       }
-      LOG("Applying a secondary amide restraint between %s and %s" , ax->description() , ay->description()  );
+      LOG("Applying a secondary amide restraint between {} and {}" , ax->description() , ay->description()  );
 		    //
 		    // H3(ax2) and O5(ay1) should be trans
       this->_addDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,activeAtoms);
-      LOG("Restrain cis %s - %s - %s -%s" , ax1->description() , ax->description() , ay->description() , ay1->description()  );
+      LOG("Restrain cis {} - {} - {} -{}" , ax1->description() , ax->description() , ay->description() , ay1->description()  );
       this->_addDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,activeAtoms);
-      LOG("Restrain trans %s - %s - %s -%s" , ax1->description() , ax->description() , ay->description() , ay2->description()  );
+      LOG("Restrain trans {} - {} - {} -{}" , ax1->description() , ax->description() , ay->description() , ay2->description()  );
       this->_addDihedralRestraint(ax2,ax,ay,ay1,transMin,transMax,weight,activeAtoms);
-      LOG("Restrain trans %s - %s - %s -%s" , ax2->description() , ax->description() , ay->description() , ay1->description()  );
+      LOG("Restrain trans {} - {} - {} -{}" , ax2->description() , ax->description() , ay->description() , ay1->description()  );
       this->_addDihedralRestraint(ax2,ax,ay,ay2,cisMin,cisMax,weight,activeAtoms);
-      LOG("Restrain cis %s - %s - %s -%s" , ax2->description() , ax->description() , ay->description() , ay2->description()  );
+      LOG("Restrain cis {} - {} - {} -{}" , ax2->description() , ax->description() , ay->description() , ay2->description()  );
     }
   }
 }
@@ -1183,7 +1183,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 {
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
-    SIMPLE_ERROR(("You can only define energy functions for Aggregates or Molecules"));
+    SIMPLE_ERROR("You can only define energy functions for Aggregates or Molecules");
   }
 
   core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,nil<core::T_O>());
@@ -1191,7 +1191,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 	//
 	// Identify rings
 	//
-  if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Searching for rings.\n"));
+  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Searching for rings.\n"));
 
   core::T_sp rings = RingFinder_O::identifyRings(matter);
   core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
@@ -1200,7 +1200,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   //
   // Assign relative Cahn-Ingold-Preylog priorities
   //
-  if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning CIP priorities.\n"));
+  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning CIP priorities.\n"));
   core::HashTable_sp cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
 
     //
@@ -1231,7 +1231,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   }
   this->_AtomTypes = atomTypes;
   if (assign_types) {
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning atom types.\n"));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types.\n"));
     moleculeLoop.loopTopGoal(matter,MOLECULES);
     while (moleculeLoop.advanceLoopAndProcess() ) {
       Molecule_sp molecule = moleculeLoop.getMolecule();
@@ -1239,17 +1239,17 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
       core::T_sp use_given_types = molecule->force_field_use_given_types();
 //      if (use_given_types.nilp()) {
         core::T_sp combined_force_field = force_fields->gethash(force_field_name);
-        if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning atom types for molecule %s using %s.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
+        if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types for molecule {} using {}.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
   //
   // Calculate aromaticity using the rings we just calculated
   //
         core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-        if (aromaticity_info.nilp()) SIMPLE_ERROR(("The aromaticity-info was NIL when about to assign force field types - it should not be"));
+        if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when about to assign force field types - it should not be");
         core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
         core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes);
 #if 0
       } else {
-        if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning atom types for molecule %s using given-types for %s.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
+        if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types for molecule {} using given-types for {}.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
         Loop atom_loop;
         atom_loop.loopTopGoal(molecule,ATOMS);
         while (atom_loop.advanceLoopAndProcess()) {
@@ -1268,13 +1268,13 @@ CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms cip-pr
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
 {
   if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
-    SIMPLE_ERROR(("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)"));
+    SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
   }
-  if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("defineForMatterWithAtomTypes\n"));
+  if (chem__verbose(0)) core::clasp_write_string(fmt::format("defineForMatterWithAtomTypes\n"));
   this->_Matter= matter;
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
-    SIMPLE_ERROR(("You can only define energy functions for Aggregates or Molecules"));
+    SIMPLE_ERROR("You can only define energy functions for Aggregates or Molecules");
   }
 
   //
@@ -1295,7 +1295,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   } else {
     this->_AtomTable->setBoundingBox(boundingBox);
   }
-  if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assembling aggregate nonbond force-field.\n"));
+  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assembling aggregate nonbond force-field.\n"));
   core::T_sp nonbondForceField = core::eval::funcall(chem::_sym_compute_merged_nonbond_force_field_for_aggregate,matter,atomTypes);
   this->_AtomTable->setNonbondForceFieldForAggregate(nonbondForceField);
   
@@ -1314,7 +1314,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   size_t first_solvent_molecule_nspsol = 0;
   bool solvent_exists = false;
   if (gc::IsA<Aggregate_sp>(matter)) {
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Classifying solute/solvent.\n"));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Classifying solute/solvent.\n"));
     ql::list solute_molecules;
     ql::list solvent_molecules;
     {
@@ -1339,10 +1339,10 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   // Calculate aromaticity using the rings we just calculated
   //
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-      if (aromaticity_info.nilp()) SIMPLE_ERROR(("The aromaticity-info was NIL when about to call generate-molecule-energy-function-tables - it should not be"));
+      if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when about to call generate-molecule-energy-function-tables - it should not be");
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
       this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,activeAtoms,atomTypes);
-      if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Generating parameters for %s using %s force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
+      if (chem__verbose(0)) core::clasp_write_string(fmt::format("Generating parameters for {} using {} force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
       core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,activeAtoms);
       final_solute_residue_iptres += onemol->contentSize();
       ++number_of_molecules_nspm;
@@ -1353,7 +1353,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       if (core::cl__length(solvent)>0) {
         Molecule_sp onemol = gc::As<Molecule_sp>(oCar(solvent));
         core::T_sp force_field_name = onemol->force_field_name();
-        core::write_bf_stream(fmt::sprintf("Generating parameters for solvent %s using %s force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
+        core::clasp_write_string(fmt::format("Generating parameters for solvent {} using {} force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
       }
     }
     for ( auto cur_solvent : solvent ) {
@@ -1372,10 +1372,10 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   // Calculate aromaticity using the rings we just calculated
   //
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-      if (aromaticity_info.nilp()) SIMPLE_ERROR(("The aromaticity-info was NIL when we were about to call generate-molecule-energy-function-tables for a single molecule - it should not be"));
+      if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when we were about to call generate-molecule-energy-function-tables for a single molecule - it should not be");
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
       this->_AtomTable->constructFromMolecule(molecule,nonbondForceField,activeAtoms,atomTypes);
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Generating parameters for %s using %s force-field.\n" , _rep_(molecule->getName()) , _rep_(force_field_name) ));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Generating parameters for {} using {} force-field.\n" , _rep_(molecule->getName()) , _rep_(force_field_name) ));
     core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),molecule,forceField,activeAtoms);
     final_solute_residue_iptres = molecule->contentSize();
     number_of_molecules_nspm = 1;
@@ -1389,7 +1389,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
   }
   {
-    if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("About to calculate nonbond and restraint terms"));
+    if (chem__verbose(1)) core::clasp_write_string(fmt::format("About to calculate nonbond and restraint terms"));
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms,atomTypes);
     this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms,cip_priorities,atomTypes);
@@ -1440,7 +1440,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   // FIXME: I think this should only be done once after all of the molecules have been added
   // FIXME: Why are we using the forcefield->getNonbondDb()?  We should be using the aggregate nonbond force-field
 #if 0  
-  if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Starting to build standard energy function tables\n"));
+  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Starting to build standard energy function tables\n"));
   auto  temp  = gctools::GC<FFNonbondCrossTermTable_O>::allocate_with_default_constructor();
   this->_NonbondCrossTermTable = temp;
   this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
@@ -1482,13 +1482,13 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       } else {
         Residue_sp res1 = gc::As<Residue_sp>(atomToRes->gethash(a1));
         Residue_sp res2 = gc::As<Residue_sp>(atomToRes->gethash(a2));
-        SIMPLE_WARN("Could not find stretch parameter in molecule %s between %s/%s (atom type %s) and %s/%s (atom type %s)" , _rep_(molecule) , _rep_(res1) , _rep_(a1) , _rep_(a1->getType(atomTypes)) , _rep_(res2) , _rep_(a2) , _rep_(a2->getType(atomTypes)));
+        SIMPLE_WARN("Could not find stretch parameter in molecule {} between {}/{} (atom type {}) and {}/{} (atom type {})" , _rep_(molecule) , _rep_(res1) , _rep_(a1) , _rep_(a1->getType(atomTypes)) , _rep_(res2) , _rep_(a2) , _rep_(a2->getType(atomTypes)));
       }
     }
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built stretch table with %d terms added and %d missing terms\n" , terms , missing_terms));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built stretch table with {} terms added and {} missing terms\n" , terms , missing_terms));
   }
 #ifdef	DEBUG_DEFINE_ENERGY
-  core::writeln_bf_stream(fmt::sprintf("%s:%d There were %d stretch terms" , __FILE__ , __LINE__ , this->_Stretch.size() ));
+  core::clasp_write_string(fmt::format("{}:{} There were {} stretch terms\n" , __FILE__ , __LINE__ , this->_Stretch.size() ));
 #endif
 #if USE_ALL_ENERGY_COMPONENTS
   // Search the angle terms
@@ -1508,7 +1508,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       ea3 = this->getEnergyAtomPointer(a3);
       FFAngle_sp ffAngle = ffangles->findTerm(ffstretches,a1,a2,a3,atomTypes);
       if ( ffAngle->level() != parameterized ) {
-        LOG("Missing angle parameter between types: %s-%s-%s" , _rep_(a1->getType(atomTypes)) , _rep_(a2->getType(atomTypes)) , _rep_(a3->getType(atomTypes)) );
+        LOG("Missing angle parameter between types: {}-{}-{}" , _rep_(a1->getType(atomTypes)) , _rep_(a2->getType(atomTypes)) , _rep_(a3->getType(atomTypes)) );
         this->_addMissingParameter(ffAngle);
         LOG("Added to missing parameters" );
         ++missing_terms;
@@ -1520,7 +1520,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         ++terms;
       }
     }
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built angle table with %d terms and %d missing terms\n" , terms , missing_terms));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built angle table with {} terms and {} missing terms\n" , terms , missing_terms));
   }
   // Search the ptor terms
   {
@@ -1541,7 +1541,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       t2 = a2->getType(atomTypes);
       t3 = a3->getType(atomTypes);
       t4 = a4->getType(atomTypes);
-//      core::write_bf_stream(fmt::sprintf("atoms types: %s-%s-%s-%s \n" , t1 , t2 , t3 , t4));
+//      core::clasp_write_string(fmt::format("atoms types: {}-{}-{}-{} \n" , t1 , t2 , t3 , t4));
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
@@ -1558,7 +1558,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
               Residue_sp res2 = gc::As<Residue_sp>(atomToRes->gethash(a2));
               Residue_sp res3 = gc::As<Residue_sp>(atomToRes->gethash(a3));
               Residue_sp res4 = gc::As<Residue_sp>(atomToRes->gethash(a4));
-              core::write_bf_stream(fmt::sprintf( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s -> %s/n"
+              core::clasp_write_string(fmt::format( "Adding proper term for atoms {}-{}-{}-{} types: {}-{}-{}-{} -> {}/n"
                                                   , ea1->getResidueAndName(res1)
                                                   , ea2->getResidueAndName(res2)
                                                   , ea3->getResidueAndName(res3)
@@ -1590,7 +1590,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t144 = t1;
           }
 //          LOG("Defining 1-4 interaction %-9s- %-9s   " , t1 , t4 );
-//          core::write_bf_stream(fmt::sprintf("Defining 1-4 interaction %-9s- %-9s   \n" , t1 , t4 ));
+//          core::clasp_write_string(fmt::format("Defining 1-4 interaction {:<9}- {:<9}   \n" , t1 , t4 ));
 #endif
 #endif
         } else {
@@ -1604,7 +1604,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t144 = t1;
           }
 //          LOG("Ignoring 1-4 interaction %-9s- %-9s    " , t1 , t4 );
-//          core::write_bf_stream(fmt::sprintf("Ignoring 1-4 interaction %-9s- %-9s    \n" , t1 , t4 ));
+//          core::clasp_write_string(fmt::format("Ignoring 1-4 interaction {:<9}- {:<9}    \n" , t1 , t4 ));
 #endif
 #endif
         }
@@ -1612,7 +1612,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 //		ea4->_CloserThan15.insert(ea1->_Atom);
       }
     }
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built dihedral table with %d terms and %d missing terms\n" , terms , missing_terms));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built dihedral table with {} terms and {} missing terms\n" , terms , missing_terms));
   }
   // Search the itor terms
   {
@@ -1657,7 +1657,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         }
       }
     }
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built improper table for %d terms\n" , terms));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built improper table for {} terms\n" , terms));
   }
 //  this->summarizeTerms();
 }
@@ -1668,9 +1668,9 @@ CL_DOCSTRING(R"dx(Generate the nonbond energy function tables. The atom types, a
 CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes )
 {
   if (chem__verbose(0))
-    core::write_bf_stream(fmt::sprintf("Built atom table for %d atoms\n" , this->_AtomTable->getNumberOfAtoms()));
+    core::clasp_write_string(fmt::format("Built atom table for {} atoms\n" , this->_AtomTable->getNumberOfAtoms()));
 #ifdef	DEBUG_DEFINE_ENERGY
-  core::writeln_bf_stream(fmt::sprintf("%s:%d There were %d atoms" , __FILE__ , __LINE__ , this->_AtomTable.size() ));
+  core::clasp_write_string(fmt::format("{}:{} There were {} atoms\n" , __FILE__ , __LINE__ , this->_AtomTable.size() ));
 #endif
         // Nonbonds here!!!!!!!!!!!!!!
   if (useExcludedAtoms) {
@@ -1693,7 +1693,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
   } else {
     this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, nonbondForceField,atomTypes);
   }
-  if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built nonbond table for %d terms\n" , this->_Nonbond->numberOfTerms()));
+  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built nonbond table for {} terms\n" , this->_Nonbond->numberOfTerms()));
 }
 
 
@@ -1712,14 +1712,14 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
-  if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("In generateRestraintEnergyFunctionTables\n"));
+  if (chem__verbose(1)) core::clasp_write_string(fmt::format("In generateRestraintEnergyFunctionTables\n"));
   
     	//
 	// Setup the atom chiral restraints
 	//
   {
     if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
-      SIMPLE_ERROR(("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)"));
+      SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
     }
     core::HashTable_sp cip = gc::As_unsafe<core::HashTable_sp>(cip_priorities);
     EnergyChiralRestraint	ichiral;
@@ -1733,11 +1733,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
       loop.loopTopGoal(res,ATOMS);
       while ( loop.advanceLoopAndProcess() ) {
         a1 = loop.getAtom();
-        if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Looking to assign stereochemical restraint for %s\n" , _rep_(a1)));
+        if (chem__verbose(1)) core::clasp_write_string(fmt::format("Looking to assign stereochemical restraint for {}\n" , _rep_(a1)));
         if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
         if ( a1->getStereochemistryType() != undefinedCenter ) {
-          if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("getStereochemistryType != undefinedCenter for %s\n" , _rep_(a1)));
-          LOG("Create a chiral restraint for %s" , a1->description()  );
+          if (chem__verbose(1)) core::clasp_write_string(fmt::format("getStereochemistryType != undefinedCenter for {}\n" , _rep_(a1)));
+          LOG("Create a chiral restraint for {}" , a1->description()  );
 			//
 			// Figure out what the desired configuration should be
 			// If it has been set then use that
@@ -1769,7 +1769,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             if ( a1->getStereochemistryType() == prochiralCenter ) {
               side = 1.0;
             } else {
-              SIMPLE_WARN("Chiral center (%s:%s) with configuration settings[%s] doesn't have its configuration set"
+              SIMPLE_WARN("Chiral center ({}:{}) with configuration settings[{}] doesn't have its configuration set"
                                        , _rep_(res)
                                        , _rep_(a1)
                                        , a1->getConfigurationAsString() );
@@ -1785,9 +1785,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             priority = a1->getNeighborsForAbsoluteConfiguration();
           }
           if (core::cl__length(priority)!=4) {
-            SIMPLE_ERROR(("There must be 4 neighbors of %s - but there is only %s") , _rep_(a1) , _rep_(priority));
+            SIMPLE_ERROR("There must be 4 neighbors of {} - but there is only {}" , _rep_(a1) , _rep_(priority));
           }
-          if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Assigning stereochemistry for central atom %s neighbors: %s\n" , _rep_(a1) , _rep_(priority)));
+          if (chem__verbose(1)) core::clasp_write_string(fmt::format("Assigning stereochemistry for central atom {} neighbors: {}\n" , _rep_(a1) , _rep_(priority)));
           n1 = gc::As<Atom_sp>(oFirst(priority));
           n2 = gc::As<Atom_sp>(oSecond(priority));
           n3 = gc::As<Atom_sp>(oThird(priority));
@@ -1816,7 +1816,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 			// Setup chiral restraints for 1->2->center->3
 			//			and 1->2->center->4
 			//
-          if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Assigning stereochemistry for central atom %s neighbors: %s\n" , _rep_(a1) , _rep_(priority)));
+          if (chem__verbose(1)) core::clasp_write_string(fmt::format("Assigning stereochemistry for central atom {} neighbors: {}\n" , _rep_(a1) , _rep_(priority)));
           ichiral._Atom1 = ea1->atom();
           ichiral._Atom2 = ea2->atom();
           ichiral._Atom3 = eaCenter->atom();
@@ -1867,11 +1867,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           this->_ChiralRestraint->addTerm(ichiral);
         } else
         {
-          LOG("There is no chiral restraint for: %s" , a1->description()  );
+          LOG("There is no chiral restraint for: {}" , a1->description()  );
         }
       }
     }
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built chiral restraints table for %d terms\n" , this->_ChiralRestraint->numberOfTerms()));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built chiral restraints table for {} terms\n" , this->_ChiralRestraint->numberOfTerms()));
   }
 
 	//
@@ -1894,10 +1894,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
     }
     int startTerms = this->_DihedralRestraint->numberOfTerms();
     // this->__createSecondaryAmideRestraints(nitrogens,activeAtoms);
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built secondary amide restraints including %d terms\n" , (this->_DihedralRestraint->numberOfTerms() - startTerms)));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built secondary amide restraints including {} terms\n" , (this->_DihedralRestraint->numberOfTerms() - startTerms)));
   } else
   {
-    LOG("Skipping Secondary amide restraints because _RestrainSecondaryAmides = %d" , this->_RestrainSecondaryAmides );
+    LOG("Skipping Secondary amide restraints because _RestrainSecondaryAmides = {}" , this->_RestrainSecondaryAmides );
   }
 
 #endif // USE_ALL_ENERGY_COMPONENTS
@@ -1908,7 +1908,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   {
     IterateRestraints_sp restraintIt = IterateRestraints_O::create(matter);
     int terms = this->_applyRestraints(ffNonbond,restraintIt,activeAtoms,atomTypes);
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built restraints including %d terms\n" , terms ));
+    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built restraints including {} terms\n" , terms ));
   }
   LOG("Done terms" );
 }
@@ -1931,7 +1931,7 @@ void	EnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
   int                             ci;
   gctools::Vec0<EnergyAtom>::iterator    ai;
   if ( pos->size() != this->getNVectorSize()) {
-    SIMPLE_ERROR(("NVector is the incorrect length"));
+    SIMPLE_ERROR("NVector is the incorrect length");
   }
   for ( ai=this->_AtomTable->begin(); ai!=this->_AtomTable->end(); ai++ ) {
     ci = ai->coordinateIndexTimes3();
@@ -1973,7 +1973,7 @@ void    EnergyFunction_O::saveCoordinatesFromVector(NVector_sp pos)
     x = pos->getElement(ci+0);
     y = pos->getElement(ci+1);
     z = pos->getElement(ci+2);
-    LOG("Set atom(%d) position (%lf,%lf,%lf)" , ci , x , y , z  );
+    LOG("Set atom({}) position ({},{},{})" , ci , x , y , z  );
     v.set(x,y,z);
     ai->atom()->setPosition(v);
   }

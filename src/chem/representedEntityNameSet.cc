@@ -47,7 +47,7 @@ namespace chem
 	LOG("RepresentedEntityNameSet_O::initialize()" );
 	this->Base::initialize();
 	this->_Representative = nil<core::Symbol_O>();
-	LOG("Creating %s" , this->description()  );
+	LOG("Creating {}" , this->description()  );
     }
 
 
@@ -137,7 +137,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	objList = RepresentativeList_O::create();
 	auto  expanded  = gctools::GC<RepresentedEntityNameSet_O>::copy( *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
 	expanded->expandToTerminalEntityNames();
-	LOG("I have a representative[%s] so I'm created a RepresentedEntityNameSet: %s" , _rep_(expanded) );
+	LOG("I have a representative[{}] so I'm created a RepresentedEntityNameSet: {}" , _rep_(expanded) );
 	objList->vectorPushExtend(expanded);
 	return objList;
     }

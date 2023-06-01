@@ -122,7 +122,7 @@ struct translate::from_object<kinematics::CoordinateCalculator>
     } else if (o == kw::_sym_bond_angle_dihedral_to_internal) {
       this->_v = kinematics::bond_angle_dihedral_to_internal;
     } else {
-      SIMPLE_ERROR(("Cannot convert CoordinateCalculator %s") , _rep_(o));
+      SIMPLE_ERROR("Cannot convert CoordinateCalculator {}" , _rep_(o));
     }
   }
 };
@@ -137,7 +137,7 @@ namespace kinematics {
 FORWARD(JumpJoint);
 
 #define	ASSERT_VALID_HANDLE(tree,handle)				\
-  ASSERTF((int)handle<tree->numberOfEntries(),("The handle[%d] is out of range (0->%d]") , handle , tree->numberOfEntries()); \
+  ASSERTF((int)handle<tree->numberOfEntries(),("The handle[{}] is out of range (0->{}]") , handle , tree->numberOfEntries()); \
   ASSERTF(tree->_AtomHolders[handle]._Type != unused,("The handle represents an unused node"));
 
 
@@ -220,7 +220,7 @@ void Joint_O::eraseChild(Joint_sp child)
       return;
     }
   }
-  SIMPLE_ERROR(("Could not find child %s in %s - so it could not be erased") , _rep_(child) , _rep_(this->asSmartPtr()));
+  SIMPLE_ERROR("Could not find child {} in {} - so it could not be erased" , _rep_(child) , _rep_(this->asSmartPtr()));
 }
 
 
@@ -232,7 +232,7 @@ int Joint_O::indexOfChild(Joint_sp child)
   {
     if (child == atom->_child(i)) return i;
   }
-  SIMPLE_ERROR(("Could not find child"));
+  SIMPLE_ERROR("Could not find child");
 }
 
 
@@ -354,7 +354,7 @@ CL_DEFMETHOD Vector3 Joint_O::position(chem::NVector_sp coords) const
                   (*coords)[this->_PositionIndexX3+2]);
     return pos;
   }
-  SIMPLE_ERROR("Out of range Joint_O::position %s at %d when coord length is %lu _EndPositionIndexX3 = %d",
+  SIMPLE_ERROR("Out of range Joint_O::position {} at {} when coord length is {} _EndPositionIndexX3 = {}",
                _rep_(this->asSmartPtr()), this->_PositionIndexX3, coords->length(), this->_EndPositionIndexX3);
 }
 
@@ -366,7 +366,7 @@ CL_DEFMETHOD void Joint_O::setPosition(chem::NVector_sp coords,const Vector3& po
     (*coords)[this->_PositionIndexX3+2] = pos.getZ();
     return;
   }
-  SIMPLE_ERROR("Out of range Joint_O::setPosition %s at %d when coord length is %lu _EndPositionIndexX3 = %d",
+  SIMPLE_ERROR("Out of range Joint_O::setPosition {} at {} when coord length is {} _EndPositionIndexX3 = {}",
                _rep_(this->asSmartPtr()), this->_PositionIndexX3, coords->length(), this->_EndPositionIndexX3);
 }
 
@@ -392,7 +392,7 @@ CL_DEFMETHOD core::T_sp Joint_O::getProperty(core::Symbol_sp symbol)
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
-    SIMPLE_ERROR(("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") , _rep_(symbol) , this->__repr__() , (void*)this , props.str()  );
+    SIMPLE_ERROR("You asked for an unknown property[{}] for matter[{}@{}] - the available properties are[{}]" , _rep_(symbol) , this->__repr__() , (void*)this , props.str()  );
   }
   return res;
 }
@@ -413,7 +413,7 @@ CL_DEFMETHOD bool Joint_O::hasProperty(core::Symbol_sp symbol)
        
 CL_DEFMETHOD void Joint_O::walkChildren(core::Function_sp callback)
 {
-  LOG("There are %d children" , this->_numberOfChildren() );
+  LOG("There are {} children" , this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
     Joint_sp child = this->_child(i);
@@ -440,7 +440,7 @@ CL_DEFUN void kin__walk(Joint_sp joint, core::Function_sp callback) {
 
 void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
 {
-  LOG("There are %d children" , this->_numberOfChildren() );
+  LOG("There are {} children" , this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
     Joint_sp child = this->_child(i);

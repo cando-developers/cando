@@ -257,7 +257,7 @@ char			caPart[254], *cPTemp;
     iAtoms = this->lines;
     for ( i=0; i< iAtoms; i++ ) {
 	fgets( caLine, sizeof(caLine), this->file );
-        LOG("Raw line: %s" , (caLine ) );
+        LOG("Raw line: {}" , (caLine ) );
 //	sscanf( caLine, " %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %11.6lf %11.6lf %11.6lf %5d%c%c%4d%9.5lf%9.5lf %4s %4s\n",
 	sscanf( caLine, " %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d",
 			&oneAtom.iType,
@@ -272,63 +272,63 @@ char			caPart[254], *cPTemp;
 	len = 11;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.x = atof(caPart);
 	offset += len+1;
 
 	len = 11;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.y = atof(caPart);
 	offset += len+1;
 
 	len = 11;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.z = atof(caPart);
 	offset += len+1;
 
 	len = 5;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.resNum = atoi(caPart);
 	offset += len;
 
 	len = 1;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.resCode = caPart[0];
 	offset += len;
 
 	len = 1;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.resChain = caPart[0];
 	offset += len;
 
 	len = 4;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.atomColor = atoi(caPart);
 	offset += len;
 
 	len = 9;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.dCharge= atof(caPart);
 	offset += len;
 
 	len = 9;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	oneAtom.dMultiPoleCharge= atof(caPart);
 	offset += len+1;
 
@@ -338,7 +338,7 @@ char			caPart[254], *cPTemp;
 	cPTemp = caPart;
 	while ( *cPTemp != ' ' && *cPTemp != '\0' ) cPTemp++;
 	*cPTemp = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	strcpy( oneAtom.caResName, caPart );
 	offset += len+1;
 
@@ -348,7 +348,7 @@ char			caPart[254], *cPTemp;
 	cPTemp = caPart;
 	while ( *cPTemp != ' ' && *cPTemp != '\0' ) cPTemp++;
 	*cPTemp = '\0';
-	LOG("LEFT: |%s|" , (caPart ) );
+	LOG("LEFT: |{}|" , (caPart ) );
 	strcpy( oneAtom.caAtomName, caPart );
 	offset += len+1;
 
@@ -366,7 +366,7 @@ char			caPart[254], *cPTemp;
 	atoms.push_back(oneAtom);
     }
 
-     LOG("proc.   : %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %11.6lf %11.6lf %11.6lf %5d%c%c%4d%9.5lf%9.5lf %4s %4s\n"
+     LOG("proc.   : %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %11.6lf %11.6lf %11.6lf %5d{}{}%4d%9.5lf%9.5lf %4s %4s\n"
      , oneAtom.iType %
      oneAtom.bonds[0].iAtom% oneAtom.bonds[0].iBondOrder%
 			oneAtom.bonds[1].iAtom% oneAtom.bonds[1].iBondOrder%
@@ -407,7 +407,7 @@ char			caPart[254], *cPTemp;
 		//
 
     for ( i=0; i<iAtoms; i++ ) {
-	LOG("Creating atom: %d" , (i ) );
+	LOG("Creating atom: {}" , (i ) );
 	aPAtom = Atom_O::create();
 	LOG("Creating atom" );
 	if ( residues.count(atoms[i].resNum) > 0 ) {

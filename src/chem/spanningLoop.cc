@@ -180,7 +180,7 @@ CL_DEFMETHOD void SpanningLoop_O::setTop(Atom_sp c) {
 
   // Now setup the loop stack
 
-  LOG("SpanningLoop_O::setTop atom moeIndex =%d", (c->getMoeIndex()));
+  LOG("SpanningLoop_O::setTop atom moeIndex ={}", (c->getMoeIndex()));
   this->iMaxDistanceFromRoot = -1;
   this->aCurSpan = c;
   this->aLastSpan = c;
@@ -233,7 +233,7 @@ SpanningInfo_sp SpanningLoop_O::getSpanningInfo(Atom_sp a) {
     core::T_sp tfirst = tinfo;
     return gc::As_unsafe<SpanningInfo_sp>(tfirst);
   }
-  SIMPLE_ERROR(("Could not get spanning-info for %s"), _rep_(a));
+  SIMPLE_ERROR("Could not get spanning-info for {}", _rep_(a));
 }
 
 SpanningInfo_sp SpanningLoop_O::storeSpanningInfo(Atom_sp key, int distance, core::T_sp toRoot, core::T_sp next) {
@@ -250,7 +250,7 @@ CL_DEFMETHOD bool SpanningLoop_O::isBackSpanValid(Atom_sp a) {
     SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
     return si->_ToRoot.notnilp();
   }
-  SIMPLE_ERROR(("Could not get spanning-info for %s"), _rep_(a));
+  SIMPLE_ERROR("Could not get spanning-info for {}", _rep_(a));
 }
 
 CL_DEFMETHOD bool SpanningLoop_O::isNextSpanValid(Atom_sp a) {
@@ -261,7 +261,7 @@ CL_DEFMETHOD bool SpanningLoop_O::isNextSpanValid(Atom_sp a) {
     SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
     return si->_Next.notnilp();
   }
-  SIMPLE_ERROR(("Could not get spanning-info for %s"), _rep_(a));
+  SIMPLE_ERROR("Could not get spanning-info for {}", _rep_(a));
 }
 
 CL_DEFMETHOD core::T_sp SpanningLoop_O::getBackSpan(Atom_sp a) {
@@ -294,7 +294,7 @@ CL_DEFMETHOD int SpanningLoop_O::getBackCount(Atom_sp a) {
     SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
     return si->_Distance;
   }
-  SIMPLE_ERROR(("Could not get spanning-info for %s"), _rep_(a));
+  SIMPLE_ERROR("Could not get spanning-info for {}", _rep_(a));
 }
 
 //
@@ -317,7 +317,7 @@ Atom_sp SpanningLoop_O::nextSpanningAtom(std::function<bool(Atom_sp fromAtom, Bo
     this->initialized = true;
   }
 
-  LOG("--- Entered nextSpanningAtom aCurSpan = %d; nextSpan valid?=%d", this->aCurSpan->getMoeIndex(),
+  LOG("--- Entered nextSpanningAtom aCurSpan = {}; nextSpan valid?={}", this->aCurSpan->getMoeIndex(),
       this->aCurSpan->isNextSpanValid());
   ASSERT(this->aCurSpan.notnilp());
   //    if (IsNull(this->aCurSpan)) {
@@ -334,8 +334,8 @@ Atom_sp SpanningLoop_O::nextSpanningAtom(std::function<bool(Atom_sp fromAtom, Bo
   //        printf("%s:%d Looking up spanning info for %s\n", __FILE__, __LINE__, _rep_(aPrev).c_str());
   SpanningInfo_sp siPrev = this->getSpanningInfo(aPrev);
   // aPrev->invalidateNextSpan();
-  LOG("--- Invalidated nextSpan for atom: %d", (aPrev->getMoeIndex()));
-  LOG("--- Currently on atom: %d", (this->aCurSpan->getMoeIndex()));
+  LOG("--- Invalidated nextSpan for atom: {}", (aPrev->getMoeIndex()));
+  LOG("--- Currently on atom: {}", (this->aCurSpan->getMoeIndex()));
   //        printf("%s:%d nextSpanningAtom: %s coordination: %d\n", __FILE__, __LINE__, _rep_(this->aCurSpan).c_str(),
   //        this->aCurSpan->coordination());
   for (i = 0; i < this->aCurSpan->coordination(); i++) {
@@ -345,12 +345,12 @@ Atom_sp SpanningLoop_O::nextSpanningAtom(std::function<bool(Atom_sp fromAtom, Bo
     bool followBond = bondTester(this->aCurSpan, bond);
     /* If the atom is visible then add it */
     if (followBond && this->bSpanAtomVisible(aBond, order, &bSeenBefore)) {
-      LOG("--- looking at bonded atom: %d", (aBond->getMoeIndex()));
+      LOG("--- looking at bonded atom: {}", (aBond->getMoeIndex()));
       SpanningInfo_sp siBond = this->storeSpanningInfo(aBond, this->getBackCount(aCurSpan) + 1, this->aCurSpan);
       siPrev->_Next = aBond; // aPrev->setNextSpan( aBond );
       //            printf("%s:%d  aBond -> %s  siBond -> %s\n", __FILE__, __LINE__, _rep_(aBond).c_str(), _rep_(siBond).c_str());
-      LOG("--- Setting atom: %d nextSpan to: %d", (aPrev->getMoeIndex()), (aBond->getMoeIndex()));
-      LOG("--- Is atom: %d nextSpan valid? ==> %d", (aPrev->getMoeIndex()), (aPrev->isNextSpanValid()));
+      LOG("--- Setting atom: {} nextSpan to: {}", (aPrev->getMoeIndex()), (aBond->getMoeIndex()));
+      LOG("--- Is atom: {} nextSpan valid? ==> {}", (aPrev->getMoeIndex()), (aPrev->isNextSpanValid()));
       siPrev = siBond;
       aPrev = aBond;
     } else {
@@ -374,10 +374,10 @@ Atom_sp SpanningLoop_O::nextSpanningAtom(std::function<bool(Atom_sp fromAtom, Bo
   oObject = this->aCurSpan;
   if (this->isNextSpanValid(aCurSpan)) {
     this->aCurSpan = gc::As_unsafe<Atom_sp>(this->getNextSpan(aCurSpan));
-    LOG("--- Setting this->aCurSpan to: %d", (this->aCurSpan->getMoeIndex()));
-    LOG("--- Is atom: %d nextSpan valid? ==> %d", (this->aCurSpan->getMoeIndex()), (this->aCurSpan->isNextSpanValid()));
+    LOG("--- Setting this->aCurSpan to: {}", (this->aCurSpan->getMoeIndex()));
+    LOG("--- Is atom: {} nextSpan valid? ==> {}", (this->aCurSpan->getMoeIndex()), (this->aCurSpan->isNextSpanValid()));
   } else {
-    LOG("atom %d does not have a next span atom, loop done", (this->aCurSpan->getMoeIndex()));
+    LOG("atom {} does not have a next span atom, loop done", (this->aCurSpan->getMoeIndex()));
     this->done = true;
     goto DONE;
   }

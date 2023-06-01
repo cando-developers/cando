@@ -72,7 +72,7 @@ Vector4::Vector4( double w, double x, double y, double z )
 
 void Vector4::dump()
 {
-  core::writeln_bf_stream(fmt::sprintf("<%lf,%lf,%lf,%lf>" , this->coords[0] , this->coords[1] , this->coords[2] , this->coords[3] ));
+  core::clasp_write_string(fmt::format("<{},{},{},{}>\n" , this->coords[0] , this->coords[1] , this->coords[2] , this->coords[3] ));
 }
 
 
@@ -112,7 +112,7 @@ Vector4	v;
 	v.coords[3] = this->coords[3]/l;
 	return v;
     }
-    SIMPLE_ERROR(("Attempted to normalize a zero vector"));
+    SIMPLE_ERROR("Attempted to normalize a zero vector");
 }
 
 

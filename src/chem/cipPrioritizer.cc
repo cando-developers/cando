@@ -156,9 +156,9 @@ gctools::Vec0<int>& CipPrioritizer_O::getS(AtomPriority& a)
   ASSERTNOTNULL(a);
   if ( ! ( a._relativePriority < this->_s.size() ) )
   {
-    FLOG("Bad priority for atom" );
-    FLOG("Bad priority for atom: {}" , a._Atom->description().c_str()  );
-    FLOG("   priority value = {}" , a._relativePriority  );
+    LOG("Bad priority for atom" );
+    LOG("Bad priority for atom: {}" , a._Atom->description().c_str()  );
+    LOG("   priority value = {}" , a._relativePriority  );
   }
   ASSERT_lessThan(a._relativePriority,this->_s.size());
   return this->_s[a._relativePriority];
@@ -272,17 +272,17 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
       AtomPriority ap(a,relativePriority);
       mAtoms.push_back(ap);
       this->_p.push_back(atomicNumber(a)); // p(i) = atomic_number of atom
-      FLOG("Atom {} has atomicNumber() {}\n", _rep_(a), atomicNumber(a));
+      LOG("Atom {} has atomicNumber() {}\n", _rep_(a), atomicNumber(a));
     }
     OrderByP byP;
     byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
 #ifdef	DEBUG_ON
-    FLOG("Assigning initial priorities STAGE1" );
+    LOG("Assigning initial priorities STAGE1" );
     for ( auto mit=mAtoms.begin(); mit!=mAtoms.end(); mit++ ) {
-      FLOG("\nAtom: {} _relativePriority {} p-> {}\n", _rep_((*mit)._Atom), (*mit)._relativePriority, this->getP(*mit));
+      LOG("\nAtom: {} _relativePriority {} p-> {}\n", _rep_((*mit)._Atom), (*mit)._relativePriority, this->getP(*mit));
     }
     for ( auto cidx=0; cidx<C.size(); cidx++ ) {
-      FLOG("\nC[{}] = {}\n", cidx, C[cidx]);
+      LOG("\nC[{}] = {}\n", cidx, C[cidx]);
     }
 #endif
     if ( mAtoms.size()>1 ) {
@@ -302,12 +302,12 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
       }
     }
 #ifdef	DEBUG_ON
-    FLOG("Assigning priorities STAGE1" );
+    LOG("Assigning priorities STAGE1" );
     for ( auto mit=mAtoms.begin(); mit!=mAtoms.end(); mit++ ) {
-      FLOG("\nAtom: {} _relativePriority {} p-> {}\n", _rep_((*mit)._Atom), (*mit)._relativePriority, this->getP(*mit));
+      LOG("\nAtom: {} _relativePriority {} p-> {}\n", _rep_((*mit)._Atom), (*mit)._relativePriority, this->getP(*mit));
     }
     for ( auto cidx=0; cidx<C.size(); cidx++ ) {
-      FLOG("\nC[{}] = {}\n", cidx, C[cidx]);
+      LOG("\nC[{}] = {}\n", cidx, C[cidx]);
     }
 #endif
   }
@@ -329,7 +329,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
               mi!=mAtoms.end(); mi++ )
         {
           Atom_sp myatom = (*mi)._Atom;
-          FLOG("About to fill mys" );
+          LOG("About to fill mys" );
           gctools::Vec0<int>	mys;
           for ( gctools::Vec0<Bond_sp>::iterator bi=myatom->bonds_begin();
                 bi!=myatom->bonds_end(); bi++ )
@@ -343,21 +343,21 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
               mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority(cip)]);
             }
           }
-          FLOG("About to sort {} mys objects" , mys.size()  );
+          LOG("About to sort {} mys objects" , mys.size()  );
           if (mys.size()>1) {
             int* begin = &mys[0];
             int* end = &mys[mys.size()];
             sort::quickSortVec0(mys, 0, mys.size());
-            FLOG("Done sort" );
+            LOG("Done sort" );
             sort::reverse(begin,end);
-            FLOG("Done reverse" );
+            LOG("Done reverse" );
           }
           this->_s[myatom->getRelativePriority(cip)] = mys;
         }
       }
 #ifdef	DEBUG_ON
       { 
-        FLOG("Reverse sorted neighbor priorities for each atom" );
+        LOG("Reverse sorted neighbor priorities for each atom" );
         for ( auto ait=mAtoms.begin(); ait!=mAtoms.end(); ait++ )
         {
           stringstream ss;
@@ -367,7 +367,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
           {
             ss << " " << *zit;
           }
-          FLOG("  reverse sorted priorities of neighbors of {} - {}" , _rep_((*ait)._Atom), ss.str().c_str()  );
+          LOG("  reverse sorted priorities of neighbors of {} - {}" , _rep_((*ait)._Atom), ss.str().c_str()  );
         }
       }
 #endif
@@ -395,7 +395,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
           {
             classEnd = C[classIndex+1];
           }
-          FLOG("Looking at class ({})-({})" , classBegin , classEnd  );
+          LOG("Looking at class ({})-({})" , classBegin , classEnd  );
           gctools::Vec0<AtomPriority> S;
           {
             for ( uint ci = classBegin; ci<classEnd; ci++ )
@@ -405,21 +405,21 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
           }
           OrderByS byS;
           {
-            FLOG("Setting up prioritizer" );
+            LOG("Setting up prioritizer" );
             byS.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
-            FLOG("about to sort number of elements = {}" , S.size()  );
+            LOG("about to sort number of elements = {}" , S.size()  );
 #ifdef DEBUG_ON
-            FLOG("Contents of S" );
+            LOG("Contents of S" );
             for ( auto ssi=S.begin();ssi!=S.end();ssi++)
             {
-              FLOG("    {} relativePriority {}" , _rep_((*ssi)._Atom), (*ssi)._relativePriority );
+              LOG("    {} relativePriority {}" , _rep_((*ssi)._Atom), (*ssi)._relativePriority );
             }
 #endif
             if (S.size()>1) sort::quickSortVec0(S, 0, S.size(), byS);
-            FLOG("done sort" );
+            LOG("done sort" );
           }
 //		    int i = 0;
-          FLOG("About to dump sort results" );
+          LOG("About to dump sort results" );
 #ifdef	DEBUG_ON
           for ( auto iiS=S.begin(); iiS!=S.end(); iiS++)
           {
@@ -433,16 +433,16 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
               sz << " " << *zit;
             }
 
-            FLOG("{}" , sz.str().c_str()  );
+            LOG("{}" , sz.str().c_str()  );
           }
 #endif
-          FLOG("Replacing mAtoms from ({})-({}) with S" , classBegin , classEnd );
+          LOG("Replacing mAtoms from ({})-({}) with S" , classBegin , classEnd );
           uint si, mi;
           for ( si=0, mi=classBegin; mi!=classEnd; mi++, si++ ) {
             mAtoms[mi]._Atom = S[si]._Atom;
             mAtoms[mi]._relativePriority = S[si]._relativePriority;
           }
-          FLOG("Partitioning based on s" );
+          LOG("Partitioning based on s" );
           vector<int> partitionS = partition(S,classBegin,byS);
 #if DEBUG_ON
           vector<int>::iterator pSi;
@@ -451,11 +451,11 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
           {
             Ss << " " << *pSi;
           }
-          FLOG(" partitionS = {}" , Ss.str().c_str()  );
+          LOG(" partitionS = {}" , Ss.str().c_str()  );
 #endif
           if ( partitionS.size()>1 ) 
           {
-            FLOG(" Did partition of S" );
+            LOG(" Did partition of S" );
             didPartition = true;
           }
           for ( vector<int>::iterator psi=partitionS.begin(); psi!=partitionS.end(); psi++ )
@@ -527,7 +527,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
     {
       uint relPriority = this->_p[(*ai)._relativePriority];
       cip->setf_gethash((*ai)._Atom,core::clasp_make_fixnum(relPriority));
-      FLOG("Assigned to atom: {} priority: {}" , _rep_((*ai)._Atom->getName()) , relPriority  );
+      LOG("Assigned to atom: {} priority: {}" , _rep_((*ai)._Atom->getName()) , relPriority  );
     }
   }
 }

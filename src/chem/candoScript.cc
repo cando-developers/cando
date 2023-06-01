@@ -86,7 +86,7 @@ CL_DEFUN void chem__initialize_smarts_users() {
  */
 void setCandoDatabase(CandoDatabase_sp bdb, core::LispPtr lisp)
 {
-    LOG("Setting *DATABASE* to database@%p" , bdb.get() );
+    LOG("Setting *DATABASE* to database@{}" , bdb.get() );
     _sym_candoDatabase->defparameter(bdb);
 }
 
@@ -144,7 +144,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
     progress_done = core::eval::funcall(cl::_sym_findSymbol,core::SimpleBaseString_O::make("PROGRESS-DONE"),
                                         core::SimpleBaseString_O::make("CANDO"));
     if (make_progress.nilp()||progress_advance.nilp()||progress_done.nilp()) {
-      SIMPLE_ERROR(("Could not get progress bar functions make-progress, progress-advance, progress-done"));
+      SIMPLE_ERROR("Could not get progress bar functions make-progress, progress-advance, progress-done");
     }
   }
   core::T_sp progress_bar = nil<core::T_O>();
@@ -271,7 +271,7 @@ CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybyl
     mol2WriteAggregateStream(agg,ss,ht);
     return ss.str();
   }
-  SIMPLE_ERROR(("Matter must be an aggregate or molecule - it is %s") , _rep_(matter));
+  SIMPLE_ERROR("Matter must be an aggregate or molecule - it is {}" , _rep_(matter));
 }
 
 /*!
@@ -294,29 +294,29 @@ core::Fixnum_sp	residueSequenceNumber;
     while ( l.advanceLoopAndProcess() )
     {
         Residue_sp res = l.getResidue();
-        LOG("Looking at residue with sequence number: %d" , res->getFileSequenceNumber()  );
+        LOG("Looking at residue with sequence number: {}" , res->getFileSequenceNumber()  );
 	bool foundResidue = false;
 	if ( resIdName )
 	{
-          LOG("Checking if residue has name(%s) that matches(%s)" , res->getName().c_str() , _rep_(resIdName) );
+          LOG("Checking if residue has name({}) that matches({})" , res->getName().c_str() , _rep_(resIdName) );
 	    if ( resIdName==res->getName() )
 	    {
-              LOG("Found residue with sequence name: %s" , _rep_(resIdName) );
+              LOG("Found residue with sequence name: {}" , _rep_(resIdName) );
 		foundResidue = true;
 	    }
 #ifdef USE_TOPOLOGY
             else if ( res->recognizesMonomerAlias(resIdName) )
 	    {
-              LOG("Found residue with Monomer alias: %s" , _rep_(resIdName) );
+              LOG("Found residue with Monomer alias: {}" , _rep_(resIdName) );
 		foundResidue = true;
 	    }
 #endif
 	} else if ( resIdSeqNum )
 	{
-	    LOG("Checking if residue has fileSequenceNumber(%d) that matches(%d)" , res->getFileSequenceNumber() , resIdSeqNum->get()  );
+	    LOG("Checking if residue has fileSequenceNumber({}) that matches({})" , res->getFileSequenceNumber() , resIdSeqNum->get()  );
 	    if ( (int)(res->getFileSequenceNumber()) == resIdSeqNum.unsafe_fixnum())
 	    {
-	        LOG("Found residue with sequence number: %s" , resIdSeqNum->get()  );
+	        LOG("Found residue with sequence number: {}" , resIdSeqNum->get()  );
 		foundResidue = true;
 	    }
 	}
@@ -362,14 +362,12 @@ CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
       residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
     } else
     {
-    	SIMPLE_ERROR(("You must provide a molecule, residueId" ));
+    	SIMPLE_ERROR("You must provide a molecule, residueId");
     }
     Residue_sp res = findResidue(molecule,residueIdentifier);
     if ( res.nilp() )
     {
-	stringstream serr;
-	serr << "Molecule does not contain residue with identifier: " << _rep_(residueIdentifier).c_str() ;
-	SIMPLE_ERROR((serr.str()));
+	SIMPLE_ERROR("Molecule does not contain residue with identifier: {}", residueIdentifier);
     }
     return res;
 }
@@ -415,21 +413,21 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
       atomName = args.asCons()->onth(2).as<core::Symbol_O>();
     } else
     {
-    	SIMPLE_ERROR(("You must provide a molecule, residueId and atom name"));
+    	SIMPLE_ERROR("You must provide a molecule, residueId and atom name");
     }
     Residue_sp foundResidue = findResidue(molecule,residueIdentifier);
     if ( foundResidue.notnilp() )
     {
       if ( foundResidue->hasAtomWithName(atomName)) {
-          LOG("Found atom with name: %s" , _rep_(atomName)  );
+          LOG("Found atom with name: {}" , _rep_(atomName)  );
           Vector3 pos = gc::As_unsafe<Atom_sp>(foundResidue->atomWithName(atomName))->getPosition();
 	    geom::OVector3_sp v = geom::OVector3_O::create();
 	    v->setAll3(pos.getX(),pos.getY(),pos.getZ());
 	    return v;
 	}
-      SIMPLE_ERROR(("Residue does not contain atom named: %s") , _rep_(atomName));
+      SIMPLE_ERROR("Residue does not contain atom named: {}" , _rep_(atomName));
     }
-    SIMPLE_ERROR(("Molecule does not contain residue with identifier: %s") , _rep_(residueIdentifier));
+    SIMPLE_ERROR("Molecule does not contain residue with identifier: {}" , _rep_(residueIdentifier));
 }
 
 

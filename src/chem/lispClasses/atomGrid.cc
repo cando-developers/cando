@@ -464,20 +464,20 @@ void AtomGrid_O::paint(Matter_sp matter, double pad)
 void	AtomGrid_O::dump()
 {
 int	iOn, iOff;
- core::writeln_bf_stream(fmt::sprintf( "AtomGrid dump" ));
- core::writeln_bf_stream(fmt::sprintf("  size= ( %d, %d, %d )" , this->xSize , this->ySize , this->zSize ));
- core::writeln_bf_stream(fmt::sprintf( "  min=(%lf, %lf, %lf)" , this->xMin , this->yMin , this->zMin ));
- core::writeln_bf_stream(fmt::sprintf( "  max=(%lf, %lf, %lf)" , this->xMax , this->yMax , this->zMax ));
- core::writeln_bf_stream(fmt::sprintf( "  ballRadius=%lf" , this->ballRadius ));
- core::writeln_bf_stream(fmt::sprintf( "  stepSize=%lf" , this->stepSize ));
- core::writeln_bf_stream(fmt::sprintf( "  grid Elements=%d" , (int)(this->grid.size()) ));
+ core::clasp_write_string(fmt::format( "AtomGrid dump\n" ));
+ core::clasp_write_string(fmt::format("  size= ({}, {}, {})\n" , this->xSize , this->ySize , this->zSize ));
+ core::clasp_write_string(fmt::format( "  min=({}, {}, {})\n" , this->xMin , this->yMin , this->zMin ));
+ core::clasp_write_string(fmt::format( "  max=({}, {}, {})\n" , this->xMax , this->yMax , this->zMax ));
+ core::clasp_write_string(fmt::format( "  ballRadius={}\n" , this->ballRadius ));
+ core::clasp_write_string(fmt::format( "  stepSize={}\n" , this->stepSize ));
+ core::clasp_write_string(fmt::format( "  grid Elements={}\n" , (int)(this->grid.size()) ));
     iOn = 0;
     iOff = 0;
     for ( uint i=0; i<this->grid.size(); i++ ) {
 	if ( this->grid[i] ) iOn++;
 	else	iOff++;
     }
-    core::writeln_bf_stream(fmt::sprintf("  The grid has %d elements on and %d elements off" , iOn , iOff ));
+    core::clasp_write_string(fmt::format("  The grid has {} elements on and {} elements off\n" , iOn , iOff ));
 }
 
 void AtomGrid_O::renderSquare( geom::DisplayList_sp dl,
