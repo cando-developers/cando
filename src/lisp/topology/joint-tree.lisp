@@ -7,14 +7,14 @@
   (kin:joint-children joint))
 
 (defclass joint-tree ()
-  ((roots :initform nil :initarg :roots :accessor roots)
+  ((root-map :initform (make-hash-table) :initarg :root-map :accessor root-map)
    (atom-id-map :initarg :atom-id-map
                 :initform (chem:make-atom-id-map)
                 :accessor atom-id-map)))
 
 (defmethod print-object ((obj joint-tree) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream ":roots ~s" (roots obj))))
+    (format stream ":root-map ~s" (alexandria:hash-table-keys (root-map obj)))))
 
 (defun make-joint-tree ()
   (make-instance 'joint-tree))
@@ -40,7 +40,7 @@
                                                atom-table))
     joint))
 
-(defun fill-atresidue (joint-tree atresidue parent-joint atmolecule-index atresidue-index atom-table)
+(defun fill-atresidue (joint-tree oligomer atresidue parent-joint atmolecule-index atresidue-index atom-table)
   "Recursively build an atom-tree into the atresidues of an ataggregate.
 This duplicates https://github.com/cando-developers/cando/blob/main/src/kinematics/pointTree.cc#L172
 JointTree_O::recursivelyBuildMolecule
@@ -59,7 +59,7 @@ If (null parent-joint) then this is the root atresidue
                                                          atresidue-index
                                                          atom-table)))
       (when (typep root-joint 'kin:jump-joint)
-        (push root-joint (roots joint-tree)))
+        (setf (gethash oligomer (root-map joint-tree)) root-joint))
       (let ((outgoing-plug-names-to-joint-map (make-hash-table)))
         (maphash (lambda (plug-name plug)
                    (declare (ignore plug-name))

@@ -15,9 +15,9 @@
    #:constitution-atom-index
    #:atom-name
    #:element
-   #:roots
+   #:root-map
    #:bonds
-   #:index
+   #:trainer-index
    #:to-atom-index
    #:order
    #:children
@@ -209,10 +209,10 @@
    #:monomer-indices
    #:internals-values
    #:internals-types
-   #:save-linearized-matched-fragment-conformations-map
-   #:create-linearized-matched-fragment-conformations-map
+   #:save-linearized-matched-fragment-conformations-holder
+   #:create-linearized-matched-fragment-conformations-holder
    #:linearized-matched-fragment-conformations-map
-   #:read-linearized-matched-fragment-conformations-map
+   #:read-linearized-matched-fragment-conformations-holder
    #:constitution-atom-named
    #:constitution-atom-names-with-dihedrals
    #:monomer-topology
@@ -230,7 +230,14 @@
    #:monomer-shape-map
    #:in-monomers
    #:out-monomers
-   #:fragment-conformation-index))
+   #:fragment-conformation-index
+   #:load-linearized-fragment-conformations
+   #:linearize-and-save-matched-fragment-conformations-map
+   #:load-linearized-matched-fragment-conformations-map
+   #:rotor3
+   #:translation
+   #:monomer-shape
+   #:set-to-closest-matching-fragment-conformation-index))
 
   
 (defpackage #:topology.dag

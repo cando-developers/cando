@@ -101,10 +101,10 @@
      (format stream "~a" (name obj)))))
 
 (defclass fragment-internals (serial:serializable)
-  ((index :initarg :index :accessor index)
-   (probability :initform nil :initarg :probability :accessor probability)
+  ((trainer-index :initarg :trainer-index :accessor trainer-index)
+   (probability :initform 1.0s0 :initarg :probability :accessor probability)
    (internals :initarg :internals :accessor internals)
-   (energy :initarg :energy :accessor energy)
+   (energy :initform 0.0s0 :initarg :energy :accessor energy)
    (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
    ))
 
@@ -115,11 +115,11 @@
    (let ((*print-pretty* nil))
    (print-unreadable-object (obj stream :type t)
      (let ((internals (coerce (subseq (internals obj) 0 (min (length (internals obj)) 4) ) 'list)))
-       (format stream ":index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral x)))) internals )))))))
+       (format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral x)))) internals )))))))
 
 (defun copy-fragment-internals (fragment-internals)
   (make-instance 'fragment-internals
-                 :index (index fragment-internals)
+                 :trainer-index (trainer-index fragment-internals)
                  :internals (copy-seq (internals fragment-internals))
                  :out-of-focus-internals (let ((ht (make-hash-table)))
                                            (maphash (lambda (key value)
@@ -298,7 +298,7 @@
   (loop for seen-frag across (fragments fragment-conformations)
         unless (rms-internals-are-different-p seen-frag fragment-internals)
           do (progn
-               (return-from seen-fragment-internals (index seen-frag))))
+               (return-from seen-fragment-internals (trainer-index seen-frag))))
   nil)
 
 
@@ -322,7 +322,7 @@
   (cando.serialize:load-cando filename))
 
 (defun dump-fragment-internals (fragment-internals finternals)
-  (format finternals "begin-conformation ~a~%" (index fragment-internals))
+  (format finternals "begin-conformation ~a~%" (trainer-index fragment-internals))
   (flet ((to-deg (rad)
            (/ rad 0.0174533)))
     (loop for internal across (topology:internals fragment-internals)
@@ -369,15 +369,33 @@
                                      (to-deg (topology:dihedral internal))))
                             )))))))
 
-(defgeneric fill-joint-internals (joint internal))
 
-(defmethod fill-joint-internals ((joint kin:jump-joint) (internal jump-internal))
+(defgeneric fill-joint-internals (joint bond angle-rad dihedral-rad))
+
+(defmethod fill-joint-internals ((joint kin:jump-joint) bond angle-rad dihedral-rad)
   )
 
-
-(defmethod fill-joint-internals ((joint kin:bonded-joint) (internal bonded-internal))
-  (kin:set-distance joint (bond internal))
-  (kin:set-theta joint (angle internal))
-  (kin:set-phi joint (dihedral internal))
+(defmethod fill-joint-internals ((joint kin:bonded-joint) bond angle-rad dihedral-rad)
+  (kin:set-distance joint bond)
+  (kin:set-theta joint angle-rad)
+  (kin:set-phi joint dihedral-rad)
   )
+
+(defgeneric extract-bond-angle-rad-dihedral-rad (internal))
+
+(defmethod extract-bond-angle-rad-dihedral-rad ((internal jump-internal))
+  (values 0.0 0.0 0.0))
+
+(defmethod extract-bond-angle-rad-dihedral-rad ((internal bonded-internal))
+  (break "Check that internal angles are in radians")
+  (values (bond internal) (angle internal) (dihedral internal)))
+
+(defgeneric apply-fragment-internals-to-atresidue (fragment-internals atresidue))
+
+(defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) atresidue)
+ (loop for joint across (joints atresidue)
+       for internal across (internals fragment-internals)
+       do (multiple-value-bind (bond angle-rad dihedral-rad)
+              (extract-bond-angle-rad-dihedral-rad internal)
+            (fill-joint-internals joint bond angle-rad dihedral-rad))))
 

@@ -284,7 +284,7 @@
 (cando.serialize:make-class-save-load monomer
  :print-unreadably
  (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
+   (print-unreadable-object (obj stream :type t :identity t )
      (format stream ":id ~a :monomers ~s" (id obj) (monomers obj)))))
 
 (defun number-of-stereoisomers (monomer)

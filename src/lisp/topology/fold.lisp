@@ -1,6 +1,12 @@
 (in-package :topology)
 
-(defclass atmatter () (()))
+(defclass atmatter ()
+  ((name :initarg :name :accessor name)))
+
+(defmethod print-object ((obj atmatter) stream)
+  (print-unreadable-object (obj stream :type t :identity t)
+    (when (slot-boundp obj 'name)
+      (format stream "~s" (name obj)))))
 
 (defclass ataggregate (atmatter)
   ((aggregate :initarg :aggregate :accessor aggregate)
@@ -45,7 +51,8 @@
      (let ((atresidue (make-instance 'ring-closing-atresidue :residue residue)))
        (setf (gethash ring-closing-monomer-map monomer atresidue) atresidue)
        atresidue))
-    (t (make-instance 'atresidue :residue residue
+    (t (make-instance 'atresidue :name (chem:get-name residue)
+                                 :residue residue
                                  :topology topology))))
 
 (defun lookup-atresidue-id (atmolecule atresidue-id)
@@ -59,7 +66,7 @@
 (defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree atom-table)
   (let* ((root-monomer (root-monomer oligomer))
          (ring-closing-monomer-map (make-hash-table))
-         (atmolecule (make-instance 'atmolecule :molecule molecule))
+         (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule))
          (monomer-position (gethash root-monomer monomer-positions))
          (residue-index (monomer-position-residue-index monomer-position))
          (residue (chem:content-at molecule residue-index))
@@ -132,7 +139,7 @@
     (setf (parent atresidue) parent-atresidue))
   (when coupling
     (setf (parent-plug-name atresidue) (target-plug-name coupling)))
-  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree atresidue parent-joint atmolecule-index atresidue-index atom-table))
+  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree oligomer atresidue parent-joint atmolecule-index atresidue-index atom-table))
         (current-topology (monomer-topology monomer oligomer)))
     (setf (stereoisomer-name atresidue) (current-stereoisomer-name monomer oligomer)
           (topology atresidue) current-topology
