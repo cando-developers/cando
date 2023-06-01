@@ -298,7 +298,7 @@ void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
 void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  KIN_LOG(("stub = \n%s\n") , stub._Transform.asString());
+  KIN_LOG(("name = %s stub = \n%s\n") , _rep_(this->_Name), stub._Transform.asString());
   KIN_LOG(("_Distance = %lf  _Theta = %lf deg   _Phi = %lf deg\n") , this->_Distance , (this->_Theta/0.0174533) , (this->_Phi/0.0174533) );
   double bcTheta = this->_Theta;
 #if 1

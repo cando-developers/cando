@@ -50,7 +50,7 @@ namespace kinematics
 
 
 #if 0
-#define KIN_LOG(...) core::write_bf_stream(fmt::sprintf("%s:%d:%f - " , __FILE__ , __LINE__ , __FUNCTION__ ); core::write_bf_stream(fmt::sprintf(__VA_ARGS__))
+#define KIN_LOG(...) core::write_bf_stream(fmt::sprintf("%s:%d:%s - " , __FILE__ , __LINE__ , __FUNCTION__ )); core::write_bf_stream(fmt::sprintf(__VA_ARGS__))
 #else
 #define KIN_LOG(...)
 #endif
