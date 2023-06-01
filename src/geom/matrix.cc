@@ -51,7 +51,7 @@ Matrix benchmarkMatrixMultiplications(int num);
 #define nrerror(s) printf("%s\n", s);
 
 void jacobi(Matrix &a, int n, double d[], Matrix &v, int *nrot)
-// Computes all eigenvalues and eigenvectors of a real
+// Computes all eigenvalues and eigenectors of a real
 // symmetric matrix a[1..n][1..n]. On
 // output, elements of a above the diagonal are destroyed.
 // d[1..n] returns the eigenvalues of a.
@@ -1239,6 +1239,73 @@ void rotation_matrix_to_quaternion(double &w, double &x, double &y, double &z, c
   x = (m.at(2, 1) - m.at(1, 2)) * wo4;
   y = (m.at(0, 2) - m.at(2, 0)) * wo4;
   z = (m.at(1, 0) - m.at(0, 1)) * wo4;
+};
+
+void rotor3_translation_to_matrix(Matrix &matrix, double scalar, double xy, double yz, double zx, double tx, double ty, double tz) {
+  double w = scalar;
+  double x = -yz;
+  double y = -zx;
+  double z = -xy;
+  double xsq = x * x;
+  double ysq = y * y;
+  double zsq = z * z;
+  double s = 1.0 / (w * w + x * x + y * y + z * z);
+  matrix.at(0, 0) = 1.0 - 2.0 * s * (ysq + zsq);
+  matrix.at(0, 1) = 2.0 * s * (x * y - w * z);
+  matrix.at(0, 2) = 2.0 * s * (x * z + w * y);
+  matrix.at(0, 3) = tx;
+  matrix.at(1, 0) = 2.0 * s * (x * y + w * z);
+  matrix.at(1, 1) = 1.0 - 2.0 * s * (xsq + zsq);
+  matrix.at(1, 2) = 2.0 * s * (y * z - w * x);
+  matrix.at(1, 3) = ty;
+  matrix.at(2, 0) = 2.0 * s * (x * z - w * y);
+  matrix.at(2, 1) = 2.0 * s * (y * z + w * x);
+  matrix.at(2, 2) = 1.0 - 2.0 * s * (xsq + ysq);
+  matrix.at(2, 3) = tz;
+  matrix.at(3, 0) = 0.0;
+  matrix.at(3, 1) = 0.0;
+  matrix.at(3, 2) = 0.0;
+  matrix.at(3, 3) = 1.0;
+}
+
+// Only use this with normalized quaternions
+void normalized_rotor3_to_matrix(Matrix &matrix, double scalar, double xy, double yz, double zx, double tx, double ty, double tz) {
+  double w = -scalar;
+  double x = -yz;
+  double y = -zx;
+  double z = -xy;
+  double xsq = x * x;
+  double ysq = y * y;
+  double zsq = z * z;
+  matrix.at(0, 0) = 1.0 - 2.0 * (ysq + zsq);
+  matrix.at(0, 1) = 2.0 * (x * y - w * z);
+  matrix.at(0, 2) = 2.0 * (x * z + w * y);
+  matrix.at(0, 3) = tx;
+  matrix.at(1, 0) = 2.0 * (x * y + w * z);
+  matrix.at(1, 1) = 1.0 - 2.0 * (xsq + zsq);
+  matrix.at(1, 2) = 2.0 * (y * z - w * x);
+  matrix.at(1, 3) = ty;
+  matrix.at(2, 0) = 2.0 * (x * z - w * y);
+  matrix.at(2, 1) = 2.0 * (y * z + w * x);
+  matrix.at(2, 2) = 1.0 - 2.0 * (xsq + ysq);
+  matrix.at(2, 3) = tz;
+  matrix.at(3, 0) = 0.0;
+  matrix.at(3, 1) = 0.0;
+  matrix.at(3, 2) = 0.0;
+  matrix.at(3, 3) = 1.0;
+}
+
+void rotation_matrix_to_rotor3(double &scalar, double &xy, double &yz, double &zx, const Matrix &m) {
+  double w = sqrt(1.0 + m.at(0, 0) + m.at(1, 1) + m.at(2, 2)) / 2.0;
+  ASSERT(w != 0.0);
+  double wo4 = 1.0 / (4.0 * w);
+  double x = (m.at(2, 1) - m.at(1, 2)) * wo4;
+  double y = (m.at(0, 2) - m.at(2, 0)) * wo4;
+  double z = (m.at(1, 0) - m.at(0, 1)) * wo4;
+  scalar = w;
+  xy = -z;
+  yz = -x;
+  zx = -y;
 };
 
 /*! Build Vector3 external coordinate using a coordinate system in a matrix

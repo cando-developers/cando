@@ -695,4 +695,17 @@ CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coord
 }
 
 
+Vector3 transform_rotor3( float r_scalar, float r_xy, float r_yz, float r_zx, const Vector3& v)
+{
+    const float S_x = r_scalar*v.getX() + r_xy*v.getY() - r_zx*v.getZ();
+    const float S_y = r_scalar*v.getY() - r_xy*v.getX() + r_yz*v.getZ();
+    const float S_z = r_scalar*v.getZ() - r_yz*v.getY() + r_zx*v.getX();
+    const float S_xyz = r_xy*v.getZ() + r_yz*v.getX() + r_zx*v.getY();
+
+    float result_x = S_x*r_scalar +   S_y*r_xy + S_xyz*r_yz -   S_z*r_zx;
+    float result_y = S_y*r_scalar -   S_x*r_xy +   S_z*r_yz + S_xyz*r_zx;
+    float result_z = S_z*r_scalar + S_xyz*r_xy -   S_y*r_yz +   S_x*r_zx;
+    return Vector3( result_x, result_y, result_z );
+}
+
 };

@@ -69,7 +69,10 @@ namespace geom {
     Vector3 getZ_Column() const;
     void set_from_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz);
     void set_from_normalized_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz);
+    void set_from_normalized_rotor3(double rscalar, double rxy, double ryz, double rzx, double tx, double ty, double tz);
+    
     core::T_mv rotation_to_quaternion() const;
+    core::T_mv rotation_to_rotor3() const;
 
     void rotationX(double radians);
     void rotationY(double radians);
