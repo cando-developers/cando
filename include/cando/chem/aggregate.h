@@ -52,6 +52,8 @@ struct AtomInfo {
   Atom_sp _Atom;
   Residue_sp _Residue;
   core::Symbol_sp _Type;
+  size_t          _MoleculeIndex;
+  size_t          _ResidueIndex;
 };
 
 struct ResidueOut {

@@ -57,6 +57,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/indexedObjectBag.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/hashTableEql.h>
 #include <clasp/core/evaluator.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
@@ -68,6 +69,13 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+
+std::string residue_molecule_name(const AtomInfo& ai) {
+  stringstream ss;
+  ss << ai._Residue->getName()->symbolNameAsString();
+  ss << "_" << ai._MoleculeIndex << "/" << ai._ResidueIndex;
+  return ss.str();
+}
 
 
 void	Mol2File::advanceLine() {
@@ -697,7 +705,7 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
   gctools::Vec0<ResidueOut> residueList;
   ResidueOut	oneResOut;
   AtomInfo	one;
-  core::HashTableEq_sp ht = core::HashTableEq_O::create_default();
+  core::HashTableEql_sp ht = core::HashTableEql_O::create_default();
  
  	//
 	// Count the atoms
@@ -733,12 +741,14 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
   LOG("Assigning ID to every atom" );
   uint atomId = 1;
   uint resId = 1;
+  size_t moleculeIndex = 0;
   chem::FFTypesDb_sp sybylRules;
   Loop lMol;
   lMol.loopTopGoal(agg,MOLECULES);
   while (lMol.advanceLoopAndProcess()) {
     Molecule_sp mol = lMol.getMolecule();
     oneResOut.mol = mol;
+    size_t residueIndex = 0;
     lRes.loopTopGoal(mol,RESIDUES);
     while ( lRes.advanceLoopAndProcess() ) {
       r = lRes.getResidue();
@@ -752,6 +762,8 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
         a = loop.getAtom();
         ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
         one._Atom = a;
+        one._MoleculeIndex = moleculeIndex;
+        one._ResidueIndex = residueIndex;
         if ( a->getType(atom_types).notnilp() ) {
           core::Symbol_sp type = gc::As<core::Symbol_sp>(a->getType(atom_types));
           one._Type = type;
@@ -762,7 +774,9 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
         atomList.push_back(one);
         atomId++;
       }
+      residueIndex++;
     }
+    moleculeIndex++;
   }
 
 
@@ -851,8 +865,8 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
     out << ai->_Type->symbolNameAsString() << " ";
     int residue_temp_int = ht->gethash(ai->_Residue).unsafe_fixnum();
     out << residue_temp_int << " ";
-    out << ai->_Residue->getName()->symbolNameAsString() << "_"
-        << residue_temp_int << " ";
+    out << residue_molecule_name(*ai);
+
     out << fmt::sprintf("%5.4lf" , a->getCharge()) << std::endl;
   }
 	//
@@ -894,7 +908,7 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
 //	out << id << " ";
     int r_ti = ht->gethash(r).unsafe_fixnum();
     out << r_ti << " ";
-    out << r->getName()->symbolNameAsString() << "_" << r_ti << " ";
+    out << r->getName()->symbolNameAsString() << " "; // << "_" << r_ti << " ";
     out << ri->firstAtom << " ";
     out << "RESIDUE 1 ";
     out << (ri->mol->getName()->symbolNameAsString()) << " ";
