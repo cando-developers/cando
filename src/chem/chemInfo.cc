@@ -1367,7 +1367,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   switch (this->_Test) {
   case SAPWildCard:
     LOG("SAPWildCard"); //
-    if (chem__verbose(2)) core::clasp_write_string(fmt::format("AtomTest_O::SAPWildCard\n"));
+    if (chem__verbose(2)) core::clasp_write_string("AtomTest_O::SAPWildCard\n");
     goto SUCCESS;
   case SAPAromaticElement:
     LOG("SAPAromaticElement({}) == expecting({})", _rep_(atom->getElementAsSymbol()), _rep_(this->_SymbolArg));
@@ -1560,11 +1560,11 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   }
 FAIL:
   LOG("FAIL");
-  if (chem__verbose(2)) core::clasp_write_string(fmt::format("----> FAIL\n"));
+  if (chem__verbose(2)) core::clasp_write_string("----> FAIL\n");
   return false;
 SUCCESS:
   LOG("SUCCESS!");
-  if (chem__verbose(2)) core::clasp_write_string(fmt::format("----> SUCCESS!!!\n"));
+  if (chem__verbose(2)) core::clasp_write_string("----> SUCCESS!!!\n");
   return this->Base::matches_Atom(root, atom);
 }
 
@@ -2797,7 +2797,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern) {
 
 void ChemInfoGraph_O::buildFromRoot_() {
   if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
-    core::clasp_write_string(fmt::format("Starting make-chem-info-graph\n"));
+    core::clasp_write_string("Starting make-chem-info-graph\n");
   }
   this->_nodeOrder.clear();
   this->_atomNodes.clear();
@@ -2972,11 +2972,11 @@ void ChemInfoGraph_O::buildFromRoot_() {
             core::clasp_write_string(fmt::format("head_index must be a fixnum - it is: {}\n", _rep_(head_index) ));
             core::clasp_write_string(fmt::format("graph->_nodes_to_index->hash_table_count() = {}\n", graph->_nodes_to_index->hashTableCount()) );
 #if DEBUG_SETF_GETHASH
-            core::clasp_write_string(fmt::format(" dump of save_pointers\n"));
+            core::clasp_write_string(" dump of save_pointers\n");
             for ( auto i : save_pointers ) {
               core::clasp_write_string(fmt::format("   key = {}  value = {}\n", (void*)i.first, i.second ));
             }
-            core::clasp_write_string(fmt::format(" dump of graph->_nodes_to_index\n"));
+            core::clasp_write_string(" dump of graph->_nodes_to_index\n");
             graph->_nodes_to_index->maphash([](core::T_sp key, core::T_sp value) {
               core::clasp_write_string(fmt::format("   key = {}  value = {}\n", (void*)key.raw_(), value.unsafe_fixnum() ));
             }
@@ -3130,7 +3130,7 @@ struct EdgeComp {
       if (!aromatic_information_available_p()) {
         bool match = _matchBondTypes(bta->_Bond, bo, unbound<Atom_O>(), unbound<Atom_O>());
         if (chem__verbose(1)) {
-          core::clasp_write_string(fmt::format("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
+          core::clasp_write_string("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n");
           core::clasp_write_string(fmt::format(" bta->_Bond -> {}\n", sabToString(bta->_Bond)));
           core::clasp_write_string(fmt::format(" bo -> {}\n", (int)bo));
           core::clasp_write_string(fmt::format("  match -> {}\n", match));
@@ -3143,7 +3143,7 @@ struct EdgeComp {
         Atom_sp atarget = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(mtarget));
         bool match = _matchBondTypes(bta->_Bond, bo, asource, atarget);
         if (chem__verbose(1)) {
-          core::clasp_write_string(fmt::format("In EdgeComp matching with _matchBondTypes using aromaticity info...\n"));
+          core::clasp_write_string("In EdgeComp matching with _matchBondTypes using aromaticity info...\n");
           core::clasp_write_string(fmt::format(" bta->_Bond -> {}\n", sabToString(bta->_Bond)));
           core::clasp_write_string(fmt::format(" bo -> {}\n", (int)bo));
           core::clasp_write_string(fmt::format("  match -> {}\n", match));
@@ -3160,7 +3160,7 @@ struct EdgeComp {
     BondMatcher_sp bondMatcher = gc::As<BondMatcher_sp>(bta->_BondMatcher);
     bool match = bondMatcher->matches_Bond(this->_chemInfoGraph->_Root, asource, bond);
     if (chem__verbose(1)) {
-      core::clasp_write_string(fmt::format("In EdgeComp matching with matches_Bond...\n"));
+      core::clasp_write_string("In EdgeComp matching with matches_Bond...\n");
       core::clasp_write_string(fmt::format(" asource -> {}\n", _rep_(asource)));
       core::clasp_write_string(fmt::format(" bond -> {}\n", _rep_(bond)));
       core::clasp_write_string(fmt::format(" root -> {}\n", _rep_(this->_chemInfoGraph->_Root)));
@@ -3178,7 +3178,7 @@ struct MatchCallback {
   template <typename CorrespondenceMap1To2, typename CorrespondenceMap2To1>
   bool operator()(CorrespondenceMap1To2 f, CorrespondenceMap2To1 g) const {
     if (chem__verbose(2)) {
-      core::clasp_write_string(fmt::format("vf2 found a match\n"));
+      core::clasp_write_string("vf2 found a match\n");
     }
     core::SimpleVector_sp copy = core::SimpleVector_O::make(
         this->_currentMatch->_TagLookup->length(), nil<core::T_O>(), false, this->_currentMatch->_TagLookup->length(),
@@ -3219,7 +3219,7 @@ CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, Mol
                                                                            *moleculeGraph->_moleculeGraph);
   MatchCallback matchCallback(chemInfoGraph, moleculeGraph, current_match);
   if (chem__verbose(1)) {
-    core::clasp_write_string(fmt::format("About to run boost::vf2_subgraph_iso\n"));
+    core::clasp_write_string("About to run boost::vf2_subgraph_iso\n");
   }
   boost::vf2_subgraph_iso(*chemInfoGraph->_chemInfoGraph, *moleculeGraph->_moleculeGraph, matchCallback, chemInfoGraph->_nodeOrder,
                           boost::edges_equivalent(edge_comp).vertices_equivalent(vertex_comp));
@@ -3256,7 +3256,7 @@ struct CommonEdgeComp {
     BondOrder bo2 = moleculeEdge2[em2];
     bool match = (bo1 == bo2);
     if (chem__verbose(1)) {
-      core::clasp_write_string(fmt::format("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
+      core::clasp_write_string("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n");
       core::clasp_write_string(fmt::format(" bo1 -> {}\n", (int)bo1));
       core::clasp_write_string(fmt::format(" bo2 -> {}\n", (int)bo2));
       core::clasp_write_string(fmt::format("  match -> {}\n", match));

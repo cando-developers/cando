@@ -610,7 +610,7 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
     for ( size_t ii = start_size; ii<end_size; ++ii ) {
       core::clasp_write_string(fmt::format("{} " , (*excludedAtomIndices)[ii]));
     }
-    core::clasp_write_string(fmt::format("\n"));
+    core::clasp_terpri();
   }
   return (end_size - start_size);
 }

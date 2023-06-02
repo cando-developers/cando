@@ -395,7 +395,7 @@ core::T_mv mol2Read(Mol2File& fIn)
     } else if ( line == "@<TRIPOS>FF_PBC" ) {
       line = fIn.line().str();
       if (chem__verbose(1)) {
-        core::clasp_write_string(fmt::format("@<TRIPOSE>FF_PBC\n"));
+        core::clasp_write_string("@<TRIPOSE>FF_PBC\n");
         core::clasp_write_string(fmt::format("{}\n" , line));
       }
       words = fIn.splitLine();

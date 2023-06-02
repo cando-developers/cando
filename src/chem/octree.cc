@@ -801,7 +801,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
     }
   }
   if (!iNewAtoms) {
-    if (chem__verbose(2)) core::clasp_write_string(fmt::format("There were no new atoms added - OCT_EXCLUDED - returning\n"));
+    if (chem__verbose(2)) core::clasp_write_string("There were no new atoms added - OCT_EXCLUDED - returning\n");
 		/*
 		 *  No atoms w/in box-enclosing sphere
 		 */
@@ -875,7 +875,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
 		//PonNode->PaAtomList = NULL;
    // PonNode->PaAtomList = _Nil<core::T_O>();
   }
-  if (chem__verbose(2)) core::clasp_write_string(fmt::format("Dropped out of bottom\n"));  
+  if (chem__verbose(2)) core::clasp_write_string("Dropped out of bottom\n");
   PonNode->iStatus = OCT_INCLUDED;
   return(OCT_INCLUDED);
 }
@@ -1109,7 +1109,7 @@ return(octTree);
     core::clasp_write_string(fmt::format("Total solute charge:  {:5.2f}  Max atom radius:  {:5.2f}\n" , dCharge , dMaxRadius ));
     if ( type == Shell )
       core::clasp_write_string(fmt::format("Grid extends from solute vdw + {:.2f}  to  {:.2f}\n" , dAddExtent , dShellRadius ));
-    core::clasp_write_string(fmt::format("Box:\n" ));
+    core::clasp_write_string("Box:\n");
     core::clasp_write_string(fmt::format("   enclosing:  {:5.2f} {:5.2f} {:5.2f}   {:5.2f} {:5.2f} {:5.2f}\n" ,  vMinCorner.getX() , vMinCorner.getY() , vMinCorner.getZ()
                                        , vMaxCorner.getX() , vMaxCorner.getY() , vMaxCorner.getZ()));
   }
@@ -1573,21 +1573,21 @@ CL_DEFMETHOD void AddIonOctree_O::OctNodePrintGrid( OctNode_sp PonNode, int iCol
             break;
         case COLOR_CUT:
             if ( PfCharge < -0.1 ){
-              core::clasp_write_string(fmt::format(".color yellow\n"));
+              core::clasp_write_string(".color yellow\n");
             } else if ( PfCharge > 0.1 ){
-              core::clasp_write_string(fmt::format(".color cyan\n"));
+              core::clasp_write_string(".color cyan\n");
             } else
-              core::clasp_write_string(fmt::format(".color black\n"));
+              core::clasp_write_string(".color black\n");
             core::clasp_write_string(fmt::format(".dot {} {} {}\n" , 
                                                vPoint.getX() , vPoint.getY() , vPoint.getZ()));
             break;
         case COLOR_DEPTH:
             if ( PonNode->iDepth == this->_iMaxDepth ){
-              core::clasp_write_string(fmt::format(".color white\n"));
+              core::clasp_write_string(".color white\n");
             }else if ( (PonNode->iDepth % 2) != 0 ){
-              core::clasp_write_string(fmt::format(".color red\n"));
+              core::clasp_write_string(".color red\n");
             } else
-              core::clasp_write_string(fmt::format(".color cyan\n"));
+              core::clasp_write_string(".color cyan\n");
             core::clasp_write_string(fmt::format(".dot {} {} {}\n" , 
                                                vPoint.getX() , vPoint.getY() , vPoint.getZ()));
             break;
@@ -1597,7 +1597,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctNodePrintGrid( OctNode_sp PonNode, int iCol
                                                vPoint.getX() ,  vPoint.getY() ,  vPoint.getZ()));
             break;
         default:
-            core::clasp_write_string(fmt::format(".color white\n"));
+            core::clasp_write_string(".color white\n");
         }
         ccharge++ ; //PfCharge++;
       }

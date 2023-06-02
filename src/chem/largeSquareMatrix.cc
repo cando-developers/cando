@@ -172,11 +172,11 @@ void	AbstractLargeSquareMatrix_O::dumpMatrix( uint upto)
   for ( y = 0; y<this->dimension(); y++ ) {
     for ( x = 0; x<this->dimension(); x++ ) {
       if ( x!=0 ) {
-        core::clasp_write_string(fmt::format(" \n"));
+        core::clasp_write_string(" \n");
       }
       core::clasp_write_string(fmt::format("{:12.7f}\n" , this->element(x,y)));
     }	
-    core::clasp_write_string(fmt::format("\n"));
+    core::clasp_terpri();
   }
 }
 
@@ -643,7 +643,7 @@ void	SparseLargeSquareMatrix_O::debug()
     }
     core::clasp_terpri();
   }
-  core::clasp_write_string(fmt::format("Columns: \n"));
+  core::clasp_write_string("Columns: \n");
   for ( uint i=0; i<this->_ActiveElements; i++ ) {
     core::clasp_write_string(fmt::format("x{}@{} ", this->_ColumnForValue[i] , i));
   }

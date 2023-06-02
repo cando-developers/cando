@@ -188,7 +188,7 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
             }
           } else {
             if (chem__verbose(2)) {
-              core::clasp_write_string(fmt::format("   Not found\n"));
+              core::clasp_write_string("   Not found\n");
             }
           }
         }

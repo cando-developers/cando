@@ -829,7 +829,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 		    // If the atoms are right on top of each other then
 		    // add a random vector to each
 		    if ( diff<0.1 ) {
-			core::clasp_write_string(fmt::format( "Aggregate_O::perturbAtomPositions>> Atoms are too close and being randomized!!!" ));
+			core::clasp_write_string("Aggregate_O::perturbAtomPositions>> Atoms are too close and being randomized!!!");
 			xd = (core::randomNumber01()*2.0-1.0)*dist;
 			yd = (core::randomNumber01()*2.0-1.0)*dist;
 			zd = (core::randomNumber01()*2.0-1.0)*dist;
@@ -848,7 +848,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 		    } else if ( diff < 0.7 ) {
 			// If the atoms are less than 0.1 angstroms away from each other then
 			// nudge them away from each other
-                      core::clasp_write_string(fmt::format( "Aggregate_O::perturbAtomPositions>> Atoms are close and being nudged out!!!" ));
+                      core::clasp_write_string("Aggregate_O::perturbAtomPositions>> Atoms are close and being nudged out!!!");
 			vdiff = vdiff.multiplyByScalar(0.5/diff);
 			pos = (*af)->getPosition();
 			pos = pos + vdiff;

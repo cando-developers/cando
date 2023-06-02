@@ -653,9 +653,9 @@ vector<int>::iterator			ip;
 vector<Matrix>::iterator		mp;
 
     if ( this->driveMode ) {
-      core::clasp_write_string(fmt::format( "Torsion driver in DRIVE mode\n" ));
+      core::clasp_write_string("Torsion driver in DRIVE mode\n");
     } else {
-      core::clasp_write_string(fmt::format( "Torsion driver in ADD_TORSION mode\n" ));
+      core::clasp_write_string("Torsion driver in ADD_TORSION mode\n");
     }
     for ( pos=this->torsions.begin(); pos != this->torsions.end(); pos++ ) {
 //	printf( "Driven torsion #%lX\n", (pos-this->torsions.begin() );
@@ -664,25 +664,25 @@ vector<Matrix>::iterator		mp;
           core::clasp_write_string(fmt::format( "      Fixed: {}\n" , pos->fixed->getName().c_str() ));
           core::clasp_write_string(fmt::format( "    Movable: {}\n" , pos->movable->getName().c_str() ));
           core::clasp_write_string(fmt::format( "      Steps: {}\n" , pos->steps ));
-          core::clasp_write_string(fmt::format("      Atoms:\n" ));
+          core::clasp_write_string("      Atoms:\n");
           for ( ap=pos->atoms.begin(); ap!=pos->atoms.end(); ap++ ) {
             core::clasp_write_string(fmt::format(" {}\n", ap->getAtom()->getName() ));
           }
           core::clasp_terpri();
-          core::clasp_write_string(fmt::format("      Children:\n" ));
+          core::clasp_write_string("      Children:\n");
           for ( ip=pos->children.begin(); ip!=pos->children.end(); ip++ ) {
             core::clasp_write_string(fmt::format(" {:3}\n", *ip ));
           }
-          core::clasp_write_string(fmt::format( "" ));
-          core::clasp_write_string(fmt::format( "      coordinate system:\n" ));
+          core::clasp_terpri();
+          core::clasp_write_string("      coordinate system:\n");
           pos->coord->dump();
-          core::clasp_write_string(fmt::format( "      relative matrix:\n" ));
+          core::clasp_write_string("      relative matrix:\n");
           pos->relative.dump();
           for (mp=pos->rotations.begin(); mp!=pos->rotations.end(); mp++ ) {
             mp->dump();
           }
 	}
-        core::clasp_write_string(fmt::format( "      accumulated matrix:\n" ));
+        core::clasp_write_string("      accumulated matrix:\n");
 	pos->accumulated.dump();
         core::clasp_terpri();
     }

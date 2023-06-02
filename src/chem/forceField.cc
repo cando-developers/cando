@@ -257,7 +257,7 @@ core::T_sp CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule,core::
   FFTypesDb_sp fftypes = FFTypesDb_O::create();
   core::List_sp parts = this->forceFieldsAsList();
   if (chem__verbose(1)) {
-    core::clasp_write_string(fmt::format("Merging type rules.\n"));
+    core::clasp_write_string("Merging type rules.\n");
   }
   for ( auto cur : parts ) {
     ForceField_sp other = gc::As<ForceField_sp>(CONS_CAR(cur));

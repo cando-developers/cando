@@ -166,17 +166,17 @@ void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
       string as = xml->getAttributeString("AS");
       if ( as == "S" )
       {
-        if (verbose) core::clasp_write_string(fmt::format("    configuration(S)\n"));
+        if (verbose) core::clasp_write_string("    configuration(S)\n");
         LOG("Atom has geometry AS={}" , as );
         this->_Configuration = S_Configuration;
       } else if ( as == "R" )
       {
         LOG("Atom has geometry AS={}" , as );
-        if (verbose) core::clasp_write_string(fmt::format("    configuration(R)\n"));
+        if (verbose) core::clasp_write_string("    configuration(R)\n");
         this->_Configuration = R_Configuration;
       } else
       {
-        if (verbose) core::clasp_write_string(fmt::format("    could not determin configuration from AS\n"));
+        if (verbose) core::clasp_write_string("    could not determin configuration from AS\n");
         LOG("Could not interpret geometry AS[{}]" , as );
       }
     }
@@ -359,7 +359,7 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool verbose)
   adapt::QDomNode_O::iterator	it;
   this->_Nodes.clear();
   this->_AtomsToNodes.clear();
-  if (verbose) core::clasp_write_string(fmt::format("CDFragment - starting\n"));
+  if (verbose) core::clasp_write_string("CDFragment - starting\n");
   for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ ) {
     adapt::QDomNode_sp child = (*it);
     if ( child->getLocalName() == "n" ) {
@@ -390,7 +390,7 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool verbose)
           , bond->getOrderAsString() , nodeBegin->getLabel() , nodeEnd->getLabel()  );
     }
   }
-  if (verbose) core::clasp_write_string(fmt::format("CDFragment - done.\n"));
+  if (verbose) core::clasp_write_string("CDFragment - done.\n");
 }
 
 CL_DEFMETHOD core::List_sp CDFragment_O::getBonds() const {
@@ -1185,11 +1185,11 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose, bool addHyd
       this->_Code = core::Cons_O::create(text->_Code,this->_Code);
     }
   } else if ( child->getLocalName() == "group" ) {
-    if (verbose) core::clasp_write_string(fmt::format("ChemDraw_O::parsing group start...\n"));
+    if (verbose) core::clasp_write_string("ChemDraw_O::parsing group start...\n");
     for ( adapt::QDomNode_O::iterator it=child->begin_Children(); it!=child->end_Children(); it++ ) {
       this->parseChild(*it,verbose,addHydrogens);
     }
-    if (verbose) core::clasp_write_string(fmt::format("ChemDraw_O::parsing group done.\n"));
+    if (verbose) core::clasp_write_string("ChemDraw_O::parsing group done.\n");
   }
 }
 
@@ -1205,7 +1205,7 @@ void	ChemDraw_O::parse( core::T_sp strm, bool verbose, bool addHydrogens )
   for ( it=page->begin_Children(); it!=page->end_Children(); it++ ) {
     this->parseChild(*it,verbose,addHydrogens);
   }
-  if (verbose) core::clasp_write_string(fmt::format("ChemDraw_O::parse done.\n"));
+  if (verbose) core::clasp_write_string("ChemDraw_O::parse done.\n");
 }
 
 

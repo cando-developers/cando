@@ -153,20 +153,20 @@ void	Dumb_Spline::describe()
     Matrix	m, gm;
     uint	i;
     core::clasp_write_string(fmt::format( "spline type = {}\n" , this->iType ));
-    core::clasp_write_string(fmt::format( "gmMatrices ======>\n" ));
+    core::clasp_write_string("gmMatrices ======>\n");
     for ( i=0; i<this->gmMatrices.size(); i++ ) {
 	this->gmMatrices[i].dump();
-        core::clasp_write_string(fmt::format( "--------------\n" ));
+        core::clasp_write_string("--------------\n");
     }
-    core::clasp_write_string(fmt::format( "mbAMatrix ======>\n" ));
+    core::clasp_write_string("mbAMatrix ======>\n");
     this->mbAMatrix.dump();
-    core::clasp_write_string(fmt::format( "mbBMatrix ======>\n" ));
+    core::clasp_write_string("mbBMatrix ======>\n");
     this->mbBMatrix.dump();
-    core::clasp_write_string(fmt::format( "mbsMatrix ======>\n" ));
+    core::clasp_write_string("mbsMatrix ======>\n");
     this->mbsMatrix.dump();
-    core::clasp_write_string(fmt::format( "mbYMatrix ======>\n" ));
+    core::clasp_write_string("mbYMatrix ======>\n");
     this->mbYMatrix.dump();
-    core::clasp_write_string(fmt::format( "mbZMatrix ======>\n" ));
+    core::clasp_write_string("mbZMatrix ======>\n");
     this->mbZMatrix.dump();
 }
 

@@ -1191,7 +1191,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 	//
 	// Identify rings
 	//
-  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Searching for rings.\n"));
+  if (chem__verbose(0)) core::clasp_write_string("Searching for rings.\n");
 
   core::T_sp rings = RingFinder_O::identifyRings(matter);
   core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
@@ -1200,7 +1200,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   //
   // Assign relative Cahn-Ingold-Preylog priorities
   //
-  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning CIP priorities.\n"));
+  if (chem__verbose(0)) core::clasp_write_string("Assigning CIP priorities.\n");
   core::HashTable_sp cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
 
     //
@@ -1231,7 +1231,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   }
   this->_AtomTypes = atomTypes;
   if (assign_types) {
-    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types.\n"));
+    if (chem__verbose(0)) core::clasp_write_string("Assigning atom types.\n");
     moleculeLoop.loopTopGoal(matter,MOLECULES);
     while (moleculeLoop.advanceLoopAndProcess() ) {
       Molecule_sp molecule = moleculeLoop.getMolecule();
@@ -1270,7 +1270,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
     SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
   }
-  if (chem__verbose(0)) core::clasp_write_string(fmt::format("defineForMatterWithAtomTypes\n"));
+  if (chem__verbose(0)) core::clasp_write_string("defineForMatterWithAtomTypes\n");
   this->_Matter= matter;
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
@@ -1295,7 +1295,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   } else {
     this->_AtomTable->setBoundingBox(boundingBox);
   }
-  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assembling aggregate nonbond force-field.\n"));
+  if (chem__verbose(0)) core::clasp_write_string("Assembling aggregate nonbond force-field.\n");
   core::T_sp nonbondForceField = core::eval::funcall(chem::_sym_compute_merged_nonbond_force_field_for_aggregate,matter,atomTypes);
   this->_AtomTable->setNonbondForceFieldForAggregate(nonbondForceField);
   
@@ -1314,7 +1314,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   size_t first_solvent_molecule_nspsol = 0;
   bool solvent_exists = false;
   if (gc::IsA<Aggregate_sp>(matter)) {
-    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Classifying solute/solvent.\n"));
+    if (chem__verbose(0)) core::clasp_write_string("Classifying solute/solvent.\n");
     ql::list solute_molecules;
     ql::list solvent_molecules;
     {
@@ -1389,7 +1389,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
   }
   {
-    if (chem__verbose(1)) core::clasp_write_string(fmt::format("About to calculate nonbond and restraint terms"));
+    if (chem__verbose(1)) core::clasp_write_string("About to calculate nonbond and restraint terms");
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms,atomTypes);
     this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms,cip_priorities,atomTypes);
@@ -1440,7 +1440,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   // FIXME: I think this should only be done once after all of the molecules have been added
   // FIXME: Why are we using the forcefield->getNonbondDb()?  We should be using the aggregate nonbond force-field
 #if 0  
-  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Starting to build standard energy function tables\n"));
+  if (chem__verbose(0)) core::clasp_write_string("Starting to build standard energy function tables\n");
   auto  temp  = gctools::GC<FFNonbondCrossTermTable_O>::allocate_with_default_constructor();
   this->_NonbondCrossTermTable = temp;
   this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
@@ -1712,7 +1712,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
-  if (chem__verbose(1)) core::clasp_write_string(fmt::format("In generateRestraintEnergyFunctionTables\n"));
+  if (chem__verbose(1)) core::clasp_write_string("In generateRestraintEnergyFunctionTables\n");
   
     	//
 	// Setup the atom chiral restraints

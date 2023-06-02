@@ -504,8 +504,8 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 #include <cando/chem/energy_functions/_NONBONDRBPB_termCode.cc>
 #if 0
           if (Energy > 1.0) {
-            core::clasp_write_string(fmt::format("Energy iHelix1 iHelix2 I1cur I2cur\n"));
-            core::clasp_write_string(fmt::format("Energy= {} {} {} {} {}\n" , Energy , iHelix1 , iHelix2 %I1cur , I2cur));
+            core::clasp_write_string("Energy iHelix1 iHelix2 I1cur I2cur\n");
+            core::clasp_write_string(fmt::format("Energy= {} {} {} {} {}\n" , Energy , iHelix1 , iHelix2, I1cur, I2cur));
             core::clasp_write_string(fmt::format("am,bm,cm,dm,xm,ym,zm,pxm,pym,pzm -> {},{},{},{},{},{},{} {},{},{}\n" , am , bm , cm , dm , xm , ym , zm , pxm , pym , pzm));
             core::clasp_write_string(fmt::format("an,bn,cn,dn,xn,yn,zn,pxn,pyn,pzn -> {},{},{},{},{},{},{} {},{},{}\n" , an , bn , cn , dn , xn , yn , zn , pxn , pyn , pzn));
             core::clasp_write_string(fmt::format("DeltaX, DeltaY, DeltaZ  -> {}, {}, {}\n" , DeltaX , DeltaY , DeltaZ ));
