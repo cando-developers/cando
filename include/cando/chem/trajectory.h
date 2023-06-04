@@ -49,12 +49,6 @@ SMART(TrajectoryFrame);
 class TrajectoryFrame_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,TrajectoryFrame_O,"TrajectoryFrame",core::CxxObject_O);
-#if INIT_TO_FACTORIES
- public:
-    static TrajectoryFrame_sp make();
-#else
-    DECLARE_INIT();
-#endif
 friend class Trajectory_O;
 public:
 public: // virtual functions inherited from Object
@@ -62,10 +56,13 @@ public: // virtual functions inherited from Object
 //	string	__repr__() const;
 
 private: // instance variables
-	geom::SimpleVectorCoordinate_sp	_Coordinates;
+    geom::SimpleVectorCoordinate_sp	_Coordinates;
 
 public:	// Creation class functions
 
+public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 protected:
     void fillFromMatter(gctools::Vec0<Atom_sp>& atomList );
     void applyToMatter(gctools::Vec0<Atom_sp>& atomList );
@@ -86,24 +83,8 @@ SMART(Trajectory);
 class Trajectory_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,Trajectory_O,"Trajectory",core::CxxObject_O);
-#if INIT_TO_FACTORIES
  public:
-    static Trajectory_sp make();
-#else
-    DECLARE_INIT();
-#endif
-public:
-    template <typename T>
-        static void expose(T cl)
-	{ 
-	    cl
-	    .def("getMatter",&Trajectory_O::getMatter)
-	    .def("numberOfTrajectoryFrames",&Trajectory_O::numberOfTrajectoryFrames)
-	    .def("addFrame",&Trajectory_O::addFrame)
-	    .def("getTrajectoryFrame",&Trajectory_O::getTrajectoryFrame)
-	    .def("applyTrajectoryFrameToMatter",&Trajectory_O::applyTrajectoryFrameToMatter)
-	    ;
-	}
+  CL_DEF_CLASS_METHOD static Trajectory_sp makeTrajectory(Matter_sp matter);
 public: // virtual functions inherited from Object
 	void	initialize();
 //	string	__repr__() const;
@@ -114,6 +95,9 @@ private: // instance variables
     gctools::Vec0<TrajectoryFrame_sp>	_Frames;
     core::HashTableEq_sp	_Namespace;
 
+public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 private:
 	void _setupAtomList(Matter_sp matter);
 
@@ -123,7 +107,7 @@ public:
 CL_LISPIFY_NAME("getMatter");
 CL_DEFMETHOD 	Matter_sp getMatter() const { return this->_Matter;};
 
-	TrajectoryFrame_sp addFrame(Matter_sp matter);
+  TrajectoryFrame_sp addFrame(core::T_sp matter);
 
 	core::List_sp trajectoryFramesAsList();
 
