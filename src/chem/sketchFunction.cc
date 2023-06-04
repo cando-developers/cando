@@ -155,7 +155,7 @@ CL_DEFMETHOD AtomTable_sp SketchFunction_O::atomTable() const
   if (gc::IsA<AtomTable_sp>(this->_NodeTable)) {
     return gc::As_unsafe<AtomTable_sp>(this->_NodeTable);
   }
-  SIMPLE_ERROR("An attempt was made to get the atom-table of a sketch-function but one hasn't been set - instead we have a node-table: ~a~%" , _rep_(this->_NodeTable));
+  SIMPLE_ERROR("An attempt was made to get the atom-table of a sketch-function but one hasn't been set - instead we have a node-table: {}" , _rep_(this->_NodeTable));
 }
 
 CL_DOCSTRING(R"dx(Return the instance graph slot if it is a Matter object. 
