@@ -74,6 +74,8 @@ namespace       chem
   SMART(AtomTable);
 
   FORWARD(RigidBodyEnergyFunction);
+  FORWARD(EnergyRigidBodyNonbond);
+  FORWARD(EnergyRigidBodyStaple);
 };
 
 
@@ -168,11 +170,15 @@ FORWARD(RigidBodyEnergyFunction);
 
     CL_LISPIFY_NAME("rigid-body-energy-function-get-position");
     CL_DEFMETHOD core::T_mv getPosition(size_t index);
-CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
+    CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
     CL_DEFMETHOD void normalizePosition(NVector_sp pos);
 
-    void dumpTerms(core::HashTable_sp atomTypes);
+    Aggregate_sp buildPseudoAggregate(NVector_sp pos) const;
+    core::SimpleVector_float_sp buildPseudoAggregateCoordinates(NVector_sp pos) const;
+    size_t numberOfPoints() const;
     
+    void dumpTerms(core::HashTable_sp atomTypes);
+ 
     RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox)
     : _RigidBodies(number_of_rigid_bodies),
       _Terms(nil<core::T_O>()),

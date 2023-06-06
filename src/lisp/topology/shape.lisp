@@ -113,7 +113,7 @@
     (loop for out-monomer in out-monomers
           for out-monomer-shape = (gethash out-monomer (monomer-shape-map oligomer-shape))
           for fragment-match-key = (cons (monomer-context root-monomer-shape) (monomer-context out-monomer-shape))
-          for allowed-fragment-vec = (let* ((ht(topology:fragment-matches (topology:matched-fragment-conformations-map oligomer-shape)))
+          for allowed-fragment-vec = (let* ((ht (topology:fragment-matches (topology:matched-fragment-conformations-map oligomer-shape)))
                                             (val (gethash fragment-match-key ht)))
                                        (unless val (break "Could not find value for key ~a in ht: ~a" fragment-match-key ht))
                                        val)
@@ -124,6 +124,13 @@
                                                 (elt allowed-fragment-indices (random (length allowed-fragment-indices)))
                                                 :BADBADBAD)
           do (setf (fragment-conformation-index out-monomer-shape) fragment-conformation-index)
+          do (format t "fragment-conformation-index ~a for monomer-shape ~a~%"
+                     fragment-conformation-index out-monomer-shape)
+          do (unless (< (fragment-conformation-index out-monomer-shape)
+                        (length (topology:fragments (fragment-conformations out-monomer-shape))))
+               (error "fragment-conformation-index ~a is out of bounds ~a"
+                      (fragment-conformation-index root-monomer-shape)
+                      (length (topology:fragments (fragment-conformations out-monomer-shape)))))
           do (random-fragment-conformation-index-impl out-monomer-shape oligomer-shape))))
 
 (defun random-fragment-conformation-index (oligomer-shape)
@@ -134,6 +141,11 @@
       (format t "fragment-conformations: ~a~%" fragment-conformations)
       (setf (fragment-conformation-index root-monomer-shape)
             (random (length (topology:fragments fragment-conformations))))
+      (unless (< (fragment-conformation-index root-monomer-shape)
+                 (length (topology:fragments fragment-conformations)))
+        (error "fragment-conformation-index ~a is out of bounds ~a"
+               (fragment-conformation-index root-monomer-shape)
+               (length (topology:fragments fragment-conformations))))
       (random-fragment-conformation-index-impl root-monomer-shape oligomer-shape))))
 
 (defun build-shapes (oligomer-shapes conf &key monomer-order)

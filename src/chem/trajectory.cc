@@ -55,27 +55,31 @@ void	TrajectoryFrame_O::initialize()
 #endif
 
 
-    void TrajectoryFrame_O::fillFromMatter(gctools::Vec0<Atom_sp>& atomList )
+void TrajectoryFrame_O::fillFromMatter(gctools::Vec0<Atom_sp>& atomList )
 {
-    this->_Coordinates = geom::SimpleVectorCoordinate_O::make(atomList.size());
-    geom::SimpleVectorCoordinate_O::iterator ci;
-    gctools::Vec0<Atom_sp>::iterator ai;
-    for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
-    {
-	(*ci) = (*ai)->getPosition();
-    }
+  this->_Coordinates = core::SimpleVector_float_O::make(atomList.size()*3);
+  size_t ci;
+  gctools::Vec0<Atom_sp>::iterator ai;
+  for ( ai=atomList.begin(), ci = 0; ai!=atomList.end(); ai++, ci++ ) {
+    const Vector3& pos = (*ai)->getPosition();
+    (*this->_Coordinates)[ci*3+0] = pos.getX();
+    (*this->_Coordinates)[ci*3+1] = pos.getY();
+    (*this->_Coordinates)[ci*3+2] = pos.getZ();
+  }
 }
 
 
 
-    void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
+void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
 {
   ASSERT_eq((*this->_Coordinates).length(),atomList.size());
-  geom::SimpleVectorCoordinate_O::iterator ci;
+  size_t ci;
   gctools::Vec0<Atom_sp>::iterator ai;
-  for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
-  {
-    (*ai)->setPosition(*ci);
+  for ( ai=atomList.begin(), ci = 0; ai!=atomList.end(); ai++, ci++ ) {
+    Vector3 pos((*this->_Coordinates)[ci*3+0],
+                (*this->_Coordinates)[ci*3+1],
+                (*this->_Coordinates)[ci*3+2] );
+    (*ai)->setPosition(pos);
   }
 }
 
@@ -119,16 +123,42 @@ void Trajectory_O::fields(core::Record_sp node)
 }
 
 CL_LISPIFY_NAME("addFrame");
-CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(core::T_sp frameObject)
+CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(core::T_sp coord_object)
 {
   TrajectoryFrame_sp frame = TrajectoryFrame_O::create();
-  if (gc::IsA<Matter_sp>(frameObject)) {
+  if (gc::IsA<Matter_sp>(coord_object)) {
     ASSERTP(matter == this->_Matter,"The matter argument must match the Matter used to define this trajectory");
     frame->fillFromMatter(this->_AtomList);
-  } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(frameObject)) {
-    frame->_Coordinates = gc::As<geom::SimpleVectorCoordinate_sp>(frameObject);
+  } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(coord_object)) {
+    auto vec = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(coord_object);
+    if (this->_AtomList.size() != vec->length()) {
+      SIMPLE_ERROR("The coord_object is the wrong size - it contains {} vectors - the topology represents {} atoms", vec->length(), this->_AtomList.size() );
+    }
+    core::SimpleVector_float_sp vec3 = core::SimpleVector_float_O::make(this->_AtomList.size()*3);
+    for ( size_t ii = 0; ii<this->_AtomList.size(); ii++ ) {
+      (*vec3)[ii*3+0] = (*vec)[ii].getX();
+      (*vec3)[ii*3+1] = (*vec)[ii].getY();
+      (*vec3)[ii*3+2] = (*vec)[ii].getZ();
+    }
+    frame->_Coordinates = vec3;
+  } else if (gc::IsA<core::SimpleVector_double_sp>(coord_object)) {
+    auto vecd = gc::As_unsafe<core::SimpleVector_double_sp>(coord_object);
+    if (this->_AtomList.size()*3 != vecd->length()) {
+      SIMPLE_ERROR("The coordinates object is the wrong size - it has {} doubles - the trajectory object has {} atoms and each atom needs x,y,z coordinate", vecd->length(), this->_AtomList.size() );
+    }
+    core::SimpleVector_float_sp vecf = core::SimpleVector_float_O::make(this->_AtomList.size()*3);
+    for ( size_t ii = 0; ii<this->_AtomList.size()*3; ii++ ) {
+      (*vecf)[ii] = (*vecd)[ii];
+    }
+    frame->_Coordinates = vecf;
+  } else if (gc::IsA<core::SimpleVector_float_sp>(coord_object) ) {
+    auto vec = gc::As_unsafe<core::SimpleVector_float_sp>(coord_object);
+    if (this->_AtomList.size()*3 != vec->length()) {
+      SIMPLE_ERROR("The coordinates object is the wrong size - it has {} doubles - the trajectory object has {} atoms and each atom needs x,y,z coordinate", vec->length(), this->_AtomList.size() );
+    }
+    frame->_Coordinates = vec;
   } else {
-    SIMPLE_ERROR("Cannot add-frame with argument {}", frameObject);
+    SIMPLE_ERROR("Cannot add-frame with argument {} of type {}", coord_object, _rep_(core::lisp_instance_class(coord_object)));
   } 
   this->_Frames.push_back(frame);
   return frame;

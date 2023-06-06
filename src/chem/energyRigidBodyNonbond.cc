@@ -12,7 +12,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+HE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -41,6 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/nVector.h>
+#include <cando/geom/ovector3.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/forceField.h>
@@ -55,6 +56,29 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
+
+core::List_sp RigidBodyNonbondCrossTerm::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,da),mk_double_float(this->dA)), 
+                                  core::Cons_O::create(INTERN_(kw,dc),mk_double_float(this->dC)) );
+}
+
+void RigidBodyNonbondCrossTerm::decode(core::List_sp alist) {
+  SIMPLE_ERROR("Implement decode of RigidBodyNonbondCrossTerm");
+}
+
+
+core::List_sp RigidBodyAtomInfo::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,object),this->_Object), 
+                                  core::Cons_O::create(INTERN_(kw,typeIndex),core::make_fixnum(this->_TypeIndex)),
+                                  core::Cons_O::create(INTERN_(kw,radius), mk_double_float(this->_Radius)),
+                                  core::Cons_O::create(INTERN_(kw,epsilon), mk_double_float(this->_Epsilon)),
+                                  core::Cons_O::create(INTERN_(kw,charge), mk_double_float(this->_Charge)),
+                                  core::Cons_O::create(INTERN_(kw,position), translate::to_object<Vector3>::convert(this->_Position) ) );
+}
+
+void RigidBodyAtomInfo::decode(core::List_sp alist) {
+  SIMPLE_ERROR("Implement decode of RigidBodyAtomInfo");
+}
 
 struct TypeParameters {
   double _Radius;
@@ -222,6 +246,40 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
   }
   return result.cons();
 }
+
+size_t EnergyRigidBodyNonbond_O::partsCoordinates(NVector_sp pos, size_t idx, core::SimpleVector_float_sp coords )
+{
+  size_t istart = 0;
+#undef	NONBOND_POSITION_RB_SET_PARAMETER
+#define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
+#undef	NONBOND_POSITION_RB_SET_POSITION
+#define	NONBOND_POSITION_RB_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#undef	NONBOND_POSITION_RB_SET_POINT
+#define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
+#pragma clang diagnostic pop
+  double am, bm, cm, dm, xm, ym, zm;
+  double pxm, pym, pzm;
+  int	I1;
+  size_t I1start = 0;
+  for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
+    ql::list helix;
+    size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
+    for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
+      RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
+      I1 = iI1*7;
+#include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termCode.cc>
+      (*coords)[idx++] = plabmx;
+      (*coords)[idx++] = plabmy;
+      (*coords)[idx++] = plabmz;
+    }
+    I1start = I1end;
+  }
+  return idx;
+}
+
 
 struct coordinate_lookup {
   coordinate_lookup(NVector_sp coords) : _Coordinates(coords) {};
@@ -659,8 +717,18 @@ void EnergyRigidBodyNonbond_O::initialize()
 }
 
 
-
-
-
+void EnergyRigidBodyNonbond_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,dielectricConstant) ,this->_DielectricConstant );
+  node->field( INTERN_(kw,scaleVdw), this->_ScaleVdw );
+  node->field( INTERN_(kw,scaleElectrostatic), this->_ScaleElectrostatic );
+  node->field( INTERN_(kw,energyVdw), this->_EnergyVdw );
+  node->field( INTERN_(kw,energyElectrostatic), this->_EnergyElectrostatic);
+  node->field( INTERN_(kw,rigidBodyEndAtom), this->_RigidBodyEndAtom );
+  node->field( INTERN_(kw,atomInfoTable), this->_AtomInfoTable );
+  node->field( INTERN_(kw,numberOfTypes), this->_NumberOfTypes );
+  node->field( INTERN_(kw,crossTerms), this->_CrossTerms );
+  node->Base::fields(node);
+}
 
 };

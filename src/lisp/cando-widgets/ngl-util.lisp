@@ -56,9 +56,11 @@
                                                    (1- (chem:trajectory/number-of-trajectory-frames instance)))
                                :trajectory-frame (lambda (inst i atom-indices) ; This function returns a specific frame. Atom subsets not implemented yet.
                                                    (declare (ignore inst atom-indices))
+                                                   (format *error-output* "Sending frame ~a~%" i)
                                                    (values i
                                                            nil
-                                                           (chem:trajectory/get-trajectory-frame instance i)
+                                                           (chem:trajectory-frame/get-coordinates
+                                                            (chem:trajectory/get-trajectory-frame instance i))
                                                            (1- (chem:trajectory/number-of-trajectory-frames instance))))
                                initargs)))
 
