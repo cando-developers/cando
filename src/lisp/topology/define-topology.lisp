@@ -476,13 +476,16 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
 (defun define-topology-charges (residue-charges)
   (loop for topology-charge in residue-charges
         for topology-name = (first topology-charge)
-        for topology = (chem:find-topology topology-name)
-        for stereoisomer = (stereoisomer topology)
-        for stereoisomer-atoms = (stereoisomer-atoms stereoisomer)
-        for name-charges = (second topology-charge)
-        do (loop for atom-charge in name-charges
-                 for atom-name = (car atom-charge)
-                 for stereoisomer-atom = (find atom-name stereoisomer-atoms :key 'topology:atom-name)
-                 for charge = (cdr atom-charge)
-                 do (setf (atom-charge stereoisomer-atom) charge)
-                )))
+        for topology = (chem:find-topology topology-name nil)
+        if topology
+          do (let* ((stereoisomer (stereoisomer topology))
+                    (stereoisomer-atoms (stereoisomer-atoms stereoisomer))
+                    (name-charges (second topology-charge)))
+               (loop for atom-charge in name-charges
+                     for atom-name = (car atom-charge)
+                     for stereoisomer-atom = (find atom-name stereoisomer-atoms :key 'topology:atom-name)
+                     for charge = (cdr atom-charge)
+                     do (setf (atom-charge stereoisomer-atom) charge)
+                     ))
+        else
+          do (warn "The topology ~s was not found - could not assign charge" topology-name)))
