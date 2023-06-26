@@ -100,7 +100,7 @@
 	CosPhi=MAX(-1.0,MIN(1.0,CosPhi));
 /*CosNPhi = mathCosNPhi[IN,SinPhi,CosPhi];*/
 /*SinNPhi = mathSinNPhi[IN,SinPhi,CosPhi];*/
-	DO_sinNPhiCosNPhi(IN, &SinNPhi, &CosNPhi, SinPhi, CosPhi);
+	DO_sinNPhiCosNPhi(IN, SinNPhi, CosNPhi, SinPhi, CosPhi);
 	 tx973 = CosNPhi*cosPhase; 		/* rule 103 */
 	 tx974 = SinNPhi*sinPhase; 		/* rule 104 */
 	 DihedralDeviation = 1. + tx973 + tx974; 		/* rule 105 */

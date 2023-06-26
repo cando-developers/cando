@@ -330,6 +330,10 @@ double	_evaluateEnergyOnly_Dihedral(
   fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
   fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
   fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+#undef ZERO_SMALL_LEN
+#define ZERO_SMALL_LEN(RL,L) {double fabs_ = fabs(L); int cmp = (fabs_ < TENM3); RL = cmp ? 0.0 : RL; }
+#undef DO_sinNPhiCosNPhi
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
 
   return Energy;
@@ -490,6 +494,8 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
     double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
     double EraseLinearDihedral;
     int	I1, I2, I3, I4, IN;
+#undef DO_sinNPhiCosNPhi
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
     double sinPhase, cosPhase, SinNPhi, CosNPhi;
     for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
           di!=this->_Terms.end(); di++ ) {
@@ -567,6 +573,8 @@ double	EnergyDihedral_O::evaluateAllComponentSingle(
       }
     }
 #endif
+#undef DO_sinNPhiCosNPhi
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
       if (chem__verbose(1)) {
         printf("%s:%d:%s IN  = %d\n", __FILE__, __LINE__, __FUNCTION__, IN);
@@ -780,6 +788,10 @@ void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
     double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
     double EraseLinearDihedral;
     int	I1, I2, I3, I4, IN, i;
+#undef ENERGY_FUNCTION
+#define ENERGY_FUNCTION _evaluateEnergyOnly_Dihedral
+#undef DO_sinNPhiCosNPhi
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
     double sinPhase, cosPhase, SinNPhi, CosNPhi;
     gctools::Vec0<EnergyDihedral>::iterator di;
     for ( i=0,di=this->_Terms.begin(); di!=this->_Terms.end(); di++,i++ ) {
@@ -974,8 +986,8 @@ double	EnergyDihedral_O::evaluateAllComponentSimd8(
 // -----------------------
 #undef mysqrt
 #define mysqrt(xx) { sqrt(xx[0]), sqrt(xx[1]), sqrt(xx[2]), sqrt(xx[3]), sqrt(xx[4]), sqrt(xx[5]), sqrt(xx[6]), sqrt(xx[7]) }
-#undef ZERO_SMALL
-#define ZERO_SMALL(RL,L) {real8 fabs = __builtin_elementwise_abs(L); int8 cmp = (fabs < TENM3); RL = cmp ? 0.0 : RL; }
+#undef ZERO_SMALL_LEN
+#define ZERO_SMALL_LEN(RL,L) {real8 fabs = __builtin_elementwise_abs(L); int8 cmp = (fabs < TENM3); RL = cmp ? 0.0 : RL; }
 #define SIMD 1
 #define DIHEDRAL_CALC_FORCE
 #define DIHEDRAL_CALC_DIAGONAL_HESSIAN
@@ -1097,7 +1109,7 @@ double	EnergyDihedral_O::evaluateAllComponentSimd8(
 
     gctools::Vec0<EnergyDihedral>::iterator di;
     for ( i=0, di=di_start8; di<di_end8; di += VREAL8_WIDTH, i += VREAL8_WIDTH ) {
-#include <cando/chem/energy_functions/new_Dihedral_termCode.cc>
+#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
       if (chem__verbose(1)) {
         for (int zz =0; zz<8; zz++ ) {
           printf("%s:%d:%s IN[%d]      = %ld\n", __FILE__, __LINE__, __FUNCTION__, zz, IN[zz] );
