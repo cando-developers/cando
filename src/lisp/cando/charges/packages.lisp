@@ -31,8 +31,10 @@
    #:combine-am1-bcc-charges
    #:calculate-am1-bcc-charges
    #:calculate-mopac-am1-bcc-charges
+   #:constrain-residue-charges
    #:write-sqm-calculation
    #:write-mopac-calculation
    #:read-am1-charges
    #:read-mopac-am1-charges
-   ))
+   #:calculate-charge-trainers
+   #:dump-residue-charges))

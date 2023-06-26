@@ -24,6 +24,7 @@
                (:file "modelling")
                (:file "constitution")
                (:file "molecules")
+               (:file "stereochemistry")
                (:file "cif")
                (:file "atom-tree")
                (:file "ring-builder")

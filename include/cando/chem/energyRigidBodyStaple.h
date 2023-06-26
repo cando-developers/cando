@@ -71,15 +71,50 @@ public:
           rigidBodyL(cl),
           pointL(pl) {};
   EnergyRigidBodyStaple() {};
-         
+  
+  core::List_sp encode() const;
+  void decode(core::List_sp alist);
 };
+};
+
+
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergyRigidBodyStaple >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyRigidBodyStaple& stretch)
+  {
+    return stretch.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergyRigidBodyStaple>
+{
+  typedef	chem::EnergyRigidBodyStaple	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR("Implement me");
+        }
+};
+};
+
+
+namespace chem {
 
  FORWARD(EnergyRigidBodyStaple);
  
 class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyRigidBodyStaple_O,"EnergyRigidBodyStaple",EnergyRigidBodyComponent_O);
- public:
+public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
  public: // virtual functions inherited from Object
   void	initialize();
   typedef EnergyRigidBodyStaple	TermType;
@@ -119,6 +154,7 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
   virtual string	beyondThresholdInteractionsAsString() {IMPLEMENT_ME();};
 
   core::List_sp parts_as_list(NVector_sp pos);
+  size_t partsCoordinates(NVector_sp pos, size_t idx, core::SimpleVector_float_sp coords);
 
  public:
   EnergyRigidBodyStaple_O( const EnergyRigidBodyStaple_O& ss ); //!< Copy constructor

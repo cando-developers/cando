@@ -63,7 +63,7 @@ void JumpJoint_O::_appendChild(Joint_sp c)
   size_t index = this->_Children.size();
   this->_Children.push_back(empty);
   this->_Children[index] = c;
-  LOG(" Appending to node %s child %s at index %lu\n" , _rep_(this->asSmartPtr()) , _rep_(c) , index);
+  LOG(" Appending to node {} child {} at index {}\n" , _rep_(this->asSmartPtr()) , _rep_(c) , index);
 }
 
 
@@ -82,7 +82,7 @@ void JumpJoint_O::_releaseAllChildren()
 
 void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
 {
-  KIN_LOG((" <<< %s\n") , _rep_(this->asSmartPtr()));
+  KIN_LOG(" <<< {}\n", _rep_(this->asSmartPtr()));
 #if 0
   Vector3 O = this->position(coords);
   if (this->_numberOfChildren()>=2) {
@@ -90,12 +90,12 @@ void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
     Vector3 B = this->_child(1)->position(coords);
     Vector3 OA = A - O;
     double lengthOA = OA.length();
-    if (lengthOA<1e-6) SIMPLE_ERROR(("You are about to divide by zero"));
+    if (lengthOA<1e-6) SIMPLE_ERROR("You are about to divide by zero");
     Vector3 a = OA*(1.0/lengthOA);
     Vector3 OB = B - O;
     Vector3 OBxa = OB.crossProduct(a);
     double lengthOBxa = OBxa.length();
-    if (lengthOBxa<1e-6) SIMPLE_ERROR(("You are about to divide by zero"));
+    if (lengthOBxa<1e-6) SIMPLE_ERROR("You are about to divide by zero");
     Vector3 c = OBxa*(1.0/lengthOBxa);
     Vector3 b = c.crossProduct(a);
     Matrix labFrame;
@@ -107,12 +107,12 @@ void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
     JumpJoint_sp jjParent = gc::As<JumpJoint_sp>(this->parent());
     Matrix parentInverted = jjParent->_LabFrame.invertTransform();
     this->_ParentRelativeTransform = labFrame*parentInverted;
-    KIN_LOG("relativeTransform = \n%s\n" , this->_ParentRelativeTransform.asString());
+    KIN_LOG("relativeTransform = \n{}\n" , this->_ParentRelativeTransform.asString());
   } else if (this->_numberOfChildren()==1) {
     Vector3 A = this->_child(0)->position(coords);
     Vector3 OA = A - O;
     double lengthOA = OA.length();
-    if (lengthOA<1e-6) SIMPLE_ERROR(("You are about to divide by zero"));
+    if (lengthOA<1e-6) SIMPLE_ERROR("You are about to divide by zero");
     Vector3 a = OA*(1.0/lengthOA);
       // We need a vector orthogonal to a - used the following reference
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
@@ -126,7 +126,7 @@ void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
     y[n] = x[m];
     y[m] = -x[n];
     double lengthy = y.length();
-    if (lengthy<1e-6) SIMPLE_ERROR(("You are about to divide by zero"));
+    if (lengthy<1e-6) SIMPLE_ERROR("You are about to divide by zero");
     y = y * (1.0/lengthy);
     // Now y should be orthogonal to a
     Vector3& b = y;
@@ -140,7 +140,7 @@ void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
     JumpJoint_sp jjParent = gc::As<JumpJoint_sp>(this->parent());
     Matrix parentInverted = jjParent->_LabFrame.invertTransform();
     this->_ParentRelativeTransform = labFrame*parentInverted;
-    KIN_LOG(("relativeTransform = \n%s\n") , this->_ParentRelativeTransform.asString());
+    KIN_LOG("relativeTransform = \n{}\n", this->_ParentRelativeTransform.asString());
   }
 #endif
 }
@@ -154,10 +154,10 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 
 void JumpJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
-  ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n%s") , stub.asString());
+  ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n{}") , stub.asString());
   this->_LabFrame = stub._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
   this->setPosition(coords,this->_LabFrame.getTranslation());
-  KIN_LOG(("LabFrame.getTranslation() = %s\n") , this->_LabFrame.getTranslation().asString());
+  KIN_LOG("LabFrame.getTranslation() = {}\n", this->_LabFrame.getTranslation().asString());
 }
 
 void JumpJoint_O::updateXyzCoord(chem::NVector_sp coords)
@@ -194,10 +194,10 @@ double JumpJoint_O::dof(DofType const& dof) const
 {
   if ( dof.isRigidBodyDof() )
   {
-    SIMPLE_ERROR(("Do something for dof"));
+    SIMPLE_ERROR("Do something for dof");
 //    return _Jump.getRigidBodyDelta(dof,RigidBodyDirection::n2c);
   }
-  SIMPLE_ERROR(("Illegal dof for JumpJoint - I can only return rigid body dofs"));
+  SIMPLE_ERROR("Illegal dof for JumpJoint - I can only return rigid body dofs");
 }
 
 

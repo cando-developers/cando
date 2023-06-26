@@ -41,33 +41,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-
-
-
-
-
-
-
-#if INIT_TO_FACTORIES
-
-#define ARGS_TrajectoryFrame_O_make "()"
-#define DECL_TrajectoryFrame_O_make ""
-#define DOCS_TrajectoryFrame_O_make "make TrajectoryFrame"
-  TrajectoryFrame_sp TrajectoryFrame_O::make()
-  {
-    IMPLEMENT_ME();
-  };
-
-#else
-
-    core::T_sp 	TrajectoryFrame_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-{
-    IMPLEMENT_ME();
-    	// your stuff here
-}
-
-#endif
-
 void	TrajectoryFrame_O::initialize()
 {
     this->Base::initialize();
@@ -82,56 +55,33 @@ void	TrajectoryFrame_O::initialize()
 #endif
 
 
-    void TrajectoryFrame_O::fillFromMatter(gctools::Vec0<Atom_sp>& atomList )
+void TrajectoryFrame_O::fillFromMatter(gctools::Vec0<Atom_sp>& atomList )
 {
-    this->_Coordinates = geom::SimpleVectorCoordinate_O::make(atomList.size());
-    geom::SimpleVectorCoordinate_O::iterator ci;
-    gctools::Vec0<Atom_sp>::iterator ai;
-    for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
-    {
-	(*ci) = (*ai)->getPosition();
-    }
-}
-
-
-
-    void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
-{
-  ASSERT_eq((*this->_Coordinates).length(),atomList.size());
-  geom::SimpleVectorCoordinate_O::iterator ci;
+  this->_Coordinates = core::SimpleVector_float_O::make(atomList.size()*3);
+  size_t ci;
   gctools::Vec0<Atom_sp>::iterator ai;
-  for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
-  {
-    (*ai)->setPosition(*ci);
+  for ( ai=atomList.begin(), ci = 0; ai!=atomList.end(); ai++, ci++ ) {
+    const Vector3& pos = (*ai)->getPosition();
+    (*this->_Coordinates)[ci*3+0] = pos.getX();
+    (*this->_Coordinates)[ci*3+1] = pos.getY();
+    (*this->_Coordinates)[ci*3+2] = pos.getZ();
   }
 }
 
 
 
-
-#if INIT_TO_FACTORIES
-
-#define ARGS_Trajectory_O_make "()"
-#define DECL_Trajectory_O_make ""
-#define DOCS_Trajectory_O_make "make Trajectory"
-  Trajectory_sp Trajectory_O::make()
-  {
-    IMPLEMENT_ME();
-  };
-
-#else
-
-    core::T_sp 	Trajectory_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
+void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
 {
-    IMPLEMENT_ME();
-#if 0
-    this->Base::oldLispInitialize(kargs,env);
-    Matter_sp matter = kargs->getAndRemove("matter").as<Matter_O>();
-    this->_setupAtomList(matter);
-#endif
+  ASSERT_eq((*this->_Coordinates).length(),atomList.size());
+  size_t ci;
+  gctools::Vec0<Atom_sp>::iterator ai;
+  for ( ai=atomList.begin(), ci = 0; ai!=atomList.end(); ai++, ci++ ) {
+    Vector3 pos((*this->_Coordinates)[ci*3+0],
+                (*this->_Coordinates)[ci*3+1],
+                (*this->_Coordinates)[ci*3+2] );
+    (*ai)->setPosition(pos);
+  }
 }
-
-#endif
 
 void	Trajectory_O::initialize()
 {
@@ -139,7 +89,6 @@ void	Trajectory_O::initialize()
     this->_Matter = nil<Matter_O>();
     this->_Namespace = core::HashTableEq_O::create_default();
 }
-
 
 void	Trajectory_O::_setupAtomList(Matter_sp matter)
 {
@@ -154,28 +103,65 @@ void	Trajectory_O::_setupAtomList(Matter_sp matter)
     this->_Frames.clear();
 }
 
-
-#ifdef XML_ARCHIVE
-    void	Trajectory_O::archiveBase(core::ArchiveP node)
-{
-    this->Base::archiveBase(node);
-    node->attribute("matter",this->_Matter);
-    node->attribute("namespace",this->_Namespace);
-    node->archiveVector0("atomList",this->_AtomList);
-    node->archiveVector0("frames",this->_Frames);
+Trajectory_sp Trajectory_O::makeTrajectory(Matter_sp matter) {
+  auto traj = gctools::GC<Trajectory_O>::allocate();
+  traj->_setupAtomList(matter);
+  return traj;
 }
-#endif
 
+void TrajectoryFrame_O::fields(core::Record_sp node)
+{
+  node->/*pod_*/field( INTERN_(kw,coords), this->_Coordinates);
+}
 
+void Trajectory_O::fields(core::Record_sp node)
+{
+  node->/*pod_*/field( INTERN_(kw,matter), this->_Matter);
+  node->/*pod_*/field( INTERN_(kw,atomlist), this->_AtomList);
+  node->/*pod_*/field( INTERN_(kw,frames), this->_Frames);
+  node->/*pod_*/field( INTERN_(kw,namespace), this->_Namespace);
+}
 
 CL_LISPIFY_NAME("addFrame");
-CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(Matter_sp matter)
+CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(core::T_sp coord_object)
 {
+  TrajectoryFrame_sp frame = TrajectoryFrame_O::create();
+  if (gc::IsA<Matter_sp>(coord_object)) {
     ASSERTP(matter == this->_Matter,"The matter argument must match the Matter used to define this trajectory");
-    TrajectoryFrame_sp frame = TrajectoryFrame_O::create();
     frame->fillFromMatter(this->_AtomList);
-    this->_Frames.push_back(frame);
-    return frame;
+  } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(coord_object)) {
+    auto vec = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(coord_object);
+    if (this->_AtomList.size() != vec->length()) {
+      SIMPLE_ERROR("The coord_object is the wrong size - it contains {} vectors - the topology represents {} atoms", vec->length(), this->_AtomList.size() );
+    }
+    core::SimpleVector_float_sp vec3 = core::SimpleVector_float_O::make(this->_AtomList.size()*3);
+    for ( size_t ii = 0; ii<this->_AtomList.size(); ii++ ) {
+      (*vec3)[ii*3+0] = (*vec)[ii].getX();
+      (*vec3)[ii*3+1] = (*vec)[ii].getY();
+      (*vec3)[ii*3+2] = (*vec)[ii].getZ();
+    }
+    frame->_Coordinates = vec3;
+  } else if (gc::IsA<core::SimpleVector_double_sp>(coord_object)) {
+    auto vecd = gc::As_unsafe<core::SimpleVector_double_sp>(coord_object);
+    if (this->_AtomList.size()*3 != vecd->length()) {
+      SIMPLE_ERROR("The coordinates object is the wrong size - it has {} doubles - the trajectory object has {} atoms and each atom needs x,y,z coordinate", vecd->length(), this->_AtomList.size() );
+    }
+    core::SimpleVector_float_sp vecf = core::SimpleVector_float_O::make(this->_AtomList.size()*3);
+    for ( size_t ii = 0; ii<this->_AtomList.size()*3; ii++ ) {
+      (*vecf)[ii] = (*vecd)[ii];
+    }
+    frame->_Coordinates = vecf;
+  } else if (gc::IsA<core::SimpleVector_float_sp>(coord_object) ) {
+    auto vec = gc::As_unsafe<core::SimpleVector_float_sp>(coord_object);
+    if (this->_AtomList.size()*3 != vec->length()) {
+      SIMPLE_ERROR("The coordinates object is the wrong size - it has {} doubles - the trajectory object has {} atoms and each atom needs x,y,z coordinate", vec->length(), this->_AtomList.size() );
+    }
+    frame->_Coordinates = vec;
+  } else {
+    SIMPLE_ERROR("Cannot add-frame with argument {} of type {}", coord_object, _rep_(core::lisp_instance_class(coord_object)));
+  } 
+  this->_Frames.push_back(frame);
+  return frame;
 }
 
 

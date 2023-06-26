@@ -145,7 +145,7 @@ CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResi
       ConstitutionAtom_sp catom = atom->asConstitutionAtom(index);
       catoms->_Atoms.push_back(catom);
       atomToIndexMap[atom] = index;
-      if (verbose) core::write_bf_stream(fmt::sprintf("Atom %s index: %d\n" , _rep_(atom) , index));
+      if (verbose) core::clasp_write_string(fmt::format("Atom {} index: {}\n" , _rep_(atom) , index));
     }
   }
   {
@@ -209,7 +209,7 @@ CL_DEFMETHOD core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, bool er
   if (!errorp) {
     return Values(nil<core::T_O>(),nil<core::T_O>());
   }
-  SIMPLE_ERROR(("Could not find ConstitutionAtom with name[%s]") , core::_rep_(nm) );
+  SIMPLE_ERROR("Could not find ConstitutionAtom with name[{}]" , core::_rep_(nm) );
 }
 
 
@@ -227,7 +227,7 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
     const ConstitutionAtom_sp& atom = this->_Atoms[idx];
     if ( atom->_AtomName == name ) return idx;
   }
-  SIMPLE_ERROR(("Unknown atom[%s]") , core::_rep_(name) );
+  SIMPLE_ERROR("Unknown atom[{}]" , core::_rep_(name) );
 }
 
 CL_DEFMETHOD core::List_sp ConstitutionAtoms_O::constitutionAtomsAsList() const {

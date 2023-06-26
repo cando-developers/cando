@@ -59,25 +59,29 @@ class CipPrioritizer_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,CipPrioritizer_O,"CipPrioritizer",core::CxxObject_O);
 private:
 	// instance variables
-  gctools::Vec0<int>		_p;
+  gctools::Vec0<int>		        _p;
   gctools::Vec0< gctools::Vec0<int> > 	_s;
 public:
+  CipPrioritizer_O() {};
+  
 	void	initialize();
 public:
     static core::HashTable_sp assignPrioritiesHashTable(Matter_sp molOrAgg);
+  CL_DEF_CLASS_METHOD static CipPrioritizer_sp make_CipPrioritizer() {
+    CipPrioritizer_sp cip = gc::GC<CipPrioritizer_O>::allocate();
+    return cip;
+  }
 public:
   int	getP(AtomPriority& a);
   gctools::Vec0<int>& getS(AtomPriority& a);
   void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg,core::HashTable_sp cip);
 public:
 
-  core::HashTable_sp setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg);
+  core::HashTable_mv calculateStereochemistryTypeForAllAtoms(Matter_sp molOrAgg);
   CipPrioritizer_O( const CipPrioritizer_O& ss ); //!< Copy constructor
 
-  DEFAULT_CTOR_DTOR(CipPrioritizer_O);
 };
 
 
 };
-TRANSLATE(chem::CipPrioritizer_O);
 #endif //]

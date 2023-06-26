@@ -85,10 +85,10 @@ double	ldltJk;
 		// Calculate each column and the diagonal
 		//
     epsilon = m->maxAbsValue();
-    LOG("epsilon = %lf" , epsilon  );
+    LOG("epsilon = {}" , epsilon  );
     betaSquared = epsilon/(sqrt(ddim*(ddim-1.0)));
     delta = 1e-9;
-    LOG("betaSquared = %lf" , betaSquared  );
+    LOG("betaSquared = {}" , betaSquared  );
     for ( j=0; j<dim; j++ ) { 
 	ksum = 0;
 	for ( k=0; k<j; k++ ) {	// k is a Y coordinate
@@ -100,7 +100,7 @@ double	ldltJk;
 				"about to divide by zero");
 	    ljk = cjk/dk;
 	    ldlt->setElement(j,k,ljk);
-	    LOG("Storing l[%d',%d']=%lf" , j+1 , k+1 , ljk );
+	    LOG("Storing l[{}',{}']={}" , j+1 , k+1 , ljk );
 	    ksum += ljk*cjk;
 	}
 	djbar = m->element(j,j)-ksum;
@@ -138,7 +138,7 @@ double	ldltJk;
 	}
 	if ( j+1<dim ) 
 	{
-	    LOG("Setting up to calculate cij j+1(%d) columns(%d)" , j+1 , ldlt->columns() );
+	    LOG("Setting up to calculate cij j+1({}) columns({})" , j+1 , ldlt->columns() );
 	    rowFirstIndex = ldlt->indexOfFirstElementAtOrAfterX(j+1,j);
 	    rowLastIndex = ldlt->indexOfLastElementOnRow(j);
 			    // ii indexes along X-coordinate
@@ -146,11 +146,11 @@ double	ldltJk;
 	    for ( ii=rowFirstIndex; ii<=rowLastIndex; ii++ ) 
 	    { 
 		xII = ldlt->columnForIndex(ii);
-		LOG("xII=%d" , xII );
+		LOG("xII={}" , xII );
 		cij = m->element(xII,j)-nvKSum->element(xII);
-		LOG("cij=%lf" , cij );
+		LOG("cij={}" , cij );
 		ldlt->setElement(xII,j,cij);
-		LOG("put cij into ldlt at element %d,%d" , xII , j );
+		LOG("put cij into ldlt at element {},{}" , xII , j );
 		theta = MAX(theta,fabs(cij));
 	    }
 	}
@@ -169,10 +169,10 @@ double	ldltJk;
 	    if ( !hasij && cij!= 0.0 ) {
 		stringstream ss;
 		ss << "Want to write "<<cij<<" to ldlt["<<i<<","<<j<<"] but it isn't in ldlt";
-		SIMPLE_ERROR(("%s") , ss.str().c_str());
+		SIMPLE_ERROR("{}" , ss.str().c_str());
 	    }
 	    if ( !hasij ) continue;
-	    LOG("Storing c[%d',%d']=%lf" , i+1 , j+1 , cij  );
+	    LOG("Storing c[{}',{}']={}" , i+1 , j+1 , cij  );
 	    ldlt->setElement(i,j,cij);
 	    theta = MAX(theta,fabs(cij));
 	}
@@ -181,7 +181,7 @@ double	ldltJk;
 //
 // To here
 //
-	LOG("Calculated theta=%lf" , theta  );
+	LOG("Calculated theta={}" , theta  );
 	thetaSquared = theta*theta;
 	double tsdbs = thetaSquared/betaSquared;
 	djtilde = djbar + TAO;
@@ -200,7 +200,7 @@ double	ldltJk;
 	} else {
 	    dj = delta;
 	}
-	LOG("Storing d[%d']=%lf" , j+1 , dj );
+	LOG("Storing d[{}']={}" , j+1 , dj );
 	ldlt->setElement(j,j,dj);
     }
 //    _lisp->profiler().timer(core::timerPreconditionerSolverFactor).stop();

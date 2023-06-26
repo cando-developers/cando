@@ -151,7 +151,7 @@
   "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
 aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
 associating the atom with its aromaticity info in a hash-table and return the hash-table."
-  (unless (and (boundp 'chem:*current-rings*) chem:*current-rings*)
+  (unless (boundp 'chem:*current-rings*)
     (error "chem:*current-rings* must be bound to a list of rings in the molecule identified using chem:identify-rings"))
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))

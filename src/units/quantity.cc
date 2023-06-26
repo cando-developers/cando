@@ -70,7 +70,7 @@ core::T_sp Quantity_O::copyAndScaleValue(core::T_sp obj, double conversion) {
 	    return narray;
 #endif
   }
-  SIMPLE_ERROR(("Illegal value type[%s] for copyAndScaleValue"), core::cl__class_of(obj)->_classNameAsString());
+  SIMPLE_ERROR("Illegal value type[{}] for copyAndScaleValue", core::cl__class_of(obj)->_classNameAsString());
 }
 
 core::T_sp Quantity_O::copyAndScaleValueElement(core::T_sp obj, uint index, double conversion) {
@@ -79,7 +79,7 @@ core::T_sp Quantity_O::copyAndScaleValueElement(core::T_sp obj, uint index, doub
     core::T_sp element = vec->rowMajorAref(index);
     return Quantity_O::copyAndScaleValue(element, conversion);
   }
-  SIMPLE_ERROR(("Illegal value type[%s] for copyAndScaleValueElement"), core::cl__class_of(obj)->_classNameAsString());
+  SIMPLE_ERROR("Illegal value type[{}] for copyAndScaleValueElement", core::cl__class_of(obj)->_classNameAsString());
 }
 
 core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index) {
@@ -92,7 +92,7 @@ core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index) {
           return element;
 #endif
   }
-  SIMPLE_ERROR(("Illegal value type[%s] for copyAndScaleValueElement"), core::cl__class_of(obj)->_classNameAsString());
+  SIMPLE_ERROR("Illegal value type[{}] for copyAndScaleValueElement", core::cl__class_of(obj)->_classNameAsString());
 }
 
 void Quantity_O::setValueElement(core::T_sp obj, uint index, core::T_sp newVal) {
@@ -100,7 +100,7 @@ void Quantity_O::setValueElement(core::T_sp obj, uint index, core::T_sp newVal) 
     core::Vector_sp vec = obj.as<core::Vector_O>();
     vec->rowMajorAset(index, newVal);
   } else {
-    SIMPLE_ERROR(("Illegal value type[%s] for Quantity_O::setValueElement"), core::cl__class_of(obj)->_classNameAsString());
+    SIMPLE_ERROR("Illegal value type[{}] for Quantity_O::setValueElement", core::cl__class_of(obj)->_classNameAsString());
   }
 }
 
@@ -113,7 +113,7 @@ uint Quantity_O::sizeOfValue(core::T_sp obj) {
     core::Vector_sp vector = obj.as<core::Vector_O>();
     return vector->length();
   }
-  SIMPLE_ERROR(("Illegal value type[%s] for sizeOfValue"), core::cl__class_of(obj)->_classNameAsString());
+  SIMPLE_ERROR("Illegal value type[{}] for sizeOfValue", core::cl__class_of(obj)->_classNameAsString());
 }
 
 bool Quantity_O::isnanValue(core::T_sp obj) {
@@ -129,7 +129,7 @@ bool Quantity_O::isnanValue(core::T_sp obj) {
 	    return vector->length();
 #endif
   }
-  SIMPLE_ERROR(("Illegal value type[%s] for isnanValue"), core::cl__class_of(obj)->_classNameAsString());
+  SIMPLE_ERROR("Illegal value type[{}] for isnanValue", core::cl__class_of(obj)->_classNameAsString());
 }
 
 Quantity_sp Quantity_O::create(core::T_sp obj, Unit_sp unit) {
@@ -220,7 +220,7 @@ CL_DEFMETHOD bool Quantity_O::is_compatible(core::T_sp other) const {
     Unit_sp uother = other.as<Quantity_O>()->_Unit;
     return this->_Unit->is_compatible(uother);
   }
-  SIMPLE_ERROR(("You can only check compatibility of a Quantity with another Quantity or Unit - you passed a %s"),
+  SIMPLE_ERROR("You can only check compatibility of a Quantity with another Quantity or Unit - you passed a {}",
                core::cl__class_of(other)->_classNameAsString());
 }
 
@@ -260,7 +260,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::setElement(uint index, Quantity_sp other) {
     core::T_sp newVal = Quantity_O::copyAndScaleValue(other->_Value, conversion);
     Quantity_O::setValueElement(this->_Value, index, newVal);
   } else {
-    SIMPLE_ERROR(("Incompatible units - you cannot put an %s with units[%s] into a Quantity with units[%s]"),
+    SIMPLE_ERROR("Incompatible units - you cannot put an {} with units[{}] into a Quantity with units[{}]",
                  core::cl__class_of(other->_Value)->_classNameAsString(), _rep_(other->_Unit), _rep_(this->_Unit));
   }
   return other;
@@ -349,7 +349,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::operator+(core::T_sp other) const {
       double newValue = myValue + otherValue;
       return Quantity_O::create(core::DoubleFloat_O::create(newValue), this->_Unit);
     } else {
-      SIMPLE_ERROR(("Currently you can only add scalar Quantities - you tried to add a %s to a %s"),
+      SIMPLE_ERROR("Currently you can only add scalar Quantities - you tried to add a {} to a {}",
                    core::cl__class_of(this->_Value)->_classNameAsString(),
                    core::cl__class_of(qother->_Value)->_classNameAsString());
     }
@@ -367,7 +367,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::operator-(core::T_sp other) const {
       double newValue = myValue - otherValue;
       return Quantity_O::create(core::DoubleFloat_O::create(newValue), this->_Unit);
     } else {
-      SIMPLE_ERROR(("Currently you can only sub scalar Quantities - you tried to add a %s to a %s"),
+      SIMPLE_ERROR("Currently you can only sub scalar Quantities - you tried to add a {} to a {}",
                    core::cl__class_of(this->_Value)->_classNameAsString(),
                    core::cl__class_of(qother->_Value)->_classNameAsString());
     }
@@ -382,7 +382,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::power(int pwr) const {
     Unit_sp newUnit = Unit_O::create(this->_Unit, pwr);
     return Quantity_O::create(core::DoubleFloat_O::create(myValue), newUnit);
   }
-  SIMPLE_ERROR(("Currently I can only take powers of Numbers - you tried to take a power of a %s"),
+  SIMPLE_ERROR("Currently I can only take powers of Numbers - you tried to take a power of a {}",
                core::cl__class_of(this->_Value)->_classNameAsString());
 }
 
@@ -393,7 +393,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::sqrt() const {
     Unit_sp newUnit = Unit_O::createSquareRoot(this->_Unit);
     return Quantity_O::create(core::DoubleFloat_O::create(myValue), newUnit);
   }
-  SIMPLE_ERROR(("Currently I can only take square root of Numbers - you tried to take square root of a %s"),
+  SIMPLE_ERROR("Currently I can only take square root of Numbers - you tried to take square root of a {}",
                core::cl__class_of(this->_Value)->_classNameAsString());
 }
 
@@ -415,7 +415,7 @@ CL_DEFMETHOD bool Quantity_O::operator<(core::T_sp other) const {
                                       qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) < 0;
     //	    return this->_Value.as<core::General_O>()->operator<(qother->value_in_unit(this->_Unit,1));
   }
-  SIMPLE_ERROR(("You cannot compare a Quantity with value of class[%s] to an object of class[%s]"),
+  SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
                core::cl__class_of(this->_Value)->_classNameAsString(), core::cl__class_of(other)->_classNameAsString());
 }
 
@@ -427,7 +427,7 @@ CL_DEFMETHOD bool Quantity_O::operator<=(core::T_sp other) const {
                                       qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) <= 0;
     //	    return this->_Value.as<core::General_O>()->operator<=(qother->value_in_unit(this->_Unit,1));
   }
-  SIMPLE_ERROR(("You cannot compare a Quantity with value of class[%s] to an object of class[%s]"),
+  SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
                core::cl__class_of(this->_Value)->_classNameAsString(), core::cl__class_of(other)->_classNameAsString());
 }
 
@@ -439,7 +439,7 @@ CL_DEFMETHOD bool Quantity_O::operator>(core::T_sp other) const {
                                       qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) > 0;
     //	    return this->_Value.as<core::General_O>()->operator>(qother->value_in_unit(this->_Unit,1));
   }
-  SIMPLE_ERROR(("You cannot compare a Quantity with value of class[%s] to an object of class[%s]"),
+  SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
                core::cl__class_of(this->_Value)->_classNameAsString(), core::cl__class_of(other)->_classNameAsString());
 }
 
@@ -451,7 +451,7 @@ CL_DEFMETHOD bool Quantity_O::operator>=(core::T_sp other) const {
                                       qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) >= 0;
     //	    return this->_Value.as<core::General_O>()->operator>=(qother->value_in_unit(this->_Unit,1));
   }
-  SIMPLE_ERROR(("You cannot compare a Quantity with value of class[%s] to an object of class[%s]"),
+  SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
                core::cl__class_of(this->_Value)->_classNameAsString(), core::cl__class_of(other)->_classNameAsString());
 }
 

@@ -134,7 +134,7 @@ int	sliceStart, sliceEnd, ss, se, sm;
     this->_orderIndices(c,r);
 
     if ( c >= this->_Columns || r >= this->_Rows ) {
-	SIMPLE_ERROR(("Overflow in matrix operation"));
+	SIMPLE_ERROR("Overflow in matrix operation");
     }
     ssstart = &(this->_Values[this->_SliceStarts[r]];
     send = &(this->_Values[this->_SliceStarts[r+1]-1];

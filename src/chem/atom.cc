@@ -243,22 +243,22 @@ CL_DEFMETHOD bool Atom_O::Atom_equal(core::T_sp obj) const
     Atom_sp other = obj.as<Atom_O>();
     if ( other->getName() != this->getName() )
     {
-      LOG("Atom names[ this->getName()=%s  other->getName()=%s ]  don't match!" , this->getName() , other->getName() );
+      LOG("Atom names[ this->getName()={}  other->getName()={} ]  don't match!" , this->getName() , other->getName() );
       goto F;
     }
     if ( other->numberOfBonds() != this->numberOfBonds() )
     {
-      LOG("Numbers of bonds don't match this->numberOfBonds()=%d  other->numberOfBonds()=%d!" , this->numberOfBonds() , other->numberOfBonds() );
+      LOG("Numbers of bonds don't match this->numberOfBonds()={}  other->numberOfBonds()={}!" , this->numberOfBonds() , other->numberOfBonds() );
       goto F;
     }
     goto T;
   }
   LOG("The other object is not an ATOM!!!!");
  F:
-  LOG("atoms this(%s) =equal= other(%s)  equal==false" , this->description() , obj->description() );
+  LOG("atoms this({}) =equal= other({})  equal==false" , this->description() , obj->description() );
   return false;
  T:
-  LOG("atoms this(%s) =equal= other(%s)  equal==true" , this->description() , obj->description() );
+  LOG("atoms this({}) =equal= other({})  equal==true" , this->description() , obj->description() );
   return true;
 }
 
@@ -266,7 +266,7 @@ void Atom_O::transferCoordinates(Matter_sp obj)
 {
   if ( !this->Atom_equal(obj) )
   {
-    SIMPLE_ERROR(("This atom(%s) is not equal to %s so you cannot transfer coordinates") , this->description() , obj->description() );
+    SIMPLE_ERROR("This atom({}) is not equal to {} so you cannot transfer coordinates" , this->description() , obj->description() );
   }
   Atom_sp other = obj.as<Atom_O>();
   this->setPosition(other->getPosition());
@@ -320,9 +320,9 @@ CL_DEFMETHOD     void Atom_O::setConfiguration(ConfigurationEnum conf)
 {
   this->_Configuration = conf;
   if (chem__verbose(1)) {
-    core::write_bf_stream(fmt::sprintf("Changed configuration of atom %s to %s\n" , _rep_(this->asSmartPtr()) , this->getConfigurationAsString()));
+    core::clasp_write_string(fmt::format("Changed configuration of atom {} to {}\n" , _rep_(this->asSmartPtr()) , this->getConfigurationAsString()));
   }
-  LOG("Changed configuration of atom[%s] to [%s]"
+  LOG("Changed configuration of atom[{}] to [{}]"
       , this->__repr__() , this->getConfigurationAsString() );
 }
 
@@ -330,14 +330,14 @@ void Atom_O::setElementFromAtomName()
 {
   string nameStr = this->getName()->symbolName()->get_std_string();
   Element element = elementFromAtomNameString(nameStr);
-  LOG(" Resulting element= |%d|" %element );
+  LOG(" Resulting element= |{}|" %element );
   this->setElement(element);
 }
 
 void Atom_O::setElementFromString(const string& str)
 {
   Element element = elementFromAtomNameStringCaseInsensitive(str);
-  LOG(" Resulting element= |%d|" %element );
+  LOG(" Resulting element= |{}|" %element );
   this->setElement(element);
 }
 
@@ -429,7 +429,7 @@ CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
     addHydrogens = maxHydrogens - totalBondOrder;
   }
   if ( addHydrogens > 10 ) {
-    SIMPLE_ERROR(("There are too many hydrogens to be added for element %s totalBondOrder: %u addHydrogens: %u") , _rep_(symbolFromElement(this->getElement())) , totalBondOrder , addHydrogens );
+    SIMPLE_ERROR("There are too many hydrogens to be added for element {} totalBondOrder: {} addHydrogens: {}" , _rep_(symbolFromElement(this->getElement())) , totalBondOrder , addHydrogens );
   }
   return addHydrogens;
 }
@@ -489,7 +489,7 @@ size_t Atom_O::fillInImplicitHydrogensWithResidue(Residue_sp residue)
 
 size_t Atom_O::fillInImplicitHydrogens()
 {
-  SIMPLE_ERROR(("You cannot invoke chem:fill-in-implicit with an atom - any new hydrogens must be added to the residue that contains this atom"));
+  SIMPLE_ERROR("You cannot invoke chem:fill-in-implicit with an atom - any new hydrogens must be added to the residue that contains this atom");
 }
 
 //
@@ -546,7 +546,7 @@ CL_DEFMETHOD Bond_sp Atom_O::getBondTo(Atom_sp a)
   {
     if ( a == (*b)->getOtherAtom(this->sharedThis<Atom_O>()) ) return *b;
   }
-  SIMPLE_ERROR(("Could not find bond"));
+  SIMPLE_ERROR("Could not find bond");
 }
 
 void Atom_O::_addExistingBond(Bond_sp const& bond)
@@ -575,7 +575,7 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_
   for ( b=begin;b!=end ; b++ ) {
     if ( (*b)->getOtherAtom(from) == to ) {
       if (error_if_exists) {
-        SIMPLE_ERROR(("You tried to form a bond from[%s]-to[%s] but there is already one there!!") , this->__repr__() , _rep_(to) );
+        SIMPLE_ERROR("You tried to form a bond from[{}]-to[{}] but there is already one there!!" , this->__repr__() , _rep_(to) );
       } else {
         this->_Bonds.erase(b);
         break;
@@ -587,10 +587,10 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_
   to->_Bonds.push_back(bn);
   if (error_if_exceed_valence) {
     if (this->_Element == element_C && this->_Bonds.size()>4) {
-      SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(this->asSmartPtr()));
+      SIMPLE_ERROR("More than four bonds to carbon will be made to {}" , _rep_(this->asSmartPtr()));
     }
     if (to->_Element == element_C && to->_Bonds.size()>4 ) {
-      SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(to));
+      SIMPLE_ERROR("More than four bonds to carbon will be made to {}" , _rep_(to));
     }
   }
   return bn;
@@ -666,7 +666,7 @@ CL_DOCSTRING(R"dx(Return the neighbors sorted from highest CIP priority to lowes
 CL_DEFMETHOD
 core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_priority)
 {
-  LOG("Ordering neighbors around(%s) by priority and name" , this->getName()  );
+  LOG("Ordering neighbors around({}) by priority and name" , this->getName()  );
   VectorAtom	reversedNeighbors;
   VectorBond::iterator	b;
   for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
@@ -683,7 +683,7 @@ core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_prio
   for ( VectorAtom::iterator ni=reversedNeighbors.begin();
         ni!=reversedNeighbors.end(); ni++ )
   {
-    LOG("    neighbor priority(%u) name(%s)" , (*ni)->getRelativePriority() , (*ni)->getName()  );
+    LOG("    neighbor priority({}) name({})" , (*ni)->getRelativePriority() , (*ni)->getName()  );
     ncons = core::Cons_O::create(*ni,ncons);
   }
   return ncons;
@@ -841,7 +841,7 @@ float chem__distance_squared_between_two_atoms(Atom_sp atom1, Atom_sp atom2)
 
 void Atom_O::makeAllAtomNamesInEachResidueUnique()
 {
-  SIMPLE_ERROR(("This should never be called for an Atom_sp"));
+  SIMPLE_ERROR("This should never be called for an Atom_sp");
 }
 
 
@@ -862,7 +862,7 @@ void Atom_O::basicRemoveBondTo(Atom_sp a)
   stringstream ss;
   ss << "Trying to remove bond from atom(" << this->description()
      << ") but I can't find the to atom(" << a->description() << ")";
-  SIMPLE_ERROR(("%s") , ss.str());
+  SIMPLE_ERROR("{}" , ss.str());
 }
 
 CL_LISPIFY_NAME("removeBondTo");
@@ -881,7 +881,7 @@ CL_DEFMETHOD     void	Atom_O::removeAllBonds()
   VectorBond::const_iterator	b;
   Atom_sp				atemp;
 	// Remove back bond
-  LOG("Bond_O::removeAllBonds for %s" , this->description() );
+  LOG("Bond_O::removeAllBonds for {}" , this->description() );
   atemp = this->sharedThis<Atom_O>();
   for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
@@ -1030,9 +1030,9 @@ void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomTo
   for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
     if ( me->atLowerUniqueAtomOrderThan( (*b)->getOtherAtom(me))) {
       if ( !(*b)->isInterResidueBond(atomToResidue) ) {
-        LOG("Original bond: %s" , (*b)->description() );
+        LOG("Original bond: {}" , (*b)->description() );
         auto bondCopy = gctools::GC<Bond_O>::copy(**b);
-        LOG("Copy bond: %s" , bondCopy->description() );
+        LOG("Copy bond: {}" , bondCopy->description() );
         list->addBond(bondCopy);
       }
     }
@@ -1110,14 +1110,14 @@ CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
 {
   VectorBond::iterator	b;
   Atom_sp				a2;
-  LOG("Looking at atom(%s) for bonded atom(%s)"
+  LOG("Looking at atom({}) for bonded atom({})"
       , this->getName()
       , aTarget->getName() );
   Atom_sp me = this->sharedThis<Atom_O>();
   for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
     a2 = (*b)->getOtherAtom(me);
-    LOG("  looking at atom(%s)" , a2->getName() );
+    LOG("  looking at atom({})" , a2->getName() );
     if ( a2 == aTarget )
     {
       LOG("Found match" );
@@ -1156,7 +1156,7 @@ void Atom_O::reorderBonds(core::List_sp atoms) {
   size_t numAtoms = core::cl__length(atoms);
   Atom_sp me = this->sharedThis<Atom_O>();
   if ( numAtoms != this->_Bonds.size()) {
-    SIMPLE_ERROR("The number of atoms %d must match the number of bonds %d", numAtoms, this->_Bonds.size() );
+    SIMPLE_ERROR("The number of atoms {} must match the number of bonds {}", numAtoms, this->_Bonds.size() );
   }
   for ( auto cur : atoms ) {
     Atom_sp atom = gc::As<Atom_sp>(CONS_CAR(cur));
@@ -1168,7 +1168,7 @@ void Atom_O::reorderBonds(core::List_sp atoms) {
       }
     }
     if (b == this->_Bonds.end()) {
-      SIMPLE_ERROR("For atom %s not find bond with other atom %s bonded-atoms: %s", _rep_(me), _rep_(atom), _rep_(this->bondedAtomsAsList()));
+      SIMPLE_ERROR("For atom {} not find bond with other atom {} bonded-atoms: {}", _rep_(me), _rep_(atom), _rep_(this->bondedAtomsAsList()));
     }
   }
   this->_Bonds = newBonds;
@@ -1190,7 +1190,7 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
     a2 = (*b)->getOtherAtom(me);
     if ( !(a2->isBondedToWithBondOrder(me,(*b)->getRawOrder())) )
     {
-      core::writeln_bf_stream(fmt::sprintf( "Atom_O::testConsistancy failed" ));
+      core::clasp_write_string("Atom_O::testConsistancy failed\n");
       return false;
     }
   }
@@ -1201,7 +1201,7 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
 
 Matter_sp Atom_O::copy(core::T_sp new_to_old)
 {
-  SIMPLE_ERROR(("Don't copy single atoms - bonds will be messed up"));
+  SIMPLE_ERROR("Don't copy single atoms - bonds will be messed up");
 }
 
 
@@ -1215,7 +1215,7 @@ Matter_sp Atom_O::copy(core::T_sp new_to_old)
 //
 Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {
-  LOG("Copying atom @%p" , this );
+  LOG("Copying atom @{}" , this );
   Atom_sp myself = this->sharedThis<Atom_O>();
   auto  aNew  = gctools::GC<Atom_O>::copy( *this); // = RP_Copy<Atom_O>(this);
   aNew->_Bonds.clear();
@@ -1224,7 +1224,7 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
     aNew->_Properties = core::cl__copy_seq(this->_Properties);
   }
   aNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
-  LOG("    copy atom== %s" , aNew->description());
+  LOG("    copy atom== {}" , aNew->description());
   return(aNew);
 }
 
@@ -1325,11 +1325,11 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
   }
   if ( (twice & 1) != 0 )
   {
-    SIMPLE_ERROR(("The total bond order for "+this->description()+" will not be a whole number"));
+    SIMPLE_ERROR("The total bond order for {} will not be a whole number", this->description());
   }
   int bondOrder = twice/2;
   if ( bondOrder < 0 || bondOrder > 10 ) {
-    SIMPLE_ERROR(("The total bond order for %s is an unreasonable value %d") , this->description() , bondOrder );
+    SIMPLE_ERROR("The total bond order for {} is an unreasonable value {}" , this->description() , bondOrder );
   }
   return bondOrder;
 }
@@ -1437,7 +1437,7 @@ CL_DEFMETHOD     bool    Atom_O::inRingSize(int r) const
       result = false;
       break;
   }
-  LOG("Tested ring membership[%s]=%d of %s" , r , result , this->description() );
+  LOG("Tested ring membership[{}]={} of {}" , r , result , this->description() );
   return result;
 }
 
@@ -1450,7 +1450,7 @@ void Atom_O::clearAllRingMembershipFlags()
 
 void Atom_O::setInRingOfSize(int r)
 {
-  LOG("Setting %s in ring of size[%d]" , this->description() , r );
+  LOG("Setting {} in ring of size[{}]" , this->description() , r );
   switch (r) {
   case 3:
       this->turnOnFlags(in3MemberRing);
@@ -1556,7 +1556,7 @@ CL_DEFMETHOD void Atom_O::setAbsoluteConfiguration(ConfigurationEnum config, Ato
   Bond_sp b3(unbound<Bond_O>());
   Bond_sp b4(unbound<Bond_O>());
   if (!(this->_Bonds.size()==4||this->_Bonds.size()==3)) {
-    SIMPLE_ERROR(("You cannot define the absolute configuration of an atom that has %d bonds - it must have 3 or 4") , this->_Bonds.size());
+    SIMPLE_ERROR("You cannot define the absolute configuration of an atom that has {} bonds - it must have 3 or 4" , this->_Bonds.size());
   }
   for ( int bi=0; bi<this->_Bonds.size(); bi++ ) {
     Bond_sp bc = this->_Bonds[bi];
@@ -1693,13 +1693,13 @@ CL_DEFMETHOD core::T_sp Atom_O::getType(core::HashTable_sp atomTypes) const {
 
 AtomIdMap_sp Atom_O::buildAtomIdMap() const
 {
-  SIMPLE_ERROR(("Atom should never buildAtomIdMap"));
+  SIMPLE_ERROR("Atom should never buildAtomIdMap");
 };
 
 
 Atom_sp Atom_O::atomWithAtomId(const AtomId& atomId) const
 {
-  SIMPLE_ERROR(("Atom should never return atomWithAtomId"));
+  SIMPLE_ERROR("Atom should never return atomWithAtomId");
 };
 
 
@@ -1718,7 +1718,7 @@ void	Atom_O::bumpPosition(double dist)
 void	Atom_O::failIfInvalid()
 {
   if ( this->invalid() ) {
-    SIMPLE_ERROR(("INVALID %s") , this->description());
+    SIMPLE_ERROR("INVALID {}" , this->description());
   }
 }
 

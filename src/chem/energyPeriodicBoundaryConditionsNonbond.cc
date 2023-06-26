@@ -58,7 +58,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 //#define DEBUG_NONBOND_TERM 1
 #define LOG_ENERGY(x)
-//#define LOG_ENERGY core::write_bf_stream
+//#define LOG_ENERGY core::clasp_write_string
 
 namespace chem
 {
@@ -87,7 +87,7 @@ double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_sp 
                                                               double x2, double y2, double z2,
                                                               double dA, double dC, double dQ1Q2)
 {
-  SIMPLE_ERROR(("Support %s") , __FUNCTION__);
+  SIMPLE_ERROR("Support {}" , __FUNCTION__);
 #if 0
 #undef	NONBOND_SET_PARAMETER
 #define	NONBOND_SET_PARAMETER(x)	{}
@@ -133,7 +133,7 @@ double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_sp 
 void	EnergyPeriodicBoundaryConditionsNonbond_O::setupHessianPreconditioner(NVector_sp nvPosition,
                                                                               AbstractLargeSquareMatrix_sp m )
 {
-  SIMPLE_ERROR(("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
+  SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }
 
 
@@ -275,7 +275,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
     }
   } 
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw, this->_EnergyElectrostatic );
-  LOG( "Nonbond energy vdw(%lf) electrostatic(%lf)\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
+  LOG( "Nonbond energy vdw({}) electrostatic({})\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
   LOG("Nonbond energy }\n");
 }
 
@@ -294,7 +294,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   this->_Evaluations++;
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
-    SIMPLE_ERROR(("The nonbonded excluded atoms parameters have not been set up"));
+    SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
@@ -358,17 +358,17 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
 //  printf("%s:%d About to do nonbond calc endIndex -> %d\n", __FILE__, __LINE__, endIndex );
   int index1_end = endIndex-1;
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
-    LOG("%s ====== top of outer loop - index1 = %d\n" , __FUNCTION__ , index1 );
+    LOG("{} ====== top of outer loop - index1 = {}\n" , __FUNCTION__ , index1 );
           // Skip 0 in excluded atom list that amber requires
     bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     double charge11 = (*this->_charge_vector)[index1];
     double electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
-      LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n" , numberOfExcludedAtomsRemaining , index2 );
+      LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> {}    index2 -> {}\n" , numberOfExcludedAtomsRemaining , index2 );
       int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
       if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
-        LOG("    Excluding atom %d\n" , index2);
+        LOG("    Excluding atom {}\n" , index2);
         ++excludedAtomIndex;
         --numberOfExcludedAtomsRemaining;
         continue;
@@ -385,7 +385,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
       dQ1Q2 = electrostatic_scaled_charge11*charge22;
       dQ1Q2 = charge11*charge22;
 #if 0
-      core::write_bf_stream(fmt::sprintf("%s:%d  dA -> %f   dC -> %f  dQ1Q2 -> %f\n" , __FILE__ , __LINE__ , dA , dC , dQ1Q2));
+      core::clasp_write_string(fmt::format("{}:{}  dA -> {}   dC -> {}  dQ1Q2 -> {}\n" , __FILE__ , __LINE__ , dA , dC , dQ1Q2));
 #endif
 //        printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
 //        printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
@@ -421,11 +421,11 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
     DONE:
 #if 0
-      core::write_bf_stream(fmt::sprintf("%s:%d  DistanceSquared -> %f   Evdw -> %f  Evdw_rc -> %f   Eeel -> %f\n" , __FILE__ , __LINE__ , DistanceSquared , Evdw , vljrc , Eeel));
-      core::write_bf_stream(fmt::sprintf("%s:%d  x1, y1, z1 -> %f, %f, %f\n" , __FILE__ , __LINE__ , x1 , y1 , z1 ));
-      core::write_bf_stream(fmt::sprintf("%s:%d  x2, y2, z2 -> %f, %f, %f\n" , __FILE__ , __LINE__ , x2 , y2 , z2 ));
-      core::write_bf_stream(fmt::sprintf("%s:%d  fx1, fy1, fz1 -> %f, %f, %f\n" , __FILE__ , __LINE__ , fx1 , fy1 , fz1 ));
-      core::write_bf_stream(fmt::sprintf("%s:%d  fx2, fy2, fz2 -> %f, %f, %f\n" , __FILE__ , __LINE__ , fx2 , fy2 , fz2 ));
+      core::clasp_write_string(fmt::format("{}:{}  DistanceSquared -> {}   Evdw -> {}  Evdw_rc -> {}   Eeel -> {}\n" , __FILE__ , __LINE__ , DistanceSquared , Evdw , vljrc , Eeel));
+      core::clasp_write_string(fmt::format("{}:{}  x1, y1, z1 -> {}, {}, {}\n" , __FILE__ , __LINE__ , x1 , y1 , z1 ));
+      core::clasp_write_string(fmt::format("{}:{}  x2, y2, z2 -> {}, {}, {}\n" , __FILE__ , __LINE__ , x2 , y2 , z2 ));
+      core::clasp_write_string(fmt::format("{}:{}  fx1, fy1, fz1 -> {}, {}, {}\n" , __FILE__ , __LINE__ , fx1 , fy1 , fz1 ));
+      core::clasp_write_string(fmt::format("{}:{}  fx2, fy2, fz2 -> {}, {}, {}\n" , __FILE__ , __LINE__ , fx2 , fy2 , fz2 ));
 #endif
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       nbi->_calcForce = calcForce;
@@ -479,7 +479,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
     }
   }
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
-  LOG( "Nonbond energy vdw(%lf) electrostatic(%lf)\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
+  LOG( "Nonbond energy vdw({}) electrostatic({})\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
   LOG( "Nonbond energy }\n");
 }
 
@@ -574,7 +574,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
   
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
-    SIMPLE_ERROR(("The nonbonded excluded atoms parameters have not been set up"));
+    SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
@@ -624,17 +624,17 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
   }
   int index1_end = endIndex-1;
   for ( int index1 = 0; index1<index1_end; ++index1 ) {
-    LOG("%s ====== top of outer loop - index1 = %d\n" , __FUNCTION__ , index1 );
+    LOG("{} ====== top of outer loop - index1 = {}\n" , __FUNCTION__ , index1 );
           // Skip 0 in excluded atom list that amber requires
     bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     double charge11 = (*this->_charge_vector)[index1];
     double electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
-      LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n" , numberOfExcludedAtomsRemaining , index2 );
+      LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> {}    index2 -> {}\n" , numberOfExcludedAtomsRemaining , index2 );
       int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
       if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
-        LOG("    Excluding atom %d\n" , index2);
+        LOG("    Excluding atom {}\n" , index2);
         ++excludedAtomIndex;
         --numberOfExcludedAtomsRemaining;
         continue;

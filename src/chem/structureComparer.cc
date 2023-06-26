@@ -119,14 +119,14 @@ int					i;
 geom::SimpleVectorCoordinate_sp			moveableCoordinates;
     if ( matter != this->_Matter )
     {
-        SIMPLE_ERROR(("The Matter passed must be the same as the one defined for the StructureComparer"));
+        SIMPLE_ERROR("The Matter passed must be the same as the one defined for the StructureComparer");
     }
 
     if ( this->_SuperposeAtoms.size() < 3 )
     {
-	SIMPLE_ERROR(("You must have defined at least three atoms to superpose"));
+	SIMPLE_ERROR("You must have defined at least three atoms to superpose");
     }
-    LOG("Number of superpose atoms = %d" , this->_SuperposeAtoms.size()  );
+    LOG("Number of superpose atoms = {}" , this->_SuperposeAtoms.size()  );
 
 
 	//
@@ -137,10 +137,10 @@ geom::SimpleVectorCoordinate_sp			moveableCoordinates;
     for ( ai=this->_SuperposeAtoms.begin(), i=0;
 		ai!=this->_SuperposeAtoms.end(); ai++, i++)
     {
-	LOG("Extracting coordinate for superpose atom(%s)" , (*ai)->getName().c_str()  );
+	LOG("Extracting coordinate for superpose atom({})" , (*ai)->getName().c_str()  );
 	(*moveableCoordinates)[i] = (*ai)->getPosition();
     }
-    LOG("There are %d superposable atoms" , this->_SuperposeAtoms.size()  );
+    LOG("There are {} superposable atoms" , this->_SuperposeAtoms.size()  );
 
 	//
 	// Now compare this conformation to every one in the database

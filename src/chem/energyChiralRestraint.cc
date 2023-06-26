@@ -142,7 +142,7 @@ void EnergyChiralRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 	as2 = atomLabel(cri->_Atom2);
 	as3 = atomLabel(cri->_Atom3);
 	as4 = atomLabel(cri->_Atom4);
-        core::writeln_bf_stream(fmt::sprintf("TERM 7CHIRAL %-9s %-9s %-9s %-9s %8.2lf %8.2lf ; I1=%d I2=%d I3=%d I4=%d" , as1 , as2 , as3 , as4 , cri->term.K , cri->term.CO , cri->term.I1 , cri->term.I2 , cri->term.I3 , cri->term.I4 ));
+        core::clasp_write_string(fmt::format("TERM 7CHIRAL {:<9} {:<9} {:<9} {:<9} {:8.2f} {:8.2f} ; I1={} I2={} I3={} I4={}\n" , as1 , as2 , as3 , as4 , cri->term.K , cri->term.CO , cri->term.I1 , cri->term.I2 , cri->term.I3 , cri->term.I4 ));
     }
 }
 
@@ -407,18 +407,18 @@ bool	calcOffDiagonalHessian = true;
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
 #include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
-		LOG("fx1 = %le" , fx1 );
-		LOG("fy1 = %le" , fy1 );
-		LOG("fz1 = %le" , fz1 );
-		LOG("fx2 = %le" , fx2 );
-		LOG("fy2 = %le" , fy2 );
-		LOG("fz2 = %le" , fz2 );
-		LOG("fx3 = %le" , fx3 );
-		LOG("fy3 = %le" , fy3 );
-		LOG("fz3 = %le" , fz3 );
-		LOG("fx4 = %le" , fx4 );
-		LOG("fy4 = %le" , fy4 );
-		LOG("fz4 = %le" , fz4 );
+		LOG("fx1 = {}" , fx1 );
+		LOG("fy1 = {}" , fy1 );
+		LOG("fz1 = {}" , fz1 );
+		LOG("fx2 = {}" , fx2 );
+		LOG("fy2 = {}" , fy2 );
+		LOG("fz2 = {}" , fz2 );
+		LOG("fx3 = {}" , fx3 );
+		LOG("fy3 = {}" , fy3 );
+		LOG("fz3 = {}" , fz3 );
+		LOG("fx4 = {}" , fx4 );
+		LOG("fy4 = {}" , fy4 );
+		LOG("fz4 = {}" , fz4 );
 		int index = i;
 #include <cando/chem/energy_functions/_ChiralRestraint_debugFiniteDifference.cc>
 
@@ -470,12 +470,12 @@ int	fails = 0;
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
 	int	I1, I2, I3, I4, i;
         gctools::Vec0<EnergyChiralRestraint>::iterator cri;
-	LOG("Entering checking loop, there are %d terms" , this->_Terms.end()-this->_Terms.begin() );
+	LOG("Entering checking loop, there are {} terms" , this->_Terms.end()-this->_Terms.begin() );
 	for ( i=0,cri=this->_Terms.begin();
 		    cri!=this->_Terms.end(); cri++,i++ ) {
 		      /* Obtain all the parameters necessary to calculate */
 		      /* the amber and forces */
-	    LOG("Checking term# %d" , i  );
+	    LOG("Checking term# {}" , i  );
 #include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 	    LOG("Status" );
 	    if ( ChiralTest>0.0 ) {
@@ -492,7 +492,7 @@ int	fails = 0;
 		info << a3->getName() << " ";
 		info << a4->getName() << ")";
 		info << std::endl;
-	        LOG("Info: %s" , info.str().c_str()  );
+	        LOG("Info: {}" , info.str().c_str()  );
 		this->_BeyondThresholdTerms.push_back(*cri);
 	        LOG("Status" );
 		fails++;

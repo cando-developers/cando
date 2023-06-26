@@ -94,16 +94,16 @@ int		i;
     if ( this->_currentNode == NULL ) 
     {
 	nd = this->topNode;
-//	LOG("In top node address=%lx" , (nd ) );
+//	LOG("In top node address={}" , (nd ) );
     } else {
 		    // Create a new node, give it its name and parent
 	newNode = QDomNode_O::create();
 	nd = &*newNode;
-//	LOG("Created new node address=%lx" , (nd ) );
+//	LOG("Created new node address={}" , (nd ) );
         this->_currentNode->addChild(newNode);
     }
 
-//    LOG("Setting data for node: %lx  localName=%s" , (nd) , this->getLocalName() );
+//    LOG("Setting data for node: {}  localName={}" , (nd) , this->getLocalName() );
     nd->setLocalName(this->getLocalName());
     nd->setFileName(this->topNode->getFileName());
     nd->setLineNumber(this->getLineNumber());
@@ -113,12 +113,12 @@ int		i;
     for ( i = 0; i<this->getAttributeCount(); i++ ) 
     {
 	this->getAttributeAtIndex( i, attrName, attrVal );
-//	LOG("Adding attribute: %s = %s" , (attrName.c_str()) , (attrVal.c_str() ) );
+//	LOG("Adding attribute: {} = {}" , (attrName.c_str()) , (attrVal.c_str() ) );
         core::SimpleBaseString_sp sattrName = core::SimpleBaseString_O::make(attrName);
         core::SimpleBaseString_sp sattrVal = core::SimpleBaseString_O::make(attrVal);
 	nd->_attributes.setEqual(sattrName,sattrVal);
     }
-//    LOG("Setting _currentNode to %X" , (void*)(nd) );
+//    LOG("Setting _currentNode to {}" , (void*)(nd) );
     this->_currentNode = nd;
 }
 
@@ -128,7 +128,7 @@ void	MySaxDomHandler::endElement()
     if ( this->_currentNode != this->topNode ) 
     {
         this->_currentNode = this->_currentNode->getParent();
-//	LOG("Restored _currentNode to %X" , (void*)(this->_currentNode));
+//	LOG("Restored _currentNode to {}" , (void*)(this->_currentNode));
     }
 }
 
@@ -136,7 +136,7 @@ void	MySaxDomHandler::endElement()
 
 void	MySaxDomHandler::characters() 
 {
-//    LOG("About to appendCharacters(%s)" , this->getData() );
+//    LOG("About to appendCharacters({})" , this->getData() );
     ASSERTP(this->_currentNode!=NULL,"currentNode is NULL and you are trying to write characters to it");
     this->_currentNode->appendCharacters(this->getData());
 }
@@ -170,8 +170,8 @@ QDomNode_sp		child;
     if ( children.size() != 0 ) {
         LOG("children.size() != 0" );
         child = *(children.begin());
-        LOG("Defining error for unknown xml command: %s" , (child->getLocalName().c_str() ) );
-	SIMPLE_ERROR(("There is an unknown command: %s in file(%s) line(%d)") , child->getLocalName() , this->getFileName() , this->getLineNumber() );
+        LOG("Defining error for unknown xml command: {}" , (child->getLocalName().c_str() ) );
+	SIMPLE_ERROR("There is an unknown command: {} in file({}) line({})" , child->getLocalName() , this->getFileName() , this->getLineNumber() );
     }
 }
 
@@ -190,8 +190,8 @@ void	QDomNode_O::throwErrorForChildrenWithoutName(string nm)
     {
 	child = *x;
 	if ( child->getLocalName() != nm ) {
-            LOG("Defining error for unknown xml command: %s" , (child->getLocalName().c_str() ) );
-	    SIMPLE_ERROR(("There is an unknown command: %s in file(%s) line(%d)") , child->getLocalName() , this->getFileName() , this->getLineNumber());
+            LOG("Defining error for unknown xml command: {}" , (child->getLocalName().c_str() ) );
+	    SIMPLE_ERROR("There is an unknown command: {} in file({}) line({})" , child->getLocalName() , this->getFileName() , this->getLineNumber());
 	}
     }
 }
@@ -210,7 +210,7 @@ bool    QDomNode_O::dataIsAllWhiteSpace()
     claspCharacter c = cl__char(this->characters->_Contents,idx).unsafe_character();
     if (!isspace(c))
     {
-      LOG( "isspace was false char=|%c|\n"% *it );
+      LOG( "isspace was false char=|{}|\n"% *it );
       return false;
     }
   }
@@ -319,7 +319,7 @@ void	QDomNode_O::writeXml( string prefix, std::ostream& out )
 	for ( it = this->_children.begin(); it!=this->_children.end(); it++ ) {
             LOG("Cea" );
 	    if ( !(*it) ) {
-		SIMPLE_ERROR(("Bad child"));
+		SIMPLE_ERROR("Bad child");
 	    }
 	    (*it)->writeXml(prefix+" ",out);
 	}
@@ -425,7 +425,7 @@ int		start, stop;
 	}
 	stop = cur-1;
 	str = s.substr(start,stop-start+1);
-	LOG("adding data (%s) to set of strings" , (str.c_str() ) );
+	LOG("adding data ({}) to set of strings" , (str.c_str() ) );
 	ss->insert(str);
     }
     return ss;
@@ -475,9 +475,9 @@ double		dVal;
 	    cur++;
 	}
 	stop = cur-1;
-	LOG("convertToVectorOfDoubles converting: |%s|" , (s.substr(start,stop-start+1).c_str() ) );
+	LOG("convertToVectorOfDoubles converting: |{}|" , (s.substr(start,stop-start+1).c_str() ) );
 	dVal = atof((s.substr(start,stop-start+1)).c_str());
-	LOG("convertToVectorOfDoubles value = %lf" , (dVal ) );
+	LOG("convertToVectorOfDoubles value = {}" , (dVal ) );
 	vs.push_back(dVal);
 	LOG("convertToVectorOfDoubles pushed value" );
     }
@@ -569,10 +569,10 @@ int				children;
     }
     if ( children > 1 )
     {
-	SIMPLE_ERROR(("There can only be one child with the name(%s) in XML file(%s) at line(%d)") , name , this->getFileName() , this->getLineNumber() );
+	SIMPLE_ERROR("There can only be one child with the name({}) in XML file({}) at line({})" , name , this->getFileName() , this->getLineNumber() );
     }
     if ( children < 1 ) {
-	SIMPLE_ERROR(("There must be one child with the name(%s) in XML file(%s) at line(%d)") , name , this->getFileName() , this->getLineNumber() );
+	SIMPLE_ERROR("There must be one child with the name({}) in XML file({}) at line({})" , name , this->getFileName() , this->getLineNumber() );
     }
     return child;
 }
@@ -583,7 +583,7 @@ CL_DEFMETHOD QDomNode_sp	QDomNode_O::onlyChild()
 {
 QDomNode_sp			child;
     if ( this->_children.size() != 1 ) {
-        SIMPLE_ERROR(("This node must have one and only one child file(%s) line(%d) ") , this->getFileName() , this->getLineNumber() );
+        SIMPLE_ERROR("This node must have one and only one child file({}) line({}) " , this->getFileName() , this->getLineNumber() );
     }
     child = *(this->_children.begin());
     return child;
@@ -596,7 +596,7 @@ VectorQDomNodes QDomNode_O::getChildrenWithNameAndRemoveThem( const string& name
 VectorQDomNodes 			childs;
 iterator		it;
     LOG("QDomNode_O::getChildrenWithNameAndRemoveThem" );
-    LOG("Coming in there are %d children" , (this->_children.size() ) );
+    LOG("Coming in there are {} children" , (this->_children.size() ) );
     it = this->_children.begin();
     while ( it != this->_children.end() ) {
 	if ( (*it)->getLocalName() == name ) {
@@ -606,8 +606,8 @@ iterator		it;
 	}
 	it++;
     }
-    LOG("I found %d children with the name: %s" , (childs.size()) , (name.c_str() ) );
-    LOG("Going out there are %d children" , (this->_children.size() ) );
+    LOG("I found {} children with the name: {}" , (childs.size()) , (name.c_str() ) );
+    LOG("Going out there are {} children" , (this->_children.size() ) );
 
     return childs;
 }
@@ -644,7 +644,7 @@ boost::python::list			vals;
 VectorQDomNodes			childs;
 VectorQDomNodes::iterator	it;
 
-    LOG("Entered python_childrenWithName, looking for name: %s" , (nm.c_str() ) );
+    LOG("Entered python_childrenWithName, looking for name: {}" , (nm.c_str() ) );
     childs = this->gatherSubNodesWithName(nm);
     for ( it = childs.begin(); it!=childs.end(); it++ ) {
 	vals.append(*it);
@@ -657,7 +657,7 @@ boost::python::list			vals;
 VectorQDomNodes			childs;
 VectorQDomNodes::iterator	it;
 
-    LOG("Entered python_childrenWithName, looking for name: %s" , (nm.c_str() ) );
+    LOG("Entered python_childrenWithName, looking for name: {}" , (nm.c_str() ) );
     childs = this->getChildrenWithName(nm);
     for ( it = childs.begin(); it!=childs.end(); it++ ) {
 	vals.append(*it);
@@ -800,7 +800,7 @@ CL_LISPIFY_NAME("addChild");
 CL_DEFMETHOD void	QDomNode_O::addChild(QDomNode_sp child)
 {
     if ( !child ) {
-	SIMPLE_ERROR(("You tried to add an empty child"));
+	SIMPLE_ERROR("You tried to add an empty child");
     }
     this->_children.push_back(child);
 }
@@ -811,7 +811,7 @@ void	QDomNode_O::fillVectorQDomNodesIfNameIs(int depth,QDomNode_sp me, VectorQDo
     VectorQDomNodes	children;
     QDomNode_sp		child;
     if ( me->getLocalName() == name ) {
-//	LOG("Found name: %s" , name.c_str()  );
+//	LOG("Found name: {}" , name.c_str()  );
 	vnodes.push_back(me);
 	return;
     }

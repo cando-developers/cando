@@ -51,7 +51,7 @@ Matrix benchmarkMatrixMultiplications(int num);
 #define nrerror(s) printf("%s\n", s);
 
 void jacobi(Matrix &a, int n, double d[], Matrix &v, int *nrot)
-// Computes all eigenvalues and eigenvectors of a real
+// Computes all eigenvalues and eigenectors of a real
 // symmetric matrix a[1..n][1..n]. On
 // output, elements of a above the diagonal are destroyed.
 // d[1..n] returns the eigenvalues of a.
@@ -681,7 +681,7 @@ namespace client
         bool r = phrase_parse(first, last, *double_, space, v);
         if (first != last)
 	{
-          core::writeln_bf_stream(fmt::sprintf("first!=last  v.size() = %d" , v.size()));
+          core::clasp_write_string(fmt::format("first!=last  v.size() = {}\n" , v.size()));
           return false;
 	}
 	m.setFromDoubleVector(v);
@@ -790,7 +790,7 @@ string Matrix::asStringFormatted() const {
   for (r = 0; r < 4; r++) {
     for (c = 0; c < 4; c++) {
       val = at(r, c);
-      strcpy(cstr, fmt::sprintf("%8.2lf", val).c_str());
+      strcpy(cstr, fmt::format("{:8.2f}", val).c_str());
       ss << cstr << " ";
     }
     ss << std::endl;
@@ -826,13 +826,13 @@ void Matrix::setFromString(const string &str) {
       serr << "Token #" << ei << " = " << tokens[ei] << std::endl;
     }
     serr << "---done dump";
-    SIMPLE_ERROR(("%s"), serr.str());
+    SIMPLE_ERROR("{}", serr.str());
   }
   {
     for (i = 0, token = tokens.begin(); token != tokens.end(); token++, i++) {
       val = atof((*token).c_str());
       if (i > 15) {
-        SIMPLE_ERROR(("Too many numbers: %s"), str);
+        SIMPLE_ERROR("Too many numbers: {}", str);
       }
       vals[i] = val;
     }
@@ -1100,9 +1100,9 @@ Matrix Matrix::flipXY() const {
 void Matrix::archive(core::ArchiveP node) {
   if (node->loading()) {
     const string &values = node->characters();
-    LOG("Loading matrix with values: [%s]", (values.c_str()));
+    LOG("Loading matrix with values: [{}]", (values.c_str()));
     this->setFromString(values, node->lisp());
-    LOG("Set myself using that string and the result is: %s", (this->asString().c_str()));
+    LOG("Set myself using that string and the result is: {}", (this->asString().c_str()));
   } else {
     string values = this->asString();
     node->setCharacters(values);
@@ -1241,6 +1241,73 @@ void rotation_matrix_to_quaternion(double &w, double &x, double &y, double &z, c
   z = (m.at(1, 0) - m.at(0, 1)) * wo4;
 };
 
+void rotor3_translation_to_matrix(Matrix &matrix, double scalar, double xy, double yz, double zx, double tx, double ty, double tz) {
+  double w = scalar;
+  double x = -yz;
+  double y = -zx;
+  double z = -xy;
+  double xsq = x * x;
+  double ysq = y * y;
+  double zsq = z * z;
+  double s = 1.0 / (w * w + x * x + y * y + z * z);
+  matrix.at(0, 0) = 1.0 - 2.0 * s * (ysq + zsq);
+  matrix.at(0, 1) = 2.0 * s * (x * y - w * z);
+  matrix.at(0, 2) = 2.0 * s * (x * z + w * y);
+  matrix.at(0, 3) = tx;
+  matrix.at(1, 0) = 2.0 * s * (x * y + w * z);
+  matrix.at(1, 1) = 1.0 - 2.0 * s * (xsq + zsq);
+  matrix.at(1, 2) = 2.0 * s * (y * z - w * x);
+  matrix.at(1, 3) = ty;
+  matrix.at(2, 0) = 2.0 * s * (x * z - w * y);
+  matrix.at(2, 1) = 2.0 * s * (y * z + w * x);
+  matrix.at(2, 2) = 1.0 - 2.0 * s * (xsq + ysq);
+  matrix.at(2, 3) = tz;
+  matrix.at(3, 0) = 0.0;
+  matrix.at(3, 1) = 0.0;
+  matrix.at(3, 2) = 0.0;
+  matrix.at(3, 3) = 1.0;
+}
+
+// Only use this with normalized quaternions
+void normalized_rotor3_to_matrix(Matrix &matrix, double scalar, double xy, double yz, double zx, double tx, double ty, double tz) {
+  double w = -scalar;
+  double x = -yz;
+  double y = -zx;
+  double z = -xy;
+  double xsq = x * x;
+  double ysq = y * y;
+  double zsq = z * z;
+  matrix.at(0, 0) = 1.0 - 2.0 * (ysq + zsq);
+  matrix.at(0, 1) = 2.0 * (x * y - w * z);
+  matrix.at(0, 2) = 2.0 * (x * z + w * y);
+  matrix.at(0, 3) = tx;
+  matrix.at(1, 0) = 2.0 * (x * y + w * z);
+  matrix.at(1, 1) = 1.0 - 2.0 * (xsq + zsq);
+  matrix.at(1, 2) = 2.0 * (y * z - w * x);
+  matrix.at(1, 3) = ty;
+  matrix.at(2, 0) = 2.0 * (x * z - w * y);
+  matrix.at(2, 1) = 2.0 * (y * z + w * x);
+  matrix.at(2, 2) = 1.0 - 2.0 * (xsq + ysq);
+  matrix.at(2, 3) = tz;
+  matrix.at(3, 0) = 0.0;
+  matrix.at(3, 1) = 0.0;
+  matrix.at(3, 2) = 0.0;
+  matrix.at(3, 3) = 1.0;
+}
+
+void rotation_matrix_to_rotor3(double &scalar, double &xy, double &yz, double &zx, const Matrix &m) {
+  double w = sqrt(1.0 + m.at(0, 0) + m.at(1, 1) + m.at(2, 2)) / 2.0;
+  ASSERT(w != 0.0);
+  double wo4 = 1.0 / (4.0 * w);
+  double x = (m.at(2, 1) - m.at(1, 2)) * wo4;
+  double y = (m.at(0, 2) - m.at(2, 0)) * wo4;
+  double z = (m.at(1, 0) - m.at(0, 1)) * wo4;
+  scalar = w;
+  xy = -z;
+  yz = -x;
+  zx = -y;
+};
+
 /*! Build Vector3 external coordinate using a coordinate system in a matrix
 and a distance, angle and dihedral angle.
 The matrix has the columns (nx ny nz origin)
@@ -1263,41 +1330,41 @@ Vector3 pointFromMatrixAndInternalCoordinates(const Matrix &coordinateSystem, do
 
 #if 0
 #define VEC_LOG(...)                                                                                                               \
-  core::write_bf_stream(fmt::sprintf("%s:%d:%f - ", __FILE__, __LINE__, __FUNCTION__));                                            \
-  core::write_bf_stream(msg)
+  core::clasp_write_string(fmt::format("{}:{}:{} - ", __FILE__, __LINE__, __FUNCTION__));                                            \
+  core::clasp_write_string(msg)
 #else
 #define VEC_LOG(...)
 #endif
 
 void internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D, const Matrix &coordinateSystem, double &distance,
                                                      double &theta, double &phi) {
-  VEC_LOG("stub = \n%s\n", coordinateSystem.asString());
+  VEC_LOG("stub = \n{}\n", coordinateSystem.asString());
   Vector3 x = coordinateSystem.colX();
   Vector3 y = coordinateSystem.colY();
   Vector3 z = coordinateSystem.colZ();
-  VEC_LOG("x = %s\n", x.asString());
-  VEC_LOG("y = %s\n", y.asString());
-  VEC_LOG("z = %s\n", z.asString());
+  VEC_LOG("x = {}\n", x.asString());
+  VEC_LOG("y = {}\n", y.asString());
+  VEC_LOG("z = {}\n", z.asString());
   Vector3 C = coordinateSystem.getTranslation();
   Vector3 CD = D - C;
   double lengthCD = CD.length();
   distance = lengthCD;
   if (lengthCD < SMALL_NUMBER)
-    SIMPLE_ERROR(("About to divide by zero"));
+    SIMPLE_ERROR("About to divide by zero");
   Vector3 d = CD * (1.0 / lengthCD);
-  VEC_LOG("d = %s\n", d.asString());
+  VEC_LOG("d = {}\n", d.asString());
   double dx = d.dotProduct(x);
   double dy = d.dotProduct(y);
   double dz = d.dotProduct(z);
-  VEC_LOG("dx = %lf  dy = %lf  dz = %lf\n", dx, dy, dz);
+  VEC_LOG("dx = {}  dy = {}  dz = {}\n", dx, dy, dz);
   phi = geom::geom__planeVectorAngle(dy, dz);
-  VEC_LOG("  dy = %lf   dz = %lf\n", dy, dz);
-  VEC_LOG("_Phi = %lf deg\n", (phi / 0.0174533));
+  VEC_LOG("  dy = {}   dz = {}\n", dy, dz);
+  VEC_LOG("_Phi = {} deg\n", (phi / 0.0174533));
   Vector3 dox(1.0, 0.0, 0.0);
   Vector3 dop(dx, dy, dz);
   double f = dop.dotProduct(dox);
-  VEC_LOG("dop = %s\n", dop.asString());
-  VEC_LOG("dop.dotProduct(dox) = %lf\n", dop.dotProduct(dox));
+  VEC_LOG("dop = {}\n", dop.asString());
+  VEC_LOG("dop.dotProduct(dox) = {}\n", dop.dotProduct(dox));
   if (f > (1.0 - SMALL_NUMBER)) {
     theta = 0.0;
     return;
@@ -1308,15 +1375,15 @@ void internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D, const Mat
   }
   Vector3 doz = dox.crossProduct(dop);
   doz = doz.normalized();
-  VEC_LOG("doz = %s\n", doz.asString());
+  VEC_LOG("doz = {}\n", doz.asString());
   Vector3 doy = doz.crossProduct(dox);
-  VEC_LOG("doy = %s\n", doy.asString());
+  VEC_LOG("doy = {}\n", doy.asString());
   double eox = dop.dotProduct(dox);
   double eoy = dop.dotProduct(doy);
-  VEC_LOG("eox = %lf  eoy = %lf\n", eox, eoy);
+  VEC_LOG("eox = {}  eoy = {}\n", eox, eoy);
   //  double eoz = dop.dotProduct(doz); // Must be 0.0
   theta = geom::geom__planeVectorAngle(eox, eoy);
-  VEC_LOG("    theta = %lf deg\n", (theta / 0.0174533));
+  VEC_LOG("    theta = {} deg\n", (theta / 0.0174533));
 }
 
 namespace geom {

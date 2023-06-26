@@ -69,7 +69,7 @@ namespace omm
 	}
 	catch (...)
 	{
-	    SIMPLE_ERROR(("Could not get positions from openmm::state"));
+	    SIMPLE_ERROR("Could not get positions from openmm::state");
 	}
 	chem::Loop lAtoms(matter,ATOMS);
 	core::Symbol_sp particleIndexSymbol = _lisp->internWithPackageName(Pkg(),ParticleIndex);
@@ -91,7 +91,7 @@ namespace omm
 	}
 	catch (...)
 	{
-	    SIMPLE_ERROR(("Could not get positions from openmm::state"));
+	    SIMPLE_ERROR("Could not get positions from openmm::state");
 	}
 	units::Quantity_sp res =
 	    units::Quantity_O::create(pos_in_nm,
@@ -109,7 +109,7 @@ namespace omm
 	}
 	catch (...)
 	{
-	    SIMPLE_ERROR(("Could not get velocities from openmm::state"));
+	    SIMPLE_ERROR("Could not get velocities from openmm::state");
 	}
 	units::Quantity_sp res = units::Quantity_O::create(vel_in_nm_per_ps,
 							   _lisp->symbol(units::_sym_nm_per_ps)->dyn<units::Unit_O>(),
@@ -128,7 +128,7 @@ namespace omm
 	}
 	catch (...)
 	{
-	    SIMPLE_ERROR(("Could not get forces from openmm::state"));
+	    SIMPLE_ERROR("Could not get forces from openmm::state");
 	}
         return res;
     };
@@ -146,7 +146,7 @@ namespace omm
 	}
 	catch (...)
 	{
-	    SIMPLE_ERROR(("Could not get kinetic energy from openmm::state"));
+	    SIMPLE_ERROR("Could not get kinetic energy from openmm::state");
 	}
 	units::Quantity_sp f =
 	    units::Quantity_O::create(e_in_kj_per_mole,
@@ -164,7 +164,7 @@ namespace omm
 	}
 	catch (...)
 	{
-	    SIMPLE_ERROR(("Could not get potential energy from openmm::state"));
+	    SIMPLE_ERROR("Could not get potential energy from openmm::state");
 	}
 	units::Quantity_sp f =
 	    units::Quantity_O::create(e_in_kj_per_mole,

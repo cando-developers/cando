@@ -64,7 +64,12 @@
 (defclass jump-internal (internal)
   ())
 
-(cando.serialize:make-class-save-load jump-internal)
+(cando.serialize:make-class-save-load
+ jump-internal
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (name obj)))))
 
 (defclass bonded-internal (internal)
   ((bond :initarg :bond :accessor bond)
@@ -88,12 +93,18 @@
 (defclass complex-bonded-internal (bonded-internal)
   ())
 
-(cando.serialize:make-class-save-load complex-bonded-internal)
+(cando.serialize:make-class-save-load
+ complex-bonded-internal
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (name obj)))))
 
 (defclass fragment-internals (serial:serializable)
-  ((index :initarg :index :accessor index)
-   (probability :initform nil :initarg :probability :accessor probability)
+  ((trainer-index :initarg :trainer-index :accessor trainer-index)
+   (probability :initform 1.0s0 :initarg :probability :accessor probability)
    (internals :initarg :internals :accessor internals)
+   (energy :initform 0.0s0 :initarg :energy :accessor energy)
    (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
    ))
 
@@ -101,12 +112,14 @@
  fragment-internals
  :print-unreadably
  (lambda (obj stream)
+   (let ((*print-pretty* nil))
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (index obj)))))
+     (let ((internals (coerce (subseq (internals obj) 0 (min (length (internals obj)) 4) ) 'list)))
+       (format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral x)))) internals )))))))
 
 (defun copy-fragment-internals (fragment-internals)
   (make-instance 'fragment-internals
-                 :index (index fragment-internals)
+                 :trainer-index (trainer-index fragment-internals)
                  :internals (copy-seq (internals fragment-internals))
                  :out-of-focus-internals (let ((ht (make-hash-table)))
                                            (maphash (lambda (key value)
@@ -118,8 +131,11 @@
   (cond
     ((symbolp name-or-plug-names)
      (loop for internal across (internals fragment-internals)
-           when (and (typep internal 'bonded-internal) (eq name-or-plug-names (name internal)))
-             do (return (list (topology:dihedral internal)))
+           when (eq name-or-plug-names (name internal))
+             do (cond
+                  ((typep internal 'bonded-internal)
+                   (return (list (topology:dihedral internal))))
+                  (t (return (list 0.0))))
            finally (error "Could not find internal with atom-name ~a" name-or-plug-names)))
     ((consp name-or-plug-names)
      (let* ((plug-name (first name-or-plug-names))
@@ -135,17 +151,18 @@
                 append (find-named-fragment-internals fragment-internals name-or-plug-names))
           'vector))
 
-(defun cluster-dihedral-point-vector (fragment-internals names)
+(defun convert-dihedral-rad-vector-to-xy-vector (rad-vector)
+  (make-array (* (length rad-vector) 2) :element-type 'single-float
+                                        :initial-contents (loop for dihedral in rad-vector
+                                                                collect (cos dihedral)
+                                                                collect (sin dihedral))))
+
+(defun cluster-dihedral-rad-vector (fragment-internals names)
   (let ((dihedrals (loop for name-or-plug-names in names
                          append (find-named-fragment-internals fragment-internals name-or-plug-names))))
-    (make-array (* (length dihedrals) 2) :element-type 'single-float
-                                           :initial-contents (loop for dihedral in dihedrals
-                                                                   collect (cos dihedral)
-                                                                   collect (sin dihedral)))))
+    dihedrals))
 
-
-
-(defun cluster-dihedral-names (focus-monomer oligomer)
+(defun calculate-cluster-dihedral-names (focus-monomer oligomer)
   "Calculate the atom-names for dihedrals that are used to cluster fragment-internals"
   (let* ((out-couplings (loop for coupling across (topology:couplings oligomer)
                              when (eq (topology:source-monomer coupling) focus-monomer)
@@ -157,7 +174,10 @@
                                                                   when (getf (topology:properties ca) :dihedral)
                                                                   collect (topology:atom-name ca)))
                                               )
-                                         (cons coupling-name (subseq target-names 0 2)))))
+                                         (cons coupling-name (cond
+                                                               ((> (length target-names) 2)
+                                                                (subseq target-names 0 2))
+                                                               (t target-names))))))
          (sorted-out (sort out-couplings #'string< :key (lambda (x) (string (car x)))))
          (focus-topology (topology:monomer-topology focus-monomer oligomer))
          (focus-constitution (topology:constitution focus-topology))
@@ -171,11 +191,19 @@
 (defclass fragment-conformations (serial:serializable)
   ((focus-monomer-name :initarg :focus-monomer-name :accessor focus-monomer-name)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
-   (total-count :initform 0 :initarg :total-count :accessor total-count)
+   (next-index :initform 0 :initarg :next-index :accessor next-index)
    (fragments :initform (make-array 16 :adjustable t :fill-pointer 0) :initarg :fragments :accessor fragments)))
 
 (cando.serialize:make-class-save-load fragment-conformations)
 
+(defmethod fragment-conformations ((obj fragment-conformations))
+  obj)
+
+(defclass clusterable-fragment-conformations (serial:serializable)
+  ((cluster-dihedral-names :initarg :cluster-dihedral-names :accessor cluster-dihedral-names)
+   (fragment-conformations :initarg :fragment-conformations :accessor fragment-conformations)))
+
+(cando.serialize:make-class-save-load clusterable-fragment-conformations)
 
 (defclass fragment-conformations-map (serial:serializable)
   ((monomer-context-to-fragment-conformations :initform (make-hash-table :test 'equal)
@@ -192,9 +220,13 @@
                      :initarg :fragment-matches
                      :accessor fragment-matches)))
 
-(cando.serialize:make-class-save-load matched-fragment-conformations-map)
-
-(cando.serialize:make-class-save-load matched-fragment-conformations-map)
+(cando.serialize:make-class-save-load
+ matched-fragment-conformations-map
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream " length-fragment-matches ~d length-fragments ~d" (hash-table-count (fragment-matches obj))
+             (hash-table-count (monomer-context-to-fragment-conformations obj))))))
 
 (defun matched-fragment-conformations-summary (matched-fragment-conformations-map)
   (let ((total-fragment-conformations 0)
@@ -266,7 +298,7 @@
   (loop for seen-frag across (fragments fragment-conformations)
         unless (rms-internals-are-different-p seen-frag fragment-internals)
           do (progn
-               (return-from seen-fragment-internals (index seen-frag))))
+               (return-from seen-fragment-internals (trainer-index seen-frag))))
   nil)
 
 
@@ -283,14 +315,14 @@
         do (setf previous-internal internal))
   nil)
 
-(defun save-fragment-conformations (fragment-conformations filename)
-  (cando.serialize:save-cando fragment-conformations filename))
+(defun save-clusterable-fragment-conformations (clusterable-fragment-conformations filename)
+  (cando.serialize:save-cando clusterable-fragment-conformations filename))
 
-(defun load-fragment-conformations (filename)
+(defun load-clusterable-fragment-conformations (filename)
   (cando.serialize:load-cando filename))
 
 (defun dump-fragment-internals (fragment-internals finternals)
-  (format finternals "begin-conformation ~a~%" (index fragment-internals))
+  (format finternals "begin-conformation ~a~%" (trainer-index fragment-internals))
   (flet ((to-deg (rad)
            (/ rad 0.0174533)))
     (loop for internal across (topology:internals fragment-internals)
@@ -337,15 +369,33 @@
                                      (to-deg (topology:dihedral internal))))
                             )))))))
 
-(defgeneric fill-joint-internals (joint internal))
 
-(defmethod fill-joint-internals ((joint kin:jump-joint) (internal jump-internal))
+(defgeneric fill-joint-internals (joint bond angle-rad dihedral-rad))
+
+(defmethod fill-joint-internals ((joint kin:jump-joint) bond angle-rad dihedral-rad)
   )
 
-
-(defmethod fill-joint-internals ((joint kin:bonded-joint) (internal bonded-internal))
-  (kin:set-distance joint (bond internal))
-  (kin:set-theta joint (angle internal))
-  (kin:set-phi joint (dihedral internal))
+(defmethod fill-joint-internals ((joint kin:bonded-joint) bond angle-rad dihedral-rad)
+  (kin:set-distance joint bond)
+  (kin:set-theta joint angle-rad)
+  (kin:set-phi joint dihedral-rad)
   )
+
+(defgeneric extract-bond-angle-rad-dihedral-rad (internal))
+
+(defmethod extract-bond-angle-rad-dihedral-rad ((internal jump-internal))
+  (values 0.0 0.0 0.0))
+
+(defmethod extract-bond-angle-rad-dihedral-rad ((internal bonded-internal))
+  (break "Check that internal angles are in radians")
+  (values (bond internal) (angle internal) (dihedral internal)))
+
+(defgeneric apply-fragment-internals-to-atresidue (fragment-internals atresidue))
+
+(defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) atresidue)
+ (loop for joint across (joints atresidue)
+       for internal across (internals fragment-internals)
+       do (multiple-value-bind (bond angle-rad dihedral-rad)
+              (extract-bond-angle-rad-dihedral-rad internal)
+            (fill-joint-internals joint bond angle-rad dihedral-rad))))
 

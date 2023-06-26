@@ -84,7 +84,7 @@ geom::SimpleVectorCoordinate_sp	ca;
 CL_DEFMETHOD void	ConformationCollectionEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     ASSERTNOTNULL(ac);
-    LOG("setAllCoordinates:%s" , (ac->asXmlString().c_str() ) );
+    LOG("setAllCoordinates:{}" , (ac->asXmlString().c_str() ) );
     LOG("The address of the geom::SimpleVectorCoordinate_sp is in o" );
     this->_AllCoordinates = ac;
 }
@@ -166,7 +166,7 @@ geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinat
     ASSERTNOTNULL(coords);
     for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
     {
-        LOG("Getting position of %s" , (*ai)->description().c_str()  );
+        LOG("Getting position of {}" , (*ai)->description().c_str()  );
         *ci = (*ai)->getPosition();
     }
     LOG("Done" );
@@ -337,7 +337,7 @@ entryIterator	ei;
 	    return i;
 	}
     }
-    SIMPLE_ERROR(("Could not find entry in ConformationCollection"));
+    SIMPLE_ERROR("Could not find entry in ConformationCollection");
 }
 
 
@@ -357,7 +357,7 @@ CL_DEFMETHOD ConformationCollectionEntry_sp	ConformationCollection_O::firstEntry
     if (this->_Entries.size()!=0) {
       return this->_Entries[0];
     }
-    SIMPLE_ERROR(("There are no entries in the conformation-collection"));
+    SIMPLE_ERROR("There are no entries in the conformation-collection");
 }
 
 

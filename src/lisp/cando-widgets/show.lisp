@@ -30,7 +30,7 @@
                       (remhash pane *panes*))
                     (ngl:on-remove (ngl-pane-stage (gethash pane *panes*)))))))
       (apply #'show-on-pane nil object rest))
-  (values))
+  #+(or)(values))
 
 ;;; sketch2d
 
@@ -485,6 +485,9 @@
   (apply #'ngl-show-on-pane pane-instance (isolate-residue object) rest))
 
 (defmethod show-on-pane (pane-instance (object dynamics:trajectory) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance object rest))
+
+(defmethod show-on-pane (pane-instance (object chem:trajectory) &rest rest &key &allow-other-keys)
   (apply #'ngl-show-on-pane pane-instance object rest))
 
 (defmethod show-on-pane (pane-instance (object dynamics:simulation) &rest rest &key &allow-other-keys)

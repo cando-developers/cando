@@ -82,7 +82,7 @@ namespace units
 string Dimension_O::baseDimensionUnitName(int i)
     {
 	ASSERTF(NumBaseDimensions==8,("When you change NumBaseDimensions you must update Dimension_O::baseDimensionUnitName"));
-	ASSERTF(i>=0 && i < NumBaseDimensions,("Illegal base dimension index[%d]") , i);
+	ASSERTF(i>=0 && i < NumBaseDimensions,("Illegal base dimension index[{}]") , i);
 	switch (i)
 	{
 	case 0: return "m";
@@ -94,7 +94,7 @@ string Dimension_O::baseDimensionUnitName(int i)
 	case 6: return "mole";
 	case 7: return "rad";
 	};
-	SIMPLE_ERROR(("Illegal dimension index[%d]") , i);
+	SIMPLE_ERROR("Illegal dimension index[{}]" , i);
     }
     
 

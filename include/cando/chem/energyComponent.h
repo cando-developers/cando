@@ -82,7 +82,7 @@ FORWARD(EnergyFunction);
 
 #if TURN_ENERGY_FUNCTION_DEBUG_ON == 1
 #define	LOG_ENERGY_CLEAR() {this->_DebugLog.str("");};
-#define LOG_ENERGY(...) {fmt::sprintf("%s:%d:%s ", __FILE__, __LINE__, __FUNCTION__ ); fmt::sprintf(__VA_ARGS__);}
+#define LOG_ENERGY(...) {fmt::print("{}:{}:{} ", __FILE__, __LINE__, __FUNCTION__ ); fmt::print(__VA_ARGS__);}
 #else
 #define	LOG_ENERGY_CLEAR() {}
 #define LOG_ENERGY(...) {}
@@ -330,7 +330,7 @@ SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
       return gctools::As<SP>(CONS_CDR(entry));
     }
   }
-  SIMPLE_ERROR(("Could not find %s") , _rep_(key));
+  SIMPLE_ERROR("Could not find {}" , _rep_(key));
 }
   
 ;

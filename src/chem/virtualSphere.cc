@@ -226,7 +226,7 @@ double	radius;
 //    ry = (halfHeight - ay)/radius;
 //    rx = (halfWidth-ax)/radius;
     ry = (ay-halfHeight)/radius;
-//    LOG("relative mouse position = %lf, %lf" , (rx) , (ry ) );
+//    LOG("relative mouse position = {}, {}" , (rx) , (ry ) );
 }
 
 
@@ -277,7 +277,7 @@ CL_DEFMETHOD void VirtualSphere_O::dump()
     ss << "_Center = " << this->_Center.asString() << std::endl;
     ss << "_Rotate = " << this->_Rotate.asString() << std::endl;
     printf("%s", ss.str().c_str() );
-    LOG("%s" , ss.str() );
+    LOG("{}" , ss.str() );
 }
 
 SYMBOL_EXPORT_SC_(ChemKwPkg,idle);
@@ -402,7 +402,7 @@ CL_DEFMETHOD     void
     VirtualSphere_O::setMouseXAxisWheelChange(core::Symbol_sp smode, double w)
     {
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);
-	LOG("Mouse mode=%d" , mode );
+	LOG("Mouse mode={}" , mode );
 	switch ( mode )
 	{
 	case vsIdle:
@@ -416,7 +416,7 @@ CL_DEFMETHOD     void
 	    if ( w < -1.0 ) w = -1.0;
 	    mtemp.rotationY(w);
 	    this->_Rotate = mtemp.multiplyByMatrix(this->_Rotate);
-	    LOG("Rotating with matrix: %s" , (mtemp.asString()));
+	    LOG("Rotating with matrix: {}" , (mtemp.asString()));
 //	        this->_Rotate = this->_Rotate.multiplyByMatrix(mtemp);
 	    this->_Recalculate = true;
 	    break;
@@ -446,7 +446,7 @@ CL_DEFMETHOD     void
     VirtualSphere_O::setMouseYAxisWheelChange(core::Symbol_sp smode, double w)
     {
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);
-	LOG("Mouse mode=%d" , mode );
+	LOG("Mouse mode={}" , mode );
 	switch ( mode )
 	{
 	case vsIdle:
@@ -459,7 +459,7 @@ CL_DEFMETHOD     void
 	    if ( w < -1.0 ) w = -1.0;
 	    mtemp.rotationX(w);
 	    this->_Rotate = mtemp.multiplyByMatrix(this->_Rotate);
-	    LOG("Rotating with matrix: %s" , (mtemp.asString()));
+	    LOG("Rotating with matrix: {}" , (mtemp.asString()));
 //	        this->_Rotate = this->_Rotate.multiplyByMatrix(mtemp);
 	    this->_Recalculate = true;
 	    break;
@@ -487,7 +487,7 @@ CL_DEFMETHOD     void
 
 void	VirtualSphere_O::setCenter(const Vector3& pos)
 {
-    LOG("setCenter to %s" , pos.asString() );
+    LOG("setCenter to {}" , pos.asString() );
     this->_Center = pos;
     this->_Recalculate = true;
 }
@@ -495,7 +495,7 @@ void	VirtualSphere_O::setCenter(const Vector3& pos)
 
 void	VirtualSphere_O::setTranslate(const Vector3& pos )
 {
-    LOG("setTranslate to %s" , pos.asString() );
+    LOG("setTranslate to {}" , pos.asString() );
     this->_Translate = pos;
     this->_Recalculate = true;
 }
@@ -541,7 +541,7 @@ Matrix	mA, mB;
 		// Calculate matrices
 		//
     vCent = this->_Center.multiplyByScalar(-1.0);
-    LOG("vCent = %s" , vCent.asString().c_str()  );
+    LOG("vCent = {}" , vCent.asString().c_str()  );
     mTranslateCenterToOrigin.translate(vCent);
     mTranslateOriginToCenter.translate(this->_Center);
     mTranslate.translate(this->_Translate);

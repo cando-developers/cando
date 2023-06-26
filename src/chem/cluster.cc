@@ -132,7 +132,7 @@ CL_DEFMETHOD core::T_sp Kmeans_O::GetPoint(size_t idx) {
   if (idx<this->_Points->length()) {
     return (*(this->_Points))[idx];
   }
-  SIMPLE_ERROR("Index %ud out of range of number of points %ud", idx, this->_Points->length());
+  SIMPLE_ERROR("Index {}d out of range of number of points {}d", idx, this->_Points->length());
 }
 
 CL_DOCSTRING("Return all the points");
@@ -158,7 +158,7 @@ void  Kmeans_O::Cluster(core::SimpleVector_sp centers, Clusters clusters)
 /* Calculate the center of each cluster.
  * Return the number of empty clusters.
 */
-int  Kmeans_O::Center(core::SimpleVector_sp centers, Clusters clusters)
+CL_DEFMETHOD int  Kmeans_O::Center(core::SimpleVector_sp centers, Clusters clusters)
 {
   int emptyClusters = 0;
   core::T_sp one = (*this->_Points)[0];
@@ -189,24 +189,37 @@ int  Kmeans_O::Center(core::SimpleVector_sp centers, Clusters clusters)
   }
   return emptyClusters;
 }
-
-core::SimpleVector_sp  Kmeans_O::ClosestPointIndexToCenter(Clusters clusters)
+/*
+ * Return a vector of the closest points in each cluster to the cluster center
+ */
+CL_DEFMETHOD core::SimpleVector_sp Kmeans_O::CenterOnPoints(core::SimpleVector_sp centers, Clusters clusters)
 {
-  core::SimpleVector_sp centers = this->EmptyCenters();
-  this->Center(centers,clusters);
-  core::SimpleVector_sp closestPointIndices = this->EmptyCenters();
+  core::SimpleVector_sp centerPoints = this->EmptyCenters();
   std::vector<float> closestDistances(this->_K,std::numeric_limits<float>::max());
   for (int pi=0; pi<this->_Points->length(); pi++ ) {
     int cluster = (*clusters)[pi];
     float distToCenter = Distance(gc::As<Point>((*centers)[cluster]),gc::As<Point>((*this->_Points)[pi]));
     if (distToCenter < closestDistances[cluster]) {
       closestDistances[cluster] = distToCenter;
-      (*closestPointIndices)[cluster] = core::make_fixnum(pi);
+      (*centerPoints)[cluster] = (*this->_Points)[pi];
     }
   }
-  return closestPointIndices;
+  return centerPoints;
 }
 
+/*
+ * Return a vector of the closest points in each cluster to the cluster center
+ */
+CL_DEFMETHOD core::SimpleVector_float_sp Kmeans_O::PointDistancesToClusterCenters(core::SimpleVector_sp centers, Clusters clusters)
+{
+  core::SimpleVector_float_sp pointDistances = core::SimpleVector_float_O::make(this->_Points->length(),std::numeric_limits<float>::max(),true);
+  for (int pi=0; pi<this->_Points->length(); pi++ ) {
+    int cluster = (*clusters)[pi];
+    float distToCenter = Distance(gc::As<Point>((*centers)[cluster]),gc::As<Point>((*this->_Points)[pi]));
+    (*pointDistances)[pi] = distToCenter;
+  }
+  return pointDistances;
+}
 
 /* Return a SimpleVector_int32_t_sp that store the cluster index for each point.
  */
@@ -223,8 +236,14 @@ CL_DEFMETHOD core::SimpleVector_sp Kmeans_O::EmptyCenters() {
 /* Run the Kmean algorithm.
  * Return the number of times the algorithm was restarted.
  */
-CL_DEFMETHOD int Kmeans_O::RunKmean(core::SimpleVector_sp centers, Clusters clusters)
+CL_DEFMETHOD int Kmeans_O::RunKmean(core::SimpleVector_sp centers, Clusters clusters, bool centerOnPoints )
 {
+  if (centers->length() != this->_K) {
+    SIMPLE_ERROR("There is a mismatch between the number of centers {} and _K {}", centers->length(), this->_K);
+  }
+  if (clusters->length() != this->_Points->length()) {
+    SIMPLE_ERROR("There is a mismatch between the number of clusters {} and number of points {}", clusters->length(), this->_Points->length());
+  }
   core::SimpleVector_sp originalCenters = centers;
   core::SimpleVector_sp oldCenter;
   this->_MaxIteration = 100;
@@ -246,6 +265,7 @@ CL_DEFMETHOD int Kmeans_O::RunKmean(core::SimpleVector_sp centers, Clusters clus
       if (restarts>2) goto fail;
       goto top;
     }
+    if (centerOnPoints) centers = this->CenterOnPoints(centers,clusters);
 		//std::cout << "-------------------------\n";
     //printf("%s:%d:%s _Center = %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Centers).c_str());
 		//PrintPointLis(_Centers);

@@ -71,7 +71,7 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
 	      
 	      if ( me->_PlugsByName.count(p->getName())>0 )
 	      {
-                SIMPLE_ERROR(("There is already a plug named: %s") , _rep_(p->getName()) );
+                SIMPLE_ERROR("There is already a plug named: {}" , _rep_(p->getName()) );
 	      }
 	      core::Symbol_sp key = p->getName();
 	      ASSERTF(!key->isKeywordSymbol(),("Don't use keyword symbols for plug names"));
@@ -134,7 +134,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
   gctools::Vec0<StereoConfiguration_sp>::iterator	sci;
   for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){
     aa = gc::As_unsafe<Atom_sp>(res->atomWithName((*sci)->getAtomName()));
-    LOG("Setting the configuration of atom(%s) to(%s)" , aa->description().c_str() , _rep_((*sci)->getConfiguration())  ); //
+    LOG("Setting the configuration of atom({}) to({})" , aa->description().c_str() , _rep_((*sci)->getConfiguration())  ); //
     if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
       aa->setConfiguration( S_Configuration );
     } else if ( (*sci)->getConfiguration() == chemkw::_sym_R ) {
@@ -199,11 +199,11 @@ core::T_sp Constitution_O::getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp 
     ss << "In Constitution(" << this->constitutionName() << ")" << std::endl;
     ss << "there are more than one topologies that match the current monomer environment: " << mon->description() << std::endl;
     ss << "that are missing a ring closing plug"<<std::endl;
-    SIMPLE_ERROR(("%s") , ss.str() );
+    SIMPLE_ERROR("{}" , ss.str() );
   }
   if ( candidateTopologies.size() == 0 )
   {
-    SIMPLE_ERROR(("There are no Topologies with missing ring closing plugs"));
+    SIMPLE_ERROR("There are no Topologies with missing ring closing plugs");
   }
   return missing;
 }
@@ -227,10 +227,10 @@ CL_DEFMETHOD adapt::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
 bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
 {
     const_stereoisomerIterator	si;
-    LOG("Looking for Stereoisomer with name(%s)" , _rep_(stereoisomerName) );
+    LOG("Looking for Stereoisomer with name({})" , _rep_(stereoisomerName) );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {
-      LOG("Looking at stereoisomer name(%s)" , _rep_((*si)->getName()) );
+      LOG("Looking at stereoisomer name({})" , _rep_((*si)->getName()) );
 	if ( (*si)->getName() == stereoisomerName )
 	{
 	    LOG("Found it!!!!" ); //
@@ -244,10 +244,10 @@ bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
     Stereoisomer_sp Constitution_O::getStereoisomerWithName(core::Symbol_sp stereoisomerName) const
 {
     const_stereoisomerIterator	si;
-    LOG("Looking for Stereoisomer with name(%s)" , _rep_(stereoisomerName) );
+    LOG("Looking for Stereoisomer with name({})" , _rep_(stereoisomerName) );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {
-      LOG("Looking at stereoisomer name(%s)" , _rep_((*si)->getName()) );
+      LOG("Looking at stereoisomer name({})" , _rep_((*si)->getName()) );
 	if ( (*si)->getName() == stereoisomerName )
 	{
 	    LOG("Found it!!!!" ); //
@@ -366,29 +366,29 @@ tres = nil<Topology_O>();
     connects = 9999999;
     for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ )
     {
-      LOG("Looking for plug[%s]@%p in topology[%s]" , _rep_(name) , name.get() , ti->second->description());
+      LOG("Looking for plug[{}]@{} in topology[{}]" , _rep_(name) , name.get() , ti->second->description());
 	if ( ti->second->hasPlugNamed(name) )
 	{
-          LOG("Found the plug[%s]" , _rep_(name) );
+          LOG("Found the plug[{}]" , _rep_(name) );
 	    temp = ti->second->numberOfPlugs();
 	    if ( temp < connects )
 	    {
-		LOG("Found one with only %d plugs" , temp );
+		LOG("Found one with only {} plugs" , temp );
 		connects = temp;
 		tres = ti->second;
 	    } else
 	    {
-              LOG("Did not find the plug[%s]" , _rep_(name) );
+              LOG("Did not find the plug[{}]" , _rep_(name) );
 	    }
 	}
     }
 #ifdef	DEBUG_ON
     if ( tres.notnilp() )
     {
-      LOG("simplest topology is named: %s" , _rep_(tres->getName())  );
+      LOG("simplest topology is named: {}" , _rep_(tres->getName())  );
     } else
     {
-      LOG("there is no topology that has the plug[%s]" , _rep_(name) );
+      LOG("there is no topology that has the plug[{}]" , _rep_(name) );
     }
 #endif
     return tres;
@@ -399,7 +399,7 @@ CL_LISPIFY_NAME("topologyWithName");
 CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp name) const
     {
 	Topology_sp			tres;
-	ASSERTF(this->_Topologies.contains(name),("There is no topology with name[%s] in constitution[%s]") , _rep_(name) , _rep_(this->getName()) );
+	ASSERTF(this->_Topologies.contains(name),("There is no topology with name[{}] in constitution[{}]") , _rep_(name) , _rep_(this->getName()) );
 	return this->_Topologies.get(name);
     }
 
@@ -420,21 +420,21 @@ string Constitution_O::__repr__() const {
 
 Topology_sp	Constitution_O::getTopologyForMonomerEnvironment(Monomer_sp mon )
 {
-  LOG("constitution: %s  monomer: %s\n" , this->__repr__() , _rep_(mon));
+  LOG("constitution: {}  monomer: {}\n" , this->__repr__() , _rep_(mon));
   TopologyMap::iterator	ti;
   Topology_sp tres;
   for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) 
   {
-    LOG("Checking topology(%s)"% _rep_(ti->first) );
+    LOG("Checking topology({})"% _rep_(ti->first) );
     if ( ti->second->matchesMonomerEnvironment(mon) ) {
-      LOG("About to return topology %s" , _rep_(ti->second));
+      LOG("About to return topology {}" , _rep_(ti->second));
       return ti->second;
     }
   }
   if (this->_Topologies.size() == 0 ) {
-    SIMPLE_ERROR(("There are no topology(s) in the constiutition %s - so we won't find any topology(s) that match the monomer %s environment - did you fail to add topology(s) to the constitution?") , _rep_(this->asSmartPtr()) , _rep_(mon));
+    SIMPLE_ERROR("There are no topology(s) in the constiutition {} - so we won't find any topology(s) that match the monomer {} environment - did you fail to add topology(s) to the constitution?" , _rep_(this->asSmartPtr()) , _rep_(mon));
   }
-  SIMPLE_ERROR(("There is no topology in constitution %s that matches the monomer %s in its environment - there are %d topology(s) in the constitution") , _rep_(this->asSmartPtr()) , _rep_(mon) , this->_Topologies.size() );
+  SIMPLE_ERROR("There is no topology in constitution {} that matches the monomer {} in its environment - there are {} topology(s) in the constitution" , _rep_(this->asSmartPtr()) , _rep_(mon) , this->_Topologies.size() );
 }
 
 

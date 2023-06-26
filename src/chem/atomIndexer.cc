@@ -61,17 +61,17 @@ int	AtomIndexer_O::addAtomName(core::Symbol_sp name)
     {
         int id = this->_Names.size();
         this->_Names.push_back(name);
-	LOG("Added atom with name(%s) gave it id(%d)" , name.c_str() , id );
+	LOG("Added atom with name({}) gave it id({})" , name.c_str() , id );
 	return id;
     }
-    SIMPLE_ERROR(("The atom name (%s) is already in the AtomIndexer") , _rep_(name));
+    SIMPLE_ERROR("The atom name ({}) is already in the AtomIndexer" , _rep_(name));
 }
 
 void	AtomIndexer_O::setFromAtomNames(const string& names)
 {
 vector<string>	ss;
 vector<string>::iterator	it;
-    LOG("Setting from atom names: %s" , names.c_str()  );
+    LOG("Setting from atom names: {}" , names.c_str()  );
     core::tokenize(names,ss," \n\t");
     this->_Names.clear();
     for ( it = ss.begin(); it!=ss.end(); it++ )
@@ -85,7 +85,7 @@ vector<string>::iterator	it;
 
 void	AtomIndexer_O::setFromList(core::List_sp sl)
 {
-    LOG("Setting from atom names: %s" , sl->asString().c_str()  );
+    LOG("Setting from atom names: {}" , sl->asString().c_str()  );
     for ( auto it : sl ) {
       this->_Names.push_back(CONS_CAR(it));
     }
@@ -93,7 +93,7 @@ void	AtomIndexer_O::setFromList(core::List_sp sl)
 
 void	AtomIndexer_O::appendConsOfTexts(core::List_sp sl)
 {
-  LOG("Appending atom names: %s" , _rep_(sl).c_str()  );
+  LOG("Appending atom names: {}" , _rep_(sl).c_str()  );
     for ( auto cur : sl ) {
       this->_Names.push_back(oCar(cur).as<core::Symbol_O>());
     }
@@ -124,7 +124,7 @@ int				idx;
       if ( (*mi)==name ) return idx;
       idx++;
     }
-    SIMPLE_ERROR(("Could not find name(%s) in AtomIndexer") , _rep_(name));
+    SIMPLE_ERROR("Could not find name({}) in AtomIndexer" , _rep_(name));
 }
 
 

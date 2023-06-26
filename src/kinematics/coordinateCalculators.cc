@@ -55,7 +55,7 @@ void origin_to_external(chem::NVector_sp coords, Joint_sp joint) {
 #if 0
   // Apply the transform from the joint atom to the tempPos.
   if (!joint->isJump()) {
-    SIMPLE_ERROR(("joint must be a JumpJoint_sp %s") , _rep_(joint));
+    SIMPLE_ERROR("joint must be a JumpJoint_sp {}" , _rep_(joint));
   }
   JumpJoint_sp jj = gc::As<JumpJoint_sp>(joint);
   Jump& jump = jj->_Jump;
@@ -80,7 +80,7 @@ void bond_to_external(chem::NVector_sp coords, Joint_sp joint) {
   Vector3 tempPos = geom::geom__build_using_bond(bjoint->_Distance,bondJoint->position(coords));
   // Apply the transform from the bondJoint atom to the tempPos.
   if (!bondJoint->isJump()) {
-    SIMPLE_ERROR(("bondJoint must be a JumpJoint_sp %s") , _rep_(bondJoint));
+    SIMPLE_ERROR("bondJoint must be a JumpJoint_sp {}" , _rep_(bondJoint));
   }
   JumpJoint_sp jj = gc::As<JumpJoint_sp>(bondJoint);
   Jump& jump = jj->_Jump;
@@ -112,7 +112,7 @@ void bond_angle_to_external(Joint_sp joint) {
                                                        bjoint->_Theta,angleJoint->position(coords));
   // Apply the transform from the angleJoint atom to the tempPos.
   if (!angleJoint->isJump()) {
-    SIMPLE_ERROR(("angleJoint must be a JumpJoint_sp %s") , _rep_(angleJoint));
+    SIMPLE_ERROR("angleJoint must be a JumpJoint_sp {}" , _rep_(angleJoint));
   }
   JumpJoint_sp jj = gc::As<JumpJoint_sp>(angleJoint);
   Jump& jump = jj->_Jump;

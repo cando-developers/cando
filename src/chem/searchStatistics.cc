@@ -94,7 +94,7 @@ CL_DEFMETHOD void	SearchStatistics_O::incrementBuilds()
     if ( this->_ReportFrequency == UndefinedUnsignedInt ) return;
     if ( ( this->_Builds % this->_ReportFrequency ) == 0 )
     {
-      core::writeln_bf_stream(fmt::sprintf("SearchStatistics_O::incrementBuilds>>%s" , this->description().c_str() ));
+      core::clasp_write_string(fmt::format("SearchStatistics_O::incrementBuilds>>{}\n" , this->description().c_str() ));
     }
 }
 
@@ -133,7 +133,7 @@ CL_DEFMETHOD Bignum SearchStatistics_O::getHits()
 string	SearchStatistics_O::description() const
 {
   IMPLEMENT_ME();
-  //return fmt::sprintf("Builds[%s] Rejects[%s] Hits[%s]" , this->_Builds , this->_Rejects , this->_Hits );
+  //return fmt::format("Builds[{}] Rejects[{}] Hits[{}]" , this->_Builds , this->_Rejects , this->_Hits );
 }
 
 

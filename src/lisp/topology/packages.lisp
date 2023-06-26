@@ -15,9 +15,9 @@
    #:constitution-atom-index
    #:atom-name
    #:element
-   #:roots
+   #:root-map
    #:bonds
-   #:index
+   #:trainer-index
    #:to-atom-index
    #:order
    #:children
@@ -81,7 +81,6 @@
    #:seen-fragment-internals
    #:seen-index
    #:bad-fragment-internals
-   #:load-fragment-conformations
    #:fragment-conformations
    #:fragment-internals
    #:out-of-focus-internal
@@ -96,14 +95,14 @@
    #:angle
    #:dihedral
    #:foldamer-monomer-context
-   #:save-fragment-conformations
-   #:load-fragment-conformations
+   #:save-clusterable-fragment-conformations
+   #:load-clusterable-fragment-conformations
    #:fragment-conformations
    #:fragment-conformations-map
    #:monomer-context-to-fragment-conformations
    #:dump-fragment-internals
    #:index
-   #:total-count
+   #:next-index
    #:bad-geometry-p
    
    #:make-in-plug-bonded-joint-template
@@ -210,16 +209,46 @@
    #:monomer-indices
    #:internals-values
    #:internals-types
-   #:save-linearized-matched-fragment-conformations-map
-   #:create-linearized-matched-fragment-conformations-map
+   #:save-linearized-matched-fragment-conformations-holder
+   #:create-linearized-matched-fragment-conformations-holder
    #:linearized-matched-fragment-conformations-map
-   #:read-linearized-matched-fragment-conformations-map
+   #:read-linearized-matched-fragment-conformations-holder
    #:constitution-atom-named
    #:constitution-atom-names-with-dihedrals
    #:monomer-topology
+   #:calculate-cluster-dihedral-names
    #:cluster-dihedral-names
    #:cluster-dihedral-vector
-   #:cluster-dihedral-point-vector))
+   #:cluster-dihedral-rad-vector
+   #:convert-dihedral-rad-vector-to-xy-vector
+   #:build-all-molecules
+   #:energy
+   #:monomer-context
+   #:define-topology-charges
+   #:clusterable-fragment-conformations
+   #:fill-internals-from-oligomer-shape
+   #:monomer-shape-map
+   #:in-monomers
+   #:out-monomers
+   #:fragment-conformation-index
+   #:load-linearized-fragment-conformations
+   #:linearize-and-save-matched-fragment-conformations-map
+   #:load-linearized-matched-fragment-conformations-map
+   #:rotor3
+   #:translation
+   #:monomer-shape
+   #:set-to-closest-matching-fragment-conformation-index))
+
+  
+(defpackage #:topology.dag
+  (:use #:common-lisp)
+  (:nicknames #:tsd)
+  (:export
+   #:make-topology-from-residue
+   #:parse-oligomer-space-labeled-dag
+   #:parse-oligomer-space-dag
+   #:validate-dag
+   ))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

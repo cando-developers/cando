@@ -233,7 +233,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 {
   this->_Evaluations++;
   if ( this->_DebugEnergy ) {
-    core::write_bf_stream(fmt::sprintf("%s\n" , __FUNCTION__ ));
+    core::clasp_write_string(fmt::format("{}\n" , __FUNCTION__ ));
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(("%s {") , this->className());
   }
@@ -288,7 +288,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
       }
 #endif
   if ( this->_DebugEnergy ) {
-    core::write_bf_stream(fmt::sprintf("Evaluating term: %d\n" , i ));
+    core::clasp_write_string(fmt::format("Evaluating term: {}\n" , i ));
   }
     
 #define DEBUG_IMPROPER_RESTRAINT 1
@@ -310,49 +310,49 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 
       if ( this->_DebugEnergy ) 
       {
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d args cando\n" , (i+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d K %lf\n" , (i+1) , K ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d U %lf\n" , (i+1) , U ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d L %lf\n" , (i+1) , L ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d x1 %5.3lf %d\n" , (i+1) , x1 , (I1/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d y1 %5.3lf %d\n" , (i+1) , y1 , (I1/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d z1 %5.3lf %d\n" , (i+1) , z1 , (I1/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d x2 %5.3lf %d\n" , (i+1) , x2 , (I2/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d y2 %5.3lf %d\n" , (i+1) , y2 , (I2/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d z2 %5.3lf %d\n" , (i+1) , z2 , (I2/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d x3 %5.3lf %d\n" , (i+1) , x3 , (I3/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d y3 %5.3lf %d\n" , (i+1) , y3 , (I3/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d z3 %5.3lf %d\n" , (i+1) , z3 , (I3/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d x4 %5.3lf %d\n" , (i+1) , x4 , (I4/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d y4 %5.3lf %d\n" , (i+1) , y4 , (I4/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d z4 %5.3lf %d\n" , (i+1) , z4 , (I4/3+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d results\n" , (i+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d CosPhi %lf\n" , (i+1) , CosPhi ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d SinPhi %lf\n" , (i+1) , SinPhi ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} args cando\n" , (i+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} K {:f}\n" , (i+1) , K ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} U {:f}\n" , (i+1) , U ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} L {:f}\n" , (i+1) , L ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x1 {:5.3f} {}\n" , (i+1) , x1 , (I1/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y1 {:5.3f} {}\n" , (i+1) , y1 , (I1/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z1 {:5.3f} {}\n" , (i+1) , z1 , (I1/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x2 {:5.3f} {}\n" , (i+1) , x2 , (I2/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y2 {:5.3f} {}\n" , (i+1) , y2 , (I2/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z2 {:5.3f} {}\n" , (i+1) , z2 , (I2/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x3 {:5.3f} {}\n" , (i+1) , x3 , (I3/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y3 {:5.3f} {}\n" , (i+1) , y3 , (I3/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z3 {:5.3f} {}\n" , (i+1) , z3 , (I3/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x4 {:5.3f} {}\n" , (i+1) , x4 , (I4/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y4 {:5.3f} {}\n" , (i+1) , y4 , (I4/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z4 {:5.3f} {}\n" , (i+1) , z4 , (I4/3+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} results\n" , (i+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} CosPhi {:f}\n" , (i+1) , CosPhi ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} SinPhi {:f}\n" , (i+1) , SinPhi ));
         if ( CosPhi>0.1 ) {
           Phi = asin(SinPhi);
         } else {
           Phi = acos(CosPhi)*SIGN(SinPhi);
         }
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d Phi %lf\n" , (i+1) , Phi ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d Energy %lf\n" , (i+1) , Energy));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Phi {:f}\n" , (i+1) , Phi ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Energy {:f}\n" , (i+1) , Energy));
         if ( calcForce ) 
         {
 //			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fx1 %8.5lf %d\n", (i+1) , fx1 , (I1/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fy1 %8.5lf %d\n", (i+1) , fy1 , (I1/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fz1 %8.5lf %d\n", (i+1) , fz1 , (I1/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fx2 %8.5lf %d\n", (i+1) , fx2 , (I2/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fy2 %8.5lf %d\n", (i+1) , fy2 , (I2/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fz2 %8.5lf %d\n", (i+1) , fz2 , (I2/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fx3 %8.5lf %d\n", (i+1) , fx3 , (I3/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fy3 %8.5lf %d\n", (i+1) , fy3 , (I3/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fz3 %8.5lf %d\n", (i+1) , fz3 , (I3/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fx4 %8.5lf %d\n", (i+1) , fx4 , (I4/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fy4 %8.5lf %d\n", (i+1) , fy4 , (I4/3+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fz4 %8.5lf %d\n", (i+1) , fz4 , (I4/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx1 {:8.5f} {}\n", (i+1) , fx1 , (I1/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy1 {:8.5f} {}\n", (i+1) , fy1 , (I1/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz1 {:8.5f} {}\n", (i+1) , fz1 , (I1/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx2 {:8.5f} {}\n", (i+1) , fx2 , (I2/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy2 {:8.5f} {}\n", (i+1) , fy2 , (I2/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz2 {:8.5f} {}\n", (i+1) , fz2 , (I2/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx3 {:8.5f} {}\n", (i+1) , fx3 , (I3/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy3 {:8.5f} {}\n", (i+1) , fy3 , (I3/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz3 {:8.5f} {}\n", (i+1) , fz3 , (I3/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx4 {:8.5f} {}\n", (i+1) , fx4 , (I4/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy4 {:8.5f} {}\n", (i+1) , fy4 , (I4/3+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz4 {:8.5f} {}\n", (i+1) , fz4 , (I4/3+1) ));
         }
-        core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d stop\n" , (i+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} stop\n" , (i+1) ));
         LOG_ENERGY(( "MEISTER improperRestraint %d args cando\n") , (i+1) );
         LOG_ENERGY(( "MEISTER improperRestraint %d K %lf\n") , (i+1) , K );
         LOG_ENERGY(( "MEISTER improperRestraint %d U %lf\n") , (i+1) , U );

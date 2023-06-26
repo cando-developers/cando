@@ -51,46 +51,98 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace       chem {
 
 
-  struct RigidBodyNonbondCrossTerm {
-    double      dA;
-    double      dC;
+struct RigidBodyNonbondCrossTerm {
+  double      dA;
+  double      dC;
   RigidBodyNonbondCrossTerm(double a, double c) : dA(a), dC(c) {};
   RigidBodyNonbondCrossTerm() : dA(0.0), dC(0.0) {};
-  };
+  core::List_sp encode() const;
+  void decode(core::List_sp alist);
+};
 
   
-  struct RigidBodyAtomInfo {
-    core::T_sp    _Object;  // can be NIL
-    size_t         _TypeIndex;
-    double         _Radius;
-    double         _Epsilon;
-    double         _Charge;
-    Vector3        _Position;
-    RigidBodyAtomInfo() : _Object(unbound<core::T_O>()) {};
+struct RigidBodyAtomInfo {
+  core::T_sp    _Object;  // can be NIL
+  size_t         _TypeIndex;
+  double         _Radius;
+  double         _Epsilon;
+  double         _Charge;
+  Vector3        _Position;
+  RigidBodyAtomInfo() : _Object(unbound<core::T_O>()) {};
   RigidBodyAtomInfo(core::T_sp a, double r, double e, double c, const Vector3& p) :
-    _Object(a),
+      _Object(a),
       _Radius(r),
       _Epsilon(e),
       _Charge(c),
       _Position(p) {};
-  };
+  core::List_sp encode() const;
+  void decode(core::List_sp alist);
+};
   
 SMART(EnergyRigidBodyNonbond);
+};
+
+namespace translate {
+
+template <>
+struct	to_object<chem::RigidBodyAtomInfo >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::RigidBodyAtomInfo& stretch)
+  {
+    return stretch.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::RigidBodyAtomInfo>
+{
+  typedef	chem::RigidBodyAtomInfo	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR("Implement me");
+        }
+};
 
 
-#if 0
-double	_evaluateEnergyOnly_Nonbond(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double dA, double dC, double dQ1Q2 );
-#endif
+template <>
+struct	to_object<chem::RigidBodyNonbondCrossTerm >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::RigidBodyNonbondCrossTerm& stretch)
+  {
+    return stretch.encode();
+  }
+};
 
+template <>
+struct	from_object<chem::RigidBodyNonbondCrossTerm>
+{
+  typedef	chem::RigidBodyNonbondCrossTerm	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR("Implement me");
+        }
+};
+};
+
+
+namespace chem {
 class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyRigidBodyNonbond_O,"EnergyRigidBodyNonbond",EnergyRigidBodyComponent_O);
  public:
   CL_LISPIFY_NAME("make-energy-rigid-body-nonbond");
   CL_DEF_CLASS_METHOD static EnergyRigidBodyNonbond_sp make( core::Array_sp end_atoms );
+public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
  public: // virtual functions inherited from Object
   void	initialize();
 //	string	__repr__() const;
@@ -146,6 +198,8 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   virtual	double	getEnergy();
   virtual void dumpTerms(core::HashTable_sp atomTypes);
   core::List_sp parts_as_list(NVector_sp pos);
+  size_t partsCoordinates(NVector_sp pos, size_t idx, core::SimpleVector_float_sp coords);
+  
   core::ComplexVector_float_sp write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts);
   core::ComplexVector_float_sp write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output);
   core::ComplexVector_sp write_nonbond_atoms_to_complex_vector(core::ComplexVector_sp parts);

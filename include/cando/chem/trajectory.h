@@ -35,7 +35,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 //#include "geom/objectDictionary.fwd.h"
 #include <cando/chem/chemPackage.h>
-#include <cando/geom/coordinateArray.fwd.h>
+#include <clasp/core/array_float.h>
 
 namespace chem {
 
@@ -48,33 +48,30 @@ class Trajectory_O;
 SMART(TrajectoryFrame);
 class TrajectoryFrame_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,TrajectoryFrame_O,"TrajectoryFrame",core::CxxObject_O);
-#if INIT_TO_FACTORIES
- public:
-    static TrajectoryFrame_sp make();
-#else
-    DECLARE_INIT();
-#endif
-friend class Trajectory_O;
+  LISP_CLASS(chem,ChemPkg,TrajectoryFrame_O,"TrajectoryFrame",core::CxxObject_O);
+  friend class Trajectory_O;
+  TrajectoryFrame_O() {};
 public:
 public: // virtual functions inherited from Object
-	void	initialize();
+  void	initialize();
 //	string	__repr__() const;
 
 private: // instance variables
-	geom::SimpleVectorCoordinate_sp	_Coordinates;
+  core::SimpleVector_float_sp	_Coordinates;
 
 public:	// Creation class functions
 
-protected:
-    void fillFromMatter(gctools::Vec0<Atom_sp>& atomList );
-    void applyToMatter(gctools::Vec0<Atom_sp>& atomList );
 public:
-	void setCoordinates(geom::SimpleVectorCoordinate_sp ca) { this->_Coordinates = ca;};
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+protected:
+  void fillFromMatter(gctools::Vec0<Atom_sp>& atomList );
+  void applyToMatter(gctools::Vec0<Atom_sp>& atomList );
+public:
+  void setCoordinates(core::SimpleVector_float_sp ca) { this->_Coordinates = ca;};
+  CL_DEFMETHOD core::SimpleVector_float_sp getCoordinates() { return this->_Coordinates;};
 
-	TrajectoryFrame_O( const TrajectoryFrame_O& ss ); //!< Copy constructor
-
-	DEFAULT_CTOR_DTOR(TrajectoryFrame_O);
+  TrajectoryFrame_O( const TrajectoryFrame_O& ss ); //!< Copy constructor
 };
 
 
@@ -85,69 +82,54 @@ public:
 SMART(Trajectory);
 class Trajectory_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,Trajectory_O,"Trajectory",core::CxxObject_O);
-#if INIT_TO_FACTORIES
- public:
-    static Trajectory_sp make();
-#else
-    DECLARE_INIT();
-#endif
+  LISP_CLASS(chem,ChemPkg,Trajectory_O,"Trajectory",core::CxxObject_O);
 public:
-    template <typename T>
-        static void expose(T cl)
-	{ 
-	    cl
-	    .def("getMatter",&Trajectory_O::getMatter)
-	    .def("numberOfTrajectoryFrames",&Trajectory_O::numberOfTrajectoryFrames)
-	    .def("addFrame",&Trajectory_O::addFrame)
-	    .def("getTrajectoryFrame",&Trajectory_O::getTrajectoryFrame)
-	    .def("applyTrajectoryFrameToMatter",&Trajectory_O::applyTrajectoryFrameToMatter)
-	    ;
-	}
+  CL_DEF_CLASS_METHOD static Trajectory_sp makeTrajectory(Matter_sp matter);
+  Trajectory_O() {};
 public: // virtual functions inherited from Object
-	void	initialize();
+  void	initialize();
 //	string	__repr__() const;
 
 private: // instance variables
-	Matter_sp		_Matter;
-    gctools::Vec0<Atom_sp>		_AtomList;
-    gctools::Vec0<TrajectoryFrame_sp>	_Frames;
-    core::HashTableEq_sp	_Namespace;
+  Matter_sp		_Matter;
+  gctools::Vec0<Atom_sp>		_AtomList;
+  gctools::Vec0<TrajectoryFrame_sp>	_Frames;
+  core::HashTableEq_sp	_Namespace;
 
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 private:
-	void _setupAtomList(Matter_sp matter);
+  void _setupAtomList(Matter_sp matter);
 
 public:	// Creation class functions
 
 public:
-CL_LISPIFY_NAME("getMatter");
-CL_DEFMETHOD 	Matter_sp getMatter() const { return this->_Matter;};
+  CL_LISPIFY_NAME("getMatter");
+  CL_DEFMETHOD 	Matter_sp getMatter() const { return this->_Matter;};
 
-	TrajectoryFrame_sp addFrame(Matter_sp matter);
+  TrajectoryFrame_sp addFrame(core::T_sp matter);
 
-	core::List_sp trajectoryFramesAsList();
+  core::List_sp trajectoryFramesAsList();
 
-	uint numberOfTrajectoryFrames();
+  uint numberOfTrajectoryFrames();
 
-	TrajectoryFrame_sp getTrajectoryFrame(uint idx);
+  TrajectoryFrame_sp getTrajectoryFrame(uint idx);
 
-	void applyTrajectoryFrameToMatter(TrajectoryFrame_sp f);
+  void applyTrajectoryFrameToMatter(TrajectoryFrame_sp f);
 
 
 #if 0
-	bool canRender() { return true; };
+  bool canRender() { return true; };
 #ifdef RENDER
-	geom::Render_sp rendered(core::List_sp kargs);
+  geom::Render_sp rendered(core::List_sp kargs);
 #endif
 #endif
 
-	Trajectory_O( const Trajectory_O& ss ); //!< Copy constructor
+  Trajectory_O( const Trajectory_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(Trajectory_O);
 };
 
 
 };
-TRANSLATE(chem::TrajectoryFrame_O);
-TRANSLATE(chem::Trajectory_O);
 #endif //]

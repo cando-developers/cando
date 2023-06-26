@@ -50,7 +50,7 @@ namespace kinematics
 
 
 #if 0
-#define KIN_LOG(...) core::write_bf_stream(fmt::sprintf("%s:%d:%f - " , __FILE__ , __LINE__ , __FUNCTION__ ); core::write_bf_stream(fmt::sprintf(__VA_ARGS__))
+#define KIN_LOG(...) core::clasp_write_string(fmt::format("{}:{}:{} - " , __FILE__ , __LINE__ , __FUNCTION__ )); core::clasp_write_string(fmt::format(__VA_ARGS__))
 #else
 #define KIN_LOG(...)
 #endif
@@ -145,7 +145,7 @@ public:
 
 	/*! Return a Joint_sp for the parent */
   CL_DEFMETHOD bool parentBoundP() const { return this->_Parent.boundp(); };
-  CL_DEFMETHOD Joint_sp parent() const { if (this->_Parent.boundp()) return this->_Parent; SIMPLE_ERROR("parent of %s is not bound", _rep_(this->asSmartPtr())); };
+  CL_DEFMETHOD Joint_sp parent() const { if (this->_Parent.boundp()) return this->_Parent; SIMPLE_ERROR("parent of {} is not bound", _rep_(this->asSmartPtr())); };
   
 	/*! Insert the child before the (before) index. */
   void insertChild( int before, Joint_sp child );

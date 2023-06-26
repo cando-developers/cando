@@ -189,7 +189,7 @@ void	SpecificContextSet_O::initialize()
 
     void	SpecificContextSet_O::addWithKey(core::Symbol_sp keyKey, SpecificContext_sp key)
 {
-    LOG("adding SpecificContext |%s|" , keyKey.c_str()  );
+    LOG("adding SpecificContext |{}|" , keyKey.c_str()  );
     this->_KeySets.set(keyKey, key );
 }
 
@@ -197,7 +197,7 @@ void	SpecificContextSet_O::initialize()
 CL_LISPIFY_NAME("addSpecificContext");
 CL_DEFMETHOD void	SpecificContextSet_O::add(SpecificContext_sp key)
 {
-    LOG("adding SpecificContext |%s|" , key->asString().c_str()  );
+    LOG("adding SpecificContext |{}|" , key->asString().c_str()  );
     this->addWithKey(key->asSymbol(),key);
 }
 

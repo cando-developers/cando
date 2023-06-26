@@ -126,16 +126,16 @@ void	CalculatePositionUsingInternals_O::initialize()
 	posDihedralAtom = res->positionOfAtomWithName(this->_DihedralAtomName);
     } else
     {
-	SIMPLE_ERROR(("Unacceptable positionLookup class"));
+	SIMPLE_ERROR("Unacceptable positionLookup class");
     }
     LOG("About to calculate point with values" );
-    LOG(" distance(%lf)  distancePoint(%s)" , this->_Distance , posDistanceAtom.asString().c_str()  );
-    LOG(" angleDegrees(%lf)  anglePoint(%s)" , this->_AngleDegrees , posAngleAtom.asString().c_str()  );
-    LOG(" dihedralDegrees(%lf)  dihedralPoint(%s)" , this->_DihedralDegrees , posDihedralAtom.asString().c_str()  );
+    LOG(" distance({})  distancePoint({})" , this->_Distance , posDistanceAtom.asString().c_str()  );
+    LOG(" angleDegrees({})  anglePoint({})" , this->_AngleDegrees , posAngleAtom.asString().c_str()  );
+    LOG(" dihedralDegrees({})  dihedralPoint({})" , this->_DihedralDegrees , posDihedralAtom.asString().c_str()  );
     pnt = geom::geom__build_using_bond_angle_dihedral(this->_Distance,posDistanceAtom,
                                                       this->_AngleDegrees*0.0174533,posAngleAtom,
                                                       this->_DihedralDegrees*0.0174533,posDihedralAtom);
-    LOG("Generated point: %s" , pnt.asString().c_str()  );
+    LOG("Generated point: {}" , pnt.asString().c_str()  );
     return pnt;
 }
 
@@ -201,20 +201,20 @@ void	CalculatePositionAlongBond_O::initialize()
 	IterateFragmentCoordinateEntries_sp it = positionLookup.as<IterateFragmentCoordinateEntries_O>();
 	posFromAtom = it->positionOfAtomWithName(this->_FromAtomName);
 	posToAtom = it->positionOfAtomWithName(this->_ToAtomName);
-	LOG("Got atom positions from IterateFragmentCoordinateEntries with names (%s)-(%s)" , this->_FromAtomName.c_str() , this->_ToAtomName.c_str()  );
+	LOG("Got atom positions from IterateFragmentCoordinateEntries with names ({})-({})" , this->_FromAtomName.c_str() , this->_ToAtomName.c_str()  );
     } else if ( positionLookup.isA<Residue_O>() )
     {
 	Residue_sp res = positionLookup.as<Residue_O>();
 	posFromAtom = res->positionOfAtomWithName(this->_FromAtomName);
 	posToAtom = res->positionOfAtomWithName(this->_ToAtomName);
-	LOG("Got atom positions from Residue with names (%s)-(%s)" , this->_FromAtomName.c_str() , this->_ToAtomName.c_str()  );
+	LOG("Got atom positions from Residue with names ({})-({})" , this->_FromAtomName.c_str() , this->_ToAtomName.c_str()  );
     } else
     {
-	SIMPLE_ERROR(("Unacceptable positionLookup class"));
+	SIMPLE_ERROR("Unacceptable positionLookup class");
     }
     LOG("About to calculate point with values" );
-    LOG(" fromAtom(%s)   -  toAtom(%s)" , posFromAtom.asString().c_str() , posToAtom.asString().c_str()  );
-    LOG(" extendDistance(%lf) " , this->_ExtendDistance  );
+    LOG(" fromAtom({})   -  toAtom({})" , posFromAtom.asString().c_str() , posToAtom.asString().c_str()  );
+    LOG(" extendDistance({}) " , this->_ExtendDistance  );
     Vector3 dir = posToAtom.sub(posFromAtom);
     dir = dir.normalizedOrZero();
     if ( !dir.isDefined() )
@@ -224,7 +224,7 @@ void	CalculatePositionAlongBond_O::initialize()
 	return dir;
     }
     pnt = posToAtom.add(dir.multiplyByScalar(this->_ExtendDistance));
-    LOG("Generated point: %s" , pnt.asString().c_str()  );
+    LOG("Generated point: {}" , pnt.asString().c_str()  );
     return pnt;
 #endif
 }
@@ -295,20 +295,20 @@ void	CalculatePositionRelativeToOrigin_O::initialize()
 	IterateFragmentCoordinateEntries_sp it = positionLookup.as<IterateFragmentCoordinateEntries_O>();
 	posOriginAtom.set(0.0,0.0,0.0);
 	posToAtom = it->positionOfAtomWithName(this->_ToAtomName);
-	LOG("Got atom positions from IterateFragmentCoordinateEntries with names (%s)-(%s)" , this->_OriginAtomName.c_str() , this->_ToAtomName.c_str()  );
+	LOG("Got atom positions from IterateFragmentCoordinateEntries with names ({})-({})" , this->_OriginAtomName.c_str() , this->_ToAtomName.c_str()  );
     } else if ( positionLookup.isA<Residue_O>() )
     {
 	Residue_sp res = positionLookup.as<Residue_O>();
 	posOriginAtom = res->positionOfAtomWithName(this->_OriginAtomName);
 	posToAtom = res->positionOfAtomWithName(this->_ToAtomName);
-	LOG("Got atom positions from Residue with names (%s)-(%s)" , this->_OriginAtomName.c_str() , this->_ToAtomName.c_str()  );
+	LOG("Got atom positions from Residue with names ({})-({})" , this->_OriginAtomName.c_str() , this->_ToAtomName.c_str()  );
     } else
     {
-	SIMPLE_ERROR(("Unacceptable positionLookup class"));
+	SIMPLE_ERROR("Unacceptable positionLookup class");
     }
     LOG("About to calculate point with values" );
-    LOG(" originAtom(%s)   -  toAtom(%s)" , posOriginAtom.asString().c_str() , posToAtom.asString().c_str()  );
-    LOG(" extendDistance(%lf) " , this->_ExtendDistance  );
+    LOG(" originAtom({})   -  toAtom({})" , posOriginAtom.asString().c_str() , posToAtom.asString().c_str()  );
+    LOG(" extendDistance({}) " , this->_ExtendDistance  );
     Vector3 dir = posToAtom.sub(posOriginAtom);
     dir = dir.normalizedOrZero();
     if ( !dir.isDefined() )
@@ -318,7 +318,7 @@ void	CalculatePositionRelativeToOrigin_O::initialize()
 	return dir;
     }
     pnt = posToAtom.add(dir.multiplyByScalar(this->_ExtendDistance));
-    LOG("Generated point: %s" , pnt.asString().c_str()  );
+    LOG("Generated point: {}" , pnt.asString().c_str()  );
     return pnt;
 #endif
 }

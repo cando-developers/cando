@@ -12,7 +12,7 @@
 
 
 (defmethod make-ngl-trajectories ((instance netcdf:netcdf) &rest initargs &key &allow-other-keys)
-  (let* ((atom-count (netcdf:get-dimension instance "atom"))
+  (let* ((atom-count (netcdf::dimension instance "atom"))
          (coords (static-vectors:make-static-vector (* 3 atom-count)
                                                     :element-type 'single-float))
          (frame-count (netcdf:get-dimension instance "frame")))
@@ -47,6 +47,23 @@
                                                            (1- (length (dynamics:coordinates instance)))))
                                initargs)))
 
+(defmethod make-ngl-trajectories ((instance chem:trajectory) &rest initargs &key &allow-other-keys)
+  (list (apply #'make-instance 'ngl:trajectory
+                               :value (concatenate 'string "jupyter:" (getf initargs :name ""))
+                               :end (chem:trajectory/number-of-trajectory-frames instance)
+                               :trajectory-count (lambda (inst) ; This function returns the frame count
+                                                   (declare (ignore inst))
+                                                   (1- (chem:trajectory/number-of-trajectory-frames instance)))
+                               :trajectory-frame (lambda (inst i atom-indices) ; This function returns a specific frame. Atom subsets not implemented yet.
+                                                   (declare (ignore inst atom-indices))
+                                                   (format *error-output* "Sending frame ~a~%" i)
+                                                   (values i
+                                                           nil
+                                                           (chem:trajectory-frame/get-coordinates
+                                                            (chem:trajectory/get-trajectory-frame instance i))
+                                                           (1- (chem:trajectory/number-of-trajectory-frames instance))))
+                               initargs)))
+
 
 (defgeneric make-ngl-structure (instance &rest initargs &key &allow-other-keys)
   (:documentation "Create a ngl-clj structure from an object"))
@@ -70,6 +87,14 @@
 
 (defmethod make-ngl-structure ((instance dynamics:trajectory) &rest initargs &key &allow-other-keys)
   (let ((agg (dynamics:matter instance)))
+    (values (apply #'ngl:make-structure :ext "mol2"
+                   :value (chem:aggregate-as-mol2-string agg t)
+                   :trajectories (apply #'make-ngl-trajectories instance initargs)
+                   initargs)
+            agg)))
+
+(defmethod make-ngl-structure ((instance chem:trajectory) &rest initargs &key &allow-other-keys)
+  (let ((agg (chem:trajectory/get-matter instance)))
     (values (apply #'ngl:make-structure :ext "mol2"
                    :value (chem:aggregate-as-mol2-string agg t)
                    :trajectories (apply #'make-ngl-trajectories instance initargs)

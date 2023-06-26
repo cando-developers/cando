@@ -52,6 +52,8 @@ struct AtomInfo {
   Atom_sp _Atom;
   Residue_sp _Residue;
   core::Symbol_sp _Type;
+  size_t          _MoleculeIndex;
+  size_t          _ResidueIndex;
 };
 
 struct ResidueOut {
@@ -80,6 +82,7 @@ public:
   bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
 public:
+  BoundingBox_O() {};
   static BoundingBox_sp make(core::List_sp widths, core::T_sp angles_degrees, core::T_sp center);
 public:
   Vector3 get_bounding_box_widths() const;

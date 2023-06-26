@@ -75,7 +75,7 @@ struct from_object<gctools::SmallOrderedSet<chem::Atom_sp> > {
       }
       return;
     }
-    SIMPLE_ERROR_SPRINTF("Add support to convert %s to gctools::SmallOrderedSet<chem::Atom_sp>", _rep_(o).c_str());
+    SIMPLE_ERROR("Add support to convert {} to gctools::SmallOrderedSet<chem::Atom_sp>", o);
   }
 };
 };

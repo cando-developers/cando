@@ -124,7 +124,7 @@ namespace translate {
     DeclareType _v;
     from_object(core::T_sp o)
     {
-      SIMPLE_ERROR(("Implement me"));
+      SIMPLE_ERROR("Implement me");
     }
   };
 };

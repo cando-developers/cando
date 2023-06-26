@@ -156,7 +156,7 @@ core::T_sp CandoDatabase_O::oGetResource(core::Symbol_sp resource, core::Symbol_
   if (resource == chemkw::_sym_frameRecognizer) {
     return this->getFrameRecognizer(name);
   }
-  SIMPLE_ERROR(("Unknown CandoDatabase Resource %s %s"), _rep_(resource), _rep_(name));
+  SIMPLE_ERROR("Unknown CandoDatabase Resource {} {}", _rep_(resource), _rep_(name));
 }
 #endif
 
@@ -212,7 +212,7 @@ CL_DEFMETHOD Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const {
 Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Instance_sp mc) {
   Entity_sp entity = this->getEntity(nm);
   if (core::cl__class_of(entity) != mc) {
-    SIMPLE_ERROR(("You asked for Entity[%s] of class[%s] and there is one with that name but it has the wrong class[%s]"),
+    SIMPLE_ERROR("You asked for Entity[{}] of class[{}] and there is one with that name but it has the wrong class[{}]",
                  _rep_(nm), mc->className(), entity->className());
   }
   return entity;
@@ -240,7 +240,7 @@ CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTerminals(a
 #if 0
 bool	CandoDatabase_O::monomersAreDefinedForSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
 {
-  LOG("looking for(%s)" , _rep_(nm)  );
+  LOG("looking for({})" , _rep_(nm)  );
   EntityNameSet_sp group;
   if ( this->recognizesEntityNameSetName(nm) )
   {
@@ -267,13 +267,13 @@ CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstitutio
 
   if ( !this->_Entities.contains(nm) )
   {
-    LOG("The namespace contains %d names: " , this->_Entities.size()  );
+    LOG("The namespace contains {} names: " , this->_Entities.size()  );
 //        for ( adapt::SymbolMap<CandoDatabase_ODependent>::iterator it=this->_Entities.begin();
     for ( adapt::SymbolMap<Entity_O>::iterator it=this->_Entities.begin();
           it!=this->_Entities.end();
           it++ )
     {
-      LOG("Namespace contains name: %s" , _rep_(it->first) );
+      LOG("Namespace contains name: {}" , _rep_(it->first) );
     }
   }
 #endif
@@ -296,7 +296,7 @@ RepresentativeList_sp CandoDatabase_O::expandEntityNameToListOfRepresentatives(c
 {
   Entity_sp obj;
   geom::ObjectList_sp 	ll;
-  LOG("Looking for name(%s)" , _rep_(nm)  );
+  LOG("Looking for name({})" , _rep_(nm)  );
   ASSERT(this->recognizesEntityName(nm));
   obj = this->getEntity(nm);
   ll = obj->expandedRepresentativeList();
@@ -315,7 +315,7 @@ CL_DEFMETHOD bool CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm) {
   Entity_sp obj = this->getEntity(nm);
   if (obj->isTerminalName())
     return true;
-  LOG("The name(%s) is in the namespace but its not a terminal", nm);
+  LOG("The name({}) is in the namespace but its not a terminal", nm);
   return false;
 };
 #endif
@@ -403,7 +403,7 @@ adapt::SymbolSet_sp CandoDatabase_O::allMonomerNamesAsSymbolSet()
 */
 void	CandoDatabase_O::addCouplingRule( Coupling_spRule rule )
 {
-  LOG("Adding couplingRule with name=%s to CandoDatabase" , (rule->getName().c_str() ) );
+  LOG("Adding couplingRule with name={} to CandoDatabase" , (rule->getName().c_str() ) );
   this->couplingMap.insert(make_pair(rule->getName(),rule));
   this->couplings.push_back(rule);
 }
@@ -415,7 +415,7 @@ void	CandoDatabase_O::addCouplingRule( Coupling_spRule rule )
 #if 0  //[
 void	CandoDatabase_O::addCoreFragmentCoordinatesTable( FragmentCoordinates_spTable& frag )
 {
-  LOG("Adding fragment with name=%s to CandoDatabase" , (frag->getName().c_str() ) );
+  LOG("Adding fragment with name={} to CandoDatabase" , (frag->getName().c_str() ) );
   frag->setGlobal(true);
   if ( this->_CoreFragmentMap.count(frag->getName()) != 0 ) {
     SIMPLE_ERROR(("The global fragment: ", frag->getName()," has already been defined"));
@@ -436,7 +436,7 @@ FragmentCoordinates_spTable	CandoDatabase_O::getCoreFragmentCoordinatesTableWith
 */
 void	CandoDatabase_O::addFinishFragmentCoordinatesTable( FragmentCoordinates_spTable& frag )
 {
-  LOG("Adding fragment with name=%s to CandoDatabase" , (frag->getName().c_str() ) );
+  LOG("Adding fragment with name={} to CandoDatabase" , (frag->getName().c_str() ) );
   frag->setGlobal(true);
   if ( this->_FinishFragmentMap.count(frag->getName()) != 0 ) {
     SIMPLE_ERROR(("The global fragment: ", frag->getName()," has already been defined"));
@@ -470,24 +470,24 @@ CL_DEFMETHOD uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_sp m
   SpecificContextSet_O::iterator si;
   LOG("about to generate specific keys");
   context = mc->getContext();
-  //  core::writeln_bf_stream(fmt::sprintf("%s %u addMonomerCoordinates context:\n%s" , __FILE__% __LINE__ ,
-  //  context->asXmlString().c_str() ));
+  //  core::clasp_write_string(fmt::format("{} {} addMonomerCoordinates context:\n{}\n" , __FILE__, __LINE__ ,
+  //  context->asXmlString() ));
   allContexts = context->getAllSpecificContexts();
-  LOG("There are %u specific contexts", (allContexts->size()));
+  LOG("There are {} specific contexts", (allContexts->size()));
   //    _lisp->print(BF("%s %u There are %u specific contexts") , __FILE__% __LINE__ , allContexts->size() );
   uint count = 0;
   for (si = allContexts->begin(); si != allContexts->end(); si++) {
     //        _lisp->print(BF("    %s %u Looking at specific contexts: %s") , __FILE__% __LINE__ , si->first.c_str() );
     if (si->second->allMonomersInDatabase(this->sharedThis<CandoDatabase_O>())) {
       //	    _lisp->print(BF("      %s %u  Adding it") , __FILE__ , __LINE__ );
-      LOG("Adding context: %s", (si->first).c_str());
+      LOG("Adding context: {}", (si->first).c_str());
       this->_MonomerCoordinates.set(si->first, mc);
       count++;
     } else {
-      //	    core::writeln_bf_stream(fmt::sprintf("      %s %u  Ignoring it" , __FILE__ , __LINE__ ));
+      //	    core::clasp_write_string(fmt::format("      {} {}  Ignoring it\n" , __FILE__ , __LINE__ ));
     }
   }
-  LOG("Only %u of the specific contexts were used", count);
+  LOG("Only {} of the specific contexts were used", count);
   return count;
 }
 
@@ -549,9 +549,9 @@ CL_LISPIFY_NAME("recognizesContext");
 CL_DEFMETHOD bool CandoDatabase_O::recognizesContext(MonomerContext_sp context) {
   bool foundIt;
   core::Symbol_sp key = context->getKey();
-  LOG("Looking for context: %s", key.c_str());
+  LOG("Looking for context: {}", key.c_str());
   foundIt = this->_MonomerCoordinates.contains(key);
-  LOG("Found it = %d", foundIt);
+  LOG("Found it = {}", foundIt);
   return foundIt;
 }
 
@@ -580,10 +580,10 @@ void CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists(core::List
   }
 //    SpecificContextSet_sp necessary = scorer->allSpecificMonomerContexts();
   SpecificContextSet_sp available = this->allSpecificMonomerContexts();
-  LOG("There are %d necessary MonomerContexts" , necessary->size() );
-  LOG("There are %d available MonomerContexts" , available->size() );
+  LOG("There are {} necessary MonomerContexts" , necessary->size() );
+  LOG("There are {} available MonomerContexts" , available->size() );
   available->remove(necessary);
-  LOG("After removing necessary there are %d useless MonomerContexts" , available->size() );
+  LOG("After removing necessary there are {} useless MonomerContexts" , available->size() );
   SpecificContextSet_O::iterator it;
   for ( it=available->begin(); it!=available->end(); it++ )
   {
@@ -596,9 +596,9 @@ void CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists(core::List
 	// There should be nothing left in necessary once this is done
 	//
   available = this->allSpecificMonomerContexts();
-  LOG("Now there are %d available MonomerContexts" , available->size() );
+  LOG("Now there are {} available MonomerContexts" , available->size() );
   necessary->remove(available);
-  LOG("After removing available MonomerContexts from the necessary ones ther are %d missing" , necessary->size() );
+  LOG("After removing available MonomerContexts from the necessary ones ther are {} missing" , necessary->size() );
   if ( necessary->size() > 0 )
   {
 	    //
@@ -676,7 +676,7 @@ core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
   core::T_mv result_mv = this->_Topologys->gethash(name);
   core::MultipleValues &values = core::lisp_multipleValues();
   if (errorp && values.second(result_mv.number_of_values()).nilp()) {
-    SIMPLE_ERROR(("Could not find topology with name %s"), core::_rep_(name));
+    SIMPLE_ERROR("Could not find topology with name {}", core::_rep_(name));
   }
   return result_mv;
 }

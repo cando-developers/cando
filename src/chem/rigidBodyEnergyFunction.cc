@@ -52,6 +52,8 @@ __END_DOC
 #include <cando/adapt/iterateCons.h>
 #include <cando/chem/ringFinder.h>
 #include <cando/chem/cipPrioritizer.h>
+#include <cando/chem/energyRigidBodyNonbond.h>
+#include <cando/chem/energyRigidBodyStaple.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/virtualAtom.h>
 
@@ -104,7 +106,7 @@ CL_DEFMETHOD BoundingBox_sp RigidBodyEnergyFunction_O::boundingBox() const
   if (this->_BoundingBox.boundp()) {
     return this->_BoundingBox;
   }
-  SIMPLE_ERROR(("The bounding-box slot is unbound"));
+  SIMPLE_ERROR("The bounding-box slot is unbound");
 }
 
 CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx");
@@ -128,7 +130,7 @@ CL_DEFMETHOD void RigidBodyEnergyFunction_O::makUnboundBoundingBox() {
 
 CL_DEFMETHOD void RigidBodyEnergyFunction_O::set_coordinates(NVector_sp pos) {
   if (pos->length() != this->_RigidBodies*7) {
-    SIMPLE_ERROR(("The coordinates you pass do not have enough components - there are %d rigid bodies with 7 (a,b,c,d,x,y,z) coordinates each - total %d are needed") , this->_RigidBodies , (this->_RigidBodies*7));
+    SIMPLE_ERROR("The coordinates you pass do not have enough components - there are {} rigid bodies with 7 (a,b,c,d,x,y,z) coordinates each - total {} are needed" , this->_RigidBodies , (this->_RigidBodies*7));
   }
   this->_SavedCoordinates = pos;
 }
@@ -197,7 +199,7 @@ void	RigidBodyEnergyFunction_O::setOption( core::Symbol_sp option, core::T_sp va
   {
     return;
   }
-  SIMPLE_ERROR(("Unknown option"));
+  SIMPLE_ERROR("Unknown option");
 }
 
 
@@ -224,21 +226,21 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
 
 #ifdef	DEBUG_ON //[
 	// Summarize entry state for debugging
-  LOG("calcForce = %d" , calcForce  );
-  LOG("calcDiagonalHessian = %d" , calcDiagonalHessian  );
-  LOG("calcOffDiagonalHessian = %d" , calcOffDiagonalHessian  );
-  LOG("hasForce = %d" , hasForce  );
-  LOG("hasHdAndD = %d" , hasHdAndD  );
+  LOG("calcForce = {}" , calcForce  );
+  LOG("calcDiagonalHessian = {}" , calcDiagonalHessian  );
+  LOG("calcOffDiagonalHessian = {}" , calcOffDiagonalHessian  );
+  LOG("hasForce = {}" , hasForce  );
+  LOG("hasHdAndD = {}" , hasHdAndD  );
   if ( hasForce && force->size() < pos->size() ) {
-    SIMPLE_ERROR(("Force does not have the necessary dimensions"));
+    SIMPLE_ERROR("Force does not have the necessary dimensions");
   }
 #endif //]
 
   if ( !calcForce && ( calcDiagonalHessian || calcOffDiagonalHessian ) ) {
-    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce"));
+    SIMPLE_ERROR("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce");
   }
   if ( !calcDiagonalHessian & calcOffDiagonalHessian ) {
-    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian"));
+    SIMPLE_ERROR("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian");
   }
 
 ////    _lisp->profiler().pushTimerStates();
@@ -284,7 +286,7 @@ size_t RigidBodyEnergyFunction_O::numberOfRigidBodies() const {
 
 void RigidBodyEnergyFunction_O::setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z) {
   if (index>= this->_RigidBodies) {
-    SIMPLE_ERROR(("set-position at index %d out of range <= %d for coordinate") , index , this->_RigidBodies);
+    SIMPLE_ERROR("set-position at index {} out of range <= {} for coordinate" , index , this->_RigidBodies);
   }
   double*  p = &(*this->_SavedCoordinates)[0];
   size_t base = index*7;
@@ -298,7 +300,7 @@ void RigidBodyEnergyFunction_O::setPosition(size_t index, double a, double b, do
 }
 core::T_mv RigidBodyEnergyFunction_O::getPosition(size_t index) {
   if (index>= this->_RigidBodies) {
-    SIMPLE_ERROR(("set-position at index %d out of range <= %d for coordinate") , index , this->_RigidBodies);
+    SIMPLE_ERROR("set-position at index {} out of range <= {} for coordinate" , index , this->_RigidBodies);
   }
   double*  p = &(*this->_SavedCoordinates)[0];
   size_t base = index*7;
@@ -373,10 +375,10 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
     if (frozen->length() != (position->length()/7)) {
-      SIMPLE_ERROR(("frozen must be a simple-bit-vector of length %d or NIL - it is %s") , (position->length()/7) , _rep_(position));
+      SIMPLE_ERROR("frozen must be a simple-bit-vector of length {} or NIL - it is {}" , (position->length()/7) , _rep_(position));
     }
   } else if (tfrozen.notnilp()) {
-    SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
+    SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
   }
   double delta_tsquared = delta_t*delta_t;
   double delta_tsquared_div2 = delta_tsquared/2.0;
@@ -448,6 +450,130 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
   }
   return body_limited;
 }
+
+
+CL_DEFMETHOD Aggregate_sp RigidBodyEnergyFunction_O::buildPseudoAggregate(NVector_sp pos) const {
+  core::SimpleVector_float_sp coords = this->buildPseudoAggregateCoordinates(pos);
+  size_t idx = 0;
+  core::List_sp terms = this->_Terms;
+  EnergyRigidBodyNonbond_sp nonbondTerm = unbound<EnergyRigidBodyNonbond_O>();
+  EnergyRigidBodyStaple_sp stapleTerm = unbound<EnergyRigidBodyStaple_O>();
+  for ( auto cur : this->_Terms ) {
+    core::T_sp term = CONS_CAR(cur);
+    if (gc::IsA<EnergyRigidBodyNonbond_sp>(term)) {
+      nonbondTerm = gc::As<EnergyRigidBodyNonbond_sp>(term);
+    } else if (gc::IsA<EnergyRigidBodyStaple_sp>(term)) {
+      stapleTerm = gc::As<EnergyRigidBodyStaple_sp>(term);
+    }
+  }
+  Aggregate_sp aggregate = Aggregate_O::make(nil<core::T_O>());
+  if (nonbondTerm.boundp()) {
+    size_t prevAtomInfoEnd = 0;
+    for ( size_t nbodyi = 0; nbodyi < nonbondTerm->_RigidBodyEndAtom->length(); nbodyi++ ) {
+      Molecule_sp molecule = Molecule_O::make(nil<core::T_O>());
+      Residue_sp residue = Residue_O::make(nil<core::T_O>());
+      Atom_sp prevAtom = unbound<Atom_O>();
+      aggregate->addMatter(molecule);
+      molecule->addMatter(residue);
+      size_t atomInfoStart = prevAtomInfoEnd;
+      size_t atomInfoEnd = (*nonbondTerm->_RigidBodyEndAtom)[nbodyi];
+      for ( size_t ai = atomInfoStart; ai<atomInfoEnd; ai++ ) {
+        RigidBodyAtomInfo& atomInfo = nonbondTerm->_AtomInfoTable[ai];
+        Atom_sp part_atom;
+        if (gc::IsA<Atom_sp>(atomInfo._Object)) {
+          Atom_sp atm = gc::As_unsafe<Atom_sp>(atomInfo._Object);
+          part_atom = Atom_O::make(atm->getName(),atm->getElement());
+        } else {
+          part_atom = Atom_O::make(nil<core::T_O>(),element_C);
+        }
+        float x = (*coords)[idx++];
+        float y = (*coords)[idx++];
+        float z = (*coords)[idx++];
+        Vector3 pos( x, y, z );
+        part_atom->setPosition(pos);
+        residue->addMatter(part_atom);
+        if (prevAtom.boundp()) {
+          prevAtom->bondTo(part_atom,singleBond);
+        }
+        prevAtom = part_atom;
+      }
+      prevAtomInfoEnd = atomInfoEnd;
+    }
+  }
+  if (stapleTerm.boundp()) {
+    size_t prevAtomInfoEnd = 0;
+    for ( size_t ii = 0; ii < stapleTerm->_Terms.size(); ii++ ) {
+      Molecule_sp molecule = Molecule_O::make(nil<core::T_O>());
+      Residue_sp residue = Residue_O::make(nil<core::T_O>());
+      aggregate->addMatter(molecule);
+      molecule->addMatter(residue);
+      Atom_sp atomK = Atom_O::make(nil<core::T_O>(),element_N);
+      float xK = (*coords)[idx++];
+      float yK = (*coords)[idx++];
+      float zK = (*coords)[idx++];
+      Vector3 posK( xK, yK, zK );
+      atomK->setPosition(posK);
+      Atom_sp atomL = Atom_O::make(nil<core::T_O>(),element_N);
+      float xL = (*coords)[idx++];
+      float yL = (*coords)[idx++];
+      float zL = (*coords)[idx++];
+      Vector3 posL( xL, yL, zL );
+      atomL->setPosition(posL);
+      atomK->bondTo(atomL,singleBond);
+      residue->addMatter(atomK);
+      residue->addMatter(atomL);
+    }
+  }
+  return aggregate;
+}
+
+CL_DEFMETHOD core::SimpleVector_float_sp RigidBodyEnergyFunction_O::buildPseudoAggregateCoordinates(NVector_sp pos) const {
+  core::SimpleVector_float_sp coords = core::SimpleVector_float_O::make(this->numberOfPoints()*3);
+  core::List_sp terms = this->_Terms;
+  EnergyRigidBodyNonbond_sp nonbondTerm = unbound<EnergyRigidBodyNonbond_O>();
+  EnergyRigidBodyStaple_sp stapleTerm = unbound<EnergyRigidBodyStaple_O>();
+  for ( auto cur : this->_Terms ) {
+    core::T_sp term = CONS_CAR(cur);
+    if (gc::IsA<EnergyRigidBodyNonbond_sp>(term)) {
+      nonbondTerm = gc::As<EnergyRigidBodyNonbond_sp>(term);
+    } else if (gc::IsA<EnergyRigidBodyStaple_sp>(term)) {
+      stapleTerm = gc::As<EnergyRigidBodyStaple_sp>(term);
+    }
+  }
+  size_t idx = 0;
+  Aggregate_sp aggregate = Aggregate_O::make(nil<core::T_O>());
+  if (nonbondTerm.boundp()) {
+    idx = nonbondTerm->partsCoordinates(pos,idx,coords);
+  }
+  if (stapleTerm.boundp()) {
+    idx = stapleTerm->partsCoordinates(pos,idx,coords);
+  }
+  return coords;
+}
+
+
+CL_DEFMETHOD size_t RigidBodyEnergyFunction_O::numberOfPoints() const {
+  core::List_sp terms = this->_Terms;
+  EnergyRigidBodyNonbond_sp nonbondTerm = unbound<EnergyRigidBodyNonbond_O>();
+  EnergyRigidBodyStaple_sp stapleTerm = unbound<EnergyRigidBodyStaple_O>();
+  for ( auto cur : this->_Terms ) {
+    core::T_sp term = CONS_CAR(cur);
+    if (gc::IsA<EnergyRigidBodyNonbond_sp>(term)) {
+      nonbondTerm = gc::As<EnergyRigidBodyNonbond_sp>(term);
+    } else if (gc::IsA<EnergyRigidBodyStaple_sp>(term)) {
+      stapleTerm = gc::As<EnergyRigidBodyStaple_sp>(term);
+    }
+  }
+  size_t numberOfPoints = 0;
+  if (nonbondTerm.boundp()) {
+    numberOfPoints += nonbondTerm->_AtomInfoTable.size();
+  }
+  if (stapleTerm.boundp()) {
+    numberOfPoints += 2* stapleTerm->_Terms.size();
+  }
+  return numberOfPoints;
+}
+  
 
 
 #if 0

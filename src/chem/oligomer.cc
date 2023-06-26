@@ -201,7 +201,7 @@ void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_s
   LOG("Starting set of monomers:" );
   for ( mi=monomers.begin(); mi!=monomers.end(); mi++ )
     {
-      LOG("    %s" , (*mi)->description().c_str()  );
+      LOG("    {}" , (*mi)->description().c_str()  );
       for ( ci = (*mi)->_Couplings.begin();
             ci != (*mi)->_Couplings.end(); ci++ )
 	{
@@ -215,7 +215,7 @@ void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_s
   LOG("Expanded set of monomers:" );
   for ( gctools::SmallOrderedSet<Monomer_sp>::iterator si=expanded.begin(); si!=expanded.end(); si++ )
     {
-      LOG("    %s" , (*si)->description().c_str()  );
+      LOG("    {}" , (*si)->description().c_str()  );
       monomers.insert(*si);
     };
 }
@@ -254,8 +254,8 @@ CL_DEFMETHOD uint Oligomer_O::addMonomer(Monomer_sp s)
 Monomer_sp	monomer;
 uint		idx;
     monomer = s->sharedThis<Monomer_O>();
-    LOG("s@%p    monomer@%X" , s.get() , monomer.get() );
-    LOG("Adding monomer@%X with name (%s)" , monomer.get() , s->description().c_str() );
+    LOG("s@{}    monomer@{}" , s.get() , monomer.get() );
+    LOG("Adding monomer@{} with name ({})" , monomer.get() , s->description().c_str() );
     idx = this->_Monomers.size();
     monomer->setSequenceNumber(idx);
     this->_Monomers.push_back(monomer);
@@ -403,12 +403,12 @@ Monomer_sp	monomerToRemain;
 
     if ( !monomerToRemove->hasInCoupling() )
     {
-      SIMPLE_ERROR(("Trying to remove a leaf monomer that has no in coupling!") , monomerToRemove->description());
+      SIMPLE_ERROR("Trying to remove a leaf monomer that has no in coupling!" , monomerToRemove->description());
     }
     couplings = monomerToRemove->numberOfCouplings();
     if ( couplings > 1 )
     {
-      SIMPLE_ERROR(("Trying to remove a leaf monomer but it has out couplings!") , monomerToRemove->description());
+      SIMPLE_ERROR("Trying to remove a leaf monomer but it has out couplings!" , monomerToRemove->description());
     }
     couplingToRemove = monomerToRemove->getInCoupling().as<DirectionalCoupling_O>();
     monomerToRemain = couplingToRemove->getMonomer1();
@@ -440,11 +440,11 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer() const
   Coupling_sp	coupling;
   coupling = unbound<Coupling_O>();
   if (this->_Monomers.size()==0) {
-    SIMPLE_ERROR(("There are no monomers, root-monomer can not be determined"));
+    SIMPLE_ERROR("There are no monomers, root-monomer can not be determined");
   }
   sub = this->_Monomers[0];
   do {
-    LOG("Looking at monomer: %s" , sub->description().c_str()  );
+    LOG("Looking at monomer: {}" , sub->description().c_str()  );
     if ( sub->hasInCoupling()) {
       LOG("    It has an in-coupling" );
       coupling = sub->getInCoupling();
@@ -490,30 +490,30 @@ CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp sourceMon, co
     core::Cons_sp pair = gc::As_unsafe<core::Cons_sp>(couplingOrSourcePlugName);
     sourcePlugName = gc::As<core::Symbol_sp>(CONS_CAR(pair));
     if (!targetPlugName.nilp()) {
-      SIMPLE_ERROR(("coupling-or-source-plug-name was a pair and so target-plug-name must be NIL - but it is %s") , _rep_(targetPlugName));
+      SIMPLE_ERROR("coupling-or-source-plug-name was a pair and so target-plug-name must be NIL - but it is {}" , _rep_(targetPlugName));
     }
     targetPlugName = gc::As<core::Symbol_sp>(CONS_CDR(pair));
   } else if (gc::IsA<core::Symbol_sp>(couplingOrSourcePlugName)) {
     core::Symbol_sp sym = gc::As_unsafe<core::Symbol_sp>(couplingOrSourcePlugName);
     if (!DirectionalCoupling_O::isOutPlugName(couplingOrSourcePlugName)&&!targetPlugName.nilp()) {
-      SIMPLE_ERROR(("coupling-or-source-plug-name was a coupling name and so target-plug-name must be NIL - but it is %s") , _rep_(targetPlugName));
+      SIMPLE_ERROR("coupling-or-source-plug-name was a coupling name and so target-plug-name must be NIL - but it is {}" , _rep_(targetPlugName));
     }
     if (DirectionalCoupling_O::isCouplingName(sym)) {
       sourcePlugName = DirectionalCoupling_O::outPlugName(sym);
       targetPlugName = DirectionalCoupling_O::inPlugName(sym);
     } else {
       if (!DirectionalCoupling_O::isOutPlugName(sym)) {
-        SIMPLE_ERROR(("coupling-or-source-plug-name must be a source-plug-name - instead it is %s") , _rep_(sym));
+        SIMPLE_ERROR("coupling-or-source-plug-name must be a source-plug-name - instead it is {}" , _rep_(sym));
       }
       sourcePlugName = sym;
       if (!DirectionalCoupling_O::isInPlugName(targetPlugName)) {
-        SIMPLE_ERROR(("target-plug-name must be a target-plug-name - instead it is %s") , _rep_(targetPlugName));
+        SIMPLE_ERROR("target-plug-name must be a target-plug-name - instead it is {}" , _rep_(targetPlugName));
       }
     }
   } else {
-    SIMPLE_ERROR(("coupling-or-source-plug-name must be a cons or a symbol - it is %s") , _rep_(couplingOrSourcePlugName));
+    SIMPLE_ERROR("coupling-or-source-plug-name must be a cons or a symbol - it is {}" , _rep_(couplingOrSourcePlugName));
   }
-  LOG("Creating a coupling from %s to %s" , _rep_(sourceMon) , _rep_(targetMon));
+  LOG("Creating a coupling from {} to {}" , _rep_(sourceMon) , _rep_(targetMon));
   foundIn = false;
   foundOut = false;
   for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
@@ -526,28 +526,28 @@ CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp sourceMon, co
     }
   }
   if ( !foundIn ) {
-    SIMPLE_ERROR(("Could not find first monomer in oligomer"));
+    SIMPLE_ERROR("Could not find first monomer in oligomer");
   }
   if ( !foundOut ) {
-    SIMPLE_ERROR(("Could not find second monomer in oligomer"));
+    SIMPLE_ERROR("Could not find second monomer in oligomer");
   }
 #if 0
   // Turn this off for now until we know how the new coupling names work
   core::Symbol_sp targetMonPlugName = DirectionalCoupling_O::inPlugName(name);
   if ( targetMon->hasCouplingWithPlugName(targetMonPlugName) ) {
-    SIMPLE_ERROR(("The second monomer already has an in coupling"));
+    SIMPLE_ERROR("The second monomer already has an in coupling");
   }
   core::Symbol_sp sourceMonPlugName = DirectionalCoupling_O::outPlugName(name);
   if ( sourceMon->hasCouplingWithPlugName(sourceMonPlugName) ) {
-    SIMPLE_ERROR(("The first monomer[%s] already has an out coupling with the name: %s") , sourceMon->currentStereoisomerName() , name );
+    SIMPLE_ERROR("The first monomer[{}] already has an out coupling with the name: {}" , sourceMon->currentStereoisomerName() , name );
   }
 #endif
-  LOG("in/out plug names: %s/%s" , _rep_(sourcePlugName) , _rep_(targetPlugName));
+  LOG("in/out plug names: {}/{}" , _rep_(sourcePlugName) , _rep_(targetPlugName));
   coupling = DirectionalCoupling_O::make(sourceMon,sourcePlugName,targetPlugName,targetMon);
   sourceMon->addCoupling(sourcePlugName,coupling);
   targetMon->addCoupling(targetPlugName,coupling);
   this->addCoupling(coupling);
-  LOG("after coupling coupling: %s" , coupling->description()  );
+  LOG("after coupling coupling: {}" , coupling->description()  );
   return coupling;
 }
 
@@ -570,22 +570,22 @@ gctools::Vec0<Monomer_sp>::iterator	mi;
     }
     if ( !found1 ) 
     {
-	SIMPLE_ERROR(("Could not find monomer1 in oligomer"));
+	SIMPLE_ERROR("Could not find monomer1 in oligomer");
     }
     if ( !found2 ) 
     {
-	SIMPLE_ERROR(("Could not find monomer2 in oligomer"));
+	SIMPLE_ERROR("Could not find monomer2 in oligomer");
     }
     RingClosingPlug_sp rcPlug1 = gc::As<OutPlug_sp>(mon1->getMissingRingClosingPlug(mon2));
     if ( rcPlug1.nilp() )
     {
-	SIMPLE_ERROR(("The %s can not make a ring closing coupling")
+	SIMPLE_ERROR("The {} can not make a ring closing coupling"
 					 , mon1->description() );
     }
     RingClosingPlug_sp rcPlug2 = gc::As<OutPlug_sp>(mon2->getMissingRingClosingPlug(mon1));
     if ( rcPlug2.nilp() )
     {
-	SIMPLE_ERROR(("The %s can not make a ring closing coupling")
+	SIMPLE_ERROR("The {} can not make a ring closing coupling"
 					 , mon2->description()
 		  );
     }
@@ -618,9 +618,9 @@ CL_DEFMETHOD RingCoupling_sp	Oligomer_O::ringCoupleWithPlugNames( Monomer_sp mon
     }
   }
   if ( !found1 ) 
-    SIMPLE_ERROR(("Could not find monomer1 in oligomer"));
+    SIMPLE_ERROR("Could not find monomer1 in oligomer");
   if ( !found2 ) 
-    SIMPLE_ERROR(("Could not find monomer2 in oligomer"));
+    SIMPLE_ERROR("Could not find monomer2 in oligomer");
   coupling = RingCoupling_O::make(mon1->sharedThis<Monomer_O>(),plug1name,mon2->sharedThis<Monomer_O>(),plug2name);
   mon1->addCoupling(plug1name,coupling);
   mon2->addCoupling(plug2name,coupling);
@@ -640,7 +640,7 @@ int			residueNetCharge;
     Residue_sp			res;
     Molecule_sp 			mol;
     mol = Molecule_O::create();
-    core::write_bf_stream(fmt::sprintf("%s:%d Creating residues\n" , __FILE__ , __LINE__ ));
+    core::clasp_write_string(fmt::format("{}:{} Creating residues\n" , __FILE__ , __LINE__ ));
     core::HashTableEq_sp monomersToResidues = core::HashTableEq_O::create_default();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
@@ -648,11 +648,11 @@ int			residueNetCharge;
       Constitution_sp constitution = topology->_Constitution;
       core::Symbol_sp stereoisomerName = (*mi)->currentStereoisomerName(); // Should be stereoisomerName()
       if (chem__verbose(0)) {
-        core::write_bf_stream(fmt::sprintf("Building residue for monomer name: %s" , _rep_(stereoisomerName)));
+        core::clasp_write_string(fmt::format("Building residue for monomer name: {}" , _rep_(stereoisomerName)));
         core::clasp_finish_output_t();
       }
       res = topology->buildResidueForMonomerName(stereoisomerName);
-      LOG("made res consistent with stereoisomer named res: %s" , _rep_(res));
+      LOG("made res consistent with stereoisomer named res: {}" , _rep_(res));
       mol->addMatter(res);
       LOG("Added matter");
       monomersToResidues->hash_table_setf_gethash((*mi),res);
@@ -712,10 +712,10 @@ uint				iperturb;
 	//
 	// For now throw an exception
 	//
-	SIMPLE_ERROR(("There are no multimonomers to perturb"));
+	SIMPLE_ERROR("There are no multimonomers to perturb");
     }
     iperturb = core::randomNumber01()*multiMonomers.size();
-    LOG("Randomizing MultiMonomer to %d out of %d" , iperturb , multiMonomers.size());
+    LOG("Randomizing MultiMonomer to {} out of {}" , iperturb , multiMonomers.size());
     ASSERT_lt(iperturb,multiMonomers.size());
     
     multiMonomers[iperturb]->randomizeMonomer();
@@ -780,7 +780,7 @@ CL_DEFMETHOD Monomer_sp Oligomer_O::monomerWithSequenceNumber(size_t sequence) c
   if (sequence <= this->_Monomers.size()) {
     return this->_Monomers[sequence];
   }
-  SIMPLE_ERROR(("Monomer sequence number %lu must be less than %lu") , sequence , this->_Monomers.size());
+  SIMPLE_ERROR("Monomer sequence number {} must be less than {}" , sequence , this->_Monomers.size());
 }
 
 /*!
@@ -1026,8 +1026,8 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
       OligomerPart_Link_sp link = gc::As<OligomerPart_Link_sp>(oligPart);
       core::Symbol_sp	mon1Id = link->_Monomer1Id;
       core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
-      if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , core::_rep_(mon1Id));
-      if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , core::_rep_(mon2Id));
+      if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR("Unknown monomer id: {}" , core::_rep_(mon1Id));
+      if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR("Unknown monomer id: {}" , core::_rep_(mon2Id));
       Monomer_sp mon1 = monomerMap->gethash(mon1Id).as<Monomer_O>();
       Monomer_sp mon2 = monomerMap->gethash(mon2Id).as<Monomer_O>();
       this->couple(mon1,link->_Coupling,mon2);

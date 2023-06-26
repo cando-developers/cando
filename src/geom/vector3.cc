@@ -57,7 +57,7 @@ Vector3 Vector3::inNanometers() const
 
 void Vector3::dump()
 {
-  core::writeln_bf_stream(fmt::sprintf("<%lf,%lf,%lf>" , this->coords[0] , this->coords[1] , this->coords[2] ));
+  core::clasp_write_string(fmt::format("<{},{},{}>\n" , this->coords[0] , this->coords[1] , this->coords[2] ));
 }
 
 void Vector3::writeToStream( std::ostream& out )
@@ -116,7 +116,7 @@ Vector3	v;
 	v.coords[2] = this->coords[2]/l;
 	return v;
     }
-    SIMPLE_ERROR(("Attempted to normalize the vector (0,0,0)"));
+    SIMPLE_ERROR("Attempted to normalize the vector (0,0,0)");
 }
 
 Vector3 Vector3::normalizedOrZero() const
@@ -171,7 +171,7 @@ double		x,y,z;
     ss >> std::skipws >> comma >> std::skipws;
     ss >> z;
     this->set(x,y,z);
-    LOG("Vector3::parseFromString got (%lf,%lf,%lf)" , x , y , z );
+    LOG("Vector3::parseFromString got ({},{},{})" , x , y , z );
 }
 
 
@@ -188,7 +188,7 @@ double		x,y,z;
     ss >> comma;
     ss >> z;
     this->set(x,y,z);
-    LOG("Vector3::parseFromCharacterArray got (%lf,%lf,%lf)" , x , y , z );
+    LOG("Vector3::parseFromCharacterArray got ({},{},{})" , x , y , z );
 }
 
 
@@ -235,20 +235,20 @@ Vector3	diff;
 double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal)
 {
 	Vector3 men = this->normalizedOrZero();
-	LOG("me.normalized{%lf,%lf,%lf} " , men.getX() , men.getY() , men.getZ() );
+	LOG("me.normalized{{},{},{}} " , men.getX() , men.getY() , men.getZ() );
 	Vector3 ton = toVector.normalizedOrZero();
-	LOG("to.normalized{%lf,%lf,%lf} " , ton.getX() , ton.getY() , ton.getZ() );
-	LOG("about_normal{%lf,%lf,%lf} " , aboutNormal.getX() , aboutNormal.getY() , aboutNormal.getZ() );
+	LOG("to.normalized{{},{},{}} " , ton.getX() , ton.getY() , ton.getZ() );
+	LOG("about_normal{{},{},{}} " , aboutNormal.getX() , aboutNormal.getY() , aboutNormal.getZ() );
 	double cosTheta = men.dotProduct(ton);
 	if ( fabs(cosTheta-1.0)<0.00001 )  return 0.0;
 	if ( fabs(cosTheta+1.0)<0.00001 )  return 3.14159;
-	LOG("cosTheta = %lf" , cosTheta  );
+	LOG("cosTheta = {}" , cosTheta  );
 	Vector3 cr = men.crossProduct(ton);
 	LOG("status" );
 	double dir = cr.dotProduct(aboutNormal);
-	LOG("dir = %lf " , dir );
+	LOG("dir = {} " , dir );
 	double theta = (dir>=0.0)?acos(cosTheta):(6.2831853-acos(cosTheta));
-	LOG("theta = %lf deg" , theta/0.0174533 );
+	LOG("theta = {} deg" , theta/0.0174533 );
 	return theta;
     }
 
@@ -310,13 +310,13 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
   Vector3 vcb = (vc - vb);
   Vector3 vdc = (vd - vc);
   Vector3 vacCross = (vab.crossProduct(vcb)).normalized();
-  LOG("vacCross = %lf,%lf,%lf" , (vacCross.getX()) , (vacCross.getY()) , (vacCross.getZ() ) );
+  LOG("vacCross = {},{},{}" , (vacCross.getX()) , (vacCross.getY()) , (vacCross.getZ() ) );
   Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized();
-  LOG("vdcCross = %lf,%lf,%lf" , (vdcCross.getX()) , (vdcCross.getY()) , (vdcCross.getZ() ) );
+  LOG("vdcCross = {},{},{}" , (vdcCross.getX()) , (vdcCross.getY()) , (vdcCross.getZ() ) );
   Vector3 vCross = vacCross.crossProduct(vdcCross);
-  LOG("vCross = %lf,%lf,%lf" , (vCross.getX()) , (vCross.getY()) , (vCross.getZ() ) );
+  LOG("vCross = {},{},{}" , (vCross.getX()) , (vCross.getY()) , (vCross.getZ() ) );
   double dih = acos(vacCross.dotProduct(vdcCross));
-  LOG("dih = %lf" , (dih ) );
+  LOG("dih = {}" , (dih ) );
   double sgn = (vCross.dotProduct(vcb))<0.0?-1.0:+1.0;
 //    if ( enantiomer ) return -dih*sgn;
   return dih*sgn;
@@ -504,11 +504,11 @@ Vector3 zvZMatrixCalculatePositionFromAngles( double dAngleA, double dAngleB,
               (-dCosB + dCosA*dCosC + dCosX*dSinA*dSinC) +
               2.0*dSinA*dSinA*dSinC*dSinC*dSinX*dSinX;
 
-    LOG( "Iteration %d dF1=%lf  dF2=%lf  dB=%lf\n",
+    LOG( "Iteration {} dF1={}  dF2={}  dB={}\n",
          iCount, dF1, dF2, dX );
     if ( fabs(dF1) < VERYSMALL*10.0 ) break;
     if ( fabs(dF2) < VERYSMALL ) {
-      SIMPLE_ERROR( "Could not optimize! dF1 = %lf, dF2 = %lfdX = %lf steps=%d", dF1, dF2, dX, iCount );
+      SIMPLE_ERROR( "Could not optimize! dF1 = {}, dF2 = {}dX = {} steps={}", dF1, dF2, dX, iCount );
     }
     dXNew = dX - dF1/dF2;
     if ( fabs(dXNew - dX) < VERYSMALL ) break;
@@ -579,21 +579,21 @@ CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation(
   vTrans = vCenter;
   vTempAC = vAtomA-vCenter;
   vTempBC = vAtomB-vCenter; // vVectorSub( vPAtomB, vPAtomC );
-  LOG( "AC= %s\n", vTempAC.asString() );
-  LOG( "BC= %s\n", vTempBC.asString() );
+  LOG( "AC= {}\n", vTempAC.asString() );
+  LOG( "BC= {}\n", vTempBC.asString() );
   vTempXZ = vTempAC;
   vTempXZ.getY() = 0.0;
-  LOG( "XZ= %s\n", vTempXZ.asString() );
+  LOG( "XZ= {}\n", vTempXZ.asString() );
   if ( vTempXZ.length() != 0.0 ) {
     dAngleY = dVectorAbsAngle(vTempXZ, vXAxis, vYAxis );
   } else dAngleY = 0.0;
-  LOG( "dAngleY = %lf\n", dAngleY );
+  LOG( "dAngleY = {}\n", dAngleY );
   mT.rotationY(-dAngleY );
   LOG( "Rotated around Y\n" );
   vTempAC = mT.multiplyByVector3(vTempAC);
   vTempBC = mT.multiplyByVector3(vTempBC);
-  LOG( "New AC= %s\n", vTempAC.asString() );
-  LOG( "New BC= %s\n", vTempBC.asString() );
+  LOG( "New AC= {}\n", vTempAC.asString() );
+  LOG( "New BC= {}\n", vTempBC.asString() );
 
   dAngleZ = dVectorAbsAngle( vTempAC, vXAxis, vZAxis );
   mT.rotationZ( -dAngleZ );
@@ -602,8 +602,8 @@ CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation(
   vTempAC = mT.multiplyByVector3(vTempAC);
 #endif
   LOG( "Rotated around Z\n" );
-  LOG( "New AC= %s\n", vTempAC.asString() );
-  LOG( "New BC= %s\n", vTempBC.asString() );
+  LOG( "New AC= {}\n", vTempAC.asString() );
+  LOG( "New BC= {}\n", vTempBC.asString() );
 
   vTempBC.getX() = 0.0;
 
@@ -632,7 +632,7 @@ CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation(
                 /* leave it the way it is */
 
   vNew = mT.multiplyByVector3(vLab);
-  LOG( "ZMatrix2Angle:  %s\n", vNew.asString() );
+  LOG( "ZMatrix2Angle:  {}\n", vNew.asString() );
   return vNew;
 }
 
@@ -664,7 +664,7 @@ CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size
          (*coordinates)[index0+2]);
   return;
   }
-  SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
+  SIMPLE_ERROR("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at {} and the nvector length is {}" , index0 , coordinates->length());
 }
 
 CL_DOCSTRING(R"dx(Put a geom:vec into a nvector at the particular index.)dx");
@@ -678,7 +678,7 @@ CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3& pos, si
     (*coordinates)[index0+2] = pos.getZ();
   return;
   }
-  SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to put starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
+  SIMPLE_ERROR("Out of bounds extraction of geom:vec from nvector. Trying to put starting at {} and the nvector length is {}" , index0 , coordinates->length());
 }
 
 CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx");
@@ -691,8 +691,21 @@ CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coord
     transform.transform_nvector_point(vec.getX(),vec.getY(),vec.getZ(),coordinates,index0);
     return;
   }
-  SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
+  SIMPLE_ERROR("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at {} and the nvector length is {}" , index0 , coordinates->length());
 }
 
+
+Vector3 transform_rotor3( float r_scalar, float r_xy, float r_yz, float r_zx, const Vector3& v)
+{
+    const float S_x = r_scalar*v.getX() + r_xy*v.getY() - r_zx*v.getZ();
+    const float S_y = r_scalar*v.getY() - r_xy*v.getX() + r_yz*v.getZ();
+    const float S_z = r_scalar*v.getZ() - r_yz*v.getY() + r_zx*v.getX();
+    const float S_xyz = r_xy*v.getZ() + r_yz*v.getX() + r_zx*v.getY();
+
+    float result_x = S_x*r_scalar +   S_y*r_xy + S_xyz*r_yz -   S_z*r_zx;
+    float result_y = S_y*r_scalar -   S_x*r_xy +   S_z*r_yz + S_xyz*r_zx;
+    float result_z = S_z*r_scalar + S_xyz*r_xy -   S_y*r_yz +   S_x*r_zx;
+    return Vector3( result_x, result_y, result_z );
+}
 
 };

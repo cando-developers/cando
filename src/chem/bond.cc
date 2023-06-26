@@ -84,7 +84,7 @@ Bond_sp	Bond_O::create(Atom_sp from, Atom_sp to, BondOrder o)
     printf("%s:%d Created bond %s -> %s %s\n", __FILE__, __LINE__, _rep_(from).c_str(), _rep_(to).c_str(), bondOrderToString(o).c_str());
   }
 #endif
-  LOG("created bond from=%s to=%s"
+  LOG("created bond from={} to={}"
       , bond->_Atom1->description()
       , bond->_Atom2->description() );
   return bond;
@@ -108,7 +108,7 @@ Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
   this->_Atom2 = bb._Atom2;
 //  printf("%s:%d  Bond_O copy ctor %s -> %s %s\n", __FILE__, __LINE__, _rep_(bb._Atom1).c_str(), _rep_(bb._Atom2).c_str(), bondOrderToString(bb.order).c_str());
   this->_Properties = bb._Properties; // You can't call allocators from ctors core::cl__copy_list(bb._Properties);
-  LOG("copy _Atom1=%s _Atom2=%s"
+  LOG("copy _Atom1={} _Atom2={}"
       , this->_Atom1->description()
       , this->_Atom2->description() );
 }
@@ -120,7 +120,7 @@ bool Bond_O::isAtom1(Atom_sp a) const
   if (this->_Atom1==a) return true;
   ASSERTNOTNULL(this->_Atom2);
   if ( this->_Atom2==a) return false;
-  SIMPLE_ERROR(("Atom[%s] is neither atom1[%s] or atom2[%s] of bond") , _rep_(a) , _rep_(this->_Atom1) , _rep_(this->_Atom2) );
+  SIMPLE_ERROR("Atom[{}] is neither atom1[{}] or atom2[{}] of bond" , _rep_(a) , _rep_(this->_Atom1) , _rep_(this->_Atom2) );
 }
 
 
@@ -189,7 +189,7 @@ core::NullTerminatedEnumAssociation bondOrderKeys[] = {
  */
 void Bond_O::fields(core::Record_sp node)
 {
-  LOG("archive direction = %s" , (node->loading()?"loading":"saving") ); //
+  LOG("archive direction = {}" , (node->loading()?"loading":"saving") ); //
   node->field(INTERN_(kw,order), this->_DirectionalOrder ); // attributeSymbolEnumHiddenConverter("order",this->order,_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
   node->field_if_not_nil(INTERN_(kw,properties),this->_Properties);
   node->field( INTERN_(kw,a1), this->_Atom1 );
@@ -284,7 +284,7 @@ string  Bond_O::description() const
 
 string  Bond_O::describeOther(Atom_sp from) const
 {
-  ASSERTF(from==this->_Atom1||from==this->_Atom2,"describeFrom failed because from atom[%s] is not part of bond: %s" , from->description() , this->description() );
+  ASSERTF(from==this->_Atom1||from==this->_Atom2,"describeFrom failed because from atom[{}] is not part of bond: {}" , from->description() , this->description() );
   stringstream    ss;
   ss << "Bond(";
   ss << from->description();
@@ -309,7 +309,7 @@ bool	Bond_O::invalid(Atom_sp a)
 void	Bond_O::failIfInvalid(Atom_sp a)
 {
   if ( this->invalid(a) ) {
-    SIMPLE_ERROR(("INVALID %s") , this->description());
+    SIMPLE_ERROR("INVALID {}" , this->description());
   }
 }
 
@@ -317,25 +317,25 @@ void	Bond_O::failIfInvalid(Atom_sp a)
 
 void Bond_O::redirectToAtomCopies()
 {
-  LOG("Redirecting bond@%p" , this ); //
+  LOG("Redirecting bond@{}" , this ); //
   Atom_sp fa =  this->_Atom1;
   Atom_sp ta = this->_Atom2;
 #ifdef	DEBUG_ON
   if ( !fa.objectp() ) {
-    SIMPLE_ERROR(("redirectToAtomCopies _Atom1 is NULL"));
+    SIMPLE_ERROR("redirectToAtomCopies _Atom1 is NULL");
   }
-  LOG("  original from atom@%p" , fa ); //
+  LOG("  original from atom@{}" , fa ); //
   if ( !ta.objectp() ) {
-    SIMPLE_ERROR(("redirectToAtomCopies _Atom2 is NULL"));
+    SIMPLE_ERROR("redirectToAtomCopies _Atom2 is NULL");
   }
-  LOG("  original   to atom@%p" , ta ); //
+  LOG("  original   to atom@{}" , ta ); //
 #endif
   Atom_sp fc = fa->getCopyAtom();
   ASSERTNOTNULL(fc);
-  LOG("    new from %s" , fc->description() );
+  LOG("    new from {}" , fc->description() );
   Atom_sp tc = ta->getCopyAtom();
   ASSERTNOTNULL(tc);
-  LOG("    new   to %s" , tc->description() );
+  LOG("    new   to {}" , tc->description() );
   this->_Atom1 = fc;
   this->_Atom2 = tc;
 }
@@ -393,7 +393,7 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToCon
   MapAtomsToConstitutionAtomIndex0N::const_iterator it = atomMap.find(to);
   if ( it == atomMap.end() )
   {
-    SIMPLE_ERROR(("Could not find atom[%s] in atomMap") , _rep_(to));
+    SIMPLE_ERROR("Could not find atom[{}] in atomMap" , _rep_(to));
   }
   ConstitutionAtomIndex0N index = it->second;
   BondOrder order = this->maybeFlipOrder(from);
@@ -591,7 +591,7 @@ void	BondList_O::removeBondBetween(Atom_sp a,Atom_sp b)
       return;
     }
   }
-  SIMPLE_ERROR(("Could not find bond between %s and %s in bondList: %s") , _rep_(a) , _rep_(b) , _rep_(this->asSmartPtr()));
+  SIMPLE_ERROR("Could not find bond between {} and {} in bondList: {}" , _rep_(a) , _rep_(b) , _rep_(this->asSmartPtr()));
 	// If the bond wasn't found then just return
 }
 
@@ -654,7 +654,7 @@ void	BondList_O::archiveBase(core::ArchiveP node)
 {
   BondList_O::iterator	ib;
   if ( node->saving() ) {
-    LOG("About to save BondList with %d members" , this->size()  ); //
+    LOG("About to save BondList with {} members" , this->size()  ); //
     for ( ib=this->_Bonds.begin(); ib!=this->_Bonds.end(); ib++ ) {
       
       node->archiveSaveObjectAsChildAssignAutoUniqueId<Bond_O>(*ib);

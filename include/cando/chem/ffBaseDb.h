@@ -90,7 +90,7 @@ namespace translate {
             case chem::unknown:
                 return (chemkw::_sym_unknown);
 	    };
-	    SIMPLE_ERROR(("Illegal ParameterizationLevel"));
+	    SIMPLE_ERROR("Illegal ParameterizationLevel");
 	}
     };
 
@@ -108,7 +108,7 @@ namespace translate {
 	    } else if ( o == chemkw::_sym_rough ) {
 		_v = chem::rough;
 	    } else {
-		SIMPLE_ERROR(("Illegal value for ParameterizationLevel %s") , _rep_(o) );
+		SIMPLE_ERROR("Illegal value for ParameterizationLevel {}" , _rep_(o) );
 	    }
 	}
     };

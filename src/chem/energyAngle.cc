@@ -61,7 +61,7 @@ core::List_sp EnergyAngle::encode() const {
 }
 
 void EnergyAngle::decode(core::List_sp alist) {
-  SIMPLE_ERROR(("Implement decode of EnergyAngle"));
+  SIMPLE_ERROR("Implement decode of EnergyAngle");
 }
 
 #ifdef XML_ARCHIVE
@@ -265,7 +265,7 @@ string				str1, str2, str3, str4;
 	    str2 = as2;
 	    str1 = as3;
 	}
-        core::writeln_bf_stream(fmt::sprintf("TERM 2ANG %-9s - %-9s - %-9s %8.2lf %8.2lf" , str1.c_str() , str2.c_str() , str3.c_str() , eai->term.kt , core::degrees(eai->term.t0) ));
+        core::clasp_write_string(fmt::format("TERM 2ANG {:<9} - {:<9} - {:<9} {:8.2f} {:8.2f}\n" , str1.c_str() , str2.c_str() , str3.c_str() , eai->term.kt , core::degrees(eai->term.t0) ));
     }
 }
 
@@ -512,29 +512,29 @@ bool	calcOffDiagonalHessian = true;
 	    gctools::Vec0<EnergyAngle>::iterator ai;
 	    for ( i=0,ai=this->_Terms.begin();
 			ai!=this->_Terms.end(); ai++,i++ ) {
-		LOG("ai->term.kt = %le" , ai->term.kt  );
-		LOG("ai->term.t0 = %le" , ai->term.t0  );
-		LOG("angleScale = %le" , angleScale  );
-		LOG("ai->x1 = %le" , pos->element(ai->term.I1 ) );
-		LOG("ai->y1 = %le" , pos->element(ai->term.I1+1 ) );
-		LOG("ai->z1 = %le" , pos->element(ai->term.I1+2 ) );
-		LOG("ai->x2 = %le" , pos->element(ai->term.I2 ) );
-		LOG("ai->y2 = %le" , pos->element(ai->term.I2+1 ) );
-		LOG("ai->z2 = %le" , pos->element(ai->term.I2+2 ) );
-		LOG("ai->x3 = %le" , pos->element(ai->term.I3 ) );
-		LOG("ai->y3 = %le" , pos->element(ai->term.I3+1 ) );
-		LOG("ai->z3 = %le" , pos->element(ai->term.I3+2 ) );
+		LOG("ai->term.kt = {}" , ai->term.kt  );
+		LOG("ai->term.t0 = {}" , ai->term.t0  );
+		LOG("angleScale = {}" , angleScale  );
+		LOG("ai->x1 = {}" , pos->element(ai->term.I1 ) );
+		LOG("ai->y1 = {}" , pos->element(ai->term.I1+1 ) );
+		LOG("ai->z1 = {}" , pos->element(ai->term.I1+2 ) );
+		LOG("ai->x2 = {}" , pos->element(ai->term.I2 ) );
+		LOG("ai->y2 = {}" , pos->element(ai->term.I2+1 ) );
+		LOG("ai->z2 = {}" , pos->element(ai->term.I2+2 ) );
+		LOG("ai->x3 = {}" , pos->element(ai->term.I3 ) );
+		LOG("ai->y3 = {}" , pos->element(ai->term.I3+1 ) );
+		LOG("ai->z3 = {}" , pos->element(ai->term.I3+2 ) );
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
-		LOG("Energy = %le" , Energy  );
-		LOG("x1 = %le" , x1  );
-		LOG("y1 = %le" , y1  );
-		LOG("z1 = %le" , z1  );
-		LOG("x2 = %le" , x2  );
-		LOG("y2 = %le" , y2  );
-		LOG("z2 = %le" , z2  );
-		LOG("x3 = %le" , x3  );
-		LOG("y3 = %le" , y3  );
-		LOG("z3 = %le" , z3  );
+		LOG("Energy = {}" , Energy  );
+		LOG("x1 = {}" , x1  );
+		LOG("y1 = {}" , y1  );
+		LOG("z1 = {}" , z1  );
+		LOG("x2 = {}" , x2  );
+		LOG("y2 = {}" , y2  );
+		LOG("z2 = {}" , z2  );
+		LOG("x3 = {}" , x3  );
+		LOG("y3 = {}" , y3  );
+		LOG("z3 = {}" , z3  );
 		int index = i;
 #include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
 	    }
@@ -723,9 +723,9 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
   core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
   core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
   core::T_sp tia3 = atomTable->_AtomTableIndices->gethash(a3);
-  if (!tia1.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a1));
-  if (!tia2.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a2));
-  if (!tia3.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a3));
+  if (!tia1.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a1));
+  if (!tia2.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a2));
+  if (!tia3.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a3));
   int ia1 = tia1.unsafe_fixnum();
   int ia2 = tia2.unsafe_fixnum();
   int ia3 = tia3.unsafe_fixnum();

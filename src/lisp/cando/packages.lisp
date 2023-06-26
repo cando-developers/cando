@@ -211,7 +211,9 @@
            #:assign-solvent-molecules-using-residue-name
            #:identify-solvent-residue-name
            #:make-rapid-starting-geometry
-           #:next-rapid-starting-geometry))
+           #:next-rapid-starting-geometry
+           #:stereochemistry-from-structure
+           #:superpose-all))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

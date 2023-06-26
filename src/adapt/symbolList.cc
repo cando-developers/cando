@@ -69,7 +69,7 @@ void SymbolList_O::fields(core::Record_sp node) {
 
 
 void SymbolList_O::clear() {
-  LOG("SymbolList::clear size=%d" , (this->_Contents.size()));
+  LOG("SymbolList::clear size={}" , (this->_Contents.size()));
   if (this->_Contents.size() == 0)
     return;
   this->_Contents.clear();
@@ -122,15 +122,15 @@ bool SymbolList_O::contains(Symbol_sp nm) {
 
 int SymbolList_O::indexOf(Symbol_sp nm) {
   
-  LOG("Looking for string(%s)" , _rep_(nm));
+  LOG("Looking for string({})" , _rep_(nm));
   for (auto it = this->_Contents.begin(); it != this->_Contents.end(); it++) {
-    LOG("   Looking at SymbolList entry(%s)" , _rep_((*it)));
+    LOG("   Looking at SymbolList entry({})" , _rep_((*it)));
     if ((*it) == nm) {
       LOG("Found Match!!!");
       return it - this->_Contents.begin();
     }
   }
-  SIMPLE_ERROR(("SymbolList does not contain: %s") , _rep_(nm));
+  SIMPLE_ERROR("SymbolList does not contain: {}" , _rep_(nm));
 }
 
 void SymbolList_O::map(std::function<void(Symbol_sp)> const &fn) {

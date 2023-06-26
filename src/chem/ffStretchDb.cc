@@ -92,7 +92,7 @@ CL_DEFMETHOD core::T_sp	FFStretchDb_O::findTermForTypes(core::Symbol_sp t1, core
 {
   FFStretch_sp	match;
   core::Symbol_sp key;
-  LOG("Looking for stretch between types (%s)-(%s)" , t1.c_str() , t2.c_str() );
+  LOG("Looking for stretch between types ({})-({})" , t1.c_str() , t2.c_str() );
   key = stretchKey(t1,t2); // forwards
   core::T_sp parm = this->_Parameters->gethash(key);
   if (parm.notnilp()) return parm;

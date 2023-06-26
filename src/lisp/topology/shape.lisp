@@ -1,8 +1,12 @@
 (in-package :topology)
 
+(defgeneric set-to-closest-matching-fragment-conformation-index (monomer-shape oligomer)
+  (:documentation "Set the fragment-conformation-index to the closest matching fragment-conformations index"))
+
+
 
 (defclass monomer-shape ()
-  ((fragment-conformation-index :initform nil :initarg :fragment-conformation-index :accessor fragment-conformation-index)
+  ((fragment-conformation-index :initarg :fragment-conformation-index :accessor fragment-conformation-index)
    (monomer :initarg :monomer :accessor monomer)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
    (fragment-conformations :initarg :fragment-conformations :accessor fragment-conformations)
@@ -10,7 +14,11 @@
 
 (defmethod print-object ((obj monomer-shape) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream "~a ~a" (monomer obj) (fragment-conformation-index obj))))
+    (format stream "~a ~a"
+            (monomer obj)
+            (if (slot-boundp obj 'fragment-conformation-index)
+                (fragment-conformation-index obj)
+                "#<unbound>"))))
 
 (defclass oligomer-shape ()
   ((oligomer :initarg :oligomer :accessor oligomer)
@@ -21,14 +29,17 @@
    (the-root-monomer :initarg :the-root-monomer :accessor the-root-monomer)
    (in-monomers :initarg :in-monomers :accessor in-monomers)
    (out-monomers :initarg :out-monomers :accessor out-monomers)
+   (rotor3 :initarg :rotor3 :initform #(1.0 0.0 0.0 0.0) :accessor rotor3)
+   (translation :initarg :translation :initform (geom:vec 0 0 0) :accessor translation)
    ))
 
 (defclass receptor-shape (oligomer-shape)
-  ((aggregate :initarg :aggregate :accessor aggregate)))
+  ((aggregate :initarg :aggregate :accessor aggregate)
+    ))
 
   
 
-(defun make-oligomer-shape (oligomer matched-fragment-conformations-map)
+(defun make-oligomer-shape (oligomer matched-fragment-conformations-map &key monomer-shape-factory)
   (multiple-value-bind (monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)
       (loop with monomer-shape-vector = (make-array (length (monomers oligomer)))
             with in-monomers = (make-hash-table)
@@ -43,10 +54,15 @@
                                            (unless fc
                                              (error "Could not find monomer-context ~s" monomer-context))
                                            fc)
-            for monomer-shape = (make-instance 'monomer-shape
-                                               :monomer monomer
-                                               :monomer-context monomer-context
-                                               :fragment-conformations fragment-conformations)
+            for monomer-shape = (if monomer-shape-factory
+                                    (funcall monomer-shape-factory
+                                             monomer
+                                             :monomer-context monomer-context
+                                             :fragment-conformations fragment-conformations)
+                                    (make-instance 'monomer-shape
+                                                   :monomer monomer
+                                                   :monomer-context monomer-context
+                                                   :fragment-conformations fragment-conformations))
             for couplings = (couplings monomer)
             for in-monomer = nil
             for out-mons = nil
@@ -97,7 +113,7 @@
     (loop for out-monomer in out-monomers
           for out-monomer-shape = (gethash out-monomer (monomer-shape-map oligomer-shape))
           for fragment-match-key = (cons (monomer-context root-monomer-shape) (monomer-context out-monomer-shape))
-          for allowed-fragment-vec = (let* ((ht(topology:fragment-matches (topology:matched-fragment-conformations-map oligomer-shape)))
+          for allowed-fragment-vec = (let* ((ht (topology:fragment-matches (topology:matched-fragment-conformations-map oligomer-shape)))
                                             (val (gethash fragment-match-key ht)))
                                        (unless val (break "Could not find value for key ~a in ht: ~a" fragment-match-key ht))
                                        val)
@@ -108,6 +124,13 @@
                                                 (elt allowed-fragment-indices (random (length allowed-fragment-indices)))
                                                 :BADBADBAD)
           do (setf (fragment-conformation-index out-monomer-shape) fragment-conformation-index)
+          do (format t "fragment-conformation-index ~a for monomer-shape ~a~%"
+                     fragment-conformation-index out-monomer-shape)
+          do (unless (< (fragment-conformation-index out-monomer-shape)
+                        (length (topology:fragments (fragment-conformations out-monomer-shape))))
+               (error "fragment-conformation-index ~a is out of bounds ~a"
+                      (fragment-conformation-index root-monomer-shape)
+                      (length (topology:fragments (fragment-conformations out-monomer-shape)))))
           do (random-fragment-conformation-index-impl out-monomer-shape oligomer-shape))))
 
 (defun random-fragment-conformation-index (oligomer-shape)
@@ -118,15 +141,19 @@
       (format t "fragment-conformations: ~a~%" fragment-conformations)
       (setf (fragment-conformation-index root-monomer-shape)
             (random (length (topology:fragments fragment-conformations))))
+      (unless (< (fragment-conformation-index root-monomer-shape)
+                 (length (topology:fragments fragment-conformations)))
+        (error "fragment-conformation-index ~a is out of bounds ~a"
+               (fragment-conformation-index root-monomer-shape)
+               (length (topology:fragments fragment-conformations))))
       (random-fragment-conformation-index-impl root-monomer-shape oligomer-shape))))
 
-(defun build-shapes (oligomer-shapes conf &optional monomer-order)
+(defun build-shapes (oligomer-shapes conf &key monomer-order)
   (let ((coordinates (chem:make-coordinates (topology:energy-function conf))))
     (chem:energy-function/load-coordinates-into-vector (topology:energy-function conf) coordinates)
     (loop for oligomer-shape in oligomer-shapes
           for oligomer = (oligomer oligomer-shape)
-          for fragment-conformations = (matched-fragment-conformations-map oligomer-shape)
-          do (topology::fill-internals-from-oligomer-shape conf fragment-conformations oligomer-shape)
+          do (topology:fill-internals-from-oligomer-shape conf oligomer-shape)
              (if monomer-order
                  (loop for monomer in monomer-order
                        for monomer-position = (gethash monomer (monomer-positions conf))

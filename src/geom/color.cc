@@ -129,7 +129,7 @@ Color_O::Color_O(const Color_O& orig) : core::CxxObject_O(orig)
 	core::HashTable_sp colorTable = colorTableSymbol->symbolValue().as<core::HashTable_O>();
         core::T_sp c = colorTable->gethash(sym);
         if (c.nilp()) {
-          SIMPLE_ERROR(("Could not find color %s") , _rep_(sym));
+          SIMPLE_ERROR("Could not find color {}" , _rep_(sym));
         }
 	return c.as<Color_O>();
     }
@@ -194,7 +194,7 @@ void	Color_O::archiveBase(core::ArchiveP node)
     this->Base::archiveBase(node);
     if ( node->loading() )
     {
-	SIMPLE_ERROR(("Never load colors - they are handled by createYourColor"));
+	SIMPLE_ERROR("Never load colors - they are handled by createYourColor");
     }
     node->attributeSymbolIfNotNil("colorName",this->_ColorName);
     node->attribute("color",this->_Color);
@@ -236,23 +236,23 @@ void Color_O::setRGB(double r, double g, double b)
 uint	ir, ig, ib;
     if ( r < 0.0 || r > 1.0 )
     {
-	SIMPLE_ERROR(("RGB red value must be between 0.0 and 1.0" ));
+	SIMPLE_ERROR("RGB red value must be between 0.0 and 1.0");
     }
     if ( g < 0.0 || g > 1.0 )
     {
-	SIMPLE_ERROR(("RGB green value must be between 0.0 and 1.0" ));
+	SIMPLE_ERROR("RGB green value must be between 0.0 and 1.0");
     }
     if ( b < 0.0 || b > 1.0 )
     {
-	SIMPLE_ERROR(("RGB blue value must be between 0.0 and 1.0" ));
+	SIMPLE_ERROR("RGB blue value must be between 0.0 and 1.0");
     }
     ir = 255*r;
     ig = 255*g;
     ib = 255*b;
-    LOG("Color bytes r(%d)g(%d)b(%d)" , ir , ig , ib );
+    LOG("Color bytes r({})g({})b({})" , ir , ig , ib );
     this->_Color = (ir<<16)|(ig<<8)|ib;
-    LOG("Put into _Color(%d)" , this->_Color );
-    LOG("Color name(%s" , _rep_(this->_ColorName) );
+    LOG("Put into _Color({})" , this->_Color );
+    LOG("Color name({}" , _rep_(this->_ColorName) );
 }
 
 
@@ -260,7 +260,7 @@ uint	ir, ig, ib;
 
     void	Color_O::setColorName(core::Symbol_sp name)
 {
-  LOG("Setting color name to %s"% _rep_(name) );
+  LOG("Setting color name to {}"% _rep_(name) );
     this->_ColorName = name;
 }
 

@@ -136,7 +136,7 @@ struct	to_object<chem::EnergyNonbond>
     DeclareType _v;
     from_object(core::T_sp o)
     {
-      SIMPLE_ERROR(("Implement me"));
+      SIMPLE_ERROR("Implement me");
     }
   };
 };

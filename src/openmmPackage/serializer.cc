@@ -78,7 +78,7 @@ namespace omm
 	    rawSystem = OpenMM::XmlSerializer::deserialize<OpenMM::System>(fin);
 	} else
 	{
-	    SIMPLE_ERROR(("Could not open file[%s] for reading") , path->asString() );
+	    SIMPLE_ERROR("Could not open file[{}] for reading" , path->asString() );
 	}
 	fin.close();
 	ASSERTF(rawSystem!=NULL,("The system was NULL"));

@@ -58,7 +58,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
   (let* ((bond (chem:get-bond-to atom1 atom2)))
     (chem:get-order-from-atom-as-int bond atom1)))
 
-(defun collapse-stretch-parameters (kb-vec r0-vec atom1-vec atom2-vec)
+(defun collapse-stretch-parameters (atom-types kb-vec r0-vec atom1-vec atom2-vec)
   (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (jnext 0)
         jtemp
@@ -66,19 +66,20 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (kbj-vec (make-array 256 :element-type 'double-float :fill-pointer 0 :adjustable t))
         (r0j-vec (make-array 256 :element-type 'double-float :fill-pointer 0 :adjustable t)))
     (loop for i from 0 below (length kb-vec)
-       for atom1 = (aref atom1-vec i)
-       for atom2 = (aref atom2-vec i)
-       for key = (chem:canonical-stretch-key (chem:get-type atom1) (chem:get-type atom2))
-       for kbi = (aref kb-vec i)
-       for r0i = (aref r0-vec i)
-       do (if (setf jtemp (gethash key uniques))
-              (vector-push-extend jtemp j-vec)
-              (progn
-                (setf (gethash key uniques) jnext)
-                (vector-push-extend jnext j-vec)
-                (vector-push-extend kbi kbj-vec)
-                (vector-push-extend r0i r0j-vec)
-                (incf jnext))))
+          for atom1 = (aref atom1-vec i)
+          for atom2 = (aref atom2-vec i)
+          for key = (chem:canonical-stretch-key (chem:get-type atom1 atom-types)
+                                                (chem:get-type atom2 atom-types))
+          for kbi = (aref kb-vec i)
+          for r0i = (aref r0-vec i)
+          do (if (setf jtemp (gethash key uniques))
+                 (vector-push-extend jtemp j-vec)
+                 (progn
+                   (setf (gethash key uniques) jnext)
+                   (vector-push-extend jnext j-vec)
+                   (vector-push-extend kbi kbj-vec)
+                   (vector-push-extend r0i r0j-vec)
+                   (incf jnext))))
     (values j-vec kbj-vec r0j-vec)))
 
 (defun prepare-amber-energy-stretch (energy-function)
@@ -100,7 +101,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
     (format t "atom2-vector ~a~%" atom2-vector)
 ||#
     (multiple-value-bind (j-vec kbj-vec r0j-vec)
-        (collapse-stretch-parameters kb-vector r0-vector atom1-vector atom2-vector)
+        (collapse-stretch-parameters (chem:atom-types energy-function) kb-vector r0-vector atom1-vector atom2-vector)
       (Let ((with-h 0)
             (without-h 0))
         (loop for i from 0 below (length kb-vector)
@@ -150,7 +151,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
        (format nil "~a-~a-~a" (string type3) (string type2) (string type1)))
    :keyword))
 
-(defun collapse-angle-parameters (kt-vec t0-vec atom1-vec atom2-vec atom3-vec)
+(defun collapse-angle-parameters (atom-types kt-vec t0-vec atom1-vec atom2-vec atom3-vec)
   (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (jnext 0)
         jtemp
@@ -161,7 +162,9 @@ Return (values compressed-atom-name-map max-atom-name-length). "
        for atom1 = (aref atom1-vec i)
        for atom2 = (aref atom2-vec i)
        for atom3 = (aref atom3-vec i)
-       for key = (canonical-angle-key (chem:get-type atom1) (chem:get-type atom2) (chem:get-type atom3))
+          for key = (canonical-angle-key (chem:get-type atom1 atom-types)
+                                         (chem:get-type atom2 atom-types)
+                                         (chem:get-type atom3 atom-types))
        for kti = (aref kt-vec i)
        for t0i = (aref t0-vec i)
 ;;;       do (format t "atom1: ~a atom2: ~a atom3: ~a  key: ~a~% " atom1 atom2 atom3 key)
@@ -188,7 +191,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
          (atom3-vector (cdr (assoc :atom3 angle-vectors)))
          )
     (multiple-value-bind (j-vec ktj-vec t0j-vec)
-        (collapse-angle-parameters kt-vector t0-vector atom1-vector atom2-vector atom3-vector)
+        (collapse-angle-parameters (chem:atom-types energy-function) kt-vector t0-vector atom1-vector atom2-vector atom3-vector)
     (Let ((with-h 0)
           (without-h 0))
       (loop for i from 0 below (length kt-vector)
@@ -255,7 +258,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
              (string (chem:get-type satom4)))
      :keyword)))
 
-(defun collapse-dihedral-parameters (v-vec in-vec phase-vec proper-vec atom1-vec atom2-vec atom3-vec atom4-vec)
+(defun collapse-dihedral-parameters (atom-types v-vec in-vec phase-vec proper-vec atom1-vec atom2-vec atom3-vec atom4-vec)
   (let ((j-vec (make-array (length v-vec) :fill-pointer 0))
         (jnext 0)
         jtemp
@@ -269,10 +272,10 @@ Return (values compressed-atom-name-map max-atom-name-length). "
           for atom2 = (aref atom2-vec i)
           for atom3 = (aref atom3-vec i)
           for atom4 = (aref atom4-vec i)
-          for type1 = (chem:get-type atom1)
-          for type2 = (chem:get-type atom2)
-          for type3 = (chem:get-type atom3)
-          for type4 = (chem:get-type atom4)
+          for type1 = (chem:get-type atom1 atom-types)
+          for type2 = (chem:get-type atom2 atom-types)
+          for type3 = (chem:get-type atom3 atom-types)
+          for type4 = (chem:get-type atom4 atom-types)
                                         ;       for in = (aref in-vec i)
           for proper = (aref proper-vec i)
                                         ;       for key = (if proper
@@ -472,7 +475,7 @@ then don't calculate 1,4 interactions"
                          i3prev i3x
                          i4prev i4x))))
       (multiple-value-bind (j-vec vj-vec inj-vec phasej-vec properj-vec)
-          (collapse-dihedral-parameters v-vector in-vector phase-vector proper-vector atom1-vector atom2-vector atom3-vector atom4-vector)
+          (collapse-dihedral-parameters (chem:atom-types energy-function) v-vector in-vector phase-vector proper-vector atom1-vector atom2-vector atom3-vector atom4-vector)
         (let ((with-h 0)
               (without-h 0))
           (format t "Counting w and w/o water prepare-amber-energy-dihedral~%")
@@ -780,7 +783,7 @@ cando-extensions               : T if you want cando-extensions written to the t
     (finish-output)
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
       (fortran:debug "-1-")             ;
-      (fortran:fformat 1 "%-80s")
+      (fortran:fformat 1 "{:<80s}")
       ;;                  (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
 ;;; temporary!!!
       (multiple-value-bind (second minute hour date month year)
@@ -865,12 +868,12 @@ cando-extensions               : T if you want cando-extensions written to the t
         #| dihedrals, nonbonds, others??? |#
         ;; --- Done calculating all of the values
         ;; --- Now write out all of the values
-        (fortran:fformat 1 "%-80s")
+        (fortran:fformat 1 "{:<80s}")
         (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG POINTERS")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-2-")
-        (fortran:fformat 10 "%8d")
+        (fortran:fformat 10 "{:8d}")
         ;; NATOM
         (fortran:fwrite natom)
         (fortran:fwrite ntypes)
@@ -908,12 +911,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next)
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ATOM_NAME")
          (fortran:fwrite "%FORMAT(20a4)")
          (fortran:debug "-3-")
-         (fortran:fformat 20 "%-4s")
+         (fortran:fformat 20 "{:<4s}")
          (multiple-value-bind (compressed-atom-names max-name-length)
              (compress-atom-names atom-name)
            (loop for name across atom-name
@@ -926,12 +929,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG CHARGE")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-4-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for ch across charge
                do (fortran:fwrite (* ch +amber-charge-conversion-18.2223+)))
          (fortran:end-line))
@@ -939,12 +942,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ATOMIC_NUMBER")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-5-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for number across atomic-number
                do (fortran:fwrite number))
          (fortran:end-line))
@@ -952,12 +955,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG MASS")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-6-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for ma across mass
                do (fortran:fwrite ma))
          (fortran:end-line))
@@ -965,12 +968,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ATOM_TYPE_INDEX")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-7-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for ia across iac
                do (fortran:fwrite ia))
          (fortran:end-line))
@@ -978,13 +981,13 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG NUMBER_EXCLUDED_ATOMS")
          (fortran:end-line)
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-8-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for na across number-excluded-atoms
                do (fortran:fwrite na))
          (fortran:end-line))
@@ -992,12 +995,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG NONBONDED_PARM_INDEX")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-9-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for ic across ico
                do (fortran:fwrite ic))
          (fortran:end-line))
@@ -1005,12 +1008,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RESIDUE_LABEL")
          (fortran:fwrite "%FORMAT(20A4)")
          (fortran:debug "-10-")
-         (fortran:fformat 20 "%-4s")
+         (fortran:fformat 20 "{:<4s}")
          (loop for ren across residue-name-vec
                do (fortran:fwrite (string ren)))
          (fortran:end-line))
@@ -1018,12 +1021,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RESIDUE_POINTER")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-11-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for re from 0 below (- (length residue-pointer-vec) 1)
                do (fortran:fwrite (aref residue-pointer-vec re)))
          (fortran:end-line))
@@ -1031,12 +1034,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BOND_FORCE_CONSTANT")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-12-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for kb across kbj-vec
                do (fortran:fwrite kb))
          (fortran:end-line))
@@ -1045,12 +1048,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BOND_EQUIL_VALUE")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-13-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for r0 across r0j-vec
                do (fortran:fwrite r0))
          (fortran:end-line))
@@ -1058,12 +1061,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLE_FORCE_CONSTANT")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-14-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for kt across ktj-vec
                do (fortran:fwrite kt))
          (fortran:end-line))
@@ -1071,12 +1074,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLE_EQUIL_VALUE")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-15-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for t0 across t0j-vec
                do (fortran:fwrite t0))
          (fortran:end-line))
@@ -1084,12 +1087,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRAL_FORCE_CONSTANT")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-16-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for v0 across vj-vec
                do (fortran:fwrite v0))
          (fortran:end-line))
@@ -1097,12 +1100,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRAL_PERIODICITY")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-17-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for in0 across inj-vec
                do (fortran:fwrite (float in0)))
          (fortran:end-line))
@@ -1110,12 +1113,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRAL_PHASE")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-18-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for p0 across phasej-vec
                do (fortran:fwrite p0))
          (fortran:end-line))
@@ -1123,12 +1126,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SCEE_SCALE_FACTOR")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-19-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for pr0 across properj-vec
                do (if pr0
                       (fortran:fwrite 1.2)
@@ -1138,12 +1141,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SCNB_SCALE_FACTOR")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-20-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for pr0 across properj-vec
                do (if pr0
                       (fortran:fwrite 2.0)
@@ -1153,12 +1156,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SOLTY")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-21-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop repeat natyp
                do (fortran:fwrite 0.0))
          (fortran:end-line))
@@ -1166,12 +1169,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG LENNARD_JONES_ACOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-22-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for cn1 across cn1-vec
                do (fortran:fwrite cn1))
          (fortran:end-line))
@@ -1179,12 +1182,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG LENNARD_JONES_BCOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-23-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for cn2 across cn2-vec
                do (fortran:fwrite cn2))
          (fortran:end-line))
@@ -1192,12 +1195,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BONDS_INC_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-24-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for i below (length ibh)
                for ibhi = (aref ibh i)
                for jbhi = (aref jbh i)
@@ -1211,12 +1214,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BONDS_WITHOUT_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-25-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for i below (length ib)
                for ibi = (aref ib i)
                for jbi = (aref jb i)
@@ -1229,12 +1232,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLES_INC_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-26-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for i below (length ith)
                for ithi = (aref ith i)
                for jthi = (aref jth i)
@@ -1249,12 +1252,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLES_WITHOUT_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-27-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for i below (length it)
                for iti = (aref it i)
                for jti = (aref jt i)
@@ -1269,12 +1272,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRALS_INC_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-28-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for i below (length iph)
                for iphi = (aref iph i)
                for jphi = (aref jph i)
@@ -1291,12 +1294,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRALS_WITHOUT_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-29-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for i below (length ip)
                for ipi = (aref ip i)
                for jpi = (aref jp i)
@@ -1313,12 +1316,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG EXCLUDED_ATOMS_LIST")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-30-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop for atom across excluded-atom-list
                do (fortran:fwrite (+ atom 1)))
          (fortran:end-line))
@@ -1326,59 +1329,59 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG HBOND_ACOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-31-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (fortran:fwrite 0.0)
          (fortran:end-line))
         ;;This term has been dropped from most modern force fields.
 
         ;; Next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG HBOND_BCOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-32-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (fortran:fwrite 0.0)
          (fortran:end-line))
         ;;This term has been dropped from most modern force fields.
 
         ;; Next
-        (fortran:fformat 1 "%-80s")
+        (fortran:fformat 1 "{:<80s}")
         (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG HBCUT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-33-")
-        (fortran:fformat 5 "%16.8e")
+        (fortran:fformat 5 "{:16.8e}")
         (fortran:fwrite 0.0)
         (fortran:end-line)
         ;;no longer used for anything.
 
         ;;next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
          (fortran:fwrite "%FORMAT(20A4)")
          (fortran:debug "-34-")
-         (fortran:fformat 20 "%-4s")
+         (fortran:fformat 20 "{:<4s}")
          (loop for type across atom-type
                do (fortran:fwrite (string type)))
          (fortran:end-line))
 
         ;;next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG TREE_CHAIN_CLASSIFICATION")
          (fortran:fwrite "%FORMAT(20A4)")
          (fortran:debug "-35-")
-         (fortran:fformat 20 "%-4s")
+         (fortran:fformat 20 "{:<4s}")
          (loop repeat natom
                do (fortran:fwrite "M"))
          (fortran:end-line))
@@ -1386,12 +1389,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;;next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG JOIN_ARRAY")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-36-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop repeat natom
                do (fortran:fwrite 0))
          (fortran:end-line))
@@ -1399,12 +1402,12 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;;next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG IROTAT")
          (fortran:fwrite "%FORMAT(10I8)")
          (fortran:debug "-37-")
-         (fortran:fformat 10 "%8d")
+         (fortran:fformat 10 "{:8d}")
          (loop repeat natom
                do (fortran:fwrite 0))
          (fortran:end-line))
@@ -1414,7 +1417,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (outline-progn
          (if (chem:bounding-box-bound-p atom-table)
              (progn
-               (fortran:fformat 1 "%-80s")
+               (fortran:fformat 1 "{:<80s}")
                (cando:progress-advance bar (incf bar-counter))
                #+(or)(format t "solvent_pointers info: iptres nspm nspsol -> ~a ~a ~a~%"
                        (chem:final-solute-residue-iptres-bound-p atom-table)
@@ -1430,29 +1433,29 @@ cando-extensions               : T if you want cando-extensions written to the t
                    (fortran:fwrite "%FLAG SOLVENT_POINTERS")
                    (fortran:fwrite "%FORMAT(3I8)")
                    (fortran:debug "-38-")
-                   (fortran:fformat 3 "%8d")
+                   (fortran:fformat 3 "{:8d}")
                    (fortran:fwrite final-solute-residue-iptres)
                    (fortran:fwrite total-number-of-molecules-nspm)
                    (fortran:fwrite first-solvent-molecule-nspsol)
                    (fortran:end-line)))
-               (fortran:fformat 1 "%-80s")
+               (fortran:fformat 1 "{:<80s}")
                (cando:progress-advance bar (incf bar-counter))
                (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
                (fortran:fwrite "%FORMAT(10I8)")
                (fortran:debug "-39-")
-               (fortran:fformat 10 "%8d")
+               (fortran:fformat 10 "{:8d}")
                (loop for natom across atoms-per-molecule
                      do (fortran:fwrite natom))
                (fortran:end-line)
                ;; number of atoms per molecule
 
                ;;next
-               (fortran:fformat 1 "%-80s")
+               (fortran:fformat 1 "{:<80s}")
                (cando:progress-advance bar (incf bar-counter))
                (fortran:fwrite "%FLAG BOX_DIMENSIONS")
                (fortran:fwrite "%FORMAT(5E16.8)")
                (fortran:debug "-40-")
-               (fortran:fformat 5 "%16.8e")
+               (fortran:fformat 5 "{:16.8e}")
                (let ((solvent-box (chem:bounding-box atom-table)))
                  (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
                  (fortran:fwrite (float (chem:get-x-width solvent-box)))
@@ -1462,23 +1465,23 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;;next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RADIUS_SET")
          (fortran:fwrite "%FORMAT(1a80)")
          (fortran:debug "-41-")
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (fortran:fwrite "modified Bondi radii (mbondi)") ;default in leap
          (fortran:end-line))
 
         ;;next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RADII")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-42-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for radius across generalized-born-radius
                do (fortran:fwrite radius))
          (fortran:end-line))
@@ -1486,23 +1489,23 @@ cando-extensions               : T if you want cando-extensions written to the t
 
         ;;next
         (outline-progn
-         (fortran:fformat 1 "%-80s")
+         (fortran:fformat 1 "{:<80s}")
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SCREEN")
          (fortran:fwrite "%FORMAT(5E16.8)")
          (fortran:debug "-43-")
-         (fortran:fformat 5 "%16.8e")
+         (fortran:fformat 5 "{:16.8e}")
          (loop for screen across generalized-born-screen
                do (fortran:fwrite screen))
          (fortran:end-line))
         (when cando-extensions
           (outline-progn
-           (fortran:fformat 1 "%-80s")
+           (fortran:fformat 1 "{:<80s}")
            (cando:progress-advance bar (incf bar-counter))
            (fortran:fwrite "%FLAG BOND_ORDERS")
            (fortran:fwrite "%FORMAT(40I2)")
            (fortran:debug "-44-")
-           (fortran:fformat 40 "%2d")
+           (fortran:fformat 40 "{:2d}")
            (loop for orderi across non-h-bond-orders
                  do (fortran:fwrite orderi))
            (fortran:end-line))
@@ -1515,38 +1518,38 @@ cando-extensions               : T if you want cando-extensions written to the t
                (loop for name across force-field-names-vec
                      do (setf max-force-field-name-len (max max-force-field-name-len
                                                             (length (string name)))))
-               (fortran:fformat 1 (format nil "%-80s"))
+               (fortran:fformat 1 "{:<80s}")
                (cando:progress-advance bar (incf bar-counter))
                (fortran:fwrite "%FLAG FORCE_FIELD_NAMES")
                (fortran:fwrite (format nil "%FORMAT(1a~d)" (1+ max-force-field-name-len)))
                (fortran:debug "-45-")
-               (fortran:fformat 1 (format nil "%-~ds" (1+ max-force-field-name-len)))
+               (fortran:fformat 1 (format nil "{:<~ds}" (1+ max-force-field-name-len)))
                (loop for name across force-field-names-vec
                      do (fortran:fwrite (string name)))
                (fortran:end-line)))
             (outline-progn
-             (fortran:fformat 1 "%-80s")
+             (fortran:fformat 1 "{:<80s}")
              (cando:progress-advance bar (incf bar-counter))
              (fortran:fwrite "%FLAG MOLECULE_FORCE_FIELD_INDEX")
              (fortran:fwrite (format nil "%FORMAT(20I3)"))
              (fortran:debug "-46-")
-             (fortran:fformat 20 "%3d")
+             (fortran:fformat 20 "{:3d}")
              (loop for index across molecule-force-field-name-indices
                    do (fortran:fwrite (1+ index)))
              (fortran:end-line))))
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
     (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
-      (fortran:fformat 20 "%-4s")
+      (fortran:fformat 20 "{:<4s}")
       (fortran:fwrite (string (chem:aggregate-name atom-table)))
       (fortran:end-line)
-                                        ;      (fortran:fformat 1 "%5d")
+                                        ;      (fortran:fformat 1 "{:5d}")
                                         ;      (fortran:fwrite natom)
                                         ;      (fortran:fformat 5 "%15.7lf")
                                         ;      (fortran:fwrite 0.0)
                                         ;      (fortran:fwrite 0.0)
       (fortran:fwrite (format nil  " ~5d~%" natom))
-      (fortran:fformat 6 "%12.7lf")
+      (fortran:fformat 6 "{:12.7f}")
       (let ((ox 0.0)
             (oy 0.0)
             (oz 0.0))

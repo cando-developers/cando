@@ -109,7 +109,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
     { 
 	{ 
 	    extractFragment = topology->getExtractCoreFragment();
-	    LOG("Got core fragment: %s" , extractFragment->description().c_str() );
+	    LOG("Got core fragment: {}" , extractFragment->description().c_str() );
 	    uniqueStructures = extractFragment->isolateUniqueStructures(
 		conformationExplorer, focusMonomer);
 
@@ -165,14 +165,13 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 	    if ( !extractFragment->sharesAtomsWithExtractScaffold(extractScaffold,
 								  focusMonomer, problems ) )
 	    {
-		stringstream ss;
-		ss << "ExtractFragment does not share atoms with ExtractScaffold"<<std::endl;
-		ss << "ExtractFragment constitution["<< topology->getConstitution()->getName() << "] "
-		   << "topology[" << topology->getName() << "]"
-		   << " fragmentName:("+extractFragment->getFragment()->getName()+") atoms: ["
-		   << extractFragment->getFragment()->getAtomNames()->asString() << "]" << std::endl;
-		ss << problems.str();
-		SIMPLE_ERROR((ss.str()));
+              SIMPLE_ERROR("ExtractFragment does not share atoms with ExtractScaffold\n"
+                           "ExtractFragment constitution[{}] topology[{}] fragmentName:({}) atoms: [{}]\n{}",
+                           topology->getConstitution()->getName(),
+                           topology->getName(),
+                           extractFragment->getFragment()->getName(),
+                           extractFragment->getFragment()->getAtomNames()->asString(),
+                           problems.str());
 	    }
 	}
 	{ 
@@ -214,7 +213,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 	    this->_FragmentCoordinates.push_back(fragmentCoordinates);
 	}
     }
-    LOG("MonomerCoordinates defined: %s" , this->asXmlString().c_str()  );
+    LOG("MonomerCoordinates defined: {}" , this->asXmlString().c_str()  );
 #endif
 }
 
@@ -268,10 +267,10 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
 	if ( !e.conditionObject().isA<core::MathException_O>() )
 	{
 	    throw;
-//	    RESIMPLE_ERROR(("An error was caught in MonomerCoordinates_O::testExtraction - here it is: %s") , e.message() ));
+//	    RESIMPLE_ERROR("An error was caught in MonomerCoordinates_O::testExtraction - here it is: {}" , e.message() ));
 	}
 	sawProblem = true;
-	LOG("%s" , e.message().c_str()  );
+	LOG("{}" , e.message().c_str()  );
 	problems->write(e.message());
     }
     core::Cons_sp results = core::Cons_O::createList(_lisp->internKeyword("sawProblems"),

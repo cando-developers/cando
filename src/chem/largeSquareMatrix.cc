@@ -101,7 +101,7 @@ uint	AbstractLargeSquareMatrix_O::indexFromCoordinates(uint x, uint y )
   uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
   if ( idx == UndefinedUnsignedInt )
   {
-    SIMPLE_ERROR(("Illegal coordinates for %s[%u,%u]") , this->className() , x , y );
+    SIMPLE_ERROR("Illegal coordinates for {}[{},{}]" , this->className() , x , y );
   }
   return idx;
 }
@@ -172,11 +172,11 @@ void	AbstractLargeSquareMatrix_O::dumpMatrix( uint upto)
   for ( y = 0; y<this->dimension(); y++ ) {
     for ( x = 0; x<this->dimension(); x++ ) {
       if ( x!=0 ) {
-        core::writeln_bf_stream(fmt::sprintf(" "));
+        core::clasp_write_string(" \n");
       }
-      core::writeln_bf_stream(fmt::sprintf("%12.7lf" , this->element(x,y)));
+      core::clasp_write_string(fmt::format("{:12.7f}\n" , this->element(x,y)));
     }	
-    core::writeln_bf_stream(fmt::sprintf(""));
+    core::clasp_terpri();
   }
 }
 
@@ -187,10 +187,10 @@ void	AbstractLargeSquareMatrix_O::multiplyByVector(NVector_sp result, NVector_sp
   uint	x,y;
   double	sum;
   if ( result->size() != this->_Rows ) {
-    SIMPLE_ERROR(("Result vector does not have the correct dimension"));
+    SIMPLE_ERROR("Result vector does not have the correct dimension");
   }
   if ( d->size() != this->_Rows ) {
-    SIMPLE_ERROR(("Argument vector does not have the correct dimension"));
+    SIMPLE_ERROR("Argument vector does not have the correct dimension");
   }
 
   for ( y=0; y<this->_Rows; y++ ) {
@@ -266,7 +266,7 @@ uint	FullLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint x,
     }
     i0 = ((y+1)*y)/2;
     i = i0 + x;
-    LOG("i0(%d) i(%d)" , i0 , i  );
+    LOG("i0({}) i({})" , i0 , i  );
     if ( i>=this->_ActiveElements ) {
       return UndefinedUnsignedInt;
     }
@@ -303,7 +303,7 @@ void	FullLargeSquareMatrix_O::coordinatesFromIndex(uint ii, uint& x, uint& y)
   uint		f2;
   uint		i;
   if ( ii < this->indexBegin() || ii >= this->indexEnd() ) {
-    SIMPLE_ERROR(("Out of bounds in indicesFromValuePtr"));
+    SIMPLE_ERROR("Out of bounds in indicesFromValuePtr");
   }
   if ( this->_Triangle == UpperDiagonalLower ) {
     y = ii/this->_Columns;
@@ -324,9 +324,9 @@ void	FullLargeSquareMatrix_O::coordinatesFromIndex(uint ii, uint& x, uint& y)
     x = ii-((y+1)*y)/2+y;
 		// I hacked this routine from the one above
 		// I didn't test it.
-    SIMPLE_ERROR(("Test this function rigorously before using it"));
+    SIMPLE_ERROR("Test this function rigorously before using it");
   } else {
-    SIMPLE_ERROR(("Illegal triangle type"));
+    SIMPLE_ERROR("Illegal triangle type");
   }
 }
 
@@ -367,7 +367,7 @@ CL_DEFUN SparseLargeSquareMatrix_sp chem__make_sparse_large_square_matrix(size_t
   if (type == _sym_SymmetricDiagonalLower ) {
     return SparseLargeSquareMatrix_O::create(dim,SymmetricDiagonalLower);
   }
-  SIMPLE_ERROR("Illegal type %s", _rep_(type));
+  SIMPLE_ERROR("Illegal type {}", _rep_(type));
 }
 
 
@@ -485,10 +485,10 @@ void	SparseLargeSquareMatrix_O::insertElement(uint x, uint y)
   printf("insert at %d,%d\n",x,y);
 #endif
   if ( this->_InsertionIsComplete ) {
-    SIMPLE_ERROR(("SparseMatrix InsertionIsComplete so no more entries may be inserted"));
+    SIMPLE_ERROR("SparseMatrix InsertionIsComplete so no more entries may be inserted");
   }
   if ( y>=this->_Rows || x>=this->_Columns ) {
-    SIMPLE_ERROR(("Overflow in matrix operation"));
+    SIMPLE_ERROR("Overflow in matrix operation");
   }
   if ( this->_Triangle == SymmetricDiagonalLower && x>y ) {
     SWAP(x,y,t);
@@ -557,10 +557,10 @@ uint	SparseLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint 
     SWAP(x,y,t);
     LOG("Swapped row/column" );
   }
-  LOG("Looking at row: %d" , y  );
+  LOG("Looking at row: {}" , y  );
   uint ib = this->_RowStarts[y];
   uint ie = this->_RowStarts[y+1]-1;
-  LOG("This row has columns in the list between indices: %d-%d" , ib , ie );
+  LOG("This row has columns in the list between indices: {}-{}" , ib , ie );
   if ( ie<ib ) return UndefinedUnsignedInt;
   if ( ib >= this->_ColumnForValue.size() ) return UndefinedUnsignedInt;
   if ( x < this->_ColumnForValue[ib] ) return UndefinedUnsignedInt;
@@ -594,12 +594,12 @@ uint	SparseLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint 
  gotOne:
   if ( ret >= this->_Values.size() )
   {
-    core::writeln_bf_stream(fmt::sprintf("Out of bounds at: %s line: %d" , __FILE__ , __LINE__ ));
-    core::writeln_bf_stream(fmt::sprintf("Looking for point: %u, %u" , x% y ));
-    core::writeln_bf_stream(fmt::sprintf("Calculated: %u" , ret ));
-    core::writeln_bf_stream(fmt::sprintf("this->_Values.size() = %u" , this->_Values.size() ));
+    core::clasp_write_string(fmt::format("Out of bounds at: {} line: {}\n" , __FILE__ , __LINE__ ));
+    core::clasp_write_string(fmt::format("Looking for point: {}, {}\n" , x,  y ));
+    core::clasp_write_string(fmt::format("Calculated: {}\n" , ret ));
+    core::clasp_write_string(fmt::format("this->_Values.size() = {}\n" , this->_Values.size() ));
     this->debug();
-    SIMPLE_ERROR(("Calculated a position that is beyond the range of Values"));
+    SIMPLE_ERROR("Calculated a position that is beyond the range of Values");
   }
   return ret;
 }
@@ -631,23 +631,23 @@ void	SparseLargeSquareMatrix_O::coordinatesFromIndex(uint is, uint& x, uint& y )
 void	SparseLargeSquareMatrix_O::debug()
 {
   uint	ib, ie;
-  core::writeln_bf_stream(fmt::sprintf("this->_Rows = %d" , this->_Rows ));
-  core::writeln_bf_stream(fmt::sprintf("this->_Columns = %d" , this->_Columns ));
+  core::clasp_write_string(fmt::format("this->_Rows = {}\n" , this->_Rows ));
+  core::clasp_write_string(fmt::format("this->_Columns = {}\n" , this->_Columns ));
   for ( uint r=0; r<this->_Rows; r++ ) {
     ib = this->_RowStarts[r];
     ie = this->_RowStarts[r+1];
-    core::writeln_bf_stream(fmt::sprintf("Row%3d [%3d-%3d]: " , r , ib , ie ));
+    core::clasp_write_string(fmt::format("Row{:3} [{:3}-{:3}]: \n" , r , ib , ie ));
     for (uint i=ib;i<ie;i++ ) 
     {
-      core::writeln_bf_stream(fmt::sprintf(" x%d@%-3d" , this->_ColumnForValue[i] , i ));
+      core::clasp_write_string(fmt::format(" x{}@{:<3}\n" , this->_ColumnForValue[i] , i ));
     }
-    core::writeln_bf_stream(fmt::sprintf( "" ));
+    core::clasp_terpri();
   }
-  core::writeln_bf_stream(fmt::sprintf("Columns: "));
+  core::clasp_write_string("Columns: \n");
   for ( uint i=0; i<this->_ActiveElements; i++ ) {
-    core::write_bf_stream(fmt::sprintf("x%d@%d ", this->_ColumnForValue[i] , i));
+    core::clasp_write_string(fmt::format("x{}@{} ", this->_ColumnForValue[i] , i));
   }
-  core::writeln_bf_stream(fmt::sprintf("Number of values: %u" , this->_Values.size() ));
+  core::clasp_write_string(fmt::format("Number of values: {}\n" , this->_Values.size() ));
 }
 
 
@@ -669,13 +669,13 @@ void	SparseLargeSquareMatrix_O::setElement(uint x, uint y, double d)
       if ( this->_InsertionIsComplete ) {
         stringstream ss;
         ss << "Trying to write to non-existent element (x,y)=("<< x << "," << y <<") in sparse matrix";
-        SIMPLE_ERROR(("%s") , ss.str());
+        SIMPLE_ERROR("{}" , ss.str());
       } else {
         this->insertElement(x,y);
         dp = this->indexFromCoordinates(x,y);
       }
     } else {
-      LOG("Found indexFromCoordinates dp=%d" , dp );
+      LOG("Found indexFromCoordinates dp={}" , dp );
     }
     this->_Values[dp] = d;
   }
@@ -703,7 +703,7 @@ void	SparseLargeSquareMatrix_O::addToElement(uint x, uint y, double d)
     if ( this->_InsertionIsComplete ) {
       stringstream ss;
       ss << "Trying to write to non-existent element (x,y)=("<< x << "," << y <<") in sparse matrix";
-      SIMPLE_ERROR(("%s") , ss.str());
+      SIMPLE_ERROR("{}" , ss.str());
     } else {
       inserted = true;
       this->insertElement(x,y);
@@ -713,13 +713,13 @@ void	SparseLargeSquareMatrix_O::addToElement(uint x, uint y, double d)
   if ( this->_Values.size() == 0 )
   {
 	    // This should never happen! The _Values array should have had one element inserted
-    core::writeln_bf_stream(fmt::sprintf("Failing in %s line: %d" , __FILE__ , __LINE__ ));
-    core::writeln_bf_stream(fmt::sprintf("Trying to add to element at: %u, %u" , x% y ));
-    core::writeln_bf_stream(fmt::sprintf( "inserted dp = %u" , dp ));
-    core::writeln_bf_stream(fmt::sprintf( "initial dp = %u" , idp ));
-    core::writeln_bf_stream(fmt::sprintf( "inserted = %d" , inserted ));
-    core::writeln_bf_stream(fmt::sprintf( "this->_Values.size() = %u" , this->_Values.size() ));
-    core::writeln_bf_stream(fmt::sprintf( "this->_InsertionIsComplete = %d" , this->_InsertionIsComplete ));
+    core::clasp_write_string(fmt::format("Failing in {} line: {}\n" , __FILE__ , __LINE__ ));
+    core::clasp_write_string(fmt::format("Trying to add to element at: {}, {}\n" , x,  y ));
+    core::clasp_write_string(fmt::format( "inserted dp = {}\n" , dp ));
+    core::clasp_write_string(fmt::format( "initial dp = {}\n" , idp ));
+    core::clasp_write_string(fmt::format( "inserted = {}\n" , inserted ));
+    core::clasp_write_string(fmt::format( "this->_Values.size() = {}\n" , this->_Values.size() ));
+    core::clasp_write_string(fmt::format( "this->_InsertionIsComplete = {}\n" , this->_InsertionIsComplete ));
   }
   ASSERTP(dp!=UndefinedUnsignedInt,"Illegal index for SparseLargeSquareMatrix");
   ASSERT_lessThan(dp,this->_Values.size());
@@ -741,10 +741,10 @@ uint	SparseLargeSquareMatrix_O::indexOfFirstElementAtOrAfterX(uint x, uint y )
   ASSERT_lessThan(x,this->_Columns);
   ASSERT_lessThan(y,this->_Rows);
   ASSERT(this->_Triangle == SymmetricUpperDiagonal);
-  LOG("Looking at row: %d" , y  );
+  LOG("Looking at row: {}" , y  );
   uint ib = this->_RowStarts[y];
   uint ie = this->_RowStarts[y+1]-1;
-  LOG("This row has columns in the list between indices: %d-%d" , ib , ie );
+  LOG("This row has columns in the list between indices: {}-{}" , ib , ie );
   if ( ie<ib ) return UndefinedUnsignedInt;
   if ( x < this->_ColumnForValue[ib] ) return ib;
   if ( x > this->_ColumnForValue[ie] ) return this->_RowStarts[y+1];

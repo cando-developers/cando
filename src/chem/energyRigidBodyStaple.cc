@@ -33,15 +33,31 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/nVector.h>
+#include <cando/geom/ovector3.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
 
 namespace chem {
 
+core::List_sp EnergyRigidBodyStaple::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,ks),mk_double_float(this->ks)), 
+                                  core::Cons_O::create(INTERN_(kw,r0),mk_double_float(this->r0)),
+                                  core::Cons_O::create(INTERN_(kw,rigidBodyK),core::make_fixnum(this->rigidBodyK)),
+                                  core::Cons_O::create(INTERN_(kw,pointK), translate::to_object<Vector3>::convert(this->pointK) ),
+                                  core::Cons_O::create(INTERN_(kw,rigidBodyL),core::make_fixnum(this->rigidBodyL)),
+                                  core::Cons_O::create(INTERN_(kw,pointL), translate::to_object<Vector3>::convert(this->pointL) )
+                                  );
+}
+
+void EnergyRigidBodyStaple::decode(core::List_sp alist) {
+  SIMPLE_ERROR("Implement decode of EnergyRigidBodyStaple");
+}
+
+
 void EnergyRigidBodyStaple_O::energy_rigid_body_staple_add_term( double ks, double r0, size_t rba, const Vector3& pointa, size_t rbb, const Vector3& pointb)
 {
-  LOG("Defining EnergyRigidBodyStaple with ks=%lf r0=%lf rba=%lu pointa=%s   rbb=%lu  pointb=%s\n"
+  LOG("Defining EnergyRigidBodyStaple with ks={} r0={} rba={} pointa={}   rbb={}  pointb={}\n"
       , ks
       , r0
       , rba
@@ -177,8 +193,8 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
-    //core::write_bf_stream_CLEAR();
-    core::write_bf_stream(fmt::sprintf("%s {\n" , this->className()));
+    //core::clasp_write_string_CLEAR();
+    core::clasp_write_string(fmt::format("{} {{\n" , this->className()));
   }
 
   ANN(force);
@@ -242,51 +258,51 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
 #include <cando/energy-functions/_STAPLE_debugEvalSet.cc>
 #endif //]
       if ( this->_DebugEnergy ) {
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d args cando\n" , (i+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d address %x \n" , (i+1) , ((void*)&(*si)) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d r0  %5.3lf\n" , (i+1) , r0 ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d ks  %5.1lf\n" , (i+1) , ks ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d I1  %4d\n" , (i+1) , I1 ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d I2  %4d\n" , (i+1) , I2 ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d ak  %5.3lf %d\n" , (i+1) , ak , (I1/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d bk  %5.3lf %d\n" , (i+1) , bk , (I1/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d ck  %5.3lf %d\n" , (i+1) , ck , (I1/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d dk  %5.3lf %d\n" , (i+1) , dk , (I1/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d xk  %5.3lf %d\n" , (i+1) , xk , (I1/7+1) )); 
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d yk  %5.3lf %d\n" , (i+1) , yk , (I1/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d zk  %5.3lf %d\n" , (i+1) , zk , (I1/7+1) )); 
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pxk %5.3lf %d\n" , (i+1) , pxk , (I1/7+1) )); 
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pyk %5.3lf %d\n" , (i+1) , pyk , (I1/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pzk %5.3lf %d\n" , (i+1) , pzk , (I1/7+1) )); 
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d al  %5.3lf %d\n" , (i+1) , al , (I2/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d bl  %5.3lf %d\n" , (i+1) , bl , (I2/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d cl  %5.3lf %d\n" , (i+1) , cl , (I2/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d dl  %5.3lf %d\n" , (i+1) , dl , (I2/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d xl  %5.3lf %d\n" , (i+1) , xl , (I2/7+1) )); 
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d yl  %5.3lf %d\n" , (i+1) , yl , (I2/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d zl  %5.3lf %d\n" , (i+1) , zl , (I2/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pxl %5.3lf %d\n" , (i+1) , pxl , (I2/7+1) )); 
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pyl %5.3lf %d\n" , (i+1) , pyl , (I2/7+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pzl %5.3lf %d\n" , (i+1) , pzl , (I2/7+1) )); 
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d results\n" , (i+1) ));
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d Energy %lf\n" , (i+1) , Energy ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} args cando\n" , (i+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} address {} \n" , (i+1) , ((void*)&(*si)) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} r0  {:5.3f}\n" , (i+1) , r0 ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} ks  {:5.1f}\n" , (i+1) , ks ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} I1  {:4}\n" , (i+1) , I1 ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} I2  {:4}\n" , (i+1) , I2 ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} ak  {:5.3f} {}\n" , (i+1) , ak , (I1/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} bk  {:5.3f} {}\n" , (i+1) , bk , (I1/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} ck  {:5.3f} {}\n" , (i+1) , ck , (I1/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} dk  {:5.3f} {}\n" , (i+1) , dk , (I1/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} xk  {:5.3f} {}\n" , (i+1) , xk , (I1/7+1) )); 
+        core::clasp_write_string(fmt::format( "MEISTER staple {} yk  {:5.3f} {}\n" , (i+1) , yk , (I1/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} zk  {:5.3f} {}\n" , (i+1) , zk , (I1/7+1) )); 
+        core::clasp_write_string(fmt::format( "MEISTER staple {} pxk {:5.3f} {}\n" , (i+1) , pxk , (I1/7+1) )); 
+        core::clasp_write_string(fmt::format( "MEISTER staple {} pyk {:5.3f} {}\n" , (i+1) , pyk , (I1/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} pzk {:5.3f} {}\n" , (i+1) , pzk , (I1/7+1) )); 
+        core::clasp_write_string(fmt::format( "MEISTER staple {} al  {:5.3f} {}\n" , (i+1) , al , (I2/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} bl  {:5.3f} {}\n" , (i+1) , bl , (I2/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} cl  {:5.3f} {}\n" , (i+1) , cl , (I2/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} dl  {:5.3f} {}\n" , (i+1) , dl , (I2/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} xl  {:5.3f} {}\n" , (i+1) , xl , (I2/7+1) )); 
+        core::clasp_write_string(fmt::format( "MEISTER staple {} yl  {:5.3f} {}\n" , (i+1) , yl , (I2/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} zl  {:5.3f} {}\n" , (i+1) , zl , (I2/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} pxl {:5.3f} {}\n" , (i+1) , pxl , (I2/7+1) )); 
+        core::clasp_write_string(fmt::format( "MEISTER staple {} pyl {:5.3f} {}\n" , (i+1) , pyl , (I2/7+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} pzl {:5.3f} {}\n" , (i+1) , pzl , (I2/7+1) )); 
+        core::clasp_write_string(fmt::format( "MEISTER staple {} results\n" , (i+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} Energy {:f}\n" , (i+1) , Energy ));
         if ( calcForce ) {
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fak  %5.3lf %d\n" , (i+1) , fak , (I1/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fbk  %5.3lf %d\n" , (i+1) , fbk , (I1/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fck  %5.3lf %d\n" , (i+1) , fck , (I1/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fdk  %5.3lf %d\n" , (i+1) , fdk , (I1/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fxk  %5.3lf %d\n" , (i+1) , fxk , (I1/7+1) )); 
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fyk  %5.3lf %d\n" , (i+1) , fyk , (I1/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fzk  %5.3lf %d\n" , (i+1) , fzk , (I1/7+1) )); 
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fal  %5.3lf %d\n" , (i+1) , fal , (I2/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fbl  %5.3lf %d\n" , (i+1) , fbl , (I2/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fcl  %5.3lf %d\n" , (i+1) , fcl , (I2/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fdl  %5.3lf %d\n" , (i+1) , fdl , (I2/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fxl  %5.3lf %d\n" , (i+1) , fxl , (I2/7+1) )); 
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fyl  %5.3lf %d\n" , (i+1) , fyl , (I2/7+1) ));
-          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fzl  %5.3lf %d\n" , (i+1) , fzl , (I2/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fak  {:5.3f} {}\n" , (i+1) , fak , (I1/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fbk  {:5.3f} {}\n" , (i+1) , fbk , (I1/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fck  {:5.3f} {}\n" , (i+1) , fck , (I1/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fdk  {:5.3f} {}\n" , (i+1) , fdk , (I1/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fxk  {:5.3f} {}\n" , (i+1) , fxk , (I1/7+1) )); 
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fyk  {:5.3f} {}\n" , (i+1) , fyk , (I1/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fzk  {:5.3f} {}\n" , (i+1) , fzk , (I1/7+1) )); 
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fal  {:5.3f} {}\n" , (i+1) , fal , (I2/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fbl  {:5.3f} {}\n" , (i+1) , fbl , (I2/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fcl  {:5.3f} {}\n" , (i+1) , fcl , (I2/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fdl  {:5.3f} {}\n" , (i+1) , fdl , (I2/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fxl  {:5.3f} {}\n" , (i+1) , fxl , (I2/7+1) )); 
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fyl  {:5.3f} {}\n" , (i+1) , fyl , (I2/7+1) ));
+          core::clasp_write_string(fmt::format( "MEISTER staple {} fzl  {:5.3f} {}\n" , (i+1) , fzl , (I2/7+1) ));
         }
-        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d stop\n" , (i+1) ));
+        core::clasp_write_string(fmt::format( "MEISTER staple {} stop\n" , (i+1) ));
       }
 		/* Add the forces */
 
@@ -300,7 +316,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   }
   if ( this->_DebugEnergy ) 
   {
-    core::write_bf_stream(fmt::sprintf("%s }" , this->className()));
+    core::clasp_write_string(fmt::format("{} }}" , this->className()));
   }
   return totalEnergy;
 }
@@ -315,7 +331,7 @@ void	EnergyRigidBodyStaple_O::dumpTerms(core::HashTable_sp atomTypes)
   uint idx;
   for ( idx = 0, esi=this->_Terms.begin(); esi!=this->_Terms.end(); esi++, idx++ )
   {
-    core::writeln_bf_stream(fmt::sprintf("TERM 1RBST %-8.2lf %-8.2lf %-9lu %-8.2lf %-8.2lf %-8.2lf - %-9lu %-8.2lf %-8.2lf %-8.2lf" , esi->ks , esi->r0 , esi->rigidBodyK , esi->pointK.getX() , esi->pointK.getY() , esi->pointK.getZ() , esi->rigidBodyL , esi->pointL.getX() , esi->pointL.getY() , esi->pointL.getZ() ));
+    core::clasp_write_string(fmt::format("TERM 1RBST {:<8.2f} {:<8.2f} {:<9} {:<8.2f} {:<8.2f} {:<8.2f} - {:<9} {:<8.2f} {:<8.2f} {:<8.2f}\n" , esi->ks , esi->r0 , esi->rigidBodyK , esi->pointK.getX() , esi->pointK.getY() , esi->pointK.getZ() , esi->rigidBodyL , esi->pointL.getX() , esi->pointL.getY() , esi->pointL.getZ() ));
   }
 }
 
@@ -375,6 +391,52 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyStaple_O::parts_as_list(NVector_sp 	po
   }
   return result.cons();
 }
-};
-  
 
+size_t EnergyRigidBodyStaple_O::partsCoordinates(NVector_sp 	pos, size_t idx, core::SimpleVector_float_sp coords) {
+  double        ks, r0;
+  size_t        rba, rbb;
+  double        pxk, pyk, pzk;
+  double        pxl, pyl, pzl;
+  double        ak, bk, ck, dk, xk, yk, zk;
+  double        al, bl, cl, dl, xl, yl, zl;
+  int I1, I2;
+#undef	STAPLE_POSITION_SET_PARAMETER
+#define	STAPLE_POSITION_SET_PARAMETER(x,y)	{x = si->y;}
+#undef  STAPLE_POSITION_SET_POINT
+#define	STAPLE_POSITION_SET_POINT(x,p,i)         {x = si->p.i;}
+#undef	STAPLE_POSITION_SET_POSITION
+#define	STAPLE_POSITION_SET_POSITION(x,ii,of)	{x = pos->getElement(ii+of);}
+
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/energy-functions/_STAPLE_POSITIONS_termDeclares.cc>
+#pragma clang diagnostic pop
+  int i;
+  gctools::Vec0<EnergyRigidBodyStaple>::iterator si;
+  for ( i=0,si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++,i++ ) {
+		// ************* Evaluate the stretch energy/force/hessian
+		// using code generated by Mathematica ***************
+#include <cando/energy-functions/_STAPLE_POSITIONS_termCode.cc>
+#if 0
+    printf("%s:%d  I1 -> %d   I2 -> %d\n", __FILE__, __LINE__, I1, I2);
+    printf("      ak -> %lf bk -> %lf ck -> %lf dk -> %lf xk -> %lf yk -> %lf zk -> %lf\n", ak, bk, ck, dk, xk, yk, zk);
+    printf("      al -> %lf bl -> %lf cl -> %lf dl -> %lf xl -> %lf yl -> %lf zl -> %lf\n", al, bl, cl, dl, xl, yl, zl);
+#endif
+    (*coords)[idx++] = plabkx;
+    (*coords)[idx++] = plabky;
+    (*coords)[idx++] = plabkz;
+    (*coords)[idx++] = plablx;
+    (*coords)[idx++] = plably;
+    (*coords)[idx++] = plablz;
+  }
+  return idx;
+}
+
+
+void EnergyRigidBodyStaple_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,terms) ,this->_Terms);
+};
+
+};

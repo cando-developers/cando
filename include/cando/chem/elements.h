@@ -152,7 +152,7 @@ namespace translate
         this->_v = chem::elementForSymbol(sym);
         return;
       }
-      SIMPLE_ERROR(("Could not convert %s to an element - either provide an element symbol or an atomic number") , _rep_(o));
+      SIMPLE_ERROR("Could not convert {} to an element - either provide an element symbol or an atomic number" , _rep_(o));
     };
 
   };
