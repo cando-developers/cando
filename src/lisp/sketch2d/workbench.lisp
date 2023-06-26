@@ -18,8 +18,8 @@
   (cando:jostle *m* 1.0 t)
   (chem:do-atoms (atom *m*) (chem:set-atom-type atom :sketch))
   (defparameter *sk* (sketch2d::generate-sketch-function *m*))
-  (defparameter *v* (make-array (chem:get-nvector-size *sk*) :element-type 'double-float :initial-element 0.0d0))
-  (defparameter *f* (make-array (chem:get-nvector-size *sk*) :element-type 'double-float :initial-element 0.0d0))
+  (defparameter *v* (make-array (chem:get-nvector-size *sk*) :element-type (geom:vecreal-type) :initial-element 0.0d0))
+  (defparameter *f* (make-array (chem:get-nvector-size *sk*) :element-type (geom:vecreal-type) :initial-element 0.0d0))
   *f*
   *v*
   (setf (elt *v* 0) 2.0d0)

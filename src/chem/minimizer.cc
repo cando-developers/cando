@@ -42,6 +42,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/minimizer.h>
 #include <iostream>
+#include <cando/geom/vector3.fwd.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
@@ -61,7 +62,6 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/lispCallback.h"
 #include <cando/chem/forceField.h>
 #include <cando/chem/energyStretch.h>
-#if USE_ALL_ENERGY_COMPONENTS
 #include <cando/chem/energyAngle.h>
 #include <cando/chem/energyDihedral.h>
 #include <cando/chem/energyNonbond.h>
@@ -71,7 +71,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyOutOfZPlane.h>
 #include <cando/chem/energyDihedralRestraint.h>
 #include <cando/chem/energyFixedNonbond.h>
-#endif
 #include <clasp/core/wrappers.h>
 
 
@@ -654,7 +653,7 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
     cosAngle = dotProduct(nvDir,nvForce,this->_Frozen)/(lenForce*lenDir);
     if ( cosAngle > 1.0 ) cosAngle = 1.0;
     if ( cosAngle < -1.0 ) cosAngle = -1.0;
-    angle = acos(cosAngle);
+    angle = ::safe_acos(cosAngle);
   }
   report->_AngleBetweenDirectionAndForceDeg = angle/0.0174533;
   report->_Xa = xa;
@@ -703,7 +702,6 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
             // skipping components - it's not general
     report->_StretchEnergyFn->appendValue(
                                           this->_EnergyFunction->getStretchComponent()->getEnergy());
-#if USE_ALL_ENERGY_COMPONENTS
     report->_AngleEnergyFn->appendValue(this->_EnergyFunction->getAngleComponent()->getEnergy());
     report->_DihedralEnergyFn->appendValue(this->_EnergyFunction->getDihedralComponent()->getEnergy());
     report->_NonbondEnergyFn->appendValue(this->_EnergyFunction->getNonbondComponent()->getEnergy());
@@ -713,7 +711,6 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
     report->_PointToLineRestraintEnergyFn->appendValue(this->_EnergyFunction->getPointToLineRestraintComponent()->getEnergy());
     report->_OutOfZPlaneEnergyFn->appendValue(this->_EnergyFunction->getOutOfZPlaneComponent()->getEnergy());
     report->_FixedNonbondRestraintEnergyFn->appendValue(this->_EnergyFunction->getFixedNonbondRestraintComponent()->getEnergy());
-#endif
 #endif
   }
 };
@@ -880,7 +877,7 @@ bool	Minimizer_O::_displayIntermediateMessage(
     {
       if ( cosAngle < -1.0 ) cosAngle = -1.0;
       if ( cosAngle > 1.0 ) cosAngle = 1.0;
-      angle = acos(cosAngle)/0.0174533;
+      angle = ::safe_acos(cosAngle)/0.0174533;
       if ( angle < 0.1 ) 
       {
         angle = 0.0;
@@ -1235,31 +1232,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
     // TODO calculate preconditioner here
     // s = M^(-1)r rather than just copying it from r
   copyVector(s,force);
-#if 0 //[
-  switch ( preconditioner ) {
-  case noPreconditioner:
-      s->copy(force);
-      break;
-  case diagonalPreconditioner:
-      diag = NVector_O::create(iRestartSteps);
-      this->_EnergyFunction->setupDiagonalPreconditioner(x,diag);
-      LOG("Preconditioner max value: {}" , diag->maxValue() );
-      LOG("Preconditioner min value: {}" , diag->minValue() );
-      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(diag,s,force);
-      break;
-  case hessianPreconditioner:
-      m = new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricDiagonalLower);
-      ldlt=new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricDiagonalLower);
-      m->fill(0.0);
-      ldlt->fill(0.0);
-      this->_EnergyFunction->setupHessianPreconditioner(x,m);
-      this->_EnergyFunction->unconventionalModifiedCholeskyFactorization(m,ldlt);
-      this->_EnergyFunction->backSubstituteLDLt(ldlt,s,force);
-      break;
-  default:
-      SIMPLE_ERROR("Unknown preconditioner option");
-  }
-#endif //]
   copyVector(d,s);
   deltaNew = dotProduct(force,d,this->_Frozen);
   delta0 = deltaNew;
@@ -1415,33 +1387,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 
 		// No preconditioning
         copyVector(s,force);
-
-#if 0 //[
-		// Calculate preconditioner M = f''(x)
-		// s = M^(-1)r
-        switch ( preconditioner ) {
-        case noPreconditioner:
-            s->copy(force);
-            break;
-        case diagonalPreconditioner:
-            this->_EnergyFunction->setupDiagonalPreconditioner(x,diag);
-            LOG("Preconditioner max value: {}" , diag->maxValue() );
-            LOG("Preconditioner min value: {}" , diag->minValue() );
-            this->_EnergyFunction->backSubstituteDiagonalPreconditioner(diag,s,force);
-            break;
-        case hessianPreconditioner:
-		    //		refactor++;
-		    //		if ( refactor >= 5 ) {
-            this->_EnergyFunction->setupHessianPreconditioner(x,m);
-            this->_EnergyFunction->unconventionalModifiedCholeskyFactorization(m,ldlt);
-            refactor = 0;
-		    //		}
-            this->_EnergyFunction->backSubstituteLDLt(ldlt,s,force);
-            break;
-        default:
-            SIMPLE_ERROR("Unknown preconditioner option");
-        }
-#endif //]
         deltaNew = dotProduct(force,s,this->_Frozen);		// deltaNew = r.r
         beta = (deltaNew-deltaMid)/deltaOld;
         k = k + 1;
@@ -1555,7 +1500,9 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // exit PCG loop with pk=pj ( for j=1, set pk=force)
     //
 
-    this->_ScoringFunction->evaluateAll( xk, true, nvDummy,
+    this->_ScoringFunction->evaluateAll( xk,
+                                         nil<core::T_O>(),
+                                         true, nvDummy,
                                          true, true, nmDummy,
                                          qj, dj );
     // MOVE rjDotzj calculation above this loop because
@@ -1660,8 +1607,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
 #define	SQRT_EPSILONF	1.0e-5
 #define	CUBERT_EPSILONF	4.6416e-4
 
-void	Minimizer_O::_truncatedNewton(
-                                      int numSteps,
+void	Minimizer_O::_truncatedNewton(int numSteps,
                                       NVector_sp xK,
                                       double forceTolerance )
 {
@@ -1669,7 +1615,7 @@ void	Minimizer_O::_truncatedNewton(
   int	iDimensions;
   double			fp;
   NVector_sp	forceK, pK, pjNext, rj, dj, zj, qj, xKNext, kSum;
-  SparseLargeSquareMatrix_sp	mprecon, ldlt;
+  SparseLargeSquareMatrix_sp	mprecon, ldlt, opt_ldlt;
   double				energyXk, energyXkNext;
   double				rmsForceMag;
   int				kk;
@@ -1725,6 +1671,7 @@ void	Minimizer_O::_truncatedNewton(
   this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
   unconventionalModifiedCholeskySymbolicFactorization(mprecon,ldlt);
   unconventionalModifiedCholeskyFactorization(mprecon,ldlt,kSum);
+  opt_ldlt = ldlt->optimized();
 
   if ( this->_PrintIntermediateResults ) {
     core::clasp_writeln_string(fmt::format( "======= Starting Truncated Newton Minimizer" ));
@@ -1746,7 +1693,7 @@ void	Minimizer_O::_truncatedNewton(
 	    //
 	    // Inner loop
 	    //
-      _truncatedNewtonInnerLoop( kk, xK, mprecon, ldlt,
+      _truncatedNewtonInnerLoop( kk, xK, mprecon, opt_ldlt,
                                  forceK, rmsForceMag, pK,
                                  pjNext, rj, dj, zj, qj );
 
@@ -1822,6 +1769,7 @@ void	Minimizer_O::_truncatedNewton(
 	    //
       this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
       unconventionalModifiedCholeskyFactorization(mprecon,ldlt,kSum);
+      opt_ldlt = ldlt->optimized();
       copyVector(xK,xKNext);
       kk++;
       this->_Iteration++;
@@ -2049,7 +1997,7 @@ CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
 
 
 CL_LISPIFY_NAME("minimize");
-CL_DEFMETHOD     void	Minimizer_O::minimize()
+CL_DEFMETHOD core::T_mv Minimizer_O::minimize()
 {
   NVector_sp	pos;
   int		retries;
@@ -2110,7 +2058,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
                               << kw::_sym_minimizer << this->asSmartPtr()
                               << kw::_sym_coordinates << pos).result());
  DONE:
-    return;
+  return Values(pos,mk_double_float(this->dTotalEnergy(pos)));
 }
 
 

@@ -66,8 +66,8 @@ class FixedNonbondRestraint : public EnergyTerm {
                 // Parameters
                 // Variables
   Atom_sp		_FixedAtom;
-  double		_FixedCharge;
-  uint		_FixedType;
+  REAL                  _FixedCharge;
+  INT	                _FixedType;
   Vector3		_FixedPosition;
 //	int		I1; //!< i*3 index into coordinate vector, must match Mathematica code!
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
@@ -195,19 +195,18 @@ public:
     virtual void dumpTerms(core::HashTable_sp atomTypes);
     virtual bool is_restraint() const { return true; };
 
-
-    virtual	void	zeroEnergy();
 //virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 //				AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec) override;
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec) override;
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );
@@ -218,13 +217,12 @@ public:
 
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn );
 
-    virtual	double	getEnergy();
-
 
 public:
 
     EnergyFixedNonbondRestraint_O( const EnergyFixedNonbondRestraint_O& ss ); //!< Copy constructor
 
+  EnergyFixedNonbondRestraint_sp copyFilter(core::T_sp keepInteraction);
 
     DEFAULT_CTOR_DTOR(EnergyFixedNonbondRestraint_O);
 };

@@ -101,8 +101,8 @@
     (cond
       (open-paren
        (let ((just-number (subseq number-string 0 open-paren)))
-         (fortran:parse-double-float just-number)))
-      (t (fortran:parse-double-float number-string)))))
+         (fortran:parse-vecreal just-number)))
+      (t (fortran:parse-vecreal number-string)))))
 
 (defun elements-match (el1 el2 ela elb)
   (or (and (eq el1 ela) (eq el2 elb))

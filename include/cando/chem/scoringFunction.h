@@ -89,14 +89,15 @@ namespace       chem
 // once we have split up the scoring components
 //
 //
-  SMART(ScoringFunction);
+SMART(ScoringFunction);
 class ScoringFunction_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,ScoringFunction_O,"ScoringFunction",core::CxxObject_O);
 public:
-  core::T_sp 	    _Name;
-  bool            _Debug;
-  Vector3         _VelocityScale;
+  core::T_sp 	     _Name;
+  bool               _Debug;
+  Vector3            _VelocityScale;
+  core::HashTable_sp _AtomTypes;
 public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
@@ -142,7 +143,7 @@ public:
 
 //    virtual void	summarizeTerms() = 0;
   CL_LISPIFY_NAME("dumpTerms");
-  CL_DEFMETHOD virtual void	dumpTerms(core::HashTable_sp atomTypes) = 0;
+  CL_DEFMETHOD virtual void dumpTerms() = 0;
 
     /*! Print the scoring components as a single, multi-line string
      */
@@ -154,9 +155,6 @@ public:
   CL_DEFMETHOD int	compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition();
 #endif
 
-  CL_LISPIFY_NAME("energyComponentsAsString");
-  CL_DEFMETHOD virtual string energyComponentsAsString() = 0;
- 
   CL_DEFMETHOD virtual void	loadCoordinatesIntoVector(NVector_sp pos) = 0;
   CL_LISPIFY_NAME("saveCoordinatesFromVector");
   CL_DEFMETHOD virtual void	saveCoordinatesFromVector(NVector_sp pos) = 0;
@@ -167,7 +165,7 @@ public:
      * This allows restraints to be applied to the system
      * without having to add them to the molecule/aggregate.
      */
-//    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp activeAtoms );
+//    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp keepInteraction );
 
 
 #if 0
@@ -185,6 +183,7 @@ public:
   CL_LISPIFY_NAME("evaluateAll");
   CL_LAMBDA(pos &optional calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec);
   CL_DEFMETHOD virtual double	evaluateAll( 	NVector_sp pos,
+                                                core::T_sp componentEnergy,
                                                 bool calcForce,
                                                 gc::Nilable<NVector_sp> force,
                                                 bool calcDiagonalHessian,
@@ -227,8 +226,24 @@ public:
 
   virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments) = 0;
 
+  CL_DEFMETHOD core::HashTable_sp atomTypes() const;
+
   ScoringFunction_O();
 };
+
+SMART(ScoringFunctionEnergy);
+class ScoringFunctionEnergy_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,ScoringFunctionEnergy_O,"ScoringFunctionEnergy",core::CxxObject_O);
+public:
+
+  ScoringFunctionEnergy_O() {};
+
+  virtual string energyComponentsAsString() {SUBIMP();};
+  virtual void setEnergy(core::T_sp component, double energy ) {SUBIMP();};
+};
+
+void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp energyComponentName, double energy );
 
 };
 

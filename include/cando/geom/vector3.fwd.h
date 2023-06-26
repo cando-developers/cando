@@ -1,5 +1,5 @@
 /*
-    File: energyComponent.fwd.h
+    File: vector3.fwd.h
 */
 /*
 Open Source License
@@ -23,15 +23,15 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef energyComponent_fwd_H
-#define energyComponent_fwd_H
+#ifndef vector3_fwd_H
+#define vector3_fwd_H
+#define VECREAL_DOUBLE 2
+#define VECREAL_FLOAT  1
+#define VECREAL VECREAL_FLOAT
+typedef float vecreal;
+extern double safe_acos(double rad);
+extern double safe_asin(double rad);
+extern float  safe_acos(float rad);
+extern float  safe_asin(float rad);
 
-
-typedef float REAL;
-typedef int   INT;
-
-namespace  chem
-{
-FORWARD(EnergyComponent);
-}
 #endif

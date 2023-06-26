@@ -100,20 +100,55 @@ void	EnergyDihedral::archive(core::ArchiveP node)
 }
 #endif
 
+template <int N,typename Real>
+struct SinCos {
+  static void sinNPhiCosNPhi(Real& sinNPhi, Real& cosNPhi,
+                      Real sinPhi, Real cosPhi ) {
+    Real sinNm1Phi;
+    Real cosNm1Phi;
+    SinCos<N-1,Real>::sinNPhiCosNPhi(sinNm1Phi,cosNm1Phi,sinPhi,cosPhi);
+    sinNPhi = cosPhi*sinNm1Phi+sinPhi*cosNm1Phi;
+    cosNPhi = cosPhi*cosNm1Phi-sinPhi*sinNm1Phi;
+  }
+};
 
-void	sinNPhiCosNPhi(int n, double* sinNPhi, double* cosNPhi,
-                       double sinPhi, double cosPhi )
+template <typename Real>
+struct SinCos<1,Real> {
+  static void sinNPhiCosNPhi(Real& sinNPhi, Real& cosNPhi,
+                      Real sinPhi, Real cosPhi ) {
+    sinNPhi = sinPhi;
+    cosNPhi = cosPhi;
+  }
+};
+
+
+template <typename Real>
+void	sinNPhiCosNPhi(int n, Real& sinNPhi, Real& cosNPhi,
+                       Real sinPhi, Real cosPhi )
 {
-  double	sinNm1Phi, cosNm1Phi;
-  if ( n==1 ) {
-    *sinNPhi = sinPhi;
-    *cosNPhi = cosPhi;
-    return;
-  };
-  sinNPhiCosNPhi(n-1,&sinNm1Phi,&cosNm1Phi,sinPhi,cosPhi);
-  *sinNPhi = cosPhi*sinNm1Phi+sinPhi*cosNm1Phi;
-  *cosNPhi = cosPhi*cosNm1Phi-sinPhi*sinNm1Phi;
-  return;
+  switch (n) {
+  case 1:
+      SinCos<1,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 2:
+      SinCos<2,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 3:
+      SinCos<3,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 4:
+      SinCos<4,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 5:
+      SinCos<5,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 6:
+      SinCos<6,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  default:
+      SIMPLE_ERROR("N {} should always be 1-6", n);
+      break;
+  }
 }
 
 
@@ -461,31 +496,27 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
 #include	<cando/chem/energy_functions/_Dihedral_termCode.cc>
     }
   }
-
-
 }
 
-
-
-
-
-double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
-                                       NVector_sp 	pos,
-                                       bool 		calcForce,
-                                       gc::Nilable<NVector_sp> 	force,
-                                       bool		calcDiagonalHessian,
-                                       bool		calcOffDiagonalHessian,
-                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                       gc::Nilable<NVector_sp>	hdvec,
-                                       gc::Nilable<NVector_sp> dvec)
+double	EnergyDihedral_O::evaluateAllComponentSingle(
+    gctools::Vec0<EnergyDihedral>::iterator di_start,
+    gctools::Vec0<EnergyDihedral>::iterator di_end,
+    ScoringFunction_sp score,
+    NVector_sp 	pos,
+    bool 		calcForce,
+    gc::Nilable<NVector_sp> 	force,
+    bool		calcDiagonalHessian,
+    bool		calcOffDiagonalHessian,
+    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+    gc::Nilable<NVector_sp>	hdvec,
+    gc::Nilable<NVector_sp> dvec)
 { 
-  this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(("%s {\n") , this->className());
   }
-
+  double totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -507,7 +538,7 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	DIHEDRAL_SET_POSITION
 #define	DIHEDRAL_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	DIHEDRAL_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	DIHEDRAL_FORCE_ACCUMULATE
 #undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -519,83 +550,89 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-    double EraseLinearDihedral;
-    int	I1, I2, I3, I4, IN, i;
-    double sinPhase, cosPhase, SinNPhi, CosNPhi;
-    gctools::Vec0<EnergyDihedral>::iterator di;
-    for ( i=0,di=this->_Terms.begin();
-          di!=this->_Terms.end(); di++,i++ ) {
+  fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+  fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+  fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+  fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+  double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
+  double EraseLinearDihedral;
+  int	I1, I2, I3, I4, IN, i;
+  double sinPhase, cosPhase, SinNPhi, CosNPhi;
+  gctools::Vec0<EnergyDihedral>::iterator di;
+  for ( i=0,di=di_start; di!= di_end; di++,i++ ) {
 #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfDihedralTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfDihedralTermsToCalculate ) {
-          break;
-        }
+    if ( this->_Debug_NumberOfDihedralTermsToCalculate > 0 ) {
+      if ( i>= this->_Debug_NumberOfDihedralTermsToCalculate ) {
+        break;
       }
+    }
 #endif
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-      if ( EraseLinearDihedral == 0.0 ) {
-        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4),
-                                                                      kw::_sym_coordinates,pos,
-                                                                      kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
+      if (chem__verbose(1)) {
+        printf("%s:%d:%s IN  = %d\n", __FILE__, __LINE__, __FUNCTION__, IN);
+        printf("%s:%d:%s SinPhi  = %lf\n", __FILE__, __LINE__, __FUNCTION__, SinPhi);
+        printf("%s:%d:%s CosPhi  = %lf\n", __FILE__, __LINE__, __FUNCTION__, CosPhi);
+        printf("%s:%d:%s SinNPhi = %lf\n", __FILE__, __LINE__, __FUNCTION__, SinNPhi);
+        printf("%s:%d:%s CosNPhi = %lf\n", __FILE__, __LINE__, __FUNCTION__, CosNPhi);
       }
+    if ( EraseLinearDihedral == 0.0 ) {
+      ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4),
+                                                                    kw::_sym_coordinates,pos,
+                                                                    kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
+    }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-      di->_calcForce = calcForce;
-      di->_calcDiagonalHessian = calcDiagonalHessian;
-      di->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+    di->_calcForce = calcForce;
+    di->_calcDiagonalHessian = calcDiagonalHessian;
+    di->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define	EVAL_SET(var,val)	{ di->eval.var=val;};
 #include	<cando/chem/energy_functions/_Dihedral_debugEvalSet.cc>
 #endif //]
 
-      if ( this->_DebugEnergy ) 
-      {
-        LOG_ENERGY(( "MEISTER dihedral %d args cando\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d V %lf\n") , (i+1) , V );
-        LOG_ENERGY(( "MEISTER dihedral %d DN %lf\n") , (i+1) , DN );
-        LOG_ENERGY(( "MEISTER dihedral %d IN %d\n") , (i+1) , IN );
+    if ( this->_DebugEnergy ) 
+    {
+      LOG_ENERGY(( "MEISTER dihedral %d args cando\n") , (i+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d V %lf\n") , (i+1) , V );
+      LOG_ENERGY(( "MEISTER dihedral %d DN %lf\n") , (i+1) , DN );
+      LOG_ENERGY(( "MEISTER dihedral %d IN %d\n") , (i+1) , IN );
 //		    LOG_ENERGY(( "MEISTER dihedral %d phase %lf\n") , (i+1) , phase );
-        LOG_ENERGY(( "MEISTER dihedral %d sinPhase %lf\n") , (i+1) , sinPhase );
-        LOG_ENERGY(( "MEISTER dihedral %d cosPhase %lf\n") , (i+1) , cosPhase );
-        LOG_ENERGY(( "MEISTER dihedral %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d results\n") , (i+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d sinPhase %lf\n") , (i+1) , sinPhase );
+      LOG_ENERGY(( "MEISTER dihedral %d cosPhase %lf\n") , (i+1) , cosPhase );
+      LOG_ENERGY(( "MEISTER dihedral %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d results\n") , (i+1) );
 	//	LOG_ENERGY(( "MEISTER dihedral %d Phi %lf (%lf degrees)\n") , (i+1) %
 	//		    	Phi, Phi/0.0174533 );
-        LOG_ENERGY(( "MEISTER dihedral %d Energy %lf\n") , (i+1) , Energy);
-        if ( calcForce ) {
-          LOG_ENERGY(( "MEISTER dihedral %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER dihedral %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
-        }
-        LOG_ENERGY(( "MEISTER dihedral %d stop\n") , (i+1) );
+      LOG_ENERGY(( "MEISTER dihedral %d Energy %lf\n") , (i+1) , Energy);
+      if ( calcForce ) {
+        LOG_ENERGY(( "MEISTER dihedral %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
       }
+      LOG_ENERGY(( "MEISTER dihedral %d stop\n") , (i+1) );
+    }
 			/* Add the forces */
 
-      if ( calcForce ) {
+    if ( calcForce ) {
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
@@ -608,15 +645,14 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
-      }
     }
+  }
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY(("%s }\n") , this->className());
   }
-  return this->_TotalEnergy;
+  return totalEnergy;
 }
-
 
 
 
@@ -652,10 +688,7 @@ void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 #undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-
-
   {
-    
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
@@ -749,8 +782,7 @@ void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
     int	I1, I2, I3, I4, IN, i;
     double sinPhase, cosPhase, SinNPhi, CosNPhi;
     gctools::Vec0<EnergyDihedral>::iterator di;
-    for ( i=0,di=this->_Terms.begin();
-          di!=this->_Terms.end(); di++,i++ ) {
+    for ( i=0,di=this->_Terms.begin(); di!=this->_Terms.end(); di++,i++ ) {
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
       int index = i;
 #include <cando/chem/energy_functions/_Dihedral_debugFiniteDifference.cc>
@@ -791,9 +823,9 @@ SYMBOL_EXPORT_SC_(KeywordPkg,indices);
 
 CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
   size_t size = this->_Terms.size();
-  core::SimpleVector_double_sp v_vec = core::SimpleVector_double_O::make(size);
+  NVector_sp v_vec = NVector_O::make(size);
   core::SimpleVector_int32_t_sp in_vec = core::SimpleVector_int32_t_O::make(size);
-  core::SimpleVector_double_sp phase_vec = core::SimpleVector_double_O::make(size);
+  NVector_sp phase_vec = NVector_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i3_vec = core::SimpleVector_int32_t_O::make(size);
@@ -837,10 +869,10 @@ CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
 
 CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
-  core::SimpleVector_double_sp v_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_v));
+  NVector_sp v_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_v));
   core::SimpleVector_int32_t_sp in_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_in));
-  core::SimpleVector_double_sp dn_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_dn));
-  core::SimpleVector_double_sp phase_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_phase));
+  NVector_sp dn_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_dn));
+  NVector_sp phase_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_phase));
   core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
   core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
   core::SimpleVector_int32_t_sp i3_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i3));
@@ -890,5 +922,293 @@ CL_DEFMETHOD void EnergyDihedral_O::addDihedralTerm(AtomTable_sp atomTable, Atom
                                 multiplicity);
   this->addTerm(energyDihedral);
 }
+
+EnergyDihedral_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyDihedral_sp copy = EnergyDihedral_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_Atom1;
+    Atom_sp a2 = edi->_Atom2;
+    Atom_sp a3 = edi->_Atom3;
+    Atom_sp a4 = edi->_Atom4;
+    if ( skipInteraction( keepInteraction, EnergyDihedral_O::staticClass(), a1, a2, a3, a4 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
+}
+
+
+#define VREAL8_WIDTH 8
+typedef double real;
+typedef real real8 __attribute__((ext_vector_type(VREAL8_WIDTH)));
+typedef int64_t int8 __attribute__((ext_vector_type(VREAL8_WIDTH)));
+
+double	EnergyDihedral_O::evaluateAllComponentSimd8(
+    gctools::Vec0<EnergyDihedral>::iterator di_start8,
+    gctools::Vec0<EnergyDihedral>::iterator di_end8,
+    ScoringFunction_sp          score,
+    NVector_sp 	                pos,
+    bool 		        calcForce,
+    gc::Nilable<NVector_sp> 	force,
+    bool		        calcDiagonalHessian,
+    bool		        calcOffDiagonalHessian,
+    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+    gc::Nilable<NVector_sp>	hdvec,
+    gc::Nilable<NVector_sp>     dvec)
+{
+  if ( this->_DebugEnergy ) {
+    LOG_ENERGY_CLEAR();
+    LOG_ENERGY(("%s {\n") , this->className());
+  }
+  ANN(force);
+  ANN(hessian);
+  ANN(hdvec);
+  ANN(dvec);
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  double totalEnergy = 0.0;
+//
+// Copy from implementAmberFunction::evaluateAll
+//
+// -----------------------
+#undef mysqrt
+#define mysqrt(xx) { sqrt(xx[0]), sqrt(xx[1]), sqrt(xx[2]), sqrt(xx[3]), sqrt(xx[4]), sqrt(xx[5]), sqrt(xx[6]), sqrt(xx[7]) }
+#undef ZERO_SMALL
+#define ZERO_SMALL(RL,L) {real8 fabs = __builtin_elementwise_abs(L); int8 cmp = (fabs < TENM3); RL = cmp ? 0.0 : RL; }
+#define SIMD 1
+#define DIHEDRAL_CALC_FORCE
+#define DIHEDRAL_CALC_DIAGONAL_HESSIAN
+#define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
+#undef	DIHEDRAL_SET_PARAMETER
+#define	DIHEDRAL_SET_PARAMETER(x)	{x={ di[0].term.x, di[1].term.x, di[2].term.x, di[3].term.x, di[4].term.x, di[5].term.x, di[6].term.x, di[7].term.x };}
+#undef	DIHEDRAL_SET_POSITION
+#define	DIHEDRAL_SET_POSITION(x,ii,of)	{x={ pos->element(ii[0]+of), pos->element(ii[1]+of), pos->element(ii[2]+of), pos->element(ii[3]+of), pos->element(ii[4]+of), pos->element(ii[5]+of), pos->element(ii[6]+of), pos->element(ii[7]+of) }; }
+#undef	DIHEDRAL_ENERGY_ACCUMULATE
+#define	DIHEDRAL_ENERGY_ACCUMULATE(e) totalEnergy += (e[0]+e[1]+e[2]+e[3]+e[4]+e[5]+e[6]+e[7]);
+#undef	DIHEDRAL_FORCE_ACCUMULATE
+#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
+#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#undef ONE_ForceAcc
+#define ONE_ForceAcc(i,o,v) force->setElement((i)+(o),(v)+force->getElement((i)+(o)));
+#undef DIHEDRAL_FORCE_ACCUMULATE
+#define	DIHEDRAL_FORCE_ACCUMULATE(I,O,V) { \
+    if (hasForce) { \
+      ONE_ForceAcc(I[0],O,V[0]); \
+      ONE_ForceAcc(I[1],O,V[1]); \
+      ONE_ForceAcc(I[2],O,V[2]); \
+      ONE_ForceAcc(I[3],O,V[3]); \
+      ONE_ForceAcc(I[4],O,V[4]); \
+      ONE_ForceAcc(I[5],O,V[5]); \
+      ONE_ForceAcc(I[6],O,V[6]); \
+      ONE_ForceAcc(I[7],O,V[7]); \
+    }}
+#undef ONE_OffDiagHessAcc_hasHessian
+#define ONE_OffDiagHessAcc_hasHessian(vi,i1,o1,i2,o2,v) hessian->addToElement((i1[vi])+(o1),(i2[vi])+(o2),v[vi]);
+#undef ONE_OffDiagHessAcc_hasHdAndD
+#define ONE_OffDiagHessAcc_hasHdAndD(vi,i1,o1,i2,o2,v) {\
+          hdvec->addToElement((i1[vi])+(o1),v[vi]*dvec->element((i2[vi])+(o2)));\
+          hdvec->addToElement((i2[vi])+(o2),v[vi]*dvec->element((i1[vi])+(o1)));\
+}
+#undef ONE_DiagHessAcc_hasHessian
+#define ONE_DiagHessAcc_hasHessian(vi,i1,o1,i2,o2,v)  hessian->addToElement((i1[vi])+(o1),(i2[vi])+(o2),v[vi]);
+#undef ONE_DiagHessAcc_hasHdAndD
+#define ONE_DiagHessAcc_hasHdAndD(vi,i1,o1,i2,o2,v)   hdvec->addToElement((i1[vi])+(o1),v[vi]*dvec->element((i1[vi])+(o1)));
+
+#undef DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) { \
+    if (hasHessian) { \
+      ONE_DiagHessAcc_hasHessian(0,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHessian(1,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHessian(2,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHessian(3,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHessian(4,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHessian(5,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHessian(6,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHessian(7,i1,o1,i2,o2,v); \
+    } \
+    if (hasHdAndD) { \
+      ONE_DiagHessAcc_hasHdAndD(0,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHdAndD(1,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHdAndD(2,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHdAndD(3,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHdAndD(4,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHdAndD(5,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHdAndD(6,i1,o1,i2,o2,v); \
+      ONE_DiagHessAcc_hasHdAndD(7,i1,o1,i2,o2,v); \
+    } \
+}
+#undef DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) { \
+    if (hasHessian) { \
+      ONE_OffDiagHessAcc_hasHessian(0,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHessian(1,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHessian(2,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHessian(3,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHessian(4,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHessian(5,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHessian(6,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHessian(7,i1,o1,i2,o2,v); \
+    } \
+    if (hasHdAndD) { \
+      ONE_OffDiagHessAcc_hasHdAndD(0,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHdAndD(1,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHdAndD(2,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHdAndD(3,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHdAndD(4,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHdAndD(5,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHdAndD(6,i1,o1,i2,o2,v); \
+      ONE_OffDiagHessAcc_hasHdAndD(7,i1,o1,i2,o2,v); \
+    } \
+}
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#undef DECLARE_FLOAT
+#define DECLARE_FLOAT(xx) real8 xx
+#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
+#pragma clang diagnostic pop
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+    real8 x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
+    real8 EraseLinearDihedral;
+    int8	I1, I2, I3, I4, IN, i;
+    real8 sinPhase, cosPhase, SinNPhi, CosNPhi;
+
+#undef ONE_sinNPhiCosNPhi
+#define ONE_sinNPhiCosNPhi(INI,IN,SinNPhi,CosNPhi,SinPhi,CosPhi) {\
+    real tSinNPhi, tCosNPhi; \
+    sinNPhiCosNPhi(IN[INI],tSinNPhi,tCosNPhi,SinPhi[INI],CosPhi[INI]); \
+    SinNPhi[INI] = tSinNPhi; CosNPhi[INI] = tCosNPhi; \
+}
+
+#undef DO_sinNPhiCosNPhi
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) { \
+    ONE_sinNPhiCosNPhi(0,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+    ONE_sinNPhiCosNPhi(1,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+    ONE_sinNPhiCosNPhi(2,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+    ONE_sinNPhiCosNPhi(3,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+    ONE_sinNPhiCosNPhi(4,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+    ONE_sinNPhiCosNPhi(5,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+    ONE_sinNPhiCosNPhi(6,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+    ONE_sinNPhiCosNPhi(7,IN,SinNPhi,CosNPhi,SinPhi,CosPhi); \
+}
+
+    gctools::Vec0<EnergyDihedral>::iterator di;
+    for ( i=0, di=di_start8; di<di_end8; di += VREAL8_WIDTH, i += VREAL8_WIDTH ) {
+#include <cando/chem/energy_functions/new_Dihedral_termCode.cc>
+      if (chem__verbose(1)) {
+        for (int zz =0; zz<8; zz++ ) {
+          printf("%s:%d:%s IN[%d]      = %ld\n", __FILE__, __LINE__, __FUNCTION__, zz, IN[zz] );
+          printf("%s:%d:%s SinPhi[%d]  = %lf\n", __FILE__, __LINE__, __FUNCTION__, zz, SinPhi[zz] );
+          printf("%s:%d:%s CosPhi[%d]  = %lf\n", __FILE__, __LINE__, __FUNCTION__, zz, CosPhi[zz] );
+          printf("%s:%d:%s SinNPhi[%d] = %lf\n", __FILE__, __LINE__, __FUNCTION__, zz, SinNPhi[zz] );
+          printf("%s:%d:%s CosNPhi[%d] = %lf\n", __FILE__, __LINE__, __FUNCTION__, zz, CosNPhi[zz] );
+        }
+      }
+#undef SIMD
+#undef MAYBE_ERROR_LINEAR_DIHEDRAL
+#define MAYBE_ERROR_LINEAR_DIHEDRAL(IDX,di,I1,I2,I3,I4) { \
+      if ( EraseLinearDihedral[IDX] == 0.0 ) { \
+          ERROR(chem::_sym_LinearDihedralError, \
+                core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di[IDX]._Atom1,\
+                                                                                 di[IDX]._Atom2,\
+                                                                                 di[IDX]._Atom3,\
+                                                                                 di[IDX]._Atom4 ), \
+                                         kw::_sym_coordinates,pos, \
+                                         kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1[IDX]), core::make_fixnum(I2[IDX]), core::make_fixnum(I3[IDX]), core::make_fixnum(I4[IDX])))); \
+      }}
+
+      MAYBE_ERROR_LINEAR_DIHEDRAL(0,di,I1,I2,I3,I4);
+      MAYBE_ERROR_LINEAR_DIHEDRAL(1,di,I1,I2,I3,I4);
+      MAYBE_ERROR_LINEAR_DIHEDRAL(2,di,I1,I2,I3,I4);
+      MAYBE_ERROR_LINEAR_DIHEDRAL(3,di,I1,I2,I3,I4);
+      MAYBE_ERROR_LINEAR_DIHEDRAL(4,di,I1,I2,I3,I4);
+      MAYBE_ERROR_LINEAR_DIHEDRAL(5,di,I1,I2,I3,I4);
+      MAYBE_ERROR_LINEAR_DIHEDRAL(6,di,I1,I2,I3,I4);
+      MAYBE_ERROR_LINEAR_DIHEDRAL(7,di,I1,I2,I3,I4);
+
+#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
+      di->_calcForce = calcForce;
+      di->_calcDiagonalHessian = calcDiagonalHessian;
+      di->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+#undef EVAL_SET
+#define	EVAL_SET(var,val)	{ di->eval.var=val;};
+#include	<cando/chem/energy_functions/_Dihedral_debugEvalSet.cc>
+#endif //]
+    }
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY(("%s }\n") , this->className());
+  }
+  return totalEnergy;
+}
+
+
+//
+//
+//
+//  INSERT evaluateAllComponentSimd4 and evaluateAllComponentSimd2
+//
+//
+//
+//
+
+
+
+double	EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
+                                               NVector_sp 	                pos,
+                                               core::T_sp               componentEnergy,
+                                               bool 		        calcForce,
+                                               gc::Nilable<NVector_sp> 	force,
+                                               bool		        calcDiagonalHessian,
+                                               bool		        calcOffDiagonalHessian,
+                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                               gc::Nilable<NVector_sp>	hdvec,
+                                               gc::Nilable<NVector_sp>     dvec)
+{
+  gctools::Vec0<EnergyDihedral>::iterator di_vector_end8 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL8_WIDTH))*VREAL8_WIDTH;
+  double energy = 0.0;
+  this->_Evaluations++;
+  if (this->_UseSimd) {
+    energy += this->evaluateAllComponentSimd8(this->_Terms.begin(),
+                                              di_vector_end8,
+                                              score,
+                                              pos,
+                                              calcForce,
+                                              force,
+                                              calcDiagonalHessian,
+                                              calcOffDiagonalHessian,
+                                              hessian,
+                                              hdvec,
+                                              dvec);
+  } else {
+    energy += this->evaluateAllComponentSingle(this->_Terms.begin(),
+                                               di_vector_end8,
+                                               score,
+                                               pos,
+                                               calcForce,
+                                               force,
+                                               calcDiagonalHessian,
+                                               calcOffDiagonalHessian,
+                                               hessian,
+                                               hdvec,
+                                               dvec);
+  }
+  energy += this->evaluateAllComponentSingle(di_vector_end8,
+                                             this->_Terms.end(),
+                                             score,
+                                             pos,
+                                             calcForce,
+                                             force,
+                                             calcDiagonalHessian,
+                                             calcOffDiagonalHessian,
+                                             hessian,
+                                             hdvec,
+                                             dvec);
+  maybeSetEnergy( componentEnergy, EnergyDihedral_O::static_classSymbol(), energy );
+  return energy;
+};
 
 };

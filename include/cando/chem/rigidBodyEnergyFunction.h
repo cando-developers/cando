@@ -89,70 +89,71 @@ struct gctools::GCInfo<chem::RigidBodyEnergyFunction_O> {
 namespace chem {
 FORWARD(BoundingBox);
 FORWARD(RigidBodyEnergyFunction);
-  class RigidBodyEnergyFunction_O : public ScoringFunction_O
-  {
-    LISP_CLASS(chem,ChemPkg,RigidBodyEnergyFunction_O,"RigidBodyEnergyFunction",ScoringFunction_O);
-  public:
-    static RigidBodyEnergyFunction_sp make(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox );
-  public:
-    size_t              _RigidBodies;
-    NVector_sp          _SavedCoordinates;
-    core::List_sp       _Terms;
-    BoundingBox_sp      _BoundingBox;
-  public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-  public:
-    BoundingBox_sp boundingBox() const;
-    bool boundingBoxBoundP() const;
-    void setBoundingBox(BoundingBox_sp bounding_box);
-    void makUnboundBoundingBox();
+class RigidBodyEnergyFunction_O : public ScoringFunction_O
+{
+  LISP_CLASS(chem,ChemPkg,RigidBodyEnergyFunction_O,"RigidBodyEnergyFunction",ScoringFunction_O);
+public:
+  static RigidBodyEnergyFunction_sp make(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox );
+public:
+  size_t              _RigidBodies;
+  NVector_sp          _SavedCoordinates;
+  core::List_sp       _Terms;
+  BoundingBox_sp      _BoundingBox;
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  BoundingBox_sp boundingBox() const;
+  bool boundingBoxBoundP() const;
+  void setBoundingBox(BoundingBox_sp bounding_box);
+  void makUnboundBoundingBox();
 
     
-    CL_LISPIFY_NAME("rigid-body-energy-function-add-term");
-    CL_DEFMETHOD void addTerm(EnergyRigidBodyComponent_sp comp) { this->_Terms = core::Cons_O::create(comp,this->_Terms);};
+  CL_LISPIFY_NAME("rigid-body-energy-function-add-term");
+  CL_DEFMETHOD void addTerm(EnergyRigidBodyComponent_sp comp) { this->_Terms = core::Cons_O::create(comp,this->_Terms);};
     
-    CL_LISPIFY_NAME("rigid-body-energy-function-terms")
-    CL_DEFMETHOD core::List_sp allComponents() const { return this->_Terms;};
-  public:
+  CL_LISPIFY_NAME("rigid-body-energy-function-terms")
+  CL_DEFMETHOD core::List_sp allComponents() const { return this->_Terms;};
+public:
     /*! 4 quaternion and 3 cartesian coordinates for each rigid body */
-    size_t numberOfRigidBodies() const;
-    virtual size_t getNVectorSize() const override { return this->_RigidBodies*7; };
-    CL_DEFMETHOD NVector_sp get_coordinates() const { return this->_SavedCoordinates; };
-    CL_DEFMETHOD void set_coordinates(NVector_sp coords);
+  size_t numberOfRigidBodies() const;
+  virtual size_t getNVectorSize() const override { return this->_RigidBodies*7; };
+  CL_DEFMETHOD NVector_sp get_coordinates() const { return this->_SavedCoordinates; };
+  CL_DEFMETHOD void set_coordinates(NVector_sp coords);
 
-    virtual void	enableDebug() override;
+  virtual void	enableDebug() override;
     /*! Disable debugging on all energy components
      */
-    virtual void	disableDebug() override;
+  virtual void	disableDebug() override;
 
-    virtual string	energyTermsEnabled() override;
+  virtual string	energyTermsEnabled() override;
 
-    virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) override;
+  virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) override;
 
     /*! Load the coordinates in the ScoringFunction into the position vector */
-    virtual void	loadCoordinatesIntoVector(NVector_sp pos);
+  virtual void	loadCoordinatesIntoVector(NVector_sp pos);
     /*! Save the coordinates in the pos vector into the ScoringFunction */
-    virtual void	saveCoordinatesFromVector(NVector_sp pos);
+  virtual void	saveCoordinatesFromVector(NVector_sp pos);
     /*! Save the coordinates in the pos vector and forces in force into the ScoringFunction */
-    virtual void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
-    virtual double	evaluateRaw( NVector_sp pos, NVector_sp force ) ;
+  virtual void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
+  virtual double	evaluateRaw( NVector_sp pos, NVector_sp force ) ;
 //    virtual double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce ) ;
-    adapt::QDomNode_sp	identifyTermsBeyondThreshold();
+  adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
-    ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
+  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
-    void	useDefaultSettings();
+  void	useDefaultSettings();
 
     /*! Set a single options */
-    void	setOption( core::Symbol_sp option, core::T_sp val);
+  void	setOption( core::Symbol_sp option, core::T_sp val);
 
 
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
-    void	setOptions( core::List_sp options );
+  void	setOptions( core::List_sp options );
 
-    double	evaluateAll(NVector_sp pos,
+  double	evaluateAll(NVector_sp pos,
+                            core::T_sp componentEnergy,
                             bool calcForce,
                             gc::Nilable<NVector_sp> force,
                             bool calcDiagonalHessian,
@@ -161,28 +162,36 @@ FORWARD(RigidBodyEnergyFunction);
                             gc::Nilable<NVector_sp> hdvec,
                             gc::Nilable<NVector_sp> dvec	);
 
-    void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
-    CL_LISPIFY_NAME("rigid-body-energy-function-set-position");
-    CL_DEFMETHOD void setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z);
+  void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
+  CL_LISPIFY_NAME("rigid-body-energy-function-set-position");
+  CL_DEFMETHOD void setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z);
 
     // uint checkForBeyondThresholdInteractions();
-    string	energyComponentsAsString();
+  string	energyComponentsAsString();
 
-    CL_LISPIFY_NAME("rigid-body-energy-function-get-position");
-    CL_DEFMETHOD core::T_mv getPosition(size_t index);
-    CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
-    CL_DEFMETHOD void normalizePosition(NVector_sp pos);
+  CL_LISPIFY_NAME("rigid-body-energy-function-get-position");
+  CL_DEFMETHOD core::T_mv getPosition(size_t index);
+  CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
+  CL_DEFMETHOD void normalizePosition(NVector_sp pos);
 
-    Aggregate_sp buildPseudoAggregate(NVector_sp pos) const;
-    core::SimpleVector_float_sp buildPseudoAggregateCoordinates(NVector_sp pos) const;
-    size_t numberOfPoints() const;
+  Aggregate_sp buildPseudoAggregate(NVector_sp pos) const;
+  core::SimpleVector_float_sp buildPseudoAggregateCoordinates(NVector_sp pos) const;
+  size_t numberOfPoints() const;
     
-    void dumpTerms(core::HashTable_sp atomTypes);
+  void dumpTerms();
  
-    RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox)
-    : _RigidBodies(number_of_rigid_bodies),
-      _Terms(nil<core::T_O>()),
-      _BoundingBox(boundingBox){};
+  RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox)
+      : _RigidBodies(number_of_rigid_bodies),
+        _Terms(nil<core::T_O>()),
+        _BoundingBox(boundingBox){};
+};
+
+  SMART(RigidBodyEnergyFunctionEnergy);
+  class RigidBodyEnergyFunctionEnergy_O : public ScoringFunctionEnergy_O
+  {
+    LISP_CLASS(chem,ChemPkg,RigidBodyEnergyFunctionEnergy_O,"RigidBodyEnergyFunctionEnergy",ScoringFunctionEnergy_O);
+  public:
+
   };
 
 };

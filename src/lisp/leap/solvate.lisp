@@ -11,9 +11,9 @@
     (format t "Removed ~a solvent molecules~%" (length solvents))))
 
 (defun tool-build-solute-array (matter)
-  (let ((x-vec (make-array 10 :element-type 'double-float :fill-pointer 0 :adjustable t))
-        (y-vec (make-array 10 :element-type 'double-float :fill-pointer 0 :adjustable t))
-        (z-vec (make-array 10 :element-type 'double-float :fill-pointer 0 :adjustable t))
+  (let ((x-vec (make-array 10 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t))
+        (y-vec (make-array 10 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t))
+        (z-vec (make-array 10 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t))
         (dx 0)
         (dy 0)
         (dz 0)

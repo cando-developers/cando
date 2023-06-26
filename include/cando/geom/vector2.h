@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <iostream>
 #include <vector>
 #include <clasp/core/foundation.h>
+#include <cando/geom/vector3.fwd.h>
 //#include "core/archiveNode.h"
 
 

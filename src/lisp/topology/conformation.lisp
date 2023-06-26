@@ -4,7 +4,7 @@
   molecule-index
   residue-index)
 
-(defclass conformation ()
+(defclass assembler ()
   ((monomer-positions :initarg :monomer-positions :accessor monomer-positions)
    (monomer-contexts :type hash-table :initarg :monomer-contexts :accessor monomer-contexts)
    (oligomers :initarg :oligomers :accessor oligomers)
@@ -13,14 +13,14 @@
    (ataggregate :initarg :ataggregate :accessor ataggregate)
    (joint-tree :initarg :joint-tree :accessor joint-tree)))
 
-(cando.serialize:make-class-save-load conformation)
+(cando.serialize:make-class-save-load assembler)
 
 (defgeneric foldamer-monomer-context (focus-monomer oligomer foldamer)
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))
 
-(defun make-conformation (oligomers &key monomer-order)
-  "Build a conformation for the oligomers."
+(defun make-assembler (oligomers &key monomer-order)
+  "Build a assembler for the oligomers."
   (let* ((aggregate (chem:make-aggregate :all))
          (monomer-positions (make-hash-table))
          (oligomer-molecules (loop for oligomer in oligomers
@@ -47,7 +47,7 @@ Specialize the foldamer argument to provide methods"))
              ;; Use the monomers-to-topologys
           do (let ((atmolecule (build-atmolecule-using-oligomer oligomer molecule molecule-index monomer-positions joint-tree (chem:atom-table energy-function))))
                (put-atmolecule ataggregate atmolecule molecule-index))
-          finally (return (make-instance 'conformation
+          finally (return (make-instance 'assembler
                                          :monomer-positions monomer-positions
                                          :monomer-contexts monomer-contexts
                                          :oligomers oligomers
@@ -57,9 +57,9 @@ Specialize the foldamer argument to provide methods"))
                                          :joint-tree joint-tree)))
     ))
 
-(defun walk-atoms-joints (conformation callback)
-  (let ((aggregate (aggregate conformation))
-        (ataggregate (ataggregate conformation)))
+(defun walk-atoms-joints (assembler callback)
+  (let ((aggregate (aggregate assembler))
+        (ataggregate (ataggregate assembler)))
     (loop for molecule-index below (chem:content-size aggregate)
           for molecule = (chem:content-at aggregate molecule-index)
           for atmolecule = (aref (atmolecules ataggregate) molecule-index)
@@ -72,30 +72,30 @@ Specialize the foldamer argument to provide methods"))
                            do (funcall callback atom joint (list molecule-index residue-index atom-index)))))))
 
 #+(or)
-(defun copy-atom-positions-into-joints (conformation)
-  (walk-atoms-joints conformation
+(defun copy-atom-positions-into-joints (assembler)
+  (walk-atoms-joints assembler
                      (lambda (atm jnt atomid)
                        (declare (ignore atomid))
                        (kin:set-position jnt (chem:get-position atm)))))
 
-#+(or)(defun copy-joint-positions-into-atoms (conformation)
-  (walk-atoms-joints conformation
+#+(or)(defun copy-joint-positions-into-atoms (assembler)
+  (walk-atoms-joints assembler
                      (lambda (atm jnt atomid)
                        (declare (ignore atomid))
                        (chem:set-position atm (kin:position coords jnt)))))
 
-(defun update-joint-tree-internal-coordinates (conformation coordinates)
-  (let ((ataggregate (ataggregate conformation)))
+(defun update-joint-tree-internal-coordinates (assembler coordinates)
+  (let ((ataggregate (ataggregate assembler)))
     (walk-ataggregate-joints ataggregate
                              (lambda (joint atom-id)
                                (declare (ignore atom-id))
                                (kin:update-internal-coord joint coordinates)))))
 
-(defun build-all-atom-tree-external-coordinates (conformation oligomer coords)
-  (loop for one-oligomer in (oligomers conformation)
-        for joint = (gethash oligomer (root-map (joint-tree conformation)))
+(defun build-all-atom-tree-external-coordinates (assembler oligomer coords)
+  (loop for one-oligomer in (oligomers assembler)
+        for joint = (gethash oligomer (root-map (joint-tree assembler)))
         unless joint
-          do (error "Could not find oligomer ~s in root-map ~s" oligomer (root-map (joint-tree conformation)))
+          do (error "Could not find oligomer ~s in root-map ~s" oligomer (root-map (joint-tree assembler)))
         when (eq oligomer one-oligomer)
           do (kin:update-xyz-coords joint coords)))
 
@@ -158,7 +158,7 @@ Specialize the foldamer argument to provide methods"))
           for rand-sequence = (random (topology:number-of-sequences oligomer-space))
           for _a = (format t "rand-sequence ~a~%" rand-sequence)
           for oligomer = (topology:make-oligomer oligomer-space rand-sequence)
-          for conf = (topology:make-conformation oligomer)
+          for conf = (topology:make-assembler oligomer)
           do (topology::fill-internals-from-fragments conf fragment-conformations 0)
              (loop for count below number-conf
                    do (topology::fill-internals-from-fragments-for-monomers-named conf fragment-conformations monomer-names)

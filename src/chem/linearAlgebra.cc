@@ -34,35 +34,32 @@ namespace chem {
 
 
 
-void	unconventionalModifiedCholeskySymbolicFactorization(
-			AbstractLargeSquareMatrix_sp 	m,
-			AbstractLargeSquareMatrix_sp	ldlt )
+void	unconventionalModifiedCholeskySymbolicFactorization(AbstractLargeSquareMatrix_sp 	m,
+                                                            AbstractLargeSquareMatrix_sp	ldlt )
 {
-int	dim, j;
+  int	dim;
 #define	TAO	10.0	// See Schlick paper page 10, top paragraph
 
-    dim = m->dimension();
+  dim = m->dimension();
 		//
 		// Calculate each column and the diagonal
 		//
-    for ( j=0; j<dim; j++ ) { 
-	ldlt->insertElement(j,j);	// Diagonal element is always there
-	for ( int i=j+1; i<dim; i++ ) {	// i is X-coordinate
-	    if ( m->hasElement(i,j) ) {
-		ldlt->insertElement(i,j);
-	    };
-	    if ( j>0 && ldlt->hasElement(i,j-1) ) {
-		ldlt->insertElement(i,j);
-	    }
-	}
+  for ( int y=0; y<dim; y++ ) { 
+    ldlt->insertElement(y,y);	// Diagonal element is always there
+    for ( int x=y+1; x<dim; x++ ) {	// x is X-coordinate
+      if ( m->hasElement(x,y) ) {
+        ldlt->insertElement(x,y);
+      };
+      if ( y>0 && ldlt->hasElement(x,y-1) ) {
+        ldlt->insertElement(x,y);
+      }
     }
-    ldlt->insertionIsComplete();
+  }
 }
 
-void	unconventionalModifiedCholeskyFactorization(
-			SparseLargeSquareMatrix_sp 	m,
-			SparseLargeSquareMatrix_sp	ldlt,
-			NVector_sp			nvKSum)
+void	unconventionalModifiedCholeskyFactorization(SparseLargeSquareMatrix_sp 	m,
+                                                    SparseLargeSquareMatrix_sp	ldlt,
+                                                    NVector_sp			nvKSum)
 {
 uint	dim;
 uint	k;
@@ -206,12 +203,48 @@ double	ldltJk;
 //    _lisp->profiler().timer(core::timerPreconditionerSolverFactor).stop();
 //    _lisp->profiler().timer(core::timerPreconditionerSolver).stop();
 //    _lisp->profiler().timer(core::timerPreconditioner).stop();
+//    ldlt->dumpMatrix(0);
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg,trap_back_substitute_ldl);
 
-void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt,
-                           NVector_sp s1, NVector_sp b )
+__attribute__((noinline))
+void	backSubstituteLDLtRow(SparseLargeSquareMatrix_sp slsm, NVector_sp s1, NVector_sp b ) {
+  vecreal sum;
+  for ( int y=0; y<b->size(); y++ ) {
+    sum = 0.0;
+    slsm->loopOverRowLowerDiagonal(y,0,y,[&s1,&sum](uint col, uint row, double value) {
+      double element = s1->element(col);
+      sum += value * element;
+    } );
+    s1->setElement(y,b->element(y)-sum);
+  }
+}
+
+__attribute__((noinline))
+void	backSubstituteLDLtDiag(SparseLargeSquareMatrix_sp slsm, NVector_sp s1, NVector_sp b, NVector_sp tx ) {
+  for ( int x=0; x<s1->size(); x++ ) {
+    vecreal dd = slsm->element(x,x);
+    ASSERTP(dd!=0.0,"backSubstituteLDLt diagonal element shouldn't be zero");
+    tx->setElement(x,s1->element(x)/dd);
+  }
+}
+
+__attribute__((noinline))
+void	backSubstituteLDLtColumn(SparseLargeSquareMatrix_sp slsm, NVector_sp s1, NVector_sp b, NVector_sp tx ) {
+  float sum;
+  for ( int y=b->size()-1; y>=0; y-- ) {
+    sum = 0.0;
+    slsm->loopOverColumnLowerDiagonal(y,y+1,b->size(),[&s1,&sum](uint col, uint row, double value) {
+      double element = s1->element(col);
+      sum += value * element;
+    } );
+    s1->setElement(y,tx->element(y)-sum);
+  }
+}
+
+
+void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt, NVector_sp s1, NVector_sp b )
 {
   ASSERT(ldlt->_Triangle==SymmetricDiagonalLower);
   NVector_sp	tx;
@@ -220,6 +253,11 @@ void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt,
   tx = NVector_O::create(b->size());
   if (gc::IsA<SparseLargeSquareMatrix_sp>(ldlt)) {
     SparseLargeSquareMatrix_sp slsm = gc::As_unsafe<SparseLargeSquareMatrix_sp>(ldlt);
+#if 1
+    backSubstituteLDLtRow( slsm, s1, b );
+    backSubstituteLDLtDiag( slsm, s1, b, tx );
+    backSubstituteLDLtColumn( slsm, s1, b, tx );
+#else
       // Lower diagonal
     for ( y=0; y<b->size(); y++ ) {
       sum = 0.0;
@@ -230,7 +268,7 @@ void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt,
       s1->setElement(y,b->element(y)-sum);
     }
     for ( x=0; x<s1->size(); x++ ) {
-      dd = ldlt->element(x,x);
+      dd = slsm->element(x,x);
       ASSERTP(dd!=0.0,"backSubstituteLDLt diagonal element shouldn't be zero");
       tx->setElement(x,s1->element(x)/dd);
     }
@@ -242,6 +280,7 @@ void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt,
       } );
       s1->setElement(y,tx->element(y)-sum);
     }
+#endif
   } else {
     for ( y=0; y<b->size(); y++ ) {
       sum = 0.0;

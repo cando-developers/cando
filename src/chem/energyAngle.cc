@@ -329,15 +329,17 @@ bool		calcOffDiagonalHessian = true;
 
 
 double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
-                                   chem::NVector_sp 	pos,
-                                   bool 		calcForce,
-                                   gc::Nilable<chem::NVector_sp> 	force,
-                                   bool		calcDiagonalHessian,
-                                   bool		calcOffDiagonalHessian,
-                                   gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                   gc::Nilable<chem::NVector_sp> hdvec,
-                                   gc::Nilable<chem::NVector_sp> dvec)
+                                            chem::NVector_sp 	pos,
+                                            core::T_sp componentEnergy,
+                                            bool 		calcForce,
+                                            gc::Nilable<chem::NVector_sp> 	force,
+                                            bool		calcDiagonalHessian,
+                                            bool		calcOffDiagonalHessian,
+                                            gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                            gc::Nilable<chem::NVector_sp> hdvec,
+                                            gc::Nilable<chem::NVector_sp> dvec)
 {
+  double termEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
@@ -366,7 +368,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef ANGLE_SET_POSITION
 #define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define ANGLE_ENERGY_ACCUMULATE(e) termEnergy += (e);
 #undef	ANGLE_FORCE_ACCUMULATE
 #undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -460,7 +462,8 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
   {
     LOG_ENERGY(("%s }\n") , this->className());
   }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergyAngle_O::static_classSymbol(), termEnergy );
+  return termEnergy;
 }
 
 
@@ -646,8 +649,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atom3);
 
 CL_DEFMETHOD core::List_sp EnergyAngle_O::extract_vectors_as_alist() const {
   size_t size = this->_Terms.size();
-  core::SimpleVector_double_sp kt_vec = core::SimpleVector_double_O::make(size);
-  core::SimpleVector_double_sp t0_vec = core::SimpleVector_double_O::make(size);
+  NVector_sp kt_vec = NVector_O::make(size);
+  NVector_sp t0_vec = NVector_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i3_vec = core::SimpleVector_int32_t_O::make(size);
@@ -679,8 +682,8 @@ CL_DEFMETHOD core::List_sp EnergyAngle_O::extract_vectors_as_alist() const {
 
 CL_DEFMETHOD void EnergyAngle_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
-  core::SimpleVector_double_sp kt_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_kt));
-  core::SimpleVector_double_sp t0_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_t0));
+  NVector_sp kt_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_kt));
+  NVector_sp t0_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_t0));
   core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
   core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
   core::SimpleVector_int32_t_sp i3_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i3));
@@ -747,4 +750,17 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
   }
   return result.result();
 }
+
+EnergyAngle_sp EnergyAngle_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyAngle_sp copy = EnergyAngle_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_Atom1;
+    Atom_sp a2 = edi->_Atom2;
+    Atom_sp a3 = edi->_Atom3;
+    if ( skipInteraction( keepInteraction, EnergyAngle_O::staticClass(), a1, a2, a3 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
+}
+
 };

@@ -51,10 +51,14 @@ charge."
     (loop for os-desc in charge-trainers
           do (multiple-value-bind (oligomer-space focus-monomer)
                  (topology.dag:parse-oligomer-space-dag foldamer os-desc)
+               (format t "Building molecules for ~s~%" os-desc)
                (multiple-value-bind (aggs monomer-to-mol-res-ids)
                    (topology:build-all-molecules oligomer-space)
+                 (format t "starting-geometry for ~s~%" os-desc)
                  (lparallel:pmapcar #'cando:starting-geometry aggs)
+                 (format t "calculate-am1-bcc-charges for ~s~%" os-desc)
                  (lparallel:pmapcar #'charges:calculate-am1-bcc-charges aggs)
+                 (format t "Finishing ~s~%" os-desc)
                  (mapc #'constrain-residue-charges aggs)
                  (loop for agg in aggs
                        for mol-res = (gethash focus-monomer monomer-to-mol-res-ids)

@@ -47,6 +47,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/units/quantity.fwd.h>
 #include <cando/chem/indirectAtomCoordinateReference.h>
 #include <cando/chem/molecule.h>
+#include <cando/chem/energyComponent.fwd.h>
 #include <cando/geom/vector3.h>
 
 
@@ -64,13 +65,11 @@ SMART(FFNonbondDb);
 class EnergyAtom : public IndirectAtomCoordinateReference {
   typedef IndirectAtomCoordinateReference Base;
 public:
-//        Atom_sp  	_Atom;			//!<Atom
-//        uint     	_CoordinateIndex;	//!<index into the coordinate vector (atomNumber)*3
   MatterName		_AtomName;		//!<Atom name
-  double		_Charge;		//!<Atom charge in electrons
-  double		_Mass;			//!<Atom mass in Daltons
-  uint		        _TypeIndex;		//!<Type index
-  uint                  _AtomicNumber;           //!<Atomic number
+  REAL                  _Charge;		//!<Atom charge in electrons
+  REAL                  _Mass;			//!<Atom mass in Daltons
+  INT                   _TypeIndex;		//!<Type index
+  INT                   _AtomicNumber;           //!<Atomic number
   size_t                _Flag;
 public:
 	// Temporary variables, not necessary to store
@@ -218,7 +217,7 @@ public:
   size_t getAtomFlag(size_t index);
 
   void	dumpTerms(core::HashTable_sp atomTypes);
-  void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes );
+  void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
 
   size_t push_back_excluded_atom_indices_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indices starting at 0.
@@ -252,8 +251,8 @@ public:
   CL_DEFMETHOD void setf_atom_table_atoms_per_molecule(core::ComplexVector_int32_t_sp val) {this->_AtomsPerMolecule = val; };
   CL_DEFMETHOD void setf_atom_table_residues(core::Vector_sp val) {this->_Residues = val; };
   CL_DEFMETHOD void setf_atom_table_molecules(core::Vector_sp val) {this->_Molecules = val; };
-  size_t getCoordinateIndex(Atom_sp atom);
-  size_t getCoordinateIndexForAtomAtIndex(size_t index);
+  size_t getCoordinateIndexTimes3(Atom_sp atom);
+  size_t getCoordinateIndexTimes3ForAtomAtIndex(size_t index);
   
  AtomTable_O() : _ResiduePointers(unbound<core::ComplexVector_int32_t_O>()),
                  _ResidueNames(unbound<core::ComplexVector_T_O>()),

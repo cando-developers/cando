@@ -68,7 +68,7 @@ double calculate2Angle( const Vector2& va,
 {
     Vector2	vab = (va-vb).normalized();
     Vector2	vcb = (vc-vb).normalized();
-    double ang = acos(vab.dotProduct(vcb));
+    double ang = safe_acos(vab.dotProduct(vcb));
     return ang;
 }
 

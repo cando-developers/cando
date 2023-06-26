@@ -50,15 +50,17 @@ EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchS
 
 
 double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                  NVector_sp 	pos,
-                                                  bool 		calcForce,
-                                                  gc::Nilable<NVector_sp> 	force,
-                                                  bool		calcDiagonalHessian,
-                                                  bool		calcOffDiagonalHessian,
-                                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                  gc::Nilable<NVector_sp>	hdvec,
-                                                  gc::Nilable<NVector_sp> dvec)
+                                                           NVector_sp 	pos,
+                                                           core::T_sp componentEnergy,
+                                                           bool 		calcForce,
+                                                           gc::Nilable<NVector_sp> 	force,
+                                                           bool		calcDiagonalHessian,
+                                                           bool		calcOffDiagonalHessian,
+                                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                           gc::Nilable<NVector_sp>	hdvec,
+                                                           gc::Nilable<NVector_sp> dvec)
 {
+  double totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -78,7 +80,7 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
 #undef	POINT_TO_LINE_RESTRAINT_PHI_SET
 #define	POINT_TO_LINE_RESTRAINT_PHI_SET(x) {}
 #undef	POINT_TO_LINE_RESTRAINT_ENERGY_ACCUMULATE
-#define	POINT_TO_LINE_RESTRAINT_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	POINT_TO_LINE_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE
 #undef	POINT_TO_LINE_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	POINT_TO_LINE_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -145,7 +147,8 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
       }
     }
   }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergyPointToLineRestraint_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
 
 

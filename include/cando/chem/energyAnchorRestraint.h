@@ -50,20 +50,20 @@ namespace chem
 {
 
 
-    struct TermAnchorRestraint {
-	double		ka;
-	int		I1;
-	double		xa;
-	double		ya;
-	double		za;
-    };
+struct TermAnchorRestraint {
+  REAL		ka;
+  INT           I1;
+  REAL		xa;
+  REAL		ya;
+  REAL		za;
+};
 
 /*! Store a AnchorRestraint energy term
  */
 class	EnergyAnchorRestraint : public EnergyTerm {
- public:
+public:
   string	className()	{ return "EnergyAnchorRestraint"; };
- public:
+public:
   TermAnchorRestraint	term;
 		// Variables
   Atom_sp      _Atom1;
@@ -78,7 +78,7 @@ class	EnergyAnchorRestraint : public EnergyTerm {
   double		getXa() { return this->term.xa; };
   double		getYa() { return this->term.ya; };
   double		getZa() { return this->term.za; };
- public:
+public:
   core::List_sp encode() const;
   EnergyAnchorRestraint();
   virtual ~EnergyAnchorRestraint();
@@ -124,6 +124,8 @@ double	_evaluateEnergyOnly_AnchorRestraint(
 		double xa, double ya, double za,
 		double kb );
 
+FORWARD(EnergyAnchorRestraint);
+
 class EnergyAnchorRestraint_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyAnchorRestraint_O,"EnergyAnchorRestraint",EnergyComponent_O);
@@ -157,14 +159,15 @@ public:
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );
@@ -173,6 +176,7 @@ public:
 
     virtual string	beyondThresholdInteractionsAsString();
 
+  EnergyAnchorRestraint_sp copyFilter(core::T_sp keepInteraction);
 
 public:
     EnergyAnchorRestraint_O( const EnergyAnchorRestraint_O& ss ); //!< Copy constructor

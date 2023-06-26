@@ -36,13 +36,13 @@ namespace chem {
 #if 0
 CL_LAMBDA(helix-points interactions pos calc-force force-vec &key debug-energy);
 DOCGROUP(cando);
-CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVector_double_sp helix_points,  /* xi, yi, zi */
+CL_DEFUN double chem__rigid_staple_evaluate( NVector_sp helix_points,  /* xi, yi, zi */
                                 /* helixk/pos, pointk/helix_points, helixl/pos, pointl/helix_points */
                                              core::SimpleVector_byte32_t_sp interactions,
                                              /* ai,bi,ci,di,xi,yi,zi */
-                                             core::SimpleVector_double_sp pos,
+                                             NVector_sp pos,
                                              bool 		calcForce,
-                                             gc::Nilable<core::SimpleVector_double_sp> 	force,
+                                             gc::Nilable<NVector_sp> 	force,
                                              bool debugEnergy
                                              )
 /*                            

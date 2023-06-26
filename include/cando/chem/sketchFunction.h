@@ -101,104 +101,96 @@ struct gctools::GCInfo<chem::SketchFunction_O> {
 };
 
 namespace chem {
-  SMART(SketchFunction);
-  class SketchFunction_O : public ScoringFunction_O
-  {
-    LISP_CLASS(chem,ChemPkg,SketchFunction_O,"SketchFunction",ScoringFunction_O);
-  public:
-    static SketchFunction_sp make(core::T_sp graph, core::T_sp sketchNonbondForceField, core::HashTable_sp atomTypes);
-  public:
-    void initialize();
-  public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-  public:
-    core::T_sp				_Graph;	// Graph object
+SMART(SketchFunction);
+class SketchFunction_O : public ScoringFunction_O
+{
+  LISP_CLASS(chem,ChemPkg,SketchFunction_O,"SketchFunction",ScoringFunction_O);
+public:
+  static SketchFunction_sp make(core::T_sp graph, core::T_sp sketchNonbondForceField, core::HashTable_sp atomTypes);
+public:
+  void initialize();
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  core::T_sp				_Graph;	// Graph object
     /*! Stores cross terms for evaluating nonbond interactions
      */
-    core::T_sp			        _NodeTable;
-    EnergySketchStretch_sp		_Stretch;
-    EnergyOutOfZPlane_sp                _OutOfZPlane;
-    EnergyPointToLineRestraint_sp       _PointToLineRestraint;
-    EnergySketchNonbond_sp              _Nonbond;
+  core::T_sp			        _NodeTable;
+  EnergySketchStretch_sp		_Stretch;
+  EnergyOutOfZPlane_sp                _OutOfZPlane;
+  EnergyPointToLineRestraint_sp       _PointToLineRestraint;
+  EnergySketchNonbond_sp              _Nonbond;
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
-    double					_PointToLineRestraintWeight;
-    double					_OutOfZPlaneWeight;
-    double					_TotalEnergy;
-    core::SimpleBaseString_sp			_Message;
-    core::T_sp                                  _Frozen;
-  public:
-    SketchFunction_O(core::T_sp graph) : _Graph(graph), _Frozen(nil<core::T_O>()) {};
-  public:
-    CL_LISPIFY_NAME("nodeTable");
-    CL_DEFMETHOD     core::T_sp nodeTable() const { return this->_NodeTable;};
-    AtomTable_sp atomTable() const;
-    void setf_velocity_scale(double xscale, double yscale, double zscale);
+  double					_PointToLineRestraintWeight;
+  double					_OutOfZPlaneWeight;
+  core::SimpleBaseString_sp			_Message;
+  core::T_sp                                  _Frozen;
+public:
+  SketchFunction_O(core::T_sp graph) : _Graph(graph), _Frozen(nil<core::T_O>()) {};
+public:
+  CL_LISPIFY_NAME("nodeTable");
+  CL_DEFMETHOD     core::T_sp nodeTable() const { return this->_NodeTable;};
+  AtomTable_sp atomTable() const;
+  void setf_velocity_scale(double xscale, double yscale, double zscale);
     
-    string	energyTermsEnabled() ;
-    void	loadCoordinatesIntoVector(NVector_sp pos);
-    void	saveCoordinatesFromVector(NVector_sp pos);
-    void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
-    size_t	getNVectorSize() const;
-    double	evaluateRaw( NVector_sp pos, NVector_sp force );
+  void  dumpTerms(); 
+  string	energyTermsEnabled() ;
+  void	loadCoordinatesIntoVector(NVector_sp pos);
+  void	saveCoordinatesFromVector(NVector_sp pos);
+  void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
+  size_t	getNVectorSize() const;
+  double	evaluateRaw( NVector_sp pos, NVector_sp force );
 //    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
-    adapt::QDomNode_sp	identifyTermsBeyondThreshold();
+  adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
-    ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
+  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
-    CL_LISPIFY_NAME("getGraph");
-    CL_DEFMETHOD     core::T_sp	getGraph() { return this->_Graph;};
-    virtual Matter_sp getMatter();
+  CL_LISPIFY_NAME("getGraph");
+  CL_DEFMETHOD     core::T_sp	getGraph() { return this->_Graph;};
+  virtual Matter_sp getMatter();
     
-    void	useDefaultSettings();
+  void	useDefaultSettings();
 
-    core::List_sp allComponents() const;
+  core::List_sp allComponents() const;
 
 
     /*! Set a single options */
-    void	setOption( core::Symbol_sp option, core::T_sp val);
+  void	setOption( core::Symbol_sp option, core::T_sp val);
 
 
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
-    void	setOptions( core::List_sp options );
+  void	setOptions( core::List_sp options );
 
-    CL_LISPIFY_NAME("getSketchNonbondComponent");
-    CL_DEFMETHOD     EnergySketchNonbond_sp	getSketchNonbondComponent() { return this->_Nonbond; };
-    CL_LISPIFY_NAME("getStretchComponent");
-    CL_DEFMETHOD     EnergySketchStretch_sp	getSketchStretchComponent() { return this->_Stretch; };
-    CL_LISPIFY_NAME("getPointToLineRestraintComponent");
-    CL_DEFMETHOD     EnergyPointToLineRestraint_sp	getPointToLineRestraintComponent() { return this->_PointToLineRestraint; };
-    CL_LISPIFY_NAME("getOutOfZPlaneComponent");
-    CL_DEFMETHOD     EnergyOutOfZPlane_sp	getOutOfZPlaneComponent() { return this->_OutOfZPlane; };
+  CL_LISPIFY_NAME("getSketchNonbondComponent");
+  CL_DEFMETHOD     EnergySketchNonbond_sp	getSketchNonbondComponent() { return this->_Nonbond; };
+  CL_LISPIFY_NAME("getStretchComponent");
+  CL_DEFMETHOD     EnergySketchStretch_sp	getSketchStretchComponent() { return this->_Stretch; };
+  CL_LISPIFY_NAME("getPointToLineRestraintComponent");
+  CL_DEFMETHOD     EnergyPointToLineRestraint_sp	getPointToLineRestraintComponent() { return this->_PointToLineRestraint; };
+  CL_LISPIFY_NAME("getOutOfZPlaneComponent");
+  CL_DEFMETHOD     EnergyOutOfZPlane_sp	getOutOfZPlaneComponent() { return this->_OutOfZPlane; };
 
-    CL_LISPIFY_NAME("getTotalEnergy");
-    CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
-    void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian);
+  void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian);
 
     /*! Enable debugging on all energy components
      */
-    void	enableDebug();
+  void	enableDebug();
     /*! Disable debugging on all energy components
      */
-    void	disableDebug();
+  void	disableDebug();
 
-    void	summarizeTerms();
-    void	dumpTerms(core::HashTable_sp atomTypes);
-    CL_DEFMETHOD     core::T_sp	getMessage() { return this->_Message;};
+  void	summarizeTerms();
+  void	dumpTerms(core::HashTable_sp atomTypes);
+  CL_DEFMETHOD     core::T_sp	getMessage() { return this->_Message;};
 
-    /*! Print the energy components as a single, multi-line string
-     */
-    string	energyComponentsAsString();
-
-//    void		writeForceToAtoms(NVector_sp f);
-//    EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
-
-    double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
-    double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
-    double	evaluateAll(NVector_sp pos,
+  double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
+  double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
+  double	evaluateAll(NVector_sp pos,
+                            core::T_sp componentEnergy,
                             bool calcForce,
                             gc::Nilable<NVector_sp> force,
                             bool calcDiagonalHessian,
@@ -207,29 +199,37 @@ namespace chem {
                             gc::Nilable<NVector_sp> hdvec,
                             gc::Nilable<NVector_sp> dvec	);
 
-    string	summarizeBeyondThresholdInteractionsAsString();
-    string	summarizeEnergyAsString();
+  string	summarizeBeyondThresholdInteractionsAsString();
+  string	summarizeEnergyAsString();
 
 
 //		adapt::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
 //		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
-    uint		countTermsBeyondThreshold();
+  uint		countTermsBeyondThreshold();
 
-    void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
-    void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta);
+  void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
+  void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta);
 
-    string	debugLogAsString();
+  string	debugLogAsString();
 
-    virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
-    void resetSketchFunction();
-
-
-  };
+  virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
+  void resetSketchFunction();
 
 
-  bool inAtomSet(core::T_sp atomSet, Atom_sp atom);
+};
 
-  void energyFunction_initializeSmarts();
+SMART(SketchFunctionEnergy);
+class SketchFunctionEnergy_O : public ScoringFunctionEnergy_O
+{
+  LISP_CLASS(chem,ChemPkg,SketchFunctionEnergy_O,"SketchFunctionEnergy",ScoringFunctionEnergy_O);
+public:
+
+  string energyComponentsAsString();
+};
+
+bool inAtomSet(core::T_sp atomSet, Atom_sp atom);
+
+void energyFunction_initializeSmarts();
 
 };
 

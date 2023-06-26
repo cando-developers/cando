@@ -24,6 +24,9 @@
 (defmethod atm ((object chem:residue) (id integer))
   (chem:content-at object id))
 
+(defmethod atm ((object chem:residue) (id symbol))
+  (chem:content-with-name object id))
+
 (defmethod molid ((object chem:aggregate) (id integer))
   (chem:content-with-id object id))
 

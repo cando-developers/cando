@@ -113,23 +113,6 @@ string EnergyFixedNonbondRestraint_O::beyondThresholdInteractionsAsString()
 }
 
 
-void	EnergyFixedNonbondRestraint_O::zeroEnergy()
-{
-    this->Base::zeroEnergy();
-    this->_EnergyElectrostatic = 0.0;
-    this->_EnergyVdw = 0.0;
-}
-
-
-double	EnergyFixedNonbondRestraint_O::getEnergy()
-{
-double	e;
-    e = this->getVdwEnergy();
-    e += this->getElectrostaticEnergy();
-    return e;
-}
-
-
 SYMBOL_EXPORT_SC_(ChemPkg,find_atom_type_position)
 
 void EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp fa, core::HashTable_sp atomTypes) {
@@ -231,19 +214,19 @@ Vector3				v1,v2;
 }
 #endif
 
-
-
-
+SYMBOL_EXPORT_SC_(ChemPkg,energyVdw);
+SYMBOL_EXPORT_SC_(ChemPkg,energyElectrostatic);
 
 double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                   NVector_sp 	pos,
-                                                   bool 		calcForce,
-                                                   gc::Nilable<NVector_sp> 	force,
-                                                   bool		calcDiagonalHessian,
-                                                   bool		calcOffDiagonalHessian,
-                                                   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                   gc::Nilable<NVector_sp>	hdvec,
-                                                   gc::Nilable<NVector_sp> dvec)
+                                                            NVector_sp 	pos,
+                                                            core::T_sp componentEnergy,
+                                                            bool 		calcForce,
+                                                            gc::Nilable<NVector_sp> 	force,
+                                                            bool		calcDiagonalHessian,
+                                                            bool		calcOffDiagonalHessian,
+                                                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                            gc::Nilable<NVector_sp>	hdvec,
+                                                            gc::Nilable<NVector_sp> dvec)
 {
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
@@ -271,6 +254,8 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
     //
     // -----------------------
 
+  double energyElectrostatic = 0.0;
+  double energyVdw = 0.0;
 #define FNONBOND_CALC_FORCE
 #define FNONBOND_CALC_DIAGONAL_HESSIAN
 #define FNONBOND_CALC_OFF_DIAGONAL_HESSIAN
@@ -279,9 +264,9 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
 #undef	FNONBOND_SET_POSITION
 #define	FNONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	FNONBOND_EFEEL_ENERGY_ACCUMULATE
-#define	FNONBOND_EFEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
+#define	FNONBOND_EFEEL_ENERGY_ACCUMULATE(e) {energyElectrostatic += (e);}
 #undef	FNONBOND_EFVDW_ENERGY_ACCUMULATE
-#define	FNONBOND_EFVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
+#define	FNONBOND_EFVDW_ENERGY_ACCUMULATE(e) {energyVdw += (e);}
 #undef	FNONBOND_ENERGY_ACCUMULATE
 #define	FNONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	FNONBOND_FORCE_ACCUMULATE
@@ -376,7 +361,9 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
   LOG_ENERGY(( "          Vdw energy = %lf\n") , (double)this->_EnergyVdw);
   LOG_ENERGY(( "Electrostatic energy = %lf\n") , (double)this->_EnergyElectrostatic);
   LOG_ENERGY(("%s }\n") , this->className() );
-  return this->_EnergyVdw+this->_EnergyElectrostatic;
+  maybeSetEnergy(componentEnergy, _sym_energyVdw, energyVdw );
+  maybeSetEnergy(componentEnergy, _sym_energyElectrostatic, energyElectrostatic );
+  return energyVdw + energyElectrostatic;
 }
 
 
@@ -558,6 +545,16 @@ void EnergyFixedNonbondRestraint_O::initialize()
     this->setElectrostaticScale(1.0);
     this->_MobileAtomTable = nil<AtomTable_O>();
     this->_NonbondCrossTermTable = nil<FFNonbondCrossTermTable_O>();
+}
+
+EnergyFixedNonbondRestraint_sp EnergyFixedNonbondRestraint_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyFixedNonbondRestraint_sp copy = EnergyFixedNonbondRestraint_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_FixedAtom;
+    if ( skipInteraction( keepInteraction, EnergyFixedNonbondRestraint_O::staticClass(), a1 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
 }
 
 

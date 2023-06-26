@@ -198,14 +198,15 @@ bool		calcOffDiagonalHessian = true;
 
 
 double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
-                                         NVector_sp 	pos,
-                                         bool 		calcForce,
-                                         gc::Nilable<NVector_sp> 	force,
-                                         bool		calcDiagonalHessian,
-                                         bool		calcOffDiagonalHessian,
-                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                         gc::Nilable<NVector_sp>	hdvec,
-                                         gc::Nilable<NVector_sp> dvec)
+                                                  NVector_sp 	pos,
+                                                  core::T_sp componentEnergy,
+                                                  bool 		calcForce,
+                                                  gc::Nilable<NVector_sp> 	force,
+                                                  bool		calcDiagonalHessian,
+                                                  bool		calcOffDiagonalHessian,
+                                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                  gc::Nilable<NVector_sp>	hdvec,
+                                                  gc::Nilable<NVector_sp> dvec)
 {
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
@@ -216,6 +217,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 //
 // -----------------------
 
+  double totalEnergy = 0.0;
 #define OOZP_CALC_FORCE
 #define OOZP_CALC_DIAGONAL_HESSIAN
 #define OOZP_CALC_OFF_DIAGONAL_HESSIAN
@@ -226,7 +228,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	OOZP_PHI_SET
 #define	OOZP_PHI_SET(x) {}
 #undef	OOZP_ENERGY_ACCUMULATE
-#define	OOZP_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	OOZP_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	OOZP_FORCE_ACCUMULATE
 #undef	OOZP_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	OOZP_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -272,10 +274,8 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 #endif
     }
   }
-  if (chem__verbose(1)) {
-    core::clasp_write_string(fmt::format("Oopz Total Energy = {}\n" , this->_TotalEnergy ));
-  }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergyOutOfZPlane_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
 
 

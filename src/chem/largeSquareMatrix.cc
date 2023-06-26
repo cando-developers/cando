@@ -69,7 +69,7 @@ AbstractLargeSquareMatrix_O::AbstractLargeSquareMatrix_O(const AbstractLargeSqua
 }
 
 
-void	AbstractLargeSquareMatrix_O::fill(double d)
+void	AbstractLargeSquareMatrix_O::fill(vecreal d)
 {
   uint	ii, iEnd;
   ii = this->indexBegin();
@@ -81,10 +81,10 @@ void	AbstractLargeSquareMatrix_O::fill(double d)
 }
 
 
-double	AbstractLargeSquareMatrix_O::maxAbsValue()
+vecreal	AbstractLargeSquareMatrix_O::maxAbsValue()
 {
   uint	ii, iEnd;
-  double	dMaxAbs;
+  vecreal	dMaxAbs;
   dMaxAbs = 0.0;
   ii = this->indexBegin();
   iEnd = this->indexEnd();
@@ -99,6 +99,16 @@ double	AbstractLargeSquareMatrix_O::maxAbsValue()
 uint	AbstractLargeSquareMatrix_O::indexFromCoordinates(uint x, uint y )
 {
   uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
+  if ( idx == UndefinedUnsignedInt )
+  {
+    SIMPLE_ERROR("Illegal coordinates for {}[{},{}]" , this->className() , x , y );
+  }
+  return idx;
+}
+
+uint	AbstractLargeSquareMatrix_O::col_indexFromCoordinates(uint x, uint y )
+{
+  uint idx = this->col_indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
   if ( idx == UndefinedUnsignedInt )
   {
     SIMPLE_ERROR("Illegal coordinates for {}[{},{}]" , this->className() , x , y );
@@ -170,13 +180,13 @@ void	AbstractLargeSquareMatrix_O::dumpMatrix( uint upto)
 {
   uint		x,y;
   for ( y = 0; y<this->dimension(); y++ ) {
-    for ( x = 0; x<this->dimension(); x++ ) {
-      if ( x!=0 ) {
-        core::clasp_write_string(" \n");
+    for ( x = 0; x<=y; x++ ) {
+      uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
+      if (idx != UndefinedUnsignedInt) {
+        vecreal val = this->element(x,y);
+        core::clasp_write_string(fmt::format("{} {} -> {:12.7f}\n" , x, y, this->element(x,y)));
       }
-      core::clasp_write_string(fmt::format("{:12.7f}\n" , this->element(x,y)));
-    }	
-    core::clasp_terpri();
+    }
   }
 }
 
@@ -185,7 +195,7 @@ void	AbstractLargeSquareMatrix_O::dumpMatrix( uint upto)
 void	AbstractLargeSquareMatrix_O::multiplyByVector(NVector_sp result, NVector_sp d)
 {
   uint	x,y;
-  double	sum;
+  vecreal	sum;
   if ( result->size() != this->_Rows ) {
     SIMPLE_ERROR("Result vector does not have the correct dimension");
   }
@@ -379,6 +389,35 @@ SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::create(uint dim, TriangleT
 }
 
 
+SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::optimized() 
+{
+  auto  res  = gctools::GC<SparseLargeSquareMatrix_O>::allocate_with_default_constructor();
+  res->setup(this->_Columns,this->_Triangle);
+  uint		x,y;
+  for ( y = 0; y<this->dimension(); y++ ) {
+    for ( x = 0; x<=y; x++ ) {
+      uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
+      if (idx != UndefinedUnsignedInt) {
+        vecreal val = this->element(x,y);
+        if (val!=0.0) {
+          res->insertElement(x,y);
+        }
+      }
+    }
+  }
+  for ( y = 0; y<this->dimension(); y++ ) {
+    for ( x = 0; x<=y; x++ ) {
+      uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
+      if (idx != UndefinedUnsignedInt) {
+        vecreal val = this->element(x,y);
+        if (val!=0.0) {
+          res->setElement(x,y,val);
+        }
+      }
+    }
+  }
+  return res;
+}
 
 
 SparseLargeSquareMatrix_O::~SparseLargeSquareMatrix_O( )
@@ -394,6 +433,7 @@ void	SparseLargeSquareMatrix_O::setup(uint dim, TriangleType type)
 {
   this->AbstractLargeSquareMatrix_O::setup(dim,type);
   this->_InsertionIsComplete = false;
+  this->_col_OptimizationDone = false;
   this->initializeStorage();
 #ifdef	MEISTER_MALLOC_DEBUG
   printf("Done ctor for SparseLargeSquareMatrix_O\n");
@@ -426,12 +466,17 @@ void	SparseLargeSquareMatrix_O::initializeStorage()
   uint	rows = this->_Rows;
   this->_InsertionIsComplete = false;
   this->_RowStartEntries = rows+1;
-    
   this->_RowStarts.assign((rows+1),0);
   this->_ActiveElements = 0;
   this->_ReservedElements = 100;
   this->_ColumnForValue.reserve(this->_ReservedElements);
   this->_Values.reserve(this->_ReservedElements);
+  this->_col_ColumnStartEntries = rows+1;
+  this->_col_ColumnStarts.assign((rows+1),0);
+  this->_col_ActiveElements = 0;
+  this->_col_ReservedElements = 100;
+  this->_col_RowForValue.reserve(this->_col_ReservedElements);
+  this->_col_Values.reserve(this->_col_ReservedElements);
   LOG("Initialized everything, returning" );
 }
 
@@ -444,6 +489,12 @@ void	SparseLargeSquareMatrix_O::releaseStorage()
   this->_RowStartEntries = 0;
   this->_ReservedElements = 0;
   this->_ActiveElements = 0;
+  this->_col_ColumnStarts.clear();
+  this->_col_RowForValue.clear();
+  this->_col_Values.clear();
+  this->_col_ColumnStartEntries = 0;
+  this->_col_ReservedElements = 0;
+  this->_col_ActiveElements = 0;
 }
 
 
@@ -452,6 +503,13 @@ void	SparseLargeSquareMatrix_O::expandStorage()
   this->_ReservedElements *= 2;
   this->_ColumnForValue.reserve(this->_ReservedElements);
   this->_Values.reserve(this->_ReservedElements);
+}
+
+void	SparseLargeSquareMatrix_O::col_expandStorage()
+{
+  this->_col_ReservedElements *= 2;
+  this->_col_RowForValue.reserve(this->_col_ReservedElements);
+  this->_col_Values.reserve(this->_col_ReservedElements);
 }
 
 
@@ -541,6 +599,70 @@ void	SparseLargeSquareMatrix_O::insertElement(uint x, uint y)
   }
 }
 
+
+void	SparseLargeSquareMatrix_O::col_insertElement(uint x, uint y)
+{
+  uint	ib,ie,i,t;
+#ifdef	DEBUG_VIA_PRINTF
+  printf("insert at %d,%d\n",x,y);
+#endif
+  if ( this->_InsertionIsComplete ) {
+    SIMPLE_ERROR("SparseMatrix InsertionIsComplete so no more entries may be inserted");
+  }
+  if ( y>=this->_Rows || x>=this->_Columns ) {
+    SIMPLE_ERROR("Overflow in matrix operation");
+  }
+  if ( this->_Triangle == SymmetricDiagonalLower && x>y ) {
+    SWAP(x,y,t);
+#ifdef	DEBUG_VIA_PRINTF
+    printf("Swapping indices to %d,%d\n",x,y);
+#endif
+  } else if ( this->_Triangle == SymmetricUpperDiagonal && x<y ) {
+    SWAP(x,y,t);
+#ifdef	DEBUG_VIA_PRINTF
+    printf("Swapping indices to %d,%d\n",x,y);
+#endif
+  }
+  ib = this->_col_ColumnStarts[y];
+  ie = this->_col_ColumnStarts[y+1];
+  for (i=ib; i<ie; i++ ) {
+    if ( this->_col_RowForValue[i] == x ) {
+#ifdef	DEBUG_VIA_PRINTF
+      printf("The element %d,%d is already in the sparse matrix\n",x,y);
+#endif
+	    // It's already in the sparse matrix
+      return;
+    }
+    if ( this->_ColumnForValue[i] > x ) {
+      break;
+    }
+  }
+		// (i) contains the first element to move up
+		// increase the size of the Values and ColumnForValue arrays
+		// if they don't have enough space
+  if ( this->_col_ActiveElements>=this->_col_ReservedElements ) {
+    this->col_expandStorage();
+  }
+	// Slide the _Values and _ColumnForValue arrays up one to make
+	// room for this new element
+#ifdef	DEBUG_VIA_PRINTF
+  printf("Sliding from %d to %d num=%d\n", i, i+1, (this->_col_ActiveElements-i) );
+  printf("Befor slide value@%d = %d\n", i, this->_col_ColumnForValue[i]);
+#endif
+  this->_col_RowForValue.insert(this->_col_RowForValue.begin()+i,x);
+  this->_col_Values.insert(this->_col_Values.begin()+i,0.0);
+#ifdef	DEBUG_VIA_PRINTF
+  printf("After slide value@%d = %d\n", i+1, this->_col_RowForValue[i+1]);
+#endif
+  this->_col_ActiveElements++;
+		//
+		// Adjust the row start entries after this one
+		//
+  for ( uint rr = y+1; rr<this->_col_ColumnStartEntries;rr++ ) {
+    this->_col_ColumnStarts[rr]++;
+  }
+}
+
 //
 // Return the index for the element at x,y
 // If there is no element return UndefinedUnsignedInt 
@@ -604,12 +726,107 @@ uint	SparseLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint 
   return ret;
 }
 
+uint	SparseLargeSquareMatrix_O::col_indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y )
+{
+  uint	im, t, ret;
+  if ( x >= this->_Columns || y >= this->_Rows ) {
+    return UndefinedUnsignedInt;
+  }
+  if ( this->_Triangle == SymmetricDiagonalLower && x>y ) {
+    SWAP(x,y,t);
+    LOG("Swapped row/column" );
+  } else if ( this->_Triangle == SymmetricUpperDiagonal && x<y ) {
+    SWAP(x,y,t);
+    LOG("Swapped row/column" );
+  }
+  LOG("Looking at row: {}" , y  );
+  uint ib = this->_col_ColumnStarts[y];
+  uint ie = this->_col_ColumnStarts[y+1]-1;
+  if ( ie<ib ) return UndefinedUnsignedInt;
+  if ( ib >= this->_col_RowForValue.size() ) return UndefinedUnsignedInt;
+  if ( x < this->_col_RowForValue[ib] ) return UndefinedUnsignedInt;
+  if ( ie >= this->_col_RowForValue.size() ) return UndefinedUnsignedInt;
+  if ( x > this->_col_RowForValue[ie] ) return UndefinedUnsignedInt;
+  if ( x == this->_col_RowForValue[ib] )
+  {
+    ret = ib;
+    goto gotOne;
+  }
+  if ( x == this->_col_RowForValue[ie] )
+  {
+    ret = ie;
+    goto gotOne;
+  }
+  while ( ib<ie-1 ) {
+    im = (ib+ie)/2;
+    if ( this->_col_RowForValue[im] == x ) 
+    {
+      ret = im;
+      goto gotOne;
+    }
+    if ( this->_col_RowForValue[im] < x ) {
+      ib = im;
+    } else {
+      ie = im;
+    }
+  }
+  LOG("Exhausted columns, returning UndefinedUnsignedInt" );
+  return UndefinedUnsignedInt;
+ gotOne:
+  if ( ret >= this->_col_Values.size() )
+  {
+    core::clasp_write_string(fmt::format("Out of bounds at: {} line: {}\n" , __FILE__ , __LINE__ ));
+    core::clasp_write_string(fmt::format("Looking for point: {}, {}\n" , x,  y ));
+    core::clasp_write_string(fmt::format("Calculated: {}\n" , ret ));
+    core::clasp_write_string(fmt::format("this->_Values.size() = {}\n" , this->_Values.size() ));
+    this->debug();
+    SIMPLE_ERROR("Calculated a position that is beyond the range of Values");
+  }
+  return ret;
+}
+
 
 
 AbstractLargeSquareMatrix_sp	SparseLargeSquareMatrix_O::copy()
 {
   auto  dest  = gctools::GC<SparseLargeSquareMatrix_O>::copy( *this); // = RP_Copy<SparseLargeSquareMatrix_O>(this->sharedThis<SparseLargeSquareMatrix_O>());
   return dest;
+}
+
+void SparseLargeSquareMatrix_O::insertionIsComplete() {
+  this->_InsertionIsComplete = true;
+}
+
+void SparseLargeSquareMatrix_O::doColumnOptimization() {
+  if (!this->_col_OptimizationDone) {
+    if (!this->_InsertionIsComplete) {
+      for ( int row = 0; row < this->_Rows; row++ ) {
+        for ( int col = 0; col <= row; col++ ) {
+          uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(col,row);
+          if (idx != UndefinedUnsignedInt) {
+            vecreal val = this->getAtIndex(idx);
+            this->col_setElement(col,row,val);
+          }
+        }
+      }
+#if 1
+      for ( int row = 0; row < this->_Rows; row++ ) {
+        for ( int col = 0; col <= row; col++ ) {
+          uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(col,row);
+          if (idx != UndefinedUnsignedInt) {
+            vecreal row_val = this->getAtIndex(idx);
+            vecreal col_val = this->col_element(col,row);
+            if ( row_val != col_val ) {
+              SIMPLE_ERROR("There is a mismatch between the SparseLargeSquareMatrix entry %d, %d  row_val = %f, col_val = %f",
+                           col, row, row_val, col_val );
+            }
+          }
+        }
+      }
+#endif
+    }
+  }
+  this->_col_OptimizationDone = true;
 }
 
 
@@ -652,14 +869,21 @@ void	SparseLargeSquareMatrix_O::debug()
 
 
 
-double	SparseLargeSquareMatrix_O::element(uint x, uint y)
+vecreal	SparseLargeSquareMatrix_O::element(uint x, uint y)
 {
   uint ii= this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
   if ( ii == UndefinedUnsignedInt ) return 0.0;
   return this->_Values[ii];
 }
 
-void	SparseLargeSquareMatrix_O::setElement(uint x, uint y, double d)
+vecreal	SparseLargeSquareMatrix_O::col_element(uint x, uint y)
+{
+  uint ii= this->col_indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
+  if ( ii == UndefinedUnsignedInt ) return 0.0;
+  return this->_col_Values[ii];
+}
+
+void	SparseLargeSquareMatrix_O::setElement(uint x, uint y, vecreal d)
 {
   if (d!=0.0) {
     uint	dp;
@@ -681,11 +905,27 @@ void	SparseLargeSquareMatrix_O::setElement(uint x, uint y, double d)
   }
 }
 
-CL_DEFUN void chem__sparse_large_square_matrix_set_element(SparseLargeSquareMatrix_sp matrix, uint col, uint row, double value) {
+void	SparseLargeSquareMatrix_O::col_setElement(uint x, uint y, vecreal d)
+{
+  if (d!=0.0) {
+    uint	dp;
+    dp = this->col_indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
+    if ( dp == UndefinedUnsignedInt ) {
+      LOG("Could not find indexFromCoordinates" );
+      this->col_insertElement(x,y);
+      dp = this->col_indexFromCoordinates(x,y);
+    } else {
+      LOG("Found indexFromCoordinates dp={}" , dp );
+    }
+    this->_col_Values[dp] = d;
+  }
+}
+
+CL_DEFUN void chem__sparse_large_square_matrix_set_element(SparseLargeSquareMatrix_sp matrix, uint col, uint row, vecreal value) {
   matrix->setElement(col,row,value);
 }
 
-CL_DEFUN double chem__sparse_large_square_matrix_element(SparseLargeSquareMatrix_sp matrix, uint col, uint row) {
+CL_DEFUN vecreal chem__sparse_large_square_matrix_element(SparseLargeSquareMatrix_sp matrix, uint col, uint row) {
   return matrix->element(col,row);
 }
 
@@ -693,7 +933,7 @@ CL_DEFUN void chem__sparse_large_square_matrix_insertion_is_complete(SparseLarge
   matrix->insertionIsComplete();
 }
 
-void	SparseLargeSquareMatrix_O::addToElement(uint x, uint y, double d)
+void	SparseLargeSquareMatrix_O::addToElement(uint x, uint y, vecreal d)
 {
   uint	dp, idp;
   bool	inserted = false;

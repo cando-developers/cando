@@ -120,7 +120,7 @@ FORWARD(BondedJoint);
 
       CL_DEFMETHOD void setDistance(double distance) { this->_Distance = distance;}
       CL_DEFMETHOD void setTheta(double angle) { this->_Theta = angle;}
-      CL_DEFMETHOD void setPhi(double dihedral) { this->_Phi = dihedral; };
+      void setPhi(double dihedral);
 
 
     };

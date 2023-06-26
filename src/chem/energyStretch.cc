@@ -278,6 +278,7 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
   
 double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                               NVector_sp 	pos,
+                                              core::T_sp componentEnergy,
                                               bool 		calcForce,
                                               gc::Nilable<NVector_sp> 	force,
                                               bool		calcDiagonalHessian,
@@ -286,6 +287,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                               gc::Nilable<NVector_sp>	hdvec,
                                               gc::Nilable<NVector_sp> dvec)
 {
+  double totalEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) {
     LOG_ENERGY_CLEAR();
@@ -308,7 +310,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	STRETCH_SET_POSITION
 #define	STRETCH_SET_POSITION(x,ii,of)	{x = pos->getElement(ii+of);}
 #undef	STRETCH_ENERGY_ACCUMULATE
-#define	STRETCH_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	STRETCH_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	STRETCH_FORCE_ACCUMULATE
 #undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -382,14 +384,9 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   {
     LOG_ENERGY(("%s }") , this->className());
   }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergyStretch_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
-
-
-
-
-
-
 
 void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NVector_sp 	pos)
 {
@@ -593,8 +590,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
 CL_DEFMETHOD core::List_sp EnergyStretch_O::extract_vectors_as_alist() const {
   size_t size = this->_Terms.size();
   printf("%s:%d The number of EnergyStretch terms -> %lu\n", __FILE__, __LINE__, size);
-  core::SimpleVector_double_sp kb_vec = core::SimpleVector_double_O::make(size);
-  core::SimpleVector_double_sp r0_vec = core::SimpleVector_double_O::make(size);
+  NVector_sp kb_vec = NVector_O::make(size);
+  NVector_sp r0_vec = NVector_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_sp atom1_vec    = core::SimpleVector_O::make(size);
@@ -618,8 +615,8 @@ CL_DEFMETHOD core::List_sp EnergyStretch_O::extract_vectors_as_alist() const {
 
 CL_DEFMETHOD void EnergyStretch_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
-  core::SimpleVector_double_sp kb_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_kb));
-  core::SimpleVector_double_sp r0_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_r0));
+  NVector_sp kb_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_kb));
+  NVector_sp r0_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_r0));
   core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
   core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
   core::SimpleVector_sp atom1_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_atom1));
@@ -710,4 +707,16 @@ core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_s
   return result.result();
 }
 
+EnergyStretch_sp EnergyStretch_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyStretch_sp copy = EnergyStretch_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_Atom1;
+    Atom_sp a2 = edi->_Atom2;
+    if ( skipInteraction( keepInteraction, EnergyStretch_O::staticClass(), a1, a2 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
 }
+
+
+};

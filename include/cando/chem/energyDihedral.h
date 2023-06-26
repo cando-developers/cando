@@ -97,7 +97,7 @@ public:
         Atom_sp      _Atom2;
         Atom_sp      _Atom3;
         Atom_sp      _Atom4;
-	double		_PhaseRad;
+	REAL		_PhaseRad;
 	TermDihedral	term;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
@@ -105,7 +105,7 @@ public:
 	bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_Dihedral_debugEvalDeclares.cc>
 #endif
-	double		_CalculatedDihedralDeviation;
+	REAL		_CalculatedDihedralDeviation;
 
         Atom_sp		getAtom1() { return this->_Atom1; };
         Atom_sp		getAtom2() { return this->_Atom2; };
@@ -170,84 +170,112 @@ double  _evaluateEnergyOnly_Dihedral(
 
 
 
+FORWARD(EnergyDihedral);
 
 class EnergyDihedral_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergyDihedral_O,"EnergyDihedral",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyDihedral_O,"EnergyDihedral",EnergyComponent_O);
 public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
-    void	initialize();
+  void	initialize();
 
 public:
-    typedef EnergyDihedral	TermType;
+  typedef EnergyDihedral	TermType;
 public: // instance variables
-    gctools::Vec0<TermType>	_Terms;
-    gctools::Vec0<TermType>	_BeyondThresholdTerms;
+  gctools::Vec0<TermType>	_Terms;
+  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 
 public:	// Creation class functions
-public:	
-    typedef gctools::Vec0<TermType>::iterator iterator;
-    iterator begin() { return this->_Terms.begin(); };
-    iterator end() { return this->_Terms.end(); };
+  typedef gctools::Vec0<TermType>::iterator iterator;
+  iterator begin() { return this->_Terms.begin(); };
+  iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
 public:
-    virtual size_t numberOfTerms() { return this->_Terms.size();};
+  virtual size_t numberOfTerms() { return this->_Terms.size();};
     
 
 public:
-    void addTerm(const TermType& term);
-    virtual void dumpTerms(core::HashTable_sp atomTypes);
+  void addTerm(const TermType& term);
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
 
-    CL_DEFMETHOD core::T_mv safe_amber_energy_dihedral_term(size_t index) {
-      if (index >= this->numberOfTerms() ) {
-        SIMPLE_ERROR("Illegal term index {} must be less than {}" , index , this->_Terms.size() );
-      }
-      return Values(core::DoubleFloat_O::create(this->_Terms[index].term.cosPhase), // Note switched order
-                    core::DoubleFloat_O::create(this->_Terms[index].term.sinPhase),
-                    core::DoubleFloat_O::create(this->_Terms[index].term.V),
-                    core::DoubleFloat_O::create(this->_Terms[index].term.DN),
-                    core::make_fixnum(this->_Terms[index].term.I1),
-                    core::make_fixnum(this->_Terms[index].term.I2),
-                    core::make_fixnum(this->_Terms[index].term.I3),
-                    core::make_fixnum(this->_Terms[index].term.I4)
-                    );
+  CL_DEFMETHOD core::T_mv safe_amber_energy_dihedral_term(size_t index) {
+    if (index >= this->numberOfTerms() ) {
+      SIMPLE_ERROR("Illegal term index {} must be less than {}" , index , this->_Terms.size() );
     }
+    return Values(core::DoubleFloat_O::create(this->_Terms[index].term.cosPhase), // Note switched order
+                  core::DoubleFloat_O::create(this->_Terms[index].term.sinPhase),
+                  core::DoubleFloat_O::create(this->_Terms[index].term.V),
+                  core::DoubleFloat_O::create(this->_Terms[index].term.DN),
+                  core::make_fixnum(this->_Terms[index].term.I1),
+                  core::make_fixnum(this->_Terms[index].term.I2),
+                  core::make_fixnum(this->_Terms[index].term.I3),
+                  core::make_fixnum(this->_Terms[index].term.I4)
+                  );
+  }
 
-    virtual core::List_sp extract_vectors_as_alist() const;
-    virtual void fill_from_vectors_in_alist(core::List_sp vectors);
+  virtual core::List_sp extract_vectors_as_alist() const;
+  virtual void fill_from_vectors_in_alist(core::List_sp vectors);
 
     
-    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m );
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+                                          AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
-    virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-	NVector_sp pos );
+  virtual double evaluateAllComponentSingle(
+      gctools::Vec0<EnergyDihedral>::iterator di_start,
+      gctools::Vec0<EnergyDihedral>::iterator di_end,
+      ScoringFunction_sp scorer,
+      NVector_sp 	pos,
+      bool 		calcForce,
+      gc::Nilable<NVector_sp> 	force,
+      bool		calcDiagonalHessian,
+      bool		calcOffDiagonalHessian,
+      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+      gc::Nilable<NVector_sp>	hdvec,
+      gc::Nilable<NVector_sp> dvec);
+
+  virtual double evaluateAllComponentSimd8(
+      gctools::Vec0<EnergyDihedral>::iterator di_start8,
+      gctools::Vec0<EnergyDihedral>::iterator di_end8,
+      ScoringFunction_sp scorer,
+      NVector_sp 	pos,
+      bool 		calcForce,
+      gc::Nilable<NVector_sp> 	force,
+      bool		calcDiagonalHessian,
+      bool		calcOffDiagonalHessian,
+      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+      gc::Nilable<NVector_sp>	hdvec,
+      gc::Nilable<NVector_sp> dvec);
+
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
+      NVector_sp pos );
 
     // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
-    virtual string	beyondThresholdInteractionsAsString();
+  virtual string	beyondThresholdInteractionsAsString();
 
 
-    void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, double v, int multiplicity);
+  void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, double v, int multiplicity);
 
   core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::HashTable_sp atomTypes );
 
+  EnergyDihedral_sp copyFilter(core::T_sp keepInteraction);
+
 public:
-    EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor
+  EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergyDihedral_O);
-
+  EnergyDihedral_O() {};
 };
 
 

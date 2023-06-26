@@ -76,7 +76,10 @@ public:
   /*! In place add to the translation part */
   void addToTranslation(const Vector3 &offset);
 
-  void transform_nvector_point(double &xdestination, double &ydestination, double &zdestiniation, chem::NVector_sp source,
+  void transform_nvector_point(chem::Vector_real &xdestination,
+                               chem::Vector_real &ydestination, 
+                               chem::Vector_real &zdestiniation,
+                               chem::NVector_sp source,
                                size_t source_index) const;
 
   Matrix multiplyByScalar(double m) { return (*this) * m; };

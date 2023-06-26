@@ -147,9 +147,9 @@
        do (fread-line fif eof-error-p eof-value))
     result))
 
-;;;parse a double-float in the string starting at start end ending at end.
+;;;parse a vecreal in the string starting at start end ending at end.
 ;;;  Allow whitespace at the start end end of the string
-(defun parse-double-float (string &key (start 0) end)
+(defun parse-vecreal (string &key (start 0) end)
   (let ((float-start (position-if (lambda (c) (and (char/= c #\space) (char/= c #\tab))) string :start start :end end))
         (float-end (or end (length string)))
         (has-period (position #\. string :start start :end end))
@@ -167,30 +167,33 @@
           (setf exponent (parse-integer string :start (1+ has-exponent-char) :end float-end)))
       (setf exponent (- exponent (length sig-y)))
       (let ((significand-str (concatenate 'string sig-x sig-y)))
-        (* (float (parse-integer significand-str) 1.0D0) (expt 10.0d0 exponent))))))
+        (* (float (parse-integer significand-str)
+                  (load-time-value (if (eq 'double-float (geom:vecreal-type))
+                                       1.0D0
+                                       1.0s0)))
+           (expt 10.0d0 exponent))))))
 
-(defun parse-double-float-line (line result width)
+(defun parse-vec-real-line (line result width)
   (loop for start = 0 then end
      for end = (+ start width)
      until (< (length line) end)
      do (let* ((val-pos (position-if (lambda (c) (char/= c #\space)) line :start start :end end))
-               (val (parse-double-float line :start start :end end)))
+               (val (parse-vecreal line :start start :end end)))
           (vector-push-extend val result))))
 
-(defun fread-double-float-vector (fif per-line width &optional max-entries)
-  (let ((result (make-array 32 :element-type 'double-float :fill-pointer 0 :adjustable t)))
+(defun fread-vecreal-vector (fif per-line width &optional max-entries)
+  (let ((result (make-array 32 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t)))
     (loop for line = (fortran-input-file-look-ahead fif)
           until (or (eq line nil) (eql (aref line 0) #\%))
           if (and max-entries (>= (fill-pointer result) max-entries))
-            do (return-from fread-double-float-vector result)
-          do (parse-double-float-line line result width)
+            do (return-from fread-vecreal-vector result)
+          do (parse-vecreal-line line result width)
           do (fread-line fif nil nil))
-    
     result))
     
 (defun fread-vector (fif per-line format-char width)
   (ecase (format-symbol format-char)
     (:integer (fread-integer-vector fif per-line width))
-    (:double-float (fread-double-float-vector fif per-line width))
+    (:double-float (fread-vecreal-vector fif per-line width))
     (:string (fread-string-vector fif per-line width))))
 

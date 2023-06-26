@@ -111,10 +111,10 @@ multiple force-fields and know how a more recently added force-field shadows a l
   (chem:generate-standard-assign-molecular-force-field-parameters energy-function force-field molecule))
 
 
-(defgeneric chem:generate-molecule-energy-function-tables (energy-function molecule combined-force-field active-atoms)
+(defgeneric chem:generate-molecule-energy-function-tables (energy-function molecule combined-force-field keep-interaction)
   (:documentation "Generate the molecule energy-function tables"))
 
-(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) active-atoms)
+(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) keep-interaction)
   "Combine AMBER and GAFF force field and frcmods and run parmchk2"
   (let ((merged-force-field (chem:force-field/make)))
     (loop for partial-force-field in (chem:combined-force-field/force-fields-as-list combined-force-field)
@@ -124,7 +124,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
           (ffptor-db (chem:get-ptor-db merged-force-field))
           (ffitor-db (chem:get-itor-db merged-force-field)))
       #+(or)(warn "At this point we should run parmchk2 on the stretch/angle/ptor/itor components of the merged-force-field - any missing parameters should be provided by parmchk2")
-      (chem:energy-function/generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db :active-atoms active-atoms :atom-types (chem:atom-types energy-function)))))
+      (chem:energy-function/generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db :keep-interaction keep-interaction :atom-types (chem:atom-types energy-function)))))
 
 
 ;;; ------------------------------------------------------------
@@ -164,7 +164,7 @@ for the node in the table."))
   (chem:get-number-of-atoms atom-table))
 
 (defmethod chem:node-table-coordinate-index-times3 ((atom-table chem:atom-table) index)
-  (chem:get-coordinate-index-for-atom-at-index atom-table index))
+  (chem:get-coordinate-index-times3-for-atom-at-index atom-table index))
 
 (defmethod chem:node-table-node-at-index ((atom-table chem:atom-table) index)
   (chem:elt-atom atom-table index))

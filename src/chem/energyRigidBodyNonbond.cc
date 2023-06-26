@@ -162,21 +162,6 @@ EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atom
   return nb;
 }
 
-void	EnergyRigidBodyNonbond_O::zeroEnergy()
-{
-  this->Base::zeroEnergy();
-  this->_EnergyElectrostatic = 0.0;
-  this->_EnergyVdw = 0.0;
-}
-
-double	EnergyRigidBodyNonbond_O::getEnergy()
-{
-  double	e;
-  e = this->getVdwEnergy();
-  e += this->getElectrostaticEnergy();
-  return e;
-}
-
  void EnergyRigidBodyNonbond_O::energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp atom, double radius, double epsilon, double charge, const Vector3& position) {
   if (index < 0 || index >= this->_AtomInfoTable.size()) {
     SIMPLE_ERROR("Index out of range {} - max is {}" , index , this->_AtomInfoTable.size());
@@ -452,6 +437,7 @@ inline double periodic_boundary_adjust(const double& delta, const double& rsize,
 
 double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         NVector_sp 	pos,
+                                                        core::T_sp componentEnergy,
                                                         bool 		calcForce,
                                                         gc::Nilable<NVector_sp> 	force,
                                                         bool		calcDiagonalHessian,
@@ -464,9 +450,9 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
-  this->_EnergyElectrostatic = 0.0;
-  this->_EnergyVdw = 0.0;
-  this->_TotalEnergy = 0.0;
+  double energyElectrostatic = 0.0;
+  double energyVdw = 0.0;
+  double totalEnergy = 0.0;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -497,11 +483,11 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	NONBONDRB_SET_POINT
 #define	NONBONDRB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
 #undef	NONBONDRB_EEEL_ENERGY_ACCUMULATE
-#define	NONBONDRB_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);} // not used
+#define	NONBONDRB_EEEL_ENERGY_ACCUMULATE(e) {energyElectrostatic +=(e);} // not used
 #undef	NONBONDRB_EVDW_ENERGY_ACCUMULATE
-#define	NONBONDRB_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);} // not used
+#define	NONBONDRB_EVDW_ENERGY_ACCUMULATE(e) {energyVdw+=(e);} // not used
 #undef	NONBONDRB_ENERGY_ACCUMULATE
-#define	NONBONDRB_ENERGY_ACCUMULATE(e) {this->_TotalEnergy += e;};
+#define	NONBONDRB_ENERGY_ACCUMULATE(e) {totalEnergy += e;};
 #undef	NONBONDRB_FORCE_ACCUMULATE
 #undef	NONBONDRB_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	NONBONDRB_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -633,17 +619,9 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     LOG_ENERGY(( "MEISTER nonbond interactions -> %d\n") , interactions);
   }
 #endif
-  
-#if 0
-  printf("%s:%d NonbondRigidBody    TotalEnergy -> %lf\n", __FILE__, __LINE__, this->_TotalEnergy );
-#endif
-  if (std::isnan(this->_TotalEnergy)) {
-    SIMPLE_ERROR("Returning nan");
-  }
-#if 0  
-  core::clasp_write_string(fmt::format("Total-energy {}\n" , this->_TotalEnergy ));
-#endif
-  return this->_TotalEnergy;
+
+  maybeSetEnergy( componentEnergy, EnergyRigidBodyNonbond_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
     
 void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(

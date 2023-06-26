@@ -237,15 +237,17 @@ bool		calcOffDiagonalHessian = true;
 
 
 double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                             NVector_sp 	pos,
-                                             bool 		calcForce,
-                                             gc::Nilable<NVector_sp> 	force,
-                                             bool		calcDiagonalHessian,
-                                             bool		calcOffDiagonalHessian,
-                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                             gc::Nilable<NVector_sp>	hdvec,
-                                             gc::Nilable<NVector_sp> dvec)
+                                                      NVector_sp 	pos,
+                                                      core::T_sp componentEnergy,
+                                                      bool 		calcForce,
+                                                      gc::Nilable<NVector_sp> 	force,
+                                                      bool		calcDiagonalHessian,
+                                                      bool		calcOffDiagonalHessian,
+                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                      gc::Nilable<NVector_sp>	hdvec,
+                                                      gc::Nilable<NVector_sp> dvec)
 {
+  double totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -265,7 +267,7 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	ANCHOR_RESTRAINT_PHI_SET
 #define	ANCHOR_RESTRAINT_PHI_SET(x) {}
 #undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
 #undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -320,7 +322,8 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
       }
     }
   }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergyAnchorRestraint_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
 
 
@@ -476,6 +479,16 @@ void EnergyAnchorRestraint_O::initialize()
 {
     this->Base::initialize();
     this->setErrorThreshold(0.2);
+}
+
+EnergyAnchorRestraint_sp EnergyAnchorRestraint_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyAnchorRestraint_sp copy = EnergyAnchorRestraint_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_Atom1;
+    if ( skipInteraction( keepInteraction, EnergyAnchorRestraint_O::staticClass(), a1 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
 }
 
 

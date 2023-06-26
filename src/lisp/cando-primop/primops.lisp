@@ -10,14 +10,26 @@
   ;; are skipped, improving efficiency.
   ;; Right now the interfaces to do this cleanly have not yet been developed
   ;; so we're kind of messing with compiler internals. BEWARE. FIXME.
-  
-  (cmp:define-primitive "cc_OVector3_vx" :double-float '(:object))
-  (cmp:define-primitive "cc_OVector3_vy" :double-float '(:object))
-  (cmp:define-primitive "cc_OVector3_vz" :double-float '(:object))
 
-  (clasp-cleavir::defvprimop-intrinsic %vx ((:double-float) :object) "cc_OVector3_vx")
-  (clasp-cleavir::defvprimop-intrinsic %vy ((:double-float) :object) "cc_OVector3_vy")
-  (clasp-cleavir::defvprimop-intrinsic %vz ((:double-float) :object) "cc_OVector3_vz")
+  (if (eq (geom:vecreal-type) 'double-float)
+      (progn
+        (cmp:define-primitive "cc_OVector3_vx" :double-float '(:object))
+        (cmp:define-primitive "cc_OVector3_vy" :double-float '(:object))
+        (cmp:define-primitive "cc_OVector3_vz" :double-float '(:object))
+
+        (clasp-cleavir::defvprimop-intrinsic %vx ((:double-float) :object) "cc_OVector3_vx")
+        (clasp-cleavir::defvprimop-intrinsic %vy ((:double-float) :object) "cc_OVector3_vy")
+        (clasp-cleavir::defvprimop-intrinsic %vz ((:double-float) :object) "cc_OVector3_vz")
+        )
+      (progn
+        (cmp:define-primitive "cc_OVector3_vx" :single-float '(:object))
+        (cmp:define-primitive "cc_OVector3_vy" :single-float '(:object))
+        (cmp:define-primitive "cc_OVector3_vz" :single-float '(:object))
+
+        (clasp-cleavir::defvprimop-intrinsic %vx ((:single-float) :object) "cc_OVector3_vx")
+        (clasp-cleavir::defvprimop-intrinsic %vy ((:single-float) :object) "cc_OVector3_vy")
+        (clasp-cleavir::defvprimop-intrinsic %vz ((:single-float) :object) "cc_OVector3_vz")
+        ))
 
   (cc-bir-to-bmir::deftransform vx %vx t)
   (cc-bir-to-bmir::deftransform vy %vy t)
@@ -30,15 +42,15 @@
     (declare (ignore o))
     (let ((sys clasp-cleavir:*clasp-system*))
       (cleavir-ctype:single-value
-       (cleavir-ctype:range 'double-float '* '* sys) sys)))
+       (cleavir-ctype:range (geom:vecreal-type) '* '* sys) sys)))
   (clasp-cleavir::define-deriver geom:vy (o)
     (declare (ignore o))
     (let ((sys clasp-cleavir:*clasp-system*))
       (cleavir-ctype:single-value
-       (cleavir-ctype:range 'double-float '* '* sys) sys)))
+       (cleavir-ctype:range (geom:vecreal-type) '* '* sys) sys)))
   (clasp-cleavir::define-deriver geom:vz (o)
     (declare (ignore o))
     (let ((sys clasp-cleavir:*clasp-system*))
       (cleavir-ctype:single-value
-       (cleavir-ctype:range 'double-float '* '* sys) sys)))
+       (cleavir-ctype:range (geom:vecreal-type) '* '* sys) sys)))
   )

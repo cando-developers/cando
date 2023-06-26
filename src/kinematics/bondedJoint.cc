@@ -255,6 +255,13 @@ string BondedJoint_O::asString() const
   return ss.str();
 }
 
+CL_DEFMETHOD void BondedJoint_O::setPhi(double dihedral) {
+  if (isnan(dihedral)) {
+    SIMPLE_ERROR("Hit NAN dihedral");
+  }
+  this->_Phi = dihedral;
+}
+
 /*! There are three possible situations
     C is always a BondedJoint_sp
     (1)    <BondedJoint_sp>(B) <BondedJoint_sp>(A)

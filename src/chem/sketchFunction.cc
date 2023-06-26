@@ -147,9 +147,6 @@ void SketchFunction_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-
-
-
 CL_DEFMETHOD AtomTable_sp SketchFunction_O::atomTable() const
 {
   if (gc::IsA<AtomTable_sp>(this->_NodeTable)) {
@@ -309,6 +306,7 @@ void maybe_dump_force(const string& msg, NVector_sp force)
 //
 
 double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
+                                       core::T_sp       componentEnergy,
                                        bool 		calcForce,
                                        gc::Nilable<NVector_sp> 	force,
                                        bool		calcDiagonalHessian,
@@ -316,7 +314,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec)
-{_G()
+{
+  double totalEnergy = 0.0;
 #ifdef DEBUG_ENERGY_FUNCTION
     printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
 #endif
@@ -381,11 +380,6 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
   }
 
 ////    _lisp->profiler().pushTimerStates();
-  this->_Nonbond->zeroEnergy();
-  this->_Stretch->zeroEnergy();
-  this->_OutOfZPlane->zeroEnergy();
-  this->_PointToLineRestraint->zeroEnergy();
-  
 
   if ( hasForce ) force->zero();
   if ( hasHessian ) hessian->zero();
@@ -395,10 +389,6 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
   }
 
   LOG("Starting evaluation of energy" );
-////	_lisp->profiler().timer(core::timerEnergy).start();
-
-////	_lisp->profiler().timer(core::timerBondAngleDihedral).start();
-
 	//
 	// Evaluate the stretch term
 	//
@@ -408,20 +398,24 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
   maybe_dump_force("start",force);
 #endif
   if (this->_Stretch->isEnabled())
-    this->_Stretch->evaluateAllComponent( this->asSmartPtr(),
-                                          pos, calcForce, force,
-                                          calcDiagonalHessian,
-                                          calcOffDiagonalHessian,
-                                          hessian, hdvec, dvec );
+    totalEnergy += this->_Stretch->evaluateAllComponent( this->asSmartPtr(),
+                                                         pos,
+                                                         componentEnergy,
+                                                         calcForce, force,
+                                                         calcDiagonalHessian,
+                                                         calcOffDiagonalHessian,
+                                                         hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerBond).stop();
 ////	_lisp->profiler().timer(core::timerNonbond).start();
 #ifdef DUMP_FORCE
   maybe_dump_force("stretch",force);
 #endif
   if (this->_Nonbond->isEnabled())
-    this->_Nonbond->evaluateAllComponent( this->asSmartPtr(),
-                                          pos, calcForce, force,
-                                          calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+    totalEnergy += this->_Nonbond->evaluateAllComponent( this->asSmartPtr(),
+                                                         pos,
+                                                         componentEnergy,
+                                                         calcForce, force,
+                                                         calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
@@ -429,45 +423,39 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
   maybe_dump_force("nonbond",force);
 #endif
   if (this->_PointToLineRestraint->isEnabled())
-    this->_PointToLineRestraint->evaluateAllComponent( this->asSmartPtr(),
-                                                       pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+    totalEnergy += this->_PointToLineRestraint->evaluateAllComponent( this->asSmartPtr(),
+                                                                      pos,
+                                                                      componentEnergy,
+                                                                      calcForce, force,
+                                                                      calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 #ifdef DUMP_FORCE
   maybe_dump_force("pointToLineRestraint",force);
 #endif
   if (this->_OutOfZPlane->isEnabled())
-    this->_OutOfZPlane->evaluateAllComponent( this->asSmartPtr(),
-                                   pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+    totalEnergy += this->_OutOfZPlane->evaluateAllComponent( this->asSmartPtr(),
+                                                             pos,
+                                                             componentEnergy,
+                                                             calcForce, force,
+                                                             calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 #ifdef DUMP_FORCE
   maybe_dump_force("oozp",force);
 #endif
-////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
-
-  this->_TotalEnergy = this->_Nonbond->getEnergy();
-  this->_TotalEnergy += this->_Stretch->getEnergy();
-  this->_TotalEnergy += this->_PointToLineRestraint->getEnergy();
-  this->_TotalEnergy += this->_OutOfZPlane->getEnergy();
-  if (chem__verbose(1)) {
-    core::clasp_write_string(fmt::format("Stretch energy -> {}.\n" , this->_Stretch->getEnergy() ));
-    core::clasp_write_string(fmt::format("Nonbond energy -> {}.\n" , this->_Nonbond->getEnergy() ));
-    core::clasp_write_string(fmt::format("PointToLineRestraint energy -> {}.\n" , this->_PointToLineRestraint->getEnergy() ));
-    core::clasp_write_string(fmt::format("OutOfZPlane energy -> {}.\n" , this->_OutOfZPlane->getEnergy() ));
-    core::clasp_write_string(fmt::format("Total energy -> {}.\n" , this->_TotalEnergy ));
-  }
-
-////	_lisp->profiler().timer(core::timerEnergy).stop();
 
     	// More energy terms
-  return this->_TotalEnergy;
+  return totalEnergy;
 }
 
 
-string SketchFunction_O::energyComponentsAsString()
+string SketchFunctionEnergy_O::energyComponentsAsString()
 {
+  IMPLEMENT_ME();
+  #if 0
   stringstream ss;
   ss << fmt::format("Stretch({})" , this->_Stretch->getEnergy()) << std::endl;
   ss << fmt::format("PointToLineRestraint({})" , this->_PointToLineRestraint->getEnergy()) << std::endl;
   ss << fmt::format("OutOfZPlane({})" , this->_OutOfZPlane->getEnergy()) << std::endl;
   return ss.str();
+  #endif
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,stretch_deviations);
@@ -696,11 +684,11 @@ ForceMatchReport_sp SketchFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 }
 
 
-void	SketchFunction_O::dumpTerms(core::HashTable_sp atomTypes)
+void	SketchFunction_O::dumpTerms()
 {
-  this->_Stretch->dumpTerms(atomTypes);
-  this->_PointToLineRestraint->dumpTerms(atomTypes);
-  this->_OutOfZPlane->dumpTerms(atomTypes);
+  this->_Stretch->dumpTerms(this->_AtomTypes);
+  this->_PointToLineRestraint->dumpTerms(this->_AtomTypes);
+  this->_OutOfZPlane->dumpTerms(this->_AtomTypes);
 }
 
 

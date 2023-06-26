@@ -141,8 +141,8 @@ CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(core::T_sp coord_object)
       (*vec3)[ii*3+2] = (*vec)[ii].getZ();
     }
     frame->_Coordinates = vec3;
-  } else if (gc::IsA<core::SimpleVector_double_sp>(coord_object)) {
-    auto vecd = gc::As_unsafe<core::SimpleVector_double_sp>(coord_object);
+  } else if (gc::IsA<NVector_sp>(coord_object)) {
+    auto vecd = gc::As_unsafe<NVector_sp>(coord_object);
     if (this->_AtomList.size()*3 != vecd->length()) {
       SIMPLE_ERROR("The coordinates object is the wrong size - it has {} doubles - the trajectory object has {} atoms and each atom needs x,y,z coordinate", vecd->length(), this->_AtomList.size() );
     }

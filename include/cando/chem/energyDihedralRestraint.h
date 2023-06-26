@@ -54,13 +54,13 @@ namespace       chem {
 
 struct TermImproperRestraint
 {
-	double		K;	// Force constant
-    	double		U;	// Upper bound in radians domain [-180,180]
-	double		L;	// Lower bound in radians domain [-180,180]
-	int		I1;
-	int		I2;
-	int		I3;
-	int		I4;
+	REAL		K;	// Force constant
+    	REAL		U;	// Upper bound in radians domain [-180,180]
+	REAL		L;	// Lower bound in radians domain [-180,180]
+	INT		I1;
+	INT		I2;
+	INT		I3;
+	INT		I4;
 };
 
 
@@ -75,7 +75,7 @@ class	EnergyDihedralRestraint : public EnergyTerm {
   Atom_sp      _Atom4;
 		// Threshold
   bool		_AboveThreshold;
-  double		_AboveThreshold_Phi;
+  REAL          _AboveThreshold_Phi;
   TermImproperRestraint	term;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
   bool		_calcForce;
@@ -137,6 +137,7 @@ double	_evaluateEnergyOnly_ImproperRestraint(
 		double K, double L, double U );
 
 
+FORWARD(EnergyDihedralRestraint);
 
 class EnergyDihedralRestraint_O : public EnergyComponent_O
 {
@@ -172,6 +173,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
                                           AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
                                        bool 		calcForce,
                                        gc::Nilable<NVector_sp> 	force,
                                        bool		calcDiagonalHessian,
@@ -186,7 +188,8 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
   virtual int checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
   virtual string	beyondThresholdInteractionsAsString();
-
+ 
+  EnergyDihedralRestraint_sp copyFilter(core::T_sp keepInteraction);
 
  public:
   EnergyDihedralRestraint_O( const EnergyDihedralRestraint_O& ss ); //!< Copy constructor

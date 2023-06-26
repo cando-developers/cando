@@ -43,33 +43,32 @@ This is an open source license for the CANDO software from Temple University, bu
 #define MY_PI 3.1415926535897932
 #define SMALL_NUMBER 1e-6
 
+
 /*! A vector stores xyz coordinates in Angstroms */
 class Vector3 {
   friend class OVector3_O;
-
 protected:
-  double coords[3];
+  vecreal coords[3];
 public:
-
 
   //! Construct zerod vector
   Vector3() : coords{0.0,0.0,0.0} {};
   ~Vector3() {};
-  Vector3( double x, double y, double z ) : coords{x,y,z} {};
+  Vector3( vecreal x, vecreal y, vecreal z ) : coords{x,y,z} {};
 
   /*! Return the vector in nanometers */
   Vector3 inNanometers() const;
 
-  double& operator[](uint x) { return this->coords[x];};
+  vecreal& operator[](uint x) { return this->coords[x];};
 
-  double const& operator[](uint x) const { return this->coords[x];};
+  vecreal const& operator[](uint x) const { return this->coords[x];};
 
-  double& getX() { return this->coords[0]; }
-  double& getY() { return this->coords[1]; }
-  double& getZ() { return this->coords[2]; }
-  double getX() const { return this->coords[0]; }
-  double getY() const { return this->coords[1]; }
-  double getZ() const { return this->coords[2]; }
+  vecreal& getX() { return this->coords[0]; }
+  vecreal& getY() { return this->coords[1]; }
+  vecreal& getZ() { return this->coords[2]; }
+  vecreal getX() const { return this->coords[0]; }
+  vecreal getY() const { return this->coords[1]; }
+  vecreal getZ() const { return this->coords[2]; }
   bool operator==( const Vector3& v ) const { return this->coords[0] == v.coords[0]
         && this->coords[1] == v.coords[1]
         && this->coords[2] == v.coords[2]; }

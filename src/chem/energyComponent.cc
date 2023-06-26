@@ -47,17 +47,11 @@ void	EnergyComponent_O::initialize()
 {
   this->Base::initialize();
   this->enable();
-  this->zeroEnergy();
   this->disableDebug();
   this->setScale(1.0);
   this->setDebug_NumberOfTermsToCalculate(-1);
 }
 
-
-void	EnergyComponent_O::zeroEnergy()
-{
-  this->_TotalEnergy = 0.0;
-}
 
 CL_LISPIFY_NAME("debugLogAsString");
 CL_DEFMETHOD string EnergyComponent_O::debugLogAsString()
@@ -89,16 +83,6 @@ string	EnergyComponent_O::enabledAsString()
   return ss.str();
 };
 
-string EnergyComponent_O::summarizeEnergyAsString() 
-{
-  stringstream ss;
-  ss.str("");
-  ss<< this->className();
-  ss << " energy: " << this->getEnergy() << std::endl;
-  return ss.str();
-};
-
-
 
 CL_DOCSTRING(R"dx(Evaluate the energy of a component)dx");
 DOCGROUP(cando);
@@ -109,6 +93,7 @@ double chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
 {
   double val = component->evaluateAllComponent(energy_function,
                                                pos,
+                                               nil<core::T_O>(),
                                                false,nil<NVector_O>(),
                                                false,false,
                                                nil<AbstractLargeSquareMatrix_O>(),
@@ -127,6 +112,7 @@ double chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_fun
 {
   double val = component->evaluateAllComponent(energy_function,
                                                pos,
+                                               nil<core::T_O>(),
                                                true,force,
                                                false,false,
                                                nil<AbstractLargeSquareMatrix_O>(),
@@ -134,5 +120,10 @@ double chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_fun
                                                nil<NVector_O>());
   return val;
 };
+
+EnergyComponent_sp EnergyComponent_O::filterCopyComponent(core::T_sp keepInteraction) {
+  IMPLEMENT_ME();
+}
+
 
 };

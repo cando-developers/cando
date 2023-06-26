@@ -159,14 +159,15 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 
 
 double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
-                                           NVector_sp 	pos,
-                                           bool 		calcForce,
-                                           gc::Nilable<NVector_sp> 	force,
-                                           bool		calcDiagonalHessian,
-                                           bool		calcOffDiagonalHessian,
-                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                           gc::Nilable<NVector_sp>	hdvec,
-                                           gc::Nilable<NVector_sp> dvec)
+                                                    NVector_sp 	pos,
+                                                    core::T_sp componentEnergy,
+                                                    bool 		calcForce,
+                                                    gc::Nilable<NVector_sp> 	force,
+                                                    bool		calcDiagonalHessian,
+                                                    bool		calcOffDiagonalHessian,
+                                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                    gc::Nilable<NVector_sp>	hdvec,
+                                                    gc::Nilable<NVector_sp> dvec)
 {
   this->_Evaluations++;
   if ( this->_DebugEnergy ) {
@@ -180,7 +181,7 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-
+  double totalEnergy = 0.0;
 #define STRETCH_CALC_FORCE
 #define STRETCH_CALC_DIAGONAL_HESSIAN
 #define STRETCH_CALC_OFF_DIAGONAL_HESSIAN
@@ -189,7 +190,7 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	STRETCH_SET_POSITION
 #define	STRETCH_SET_POSITION(x,ii,of)	{x = pos->getElement(ii+of);}
 #undef	STRETCH_ENERGY_ACCUMULATE
-#define	STRETCH_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	STRETCH_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	STRETCH_FORCE_ACCUMULATE
 #undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -261,11 +262,8 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
     }
   }
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }") , this->className());
-  }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergySketchStretch_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
 
 
@@ -306,8 +304,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
 CL_DEFMETHOD core::List_sp EnergySketchStretch_O::extract_vectors_as_alist() const {
   size_t size = this->_Terms.size();
   printf("%s:%d The number of EnergySketchStretch terms -> %lu\n", __FILE__, __LINE__, size);
-  core::SimpleVector_double_sp kb_vec = core::SimpleVector_double_O::make(size);
-  core::SimpleVector_double_sp r0_vec = core::SimpleVector_double_O::make(size);
+  NVector_sp kb_vec = NVector_O::make(size);
+  NVector_sp r0_vec = NVector_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
   for (size_t i=0;i<size;++i) {
@@ -325,8 +323,8 @@ CL_DEFMETHOD core::List_sp EnergySketchStretch_O::extract_vectors_as_alist() con
 
 CL_DEFMETHOD void EnergySketchStretch_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
-  core::SimpleVector_double_sp kb_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_kb));
-  core::SimpleVector_double_sp r0_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_r0));
+  NVector_sp kb_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_kb));
+  NVector_sp r0_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_r0));
   core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
   core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
   this->_Terms.resize(kb_vec->length());

@@ -76,14 +76,15 @@ public:
   static EnergyPointToLineRestraint_sp create(EnergySketchStretch_sp stretch);
 public:
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
 public:
   EnergyPointToLineRestraint_O(EnergySketchStretch_sp stretch) : _Stretch(stretch), _ForceConstant(0.5) {};

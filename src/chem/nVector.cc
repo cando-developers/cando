@@ -57,8 +57,8 @@ double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen )
     core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
     double          dDot;
     dDot = 0.0;
-    double* px = &(*x)[0];
-    double* py = &(*y)[0];
+    Vector_real* px = &(*x)[0];
+    Vector_real* py = &(*y)[0];
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
       dDot += (px[i]*py[i])*(1-frozen_->testBit(i));
     }
@@ -66,8 +66,8 @@ double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen )
   } else if (frozen.nilp()) {
     double          dDot;
     dDot = 0.0;
-    double* px = &(*x)[0];
-    double* py = &(*y)[0];
+    Vector_real* px = &(*x)[0];
+    Vector_real* py = &(*y)[0];
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) dDot += px[i]*py[i];
     return dDot;
   }
@@ -81,7 +81,7 @@ double	squared(NVector_sp x, core::T_sp frozen)
     core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
     double          dDot;
     dDot = 0.0;
-    double* dp = &(*x)[0];
+    Vector_real* dp = &(*x)[0];
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
       dDot += (dp[i]*dp[i])*(1-frozen_->testBit(i));
     }
@@ -89,7 +89,7 @@ double	squared(NVector_sp x, core::T_sp frozen)
   } else if (frozen.nilp()) {
     double          dDot;
     dDot = 0.0;
-    double* dp = &(*x)[0];
+    Vector_real* dp = &(*x)[0];
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
       dDot += dp[i]*dp[i];
     }
@@ -113,7 +113,7 @@ double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
     core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
     size_t num = 0;
     double dDot = 0.0;
-    double* dp = &(*me)[0];
+    Vector_real* dp = &(*me)[0];
     for ( size_t i(0), iEnd(me->length()); i<iEnd; ++i ) {
       int moveable = (1-frozen_->testBit(i));
       num += moveable;
@@ -130,7 +130,7 @@ double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
     return(dDot/num);
   } else if (frozen.nilp()) {
     double dDot = 0.0;
-    double* dp = &(*me)[0];
+    Vector_real* dp = &(*me)[0];
     for ( size_t i(0), iEnd(me->length()); i<iEnd; ++i ) {
       dDot += dp[i]*dp[i];
     }
@@ -159,7 +159,7 @@ double	angleWithVector(NVector_sp me, NVector_sp other, core::T_sp frozen)
     dot /= (lenThis*lenOther);
     if ( dot > 1.0 ) dot = 1.0;
     if ( dot < -1.0 ) dot = -1.0;
-    return acos(dot);
+    return safe_acos(dot);
   }
   return 0.0;
 }
@@ -183,9 +183,9 @@ void XPlusYTimesScalar( NVector_sp output, NVector_sp x, NVector_sp y, double s,
   } else if (frozen.notnilp()) {
     SIMPLE_ERROR("Expected frozen to be a simple-bit-vector - but it is {}" , _rep_(frozen));
   }
-  double* poutput = &(*output)[0];
-  double* px = &(*x)[0];
-  double* py = &(*y)[0];
+  Vector_real* poutput = &(*output)[0];
+  Vector_real* px = &(*x)[0];
+  Vector_real* py = &(*y)[0];
   if (frozen_bitvector) {
     // Some things may be frozen
     for ( int i(0),iEnd(output->length()); i<iEnd; ++i ) {
@@ -209,8 +209,8 @@ void XPlusYTimesScalar( NVector_sp output, NVector_sp x, NVector_sp y, double s,
 void	copyVector(NVector_sp dest, NVector_sp orig)
 {
   ASSERTP(dest->length()==orig->length(),"NVector_O::copy>>mismatched length");
-  double* ddest = &(*dest)[0];
-  double* dorig = &(*orig)[0];
+  Vector_real* ddest = &(*dest)[0];
+  Vector_real* dorig = &(*orig)[0];
   for ( size_t i(0),iEnd(orig->length()); i<iEnd; ++i ) {
     ddest[i] = dorig[i];
   }
@@ -221,15 +221,15 @@ void inPlaceAddTimesScalar( NVector_sp result, NVector_sp dir, double s, core::T
   ASSERT( result->length() == dir->length());
   if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
     core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
-    double* presult = &(*result)[0];
-    double* pdir = &(*dir)[0];
+    Vector_real* presult = &(*result)[0];
+    Vector_real* pdir = &(*dir)[0];
     for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
       presult[i] += pdir[i]*s*(1-frozen_->testBit(i));
     }
     return;
   } else if (frozen.nilp()) {
-    double* presult = &(*result)[0];
-    double* pdir = &(*dir)[0];
+    Vector_real* presult = &(*result)[0];
+    Vector_real* pdir = &(*dir)[0];
     for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
       presult[i] += pdir[i]*s;
     }
@@ -247,8 +247,8 @@ double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
     size_t num = 0;
     double	e, sum;
     sum = 0.0;
-    double* du = &(*u)[0];
-    double* dv = &(*v)[0];
+    Vector_real* du = &(*u)[0];
+    Vector_real* dv = &(*v)[0];
     for ( size_t i(0), iEnd(u->length()); i<iEnd; ++i ) {
       int moveable = (1-frozen_->testBit(i));
       e = du[i]-dv[i];
@@ -260,8 +260,8 @@ double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
   } else if (frozen.nilp()) {
     double	e, sum;
     sum = 0.0;
-    double* du = &(*u)[0];
-    double* dv = &(*v)[0];
+    Vector_real* du = &(*u)[0];
+    Vector_real* dv = &(*v)[0];
     for ( size_t i(0), iEnd(u->length()); i<iEnd; ++i ) {
       e = du[i]-dv[i];
       sum += e*e;
@@ -275,7 +275,7 @@ double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
 
 NVector_sp copy_nvector(NVector_sp orig )
 {
-  NVector_sp vv = NVector_O::make(orig->length(),0.0,false,orig->length(),(double*)&(*orig)[0]);
+  NVector_sp vv = NVector_O::make(orig->length(),0.0,false,orig->length(),(Vector_real*)&(*orig)[0]);
   return vv;
 }
 

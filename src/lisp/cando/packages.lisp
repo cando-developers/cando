@@ -78,8 +78,8 @@
            #:fread-line
            #:fread-line-or-error
            #:parse-fortran-format-line
-           #:parse-double-float
-           #:fread-double-float-vector
+           #:parse-vecreal
+           #:fread-vecreal-vector
            #:fread-vector))
 
 (defpackage #:energy

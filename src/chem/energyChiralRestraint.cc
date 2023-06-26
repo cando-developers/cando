@@ -118,6 +118,19 @@ core::List_sp EnergyChiralRestraint::encode() const {
                                   core::Cons_O::create(INTERN_(kw,atom4), this->_Atom4));
 }
 
+EnergyChiralRestraint_sp EnergyChiralRestraint_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyChiralRestraint_sp copy = EnergyChiralRestraint_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_Atom1;
+    Atom_sp a2 = edi->_Atom2;
+    Atom_sp a3 = edi->_Atom3;
+    Atom_sp a4 = edi->_Atom4;
+    if ( skipInteraction( keepInteraction, EnergyChiralRestraint_O::staticClass(), a1, a2, a3, a4 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
+}
+
 
 void EnergyChiralRestraint_O::fields(core::Record_sp node)
 {
@@ -213,14 +226,15 @@ bool		calcOffDiagonalHessian = true;
 
 
 double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                              chem::NVector_sp 	pos,
-                                              bool 		calcForce,
-                                              gc::Nilable<chem::NVector_sp> 	force,
-                                              bool		calcDiagonalHessian,
-                                              bool		calcOffDiagonalHessian,
-                                              gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                              gc::Nilable<chem::NVector_sp>	hdvec,
-                                              gc::Nilable<chem::NVector_sp> dvec)
+                                                       chem::NVector_sp 	pos,
+                                                       core::T_sp componentEnergy,
+                                                       bool 		calcForce,
+                                                       gc::Nilable<chem::NVector_sp> 	force,
+                                                       bool		calcDiagonalHessian,
+                                                       bool		calcOffDiagonalHessian,
+                                                       gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                                       gc::Nilable<chem::NVector_sp>	hdvec,
+                                                       gc::Nilable<chem::NVector_sp> dvec)
 {
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
@@ -229,6 +243,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
     LOG_ENERGY(("%s {\n") , this->className());
   }
 
+  double totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -254,7 +269,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	CHIRAL_RESTRAINT_PHI_SET
 #define	CHIRAL_RESTRAINT_PHI_SET(x) {}
 #undef	CHIRAL_RESTRAINT_ENERGY_ACCUMULATE
-#define	CHIRAL_RESTRAINT_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	CHIRAL_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	CHIRAL_RESTRAINT_FORCE_ACCUMULATE
 #undef	CHIRAL_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	CHIRAL_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -351,7 +366,8 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
   {
     LOG_ENERGY(("%s }\n") , this->className());
   }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergyChiralRestraint_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
 
 

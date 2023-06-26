@@ -100,16 +100,16 @@ public:
     uint	rows()	{ return this->_Rows; };
     uint	dimension()	{return this->_Rows;};
 
-    virtual	double	element(uint x, uint y) {SUBIMP();};
-    virtual	void	setElement(uint x, uint y, double d) {SUBIMP();};
-    virtual	void	addToElement(uint x, uint y, double d) {SUBIMP();};
-    virtual	void	setAtIndex(uint ii, double d) {SUBIMP();};
-    virtual	double	getAtIndex(uint ii) {SUBIMP();};
+    virtual	vecreal	element(uint x, uint y) {SUBIMP();};
+    virtual	void	setElement(uint x, uint y, vecreal d) {SUBIMP();};
+    virtual	void	addToElement(uint x, uint y, vecreal d) {SUBIMP();};
+    virtual	void	setAtIndex(uint ii, vecreal d) {SUBIMP();};
+    virtual	vecreal	getAtIndex(uint ii) {SUBIMP();};
     virtual	void	insertionIsComplete() {};
 
 
-    double	maxAbsValue();
-    void	fill(double d);
+    vecreal	maxAbsValue();
+    void	fill(vecreal d);
     void	writeMathematica(const string& fileName);
     void	writeMathematicaSymbolic(const string& fileName);
     void	dumpMatrix(uint x);
@@ -121,6 +121,8 @@ public:
     virtual	MatrixClass	myClass()		{return AbstractMatrix;};
     virtual	AbstractLargeSquareMatrix_sp copy( ) {SUBIMP();};
     virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y) {SUBIMP();};
+    virtual	uint	col_indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y) {SUBIMP();};
+    virtual	uint	col_indexFromCoordinates(uint x, uint y);
     virtual	bool	hasElement(uint x, uint y) { return this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y)!=UndefinedUnsignedInt; };
     virtual	void	debug()	{};
 
@@ -149,7 +151,7 @@ SMART(FullLargeSquareMatrix)
 
 private:
 	uint		_ActiveElements;
-  gctools::Vec0<double>	_Values;
+  gctools::Vec0<vecreal>	_Values;
 
 private:
 	void	setup(uint dim, TriangleType type);
@@ -171,11 +173,11 @@ virtual	AbstractLargeSquareMatrix_sp copy();
 virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
 virtual	void	insertElement(uint x, uint y) {};
 virtual	void	reset() {};
-virtual	void	setAtIndex(uint ii, double d) { this->_Values[ii] = d;};
-virtual	double	getAtIndex(uint ii) { return this->_Values[ii];};
-virtual	void	setElement(uint x, uint y, double d) { this->_Values[this->indexFromCoordinates(x,y)]=d;};
-virtual	void	addToElement(uint x, uint y, double d) { this->_Values[this->indexFromCoordinates(x,y)]+=d;};
-virtual	double	element(uint x, uint y) { return this->_Values[this->indexFromCoordinates(x,y)];};
+virtual	void	setAtIndex(uint ii, vecreal d) { this->_Values[ii] = d;};
+virtual	vecreal	getAtIndex(uint ii) { return this->_Values[ii];};
+virtual	void	setElement(uint x, uint y, vecreal d) { this->_Values[this->indexFromCoordinates(x,y)]=d;};
+virtual	void	addToElement(uint x, uint y, vecreal d) { this->_Values[this->indexFromCoordinates(x,y)]+=d;};
+virtual	vecreal	element(uint x, uint y) { return this->_Values[this->indexFromCoordinates(x,y)];};
 virtual	void	debug()	{};
 DEFAULT_CTOR_DTOR(FullLargeSquareMatrix_O);
 };
@@ -198,45 +200,59 @@ inline	FullLargeSquareMatrix_sp new_FullLargeSquareMatrix_sp(const FullLargeSqua
 SMART(SparseLargeSquareMatrix);
 class SparseLargeSquareMatrix_O : public AbstractLargeSquareMatrix_O
 {
-    LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix",AbstractLargeSquareMatrix_O);
+  LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix",AbstractLargeSquareMatrix_O);
 
 public:
-  bool		_InsertionIsComplete;
-  uint		_RowStartEntries;
-  gctools::Vec0<uint> 	_RowStarts;
-  uint		_ActiveElements;
-  uint		_ReservedElements;
-  gctools::Vec0<uint> 	_ColumnForValue;
-  gctools::Vec0<double> 	_Values;
+  bool                          _InsertionIsComplete;
+  uint		                _RowStartEntries;
+  uint		                _ActiveElements;
+  uint		                _ReservedElements;
+  gctools::Vec0<uint> 	        _RowStarts;
+  gctools::Vec0<uint> 	        _ColumnForValue;
+  gctools::Vec0<vecreal> 	_Values;
+  bool                          _col_OptimizationDone;
+  uint		                _col_ColumnStartEntries;
+  uint		                _col_ActiveElements;
+  uint		                _col_ReservedElements;
+  gctools::Vec0<uint> 	        _col_ColumnStarts;
+  gctools::Vec0<uint> 	        _col_RowForValue;
+  gctools::Vec0<vecreal> 	_col_Values;
 public:
-    static SparseLargeSquareMatrix_sp	create(uint dim, TriangleType type);
+  static SparseLargeSquareMatrix_sp	create(uint dim, TriangleType type);
 private:
-	void	initializeStorage();
-	void	expandStorage();
-	void	releaseStorage();
-	void	setup(uint dim, TriangleType type);
+  void	initializeStorage();
+  void	expandStorage();
+  void	col_expandStorage();
+  void	releaseStorage();
+  void	setup(uint dim, TriangleType type);
 
 public:
-virtual	uint	indexBegin()	{ return 0; };
-virtual	uint	indexEnd() {return this->_ActiveElements;};
-virtual	uint	indexAdvance(uint i) {return i+1;};
-virtual	void	coordinatesFromIndex(uint i,uint& x, uint& y );
-virtual	void	addToElement(uint x, uint y, double d);
+  virtual	uint	indexBegin()	{ return 0; };
+  virtual	uint	indexEnd() {return this->_ActiveElements;};
+  virtual	uint	indexAdvance(uint i) {return i+1;};
+  virtual	void	coordinatesFromIndex(uint i,uint& x, uint& y );
+  virtual	void	addToElement(uint x, uint y, vecreal d);
 
-virtual	void	setElement(uint x, uint y, double d);
-virtual	double	element(uint x, uint y);
+  virtual	void	setElement(uint x, uint y, vecreal d);
+  virtual	void	col_setElement(uint x, uint y, vecreal d);
+  virtual	vecreal element(uint x, uint y);
+  virtual	vecreal col_element(uint x, uint y);
 
 
-virtual	MatrixClass	myClass()	{return SparseMatrix;};
-virtual	AbstractLargeSquareMatrix_sp copy();
-virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
+  virtual	MatrixClass	myClass()	{return SparseMatrix;};
+  virtual	AbstractLargeSquareMatrix_sp copy();
+  virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
+  virtual	uint	col_indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
 //virtual	bool	hasElement(uint x, uint y) { return this->indexFromCoordinates(x,y)>=0; };
-virtual	void	insertElement(uint x, uint y);
-virtual	void	reset();
-virtual	void	insertionIsComplete() {this->_InsertionIsComplete = true;};
-virtual	void	debug();
-virtual	void	setAtIndex(uint ii, double d) { this->_Values[ii] = d;};
-virtual	double	getAtIndex(uint ii) { return this->_Values[ii];};
+  virtual	void	insertElement(uint x, uint y);
+  virtual	void	col_insertElement(uint x, uint y);
+  virtual	void	reset();
+  virtual	void	insertionIsComplete();
+  virtual       void    doColumnOptimization();
+  virtual	void	debug();
+  virtual	SparseLargeSquareMatrix_sp optimized();
+  virtual	void	setAtIndex(uint ii, vecreal d) { this->_Values[ii] = d;};
+  virtual	vecreal getAtIndex(uint ii) { return this->_Values[ii];};
 
   template <typename Func>
   void loopOverRowLowerDiagonal(uint row, uint start_col, uint end_col, Func f) {
@@ -250,65 +266,53 @@ virtual	double	getAtIndex(uint ii) { return this->_Values[ii];};
     }
   }
 
-    template <typename Func>
-    void loopOverColumnLowerDiagonal(uint column, uint row_start, uint row_end, Func f) {
+#if 1  
+  template <typename Func>
+  void loopOverColumnLowerDiagonal(uint col, uint start_row, uint end_row, Func f) {
+    if (!this->_col_OptimizationDone) this->doColumnOptimization();
+    uint ib = this->_col_ColumnStarts[col];
+    uint ie = this->_col_ColumnStarts[col+1]-1;
+    for ( uint ii = ib; ii<=ie; ii++ ) {
+      uint row = this->_col_RowForValue[ii];
+      if ( start_row <= row && row < end_row) {
+        f(col,row,this->_Values[ii]);
+      }
+    }
+  }
+
+#else
+  template <typename Func>
+  void loopOverColumnLowerDiagonal(uint column, uint row_start, uint row_end, Func f) {
     for ( int row = row_start; row < row_end; row++ ) {
       uint ib = this->_RowStarts[row];
       uint ie = this->_RowStarts[row+1];
-      auto it = std::find( this->_ColumnForValue.begin()+ib,
-                           this->_ColumnForValue.begin()+ie,
-                           column );
-      if (it != this->_ColumnForValue.begin()+ie) {
+      auto it = std::lower_bound(this->_ColumnForValue.begin()+ib,
+                                 this->_ColumnForValue.begin()+ie,
+                                 column );
+      if (it != this->_ColumnForValue.begin()+ie && *it==column) {
         int idx = std::distance(this->_ColumnForValue.begin(),it);
         uint col = this->_ColumnForValue[idx];
-        double val = this->_Values[idx];
+        vecreal val = this->_Values[idx];
         f(col,row,val);
       }
     }
   }
-
-#if 0
-  template <typename Func>
-  void loopOverRowUpperOffDiagonal(uint row, uint start_col, uint end_col, Func f) {
-    uint ib = this->_RowStarts[row];
-    uint ie = this->_RowStarts[row+1]-1;
-    for ( uint ii = ib; ii<=ie; ii++ ) {
-      uint col = this->_ColumnForValue[ii];
-      if (start_col<=col && col < end_col) {
-        f(row,this->_ColumnForValue[ii],this->_Values[ii]);
-      }
-    }
-  }
-
-  template <typename Func>
-  void loopOverColumnUpperOffDiagonal(uint column, Func f) {
-    for ( int row = 0; row < this->_RowStarts.size() - 1; row++ ) {
-      uint ib = this->_RowStarts[row];
-      uint ie = this->_RowStarts[row+1];
-      auto it = std::find( this->_ColumnForValue.begin()+ib,
-                           this->_ColumnForValue.begin()+ie,
-                           column );
-      if (it != this->_ColumnForValue.begin()+ie) {
-        double val = this->_Values[std::distance(this->_ColumnForValue.begin(),it)];
-        f(row,it,val);
-      }
-    }
-  }
-#endif  
+#endif
+  
   uint	columnForIndex(uint ii) { return this->_ColumnForValue[ii];};
 
 		/*! Return the index of the element in row(y)
 		 * that immediatly follows column (x)
 		 */
-	uint	indexOfFirstElementAtOrAfterX(uint x, uint y);
+  uint	indexOfFirstElementAtOrAfterX(uint x, uint y);
 		/*! Return the index of the last element in row(y)
   		*/
-	uint	indexOfLastElementOnRow(uint y );
+  uint	indexOfLastElementOnRow(uint y );
 
 public:
-	SparseLargeSquareMatrix_O( const SparseLargeSquareMatrix_O& orig );
-	DEFAULT_CTOR(SparseLargeSquareMatrix_O);
-	virtual ~SparseLargeSquareMatrix_O(); // Non-trivial
+  SparseLargeSquareMatrix_O( const SparseLargeSquareMatrix_O& orig );
+  DEFAULT_CTOR(SparseLargeSquareMatrix_O);
+  virtual ~SparseLargeSquareMatrix_O(); // Non-trivial
 };
 };
 

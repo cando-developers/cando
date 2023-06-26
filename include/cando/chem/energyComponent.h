@@ -113,16 +113,6 @@ inline string	atomLabel(Atom_sp a)
   return sstr.str();
 }
 
-
-
-
-
-
-#define	REAL	double
-#define	INT	int
-
-
-
 #ifndef VERYSMALL
 #define VERYSMALL       0.000000000001
 #endif
@@ -250,11 +240,11 @@ class EnergyComponent_O : public core::CxxObject_O
  public: // virtual functions inherited from Object
   void initialize();
  protected: // instance variables
-  bool		_Enabled;
+  bool		        _Enabled;
+  bool                  _UseSimd;
   double		_Scale;
   double		_ErrorThreshold;
   bool		_DebugEnergy;
-  double		_TotalEnergy;
   int		_Debug_NumberOfTermsToCalculate;
   core::StringOutputStream_sp 	_DebugLog;
 public:
@@ -293,26 +283,27 @@ public:
 
   CL_DEFMETHOD virtual core::List_sp extract_vectors_as_alist() const { SUBCLASS_MUST_IMPLEMENT(); };
  
-  string summarizeEnergyAsString();
   string enabledAsString();
   string debugLogAsString();
 
  public:	// Virtual methods
-  CL_LISPIFY_NAME("getEnergy");
-  CL_DEFMETHOD     virtual double getEnergy() { return this->_TotalEnergy; };
 
-  virtual void zeroEnergy();
+  CL_DEFMETHOD void setUseSimd(bool use) { this->_UseSimd = use; };
+  
   CL_DEFMETHOD virtual void dumpTerms(core::HashTable_sp atomTypes) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
-                                    NVector_sp 	pos,
-                                    bool 		calcForce,
-                                    gc::Nilable<NVector_sp> 	force,
-                                    bool		calcDiagonalHessian,
-                                    bool		calcOffDiagonalHessian,
-                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                    gc::Nilable<NVector_sp>	hdvec,
-                                    gc::Nilable<NVector_sp> dvec) = 0;
+  virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteraction);
+  
+  CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
+                                                     NVector_sp 	pos,
+                                                     core::T_sp componentEnergy,
+                                                     bool 		calcForce,
+                                                     gc::Nilable<NVector_sp> 	force,
+                                                     bool		calcDiagonalHessian,
+                                                     bool		calcOffDiagonalHessian,
+                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                     gc::Nilable<NVector_sp>	hdvec,
+                                                     gc::Nilable<NVector_sp> dvec) = 0;
 
   virtual core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
@@ -320,7 +311,7 @@ public:
  public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
-  EnergyComponent_O() : _Evaluations(0) {};
+  EnergyComponent_O() : _UseSimd(false), _Evaluations(0) {};
 };
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {

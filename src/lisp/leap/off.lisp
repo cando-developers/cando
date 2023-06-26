@@ -102,7 +102,7 @@
                           (cond
                             ((eq type :dbl)
                              (let ((str (read-to-whitespace-or-eof sin)))
-                               (fortran:parse-double-float str)))
+                               (fortran:parse-vecreal str)))
                             ((eq type :int)
                              (let ((str (read-to-whitespace-or-eof sin)))
                                (parse-integer str)))

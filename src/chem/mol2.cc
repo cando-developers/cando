@@ -866,7 +866,7 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
     int residue_temp_int = ht->gethash(ai->_Residue).unsafe_fixnum();
     out << residue_temp_int << " ";
     out << residue_molecule_name(*ai);
-
+    out << " ";
     out << fmt::format("{:5.4}" , a->getCharge()) << std::endl;
   }
 	//

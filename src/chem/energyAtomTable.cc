@@ -184,7 +184,7 @@ void AtomTable_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndex(Atom_sp a)
+CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexTimes3(Atom_sp a)
 {
   EnergyAtom* ea = this->getEnergyAtomPointer(a);
   return ea->coordinateIndexTimes3();
@@ -231,12 +231,13 @@ CL_DEFMETHOD void AtomTable_O::writeAtomCoordinates(NVector_sp coords)
 }
 
 
-      
-CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexForAtomAtIndex(size_t index)
+
+CL_NAME(CHEM:GET-COORDINATE-INDEX-TIMES3-FOR-ATOM-AT-INDEX);
+CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexTimes3ForAtomAtIndex(size_t index)
 {
   if (index<this->_Atoms.size()) {
     EnergyAtom& ea = this->_Atoms[index];
-    return this->getCoordinateIndex(ea._SharedAtom);
+    return this->getCoordinateIndexTimes3(ea._SharedAtom);
   }
   SIMPLE_ERROR("Atom index {} is out of range (0...{})" , index, this->_Atoms.size());
 }
@@ -502,7 +503,7 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
 }
 
 CL_DEFMETHOD
-void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes )
+void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes )
 {
   uint idx = this->_Atoms.size();
   uint coordinateIndex = idx*3;
@@ -522,7 +523,6 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
       while ( loop.advanceLoopAndProcess() )
       {
         a1 = loop.getAtom();
-        if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
         if ( a1.isA<VirtualAtom_O>() )
         {
           LOG("Skipping virtual atom[{}]" , _rep_(a1) );

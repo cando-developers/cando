@@ -54,9 +54,9 @@ namespace chem {
 struct EnergySketchNonbond
 {
   size_t        _FreezeFlags;
-  double       _Constant;
-  int		I1; //!< i*3 index into coordinate vector, must match Mathematica code!
-  int		I2; //!< i*3 index into coordinate vector, must match Mathematica code!
+  REAL          _Constant;
+  INT		I1; //!< i*3 index into coordinate vector, must match Mathematica code!
+  INT		I2; //!< i*3 index into coordinate vector, must match Mathematica code!
   EnergySketchNonbond(size_t flags, double constant, int i1, int i2) : _FreezeFlags(flags), _Constant(constant), I1(i1), I2(i2) {};
   EnergySketchNonbond() {};
     core::List_sp encode() const;
@@ -111,14 +111,11 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   double _ScaleSketchNonbond;
   double _LongDistanceCutoff;
   bool   _IgnoreHydrogensAndLps;
-  double _Energy;
   size_t _FreezeFlags;
   gctools::Vec0<EnergySketchNonbond> _Terms;
  public: // virtual functions inherited from Object
   void	initialize();
  public:
-    virtual	void	zeroEnergy();
-  virtual	double	getEnergy();
 
   void setScaleSketchNonbond(double d);
   double	getScaleSketchNonbond();
@@ -131,16 +128,18 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                                           AbstractLargeSquareMatrix_sp m );
     
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
-  void evaluateTerms( NVector_sp 	pos,
+  double evaluateTerms( NVector_sp 	pos,
+                        core::T_sp componentEnergy,
                       bool 		calcForce,
                       gc::Nilable<NVector_sp> 	force,
                       bool		calcDiagonalHessian,

@@ -53,22 +53,23 @@ namespace geom {
     return ov;
 }
 
-    OVector3_sp OVector3_O::create(core::Cons_sp pnt)
-    {
-    ASSERTF(pnt->length()==3,("Poorly formed Vector"));
-    auto ov = gctools::GC<OVector3_O>::allocate_with_default_constructor();
-    ov->setAll3(core::clasp_to_double(core::oCar(pnt).as<core::Number_O>()),
-	       core::clasp_to_double(core::oCadr(pnt).as<core::Number_O>()),
-	       core::clasp_to_double(core::oCaddr(pnt).as<core::Number_O>()));
-    return ov;
+OVector3_sp OVector3_O::create(core::Cons_sp pnt)
+{
+  ASSERTF(pnt->length()==3,("Poorly formed Vector"));
+  auto ov = gctools::GC<OVector3_O>::allocate_with_default_constructor();
+  ov->setAll3(core::clasp_to_double(core::oCar(pnt).as<core::Number_O>()),
+              core::clasp_to_double(core::oCadr(pnt).as<core::Number_O>()),
+              core::clasp_to_double(core::oCaddr(pnt).as<core::Number_O>()));
+  return ov;
 }
 
 
 
 CL_NAME("VEC");
 DOCGROUP(cando);
-CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
+CL_DEFUN OVector3_sp OVector3_O::make(vecreal x, vecreal y, vecreal z)
 {
+  ASSERT(!(isnan(x)||isnan(y)||isnan(z)));
   auto ov = gctools::GC<OVector3_O>::allocate(x,y,z);
   return ov;
 }
@@ -280,19 +281,19 @@ void OVector3_O::fields(core::Record_sp node)
 
 extern "C" {
 
-  core::T_sp cc_OVector3_make(double x, double y, double z) {
+  core::T_sp cc_OVector3_make(vecreal x, vecreal y, vecreal z) {
     return geom::OVector3_O::make(x,y,z);
   }
 
-  double cc_OVector3_vx(core::T_sp tvec3) {
+  vecreal cc_OVector3_vx(core::T_sp tvec3) {
     return gc::As<geom::OVector3_sp>(tvec3)->_Value[0];
   };
 
-  double cc_OVector3_vy(core::T_sp tvec3) {
+  vecreal cc_OVector3_vy(core::T_sp tvec3) {
     return gc::As<geom::OVector3_sp>(tvec3)->_Value[1];
   };
 
-  double cc_OVector3_vz(core::T_sp tvec3) {
+  vecreal cc_OVector3_vz(core::T_sp tvec3) {
     return gc::As<geom::OVector3_sp>(tvec3)->_Value[2];
   };
 
@@ -304,13 +305,13 @@ namespace geom {
 // Lisp-accessible functions for the above.
 // The compiler is taught how to use the above more directly in cando-primops.
 
-CL_DEFUN double geom__vx(core::T_sp tvec3) {
+CL_DEFUN vecreal geom__vx(core::T_sp tvec3) {
   return cc_OVector3_vx(tvec3);
 }
-CL_DEFUN double geom__vy(core::T_sp tvec3) {
+CL_DEFUN vecreal geom__vy(core::T_sp tvec3) {
   return cc_OVector3_vy(tvec3);
 }
-CL_DEFUN double geom__vz(core::T_sp tvec3) {
+CL_DEFUN vecreal geom__vz(core::T_sp tvec3) {
   return cc_OVector3_vz(tvec3);
 }
 

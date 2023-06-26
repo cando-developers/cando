@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/lispStream.h>
 #include <cando/chem/largeSquareMatrix.h>
+#include <cando/geom/vector3.fwd.h>
 #include <cando/chem/energyDihedralRestraint.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
@@ -222,15 +223,17 @@ bool		calcOffDiagonalHessian = true;
 
 
 double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                               chem::NVector_sp 	pos,
-                                               bool 		calcForce,
-                                               gc::Nilable<chem::NVector_sp> 	force,
-                                               bool		calcDiagonalHessian,
-                                               bool		calcOffDiagonalHessian,
-                                               gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                               gc::Nilable<chem::NVector_sp>	hdvec,
-                                               gc::Nilable<chem::NVector_sp> dvec)
+                                                        chem::NVector_sp 	pos,
+                                                        core::T_sp componentEnergy,
+                                                        bool 		calcForce,
+                                                        gc::Nilable<chem::NVector_sp> 	force,
+                                                        bool		calcDiagonalHessian,
+                                                        bool		calcOffDiagonalHessian,
+                                                        gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                                        gc::Nilable<chem::NVector_sp>	hdvec,
+                                                        gc::Nilable<chem::NVector_sp> dvec)
 {
+  double totalEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) {
     core::clasp_write_string(fmt::format("{}\n" , __FUNCTION__ ));
@@ -259,7 +262,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 #undef	IMPROPER_RESTRAINT_PHI_SET
 #define	IMPROPER_RESTRAINT_PHI_SET(x) {}
 #undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
 #undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
 #undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -330,9 +333,9 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} CosPhi {:f}\n" , (i+1) , CosPhi ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} SinPhi {:f}\n" , (i+1) , SinPhi ));
         if ( CosPhi>0.1 ) {
-          Phi = asin(SinPhi);
+          Phi = safe_asin(SinPhi);
         } else {
-          Phi = acos(CosPhi)*SIGN(SinPhi);
+          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
         }
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Phi {:f}\n" , (i+1) , Phi ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Energy {:f}\n" , (i+1) , Energy));
@@ -373,9 +376,9 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         LOG_ENERGY(( "MEISTER improperRestraint %d CosPhi %lf\n") , (i+1) , CosPhi );
         LOG_ENERGY(( "MEISTER improperRestraint %d SinPhi %lf\n") , (i+1) , SinPhi );
         if ( CosPhi>0.1 ) {
-          Phi = asin(SinPhi);
+          Phi = safe_asin(SinPhi);
         } else {
-          Phi = acos(CosPhi)*SIGN(SinPhi);
+          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
         }
         LOG_ENERGY(( "MEISTER improperRestraint %d Phi %lf\n") , (i+1) , Phi );
         LOG_ENERGY(( "MEISTER improperRestraint %d Energy %lf\n") , (i+1) , Energy);
@@ -405,7 +408,8 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
   {
     LOG_ENERGY(("%s }\n") , this->className());
   }
-  return this->_TotalEnergy;
+  maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
 }
 
 void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos)
@@ -534,6 +538,19 @@ int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
     }
   }
   return fails;
+}
+
+EnergyDihedralRestraint_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyDihedralRestraint_sp copy = EnergyDihedralRestraint_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_Atom1;
+    Atom_sp a2 = edi->_Atom2;
+    Atom_sp a3 = edi->_Atom3;
+    Atom_sp a4 = edi->_Atom4;
+    if ( skipInteraction( keepInteraction, EnergyDihedralRestraint_O::staticClass(), a1, a2, a3, a4 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
 }
 
 

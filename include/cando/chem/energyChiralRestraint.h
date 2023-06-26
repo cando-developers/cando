@@ -55,12 +55,12 @@ namespace chem
 
 struct TermChiralRestraint
 {
-	double		K;
-	double		CO;
-	int		I1;
-	int		I2;
-	int		I3;
-	int		I4;
+	REAL		K;
+	REAL		CO;
+	INT		I1;
+	INT		I2;
+	INT		I3;
+	INT		I4;
 };
 
 inline	string	XmlTag_ChiralRestraint() { return "ChiralRestraint"; };
@@ -137,6 +137,7 @@ double	_evaluateEnergyOnly_ChiralRestraint(
 
 
 
+FORWARD(EnergyChiralRestraint);
 class EnergyChiralRestraint_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyChiralRestraint_O,"EnergyChiralRestraint",EnergyComponent_O);
@@ -171,14 +172,15 @@ public:
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );
@@ -186,6 +188,8 @@ public:
     // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
     virtual string	beyondThresholdInteractionsAsString();
+
+  EnergyChiralRestraint_sp copyFilter(core::T_sp keepInteraction);
 
 public:
     EnergyChiralRestraint_O( const EnergyChiralRestraint_O& ss ); //!< Copy constructor

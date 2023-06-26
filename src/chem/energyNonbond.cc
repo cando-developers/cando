@@ -87,25 +87,24 @@ core::List_sp EnergyNonbond::encode() const {
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg,find_type);
-//
-// Return true if we could fill the energyNonbond term
-// otherwise false usually if we don't recognize one of the atom types like DU
-//
-bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
-                                  bool		is14,
-                                  EnergyAtom	*iea1,
-                                  EnergyAtom	*iea2,
-                                  EnergyNonbond_sp energyNonbond,
-                                  core::HashTable_sp atomTypes )
+
+bool	EnergyNonbond::defineForAtomPair(core::T_sp	forceField,
+                                         bool		is14,
+                                         Atom_sp        a1,
+                                         Atom_sp        a2,
+                                         size_t         a1CoordinateIndexTimes3,
+                                         size_t         a2CoordinateIndexTimes3,
+                                         EnergyNonbond_sp energyNonbond,
+                                         core::HashTable_sp atomTypes )
 {
   double				epsilonij;
   double				vdwScale;
   double				electrostaticScale;
   this->_Is14 = is14;
-  this->_Atom1 = iea1->atom();
-  this->_Atom2 = iea2->atom();
-  core::Symbol_sp t1 = iea1->atom()->getType(atomTypes);
-  core::Symbol_sp t2 = iea2->atom()->getType(atomTypes);
+  this->_Atom1 = a1;
+  this->_Atom2 = a2;
+  core::Symbol_sp t1 = a1->getType(atomTypes);
+  core::Symbol_sp t2 = a2->getType(atomTypes);
   LOG("Defining nonbond between types: {} - {}" , _rep_(t1) , _rep_(t2));
   ASSERT(forceField&&forceField.notnilp());
   LOG("forceField @{}   .notnilp()->{}" , (void*)forceField.raw_() , forceField.notnilp());
@@ -146,8 +145,8 @@ bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
   }
   {
     electrostaticScale *= ELECTROSTATIC_MODIFIER;
-    this->_Charge1 = iea1->atom()->getCharge();
-    this->_Charge2 = iea2->atom()->getCharge();
+    this->_Charge1 = a1->getCharge();
+    this->_Charge2 = a2->getCharge();
     this->term.dQ1Q2 = electrostaticScale*(this->_Charge1*this->_Charge2)/energyNonbond->getDielectricConstant();
     LOG( "Calc dQ1Q2 electrostaticScale= {}" , (double)(electrostaticScale));
     LOG( "Calc dQ1Q2 Dielectric constant = {}" , (double)(energyNonbond->getDielectricConstant()));
@@ -155,9 +154,23 @@ bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
     LOG( "Calc dQ1Q2 Charge2 = {}" , (double)(this->_Charge2));
     LOG( "dQ1Q2 = {}" , (double)(this->term.dQ1Q2));
   }
-  this->term.I1 = iea1->coordinateIndexTimes3();
-  this->term.I2 = iea2->coordinateIndexTimes3();
+  this->term.I1 = a1CoordinateIndexTimes3;
+  this->term.I2 = a2CoordinateIndexTimes3;
   return true;
+}
+
+//
+// Return true if we could fill the energyNonbond term
+// otherwise false usually if we don't recognize one of the atom types like DU
+//
+bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
+                                  bool		is14,
+                                  EnergyAtom	*iea1,
+                                  EnergyAtom	*iea2,
+                                  EnergyNonbond_sp energyNonbond,
+                                  core::HashTable_sp atomTypes )
+{
+  return this->defineForAtomPair( forceField, is14, iea1->atom(), iea2->atom(), iea1->coordinateIndexTimes3(), iea2->coordinateIndexTimes3(), energyNonbond, atomTypes );
 }
 
 double	EnergyNonbond::getDistance()
@@ -203,13 +216,6 @@ double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
 }
 
 
-void	EnergyNonbond_O::zeroEnergy()
-{
-  this->Base::zeroEnergy();
-  this->_EnergyElectrostatic = 0.0;
-  this->_EnergyVdw = 0.0;
-}
-
 CL_DEFMETHOD
 void EnergyNonbond_O::setNonbondCutoff(double cutoff) {
   this->_NonbondCutoff = cutoff;
@@ -218,15 +224,6 @@ void EnergyNonbond_O::setNonbondCutoff(double cutoff) {
   this->_NonbondCutoffReciprocal12 = this->_NonbondCutoffReciprocal6*this->_NonbondCutoffReciprocal6;
 }
   
-double	EnergyNonbond_O::getEnergy()
-{
-  double	e;
-  e = this->getVdwEnergy();
-  e += this->getElectrostaticEnergy();
-  return e;
-}
-
-
 void	EnergyNonbond_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyNonbond>::iterator	eni;
@@ -262,37 +259,40 @@ void	EnergyNonbond_O::setupHessianPreconditioner(
 }
 
 double	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
-                                      NVector_sp 	pos,
-                                      bool 		calcForce,
-                                      gc::Nilable<NVector_sp> 	force,
-                                      bool		calcDiagonalHessian,
-                                      bool		calcOffDiagonalHessian,
-                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                      gc::Nilable<NVector_sp>	hdvec, 
-                                      gc::Nilable<NVector_sp> 	dvec )
+                                               NVector_sp 	pos,
+                                               core::T_sp componentEnergy,
+                                               bool 		calcForce,
+                                               gc::Nilable<NVector_sp> 	force,
+                                               bool		calcDiagonalHessian,
+                                               bool		calcOffDiagonalHessian,
+                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                               gc::Nilable<NVector_sp>	hdvec, 
+                                               gc::Nilable<NVector_sp> 	dvec )
 {
+
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  double energy = 0.0;
   if (this->_UsesExcludedAtoms) {
     // Evaluate the nonbonds using the excluded atom list
-    this->evaluateUsingExcludedAtoms(score,pos,calcForce,force,calcDiagonalHessian,
+    energy = this->evaluateUsingExcludedAtoms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                                      calcOffDiagonalHessian,hessian,hdvec,dvec);
     // Evaluate the 1-4 terms
-    this->evaluateTerms(score,pos,calcForce,force,calcDiagonalHessian,
+    this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                              calcOffDiagonalHessian,hessian,hdvec,dvec);
   } else {
     // Evaluate everything using terms
-    this->evaluateTerms(score,pos,calcForce,force,calcDiagonalHessian,
+    energy = this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                              calcOffDiagonalHessian,hessian,hdvec,dvec);
   }
-  this->_TotalEnergy = this->_EnergyVdw+this->_EnergyElectrostatic;
-  return this->_TotalEnergy;
+  return energy;
 }
     
     
 
-void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
+double EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
                                        NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
                                        bool 		calcForce,
                                        gc::Nilable<NVector_sp> 	force,
                                        bool		calcDiagonalHessian,
@@ -306,6 +306,8 @@ void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
   ANN(hessian);
   ANN(hdvec);
   ANN(dvec);
+  double energyElectrostatic = 0.0;
+  double energyVdw = 0.0;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -317,9 +319,9 @@ void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {energyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {energyVdw+=(e);}
 
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
@@ -416,12 +418,17 @@ void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw, this->_EnergyElectrostatic );
   LOG( "Nonbond energy vdw({}) electrostatic({})\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
   LOG("Nonbond energy }\n");
+
+  maybeSetEnergy( componentEnergy, _sym_energyElectrostatic, energyElectrostatic );
+  maybeSetEnergy( componentEnergy, _sym_energyVdw, energyVdw );
+  return energyElectrostatic + energyVdw;
 }
 
 
 
-void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
+double EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
                                                     NVector_sp 	pos,
+                                                    core::T_sp componentEnergy,
                                                     bool 		calcForce,
                                                     gc::Nilable<NVector_sp> 	force,
                                                     bool		calcDiagonalHessian,
@@ -442,6 +449,8 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  double energyElectrostatic = 0.0;
+  double energyVdw = 0.0;
 #define NONBOND_CALC_FORCE
 #define NONBOND_CALC_DIAGONAL_HESSIAN
 #define NONBOND_CALC_OFF_DIAGONAL_HESSIAN
@@ -450,9 +459,9 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {energyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {energyVdw+=(e);}
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE
@@ -600,6 +609,9 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->o_EnergyElectrostatic );
   LOG( "Nonbond energy vdw({}) electrostatic({})\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
   LOG( "Nonbond energy }\n");
+  maybeSetEnergy( componentEnergy, _sym_energyElectrostatic, energyElectrostatic );
+  maybeSetEnergy( componentEnergy, _sym_energyVdw, energyVdw );
+  return energyElectrostatic+energyVdw;
 }
 
 
@@ -874,9 +886,8 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString()
 }
 
 
-void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes )
+void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes )
 {
-  
   {
     EnergyNonbond energyNonbond;
     Loop loop;
@@ -885,9 +896,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
     while ( loop.advanceLoopAndProcess() ) {
       Atom_sp a1 = loop.getAtom1();
       Atom_sp a4 = loop.getAtom4();
-      if ( activeAtoms.notnilp() &&
-           ( !inAtomSet(activeAtoms,a1)
-             || !inAtomSet(activeAtoms,a4) )) continue;
+      if ( skipInteraction(keepInteraction,EnergyNonbond_O::staticClass(), a1, a4 ) ) continue;
       auto ea1 = atomTable->getEnergyAtomPointer(a1);
       auto ea4 = atomTable->getEnergyAtomPointer(a4);
       energyNonbond.defineFrom(forceField,true,&*ea1,&*ea4,this->asSmartPtr(),atomTypes);
@@ -902,7 +911,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
 
 void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField, core::HashTable_sp atomTypes )
 {
-      printf("%s:%d In :constructNonbondTermsFromAtomTable\n", __FILE__, __LINE__ );
+  printf("%s:%d In :constructNonbondTermsFromAtomTable\n", __FILE__, __LINE__ );
 
   // ------------------------------------------------------------
   //
@@ -970,6 +979,39 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   this->_ExcludedAtomIndices = excluded_atoms_list;
 }
 
+
+void EnergyNonbond_O::constructNonbondTermsBetweenResidues( AtomTable_sp atomTable, Residue_sp res1, Residue_sp res2, core::T_sp nbForceField, core::HashTable_sp atomTypes )
+{
+  printf("%s:%d In %s\n", __FILE__, __LINE__, __FUNCTION__ );
+
+  // ------------------------------------------------------------
+  //
+  // The old code created terms for each nonbonded interaction
+  // this will use waaaay too much memory for large systems
+  //
+  this->_UsesExcludedAtoms = false;
+  {
+    LOG("Defining NONBONDS" );
+    Loop lRes1( res1, ATOMS );
+    while ( lRes1.advanceLoopAndProcess() ) {
+      Atom_sp a1 = lRes1.getAtom();
+      size_t a1CoordinateIndexTimes3 = atomTable->getCoordinateIndexTimes3(a1);
+      Loop lRes2( res2, ATOMS );
+      while ( lRes2.advanceLoopAndProcess() ) {
+        Atom_sp a2 = lRes2.getAtom();
+        size_t a2CoordinateIndexTimes3 = atomTable->getCoordinateIndexTimes3(a2);
+        EnergyNonbond energyNonbond;
+        if ( energyNonbond.defineForAtomPair(nbForceField, false, a1, a2, a1CoordinateIndexTimes3, a2CoordinateIndexTimes3,
+                                             this->sharedThis<EnergyNonbond_O>(), atomTypes) )  {
+          this->addTerm(energyNonbond);
+          LOG_ENERGY(("nonbond  interaction between %s - %s in14[%d] dA %lf\n") , _rep_(iea1->atom()) , _rep_(iea2->atom()) , in14  , energyNonbond.term.dA);                 
+        }
+      }
+    }
+  }
+}
+
+
 SYMBOL_EXPORT_SC_(KeywordPkg,da);
 SYMBOL_EXPORT_SC_(KeywordPkg,dc);
 SYMBOL_EXPORT_SC_(KeywordPkg,i1);
@@ -981,12 +1023,12 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atomname2);
 
 CL_DEFMETHOD core::List_sp EnergyNonbond_O::extract_vectors_as_alist() const{
   size_t size = this->_Terms.size();
-  core::SimpleVector_double_sp da_vec = core::SimpleVector_double_O::make(size);
-  core::SimpleVector_double_sp dc_vec = core::SimpleVector_double_O::make(size);
+  NVector_sp da_vec = NVector_O::make(size);
+  NVector_sp dc_vec = NVector_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
-  core::SimpleVector_double_sp charge1_vec = core::SimpleVector_double_O::make(size);
-  core::SimpleVector_double_sp charge2_vec = core::SimpleVector_double_O::make(size);
+  NVector_sp charge1_vec = NVector_O::make(size);
+  NVector_sp charge2_vec = NVector_O::make(size);
   core::SimpleVector_sp atomname1_vec = core::SimpleVector_O::make(size);
   core::SimpleVector_sp atomname2_vec = core::SimpleVector_O::make(size);
   for (size_t i=0; i<size; ++i){
@@ -1041,14 +1083,14 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp 
   this->_ntypes =               translate::from_object<size_t>(safe_alist_lookup<core::T_sp>(values,kw::_sym_ntypes))._v;          // ntypes
   this->_atom_name_vector =     safe_alist_lookup<core::SimpleVector_sp>(values,kw::_sym_atom_name_vector);  // atom-name-vector
   this->_atom_type_vector =     safe_alist_lookup<core::SimpleVector_sp>(values,kw::_sym_atom_type_vector);  // atom-type-vector
-  this->_charge_vector =        safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_charge_vector);          // charge-vector
-  this->_mass_vector =          safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_mass_vector);            // masses
+  this->_charge_vector =        safe_alist_lookup<NVector_sp>(values,kw::_sym_charge_vector);          // charge-vector
+  this->_mass_vector =          safe_alist_lookup<NVector_sp>(values,kw::_sym_mass_vector);            // masses
   this->_atomic_number_vector = safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_atomic_number_vector);    // vec
   this->_ico_vec =              safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_ico_vec);             // ico-vec
   this->_iac_vec =              safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_iac_vec);             // iac-vec
 //  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
-  this->_cn1_vec =              safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_cn1_vec);
-  this->_cn2_vec =              safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_cn2_vec);
+  this->_cn1_vec =              safe_alist_lookup<NVector_sp>(values,kw::_sym_cn1_vec);
+  this->_cn2_vec =              safe_alist_lookup<NVector_sp>(values,kw::_sym_cn2_vec);
 }
 
 
@@ -1080,11 +1122,18 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
 
 }
 
-//core::List_sp termAtIndex(size_t index) const
-//{
+EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteraction) {
+  EnergyNonbond_sp copy = EnergyNonbond_O::create();
+  for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
+    Atom_sp a1 = edi->_Atom1;
+    Atom_sp a2 = edi->_Atom2;
+    if ( skipInteraction( keepInteraction, EnergyNonbond_O::staticClass(), a1, a2 ) ) continue;
+    copy->_Terms.push_back(*edi);
+  }
+  return copy;
+}
 
 
-//}
 
 };
 

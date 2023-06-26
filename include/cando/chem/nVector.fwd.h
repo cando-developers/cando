@@ -23,11 +23,15 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
+#include <cando/geom/vector3.fwd.h>
+
 #ifndef nVector_fwd_H
 #define nVector_fwd_H
 namespace chem {
-  typedef core::SimpleVector_double_O NVector_O;
-  typedef core::SimpleVector_double_sp NVector_sp;
+  typedef vecreal Vector_real;
+  // vecreal must match component of SimpleVector_XXX_O
+  typedef core::SimpleVector_float_O NVector_O;
+  typedef core::SimpleVector_float_sp NVector_sp;
 };
 
 #endif

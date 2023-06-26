@@ -40,7 +40,7 @@ qm-charge : The overall charge of the molecule"
 (defun generate-charge-atoms-array (pathname)
   (let ((atom-number-vec (make-array 50 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
         (element-vec (make-array 50 :fill-pointer 0 :adjustable t))
-        (charge-vec (make-array 50 :element-type 'double-float :fill-pointer 0 :adjustable t))
+        (charge-vec (make-array 50 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t))
         (line-charge 0)
         data)
     (with-open-file (in pathname :if-does-not-exist nil)
@@ -66,7 +66,7 @@ qm-charge : The overall charge of the molecule"
 (defun parse-mulliken-charge (line)
   (let ((atom-number (parse-integer line :start 0 :end 6))
         (element (intern (string-trim '(#\space) (subseq line 6 14)) :keyword))
-        (mulliken-charge (fortran::parse-double-float line :start 14 :end 36)))
+        (mulliken-charge (fortran::parse-vecreal line :start 14 :end 36)))
 ;    (format t " number ~a element ~a charge ~a~%" atom-number element mulliken-charge)
     (values atom-number element mulliken-charge)))
 

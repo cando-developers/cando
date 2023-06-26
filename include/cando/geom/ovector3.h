@@ -51,7 +51,7 @@ public:
 public:
   Vector3	_Value;
 public:
-  static OVector3_sp make(double x, double y, double z);
+  static OVector3_sp make(vecreal x, vecreal y, vecreal z);
 public:
   static OVector3_sp createFromVector3(const Vector3& pos);
   static OVector3_sp create(Vector3 const& pos);
@@ -65,13 +65,13 @@ public:
   core::T_sp shallowCopy() const { return this->deepCopy();};
   string __repr__() const;
   CL_LISPIFY_NAME("setAll3");
-  CL_DEFMETHOD 	void setAll3(double x, double y, double z) { this->_Value.set(x,y,z); };
+  CL_DEFMETHOD 	void setAll3(vecreal x, vecreal y, vecreal z) { this->_Value.set(x,y,z); };
   CL_LISPIFY_NAME("getX");
-  CL_DEFMETHOD 	double getX() { return this->_Value.getX(); };
+  CL_DEFMETHOD 	vecreal getX() { return this->_Value.getX(); };
   CL_LISPIFY_NAME("getY");
-  CL_DEFMETHOD 	double getY() { return this->_Value.getY(); };
+  CL_DEFMETHOD 	vecreal getY() { return this->_Value.getY(); };
   CL_LISPIFY_NAME("getZ");
-  CL_DEFMETHOD 	double getZ() { return this->_Value.getZ(); };
+  CL_DEFMETHOD 	vecreal getZ() { return this->_Value.getZ(); };
   Vector3& value() { return this->_Value;};
   Vector3 get() { return this->_Value; };
 		/*! Calculate the dihedral angle from this-vb-vc-vd
@@ -112,7 +112,7 @@ public:
                                  double angle, OVector3_sp anglePos,
                                  double dihedral, OVector3_sp dihedralPos);
   OVector3_O() {};
-  OVector3_O(double x, double y, double z) : _Value{x,y,z} {};
+  OVector3_O(vecreal x, vecreal y, vecreal z) : _Value{x,y,z} {};
 
 };
 }; // namespace geom

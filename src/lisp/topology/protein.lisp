@@ -28,11 +28,11 @@
         (chi4-str (subseq line 70 77)))
     (let ((phi (parse-integer phi-str :junk-allowed t))
           (psi (parse-integer psi-str :junk-allowed t))
-          (probability (fortran:parse-double-float probability-str))
-          (chi1 (fortran:parse-double-float chi1-str))
-          (chi2 (fortran:parse-double-float chi2-str))
-          (chi3 (fortran:parse-double-float chi3-str))
-          (chi4 (fortran:parse-double-float chi4-str)))
+          (probability (fortran:parse-vecreal probability-str))
+          (chi1 (fortran:parse-vecreal chi1-str))
+          (chi2 (fortran:parse-vecreal chi2-str))
+          (chi3 (fortran:parse-vecreal chi3-str))
+          (chi4 (fortran:parse-vecreal chi4-str)))
       (make-instance 'rotamer-values
                      :name name
                      :phi phi

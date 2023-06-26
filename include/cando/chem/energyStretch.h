@@ -144,6 +144,8 @@ double	_evaluateEnergyOnly_Stretch (
 		double r0,
 		double kb );
 
+FORWARD(EnergyStretch);
+
 class EnergyStretch_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyStretch_O,"EnergyStretch",EnergyComponent_O);
@@ -188,14 +190,15 @@ public:
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );
@@ -205,12 +208,14 @@ public:
     virtual string	beyondThresholdInteractionsAsString();
 
   void addStretchTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, double kb, double r0);
-  
+
   void walkStretchTerms(core::T_sp callback);
   void modifyStretchTermKb(size_t index, float kb);
   void modifyStretchTermR0(size_t index, float r0);
 
   core::List_sp lookupStretchTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, core::HashTable_sp atomTypes );
+
+  EnergyStretch_sp copyFilter(core::T_sp keepInteraction);
 
   void reset();
 public:

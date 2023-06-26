@@ -52,8 +52,8 @@ namespace       chem {
 
 
 struct RigidBodyNonbondCrossTerm {
-  double      dA;
-  double      dC;
+  REAL      dA;
+  REAL      dC;
   RigidBodyNonbondCrossTerm(double a, double c) : dA(a), dC(c) {};
   RigidBodyNonbondCrossTerm() : dA(0.0), dC(0.0) {};
   core::List_sp encode() const;
@@ -62,12 +62,12 @@ struct RigidBodyNonbondCrossTerm {
 
   
 struct RigidBodyAtomInfo {
-  core::T_sp    _Object;  // can be NIL
-  size_t         _TypeIndex;
-  double         _Radius;
-  double         _Epsilon;
-  double         _Charge;
-  Vector3        _Position;
+  core::T_sp   _Object;  // can be NIL
+  INT          _TypeIndex;
+  REAL         _Radius;
+  REAL         _Epsilon;
+  REAL         _Charge;
+  Vector3      _Position;
   RigidBodyAtomInfo() : _Object(unbound<core::T_O>()) {};
   RigidBodyAtomInfo(core::T_sp a, double r, double e, double c, const Vector3& p) :
       _Object(a),
@@ -172,7 +172,6 @@ public:
   void resizeNonbondAtomInfoTable(size_t index) { this->_AtomInfoTable.resize(index); };
 
  public:
-  void zeroEnergy();
   Vector3 getPosition(size_t index);
   CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp object, double radius, double epsilon, double charge, const Vector3& position);
   
@@ -180,14 +179,15 @@ public:
                                           AbstractLargeSquareMatrix_sp m );
     
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
@@ -195,7 +195,6 @@ public:
 
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::LispPtr );
 
-  virtual	double	getEnergy();
   virtual void dumpTerms(core::HashTable_sp atomTypes);
   core::List_sp parts_as_list(NVector_sp pos);
   size_t partsCoordinates(NVector_sp pos, size_t idx, core::SimpleVector_float_sp coords);

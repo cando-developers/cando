@@ -147,7 +147,7 @@
    #:children
    #:root
    #:atom-id-map
-   #:make-conformation
+   #:make-assembler
    #:make-oligomer
    #:topologys-in-oligomer-space
 
@@ -224,7 +224,6 @@
    #:build-all-molecules
    #:energy
    #:monomer-context
-   #:define-topology-charges
    #:clusterable-fragment-conformations
    #:fill-internals-from-oligomer-shape
    #:monomer-shape-map

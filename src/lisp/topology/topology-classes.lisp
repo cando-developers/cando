@@ -459,6 +459,9 @@ Examples:
 
 (defun goto-sequence (oligomer index)
   (let* ((bases (loop for monomer across (monomers (oligomer-space oligomer))
+                      for len = (length (monomers monomer))
+                      unless (> len 0)
+                        do (error "(length (monomers monomer)) is zero for ~s - is this monomer defined?" monomer)
                       collect (length (monomers monomer))))
          (digits (sys:positive-integer-to-mixed-base-digits index bases)))
     (loop for monomer-index below (length (monomers (oligomer-space oligomer)))

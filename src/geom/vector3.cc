@@ -247,7 +247,7 @@ double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3&
 	LOG("status" );
 	double dir = cr.dotProduct(aboutNormal);
 	LOG("dir = {} " , dir );
-	double theta = (dir>=0.0)?acos(cosTheta):(6.2831853-acos(cosTheta));
+	double theta = (dir>=0.0)?safe_acos(cosTheta):(6.2831853-safe_acos(cosTheta));
 	LOG("theta = {} deg" , theta/0.0174533 );
 	return theta;
     }
@@ -263,6 +263,66 @@ void Vector3::fillFromCons(core::Cons_sp vals)
   this->coords[2] = z;
 }
 
+
+/*
+ *      safe_acos
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Return the acos of a number, but don't crap
+ *      out on domain errors.
+ */
+double safe_acos( double d )
+{
+  double ac = std::acos(d);
+  unlikely_if (isnan(ac)) {
+    unlikely_if ( d >= 1.0 ) return(0.0);
+    unlikely_if ( d <= -1.0 ) return(core::numerics::pi);
+    SIMPLE_ERROR("Could not calculate acos of %lf", d);
+  }
+  return ac;
+}
+
+float safe_acos( float d )
+{
+  float ac = std::acos(d);
+  unlikely_if (isnan(ac)) {
+    unlikely_if ( d >= 1.0 ) return(0.0);
+    unlikely_if ( d <= -1.0 ) return(core::numerics::pi);
+    SIMPLE_ERROR("Could not calculate acos of %lf", d);
+  }
+  return ac;
+}
+
+/*
+ *      safe_asin
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Return the asin of a number, but don't crap
+ *      out on domain errors.
+ */
+double safe_asin( double d )
+{
+  double as = std::asin(d);
+  unlikely_if(isnan(as)) {
+    unlikely_if ( d >= 1.0 ) return(core::numerics::pi/2.0);
+    unlikely_if ( d <= -1.0 ) return(-core::numerics::pi/2.0);
+    SIMPLE_ERROR("Could not calculate asin of %lf", d);
+  }
+  return as;
+}
+
+float safe_asin( float d )
+{
+  float as = std::asin(d);
+  unlikely_if(isnan(as)) {
+    unlikely_if ( d >= 1.0 ) return(core::numerics::pi/2.0);
+    unlikely_if ( d <= -1.0 ) return(-core::numerics::pi/2.0);
+    SIMPLE_ERROR("Could not calculate asin of %lf", d);
+  }
+  return as;
+}
 
 
 
@@ -293,7 +353,7 @@ CL_DEFUN double calculateAngle( const Vector3& va,
 {
   Vector3	vab = (va-vb).normalized();
   Vector3	vcb = (vc-vb).normalized();
-  double ang = acos(vab.dotProduct(vcb));
+  double ang = safe_acos(vab.dotProduct(vcb));
   return ang;
 }
 
@@ -301,6 +361,7 @@ CL_DEFUN double calculateAngle( const Vector3& va,
 /*! Return the dihedral in radians
  */
 DOCGROUP(cando);
+__attribute__((optnone))
 CL_DEFUN double calculateDihedral( const Vector3& va,
                                    const Vector3& vb,
                                    const Vector3& vc,
@@ -315,7 +376,11 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
   LOG("vdcCross = {},{},{}" , (vdcCross.getX()) , (vdcCross.getY()) , (vdcCross.getZ() ) );
   Vector3 vCross = vacCross.crossProduct(vdcCross);
   LOG("vCross = {},{},{}" , (vCross.getX()) , (vCross.getY()) , (vCross.getZ() ) );
-  double dih = acos(vacCross.dotProduct(vdcCross));
+  double dot = vacCross.dotProduct(vdcCross);
+  double dih = safe_acos(dot);
+  if (isnan(dih)) {
+    SIMPLE_ERROR("dihedral is NAN");
+  }
   LOG("dih = {}" , (dih ) );
   double sgn = (vCross.dotProduct(vcb))<0.0?-1.0:+1.0;
 //    if ( enantiomer ) return -dih*sgn;
@@ -396,24 +461,6 @@ CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const V
 }
 
 
-/*
- *      myAcos
- *
- *	Author:	Christian Schafmeister (1991)
- *
- *      Return the acos of a number, but don't crap
- *      out on domain errors.
- */
-double
-myAcos( double d )
-{
-  if ( d >= 1.0 )
-    return(0.0);
-  if ( d <= -1.0 )
-    return(core::numerics::pi);
-  return(acos(d));
-}
-
 
 /*
  *      dVectorAbsAngle
@@ -434,7 +481,7 @@ dVectorAbsAngle( const Vector3& vX, const Vector3& vY, const Vector3& vRef )
   vT2 = vY.normalized();
 
   vT = vT1.crossProduct(vT2);
-  dAngle = myAcos(vT1.dotProduct(vT2));
+  dAngle = safe_acos(vT1.dotProduct(vT2));
   if ( vT.dotProduct(vRef) < 0.0 ) dAngle = -dAngle;
   return(dAngle);
 }
@@ -646,9 +693,9 @@ CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
   if (std::fabs(dx)<SMALL_NUMBER) {
     return (MY_PI/2.0) * (dy<0.0? -1.0 : 1.0);
   } else if (dy<0.0) {
-    return - std::acos(dx);
+    return - safe_acos(dx);
   } else {
-    return std::acos(dx);
+    return safe_acos(dx);
   }
 }
 
@@ -694,7 +741,33 @@ CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coord
   SIMPLE_ERROR("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at {} and the nvector length is {}" , index0 , coordinates->length());
 }
 
+CL_DEFUN core::T_sp geom__vecreal_type() {
+#if VECREAL==VECREAL_DOUBLE
+  return cl::_sym_double_float;
+#else
+  return cl::_sym_single_float;
+  #endif
+}
 
+CL_DEFUN core::T_sp geom__vecreal(core::T_sp val) {
+#if VECREAL==VECREAL_DOUBLE
+  if (val.single_float_p()) {
+    return core::make_double_float(val.unsafe_single_float());
+  } else if (gc::IsA<cl::DoubleFloat_sp>(val)) {
+    return val;
+  } else {
+    TYPE_ERROR(val,core::Cons_O::create_list(cl::_sym_double_float, cl::_sym_single_float));
+  }
+#else
+  if (val.single_floatp()) {
+    return val;
+  } else if (gc::IsA<core::DoubleFloat_sp>(val)) {
+    return core::make_single_float(gc::As<core::DoubleFloat_sp>(val)->get());
+  } else {
+    TYPE_ERROR(val,core::Cons_O::createList(cl::_sym_double_float, cl::_sym_single_float));
+  }
+#endif
+}
 Vector3 transform_rotor3( float r_scalar, float r_xy, float r_yz, float r_zx, const Vector3& v)
 {
     const float S_x = r_scalar*v.getX() + r_xy*v.getY() - r_zx*v.getZ();

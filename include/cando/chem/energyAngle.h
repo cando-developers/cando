@@ -152,6 +152,8 @@ double	_evaluateEnergyOnly_Angle(
 		double kt, double t0 );
 
 
+FORWARD(EnergyAngle);
+
 class EnergyAngle_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyAngle_O,"EnergyAngle",EnergyComponent_O);
@@ -199,14 +201,15 @@ public:
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );
@@ -220,6 +223,7 @@ public:
 
   core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
 
+  EnergyAngle_sp copyFilter(core::T_sp keepInteraction);
 
     EnergyAngle_O( const EnergyAngle_O& ss ); //!< Copy constructor
 

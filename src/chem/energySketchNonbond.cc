@@ -87,20 +87,6 @@ void EnergySketchNonbond_O::addSketchNonbondTerm(size_t coordinate1IndexTimes3,
   this->_Terms.push_back(term);
 }
 
-void	EnergySketchNonbond_O::zeroEnergy()
-{
-  this->Base::zeroEnergy();
-  this->_Energy = 0.0;
-}
-
-double	EnergySketchNonbond_O::getEnergy()
-{
-  double	e;
-  e = this->_Energy;
-  return e;
-}
-
-
 void	EnergySketchNonbond_O::setupHessianPreconditioner(
                                                           NVector_sp nvPosition,
                                                           AbstractLargeSquareMatrix_sp m )
@@ -109,24 +95,27 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
 }
 
 double	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
-                                            NVector_sp 	pos,
-                                            bool 		calcForce,
-                                            gc::Nilable<NVector_sp> 	force,
-                                            bool		calcDiagonalHessian,
-                                            bool		calcOffDiagonalHessian,
-                                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                            gc::Nilable<NVector_sp>	hdvec, 
-                                            gc::Nilable<NVector_sp> 	dvec )
+                                                     NVector_sp 	pos,
+                                                     core::T_sp componentEnergy,
+                                                     bool 		calcForce,
+                                                     gc::Nilable<NVector_sp> 	force,
+                                                     bool		calcDiagonalHessian,
+                                                     bool		calcOffDiagonalHessian,
+                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                     gc::Nilable<NVector_sp>	hdvec, 
+                                                     gc::Nilable<NVector_sp> 	dvec )
 {
 // Evaluate everything using terms
-  this->evaluateTerms(pos,calcForce,force,calcDiagonalHessian,
-                      calcOffDiagonalHessian,hessian,hdvec,dvec);
-  return this->_TotalEnergy;
+  double totalEnergy = this->evaluateTerms(pos,componentEnergy,
+                                           calcForce,force,
+                                           calcDiagonalHessian, calcOffDiagonalHessian, hessian,hdvec,dvec);
+  return totalEnergy;
 }
     
     
 
-void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
+double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
+                                             core::T_sp         componentEnergy,
                                              bool 		calcForce,
                                              gc::Nilable<NVector_sp> 	force,
                                              bool		calcDiagonalHessian,
@@ -140,6 +129,7 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  double totalEnergy = 0.0;
 #define Log(x) log(x)
 #define EREP_CALC_FORCE
 #define EREP_CALC_DIAGONAL_HESSIAN
@@ -147,21 +137,21 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 #undef	EREP_SET_PARAMETER
 #define	EREP_SET_PARAMETER(x)
 #undef	EREP_SET_POSITION
-#define	EREP_SET_POSITION(x,ii,of)	{x=coordinates_ptr[ii+of];};
+#define	EREP_SET_POSITION(x,ii,of)	{x=(*pos)[ii+of];};
 #undef	EREP_ENERGY_ACCUMULATE
-#define	EREP_ENERGY_ACCUMULATE(e) {this->_Energy+=(e);}
+#define	EREP_ENERGY_ACCUMULATE(e) {totalEnergy+=(e);}
 #undef	EREP_FORCE_ACCUMULATE
 #undef	EREP_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	EREP_FORCE_ACCUMULATE(II,IO,val) 		{force_ptr[II+IO] += val;};
+#define	EREP_FORCE_ACCUMULATE(II,IO,val) 		{(*force)[II+IO] += val;};
 #define	EREP_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 #define MAYBE_BAIL(val) {} if (val <=0.1 ) goto TOO_CLOSE; if ( val >= this->_LongDistanceCutoff) goto TOO_FAR;
   
 #include <cando/chem/energy_functions/_Erep_termDeclares.cc>
 
-  double* coordinates_ptr = (double*)(pos->rowMajorAddressOfElement_(0));
-  double* force_ptr = (double*)(force->rowMajorAddressOfElement_(0));
+//  vecreal* coordinates_ptr = (vecreal*)(pos->rowMajorAddressOfElement_(0));
+//  vecreal* force_ptr = (vecreal*)(force->rowMajorAddressOfElement_(0));
   double x1,y1,z1,x2,y2,z2,crep;
   double dx, dy, dz;
   double dsq, ERepDistance;
@@ -242,6 +232,8 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
   CONTINUE:
     (void)0;
   }
+  maybeSetEnergy(componentEnergy,EnergySketchNonbond_O::static_classSymbol(),totalEnergy);
+  return totalEnergy;
 }
 
 

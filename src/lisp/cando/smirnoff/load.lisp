@@ -196,7 +196,7 @@
             if k-str
               do (let ((idivf (let ((idivf-str (gethash (format nil "idivf~a" index) attributes)))
                                 (if idivf-str
-                                    (fortran:parse-double-float idivf-str)
+                                    (fortran:parse-vecreal idivf-str)
                                     1.0d0)))
                        (k (canonical-kcal/mol (parse-quantity k-str)))
                        (periodicity
@@ -257,10 +257,10 @@
     (let* ((attrs (plump:attributes root))
            (potential (safe-gethash "potential" attrs))
            (combining-rules (safe-gethash "combining_rules" attrs))
-           (scale12 (fortran:parse-double-float (safe-gethash "scale12" attrs)))
-           (scale13 (fortran:parse-double-float (safe-gethash "scale13" attrs)))
-           (scale14 (fortran:parse-double-float (safe-gethash "scale14" attrs)))
-           (scale15 (fortran:parse-double-float (safe-gethash "scale15" attrs)))
+           (scale12 (fortran:parse-vecreal (safe-gethash "scale12" attrs)))
+           (scale13 (fortran:parse-vecreal (safe-gethash "scale13" attrs)))
+           (scale14 (fortran:parse-vecreal (safe-gethash "scale14" attrs)))
+           (scale15 (fortran:parse-vecreal (safe-gethash "scale15" attrs)))
            (switch-width (canonical-length (parse-quantity (safe-gethash "switch_width" attrs))))
            (cutoff (canonical-length (parse-quantity (safe-gethash "cutoff" attrs))))
            (method (safe-gethash "method" attrs))

@@ -229,10 +229,12 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
 
-(defun optimize-structure (matter &key active-atoms (turn-off-nonbond t) verbose)
+(defun optimize-structure (matter &key (keep-interaction t)
+                                    (turn-off-nonbond t)
+                                    verbose)
   (let* ((energy-function (chem:make-energy-function :matter matter
                                                      :assign-types t
-                                                     :active-atoms active-atoms))
+                                                     :keep-interaction keep-interaction))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
                          :max-sd-steps 5000
@@ -249,7 +251,10 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (finish-output t))
   matter)
 
-(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t) verbose energy-function
+(defun optimize-structure-with-restarts (matter &key (keep-interaction t)
+                                                  (turn-off-nonbond t)
+                                                  verbose
+                                                  energy-function
                                                   (max-cg-steps 50000)
                                                   (max-tn-steps 500)
                                                   )
@@ -257,7 +262,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                               energy-function
                               (chem:make-energy-function :matter matter
                                                          :assign-types t
-                                                         :active-atoms active-atoms)))
+                                                         :keep-interaction keep-interaction)))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
                          :max-sd-steps 5000
@@ -274,9 +279,10 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (when verbose
       (format t "Optimization with nonbond term on~%")
       (finish-output t))
-    (minimize-with-restarts min :verbose verbose)
-    (finish-output t)
-    (values matter energy-function)))
+    (multiple-value-bind (pos total-energy)
+        (minimize-with-restarts min :verbose verbose)
+      (finish-output t)
+      (values matter energy-function total-energy))))
 
 (defun indexed-pathname (template index)
   (let* ((filename (format nil "~a~3,'0d" (pathname-name template) index)))
@@ -382,12 +388,12 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (chem:set-scale-sketch-nonbond nonbond-energy *stage1-scale-sketch-nonbond*)
     (loop for ia1 from 0 below (1- (chem:get-number-of-atoms atom-table))
           for atom1 = (chem:elt-atom atom-table ia1)
-          for atom1-coordinate-index = (chem:get-coordinate-index atom-table atom1)
+          for atom1-coordinate-index = (chem:get-coordinate-index-times3 atom-table atom1)
           for freeze1 = (or (= (chem:get-atomic-number atom1) 1)
                             (eq (chem:get-element atom1) :lp))
           do (loop for ia2 from (1+ ia1) below (chem:get-number-of-atoms atom-table)
                    for atom2 = (chem:elt-atom atom-table ia2)
-                   for atom2-coordinate-index = (chem:get-coordinate-index atom-table atom2)
+                   for atom2-coordinate-index = (chem:get-coordinate-index-times3 atom-table atom2)
                    for freeze2 = (or (= (chem:get-atomic-number atom2) 1)
                                      (eq (chem:get-element atom2) :lp))
                    for freeze-flag = (if (or freeze1 freeze2) 1 0)
@@ -405,8 +411,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
        'nil
        (lambda (a1 a2 bond-order bond)
          (declare (ignore bond-order bond))
-         (let ((atom1-coord-index (chem:get-coordinate-index atom-table a1))
-               (atom2-coord-index (chem:get-coordinate-index atom-table a2))
+         (let ((atom1-coord-index (chem:get-coordinate-index-times3 atom-table a1))
+               (atom2-coord-index (chem:get-coordinate-index-times3 atom-table a2))
                (bond-length *stage1-bond-length*))
            #+(or)
            (let ((valence1 (chem:matter-get-property-or-default a1 :valence 1))
@@ -420,10 +426,10 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     #+(or)(when sketch
       (loop for double-bond-restraint in (double-bond-restraints sketch)
             do (with-slots (top-left-atom bottom-left-atom left-atom right-atom top-right-atom bottom-right-atom) double-bond-restraint
-                 (let ((top-left-index (chem:get-coordinate-index atom-table top-left-atom))
-                       (bottom-left-index (chem:get-coordinate-index atom-table bottom-left-atom))
-                       (top-right-index (chem:get-coordinate-index atom-table top-right-atom))
-                       (bottom-right-index (chem:get-coordinate-index atom-table bottom-right-atom)))
+                 (let ((top-left-index (chem:get-coordinate-index-times3 atom-table top-left-atom))
+                       (bottom-left-index (chem:get-coordinate-index-times3 atom-table bottom-left-atom))
+                       (top-right-index (chem:get-coordinate-index-times3 atom-table top-right-atom))
+                       (bottom-right-index (chem:get-coordinate-index-times3 atom-table bottom-right-atom)))
                    (add-stretch bond-energy
                                 top-left-atom top-right-atom
                                 top-left-index top-right-index
@@ -478,14 +484,14 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   ((dynamics :initarg :dynamics :accessor dynamics)
    (energy-function :initarg :energy-function :accessor energy-function)))
 
-(defun make-rapid-starting-geometry (agg &key energy-function accumulate-coordinates verbose active-atoms)
+(defun make-rapid-starting-geometry (agg &key energy-function accumulate-coordinates verbose (keep-interaction t))
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
   (let ((atom-types (make-hash-table))
         (energy-function (if energy-function
                              energy-function
                              (chem:make-energy-function :matter agg
                                                         :assign-types t
-                                                        :active-atoms active-atoms))))
+                                                        :keep-interaction keep-interaction))))
     (unless (= (chem:content-size agg) 1)
       (format t "The aggregate must have a single molecule.")
       (return-from make-rapid-starting-geometry nil))
@@ -559,7 +565,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (dynamics:write-coordinates-back-to-matter dynamics)
       (when verbose
         (format t "Optimizing structure~%"))
-      (multiple-value-bind (matter energy-function)
+      (multiple-value-bind (matter energy-function total-energy)
           (if energy-function
               (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function
                                                     :max-cg-steps max-cg-steps
@@ -569,7 +575,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                                     :max-tn-steps max-tn-steps))
         (unless energy-function
           (error "starting-geometry-with-restarts energy-function is nil"))
-        (values dynamics energy-function)
+        (values dynamics energy-function total-energy)
         ))))
 
 (defun build-good-geometry-from-random (agg)

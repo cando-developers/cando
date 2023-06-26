@@ -1,28 +1,3 @@
-/*
-    File: _Dihedral_termCode.cc
-*/
-/*
-Open Source License
-Copyright (c) 2016, Christian E. Schafmeister
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
-*/
-/* -^- */
 // C-code
 	DIHEDRAL_SET_PARAMETER(sinPhase);
 	DIHEDRAL_SET_PARAMETER(cosPhase);
@@ -93,11 +68,11 @@ This is an open source license for the CANDO software from Temple University, bu
 	 LenB = mysqrt(tx950); 		/* rule 67 */
 	 ReciprocalLenA = reciprocal(LenA); 		/* rule 68 */
 	 ReciprocalLenB = reciprocal(LenB); 		/* rule 69 */
-	if (fabs(LenA)<TENM3) ReciprocalLenA = 0.0;
-	if (fabs(LenB)<TENM3) ReciprocalLenB = 0.0;
+	ZERO_SMALL_LEN(LenA,ReciprocalLenA);
+	ZERO_SMALL_LEN(LenB,ReciprocalLenB);
 	 RecLenARecLenB = ReciprocalLenA*ReciprocalLenB; 		/* rule 72 */
 	EraseLinearDihedral = 1.0;
-	if (RecLenARecLenB==0.0) EraseLinearDihedral = 0.0;
+	EraseLinearDihedral = (RecLenARecLenB==0.0) ? 0.0 : EraseLinearDihedral;
 	 tx951 = tx925*tx944; 		/* rule 75 */
 	 tx952 = tx926*tx945; 		/* rule 76 */
 	 tx953 = tx927*tx946; 		/* rule 77 */
@@ -125,7 +100,7 @@ This is an open source license for the CANDO software from Temple University, bu
 	CosPhi=MAX(-1.0,MIN(1.0,CosPhi));
 /*CosNPhi = mathCosNPhi[IN,SinPhi,CosPhi];*/
 /*SinNPhi = mathSinNPhi[IN,SinPhi,CosPhi];*/
-	sinNPhiCosNPhi(IN, &SinNPhi, &CosNPhi, SinPhi, CosPhi);
+	DO_sinNPhiCosNPhi(IN, &SinNPhi, &CosNPhi, SinPhi, CosPhi);
 	 tx973 = CosNPhi*cosPhase; 		/* rule 103 */
 	 tx974 = SinNPhi*sinPhase; 		/* rule 104 */
 	 DihedralDeviation = 1. + tx973 + tx974; 		/* rule 105 */

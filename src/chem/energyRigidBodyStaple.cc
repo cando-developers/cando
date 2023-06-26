@@ -181,14 +181,15 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 
   
 double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
-                                             NVector_sp 	pos,
-                                             bool 		calcForce,
-                                             gc::Nilable<NVector_sp> 	force,
-                                             bool		calcDiagonalHessian,
-                                             bool		calcOffDiagonalHessian,
-                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                             gc::Nilable<NVector_sp>	hdvec,
-                                             gc::Nilable<NVector_sp> dvec)
+                                                      NVector_sp 	pos,
+                                                      core::T_sp componentEnergy,
+                                                      bool 		calcForce,
+                                                      gc::Nilable<NVector_sp> 	force,
+                                                      bool		calcDiagonalHessian,
+                                                      bool		calcOffDiagonalHessian,
+                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                      gc::Nilable<NVector_sp>	hdvec,
+                                                      gc::Nilable<NVector_sp> dvec)
 {
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
@@ -318,6 +319,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   {
     core::clasp_write_string(fmt::format("{} }}" , this->className()));
   }
+  maybeSetEnergy( componentEnergy, EnergyRigidBodyStaple_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 

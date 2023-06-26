@@ -446,14 +446,13 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               for type = (second name-type)
               for ca = (constitution-atom-named constitution name)
               do (setf (atom-type ca) type)))
-      (when dihedrals
-        (loop for name-dihedral in dihedrals
+      (loop for name-dihedral in dihedrals
               for name = (first name-dihedral)
               for dihedral = (second name-dihedral)
               for ca = (constitution-atom-named constitution name)
               do (push dihedral (properties ca))
               do (push :dihedral (properties ca))
-              ))
+              )
       tops)))
 
 (defun do-define-topology (name sexp &key restraints types dihedrals)
@@ -469,23 +468,9 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
     (topologies-from-graph graph group-names restraints :types types
                            :dihedrals dihedrals)))
 
-
 (defmacro define-topology (name sexp &key restraints types dihedrals)
   `(do-define-topology ',name ',sexp :restraints ',restraints :dihedrals ',dihedrals))
 
-(defun define-topology-charges (residue-charges)
-  (loop for topology-charge in residue-charges
-        for topology-name = (first topology-charge)
-        for topology = (chem:find-topology topology-name nil)
-        if topology
-          do (let* ((stereoisomer (stereoisomer topology))
-                    (stereoisomer-atoms (stereoisomer-atoms stereoisomer))
-                    (name-charges (second topology-charge)))
-               (loop for atom-charge in name-charges
-                     for atom-name = (car atom-charge)
-                     for stereoisomer-atom = (find atom-name stereoisomer-atoms :key 'topology:atom-name)
-                     for charge = (cdr atom-charge)
-                     do (setf (atom-charge stereoisomer-atom) charge)
-                     ))
-        else
-          do (warn "The topology ~s was not found - could not assign charge" topology-name)))
+
+
+  

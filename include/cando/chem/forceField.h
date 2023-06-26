@@ -220,7 +220,7 @@ public:
   void clear();
 
   core::T_sp assignForceFieldTypes(Matter_sp molecule, core::HashTable_sp atom_types );
-  void assignMolecularEnergyTables(Matter_sp molecule,core::T_sp activeAtoms);
+  void assignMolecularEnergyTables(Matter_sp molecule,core::T_sp keepInteraction);
   
   CombinedForceField_O() : _ForceFields(nil<core::T_O>()) {};
 };

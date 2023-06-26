@@ -318,7 +318,7 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
     void	minimizeSteepestDescent();
     void	minimizeConjugateGradient();
     void	resetAndMinimize();
-    void	minimize();
+    core::T_mv minimize();
         // If the minimization is aborted the intermediate results can be recovered
     void    writeIntermediateResultsToEnergyFunction();
     void	evaluateEnergyAndForceManyTimes(int times);

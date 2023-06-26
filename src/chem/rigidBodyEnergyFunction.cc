@@ -98,7 +98,6 @@ void RigidBodyEnergyFunction_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-
 CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx");
 CL_LISPIFY_NAME(rigidBodyEnergyFunction-bounding-box);
 CL_DEFMETHOD BoundingBox_sp RigidBodyEnergyFunction_O::boundingBox() const
@@ -212,6 +211,7 @@ void	RigidBodyEnergyFunction_O::setOptions( core::List_sp options )
 
 
 double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
+                                                core::T_sp componentEnergy,
                                                 bool calcForce,
                                                 gc::Nilable<NVector_sp> force,
                                                 bool calcDiagonalHessian,
@@ -223,7 +223,6 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
   bool	hasForce = force.notnilp();
   bool  hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-
 #ifdef	DEBUG_ON //[
 	// Summarize entry state for debugging
   LOG("calcForce = {}" , calcForce  );
@@ -260,6 +259,7 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
       if (term->isEnabled()) {
         totalEnergy += term->evaluateAllComponent(this->asSmartPtr(),
                                                   pos,
+                                                  componentEnergy,
                                                   calcForce,
                                                   force,
                                                   calcDiagonalHessian,
@@ -288,7 +288,7 @@ void RigidBodyEnergyFunction_O::setPosition(size_t index, double a, double b, do
   if (index>= this->_RigidBodies) {
     SIMPLE_ERROR("set-position at index {} out of range <= {} for coordinate" , index , this->_RigidBodies);
   }
-  double*  p = &(*this->_SavedCoordinates)[0];
+  Vector_real*  p = &(*this->_SavedCoordinates)[0];
   size_t base = index*7;
   p[base+0] = a;
   p[base+1] = b;
@@ -302,7 +302,7 @@ core::T_mv RigidBodyEnergyFunction_O::getPosition(size_t index) {
   if (index>= this->_RigidBodies) {
     SIMPLE_ERROR("set-position at index {} out of range <= {} for coordinate" , index , this->_RigidBodies);
   }
-  double*  p = &(*this->_SavedCoordinates)[0];
+  Vector_real*  p = &(*this->_SavedCoordinates)[0];
   size_t base = index*7;
   return Values(core::clasp_make_double_float(p[base+0]),
                 core::clasp_make_double_float(p[base+1]),
@@ -319,7 +319,7 @@ core::T_mv RigidBodyEnergyFunction_O::getPosition(size_t index) {
 void RigidBodyEnergyFunction_O::normalizePosition(NVector_sp pos)
 {
   // Normalize the quaternions
-  double* dpos = &(*pos)[0];
+  Vector_real* dpos = &(*pos)[0];
   for ( size_t i(0), iEnd(pos->length()); i<iEnd; i += 7 ) {
     double qlen = sqrt(dpos[i+0]*dpos[i+0] +
                        dpos[i+1]*dpos[i+1] +
@@ -344,11 +344,11 @@ string RigidBodyEnergyFunction_O::energyComponentsAsString() {
 }
  
 
-void RigidBodyEnergyFunction_O::dumpTerms(core::HashTable_sp atomTypes)
+void RigidBodyEnergyFunction_O::dumpTerms()
 {
   for ( auto cur : this->_Terms ) {
     EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-    term->dumpTerms(atomTypes);
+    term->dumpTerms(this->_AtomTypes);
   }
 }
 

@@ -22,7 +22,7 @@
                                     (declare (ignore bond))
                                     (list atm1 atm2 bond-order))
                                   aggregate))
-           (coordinates (make-array (* 3 (length atoms)) :element-type 'double-float)))
+           (coordinates (make-array (* 3 (length atoms)) :element-type (geom:vecreal-type))))
       (format stream "~3d~3d~3d~3d~3d~3d            999 V2000~%"
               (length atoms)
               (length bonds)

@@ -69,7 +69,11 @@ __END_DOC
 namespace chem
 {
 
-ScoringFunction_O::ScoringFunction_O() : _VelocityScale(Vector3(1.0,1.0,1.0)) {};
+// set_energy is a generic function for setting energies
+SYMBOL_EXPORT_SC_(ChemPkg,set_energy);
+
+
+ScoringFunction_O::ScoringFunction_O() : _VelocityScale(Vector3(1.0,1.0,1.0)), _AtomTypes(core::HashTableEq_O::create_default()) {};
 
 CL_DEFMETHOD void ScoringFunction_O::setf_velocity_scale(double xscale, double yscale, double zscale) {
   this->_VelocityScale.set(xscale,yscale,zscale);
@@ -79,6 +83,12 @@ void ScoringFunction_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,Debug),this->_Debug);
   node->field_if_not_default(INTERN_(kw,VelocityScale),this->_VelocityScale,Vector3());
+  node->field_if_not_unbound(INTERN_(kw,AtomTypes),this->_AtomTypes);
+}
+
+core::HashTable_sp ScoringFunction_O::atomTypes() const {
+  if (this->_AtomTypes.boundp()) return this->_AtomTypes;
+  SIMPLE_ERROR("The atom-types are unbound");
 }
 
 CL_LISPIFY_NAME("evaluateEnergy");
@@ -86,6 +96,7 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos )
 {
   double		energy;
   energy = this->evaluateAll(pos,
+                             nil<core::T_O>(),
                              false,
                              nil<core::T_O>(),
                              false, false,
@@ -107,7 +118,9 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool
   } else {
     rawGrad = nil<core::T_O>();
   }
-  energy = this->evaluateAll(pos,calcForce,
+  energy = this->evaluateAll(pos,
+                             nil<core::T_O>(),
+                             calcForce,
                              rawGrad,
                              false,
                              false,
@@ -137,6 +150,7 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
   if ( calcForce ) rawGrad = force;
   else rawGrad = nil<core::T_O>();
   energy = this->evaluateAll( pos,
+                              nil<core::T_O>(),
                               calcForce, rawGrad,
                               calcDiagonalHessian,
                               calcOffDiagonalHessian,
@@ -158,6 +172,7 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebuggin
   hessian = FullLargeSquareMatrix_O::create(this->getNVectorSize(),SymmetricDiagonalLower);
   this->loadCoordinatesIntoVector(pos);
   energy = this->evaluateAll(pos,
+                             nil<core::T_O>(),
                              true,
                              force,
                              true,
@@ -367,4 +382,11 @@ DOCGROUP(cando);
 CL_DEFUN core::List_sp chem__all_components(ScoringFunction_sp scoring_function) {
   return scoring_function->allComponents();
 }
+
+
+
+void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp name, double energy ) {
+
+}
+
 };

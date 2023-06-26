@@ -77,6 +77,8 @@
    (dihedral :initarg :dihedral :accessor dihedral)))
 
 (defmethod copy-internal ((internal bonded-internal))
+  (when (ext:float-nan-p (dihedral internal))
+    (error "Found a NAN dihedral"))
   (make-instance 'bonded-internal
                  :name (name internal)
                  :bond (bond internal)

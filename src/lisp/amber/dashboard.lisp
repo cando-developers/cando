@@ -81,7 +81,7 @@
          (total-steps (parse-integer progress-line :start 14 :junk-allowed t))
          (completed-steps (parse-integer progress-line :start 37 :junk-allowed t))
          (energy-line (elt lines 2))
-         (etot (fortran:parse-double-float energy-line :start 10 :end 24))
+         (etot (fortran:parse-vecreal energy-line :start 10 :end 24))
          (estimated-time-remaining (when (> (length lines) 23)
                                          (let ((time-line (elt lines 23)))
                                            (subseq time-line 30)))))
@@ -108,7 +108,7 @@
         (values nil nil)
         (let* ((nstep-line (elt lines 3))
                (nstep (parse-integer nstep-line :junk-allowed t))
-               (etot (fortran:parse-double-float nstep-line :start 10 :end 24))
+               (etot (fortran:parse-vecreal nstep-line :start 10 :end 24))
                )
           (values (make-panel-summary
                    :total-steps (job-steps info-file)

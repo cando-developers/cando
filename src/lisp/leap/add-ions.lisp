@@ -342,7 +342,7 @@
 
 (defun check-solvent (mol solvent-vec ion1-copy new-point)
   (let ((dmin2 100000000)
-        (closest-atom-vector (make-array 3 :element-type 'double-float))
+        (closest-atom-vector (make-array 3 :element-type (geom:vecreal-type)))
         (d2 0)
         (x 0)
         (y 0)

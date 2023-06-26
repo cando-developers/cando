@@ -288,7 +288,10 @@ core::VectorDoubles Matrix::asOpenGLMatrix() {
 
 void Matrix::setAll(const Matrix &m) { this->elements = m.elements; }
 
-void Matrix::transform_nvector_point(double &xdest, double &ydest, double &zdest, chem::NVector_sp source,
+void Matrix::transform_nvector_point(chem::Vector_real &xdest,
+                                     chem::Vector_real &ydest,
+                                     chem::Vector_real &zdest,
+                                     chem::NVector_sp source,
                                      size_t source_index) const {
   double acc;
   acc = at(0, 0) * (*source)[source_index];
