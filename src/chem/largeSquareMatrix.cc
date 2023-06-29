@@ -57,6 +57,7 @@ namespace chem {
 void	AbstractLargeSquareMatrix_O::setup(uint dim, TriangleType type)
 {
   this->_Triangle = type;
+  ASSERT(this->_Triangle == SymmetricDiagonalLower);
   this->_Columns = dim;
   this->_Rows = dim;
 };
@@ -980,7 +981,7 @@ uint	SparseLargeSquareMatrix_O::indexOfFirstElementAtOrAfterX(uint x, uint y )
   uint	im;
   ASSERT_lessThan(x,this->_Columns);
   ASSERT_lessThan(y,this->_Rows);
-  ASSERT(this->_Triangle == SymmetricUpperDiagonal);
+  ASSERT(this->_Triangle == SymmetricDiagonalLower);
   LOG("Looking at row: {}" , y  );
   uint ib = this->_RowStarts[y];
   uint ie = this->_RowStarts[y+1]-1;

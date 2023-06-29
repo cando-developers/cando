@@ -602,7 +602,7 @@ void doCalculateStereochemistry( bool useStructure, Molecule_sp matter, core::Ha
     Atom_sp atm = la.getAtom();
     core::T_sp st = stereochemistryType->gethash(atm);
     if ( st.notnilp() ) {
-      ConfigurationEnum ce;
+      ConfigurationEnum ce(undefinedConfiguration);
       if (useStructure) ce = atm->calculateStereochemicalConfiguration(cip);
       else stereochemistryTypes->setf_gethash( atm, st );
       configurations->setf_gethash( atm, translate::to_object<ConfigurationEnum>::convert(ce) );

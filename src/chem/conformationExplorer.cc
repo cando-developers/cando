@@ -344,7 +344,6 @@ CL_DEFMETHOD     void	ConformationExplorerEntry_O::setSelectedStage(Conformation
     {
 	ConformationExplorerEntry_sp	stageEntry;
 	stageEntry = stage->getConformationExplorerEntry();
-	ASSERTP(stageEntry.get()==this,"StageEntry != this");
 	this->_SelectedStage = stage;
     }
 

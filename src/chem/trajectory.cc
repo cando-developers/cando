@@ -127,7 +127,7 @@ CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(core::T_sp coord_object)
 {
   TrajectoryFrame_sp frame = TrajectoryFrame_O::create();
   if (gc::IsA<Matter_sp>(coord_object)) {
-    ASSERTP(matter == this->_Matter,"The matter argument must match the Matter used to define this trajectory");
+    ASSERTP( coord_object == this->_Matter,"The matter argument must match the Matter used to define this trajectory");
     frame->fillFromMatter(this->_AtomList);
   } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(coord_object)) {
     auto vec = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(coord_object);
