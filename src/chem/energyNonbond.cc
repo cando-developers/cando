@@ -271,14 +271,13 @@ double	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 {
 
   this->_Evaluations++;
-//  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   double energy = 0.0;
   if (this->_UsesExcludedAtoms) {
     // Evaluate the nonbonds using the excluded atom list
     energy = this->evaluateUsingExcludedAtoms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                                      calcOffDiagonalHessian,hessian,hdvec,dvec);
     // Evaluate the 1-4 terms
-    this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
+    energy += this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                              calcOffDiagonalHessian,hessian,hdvec,dvec);
   } else {
     // Evaluate everything using terms
