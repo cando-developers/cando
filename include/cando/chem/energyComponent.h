@@ -55,7 +55,7 @@ This is an open source license for the CANDO software from Temple University, bu
 		//
 const double ELECTROSTATIC_MODIFIER = (93865.10/3.53*93865.10/93958.78);
 
-#define	DECLARE_FLOAT(x) double x = 0.0
+#define	DECLARE_FLOAT(x) num_real x = 0.0
 
 	// If we declare mathematica generated term variables
 	// on the fly then set ON_THE_FLY_DECLARES
