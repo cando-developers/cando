@@ -945,10 +945,12 @@ EnergyDihedral_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteraction) {
 }
 
 
+#if 0
+
 #define VREAL8_WIDTH 8
 typedef double real;
-typedef real real8 __attribute__((ext_vector_type(VREAL8_WIDTH)));
-typedef int64_t int8 __attribute__((ext_vector_type(VREAL8_WIDTH)));
+typedef real real8 __attribute__((vector_size(8*VREAL8_WIDTH)));
+typedef int64_t int8 __attribute__((vector_size(8*VREAL8_WIDTH)));
 
 double	EnergyDihedral_O::evaluateAllComponentSimd8(
     gctools::Vec0<EnergyDihedral>::iterator di_start8,
@@ -1075,7 +1077,9 @@ double	EnergyDihedral_O::evaluateAllComponentSimd8(
 #define DECLARE_FLOAT(xx) real8 xx
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+  fx1 = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+   // fx1 = 0.0;
+    fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
     fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
@@ -1154,8 +1158,8 @@ double	EnergyDihedral_O::evaluateAllComponentSimd8(
 
 #define VREAL4_WIDTH 4
 typedef double real;
-typedef real real4 __attribute__((ext_vector_type(VREAL4_WIDTH)));
-typedef int64_t int4 __attribute__((ext_vector_type(VREAL4_WIDTH)));
+typedef real real4 __attribute__((vector_size(8*VREAL4_WIDTH)));
+typedef int64_t int4 __attribute__((vector_size(8*VREAL4_WIDTH)));
 
 double	EnergyDihedral_O::evaluateAllComponentSimd4(
     gctools::Vec0<EnergyDihedral>::iterator di_start4,
@@ -1333,8 +1337,8 @@ double	EnergyDihedral_O::evaluateAllComponentSimd4(
 
 #define VREAL2_WIDTH 2
 typedef double real;
-typedef real real2 __attribute__((ext_vector_type(VREAL2_WIDTH)));
-typedef int64_t int2 __attribute__((ext_vector_type(VREAL2_WIDTH)));
+typedef real real2 __attribute__((vector_size(8*VREAL2_WIDTH)));
+typedef int64_t int2 __attribute__((vector_size(8*VREAL2_WIDTH)));
 
 double	EnergyDihedral_O::evaluateAllComponentSimd2(
     gctools::Vec0<EnergyDihedral>::iterator di_start2,
@@ -1488,7 +1492,7 @@ double	EnergyDihedral_O::evaluateAllComponentSimd2(
   return totalEnergy;
 }
 
-
+#endif
 
 double	EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
                                                NVector_sp 	                pos,
@@ -1503,6 +1507,7 @@ double	EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
 {
   double energy = 0.0;
   this->_Evaluations++;
+  #if 0
   if (cando::global_simd_width == 8 ) {
     gctools::Vec0<EnergyDihedral>::iterator di_vector_end8 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL8_WIDTH))*VREAL8_WIDTH;
     energy += this->evaluateAllComponentSimd8(this->_Terms.begin(),
@@ -1575,7 +1580,9 @@ double	EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
                                                hessian,
                                                hdvec,
                                                dvec);
-  } else {
+  } else
+#endif
+  {
     energy += this->evaluateAllComponentSingle(this->_Terms.begin(),
                                                this->_Terms.end(),
                                                score,
