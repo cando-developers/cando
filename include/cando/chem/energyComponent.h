@@ -241,7 +241,6 @@ class EnergyComponent_O : public core::CxxObject_O
   void initialize();
  protected: // instance variables
   bool		        _Enabled;
-  bool                  _UseSimd;
   double		_Scale;
   double		_ErrorThreshold;
   bool		_DebugEnergy;
@@ -288,8 +287,6 @@ public:
 
  public:	// Virtual methods
 
-  CL_DEFMETHOD void setUseSimd(bool use) { this->_UseSimd = use; };
-  
   CL_DEFMETHOD virtual void dumpTerms(core::HashTable_sp atomTypes) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
   virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteraction);
@@ -311,7 +308,7 @@ public:
  public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
-  EnergyComponent_O() : _UseSimd(false), _Evaluations(0) {};
+  EnergyComponent_O() : _Evaluations(0) {};
 };
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {

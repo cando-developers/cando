@@ -127,7 +127,7 @@ double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
         }
       }
     }
-    return(dDot/num);
+    return sqrt(dDot/num);
   } else if (frozen.nilp()) {
     double dDot = 0.0;
     Vector_real* dp = &(*me)[0];
@@ -142,7 +142,7 @@ double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
         core::clasp_write_string(fmt::format("    nvector[{}] -> {}\n" , zz , (*me)[zz]));
       }
     }
-    return(dDot/me->length());
+    return sqrt(dDot/me->length());
   }
   SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
 }
@@ -454,6 +454,89 @@ geom::BoundingCuboid_sp chem__nvector_bounding_cuboid(NVector_sp coords, core::T
 }
 
 
+#define VREAL8_WIDTH 8
+typedef vecreal real;
+typedef vecreal real8 __attribute__((ext_vector_type(VREAL8_WIDTH)));
+
+CL_DEFUN vecreal chem__nvector_magnitude(NVector_sp vec) {
+  size_t end8 = (int)(vec->length()/VREAL8_WIDTH)*VREAL8_WIDTH;
+  real8 val8;
+  real val;
+  real sum2 = 0.0;
+  vecreal* vecv = &(*vec)[0];
+  for ( size_t idx = 0; idx < end8; idx++ ) {
+    val8 = {(vecv)[idx+0], (vecv)[idx+1], (vecv)[idx+2], (vecv)[idx+3], (vecv)[idx+4], (vecv)[idx+5], (vecv)[idx+6], (vecv)[idx+7] };
+    val8 = val8*val8;
+    sum2 += (val8)[idx+0] + (val8)[idx+1] + (val8)[idx+2] + (val8)[idx+3] + (val8)[idx+4] + (val8)[idx+5] + (val8)[idx+6] + (val8)[idx+7];
+  }
+  for ( size_t idx = end8; idx < vec->length(); idx++ ) {
+    val = (vecv)[idx];
+    val = val*val;
+    sum2 += val;
+  }
+  return sqrt(sum2);
+}
+
+CL_DEFUN vecreal chem__nvector_dot(NVector_sp veca, NVector_sp vecb) {
+  if (veca->length()!=vecb->length()) {
+    SIMPLE_ERROR("Mismatch in NVector lengths {} vs {}", veca->length(), vecb->length());
+  }
+  size_t end8 = (int)(veca->length()/VREAL8_WIDTH)*VREAL8_WIDTH;
+  real8 val8;
+  real8 vala8;
+  real8 valb8;
+  real val;
+  real sum2 = 0.0;
+  vecreal* vecva = &(*veca)[0];
+  vecreal* vecvb = &(*vecb)[0];
+  for ( size_t idx = 0; idx < end8; idx++ ) {
+    vala8 = {(vecva)[idx+0], (vecva)[idx+1], (vecva)[idx+2], (vecva)[idx+3], (vecva)[idx+4], (vecva)[idx+5], (vecva)[idx+6], (vecva)[idx+7] };
+    valb8 = {(vecvb)[idx+0], (vecvb)[idx+1], (vecvb)[idx+2], (vecvb)[idx+3], (vecvb)[idx+4], (vecvb)[idx+5], (vecvb)[idx+6], (vecvb)[idx+7] };
+    val8 = vala8*valb8;
+    sum2 += (val8)[0] + (val8)[1] + (val8)[2] + (val8)[3] + (val8)[4] + (val8)[5] + (val8)[6] + (val8)[7];
+  }
+  for ( size_t idx = end8; idx < veca->length(); idx++ ) {
+    val = (vecva)[idx]*(vecvb)[idx];
+    sum2 += val;
+  }
+  return sqrt(sum2);
+}
+
+
+CL_DEFUN void chem__nvector_add(NVector_sp result, NVector_sp veca, NVector_sp vecb) {
+  if (veca->length()!=vecb->length()) {
+    SIMPLE_ERROR("Mismatch in NVector lengths {} vs {}", veca->length(), vecb->length());
+  }
+  if (result->length()!=vecb->length()) {
+    SIMPLE_ERROR("Mismatch in NVector lengths result {} vs {}", result->length(), veca->length());
+  }
+  size_t end8 = (int)(veca->length()/VREAL8_WIDTH)*VREAL8_WIDTH;
+  real8 val8;
+  real8 vala8;
+  real8 valb8;
+  real val;
+  real sum2 = 0.0;
+  vecreal* vecvr = &(*result)[0];
+  vecreal* vecva = &(*veca)[0];
+  vecreal* vecvb = &(*vecb)[0];
+  for ( size_t idx = 0; idx < end8; idx++ ) {
+    vala8 = {(vecva)[idx+0], (vecva)[idx+1], (vecva)[idx+2], (vecva)[idx+3], (vecva)[idx+4], (vecva)[idx+5], (vecva)[idx+6], (vecva)[idx+7] };
+    valb8 = {(vecvb)[idx+0], (vecvb)[idx+1], (vecvb)[idx+2], (vecvb)[idx+3], (vecvb)[idx+4], (vecvb)[idx+5], (vecvb)[idx+6], (vecvb)[idx+7] };
+    val8 = vala8+valb8;
+    (vecvr)[idx+0] = val8[0];
+    (vecvr)[idx+1] = val8[1];
+    (vecvr)[idx+2] = val8[2];
+    (vecvr)[idx+3] = val8[3];
+    (vecvr)[idx+4] = val8[4];
+    (vecvr)[idx+5] = val8[5];
+    (vecvr)[idx+6] = val8[6];
+    (vecvr)[idx+7] = val8[7];
+  }
+  for ( size_t idx = end8; idx < veca->length(); idx++ ) {
+    val = (vecva)[idx]+(vecvb)[idx];
+    (vecvr)[idx] = val;
+  }
+}
 
 
 }

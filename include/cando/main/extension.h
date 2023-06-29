@@ -26,6 +26,26 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef extension_fwd_H
 #define extension_fwd_H
 
+#include <cstddef>
+#include <cstdint>
+
+#define VECREAL_DOUBLE 2
+#define VECREAL_FLOAT  1
+#define VECREAL VECREAL_DOUBLE
+typedef double vecreal;
+extern double safe_acos(double rad);
+extern double safe_asin(double rad);
+extern float  safe_acos(float rad);
+extern float  safe_asin(float rad);
+
+#define NUM_REAL VECREAL_DOUBLE
+typedef double  num_real;
+typedef int32_t num_int;
+
+#define NVECTOR_O_TYPE core::SimpleVector_double_O
+#define NVECTOR_sp_TYPE core::SimpleVector_double_sp
+
+
 namespace cando {
 // Store the number of doubles that fit into a SIMD register
 // global_simd_width

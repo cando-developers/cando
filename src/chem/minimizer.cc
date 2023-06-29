@@ -907,23 +907,25 @@ bool	Minimizer_O::_displayIntermediateMessage(
  * Steepest descent minimizer with or without preconditioning
  */
 void	Minimizer_O::_steepestDescent( int numSteps,
-                                       NVector_sp x,
+                                       NVector_sp pos,
                                        double forceTolerance )
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int		iRestartSteps;
   NVector_sp	force, m;
-  NVector_sp	s,dir,tv1,tv2;
+  NVector_sp	precon_dir,dir,tv1,tv2;
   double	forceMag, forceRmsMag,prevStep;
   double	delta0, deltaNew;
   double	eSquaredDelta0;
   double	step, fnew, dirMag;
+  core::DoubleFloat_sp dstep;
   double	cosAngle = 0.0;
   bool		steepestDescent;
   int		innerSteps;
   int		localSteps, k;
   bool          printedLatestMessage;
 
+  dstep = core::DoubleFloat_O::create(0.0);
   LOG("Checking status" );
   if ( this->_Status == minimizerError ) return;
   this->_Status = steepestDescentRunning;
@@ -938,11 +940,11 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 	/* Calculate how many conjugate gradient steps can be */
 	/* taken before a restart must be done */
 
-  iRestartSteps = x->size();
+  iRestartSteps = pos->size();
 	// Define NVectors
   force = NVector_O::create(iRestartSteps);
   this->_Force = force;
-  s = NVector_O::create(iRestartSteps);
+  precon_dir = NVector_O::create(iRestartSteps);
   LOG("step" );
   dir = NVector_O::create(iRestartSteps);
   tv1 = NVector_O::create(iRestartSteps);
@@ -951,11 +953,11 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 	// Done
   innerSteps = MIN(iRestartSteps,ITMAX);
   LOG("step" );
-  double fp = this->dTotalEnergyForce( x, force );
+  double fp = this->dTotalEnergyForce( pos, force );
   LOG("step" );
 //    r->inPlaceTimesScalar(-1.0);
 	//  no preconditioning
-  copyVector(s,force);
+  copyVector(precon_dir,force);
   LOG("Done initialization" );
 #if 0 //[
 	// TODO calculate preconditioner here
@@ -963,29 +965,29 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   switch ( preconditioner )
   {
   case noPreconditioner:
-      s->copy(force);
+      precon_dir->copy(force);
       break;
   case identityPreconditioner:
       m = NVector_O::create(iRestartSteps);
       m->fill(1.0);
-      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
+      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,precon_dir,force);
       break;
   case diagonalPreconditioner:
       m = NVector_O::create(iRestartSteps);
-      this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
+      this->_EnergyFunction->setupDiagonalPreconditioner(pos,m);
       LOG("Preconditioner max value: {}" , m->maxValue() );
       LOG("Preconditioner min value: {}" , m->minValue() );
       minVal = m->minValue();
       if ( minVal < 0.0 ) {
         m->addScalar(m,fabs(minVal)+1.0);
       }
-      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
+      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,precon_dir,force);
       break;
   default:
-      SIMPLE_ERROR("Unsupported preconditioner");
+      SIMPLE_ERROR("Unsupported preconditioner") 
   }
-#endif //]
-  copyVector(dir,s);
+#endif // 
+  copyVector(dir,precon_dir);
   deltaNew = dotProduct(force,dir,this->_Frozen);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
@@ -997,11 +999,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
     core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
   }
   {
-    while (1) 
-    { 
-      
-      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
-      
+    while (1) { 
 		//
 		// Absolute gradient test
 		//
@@ -1012,12 +1010,6 @@ void	Minimizer_O::_steepestDescent( int numSteps,
       		    //
 		    // Print intermediate status
 		    //
-      prevStep = step;
-      printedLatestMessage = false;
-      if ( this->_PrintIntermediateResults ) {
-        printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent);
-      }
-     
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
           if (!printedLatestMessage) {
@@ -1041,12 +1033,12 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 	    // Lets save the current conformation
 	    // before throwing this higher
 	    //
-        fp = dTotalEnergyForce( x, force );
-        this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
+        fp = dTotalEnergyForce( pos, force );
+        this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,force);
         ERROR(_sym_MinimizerExceededSD_MaxSteps, (ql::list() 
                                                << kw::_sym_minimizer << this->asSmartPtr()
                                                << kw::_sym_number_of_steps << core::make_fixnum(localSteps)
-                                               << kw::_sym_coordinates << x).result());
+                                               << kw::_sym_coordinates << pos).result());
       }
 //
 // Here we need to implement the three Progress tests
@@ -1093,7 +1085,18 @@ void	Minimizer_O::_steepestDescent( int numSteps,
           cosAngle = 0.0;
         }
 
-        this->lineSearch( &step, &fnew, x, dir, force, tv1, tv2, localSteps, stepReport );
+        this->lineSearch( &step, &fnew, pos, dir, force, tv1, tv2, localSteps, stepReport );
+        prevStep = step;
+        printedLatestMessage = false;
+        if ( this->_PrintIntermediateResults ) {
+          double tforceRmsMag = rmsMagnitude(force,this->_Frozen);
+          printedLatestMessage = this->_displayIntermediateMessage(step,fp,tforceRmsMag,cosAngle,steepestDescent);
+        }
+     
+        if (this->_StepCallback.notnilp()) {
+          dstep = core::DoubleFloat_O::create(step);
+          core::eval::funcall(this->_StepCallback, pos, force, dstep, dir );
+        }
         if (chem__verbose(5)) {
           core::clasp_write_string(fmt::format(" {}  lineSearch step-> {}\n" , __FUNCTION__ , step ));
         }
@@ -1101,14 +1104,14 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         if ( prevStep == 0.0 && step == 0.0 ) {
           ERROR(_sym_MinimizerStuck, (ql::list()
                                       << kw::_sym_minimizer << this->asSmartPtr()
-                                      << kw::_sym_coordinates << x).result());
+                                      << kw::_sym_coordinates << pos).result());
           
         }
 
-        inPlaceAddTimesScalar(x, dir, step, this->_Frozen );
+        inPlaceAddTimesScalar( pos, dir, step, this->_Frozen );
 
 		    // r = -f'(x)   r == force!!!!
-        fp = dTotalEnergyForce( x, force );
+        fp = dTotalEnergyForce( pos, force );
         if ( this->_DebugOn ) {
           this->stepReport(stepReport,fp,force);
         }
@@ -1117,7 +1120,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         this->validateForce(x,force);
 #endif //]
 		    // Don't use preconditioning
-        copyVector(s,force);
+        copyVector(precon_dir,force);
 #if 0 //[
         switch ( preconditioner ) {
         case noPreconditioner:
@@ -1146,7 +1149,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
             break;
         }
 #endif //]
-        copyVector(dir,s);
+        copyVector(dir,precon_dir);
         if ( this->_DebugOn )
         {
           ASSERTNOTNULL(this->_Log);
@@ -1163,8 +1166,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
     this->_displayIntermediateMessage(step,fnew,forceRmsMag,cosAngle,steepestDescent);
   }
-  fp = dTotalEnergyForce( x, force );
-  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
+  fp = dTotalEnergyForce( pos, force );
+  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,force);
   LOG("Wrote coordinates and force to atoms" );
   if ( this->_DebugOn )
   {
@@ -1232,6 +1235,31 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
     // TODO calculate preconditioner here
     // s = M^(-1)r rather than just copying it from r
   copyVector(s,force);
+#if 0 //[
+  switch ( preconditioner ) {
+  case noPreconditioner:
+      s->copy(force);
+      break;
+  case diagonalPreconditioner:
+      diag = NVector_O::create(iRestartSteps);
+      this->_EnergyFunction->setupDiagonalPreconditioner(x,diag);
+      LOG("Preconditioner max value: {}" , diag->maxValue() );
+      LOG("Preconditioner min value: {}" , diag->minValue() );
+      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(diag,s,force);
+      break;
+  case hessianPreconditioner:
+      m = new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricDiagonalLower);
+      ldlt=new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricDiagonalLower);
+      m->fill(0.0);
+      ldlt->fill(0.0);
+      this->_EnergyFunction->setupHessianPreconditioner(x,m);
+      this->_EnergyFunction->unconventionalModifiedCholeskyFactorization(m,ldlt);
+      this->_EnergyFunction->backSubstituteLDLt(ldlt,s,force);
+      break;
+  default:
+      SIMPLE_ERROR("Unknown preconditioner option");
+  }
+#endif //]
   copyVector(d,s);
   deltaNew = dotProduct(force,d,this->_Frozen);
   delta0 = deltaNew;
@@ -1246,7 +1274,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   }
   {
     while (1) {
-      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
+      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x,force);
 	    //
 	    // Absolute gradient test
 	    //
@@ -1387,6 +1415,33 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 
 		// No preconditioning
         copyVector(s,force);
+
+#if 0 //[
+		// Calculate preconditioner M = f''(x)
+		// s = M^(-1)r
+        switch ( preconditioner ) {
+        case noPreconditioner:
+            s->copy(force);
+            break;
+        case diagonalPreconditioner:
+            this->_EnergyFunction->setupDiagonalPreconditioner(x,diag);
+            LOG("Preconditioner max value: {}" , diag->maxValue() );
+            LOG("Preconditioner min value: {}" , diag->minValue() );
+            this->_EnergyFunction->backSubstituteDiagonalPreconditioner(diag,s,force);
+            break;
+        case hessianPreconditioner:
+		    //		refactor++;
+		    //		if ( refactor >= 5 ) {
+            this->_EnergyFunction->setupHessianPreconditioner(x,m);
+            this->_EnergyFunction->unconventionalModifiedCholeskyFactorization(m,ldlt);
+            refactor = 0;
+		    //		}
+            this->_EnergyFunction->backSubstituteLDLt(ldlt,s,force);
+            break;
+        default:
+            SIMPLE_ERROR("Unknown preconditioner option");
+        }
+#endif //]
         deltaNew = dotProduct(force,s,this->_Frozen);		// deltaNew = r.r
         beta = (deltaNew-deltaMid)/deltaOld;
         k = k + 1;
@@ -1681,7 +1736,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
     LOG("Starting loop" );
     while ( 1 ) {
 
-      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,xK);
+      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,xK,forceK);
 
       if ( this->_DebugOn )
       {

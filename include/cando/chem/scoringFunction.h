@@ -236,11 +236,13 @@ class ScoringFunctionEnergy_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,ScoringFunctionEnergy_O,"ScoringFunctionEnergy",core::CxxObject_O);
 public:
-
-  ScoringFunctionEnergy_O() {};
+  core::T_sp  _Terms;
+public:
+  ScoringFunctionEnergy_O() : _Terms(nil<core::T_O>()) {};
 
   virtual string energyComponentsAsString() {SUBIMP();};
-  virtual void setEnergy(core::T_sp component, double energy ) {SUBIMP();};
+  virtual void setEnergy(core::T_sp component, double energy );
+  core::T_sp   getTerms() const { return this->_Terms; };
 };
 
 void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp energyComponentName, double energy );

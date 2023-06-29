@@ -53,6 +53,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/serveEvent/serveEventPackage.h>
 #include <clasp/asttooling/asttoolingPackage.h>
 #include <clasp/core/pathname.h>
+#include <cando/main/extension.h>
 #include <cando/geom/geomPackage.h>
 #include <cando/units/unitsPackage.h>
 #include <cando/adapt/adaptPackage.h>
@@ -70,6 +71,18 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 namespace cando {
+
+size_t global_simd_width = 4; // Support AVX2 by default
+
+CL_DOCSTRING("Return the simd width - the number of doubles that fit in a simd register (1,2,4,8)")
+CL_DEFUN size_t core__simd_width() {
+  return global_simd_width;
+}
+
+CL_DOCSTRING("Set the simd width to use - the number of doubles that fit in a simd register (1,2,4,8)")
+CL_DEFUN void core__set_simd_width(size_t width) {
+  global_simd_width = width;
+}
 
 DOCGROUP(cando);
 CL_DEFUN core::T_sp core__leap_command_line_scripts()

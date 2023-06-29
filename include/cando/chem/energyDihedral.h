@@ -258,6 +258,32 @@ public:
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec);
 
+  virtual double evaluateAllComponentSimd4(
+      gctools::Vec0<EnergyDihedral>::iterator di_start4,
+      gctools::Vec0<EnergyDihedral>::iterator di_end4,
+      ScoringFunction_sp scorer,
+      NVector_sp 	pos,
+      bool 		calcForce,
+      gc::Nilable<NVector_sp> 	force,
+      bool		calcDiagonalHessian,
+      bool		calcOffDiagonalHessian,
+      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+      gc::Nilable<NVector_sp>	hdvec,
+      gc::Nilable<NVector_sp> dvec);
+
+  virtual double evaluateAllComponentSimd2(
+      gctools::Vec0<EnergyDihedral>::iterator di_start2,
+      gctools::Vec0<EnergyDihedral>::iterator di_end2,
+      ScoringFunction_sp scorer,
+      NVector_sp 	pos,
+      bool 		calcForce,
+      gc::Nilable<NVector_sp> 	force,
+      bool		calcDiagonalHessian,
+      bool		calcOffDiagonalHessian,
+      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+      gc::Nilable<NVector_sp>	hdvec,
+      gc::Nilable<NVector_sp> dvec);
+
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
       NVector_sp pos );
 

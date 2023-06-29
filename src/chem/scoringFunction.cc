@@ -383,10 +383,16 @@ CL_DEFUN core::List_sp chem__all_components(ScoringFunction_sp scoring_function)
   return scoring_function->allComponents();
 }
 
+void ScoringFunctionEnergy_O::setEnergy( core::T_sp name, double energy ) {
+  core::Cons_sp pair = core::Cons_O::create(name, mk_double_float(energy));
+  this->_Terms = core::Cons_O::create(pair,this->_Terms);
+}
 
 
 void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp name, double energy ) {
-
+  if (componentEnergy.notnilp()) {
+    gc::As<ScoringFunctionEnergy_sp>(componentEnergy)->setEnergy( name, energy );
+  }
 }
 
 };

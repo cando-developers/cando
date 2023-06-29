@@ -129,9 +129,6 @@ int	_areValuesClose( double numVal, double analVal, const char* funcName, const 
   return false;
 }
 
-//
-// Special symbols for figuring out active interactions
-//
 SYMBOL_EXPORT_SC_(ChemPkg,STARsecondaryAmideSmartsSTAR);
 void energyFunction_initializeSmarts()
 {
@@ -643,28 +640,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
   return totalEnergy;
 }
 
-
-string EnergyFunctionEnergy_O::energyComponentsAsString()
-{
-  IMPLEMENT_ME();
-  #if 0
-  stringstream ss;
-  ss << fmt::format("Stretch({})" , this->_Stretch->getEnergy() ) << std::endl;
-  ss << fmt::format("Angle({})" , this->_Angle->getEnergy() ) << std::endl;
-  ss << fmt::format("Dihedral({})" , this->_Dihedral->getEnergy() ) << std::endl;
-  ss << fmt::format("Nonbond({})" , this->_Nonbond->getEnergy() ) << std::endl;
-  ss << fmt::format("ChiralRestraint({})" , this->_ChiralRestraint->getEnergy() ) << std::endl;
-  ss << fmt::format("DihedralRestraint({})" , this->_DihedralRestraint->getEnergy() ) << std::endl;
-  ss << fmt::format("AnchorRestraint({})" , this->_AnchorRestraint->getEnergy() ) << std::endl;
-  ss << fmt::format("FixedNonbondRestraint({})" , this->_FixedNonbondRestraint->getEnergy() ) << std::endl;
-  for ( auto cur : this->_OtherEnergyComponents ) {
-    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
-    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
-    ss << fmt::format("{}({})" , _rep_(oCar(pair)) , component->getEnergy()) <<std::endl;
-  }
-  return ss.str();
-  #endif
-}
 
 
 /*!
@@ -2070,32 +2045,6 @@ CL_DEFMETHOD string EnergyFunction_O::summarizeBeyondThresholdInteractionsAsStri
 }
 
 
-CL_LISPIFY_NAME("summarizeEnergyAsString");
-CL_DEFMETHOD string	EnergyFunctionEnergy_O::summarizeEnergyAsString()
-{
-  IMPLEMENT_ME();
-  #if 0
-  stringstream	ss;
-  ss.str("");
-  ss << this->_Stretch->summarizeEnergyAsString();
-  ss << this->_Angle->summarizeEnergyAsString();
-  ss << this->_Dihedral->summarizeEnergyAsString();
-  ss << this->_Nonbond->summarizeEnergyAsString();
-  ss << this->_DihedralRestraint->summarizeEnergyAsString();
-  ss << this->_ChiralRestraint->summarizeEnergyAsString();
-  ss << this->_AnchorRestraint->summarizeEnergyAsString();
-  ss << this->_FixedNonbondRestraint->summarizeEnergyAsString();
-  for ( auto cur : this->_OtherEnergyComponents ) {
-    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
-    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
-    ss << component->summarizeEnergyAsString();
-  }
-  ss<< "             Total energy: " << this->_TotalEnergy << std::endl;
-  return ss.str();
-  #endif
-}
-
-
 
 CL_LISPIFY_NAME("hasMissingParameters");
 CL_DEFMETHOD bool	EnergyFunction_O::hasMissingParameters()
@@ -2186,5 +2135,7 @@ EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteraction)
   }
   return me;
 }
+
+
 
 };

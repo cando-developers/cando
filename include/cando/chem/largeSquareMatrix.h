@@ -266,7 +266,7 @@ public:
     }
   }
 
-#if 1  
+#if 0
   template <typename Func>
   void loopOverColumnLowerDiagonal(uint col, uint start_row, uint end_row, Func f) {
     if (!this->_col_OptimizationDone) this->doColumnOptimization();

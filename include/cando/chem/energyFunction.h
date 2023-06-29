@@ -366,10 +366,7 @@ namespace chem {
   class EnergyFunctionEnergy_O : public ScoringFunctionEnergy_O
   {
     LISP_CLASS(chem,ChemPkg,EnergyFunctionEnergy_O,"EnergyFunctionEnergy",ScoringFunctionEnergy_O);
-  public:
-
-    string energyComponentsAsString();
-    string summarizeEnergyAsString();
+    
   };
 
     bool inAtomSet(core::T_sp atomSet, Atom_sp atom);

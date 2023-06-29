@@ -30,8 +30,8 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
   typedef vecreal Vector_real;
   // vecreal must match component of SimpleVector_XXX_O
-  typedef core::SimpleVector_float_O NVector_O;
-  typedef core::SimpleVector_float_sp NVector_sp;
+  typedef NVECTOR_O_TYPE  NVector_O;
+  typedef NVECTOR_sp_TYPE NVector_sp;
 };
 
 #endif

@@ -244,10 +244,10 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
       (finish-output t)
-      (minimize-no-fail min))
+      (minimize-no-fail min :verbose verbose))
     (chem:set-option energy-function 'chem:nonbond-term t)
     (finish-output t)
-    (minimize-no-fail min)
+    (minimize-no-fail min :verbose verbose)
     (finish-output t))
   matter)
 

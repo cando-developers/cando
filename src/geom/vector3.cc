@@ -278,7 +278,7 @@ double safe_acos( double d )
   unlikely_if (isnan(ac)) {
     unlikely_if ( d >= 1.0 ) return(0.0);
     unlikely_if ( d <= -1.0 ) return(core::numerics::pi);
-    SIMPLE_ERROR("Could not calculate acos of %lf", d);
+    SIMPLE_ERROR("Could not calculate acos of {}", d);
   }
   return ac;
 }
@@ -289,7 +289,7 @@ float safe_acos( float d )
   unlikely_if (isnan(ac)) {
     unlikely_if ( d >= 1.0 ) return(0.0);
     unlikely_if ( d <= -1.0 ) return(core::numerics::pi);
-    SIMPLE_ERROR("Could not calculate acos of %lf", d);
+    SIMPLE_ERROR("Could not calculate acos of {}", d);
   }
   return ac;
 }
@@ -308,7 +308,7 @@ double safe_asin( double d )
   unlikely_if(isnan(as)) {
     unlikely_if ( d >= 1.0 ) return(core::numerics::pi/2.0);
     unlikely_if ( d <= -1.0 ) return(-core::numerics::pi/2.0);
-    SIMPLE_ERROR("Could not calculate asin of %lf", d);
+    SIMPLE_ERROR("Could not calculate asin of {}", d);
   }
   return as;
 }
@@ -319,7 +319,7 @@ float safe_asin( float d )
   unlikely_if(isnan(as)) {
     unlikely_if ( d >= 1.0 ) return(core::numerics::pi/2.0);
     unlikely_if ( d <= -1.0 ) return(-core::numerics::pi/2.0);
-    SIMPLE_ERROR("Could not calculate asin of %lf", d);
+    SIMPLE_ERROR("Could not calculate asin of {}", d);
   }
   return as;
 }
@@ -751,12 +751,12 @@ CL_DEFUN core::T_sp geom__vecreal_type() {
 
 CL_DEFUN core::T_sp geom__vecreal(core::T_sp val) {
 #if VECREAL==VECREAL_DOUBLE
-  if (val.single_float_p()) {
-    return core::make_double_float(val.unsafe_single_float());
-  } else if (gc::IsA<cl::DoubleFloat_sp>(val)) {
+  if (val.single_floatp()) {
+    return mk_double_float(val.unsafe_single_float());
+  } else if (gc::IsA<core::DoubleFloat_sp>(val)) {
     return val;
   } else {
-    TYPE_ERROR(val,core::Cons_O::create_list(cl::_sym_double_float, cl::_sym_single_float));
+    TYPE_ERROR(val,core::Cons_O::createList(cl::_sym_double_float, cl::_sym_single_float));
   }
 #else
   if (val.single_floatp()) {

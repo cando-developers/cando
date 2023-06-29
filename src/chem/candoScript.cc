@@ -473,55 +473,11 @@ CL_DEFUN bool chem__overlap_solvent(NVector_sp solute_xvec,
   return true;
 }
 
-typedef float float16 __attribute__((ext_vector_type(16)));
-typedef float float8 __attribute__((ext_vector_type(8)));
-typedef float float1 __attribute__((ext_vector_type(1)));
 
-CL_DEFUN core::T_sp chem__vector16_test(size_t n, float val)
-{
-  float a = 0.0;
-  float16 x, y;
-  for ( size_t z=0; z<16; z++ ) {
-    x[z] = (z+1.0)*val;
-  }
-  y = 0.0;
-  for ( size_t ii=0; ii<n ; ii++ ) {
-    y = y + x;
-  }
-  ql::list ll;
-  for ( size_t zz=0; zz<16; zz++ ) {
-    ll << core::make_single_float(y[zz]);
-  }
-  return ll.cons();
-}
 
-CL_DEFUN core::T_sp chem__vector8_test(size_t n, float val)
-{
-  float a = 0.0;
-  float8 x = {val,2.0*val,3.0*val,4.0*val,5.0*val,6.0*val,7.0*val,8.0*val};
-  float8 y = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-  for ( size_t ii=0; ii<n ; ii++ ) {
-    y = y + x;
-  }
-  return core::Cons_O::createList(
-      core::make_single_float(y[0]),
-      core::make_single_float(y[1]),
-      core::make_single_float(y[2]),
-      core::make_single_float(y[3]),
-      core::make_single_float(y[4]),
-      core::make_single_float(y[5]),
-      core::make_single_float(y[6]),
-      core::make_single_float(y[7]) );
-}
 
-CL_DEFUN core::T_sp chem__vector1_test(size_t n, float val)
-{
-  float a = 0.0;
-  float1 x = {val};
-  float1 y = {0.0};
-  for ( size_t ii=0; ii<n ; ii++ ) {
-    y = y + x;
-  }
-  return core::Cons_O::createList(core::make_single_float(y[0]));
-}
+
+
+
+
 };

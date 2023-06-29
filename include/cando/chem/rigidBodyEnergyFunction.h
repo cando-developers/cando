@@ -186,7 +186,6 @@ public:
         _BoundingBox(boundingBox){};
 };
 
-  SMART(RigidBodyEnergyFunctionEnergy);
   class RigidBodyEnergyFunctionEnergy_O : public ScoringFunctionEnergy_O
   {
     LISP_CLASS(chem,ChemPkg,RigidBodyEnergyFunctionEnergy_O,"RigidBodyEnergyFunctionEnergy",ScoringFunctionEnergy_O);
