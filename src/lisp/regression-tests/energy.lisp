@@ -1,44 +1,9 @@
+(in-package #:clasp-tests)
 
-#+(or)
-(progn
-  (defparameter c1 (chem:make-atom :C1 :C))
-  (defparameter c2 (chem:make-atom :C2 :C))
-  (defparameter c3 (chem:make-atom :C3 :C))
-  (defparameter c4 (chem:make-atom :C4 :C))
-  (defparameter c5 (chem:make-atom :C5 :C))
-  (defparameter c6 (chem:make-atom :C6 :C))
+(defparameter agg (chem:load-mol2 "sys:extensions;cando;src;lisp;regression-tests;data;hexapeptide.mol2"))
+(chem:setf-force-field-name (cando:mol agg 0)  :smirnoff)
 
-  (chem:bond-to c1 c2 :single-bond)
-  (chem:bond-to c2 c3 :single-bond)
-  (chem:bond-to c3 c4 :single-bond)
-  (chem:bond-to c4 c5 :single-bond)
-  (chem:bond-to c5 c6 :single-bond)
-  (chem:bond-to c6 c1 :single-bond)
-
-  (defparameter res (chem:make-residue :R))
-  (chem:add-atom res c1)
-  (chem:add-atom res c2)
-  (chem:add-atom res c3)
-  (chem:add-atom res c4)
-  (chem:add-atom res c5)
-  (chem:add-atom res c6)
-
-  (defparameter mol (chem:make-molecule :mol))
-  (chem:add-matter mol res)
-  (chem:setf-force-field-name mol :smirnoff)
-  (defparameter agg (chem:make-aggregate :agg))
-  (chem:add-matter agg mol)
-
-  (chem:fill-in-implicit-hydrogens agg) 
-
-  (jostle agg)
-  )
-
-
-(defparameter agg (load-mol2 "./data/hexapeptide.mol2"))
-(chem:setf-force-field-name (mol agg 0)  :smirnoff)
-
-(leap:load-smirnoff-params (probe-file "./data/force-field.offxml"))
+(leap:load-smirnoff-params (probe-file "sys:extensions;cando;src;lisp;regression-tests;data;force-field.offxml"))
 
 
 (defparameter ef (chem:make-energy-function :matter agg))
@@ -148,61 +113,13 @@
 (defparameter force-mag (chem:nvector-magnitude force))
 
 (defparameter delta (abs (- energy 20937035.650304314d0)))
-(unless (< delta 0.0000000001)
-  (format t "Energy doesn't match expected value delta = ~f~%" delta))
 
-(unless (< (abs (- expected-force-mag force-mag)) 0.000001)
-  (format t "Force magnitudes don't match~%"))
+(test-true energy-delta (< delta 0.0000000001))
+
+(test-true force-mag (< (abs (- expected-force-mag force-mag)) 0.000001))
 
 (defparameter force-acos (/ (chem:nvector-dot expected-force force) expected-force-mag force-mag))
 
-(unless (< force-acos 0.0001)
-  (error "The force vectors are not parallel"))
+(test-true force-acos (< force-acos 0.0001))
 
 (format t "force-acos = ~f~%" force-acos)
-(core:quit)
-
-#+(or)
-(progn
-
-(chem:load-coordinates-into-vector ef pos)
-
-
-(optimize-structure agg :turn-off-nonbond nil)
-
-(defparameter dih (chem:energy-function/get-dihedral-component ef))
-
-(defun dih-energy (dih ef pos)
-  (chem:evaluate-all-component dih ef pos nil nil nil nil nil nil nil nil))
-
-;;(setf chem:*verbose* 1)
-(core:set-simd-width 1)
-(defparameter serial-dih-energy (dih-energy dih ef pos))
-
-
-(core:set-simd-width 4)
-(defparameter simd-dih-energy (dih-energy dih ef pos))
-
-(progn
-  (let ((simd-width 8))
-    (format t "simd-width ~a~%" simd-width)
-    (core:set-simd-width simd-width)
-    (time (dotimes (i 1000000) (dih-energy dih ef pos))))
-  (let ((simd-width 4))
-    (format t "simd-width ~a~%" simd-width)
-    (core:set-simd-width simd-width)
-    (time (dotimes (i 1000000) (dih-energy dih ef pos))))
-  (let ((simd-width 2))
-    (format t "simd-width ~a~%" simd-width)
-    (core:set-simd-width simd-width)
-    (time (dotimes (i 1000000) (dih-energy dih ef pos))))
-  (let ((simd-width 1))
-    (format t "simd-width ~a~%" simd-width)
-    (core:set-simd-width simd-width)
-    (time (dotimes (i 1000000) (dih-energy dih ef pos))))
-  )
-(format t "Done~%")
-
-
-
-)
