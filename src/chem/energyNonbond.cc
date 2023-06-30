@@ -319,9 +319,9 @@ num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {energyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {energyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyVdw+=(e);}
 
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
@@ -458,9 +458,9 @@ num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {energyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {energyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyVdw+=(e);}
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE

@@ -294,11 +294,13 @@ bool		calcOffDiagonalHessian = true;
 #define	ANGLE_FORCE_ACCUMULATE(i,o,v) {}
 #undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-	m->addToElement((i1)+(o1),(i2)+(o2),v);\
+    ASSERT_NOT_NAN(v); \
+    m->addToElement((i1)+(o1),(i2)+(o2),v);\
 }
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-	m->addToElement((i1)+(o1),(i2)+(o2),v);\
+    ASSERT_NOT_NAN(v); \
+    m->addToElement((i1)+(o1),(i2)+(o2),v);\
 }
 #define ANGLE_CALC_FORCE
 #define ANGLE_CALC_DIAGONAL_HESSIAN
@@ -368,7 +370,7 @@ num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef ANGLE_SET_POSITION
 #define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(e) termEnergy += (e);
+#define ANGLE_ENERGY_ACCUMULATE(e) { ASSERT_NOT_NAN(e); termEnergy += (e); }
 #undef	ANGLE_FORCE_ACCUMULATE
 #undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE

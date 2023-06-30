@@ -176,7 +176,8 @@ inline string	atomLabel(Atom_sp a)
 
 #define	ForceAcc(i,o,v) {\
       if ( hasForce ) {\
-          force->setElement((i)+(o),(v)+force->getElement((i)+(o)));\
+        ASSERT_NOT_NAN(v); \
+        force->setElement((i)+(o),(v)+force->getElement((i)+(o)));\
       }\
   }
 
@@ -184,15 +185,46 @@ inline string	atomLabel(Atom_sp a)
 // Accumulate an off diagonal Hessian element
 //
 #define	OffDiagHessAcc(i1,o1,i2,o2,v) {\
-      if ( hasHessian ) {\
-          hessian->addToElement((i1)+(o1),(i2)+(o2),v);\
-      }\
-      if ( hasHdAndD ) {\
-          hdvec->addToElement((i1)+(o1),v*dvec->element((i2)+(o2)));\
-          hdvec->addToElement((i2)+(o2),v*dvec->element((i1)+(o1)));\
-      }\
+    if ( hasHessian ) {\
+      ASSERT_NOT_NAN(v); \
+      hessian->addToElement((i1)+(o1),(i2)+(o2),v);\
+    }\
+    if ( hasHdAndD ) {\
+      auto v22 = v*dvec->element((i2)+(o2));\
+      auto v11 = v*dvec->element((i1)+(o1));\
+      ASSERT_NOT_NAN(v22);\
+      ASSERT_NOT_NAN(v11);\
+      hdvec->addToElement((i1)+(o1),v22); \
+      hdvec->addToElement((i2)+(o2),v11); \
+    }\
   }
 
+//
+// Accumulate a diagonal Hessian element
+//
+#define	DiagHessAcc(i1,o1,i2,o2,v) {\
+    if ( hasHessian ) {\
+      ASSERT_NOT_NAN(v); \
+      hessian->addToElement((i1)+(o1),(i2)+(o2),v);\
+    }\
+    if ( hasHdAndD ) {\
+      auto vd = v*dvec->element((i1)+(o1));\
+      ASSERT_NOT_NAN(vd); \
+      hdvec->addToElement((i1)+(o1),vd); \
+    }\
+  }
+
+
+
+#define	ALL_ENERGY_COMPONENTS(msg) {		\
+    this->_Stretch->msg; 			\
+      hdvec->addToElement((i1)+(o1),v*dvec->element((i2)+(o2)));\
+      hdvec->addToElement((i2)+(o2),v*dvec->element((i1)+(o1)));\
+    }\
+  }
+
+#if 0
+// This is a duplicate of the one above - why is it here?  Delete it
 //
 // Accumulate a diagonal Hessian element
 //
@@ -204,7 +236,7 @@ inline string	atomLabel(Atom_sp a)
           hdvec->addToElement((i1)+(o1),v*dvec->element((i1)+(o1)));\
       }\
   }
-
+#endif
 
 
 #define	ALL_ENERGY_COMPONENTS(msg) {		\
