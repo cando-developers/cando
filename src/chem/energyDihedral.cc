@@ -547,7 +547,7 @@ double	EnergyDihedral_O::evaluateAllComponentSingle(
 #undef	DIHEDRAL_SET_POSITION
 #define	DIHEDRAL_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) totalEnergy += (e);
+#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); totalEnergy += (e); }
 #undef	DIHEDRAL_FORCE_ACCUMULATE
 #undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
