@@ -94,7 +94,7 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }
 
-double	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                      NVector_sp 	pos,
                                                      core::T_sp componentEnergy,
                                                      bool 		calcForce,
@@ -106,7 +106,7 @@ double	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                      gc::Nilable<NVector_sp> 	dvec )
 {
 // Evaluate everything using terms
-  double totalEnergy = this->evaluateTerms(pos,componentEnergy,
+  num_real totalEnergy = this->evaluateTerms(pos,componentEnergy,
                                            calcForce,force,
                                            calcDiagonalHessian, calcOffDiagonalHessian, hessian,hdvec,dvec);
   return totalEnergy;
@@ -114,7 +114,7 @@ double	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     
     
 
-double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
+num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
                                              core::T_sp         componentEnergy,
                                              bool 		calcForce,
                                              gc::Nilable<NVector_sp> 	force,
@@ -129,7 +129,7 @@ double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-  double totalEnergy = 0.0;
+  num_real totalEnergy = 0.0;
 #define Log(x) log(x)
 #define EREP_CALC_FORCE
 #define EREP_CALC_DIAGONAL_HESSIAN
@@ -152,11 +152,11 @@ double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 
 //  vecreal* coordinates_ptr = (vecreal*)(pos->rowMajorAddressOfElement_(0));
 //  vecreal* force_ptr = (vecreal*)(force->rowMajorAddressOfElement_(0));
-  double x1,y1,z1,x2,y2,z2,crep;
-  double dx, dy, dz;
-  double dsq, ERepDistance;
-  double crep_over_dsq;
-  double cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
+  num_real x1,y1,z1,x2,y2,z2,crep;
+  num_real dx, dy, dz;
+  num_real dsq, ERepDistance;
+  num_real crep_over_dsq;
+  num_real cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
   for ( size_t index = 0; index<this->_Terms.size(); ++index ) {
     EnergySketchNonbond& ea = this->_Terms[index];
     if (this->_FreezeFlags&ea._FreezeFlags) continue;

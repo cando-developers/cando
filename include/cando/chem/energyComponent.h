@@ -148,28 +148,28 @@ inline string	atomLabel(Atom_sp a)
 
 
 #define	TEST_FORCE( func, delta, argLow, argHigh, term, idx ) {	\
-    double eLow = func argLow;\
-    double eHigh = func argHigh;\
-    double numForce = -(eHigh-eLow)/(delta);\
+    num_real eLow = func argLow;\
+    num_real eHigh = func argHigh;\
+    num_real numForce = -(eHigh-eLow)/(delta);\
     LOG(("eHigh = %le eLow = %le delta = %le") , (eHigh) , (eLow) , (delta) ); \
     LOG(("numForce = %le") , numForce );			\
     if ( !_areValuesClose( numForce, term, #func, #term, idx ) ) { fails++; };\
   }
 
 #define	TEST_DIAGONAL_HESSIAN( func, delta, argLow, argMiddle, argHigh, term, idx ) {\
-    double eLow = func argLow;\
-    double eMiddle = func argMiddle;\
-    double eHigh = func argHigh;\
-    double numHessian = (eHigh+eLow-2.0*eMiddle)/(((delta)/2.0)*((delta)/2.0));\
+    num_real eLow = func argLow;\
+    num_real eMiddle = func argMiddle;\
+    num_real eHigh = func argHigh;\
+    num_real numHessian = (eHigh+eLow-2.0*eMiddle)/(((delta)/2.0)*((delta)/2.0));\
     if ( !_areValuesClose( numHessian, term, #func, #term, idx ) ) { fails++; };\
   }
 
 #define	TEST_OFF_DIAGONAL_HESSIAN( func, delta, argMM, argPM, argMP, argPP, term, idx ) {\
-    double eMM = func argMM;\
-    double eMP = func argMP;\
-    double ePM = func argPM;\
-    double ePP = func argPP;\
-    double numHessian = ((ePP-ePM)-(eMP-eMM))/(delta*delta);\
+    num_real eMM = func argMM;\
+    num_real eMP = func argMP;\
+    num_real ePM = func argPM;\
+    num_real ePP = func argPP;\
+    num_real numHessian = ((ePP-ePM)-(eMP-eMM))/(delta*delta);\
     if ( !_areValuesClose( numHessian, term, #func, #term, idx ) ) { fails++; };\
   }
 
@@ -291,7 +291,7 @@ public:
 
   virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteraction);
   
-  CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
+  CL_DEFMETHOD virtual	num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                                      NVector_sp 	pos,
                                                      core::T_sp componentEnergy,
                                                      bool 		calcForce,

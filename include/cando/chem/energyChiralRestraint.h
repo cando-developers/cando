@@ -127,12 +127,12 @@ struct	from_object<chem::EnergyChiralRestraint>
 namespace chem {
 
 
-double	_evaluateEnergyOnly_ChiralRestraint(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double x3, double y3, double z3,
-		double x4, double y4, double z4,
-		double K, double CO );
+num_real	_evaluateEnergyOnly_ChiralRestraint(
+		num_real x1, num_real y1, num_real z1,
+		num_real x2, num_real y2, num_real z2,
+		num_real x3, num_real y3, num_real z3,
+		num_real x4, num_real y4, num_real z4,
+		num_real K, num_real CO );
 
 
 
@@ -171,7 +171,7 @@ public:
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,

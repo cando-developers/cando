@@ -160,13 +160,13 @@ struct	from_object<chem::EnergyDihedral>
 
 namespace chem {
 
-double  _evaluateEnergyOnly_Dihedral(
-                double x1, double y1, double z1,
-                double x2, double y2, double z2,
-                double x3, double y3, double z3,
-                double x4, double y4, double z4,
-                double V, double DN, int IN,
-                double cosPhase, double sinPhase );
+num_real  _evaluateEnergyOnly_Dihedral(
+                num_real x1, num_real y1, num_real z1,
+                num_real x2, num_real y2, num_real z2,
+                num_real x3, num_real y3, num_real z3,
+                num_real x4, num_real y4, num_real z4,
+                num_real V, num_real DN, int IN,
+                num_real cosPhase, num_real sinPhase );
 
 
 
@@ -221,7 +221,7 @@ public:
     
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,
@@ -232,7 +232,7 @@ public:
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec);
 
-  virtual double evaluateAllComponentSingle(
+  virtual num_real evaluateAllComponentSingle(
       gctools::Vec0<EnergyDihedral>::iterator di_start,
       gctools::Vec0<EnergyDihedral>::iterator di_end,
       ScoringFunction_sp scorer,
@@ -259,7 +259,7 @@ public:
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec);
 
-  virtual double evaluateAllComponentSimd4(
+  virtual num_real evaluateAllComponentSimd4(
       gctools::Vec0<EnergyDihedral>::iterator di_start4,
       gctools::Vec0<EnergyDihedral>::iterator di_end4,
       ScoringFunction_sp scorer,
@@ -272,7 +272,7 @@ public:
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec);
 
-  virtual double evaluateAllComponentSimd2(
+  virtual num_real evaluateAllComponentSimd2(
       gctools::Vec0<EnergyDihedral>::iterator di_start2,
       gctools::Vec0<EnergyDihedral>::iterator di_end2,
       ScoringFunction_sp scorer,

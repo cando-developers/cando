@@ -63,7 +63,7 @@ core::List_sp EnergyDihedralRestraint::encode() const {
 }
 
 
-double	EnergyDihedralRestraint::getAngle()
+double EnergyDihedralRestraint::getAngle()
 {
     Vector3	pos1, pos2, pos3, pos4;
     pos1 = this->_Atom1->getPosition();
@@ -76,15 +76,15 @@ double	EnergyDihedralRestraint::getAngle()
 //
 // Copy this from implementAmberFunction.cc
 //
-double	_evaluateEnergyOnly_ImproperRestraint(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double x3, double y3, double z3,
-		double x4, double y4, double z4,
-		double K, double L, double U )
+num_real	_evaluateEnergyOnly_ImproperRestraint(
+		num_real x1, num_real y1, num_real z1,
+		num_real x2, num_real y2, num_real z2,
+		num_real x3, num_real y3, num_real z3,
+		num_real x4, num_real y4, num_real z4,
+		num_real K, num_real L, num_real U )
 {
-double	EraseLinearDihedral;
-double	UShift, PhiShift;
+num_real	EraseLinearDihedral;
+num_real	UShift, PhiShift;
 bool	RestraintActive;
 
 #undef	IMPROPER_RESTRAINT_SET_PARAMETER
@@ -204,9 +204,9 @@ bool		calcOffDiagonalHessian = true;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include	<cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-	double K,U,L;
-	double EraseLinearDihedral, UShift, PhiShift;
+	num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
+	num_real K,U,L;
+	num_real EraseLinearDihedral, UShift, PhiShift;
 	bool RestraintActive;
 	int	I1, I2, I3, I4;
 	for ( gctools::Vec0<EnergyDihedralRestraint>::iterator iri=this->_Terms.begin();
@@ -222,7 +222,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         chem::NVector_sp 	pos,
                                                         core::T_sp componentEnergy,
                                                         bool 		calcForce,
@@ -233,7 +233,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
                                                         gc::Nilable<chem::NVector_sp>	hdvec,
                                                         gc::Nilable<chem::NVector_sp> dvec)
 {
-  double totalEnergy = 0.0;
+  num_real totalEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) {
     core::clasp_write_string(fmt::format("{}\n" , __FUNCTION__ ));
@@ -275,9 +275,9 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    double K,U,L;
-    double EraseLinearDihedral, UShift, PhiShift;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
+    num_real K,U,L;
+    num_real EraseLinearDihedral, UShift, PhiShift;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
     gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
@@ -449,9 +449,9 @@ void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    double K,U,L;
-    double EraseLinearDihedral, UShift, PhiShift;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
+    num_real K,U,L;
+    num_real EraseLinearDihedral, UShift, PhiShift;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
     gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
@@ -506,9 +506,9 @@ int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    double K,U,L;
-    double EraseLinearDihedral, UShift, PhiShift;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
+    num_real K,U,L;
+    num_real EraseLinearDihedral, UShift, PhiShift;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
     gctools::Vec0<EnergyDihedralRestraint>::iterator iri;

@@ -54,11 +54,11 @@ namespace chem
 /*! Store a PointToLineRestraint energy term
  */
 
-double	_evaluateEnergyOnly_PointToLineRestraint(
-		double x1, double y1, double z1,
-		double xa, double ya, double za,
-		double xb, double yb, double zb,
-		double ka, double ra );
+num_real	_evaluateEnergyOnly_PointToLineRestraint(
+		num_real x1, num_real y1, num_real z1,
+		num_real xa, num_real ya, num_real za,
+		num_real xb, num_real yb, num_real zb,
+		num_real ka, num_real ra );
 FORWARD(EnergyPointToLineRestraint);
 class EnergyPointToLineRestraint_O : public EnergyComponent_O
 {
@@ -75,7 +75,7 @@ public: // instance variables
 public:
   static EnergyPointToLineRestraint_sp create(EnergySketchStretch_sp stretch);
 public:
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,

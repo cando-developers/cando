@@ -87,11 +87,11 @@ string	EnergyComponent_O::enabledAsString()
 CL_DOCSTRING(R"dx(Evaluate the energy of a component)dx");
 DOCGROUP(cando);
 CL_DEFUN
-double chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
+num_real chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
                                        EnergyComponent_sp component,
                                        chem::NVector_sp pos)
 {
-  double val = component->evaluateAllComponent(energy_function,
+  num_real val = component->evaluateAllComponent(energy_function,
                                                pos,
                                                nil<core::T_O>(),
                                                false,nil<NVector_O>(),
@@ -105,12 +105,12 @@ double chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
 CL_DOCSTRING(R"dx(Evaluate the energy and force of a component)dx");
 DOCGROUP(cando);
 CL_DEFUN
-double chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_function,
+num_real chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_function,
                                              EnergyComponent_sp component,
                                              NVector_sp pos,
                                              NVector_sp force)
 {
-  double val = component->evaluateAllComponent(energy_function,
+  num_real val = component->evaluateAllComponent(energy_function,
                                                pos,
                                                nil<core::T_O>(),
                                                true,force,

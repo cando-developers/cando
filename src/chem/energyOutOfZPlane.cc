@@ -67,10 +67,10 @@ EnergyOutOfZPlane::~EnergyOutOfZPlane()
 //
 // Copy this from implementAmberFunction.cc
 //
-double	_evaluateEnergyOnly_Oozp(
-		double x1, double y1, double z1,
-		double za,
-		double kb)
+num_real	_evaluateEnergyOnly_Oozp(
+		num_real x1, num_real y1, num_real z1,
+		num_real za,
+		num_real kb)
 {
 #undef	OOZP_SET_PARAMETER
 #define	OOZP_SET_PARAMETER(x)	{}
@@ -179,7 +179,7 @@ bool		calcOffDiagonalHessian = true;
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
 	;
-	double x1,y1,z1,za,kb;
+	num_real x1,y1,z1,za,kb;
 	int	I1;
 	for ( gctools::Vec0<EnergyOutOfZPlane>::iterator cri=this->_Terms.begin();
 		    cri!=this->_Terms.end(); cri++ ) {
@@ -197,7 +197,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
                                                   NVector_sp 	pos,
                                                   core::T_sp componentEnergy,
                                                   bool 		calcForce,
@@ -217,7 +217,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 //
 // -----------------------
 
-  double totalEnergy = 0.0;
+  num_real totalEnergy = 0.0;
 #define OOZP_CALC_FORCE
 #define OOZP_CALC_DIAGONAL_HESSIAN
 #define OOZP_CALC_OFF_DIAGONAL_HESSIAN
@@ -246,7 +246,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
     if (chem__verbose(1)) {
       core::clasp_write_string(fmt::format("Evaluating Oozp component {} terms\n" , this->_Terms.size()));
     }
-    double x1,y1,z1,za,kb;
+    num_real x1,y1,z1,za,kb;
     int	I1, i;
     gctools::Vec0<EnergyOutOfZPlane>::iterator cri;
     for ( i=0,cri=this->_Terms.begin();
@@ -322,7 +322,7 @@ bool	calcOffDiagonalHessian = true;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,za,kb;
+	    num_real x1,y1,z1,za,kb;
 	    int	I1, i;
 	    gctools::Vec0<EnergyOutOfZPlane>::iterator cri;
 	    for ( i=0,cri=this->_Terms.begin();
@@ -335,15 +335,15 @@ bool	calcOffDiagonalHessian = true;
 		LOG("fz1 = {}" , fz1 );
 		int index = i;
 #if !USE_EXPLICIT_DECLARES
-		double fx1 = 0.0;
-		double fy1 = 0.0;
-		double fz1 = 0.0;
-		double dhx1x1 = 0.0;
-		double ohx1y1 = 0.0;
-		double dhy1y1 = 0.0;
-		double ohy1z1 = 0.0;
-		double dhz1z1 = 0.0;
-		double ohx1z1 = 0.0;
+		num_real fx1 = 0.0;
+		num_real fy1 = 0.0;
+		num_real fz1 = 0.0;
+		num_real dhx1x1 = 0.0;
+		num_real ohx1y1 = 0.0;
+		num_real dhy1y1 = 0.0;
+		num_real ohy1z1 = 0.0;
+		num_real dhz1z1 = 0.0;
+		num_real ohx1z1 = 0.0;
 #endif
 #include <cando/chem/energy_functions/_Oozp_debugFiniteDifference.cc>
 
@@ -390,7 +390,7 @@ int	fails = 0;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
-      double x1,y1,z1,za,kb;
+      num_real x1,y1,z1,za,kb;
       int	I1, i;
       gctools::Vec0<EnergyOutOfZPlane>::iterator cri;
       for ( i=0,cri=this->_Terms.begin();

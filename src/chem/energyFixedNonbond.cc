@@ -58,10 +58,10 @@ void EnergyFixedNonbondRestraint_O::fields(core::Record_sp node)
 //
 // Copy this from implementAmberFunction.cc
 //
-double	_evaluateEnergyOnly_FixedNonbond(
-		double x1, double y1, double z1,
-		double xf, double yf, double zf,
-		double dA, double dC, double dQ1Q2)
+num_real	_evaluateEnergyOnly_FixedNonbond(
+		num_real x1, num_real y1, num_real z1,
+		num_real xf, num_real yf, num_real zf,
+		num_real dA, num_real dC, num_real dQ1Q2)
 {
     IMPLEMENT_ME();
 #if 0
@@ -160,10 +160,10 @@ string				as1,as2,as3,as4;
 string				str1, str2, str3, str4;
 int				overlapCount = 0;
 int				ia1, ia2;
-double				x1, y1, z1;
-double				x2, y2, z2;
-double				dx,dy,dz;
-double				cutoff, distSquared;
+num_real				x1, y1, z1;
+num_real				x2, y2, z2;
+num_real				dx,dy,dz;
+num_real				cutoff, distSquared;
 bool				render;
 RPGrColor			color;
 geom::GrLine_sp			line;
@@ -217,7 +217,7 @@ Vector3				v1,v2;
 SYMBOL_EXPORT_SC_(ChemPkg,energyVdw);
 SYMBOL_EXPORT_SC_(ChemPkg,energyElectrostatic);
 
-double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                             NVector_sp 	pos,
                                                             core::T_sp componentEnergy,
                                                             bool 		calcForce,
@@ -254,8 +254,8 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
     //
     // -----------------------
 
-  double energyElectrostatic = 0.0;
-  double energyVdw = 0.0;
+  num_real energyElectrostatic = 0.0;
+  num_real energyVdw = 0.0;
 #define FNONBOND_CALC_FORCE
 #define FNONBOND_CALC_DIAGONAL_HESSIAN
 #define FNONBOND_CALC_OFF_DIAGONAL_HESSIAN
@@ -286,7 +286,7 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-      double x1,y1,z1,xf,yf,zf, dQ1Q2;
+      num_real x1,y1,z1,xf,yf,zf, dQ1Q2;
       uint I1;
       {   
 		//
@@ -302,7 +302,7 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
           xf = fixedAtomEntry._FixedPosition.getX();
           yf = fixedAtomEntry._FixedPosition.getY();
           zf = fixedAtomEntry._FixedPosition.getZ();
-          double fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
+          num_real fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
           uint fixedTypeMajorIndex = this->_NonbondCrossTermTable->typeMajorIndex(fixedAtomEntry._FixedType);
           for ( imobile=0; imobile< mobileNonbondAtoms; imobile++ )
           {
@@ -311,8 +311,8 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
             dQ1Q2 = mobileAtomEntry._Charge * fixedChargeMultiplier;
             uint crossTermIndex = fixedTypeMajorIndex + mobileAtomEntry._TypeIndex;
             FFNonbondCrossTerm crossTerm = this->_NonbondCrossTermTable->nonbondCrossTerm(crossTermIndex);
-            double dA = crossTerm._A*this->getVdwScale();
-            double dC = crossTerm._C*this->getVdwScale();
+            num_real dA = crossTerm._A*this->getVdwScale();
+            num_real dC = crossTerm._C*this->getVdwScale();
 #include	<cando/chem/energy_functions/_FixedNonbond_termCode.cc>
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
             fixedAtomEntry._calcForce = calcForce;
@@ -415,7 +415,7 @@ bool	calcOffDiagonalHessian = true;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
+	    num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
 	    int	I1, I2,i;
 	    vector<FixedNonbondRestraint>::iterator nbi;
 	    for ( i=0,nbi=this->_Terms.begin();
@@ -468,7 +468,7 @@ int	fails = 0;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-	double x1,y1,z1,xf,yf,zf,dQ1Q2;
+	num_real x1,y1,z1,xf,yf,zf,dQ1Q2;
 	int	I1;
 	{
 	    //
@@ -483,7 +483,7 @@ int	fails = 0;
 		xf = fixedAtomEntry._FixedPosition.getX();
 		yf = fixedAtomEntry._FixedPosition.getY();
 		zf = fixedAtomEntry._FixedPosition.getZ();
-		double fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
+		num_real fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
 		uint fixedTypeMajorIndex = this->_NonbondCrossTermTable->typeMajorIndex(fixedAtomEntry._FixedType);
 		for ( imobile=0; imobile< mobileNonbondAtoms; imobile++ )
 		{
@@ -492,8 +492,8 @@ int	fails = 0;
 		    dQ1Q2 = mobileAtomEntry._Charge * fixedChargeMultiplier;
 		    uint crossTermIndex = fixedTypeMajorIndex + mobileAtomEntry._TypeIndex;
 		    FFNonbondCrossTerm crossTerm = this->_NonbondCrossTermTable->nonbondCrossTerm(crossTermIndex);
-		    double dA = crossTerm._A*this->getVdwScale();
-		    double dC = crossTerm._C*this->getVdwScale();
+		    num_real dA = crossTerm._A*this->getVdwScale();
+		    num_real  dC = crossTerm._C*this->getVdwScale();
 #include	<cando/chem/energy_functions/_FixedNonbond_termCode.cc>
 		    if ( NonbondDistance < this->_ErrorThreshold ) 
 		    {

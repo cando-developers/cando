@@ -73,12 +73,12 @@ string	EnergyChiralRestraint::description()
 //
 // Copy this from implementAmberFunction.cc
 //
-double	_evaluateEnergyOnly_ChiralRestraint(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double x3, double y3, double z3,
-		double x4, double y4, double z4,
-		double K, double CO )
+num_real	_evaluateEnergyOnly_ChiralRestraint(
+		num_real x1, num_real y1, num_real z1,
+		num_real x2, num_real y2, num_real z2,
+		num_real x3, num_real y3, num_real z3,
+		num_real x4, num_real y4, num_real z4,
+		num_real K, num_real CO )
 {
 #undef	CHIRAL_RESTRAINT_SET_PARAMETER
 #define	CHIRAL_RESTRAINT_SET_PARAMETER(x)	{}
@@ -225,7 +225,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                        chem::NVector_sp 	pos,
                                                        core::T_sp componentEnergy,
                                                        bool 		calcForce,
@@ -243,7 +243,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
     LOG_ENERGY(("%s {\n") , this->className());
   }
 
-  double totalEnergy = 0.0;
+  num_real totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -283,7 +283,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
     int	I1, I2, I3, I4, i;
     gctools::Vec0<EnergyChiralRestraint>::iterator cri;
     for ( i=0,cri=this->_Terms.begin();
@@ -415,7 +415,7 @@ bool	calcOffDiagonalHessian = true;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
+	    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
 	    int	I1, I2, I3, I4, i;
             gctools::Vec0<EnergyChiralRestraint>::iterator cri;
 	    for ( i=0,cri=this->_Terms.begin();
@@ -483,7 +483,7 @@ int	fails = 0;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
+	num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
 	int	I1, I2, I3, I4, i;
         gctools::Vec0<EnergyChiralRestraint>::iterator cri;
 	LOG("Entering checking loop, there are {} terms" , this->_Terms.end()-this->_Terms.begin() );
