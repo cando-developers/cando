@@ -57,6 +57,7 @@ double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen );
   double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen);
   NVector_sp  copy_nvector(NVector_sp original);
   
+  void chem__nvector_ensure_identical(NVector_sp veca, NVector_sp vecb, double tol);
 };
 
 #endif          /* ifndef NVECTOR_H */

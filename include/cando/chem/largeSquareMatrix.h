@@ -72,65 +72,65 @@ inline	string	XmlAttribute_TriangleType(TriangleType t) {
 SMART(AbstractLargeSquareMatrix);
 class AbstractLargeSquareMatrix_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,AbstractLargeSquareMatrix_O,"AbstractLargeSquareMatrix",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,AbstractLargeSquareMatrix_O,"AbstractLargeSquareMatrix",core::CxxObject_O);
 
 public:
-    TriangleType 	_Triangle;
-    uint   		_Columns;
-    uint		_Rows;
+  TriangleType 	_Triangle;
+  uint   		_Columns;
+  uint		_Rows;
 
 protected:
-    virtual	uint	indexBegin() {SUBIMP();};
-    virtual	uint	indexEnd() {SUBIMP();}
-    virtual	uint	indexAdvance(uint ii) {SUBIMP();};
-    virtual	void	coordinatesFromIndex(uint ii,uint& row, uint& col ) {SUBIMP();};
+  virtual	uint	indexBegin() {SUBIMP();};
+  virtual	uint	indexEnd() {SUBIMP();}
+  virtual	uint	indexAdvance(uint ii) {SUBIMP();};
+  virtual	void	coordinatesFromIndex(uint ii,uint& row, uint& col ) {SUBIMP();};
 
 public:
-    AbstractLargeSquareMatrix_O( const AbstractLargeSquareMatrix_O& orig );
+  AbstractLargeSquareMatrix_O( const AbstractLargeSquareMatrix_O& orig );
 
 
-    void	setup(uint dim, TriangleType type);
+  void	setup(uint dim, TriangleType type);
 
 //	void	describe();
 
-    void	zero() {this->fill(0.0);};
+  CL_DEFMETHOD uint columns()	{ return this->_Columns; };
+  CL_DEFMETHOD uint rows()	{ return this->_Rows; };
+  uint	dimension()	{return this->_Rows;};
+
+  CL_DEFMETHOD virtual	vecreal	element(uint x, uint y) {SUBIMP();};
+  virtual	void	setElement(uint x, uint y, vecreal d) {SUBIMP();};
+  virtual	void	addToElement(uint x, uint y, vecreal d) {SUBIMP();};
+  virtual	void	setAtIndex(uint ii, vecreal d) {SUBIMP();};
+  virtual	vecreal	getAtIndex(uint ii) {SUBIMP();};
+  virtual	void	insertionIsComplete() {};
 
 
-    uint	columns()	{ return this->_Columns; };
-    uint	rows()	{ return this->_Rows; };
-    uint	dimension()	{return this->_Rows;};
-
-    virtual	vecreal	element(uint x, uint y) {SUBIMP();};
-    virtual	void	setElement(uint x, uint y, vecreal d) {SUBIMP();};
-    virtual	void	addToElement(uint x, uint y, vecreal d) {SUBIMP();};
-    virtual	void	setAtIndex(uint ii, vecreal d) {SUBIMP();};
-    virtual	vecreal	getAtIndex(uint ii) {SUBIMP();};
-    virtual	void	insertionIsComplete() {};
+  CL_DEFMETHOD virtual vecreal maxAbsValue() {SUBIMP(); };
+  CL_DEFMETHOD virtual vecreal mostPositiveValue() {SUBIMP(); };
+  CL_DEFMETHOD virtual vecreal mostNegativeValue() {SUBIMP(); };
+  virtual void	fill(vecreal d) {SUBIMP();};
+  void	writeMathematica(const string& fileName);
+  void	writeMathematicaSymbolic(const string& fileName);
+  void	dumpMatrix(uint x);
 
 
-    vecreal	maxAbsValue();
-    void	fill(vecreal d);
-    void	writeMathematica(const string& fileName);
-    void	writeMathematicaSymbolic(const string& fileName);
-    void	dumpMatrix(uint x);
+  virtual	void	insertElement(uint x, uint y) {};
+  virtual	void	reset() {};
+  virtual	void	zero() {this->fill(0.0);};
 
+  virtual	MatrixClass	myClass()		{return AbstractMatrix;};
+  virtual	AbstractLargeSquareMatrix_sp copy_matrix( ) {SUBIMP();};
+  virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y) {SUBIMP();};
+  virtual	uint	col_indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y) {SUBIMP();};
+  virtual	uint	col_indexFromCoordinates(uint x, uint y);
+  CL_DEFMETHOD virtual	bool	hasElement(uint x, uint y) { return this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y)!=UndefinedUnsignedInt; };
+  virtual	void	debug()	{};
 
-    virtual	void	insertElement(uint x, uint y) {};
-    virtual	void	reset() {};
+  virtual	void	multiplyByVector(NVector_sp result, NVector_sp x);
 
-    virtual	MatrixClass	myClass()		{return AbstractMatrix;};
-    virtual	AbstractLargeSquareMatrix_sp copy( ) {SUBIMP();};
-    virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y) {SUBIMP();};
-    virtual	uint	col_indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y) {SUBIMP();};
-    virtual	uint	col_indexFromCoordinates(uint x, uint y);
-    virtual	bool	hasElement(uint x, uint y) { return this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y)!=UndefinedUnsignedInt; };
-    virtual	void	debug()	{};
+  uint	indexFromCoordinates(uint x, uint y);
 
-    virtual	void	multiplyByVector(NVector_sp result, NVector_sp x);
-
-    uint	indexFromCoordinates(uint x, uint y);
-
-    DEFAULT_CTOR_DTOR(AbstractLargeSquareMatrix_O);
+  DEFAULT_CTOR_DTOR(AbstractLargeSquareMatrix_O);
 };
 
 
@@ -145,41 +145,43 @@ public:
 
 
 SMART(FullLargeSquareMatrix)
-    class FullLargeSquareMatrix_O : public  AbstractLargeSquareMatrix_O 
+class FullLargeSquareMatrix_O : public  AbstractLargeSquareMatrix_O 
 {
-    LISP_CLASS(chem,ChemPkg,FullLargeSquareMatrix_O,"FullLargeSquareMatrix", AbstractLargeSquareMatrix_O );
+  LISP_CLASS(chem,ChemPkg,FullLargeSquareMatrix_O,"FullLargeSquareMatrix", AbstractLargeSquareMatrix_O );
 
 private:
-	uint		_ActiveElements;
+  uint		_ActiveElements;
   gctools::Vec0<vecreal>	_Values;
 
 private:
-	void	setup(uint dim, TriangleType type);
+  void	setup(uint dim, TriangleType type);
 
 public:
-    static FullLargeSquareMatrix_sp	create(uint dim, TriangleType type);
+  static FullLargeSquareMatrix_sp	create(uint dim, TriangleType type);
 
-virtual	uint	indexBegin()	{ return 0;};
-virtual	uint	indexEnd() {return this->_ActiveElements;};
-virtual	uint	indexAdvance(uint dp) {return dp+1;};
-virtual	void	coordinatesFromIndex(uint i,uint& x, uint& y );
+  virtual	uint	indexBegin()	{ return 0;};
+  virtual	uint	indexEnd() {return this->_ActiveElements;};
+  virtual	uint	indexAdvance(uint dp) {return dp+1;};
+  virtual	void	coordinatesFromIndex(uint i,uint& x, uint& y );
 
 public:
 
-			FullLargeSquareMatrix_O( const FullLargeSquareMatrix_O& orig );
+  FullLargeSquareMatrix_O( const FullLargeSquareMatrix_O& orig );
 
-virtual	MatrixClass	myClass()	{return FullMatrix;};
-virtual	AbstractLargeSquareMatrix_sp copy();
-virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
-virtual	void	insertElement(uint x, uint y) {};
-virtual	void	reset() {};
-virtual	void	setAtIndex(uint ii, vecreal d) { this->_Values[ii] = d;};
-virtual	vecreal	getAtIndex(uint ii) { return this->_Values[ii];};
-virtual	void	setElement(uint x, uint y, vecreal d) { this->_Values[this->indexFromCoordinates(x,y)]=d;};
-virtual	void	addToElement(uint x, uint y, vecreal d) { this->_Values[this->indexFromCoordinates(x,y)]+=d;};
-virtual	vecreal	element(uint x, uint y) { return this->_Values[this->indexFromCoordinates(x,y)];};
-virtual	void	debug()	{};
-DEFAULT_CTOR_DTOR(FullLargeSquareMatrix_O);
+  virtual vecreal maxAbsValue();
+  virtual void	fill(vecreal d);
+  virtual	MatrixClass	myClass()	{return FullMatrix;};
+  virtual	AbstractLargeSquareMatrix_sp copy_matrix();
+  virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
+  virtual	void	insertElement(uint x, uint y) {};
+  virtual	void	reset() {};
+  virtual	void	setAtIndex(uint ii, vecreal d) { this->_Values[ii] = d;};
+  virtual	vecreal	getAtIndex(uint ii) { return this->_Values[ii];};
+  virtual	void	setElement(uint x, uint y, vecreal d) { this->_Values[this->indexFromCoordinates(x,y)]=d;};
+  virtual	void	addToElement(uint x, uint y, vecreal d) { this->_Values[this->indexFromCoordinates(x,y)]+=d;};
+  virtual	vecreal	element(uint x, uint y) { return this->_Values[this->indexFromCoordinates(x,y)];};
+  virtual	void	debug()	{};
+  DEFAULT_CTOR_DTOR(FullLargeSquareMatrix_O);
 };
 
 
@@ -227,6 +229,16 @@ private:
   void	setup(uint dim, TriangleType type);
 
 public:
+
+  void ensureIdentical(SparseLargeSquareMatrix_sp other);
+
+  virtual       vecreal maxAbsValue();
+  virtual       vecreal mostPositiveValue();
+  virtual       vecreal mostNegativeValue();
+  virtual       void	fill(vecreal d);
+
+  void	walkMatrix(core::T_sp callback);
+  
   virtual	uint	indexBegin()	{ return 0; };
   virtual	uint	indexEnd() {return this->_ActiveElements;};
   virtual	uint	indexAdvance(uint i) {return i+1;};
@@ -240,7 +252,7 @@ public:
 
 
   virtual	MatrixClass	myClass()	{return SparseMatrix;};
-  virtual	AbstractLargeSquareMatrix_sp copy();
+  virtual	AbstractLargeSquareMatrix_sp copy_matrix();
   virtual	uint	indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
   virtual	uint	col_indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y);
 //virtual	bool	hasElement(uint x, uint y) { return this->indexFromCoordinates(x,y)>=0; };
@@ -266,7 +278,7 @@ public:
     }
   }
 
-#if 0
+#if 1
   template <typename Func>
   void loopOverColumnLowerDiagonal(uint col, uint start_row, uint end_row, Func f) {
     if (!this->_col_OptimizationDone) this->doColumnOptimization();
@@ -279,7 +291,6 @@ public:
       }
     }
   }
-
 #else
   template <typename Func>
   void loopOverColumnLowerDiagonal(uint column, uint row_start, uint row_end, Func f) {

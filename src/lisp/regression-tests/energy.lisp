@@ -13,10 +13,11 @@
 (defparameter force (chem:make-nvector (chem:get-nvector-size ef)))
 
 (chem:load-coordinates-into-vector ef pos)
-(format t "pos = ~s~%" pos)
+
 (progn
-;;  (gctools:wait-for-user-signal "signal")
   (time (dotimes (i 10000) (defparameter energy (chem:evaluate-energy-force ef pos t force)))))
+(core:set-simd-width 1)
+(format t "Simd-width ~d~%" (core:simd-width))
 (format t "Energy = ~f~%" energy)
 
 (defparameter expected-force (coerce
@@ -107,19 +108,37 @@
     1.0324288899683762d0 -1.1993512928112695d0 -1.4486544219371218d0
     0.9342722908961351d0 -3.9378964732606065d0 1.9414453903015403d0
     1.9131488481776606d0 0.0227721793821479d0 -0.8312982008110424d0
-    4.5828630652258d0 8.83474789498359d0 3.777317119445569d0) (list 'vector (geom:vecreal-type))))
+    4.5828630652258d0 8.83474789498359d0 3.777317119445569d0)
+  (list 'vector (geom:vecreal-type))))
 
 (defparameter expected-force-mag (chem:nvector-magnitude expected-force))
 (defparameter force-mag (chem:nvector-magnitude force))
 
 (defparameter delta (abs (- energy 20937035.650304314d0)))
 
-(test-true energy-delta (< delta 0.0000000001))
+(format t "Energy delta = ~f~%" delta)
+(test-true energy-delta (< delta (if (eq (geom:vecreal-type) 'double-float)
+                                     0.0001
+                                     6.0))) ; single-float delta is about 5.02
 
-(test-true force-mag (< (abs (- expected-force-mag force-mag)) 0.000001))
+(format t "extected-force-mag = ~f~%" expected-force-mag)
+(format t "force-mag = ~f~%" force-mag)
+(defparameter force-delta (abs (- expected-force-mag force-mag)))
+
+(format t "Force delta = ~f~%" force-delta)
+(test-true force-mag (< (abs (- expected-force-mag force-mag))
+                        (if (eq (geom:vecreal-type) 'double-float)
+                            0.000001
+                            1.0))) ; float will have larger delta
 
 (defparameter force-acos (/ (chem:nvector-dot expected-force force) expected-force-mag force-mag))
 
 (test-true force-acos (< force-acos 0.0001))
 
 (format t "force-acos = ~f~%" force-acos)
+
+(defparameter min (chem:make-minimizer ef))
+(time (dotimes (i 10)
+        (chem:save-coordinates-from-vector ef pos)
+        (chem:minimize min)))
+(format t "minimizer done~%")

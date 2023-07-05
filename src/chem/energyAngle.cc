@@ -553,7 +553,11 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 SYMBOL_EXPORT_SC_(KeywordPkg,t0);
 SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
 
+<<<<<<< Updated upstream
 core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
+=======
+core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double  threshold)
+>>>>>>> Stashed changes
 {
   ql::list result;
   int	fails = 0;

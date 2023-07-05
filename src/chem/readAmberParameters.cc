@@ -552,30 +552,29 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
       //	    print ffNonbond.asXml().asString()
       ffNonbond->setRadius_Angstroms(radius);
       ffNonbond->setEpsilon_kcal(edep);
-      if(ffNonbond->getSameParms().boundp())
-        {
-          core::T_sp tstr = ffNonbond->getSameParms();
-          if (!gc::IsA<core::String_sp>(tstr)) {
-            SIMPLE_ERROR("Did not get string from ffNonbond->getSameParms() for {} - got {}\n" , core::_rep_(ffNonbond) , core::_rep_(tstr));
-          }
-          core::String_sp sstr = gc::As<core::String_sp>(tstr);
-          string sameparms = sstr->get_std_string();
-          vector<string> sameParmsParts = core::split(sameparms);
-          for ( vector<string>::iterator it=sameParmsParts.begin(); it!=sameParmsParts.end(); it++ )
-            {
-              FFNonbond_sp ffNonbondSameParmType;
-              string sameParmType = core::trimWhiteSpace(*it);
-              core::Symbol_sp ssameParmtype = chemkw_intern(sameParmType);
-              if ( ffNonbondDb->hasType(ssameParmtype) ) {
-                ffNonbondSameParmType = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(ssameParmtype));
-                ffNonbondSameParmType->setRadius_Angstroms(radius);
-                ffNonbondSameParmType->setEpsilon_kcal(edep);             
-              } else {
-                SIMPLE_ERROR("Could not find nonbond2 type: {}" , _rep_(stype));
-              }
-            
-            }
+      if(ffNonbond->getSameParms().boundp()) {
+        core::T_sp tstr = ffNonbond->getSameParms();
+        if (!gc::IsA<core::String_sp>(tstr)) {
+          SIMPLE_ERROR("Did not get string from ffNonbond->getSameParms() for {} - got {}\n" , core::_rep_(ffNonbond) , core::_rep_(tstr));
         }
+        core::String_sp sstr = gc::As<core::String_sp>(tstr);
+        string sameparms = sstr->get_std_string();
+        vector<string> sameParmsParts = core::split(sameparms);
+        for ( vector<string>::iterator it=sameParmsParts.begin(); it!=sameParmsParts.end(); it++ )
+        {
+          FFNonbond_sp ffNonbondSameParmType;
+          string sameParmType = core::trimWhiteSpace(*it);
+          core::Symbol_sp ssameParmtype = chemkw_intern(sameParmType);
+          if ( ffNonbondDb->hasType(ssameParmtype) ) {
+            ffNonbondSameParmType = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(ssameParmtype));
+            ffNonbondSameParmType->setRadius_Angstroms(radius);
+            ffNonbondSameParmType->setEpsilon_kcal(edep);             
+          } else {
+            SIMPLE_ERROR("Could not find nonbond2 type: {}" , _rep_(stype));
+          }
+            
+        }
+      }
 
 
       //	    print "parseNonbondDb::",

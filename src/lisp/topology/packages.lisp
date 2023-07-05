@@ -252,7 +252,7 @@
 (defpackage #:monomer-context
   (:use #:common-lisp)
   (:export
-   #:parse
+   #:parse-sexp
    #:matches
    #:match-as-symbol
    #:match

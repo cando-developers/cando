@@ -255,7 +255,7 @@ void	EnergyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
                                                     AbstractLargeSquareMatrix_sp m )
 {
-  SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
+  SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!! only the bonded components of energy are used for the precondition to keep it sparse");
 }
 
 num_real	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
@@ -458,9 +458,9 @@ num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyElectrostatic += (e); }
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e); energyVdw+=(e); }
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE

@@ -245,8 +245,7 @@ public:
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec);
 
-#if 0
-  virtual double evaluateAllComponentSimd8(
+  virtual num_real evaluateAllComponentSimd8(
       gctools::Vec0<EnergyDihedral>::iterator di_start8,
       gctools::Vec0<EnergyDihedral>::iterator di_end8,
       ScoringFunction_sp scorer,
@@ -284,7 +283,7 @@ public:
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec);
-#endif
+
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
       NVector_sp pos );
 

@@ -118,7 +118,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
  public:
 
   void setScaleSketchNonbond(double d);
-  num_real getScaleSketchNonbond();
+  double getScaleSketchNonbond();
 
   void setFreezeFlags(size_t freezeFlags);
   

@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <iomanip>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/ql.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -69,32 +70,6 @@ AbstractLargeSquareMatrix_O::AbstractLargeSquareMatrix_O(const AbstractLargeSqua
   this->_Rows = orig._Rows;
 }
 
-
-void	AbstractLargeSquareMatrix_O::fill(vecreal d)
-{
-  uint	ii, iEnd;
-  ii = this->indexBegin();
-  iEnd = this->indexEnd();
-  while (ii<iEnd) {
-    this->setAtIndex(ii,d);
-    ii = this->indexAdvance(ii);
-  }
-}
-
-
-vecreal	AbstractLargeSquareMatrix_O::maxAbsValue()
-{
-  uint	ii, iEnd;
-  vecreal	dMaxAbs;
-  dMaxAbs = 0.0;
-  ii = this->indexBegin();
-  iEnd = this->indexEnd();
-  while (ii<iEnd) {
-    dMaxAbs = MAX(dMaxAbs,fabs(this->getAtIndex(ii)));
-    ii = this->indexAdvance(ii);
-  }
-  return dMaxAbs;
-}
 
 
 uint	AbstractLargeSquareMatrix_O::indexFromCoordinates(uint x, uint y )
@@ -256,6 +231,32 @@ FullLargeSquareMatrix_O::FullLargeSquareMatrix_O(const FullLargeSquareMatrix_O& 
 #endif
 }
 
+void	FullLargeSquareMatrix_O::fill(vecreal d)
+{
+  uint	ii, iEnd;
+  ii = this->indexBegin();
+  iEnd = this->indexEnd();
+  while (ii<iEnd) {
+    this->setAtIndex(ii,d);
+    ii = this->indexAdvance(ii);
+  }
+}
+
+vecreal	FullLargeSquareMatrix_O::maxAbsValue()
+{
+  uint	ii, iEnd;
+  vecreal	dMaxAbs;
+  dMaxAbs = 0.0;
+  ii = this->indexBegin();
+  iEnd = this->indexEnd();
+  while (ii<iEnd) {
+    dMaxAbs = MAX(dMaxAbs,fabs(this->getAtIndex(ii)));
+    ii = this->indexAdvance(ii);
+  }
+  return dMaxAbs;
+}
+
+
 uint	FullLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y ) {
   uint		i0,i;
   if ( x >= this->_Columns || y >= this->_Rows ) {
@@ -302,7 +303,7 @@ uint	FullLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint x,
 
 
 
-AbstractLargeSquareMatrix_sp	FullLargeSquareMatrix_O::copy()
+AbstractLargeSquareMatrix_sp FullLargeSquareMatrix_O::copy_matrix()
 {
   auto  dest  = gctools::GC<FullLargeSquareMatrix_O>::copy( *this); // = RP_Copy<FullLargeSquareMatrix_O>(this);
   return dest;
@@ -389,6 +390,43 @@ SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::create(uint dim, TriangleT
   return res;
 }
 
+void SparseLargeSquareMatrix_O::fill(vecreal val)
+{
+  if (this->_InsertionIsComplete) {
+    for ( uint idx=0; idx<this->_Values.size(); idx++ ) {
+      this->_Values[idx] = 0.0;
+    }
+  }
+}
+
+vecreal	SparseLargeSquareMatrix_O::maxAbsValue()
+{
+  vecreal dMax = 0.0;
+  for ( uint idx=0; idx<this->_Values.size(); idx++ ) {
+    dMax = MAX(std::fabs(dMax),this->_Values[idx]);
+  }
+  return dMax;
+}
+
+vecreal	SparseLargeSquareMatrix_O::mostPositiveValue()
+{
+  vecreal dMax = 0.0;
+  for ( uint idx=0; idx<this->_Values.size(); idx++ ) {
+    dMax = MAX(dMax,this->_Values[idx]);
+  }
+  return dMax;
+}
+
+
+vecreal	SparseLargeSquareMatrix_O::mostNegativeValue()
+{
+  vecreal dMin = 0.0;
+  for ( uint idx=0; idx<this->_Values.size(); idx++ ) {
+    dMin = MIN(dMin,this->_Values[idx]);
+  }
+  return dMin;
+}
+
 
 SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::optimized() 
 {
@@ -441,6 +479,31 @@ void	SparseLargeSquareMatrix_O::setup(uint dim, TriangleType type)
 #endif
 }
 
+bool similar(vecreal a, vecreal b) {
+  if (a==0.0 && b==0.0) return true;
+  if (std::fabs(a - b) < 0.00001) return true;
+  return false;
+}
+
+void SparseLargeSquareMatrix_O::ensureIdentical(SparseLargeSquareMatrix_sp other)
+{
+  if (this->_Triangle != other->_Triangle) SIMPLE_ERROR("{}: _Triangle doesn't match", __FUNCTION__);
+  if (this->_Columns != other->_Columns)
+    SIMPLE_ERROR("{}: _Columns don't match", __FUNCTION__ );
+  if (this->_Rows != other->_Rows)
+    SIMPLE_ERROR("{}: _Rows don't match", __FUNCTION__ );
+  for ( uint row=0; row<this->_Rows; row++ ) {
+    for ( uint col=0; col<this->_Columns; col++ ) {
+      vecreal mine = this->element(col,row);
+      vecreal oth = other->element(col,row);
+      if (!similar(mine,oth)) {
+        SIMPLE_ERROR("{}: _Values does't match col,row={},{} this->element(col,row) = {} other->element(col,row) = {}",
+                     __FUNCTION__, col, row,
+                     mine, oth );
+      }
+    }
+  }
+}
 
 
 
@@ -448,8 +511,6 @@ void	SparseLargeSquareMatrix_O::setup(uint dim, TriangleType type)
 SparseLargeSquareMatrix_O::SparseLargeSquareMatrix_O(const SparseLargeSquareMatrix_O& orig)
     : AbstractLargeSquareMatrix_O(orig)
 {
-  DEPRECATED();
-#if 0
   // THis will fail because it calls an allocator
   this->_InsertionIsComplete = orig._InsertionIsComplete;
   this->_RowStartEntries = orig._RowStartEntries;
@@ -458,7 +519,7 @@ SparseLargeSquareMatrix_O::SparseLargeSquareMatrix_O(const SparseLargeSquareMatr
   this->_ReservedElements = orig._ReservedElements;
   this->_ColumnForValue.assign(orig._ColumnForValue.begin(),orig._ColumnForValue.end());
   this->_Values.assign(orig._Values.begin(),orig._Values.end());
-#endif
+  this->_col_OptimizationDone = false;
 }
 
 
@@ -788,7 +849,7 @@ uint	SparseLargeSquareMatrix_O::col_indexFromCoordinatesOrUndefinedUnsignedInt(u
 
 
 
-AbstractLargeSquareMatrix_sp	SparseLargeSquareMatrix_O::copy()
+CL_DEFMETHOD AbstractLargeSquareMatrix_sp	SparseLargeSquareMatrix_O::copy_matrix()
 {
   auto  dest  = gctools::GC<SparseLargeSquareMatrix_O>::copy( *this); // = RP_Copy<SparseLargeSquareMatrix_O>(this->sharedThis<SparseLargeSquareMatrix_O>());
   return dest;
@@ -866,6 +927,23 @@ void	SparseLargeSquareMatrix_O::debug()
     core::clasp_write_string(fmt::format("x{}@{} ", this->_ColumnForValue[i] , i));
   }
   core::clasp_write_string(fmt::format("Number of values: {}\n" , this->_Values.size() ));
+}
+
+CL_DEFMETHOD void	SparseLargeSquareMatrix_O::walkMatrix(core::T_sp callback)
+{
+  uint	ib, ie;
+  for ( uint r=0; r<this->_Rows; r++ ) {
+    ib = this->_RowStarts[r];
+    ie = this->_RowStarts[r+1];
+    for (uint i=ib;i<ie;i++ ) {
+#if VECREAL==VECREAL_FLOAT
+      core::T_sp val = core::make_single_float(this->_Values[i]);
+#else
+      core::T_sp val = core::make_double_float(this->_Values[i]);
+#endif
+      core::eval::funcall( callback, core::make_fixnum(this->_ColumnForValue[i]), core::make_fixnum(r), val );
+    }
+  }
 }
 
 
