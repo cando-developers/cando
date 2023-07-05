@@ -413,7 +413,7 @@ num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
       }
     }
   }
-  LOG( "Nonbond energy vdw({}) electrostatic({})\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
+  LOG( "Nonbond energy vdw({}) electrostatic({})\n" , (num_real)this->_EnergyVdw , this->_EnergyElectrostatic );
   LOG("Nonbond energy }\n");
 
   maybeSetEnergy( componentEnergy, _sym_energyElectrostatic, energyElectrostatic );

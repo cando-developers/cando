@@ -551,7 +551,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 SYMBOL_EXPORT_SC_(KeywordPkg,t0);
 SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
 
-core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, num_real threshold)
+core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
 {
   ql::list result;
   int	fails = 0;

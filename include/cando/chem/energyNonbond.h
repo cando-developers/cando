@@ -248,7 +248,7 @@ class EnergyNonbond_O : public EnergyComponent_O
                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec);
-  virtual double evaluateTerms( ScoringFunction_sp score,
+  virtual num_real evaluateTerms( ScoringFunction_sp score,
                                 NVector_sp 	pos,
                                 core::T_sp componentEnergy,
                                 bool 		calcForce,
@@ -259,7 +259,7 @@ class EnergyNonbond_O : public EnergyComponent_O
                                 gc::Nilable<NVector_sp>	hdvec,
                                 gc::Nilable<NVector_sp> dvec);
   
-  virtual double evaluateUsingExcludedAtoms( ScoringFunction_sp score,
+  virtual num_real evaluateUsingExcludedAtoms( ScoringFunction_sp score,
                                            NVector_sp 	pos,
                                            core::T_sp componentEnergy,
                                            bool 		calcFrce,
