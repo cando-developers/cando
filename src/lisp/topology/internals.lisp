@@ -108,6 +108,7 @@
    (internals :initarg :internals :accessor internals)
    (energy :initform 0.0s0 :initarg :energy :accessor energy)
    (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
+   (coordinates :initarg :coordinates :accessor coordinates)
    ))
 
 (cando.serialize:make-class-save-load
@@ -123,6 +124,7 @@
   (make-instance 'fragment-internals
                  :trainer-index (trainer-index fragment-internals)
                  :internals (copy-seq (internals fragment-internals))
+                 :coordinates (copy-seq (coordinates fragment-internals))
                  :out-of-focus-internals (let ((ht (make-hash-table)))
                                            (maphash (lambda (key value)
                                                       (setf (gethash key ht) (copy-seq value)))

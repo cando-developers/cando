@@ -85,8 +85,8 @@ public:
   void	setFixedPoints(core::ComplexVector_byte32_t_sp indices, geom::SimpleVectorCoordinate_sp fp );
 	void	setMoveablePoints(core::ComplexVector_byte32_t_sp indices, geom::SimpleVectorCoordinate_sp mp);
 
-	void	setFixedAllPoints(geom::SimpleVectorCoordinate_sp fp );
-	void	setMoveableAllPoints(geom::SimpleVectorCoordinate_sp mp);
+  void	setFixedAllPoints(core::Array_sp fp );
+  void	setMoveableAllPoints(core::Array_sp mp);
 
 	void	eraseMoveablePoints();
 	void	appendMoveablePoint(const Vector3& pos);

@@ -49,6 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/ovector3.h>
 #include <cando/chem/restraint.h>
 #include <cando/geom/boundingBox.h>
+#include <cando/geom/coordinateArray.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/angle.h>
@@ -661,6 +662,65 @@ void Matter_O::applyTransformToRestraints(const Matrix& m)
   }
 }
 
+CL_DEFUN void chem__matter_apply_coordinates(Matter_sp matter, core::Array_sp coord_array)
+{
+  size_t numberOfAtoms = matter->numberOfAtoms();
+  if ( gc::IsA<NVector_sp>(coord_array) ) {
+    auto coords = gc::As_unsafe<NVector_sp>(coord_array);
+    if ( (numberOfAtoms*3)!= coords->length()) {
+      SIMPLE_ERROR("The length of nvector coordinates {} must match {} the number of atoms * 3",
+                   coords->length(),
+                   (numberOfAtoms*3));
+    }
+    size_t idx = 0;
+    Loop lAtoms2(matter, ATOMS);
+    vecreal* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      Vector3 pos(cur[idx+0],cur[idx+1],cur[idx+2]);
+      idx += 3;
+      atm->setPosition(pos);
+    }
+    return;
+  } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(coord_array)) {
+    auto coords = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(coord_array);
+    if ( (numberOfAtoms)!= coords->length()) {
+      SIMPLE_ERROR("The length of simple-coordinate-vector {} must match {} the number of atoms * 3",
+                   coords->length(),
+                   (numberOfAtoms));
+    }
+    size_t idx = 0;
+    Loop lAtoms2(matter, ATOMS);
+    Vector3* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      Vector3 pos(cur[idx].getX(),cur[idx].getY(),cur[idx].getZ());
+      idx++;
+      atm->setPosition(pos);
+    }
+    return;
+  }
+  TYPE_ERROR(coord_array,core::Cons_O::createList(NVector_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
+
+}
+
+CL_DEFUN NVector_sp chem__matter_extract_coordinates(Matter_sp matter)
+{
+  size_t numberOfAtoms = matter->numberOfAtoms();
+  NVector_sp coords = NVector_O::create(numberOfAtoms*3);
+  size_t idx = 0;
+  Loop lAtoms2(matter, ATOMS);
+  vecreal* cur = &(*coords)[0];
+  while (lAtoms2.advanceLoopAndProcess()) {
+    Atom_sp atm = lAtoms2.getAtom();
+    Vector3 pos = atm->getPosition();
+    cur[idx+0] = pos.getX();
+    cur[idx+1] = pos.getY();
+    cur[idx+2] = pos.getZ();
+    idx += 3;
+  }
+  return coords;
+}
 
 CL_LISPIFY_NAME("invertStructureAndRestraints");
 CL_DEFMETHOD void	Matter_O::invertStructureAndRestraints()

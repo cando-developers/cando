@@ -73,7 +73,7 @@ void EnergySketchNonbond::decode(core::List_sp alist) {
 }
 
 CL_DEFMETHOD void EnergySketchNonbond_O::setScaleSketchNonbond(double d) { this->_ScaleSketchNonbond = d; };
-CL_DEFMETHOD num_real	EnergySketchNonbond_O::getScaleSketchNonbond()	{return this->_ScaleSketchNonbond; };
+CL_DEFMETHOD double	EnergySketchNonbond_O::getScaleSketchNonbond()	{return this->_ScaleSketchNonbond; };
 
 CL_DEFMETHOD void EnergySketchNonbond_O::setFreezeFlags(size_t flags) { this->_FreezeFlags = flags; };
 

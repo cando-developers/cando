@@ -58,23 +58,29 @@ namespace chem
 
 SYMBOL_EXPORT_SC_(ChemPkg,superpose);
 
+CL_DEFUN SuperposeEngine_sp chem__make_SuperposeEngine()
+{
+  auto obj = gc::GC<SuperposeEngine_O>::allocate();
+  return obj;
+}
+
 
 CL_LISPIFY_NAME("debugString");
 CL_DEFMETHOD     string SuperposeEngine_O::debugString()
-    {
-        stringstream ss;
-        for (uint i=0; i<this->_FixedIndices->length(); i++ )
-        {
-          int idx = (*this->_FixedIndices)[i];
-            ss << "Fixed#" << i << " " << (*this->_FixedCoordinates)[idx].asString() << std::endl;
-        }
-        for (uint j=0; j<this->_MoveableIndices->length(); j++ )
-        {
-          int idx = (*this->_MoveableIndices)[j];
-            ss << "Moveable#" << j << " " << (*this->_MoveableCoordinates)[idx].asString() << std::endl;
-        }
-        return ss.str();
-    }
+{
+  stringstream ss;
+  for (uint i=0; i<this->_FixedIndices->length(); i++ )
+  {
+    int idx = (*this->_FixedIndices)[i];
+    ss << "Fixed#" << i << " " << (*this->_FixedCoordinates)[idx].asString() << std::endl;
+  }
+  for (uint j=0; j<this->_MoveableIndices->length(); j++ )
+  {
+    int idx = (*this->_MoveableIndices)[j];
+    ss << "Moveable#" << j << " " << (*this->_MoveableCoordinates)[idx].asString() << std::endl;
+  }
+  return ss.str();
+}
 
 void SuperposeEngine_O::initialize()
 {
@@ -173,7 +179,11 @@ void        SuperposeEngine_O::doSuperpose()
     fixedIndicesSize = this->_FixedIndices->length();
     moveableIndicesSize = this->_MoveableIndices->length();
     LOG("Moveable indices fixed({}) moveable({})" , fixedIndicesSize , moveableIndicesSize );
-    ASSERTP(fixedIndicesSize==moveableIndicesSize,"num. fixed points must equal num. of moveable points");
+    if (fixedIndicesSize != moveableIndicesSize) {
+      SIMPLE_ERROR("Number of fixed points {} must match the number of moveable points {}",
+                   fixedIndicesSize,
+                   moveableIndicesSize );
+    }
     ASSERTF(fixedIndicesSize>=3, ("You must have at least 3 points to superpose and you only have: {}") , fixedIndicesSize );
     Sj.resize(this->_FixedIndices->length());
     if ( this->_MoveableIndices->length() < 3 )
@@ -416,20 +426,36 @@ CL_DEFMETHOD void SuperposeEngine_O::setFixedPoints(core::ComplexVector_byte32_t
 }
 
 CL_LISPIFY_NAME("setFixedAllPoints");
-CL_DEFMETHOD void        SuperposeEngine_O::setFixedAllPoints( geom::SimpleVectorCoordinate_sp fc )
+CL_DEFMETHOD void        SuperposeEngine_O::setFixedAllPoints( core::Array_sp afc )
 {
-  size_t ia;
-  size_t ii;
-  this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(fc->length(),Vector3(),core::make_fixnum(fc->length()));
-  this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(fc->length());
-  ii = 0;
-  for ( ii=0; ii<fc->length(); ii++ )
-  {
-    (*this->_FixedCoordinates)[ii] = (*fc)[ii];
-    (*this->_FixedIndices)[ii] = ii;
+  if (gc::IsA<geom::SimpleVectorCoordinate_sp>(afc) ) {
+    auto fc = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(afc);
+    this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(fc->length(),Vector3(),core::make_fixnum(fc->length()));
+    this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(fc->length());
+    size_t ii;
+    for ( ii=0; ii<fc->length(); ii++ ) {
+      (*this->_FixedCoordinates)[ii] = (*fc)[ii];
+      (*this->_FixedIndices)[ii] = ii;
 //    printf("%s:%d Set fixed coordinate[%zu] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*fc)[ii].getX(), (*fc)[ii].getY(), (*fc)[ii].getZ());
-    LOG("setFixedAllPoints index@{} " , ii  );
+      LOG("setFixedAllPoints index@{} " , ii  );
+    }
+    return;
+  } else if (gc::IsA<NVector_sp>(afc) ) {
+    auto fc = gc::As_unsafe<NVector_sp>(afc);
+    ASSERTF(fc->length()>=3*3,("You must have at least three moveable points and there are only {}") , fc->length()/3 );
+    this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(fc->length()/3,Vector3(),core::make_fixnum(fc->length()/3));
+    this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(fc->length()/3);
+    uint                ii;
+    for ( ii=0; ii<fc->length()/3; ii++ )
+    {
+      (*this->_FixedCoordinates)[ii].set((*fc)[(ii*3)+0], (*fc)[(ii*3)+1], (*fc)[(ii*3)+2] );
+      (*this->_FixedIndices)[ii] = ii;
+      LOG("setMoveableAllPoints index@{} " , ii  );
+//    printf("%s:%d Set moveable coordinate[%d] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*fc)[ii].getX(), (*fc)[ii].getY(), (*fc)[ii].getZ());
+    }
+    return;
   }
+  TYPE_ERROR(afc,core::Cons_O::createList(NVector_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
 }
 
 
@@ -446,25 +472,39 @@ CL_DEFMETHOD void        SuperposeEngine_O::setMoveablePoints( core::ComplexVect
 }
 
 CL_LISPIFY_NAME("setMoveableAllPoints");
-CL_DEFMETHOD void        SuperposeEngine_O::setMoveableAllPoints( geom::SimpleVectorCoordinate_sp mc )
+CL_DEFMETHOD void        SuperposeEngine_O::setMoveableAllPoints( core::Array_sp amc )
 {
-  size_t ia;
-  uint                ii;
-  ASSERTF(mc->length()>=3,("You must have at least three moveable points and there are only {}") , mc->length() );
-  this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(mc->length(),Vector3(),core::make_fixnum(mc->length()));
-  this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(mc->length());
-  for ( ii=0; ii<mc->length(); ii++ )
-  {
-    (*this->_MoveableCoordinates)[ii] = (*mc)[ii];
-    (*this->_MoveableIndices)[ii] = ii;
-    LOG("setMoveableAllPoints index@{} " , ii  );
+  if (gc::IsA<geom::SimpleVectorCoordinate_sp>(amc) ) {
+    auto mc = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(amc);
+    uint                ii;
+    ASSERTF(mc->length()>=3,("You must have at least three moveable points and there are only {}") , mc->length() );
+    this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(mc->length(),Vector3(),core::make_fixnum(mc->length()));
+    this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(mc->length());
+    for ( ii=0; ii<mc->length(); ii++ )
+    {
+      (*this->_MoveableCoordinates)[ii] = (*mc)[ii];
+      (*this->_MoveableIndices)[ii] = ii;
+      LOG("setMoveableAllPoints index@{} " , ii  );
 //    printf("%s:%d Set moveable coordinate[%d] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*mc)[ii].getX(), (*mc)[ii].getY(), (*mc)[ii].getZ());
+    }
+    return;
+  } else if (gc::IsA<NVector_sp>(amc)) {
+    auto mc = gc::As_unsafe<NVector_sp>(amc);
+    ASSERTF(mc->length()>=3*3,("You must have at least three moveable points and there are only {}") , mc->length() );
+    this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(mc->length()/3,Vector3(),core::make_fixnum(mc->length()));
+    this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(mc->length()/3);
+    uint                ii;
+    for ( ii=0; ii<mc->length()/3; ii++ )
+    {
+      (*this->_MoveableCoordinates)[ii].set((*mc)[(ii*3)+0], (*mc)[(ii*3)+1], (*mc)[(ii*3)+2] );
+      (*this->_MoveableIndices)[ii] = ii;
+      LOG("setMoveableAllPoints index@{} " , ii  );
+//    printf("%s:%d Set moveable coordinate[%d] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*mc)[ii].getX(), (*mc)[ii].getY(), (*mc)[ii].getZ());
+    }
+    return;
   }
+  TYPE_ERROR(amc,core::Cons_O::createList(NVector_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
 }
-
-
-
-
 
 
 

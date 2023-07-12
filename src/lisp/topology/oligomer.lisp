@@ -200,7 +200,10 @@
 (defgeneric oligomer-force-field-name (foldamer)
   (:documentation "Return the name of the force field used by the foldamer"))
 
-(defun build-molecule (oligomer aggregate molecule-index monomer-positions)
+(defun build-molecule (oligomer
+                       &key (aggregate (chem:make-aggregate :dummy))
+                         (molecule-index 0)
+                         (monomer-positions-accumulator (make-hash-table)))
   (let ((root-monomer (root-monomer oligomer))
         (monomer-out-couplings (make-hash-table))
         (monomers-to-residues (make-hash-table))
@@ -227,10 +230,10 @@
       (let ((number-of-residues (length (monomers oligomer))))
         (loop for count from 0 below (length (monomers oligomer))
               for monomer = (elt (monomers oligomer) count)
-              do (setf (gethash monomer monomer-positions) (make-monomer-position
+              do (setf (gethash monomer monomer-positions-accumulator) (make-monomer-position
                                                             :molecule-index molecule-index
                                                             :residue-index count)))
-        (let* ((monomer-position (gethash root-monomer monomer-positions))
+        (let* ((monomer-position (gethash root-monomer monomer-positions-accumulator))
                (next-residue-index (chem:content-size molecule)))
           (declare (ignore next-residue-index))
           (chem:resize-contents molecule number-of-residues)
@@ -244,7 +247,7 @@
                                     monomers-to-residues
                                     monomers-to-topologys
                                     molecule-index
-                                    monomer-positions))
+                                    monomer-positions-accumulator))
       ;; Now close the rings
       (loop for ring-coupling in ring-couplings
             for monomer1 = (monomer1 ring-coupling)
@@ -271,20 +274,24 @@
                                     residue2
                                     plug2name))
       (chem:add-matter aggregate molecule)
-      molecule)))
+      (values molecule monomer-positions-accumulator))))
 
 
 (defun build-all-molecules (oligomer-space &optional (number-of-sequences (number-of-sequences oligomer-space)))
-  "Return a list of all built molecules for the oligomer-space.
-Also return a hash-table that maps monomers to molecule/residue indices.
+  "Build all of the molecules in the oligomer-space into a single aggregate and return it.
+Also return the position of each monomer in the aggregate -
+A hash-table that maps monomers to molecule/residue indices.
 The number of entries can be limited by passing a lower value for the optional argument **number-of-sequences**
 than the (chem:oligomer/number-of-sequences oligomer)."
-  (let* ((monomer-positions (make-hash-table))
+  (let* ((monomer-positions-accumulator (make-hash-table))
          (oligomer (topology:make-oligomer oligomer-space 0))
          (aggregates (loop for index from 0 below number-of-sequences
                            for aggregate = (chem:make-aggregate (intern (format nil "seq-~a" index) :keyword))
                            for molecule = (progn
                                             (topology:goto-sequence oligomer index)
-                                            (build-molecule oligomer aggregate index monomer-positions))
+                                            (build-molecule oligomer
+                                                            :aggregate aggregate
+                                                            :molecule-index index
+                                                            :monomer-positions-accumulator monomer-positions-accumulator))
                            collect aggregate)))
-    (values aggregates monomer-positions)))
+    (values aggregates monomer-positions-accumulator)))

@@ -25,7 +25,10 @@ Specialize the foldamer argument to provide methods"))
          (monomer-positions (make-hash-table))
          (oligomer-molecules (loop for oligomer in oligomers
                                    for molecule-index from 0
-                                   for molecule = (topology:build-molecule oligomer aggregate molecule-index monomer-positions)
+                                   for molecule = (topology:build-molecule oligomer
+                                                                           :aggregate aggregate
+                                                                           :molecule-index molecule-index
+                                                                           :monomer-positions-accumulator monomer-positions)
                                    collect (cons oligomer molecule)))
          (monomer-contexts (make-hash-table))
          (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))

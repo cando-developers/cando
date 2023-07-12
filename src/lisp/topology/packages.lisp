@@ -236,7 +236,8 @@
    #:rotor3
    #:translation
    #:monomer-shape
-   #:set-to-closest-matching-fragment-conformation-index))
+   #:set-to-closest-matching-fragment-conformation-index
+   #:coordinates))
 
   
 (defpackage #:topology.dag

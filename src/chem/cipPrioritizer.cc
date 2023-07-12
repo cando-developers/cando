@@ -595,7 +595,11 @@ void doCalculateStereochemistry( bool useStructure, Molecule_sp matter, core::Ha
   prior = CipPrioritizer_O::create();
   core::HashTable_mv cip = prior->calculateStereochemistryTypeForAllAtoms(matter);
   core::MultipleValues &values = core::lisp_multipleValues();
-  core::HashTable_sp stereochemistryType = gc::As<core::HashTable_sp>(values.second( cip.number_of_values() ));
+  core::T_sp ret2 = values.second( cip.number_of_values());
+  if (ret2.nilp()) {
+    SIMPLE_ERROR("NIL was returned rather than a hash-table for stereochemistryType");
+  }
+  core::HashTable_sp stereochemistryType = gc::As<core::HashTable_sp>(ret2);
   Loop la;
   la.loopTopGoal(matter,ATOMS);
   while (la.advanceLoopAndProcess() ) {
