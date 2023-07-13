@@ -722,6 +722,22 @@ CL_DEFUN NVector_sp chem__matter_extract_coordinates(Matter_sp matter)
   return coords;
 }
 
+CL_DEFUN NVector_sp chem__atom_list_extract_coordinates(core::List_sp atoms)
+{
+  size_t numberOfAtoms = core::cl__length(atoms);
+  NVector_sp coords = NVector_O::create(numberOfAtoms*3);
+  size_t idx = 0;
+  for ( auto cur : atoms ) {
+    Atom_sp atm = gc::As<Atom_sp>(CONS_CAR(cur));
+    Vector3 pos = atm->getPosition();
+    (*coords)[idx+0] = pos.getX();
+    (*coords)[idx+1] = pos.getY();
+    (*coords)[idx+2] = pos.getZ();
+    idx += 3;
+  }
+  return coords;
+}
+
 CL_LISPIFY_NAME("invertStructureAndRestraints");
 CL_DEFMETHOD void	Matter_O::invertStructureAndRestraints()
 {
