@@ -134,15 +134,15 @@ struct	from_object<chem::EnergyStretch>
 
 namespace chem {
 
-double	_evaluateEnergyOnly_Stretch (
-		double x1,
-		double y1,
-		double z1,
-		double x2,
-		double y2,
-		double z2,
-		double r0,
-		double kb );
+num_real	_evaluateEnergyOnly_Stretch (
+		num_real x1,
+		num_real y1,
+		num_real z1,
+		num_real x2,
+		num_real y2,
+		num_real z2,
+		num_real r0,
+		num_real kb );
 
 FORWARD(EnergyStretch);
 
@@ -189,7 +189,7 @@ public:
     
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,

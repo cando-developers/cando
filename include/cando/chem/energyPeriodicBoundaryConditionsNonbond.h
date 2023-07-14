@@ -50,10 +50,10 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-double	_evaluateEnergyOnly_PeriodicBoundaryConditionNonbond(ScoringFunction_sp score,
-                                                             double x1, double y1, double z1,
-                                                             double x2, double y2, double z2,
-                                                             double dA, double dC, double dQ1Q2 );
+num_real	_evaluateEnergyOnly_PeriodicBoundaryConditionNonbond(ScoringFunction_sp score,
+                                                             num_real x1, num_real y1, num_real z1,
+                                                             num_real x2, num_real y2, num_real z2,
+                                                             num_real dA, num_real dC, num_real dQ1Q2 );
 
 
 class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O

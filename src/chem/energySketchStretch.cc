@@ -58,15 +58,15 @@ void EnergySketchStretch::decode(core::List_sp alist) {
   SIMPLE_ERROR("Implement decode of EnergySketchStretch");
 }
 
-double	_evaluateEnergyOnly_SketchStretch (
-                                     double x1,
-                                     double y1,
-                                     double z1,
-                                     double x2,
-                                     double y2,
-                                     double z2,
-                                     double r0,
-                                     double kb )
+num_real	_evaluateEnergyOnly_SketchStretch (
+                                     num_real x1,
+                                     num_real y1,
+                                     num_real z1,
+                                     num_real x2,
+                                     num_real y2,
+                                     num_real z2,
+                                     num_real r0,
+                                     num_real kb )
 {
 #undef	STRETCH_SET_PARAMETER
 #define	STRETCH_SET_PARAMETER(x)	{}
@@ -92,12 +92,12 @@ double	_evaluateEnergyOnly_SketchStretch (
 #pragma clang diagnostic pop
 
 #if !USE_EXPLICIT_DECLARES
-  double fx1 = 0.0; 
-  double fy1 = 0.0; 
-  double fz1 = 0.0;
-  double fx2 = 0.0;
-  double fy2 = 0.0;
-  double fz2 = 0.0;
+  num_real fx1 = 0.0; 
+  num_real fy1 = 0.0; 
+  num_real fz1 = 0.0;
+  num_real fx2 = 0.0;
+  num_real fy2 = 0.0;
+  num_real fz2 = 0.0;
 #endif
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
 
@@ -140,14 +140,14 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
 #if !USE_EXPLICIT_DECLARES
-    double fx1 = 0.0;
-    double fy1 = 0.0;
-    double fz1 = 0.0;
-    double fx2 = 0.0;
-    double fy2 = 0.0;
-    double fz2 = 0.0;
+    num_real fx1 = 0.0;
+    num_real fy1 = 0.0;
+    num_real fz1 = 0.0;
+    num_real fx2 = 0.0;
+    num_real fy2 = 0.0;
+    num_real fz2 = 0.0;
 #endif
-    double x1,y1,z1,x2,y2,z2,kb,r0;
+    num_real x1,y1,z1,x2,y2,z2,kb,r0;
     int I1, I2;
 //	stretchScale = this->getScale();
     for ( gctools::Vec0<EnergySketchStretch>::iterator si=this->_Terms.begin();
@@ -158,7 +158,7 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 }
 
 
-double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                                     NVector_sp 	pos,
                                                     core::T_sp componentEnergy,
                                                     bool 		calcForce,
@@ -181,7 +181,7 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-  double totalEnergy = 0.0;
+  num_real totalEnergy = 0.0;
 #define STRETCH_CALC_FORCE
 #define STRETCH_CALC_DIAGONAL_HESSIAN
 #define STRETCH_CALC_OFF_DIAGONAL_HESSIAN
@@ -205,7 +205,7 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    double x1,y1,z1,x2,y2,z2,kb,r0;
+    num_real x1,y1,z1,x2,y2,z2,kb,r0;
     int I1, I2,i;
     gctools::Vec0<EnergySketchStretch>::iterator si;
     for ( i=0,si=this->_Terms.begin();

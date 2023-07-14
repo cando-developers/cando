@@ -145,11 +145,11 @@ struct	from_object<chem::EnergyAngle>
 
 namespace chem {
 
-double	_evaluateEnergyOnly_Angle(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double x3, double y3, double z3,
-		double kt, double t0 );
+num_real	_evaluateEnergyOnly_Angle(
+		num_real x1, num_real y1, num_real z1,
+		num_real x2, num_real y2, num_real z2,
+		num_real x3, num_real y3, num_real z3,
+		num_real kt, num_real t0 );
 
 
 FORWARD(EnergyAngle);
@@ -200,7 +200,7 @@ public:
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,

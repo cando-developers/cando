@@ -190,7 +190,12 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (chem:disable-print-intermediate-results minimizer))
   (restart-case
       (with-handle-linear-angles-dihedrals (:verbose verbose)
-          (chem:minimize minimizer))
+        (multiple-value-bind (pos total-energy)
+            (chem:minimize minimizer)
+          (unless total-energy
+            (break "total-energy was NIL"))
+          (values pos total-energy)
+          ))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization (&optional err)
       :report "Skip the rest of the current minimization - continue processing"

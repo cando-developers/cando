@@ -119,10 +119,10 @@ namespace translate {
 namespace chem {
 
 
-double	_evaluateEnergyOnly_AnchorRestraint(
-		double x1, double y1, double z1,
-		double xa, double ya, double za,
-		double kb );
+num_real	_evaluateEnergyOnly_AnchorRestraint(
+		num_real x1, num_real y1, num_real z1,
+		num_real xa, num_real ya, num_real za,
+		num_real kb );
 
 FORWARD(EnergyAnchorRestraint);
 
@@ -158,7 +158,7 @@ public:
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,

@@ -81,8 +81,8 @@ void RigidBodyAtomInfo::decode(core::List_sp alist) {
 }
 
 struct TypeParameters {
-  double _Radius;
-  double _Epsilon;
+  num_real _Radius;
+  num_real _Epsilon;
   TypeParameters(double radius, double epsilon) : _Radius(radius), _Epsilon(epsilon) {};
 };
 
@@ -119,18 +119,18 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
     core::clasp_write_string(fmt::format("There are {} types\n" , this->_NumberOfTypes));
   }
   this->_CrossTerms.resize(next_type_index*next_type_index);
-  double vdwScale = this->getVdwScale();
+  num_real vdwScale = this->getVdwScale();
   for ( size_t xi=0; xi<next_type_index; xi++ ) {
     for (size_t yi=xi; yi<next_type_index; yi++ ) {
       TypeParameters& ea1 = typeParameters[xi];
       TypeParameters& ea2 = typeParameters[yi];
-      double rStar = ea1._Radius+ea2._Radius;
-      double epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
-      double rStar2 = rStar*rStar;
-      double rStar6 = rStar2*rStar2*rStar2;
-      double rStar12 = rStar6*rStar6;
-      double dA = epsilonij*rStar12*vdwScale;
-      double dC = 2.0*epsilonij*rStar6*vdwScale;
+      num_real rStar = ea1._Radius+ea2._Radius;
+      num_real epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
+      num_real rStar2 = rStar*rStar;
+      num_real rStar6 = rStar2*rStar2*rStar2;
+      num_real rStar12 = rStar6*rStar6;
+      num_real dA = epsilonij*rStar12*vdwScale;
+      num_real dC = 2.0*epsilonij*rStar6*vdwScale;
       RigidBodyNonbondCrossTerm crossTerm(dA,dC);
       if (verbose) {
         core::clasp_write_string(fmt::format("Cross term for types {} - {}\n" , xi , yi ));
@@ -210,8 +210,8 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
-  double am, bm, cm, dm, xm, ym, zm;
-  double pxm, pym, pzm;
+  num_real am, bm, cm, dm, xm, ym, zm;
+  num_real pxm, pym, pzm;
   int	I1;
   size_t I1start = 0;
   for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
@@ -245,8 +245,8 @@ size_t EnergyRigidBodyNonbond_O::partsCoordinates(NVector_sp pos, size_t idx, co
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
-  double am, bm, cm, dm, xm, ym, zm;
-  double pxm, pym, pzm;
+  num_real am, bm, cm, dm, xm, ym, zm;
+  num_real pxm, pym, pzm;
   int	I1;
   size_t I1start = 0;
   for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
@@ -271,9 +271,9 @@ struct coordinate_lookup {
   NVector_sp _Coordinates;
   size_t _StartIndex;
   void setStartIndex(size_t startIndex) { this->_StartIndex = startIndex; };
-  double getX() const { return (*this->_Coordinates)[this->_StartIndex+0];}
-  double getY() const { return (*this->_Coordinates)[this->_StartIndex+1];}
-  double getZ() const { return (*this->_Coordinates)[this->_StartIndex+2];}
+  num_real getX() const { return (*this->_Coordinates)[this->_StartIndex+0];}
+  num_real getY() const { return (*this->_Coordinates)[this->_StartIndex+1];}
+  num_real getZ() const { return (*this->_Coordinates)[this->_StartIndex+2];}
 };
 
 
@@ -300,8 +300,8 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
-  double am, bm, cm, dm, xm, ym, zm;
-  double pxm, pym, pzm;
+  num_real am, bm, cm, dm, xm, ym, zm;
+  num_real pxm, pym, pzm;
   int	I1;
   size_t coordIndex = 0;
   size_t I1start = 0;
@@ -348,8 +348,8 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
-  double am, bm, cm, dm, xm, ym, zm;
-  double pxm, pym, pzm;
+  num_real am, bm, cm, dm, xm, ym, zm;
+  num_real pxm, pym, pzm;
   int	I1;
   size_t I1start = 0;
   for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
@@ -404,8 +404,8 @@ CL_DEFMETHOD core::ComplexVector_sp EnergyRigidBodyNonbond_O::write_nonbond_atom
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
-  double am, bm, cm, dm, xm, ym, zm;
-  double pxm, pym, pzm;
+  num_real am, bm, cm, dm, xm, ym, zm;
+  num_real pxm, pym, pzm;
   int	I1;
   size_t I1start = 0;
   for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
@@ -428,14 +428,14 @@ void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
 }
 
 
-inline double periodic_boundary_adjust(const double& delta, const double& rsize, const double& size)
+inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& rsize, const num_real& size)
 {
-  double result = delta;
+  num_real result = delta;
   result -= size*std::nearbyint(delta*rsize);
   return result;
 }
 
-double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         NVector_sp 	pos,
                                                         core::T_sp componentEnergy,
                                                         bool 		calcForce,
@@ -448,11 +448,11 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 {
   this->_Evaluations++;
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
-  double vdwScale = this->getVdwScale();
-  double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
-  double energyElectrostatic = 0.0;
-  double energyVdw = 0.0;
-  double totalEnergy = 0.0;
+  num_real vdwScale = this->getVdwScale();
+  num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
+  num_real energyElectrostatic = 0.0;
+  num_real energyVdw = 0.0;
+  num_real totalEnergy = 0.0;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -462,16 +462,16 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     SIMPLE_ERROR("The rigid-body-energy-function bounding-box is unbound - it must be defined");
   }
   Vector3 rwidths = boundingBox->get_bounding_box_rwidths();
-  double x_rsize = rwidths.getX();
-  double y_rsize = rwidths.getY();
-  double z_rsize = rwidths.getZ();
+  num_real x_rsize = rwidths.getX();
+  num_real y_rsize = rwidths.getY();
+  num_real z_rsize = rwidths.getZ();
   Vector3 widths = boundingBox->get_bounding_box_widths();
-  double x_size = widths.getX();
-  double y_size = widths.getY();
-  double z_size = widths.getZ();
-  double half_x_size = x_size/2.0;
-  double half_y_size = y_size/2.0;
-  double half_z_size = z_size/2.0;
+  num_real x_size = widths.getX();
+  num_real y_size = widths.getY();
+  num_real z_size = widths.getZ();
+  num_real half_x_size = x_size/2.0;
+  num_real half_y_size = y_size/2.0;
+  num_real half_z_size = z_size/2.0;
   
 #define NONBONDRB_CALC_FORCE
 #define NONBONDRB_CALC_DIAGONAL_HESSIAN
@@ -509,11 +509,11 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>
 #pragma clang diagnostic pop
-  double dA,dC,dQ1Q2;
-  double am, bm, cm, dm, xm, ym, zm;
-  double pxm, pym, pzm;
-  double an, bn, cn, dn, xn, yn, zn;
-  double pxn, pyn, pzn;
+  num_real dA,dC,dQ1Q2;
+  num_real am, bm, cm, dm, xm, ym, zm;
+  num_real pxm, pym, pzm;
+  num_real an, bn, cn, dn, xn, yn, zn;
+  num_real pxn, pyn, pzn;
   int	I1, I2;
   size_t interactions = 0;
   size_t I1start = 0;
@@ -524,8 +524,8 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
       size_t I2end = (*this->_RigidBodyEndAtom)[iHelix2];
       for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
         RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
-        double charge1 = ea1._Charge;
-        double electrostatic_scaled_charge1 = charge1*electrostaticScale;
+        num_real charge1 = ea1._Charge;
+        num_real electrostatic_scaled_charge1 = charge1*electrostaticScale;
         for ( size_t I2cur = I2start; I2cur<I2end; ++I2cur ) {
           ++interactions;
           RigidBodyAtomInfo& ea2 = this->_AtomInfoTable[I2cur];
@@ -533,15 +533,15 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
           dA = crossTerm.dA;
           dC = crossTerm.dC;
 #if 0          
-          double rStar = ea1._Radius+ea2._Radius;
-          double epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
-          double rStar2 = rStar*rStar;
-          double rStar6 = rStar2*rStar2*rStar2;
-          double rStar12 = rStar6*rStar6;
+          num_real rStar = ea1._Radius+ea2._Radius;
+          num_real epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
+          num_real rStar2 = rStar*rStar;
+          num_real rStar6 = rStar2*rStar2*rStar2;
+          num_real rStar12 = rStar6*rStar6;
           dA = epsilonij*rStar12*vdwScale;
           dC = 2.0*epsilonij*rStar6*vdwScale;
 #endif
-          double charge2 = ea2._Charge;
+          num_real charge2 = ea2._Charge;
           dQ1Q2 = electrostatic_scaled_charge1*charge2;
           I1 = iHelix1*7;
           I2 = iHelix2*7;
@@ -668,7 +668,7 @@ void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermB
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>
 #pragma clang diagnostic pop
-    double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
+    num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
     int	I1, I2,i;
     gctools::Vec0<EnergyRigidBodyNonbond>::iterator nbi;
     for ( i=0,nbi=this->_Terms.begin();

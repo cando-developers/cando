@@ -31,20 +31,37 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #define VECREAL_DOUBLE 2
 #define VECREAL_FLOAT  1
-#define VECREAL VECREAL_DOUBLE
+
+//
+// This is where you define the VECREAL and NUM_REAL types
+//
+#define VECREAL VECREAL_FLOAT
+#define NUM_REAL VECREAL_FLOAT
+
+#if VECREAL == VECREAL_DOUBLE
 typedef double  vecreal;
 typedef int64_t vecint;
+#define NVECTOR_O_TYPE core::SimpleVector_double_O
+#define NVECTOR_sp_TYPE core::SimpleVector_double_sp
+#else
+typedef float vecreal;
+typedef int32_t vecint;
+#define NVECTOR_O_TYPE core::SimpleVector_float_O
+#define NVECTOR_sp_TYPE core::SimpleVector_float_sp
+#endif
+
+#if NUM_REAL == VECREAL_DOUBLE
+typedef double num_real;
+typedef int64_t num_int;
+#else
+typedef float  num_real;
+typedef int32_t num_int;
+#endif
+
 extern double safe_acos(double rad);
 extern double safe_asin(double rad);
 extern float  safe_acos(float rad);
 extern float  safe_asin(float rad);
-
-#define NUM_REAL VECREAL_DOUBLE
-typedef double  num_real;
-typedef int64_t num_int;
-
-#define NVECTOR_O_TYPE core::SimpleVector_double_O
-#define NVECTOR_sp_TYPE core::SimpleVector_double_sp
 
 
 namespace cando {

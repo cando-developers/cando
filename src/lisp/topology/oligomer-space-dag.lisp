@@ -126,23 +126,25 @@
           do (vector-push-extend directional-coupling (topology:couplings oligomer-space)))
     (values oligomer-space (gethash focus-node node-to-monomer))))
 
-(defun node-from-name (maybe-name label)
+(defun node-from-name (foldamer-name tree-name maybe-name label)
   (cond
     ((and (consp maybe-name) (eq (car maybe-name) :cap))
+     (when (keywordp (cadr maybe-name))
+       (error "Parsing ~s ~s - the cap name ~s must be a non-keyword symbol" foldamer-name tree-name (cadr maybe-name)))
      (make-instance 'cap-node :name (cadr maybe-name) :label label))
     ((symbolp maybe-name)
      (make-instance 'node :name maybe-name :label label))
     (t (error "Illegal name in node-from-name ~s" maybe-name))))
 
-(defun parse-recursive (sub-tree prev-node dag label)
+(defun parse-recursive (name tree-name sub-tree prev-node dag label)
   (cond
     ((null sub-tree))
     ((consp (car sub-tree))
-     (parse-recursive (car sub-tree) prev-node dag :head-cons )
-     (parse-recursive (cdr sub-tree) prev-node dag :tail-cons))
+     (parse-recursive name tree-name (car sub-tree) prev-node dag :head-cons )
+     (parse-recursive name tree-name (cdr sub-tree) prev-node dag :tail-cons))
     ((symbolp (car sub-tree))
      (let* ((plug-name (car sub-tree))
-            (node (node-from-name (cadr sub-tree) label)))
+            (node (node-from-name name tree-name (cadr sub-tree) label)))
        (cond
          ((topology:in-plug-name-p plug-name)
           (let ((edge (make-instance 'edge
@@ -161,24 +163,24 @@
             (push node (nodes dag))
             (push edge (edges dag))))
          (t (error "Illegal plug-name ~s" plug-name)))
-       (parse-recursive (cddr sub-tree) node dag :symbol)))
+       (parse-recursive name tree-name (cddr sub-tree) node dag :symbol)))
     (t (error "Illegal sub-tree ~s" sub-tree))))
 
 (defun parse-label (head)
   head)
 
-(defun parse-dag-for-oligomer-space (tree &key label)
-  (let* ((node (node-from-name (car tree) :top))
+(defun parse-dag-for-oligomer-space (name tree &key label)
+  (let* ((node (node-from-name name label (car tree) :top))
          (dag (make-instance 'dag :root node :label label)))
     (push node (nodes dag))
-    (parse-recursive (cdr tree) node dag :top)
+    (parse-recursive name label (cdr tree) node dag :top)
     (walk-spanning-tree dag)
     dag))
 
-(defun parse-labeled-dag-for-oligomer-space (labeled-tree)
+(defun parse-labeled-dag-for-oligomer-space (name labeled-tree)
   (let ((label (parse-label (car labeled-tree)))
         (tree (cdr labeled-tree)))
-    (parse-dag-for-oligomer-space tree :label label)))
+    (parse-dag-for-oligomer-space name tree :label label)))
 
 (defun parse-oligomer-space-dag (foldamer context &key (topology-groups topology:*topology-groups*))
   (let ((dag (parse-dag-for-oligomer-space context)))
@@ -186,8 +188,8 @@
         (oligomer-space-from-dag foldamer dag topology-groups)
       (values oligomer-space focus-monomer dag))))
 
-(defun parse-oligomer-space-labeled-dag (foldamer labeled-context &key (topology-groups topology:*topology-groups*))
-  (let ((dag (parse-labeled-dag-for-oligomer-space labeled-context)))
+(defun parse-oligomer-space-labeled-dag (name foldamer labeled-context &key (topology-groups topology:*topology-groups*))
+  (let ((dag (parse-labeled-dag-for-oligomer-space name labeled-context)))
     (multiple-value-bind (oligomer-space focus-monomer)
         (oligomer-space-from-dag foldamer dag topology-groups)
       (values oligomer-space focus-monomer dag))))

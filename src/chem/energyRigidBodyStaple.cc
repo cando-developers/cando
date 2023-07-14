@@ -69,21 +69,21 @@ void EnergyRigidBodyStaple_O::energy_rigid_body_staple_add_term( double ks, doub
 
 
 #if 0
-double	_evaluateEnergyOnly_STAPLE (double ak,
-                                    double bk,
-                                    double ck,
-                                    double dk,
-                                    double xk,
-                                    double yk,
-                                    double zk,
-                                    double al,
-                                    double bl,
-                                    double cl,
-                                    double dl,
-                                    double xl,
-                                    double yl,
-                                    double zl,
-                                    double ks )
+num_real	_evaluateEnergyOnly_STAPLE (num_real ak,
+                                    num_real bk,
+                                    num_real ck,
+                                    num_real dk,
+                                    num_real xk,
+                                    num_real yk,
+                                    num_real zk,
+                                    num_real al,
+                                    num_real bl,
+                                    num_real cl,
+                                    num_real dl,
+                                    num_real xl,
+                                    num_real yl,
+                                    num_real zl,
+                                    num_real ks )
 {
 #undef	STAPLE_SET_PARAMETER
 #define	STAPLE_SET_PARAMETER(x,y)	{}
@@ -111,12 +111,12 @@ double	_evaluateEnergyOnly_STAPLE (double ak,
 #pragma clang diagnostic pop
  
 #if !USE_EXPLICIT_DECLARES
-  double fx1 = 0.0; 
-  double fy1 = 0.0; 
-  double fz1 = 0.0;
-  double fx2 = 0.0;
-  double fy2 = 0.0;
-  double fz2 = 0.0;
+  num_real fx1 = 0.0; 
+  num_real fy1 = 0.0; 
+  num_real fz1 = 0.0;
+  num_real fx2 = 0.0;
+  num_real fy2 = 0.0;
+  num_real fz2 = 0.0;
 #endif
 #include <cando/energy-functions/_STAPLE_termCode.cc>
 
@@ -134,12 +134,12 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
   bool		calcForce = true;
   bool		calcDiagonalHessian = true;
   bool		calcOffDiagonalHessian = true;
-  double        ks;
+  num_real        ks;
   size_t        rba, rbb;
-  double        pxk, pyk, pzk;
-  double        pxl, pyl, pzl;
-  double        ak, bk, ck, dk, xk, yk, zk;
-  double        al, bl, cl, dl, xl, yl, zl;
+  num_real        pxk, pyk, pzk;
+  num_real        pxl, pyl, pzl;
+  num_real        ak, bk, ck, dk, xk, yk, zk;
+  num_real        al, bl, cl, dl, xl, yl, zl;
 #undef	STAPLE_SET_PARAMETER
 #define	STAPLE_SET_PARAMETER(x,y)	{x = si->y;}
 #undef STAPLE_SET_POINT
@@ -180,7 +180,7 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 
 
   
-double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
                                                       NVector_sp 	pos,
                                                       core::T_sp componentEnergy,
                                                       bool 		calcForce,
@@ -205,13 +205,13 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-  double        ks, r0;
+  num_real        ks, r0;
   size_t        rba, rbb;
-  double        pxk, pyk, pzk;
-  double        pxl, pyl, pzl;
-  double        ak, bk, ck, dk, xk, yk, zk;
-  double        al, bl, cl, dl, xl, yl, zl;
-  double totalEnergy = 0.0;
+  num_real        pxk, pyk, pzk;
+  num_real        pxl, pyl, pzl;
+  num_real        ak, bk, ck, dk, xk, yk, zk;
+  num_real        al, bl, cl, dl, xl, yl, zl;
+  num_real totalEnergy = 0.0;
 #define STAPLE_CALC_FORCE
 #define STAPLE_CALC_DIAGONAL_HESSIAN
 #define STAPLE_CALC_OFF_DIAGONAL_HESSIAN
@@ -353,12 +353,12 @@ void EnergyRigidBodyStaple_O::addTerm(const EnergyRigidBodyStaple& term)
 
 CL_DEFMETHOD core::List_sp EnergyRigidBodyStaple_O::parts_as_list(NVector_sp 	pos) {
   ql::list result;
-  double        ks, r0;
+  num_real        ks, r0;
   size_t        rba, rbb;
-  double        pxk, pyk, pzk;
-  double        pxl, pyl, pzl;
-  double        ak, bk, ck, dk, xk, yk, zk;
-  double        al, bl, cl, dl, xl, yl, zl;
+  num_real        pxk, pyk, pzk;
+  num_real        pxl, pyl, pzl;
+  num_real        ak, bk, ck, dk, xk, yk, zk;
+  num_real        al, bl, cl, dl, xl, yl, zl;
   int I1, I2;
 #undef	STAPLE_POSITION_SET_PARAMETER
 #define	STAPLE_POSITION_SET_PARAMETER(x,y)	{x = si->y;}
@@ -397,10 +397,10 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyStaple_O::parts_as_list(NVector_sp 	po
 size_t EnergyRigidBodyStaple_O::partsCoordinates(NVector_sp 	pos, size_t idx, core::SimpleVector_float_sp coords) {
   double        ks, r0;
   size_t        rba, rbb;
-  double        pxk, pyk, pzk;
-  double        pxl, pyl, pzl;
-  double        ak, bk, ck, dk, xk, yk, zk;
-  double        al, bl, cl, dl, xl, yl, zl;
+  num_real        pxk, pyk, pzk;
+  num_real        pxl, pyl, pzl;
+  num_real        ak, bk, ck, dk, xk, yk, zk;
+  num_real        al, bl, cl, dl, xl, yl, zl;
   int I1, I2;
 #undef	STAPLE_POSITION_SET_PARAMETER
 #define	STAPLE_POSITION_SET_PARAMETER(x,y)	{x = si->y;}

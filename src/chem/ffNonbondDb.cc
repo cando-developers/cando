@@ -503,7 +503,7 @@ CL_LISPIFY_NAME(FFNonbond/getSameParms);
 CL_DEFMETHOD
 core::T_sp FFNonbond_O::getSameParms() const
 {
-  ASSERT(this->_SameParms.boundp());
+  // Can return unbound<>()
   return this->_SameParms;
 }
 

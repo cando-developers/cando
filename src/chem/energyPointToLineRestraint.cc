@@ -49,7 +49,7 @@ EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchS
 }
 
 
-double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                            NVector_sp 	pos,
                                                            core::T_sp componentEnergy,
                                                            bool 		calcForce,
@@ -60,7 +60,7 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
                                                            gc::Nilable<NVector_sp>	hdvec,
                                                            gc::Nilable<NVector_sp> dvec)
 {
-  double totalEnergy = 0.0;
+  num_real totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -89,7 +89,7 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
 #define	POINT_TO_LINE_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
-  double bond_length = this->_Bond_div_2*2.0;
+  num_real bond_length = this->_Bond_div_2*2.0;
   for (size_t stretch_idx= 0; stretch_idx<this->_Stretch->_Terms.size(); stretch_idx++ ) {
     EnergySketchStretch& estretch = this->_Stretch->_Terms[stretch_idx];
     int IA = estretch.term.I1;
@@ -97,7 +97,7 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
     Vector3 vA((*pos)[IA+0],(*pos)[IA+1],(*pos)[IA+2]);
     Vector3 vB((*pos)[IB+0],(*pos)[IB+1],(*pos)[IB+2]);
     Vector3 dx21 = vB-vA;
-    double x2mx1sq = dx21.dotProduct(dx21);
+    num_real x2mx1sq = dx21.dotProduct(dx21);
     for ( size_t I1 = 0; I1 < pos->length(); I1+=3 ) {
       if (I1!=IA && I1!=IB) {
         Vector3 v1((*pos)[I1+0],(*pos)[I1+1],(*pos)[I1+2]);
@@ -117,12 +117,12 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
           if (fabs(v1.getZ()-vB.getZ()) < bond_length) continue;
         }
         Vector3 dx10 = vA-v1;
-        double dot = dx10.dotProduct(dx21);
-        double t = dot/x2mx1sq;
+        num_real dot = dx10.dotProduct(dx21);
+        num_real t = dot/x2mx1sq;
         if (t<0.0 || t>1.0) continue;
         Vector3 close = (dx21*t)+vA;
         Vector3 d = v1-close;
-        double dist = d.length();
+        num_real dist = d.length();
         if (this->_ForceConstant > 0.0 ) {
           if (dist < this->_Bond_div_2) {
             if (dist > 0.01) {

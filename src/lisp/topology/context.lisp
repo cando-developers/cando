@@ -128,9 +128,8 @@
                             :head head
                             :tail tail))))))))
 
-(defun parse (labeled-sexp)
-  (let* ((sexp (cdr labeled-sexp))
-         (head (car sexp)))
+(defun parse-sexp (sexp)
+  (let ((head (car sexp)))
     (make-instance 'chain-node
                    :head (parse-monomer head)
                    :tail (parse-plug-to-something (cdr sexp)))))

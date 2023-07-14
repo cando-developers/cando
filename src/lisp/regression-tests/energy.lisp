@@ -123,3 +123,9 @@
 (test-true force-acos (< force-acos 0.0001))
 
 (format t "force-acos = ~f~%" force-acos)
+
+(defparameter min (chem:make-minimizer ef))
+(time (dotimes (i 10)
+        (chem:save-coordinates-from-vector ef pos)
+        (chem:minimize min)))
+(format t "minimizer done~%")

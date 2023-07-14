@@ -591,7 +591,7 @@ CL_DEFUN core::List_sp all_element_symbols() {
   ElementsInfo_sp ei = elementsInfo();
   ql::list ll;
   for ( auto ai=ei->_atomicInfo.begin(); ai!=ei->_atomicInfo.end(); ai++ ) {
-    if ( ai->_Valid ) {
+    if ( ai->_Valid && ai->_RealElement) {
       core::Symbol_sp sym = ai->_AtomicSymbol;
       ll << sym;
     }

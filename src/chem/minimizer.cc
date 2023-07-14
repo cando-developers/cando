@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //#define	TURN_LINESEARCH_DETAILS_ON
 #define	TURN_LINESEARCH_DETAILS_OFF
 
+// #define DEBUG_FACTORIZATION
 
 #define	VALIDATE_FORCE_OFF	// Turn this on to compare analytical force to numerical force at every step
 
@@ -85,6 +86,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,minimizer);
 SYMBOL_EXPORT_SC_(ChemPkg,steepest_descent);
 SYMBOL_EXPORT_SC_(ChemPkg,conjugate_gradient);
 SYMBOL_EXPORT_SC_(ChemPkg,truncated_newton);
+SYMBOL_EXPORT_SC_(ChemPkg,truncated_newton_debug);
 
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededSD_MaxSteps);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededCG_MaxSteps);
@@ -1095,7 +1097,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
      
         if (this->_StepCallback.notnilp()) {
           dstep = core::DoubleFloat_O::create(step);
-          core::eval::funcall(this->_StepCallback, pos, force, dstep, dir );
+          core::eval::funcall(this->_StepCallback, _sym_steepest_descent, pos, force, dstep, dir );
         }
         if (chem__verbose(5)) {
           core::clasp_write_string(fmt::format(" {}  lineSearch step-> {}\n" , __FUNCTION__ , step ));
@@ -1274,7 +1276,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   }
   {
     while (1) {
-      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x,force);
 	    //
 	    // Absolute gradient test
 	    //
@@ -1394,6 +1395,10 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
                           tv1, tv2, localSteps,
                           stepReport);
 
+        if (this->_StepCallback.notnilp()) {
+          core::DoubleFloat_sp dstep = core::DoubleFloat_O::create(step);
+          core::eval::funcall(this->_StepCallback, _sym_conjugate_gradient, x, force, dstep, d );
+        }
 
 		// x = x + (step)d
 		// r = -f'(x)   r == force!!!!
@@ -1670,9 +1675,11 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   int	iDimensions;
   double			fp;
   NVector_sp	forceK, pK, pjNext, rj, dj, zj, qj, xKNext, kSum;
-  SparseLargeSquareMatrix_sp	mprecon, ldlt, opt_ldlt;
-  double				energyXk, energyXkNext;
-  double				rmsForceMag;
+  SparseLargeSquareMatrix_sp	mprecon;
+  SparseLargeSquareMatrix_sp    opt_mprecon;
+  SparseLargeSquareMatrix_sp    ldlt, opt_ldlt;
+  double			energyXk, energyXkNext;
+  double			rmsForceMag;
   int				kk;
   double				alphaK, delta, rmsMagXKNext;
   bool				b1aTest, b1bTest;
@@ -1706,8 +1713,6 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   kSum = NVector_O::create(iDimensions);
   mprecon = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
   ldlt = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
-  mprecon->fill(0.0);
-  ldlt->fill(0.0);
     //
     // Evaluate initial energy and force
     //
@@ -1724,9 +1729,25 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
     //
   LOG("Setting up preconditioner" );
   this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
-  unconventionalModifiedCholeskySymbolicFactorization(mprecon,ldlt);
-  unconventionalModifiedCholeskyFactorization(mprecon,ldlt,kSum);
+  opt_mprecon = mprecon->optimized();
+  // Insert entries once into ldlt based on mprecon so it has entries that can accept the factorization 
+  unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt);
+  // Factorize mprecon into ldlt
+  unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt,kSum);
   opt_ldlt = ldlt->optimized();
+
+#ifdef DEBUG_FACTORIZATION
+  core::clasp_writeln_string(fmt::format( "======= Debug ldlt at start"));
+  auto ldlt_debug = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
+  chem_old::unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt_debug);
+  auto kSum_debug = NVector_O::create(iDimensions);
+  unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt_debug,kSum_debug);
+  ldlt->ensureIdentical(ldlt_debug);
+  chem__nvector_ensure_identical(kSum,kSum_debug, 0.01);
+  if (this->_StepCallback.notnilp()) {
+    core::eval::funcall(this->_StepCallback,_sym_truncated_newton_debug,opt_mprecon,ldlt,opt_ldlt);
+  }
+#endif
 
   if ( this->_PrintIntermediateResults ) {
     core::clasp_writeln_string(fmt::format( "======= Starting Truncated Newton Minimizer" ));
@@ -1735,9 +1756,6 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   {
     LOG("Starting loop" );
     while ( 1 ) {
-
-      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,xK,forceK);
-
       if ( this->_DebugOn )
       {
         stepReport = StepReport_O::create();
@@ -1748,7 +1766,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    //
 	    // Inner loop
 	    //
-      _truncatedNewtonInnerLoop( kk, xK, mprecon, opt_ldlt,
+      _truncatedNewtonInnerLoop( kk, xK, opt_mprecon, opt_ldlt,
                                  forceK, rmsForceMag, pK,
                                  pjNext, rj, dj, zj, qj );
 
@@ -1772,6 +1790,10 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 
       energyXk = energyXkNext;
       this->lineSearch( &alphaK, &energyXkNext, xK, pK, forceK, zj, qj, kk, stepReport );
+      if (this->_StepCallback.notnilp()) {
+        core::DoubleFloat_sp dstep = core::DoubleFloat_O::create(alphaK);
+        core::eval::funcall(this->_StepCallback, _sym_truncated_newton, xK, forceK, dstep, pK, opt_mprecon, opt_ldlt  );
+      }
       XPlusYTimesScalar(xKNext, xK,pK,alphaK,this->_Frozen);
 	    //
 	    // Evaluate the force at the new position
@@ -1823,8 +1845,22 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    // Compute the preconditioner M at X{k+1}
 	    //
       this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
-      unconventionalModifiedCholeskyFactorization(mprecon,ldlt,kSum);
+      opt_mprecon = mprecon->optimized();
+      unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt,kSum);
       opt_ldlt = ldlt->optimized();
+#ifdef DEBUG_FACTORIZATION
+  core::clasp_writeln_string(fmt::format( "======= Debug ldlt in iteration"));
+  auto ldlt_debug = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
+  chem_old::unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt_debug);
+  auto kSum_debug = NVector_O::create(iDimensions);
+  unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt_debug,kSum_debug);
+  if (this->_StepCallback.notnilp()) {
+    core::eval::funcall(this->_StepCallback,_sym_truncated_newton_debug,opt_mprecon,ldlt,opt_ldlt);
+  }
+  ldlt->ensureIdentical(ldlt_debug);
+  chem__nvector_ensure_identical(kSum,kSum_debug, 0.01);
+#endif
+
       copyVector(xK,xKNext);
       kk++;
       this->_Iteration++;

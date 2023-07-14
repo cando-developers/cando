@@ -1201,7 +1201,9 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
 
 Matter_sp Atom_O::copy(core::T_sp new_to_old)
 {
-  SIMPLE_ERROR("Don't copy single atoms - bonds will be messed up");
+  auto atm = gc::GC<Atom_O>::copy(*this);
+  atm->_Bonds.clear();
+  return atm;
 }
 
 

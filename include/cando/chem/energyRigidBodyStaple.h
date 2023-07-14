@@ -137,7 +137,7 @@ public:
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,

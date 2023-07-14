@@ -127,10 +127,10 @@ void	EnergyAngle::defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *e
 }
 #endif //]
 
-double	EnergyAngle::getT()
+double EnergyAngle::getT()
 {
     Vector3	pos1, pos2, pos3;
-double	angle;
+num_real	angle;
     pos1 = this->_Atom1->getPosition();
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
@@ -187,11 +187,11 @@ double	angle;
 //
 // Copy this from implementAmberFunction.cc
 //
-double	_evaluateEnergyOnly_Angle(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double x3, double y3, double z3,
-		double t0, double kt )
+num_real	_evaluateEnergyOnly_Angle(
+		num_real x1, num_real y1, num_real z1,
+		num_real x2, num_real y2, num_real z2,
+		num_real x3, num_real y3, num_real z3,
+		num_real t0, num_real kt )
 {
 #undef	ANGLE_SET_PARAMETER
 #define	ANGLE_SET_PARAMETER(x)	{}
@@ -213,15 +213,15 @@ double	_evaluateEnergyOnly_Angle(
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
 #if !USE_EXPLICIT_DECLARES
-	double fx1;
-	double fy1;
-	double fz1;
-	double fx2;
-	double fy2;
-	double fz2;
-	double fx3;
-	double fy3;
-	double fz3;
+	num_real fx1;
+	num_real fy1;
+	num_real fz1;
+	num_real fx2;
+	num_real fy2;
+	num_real fz2;
+	num_real fx3;
+	num_real fy3;
+	num_real fz3;
 #endif
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -314,7 +314,7 @@ bool		calcOffDiagonalHessian = true;
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
 	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
+	num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
 	int I1, I2, I3;
 	for ( gctools::Vec0<EnergyAngle>::iterator ai=this->_Terms.begin();
 		    ai!=this->_Terms.end(); ai++ )
@@ -330,7 +330,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
+num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             chem::NVector_sp 	pos,
                                             core::T_sp componentEnergy,
                                             bool 		calcForce,
@@ -341,7 +341,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             gc::Nilable<chem::NVector_sp> hdvec,
                                             gc::Nilable<chem::NVector_sp> dvec)
 {
-  double termEnergy = 0.0;
+  num_real termEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
@@ -388,7 +388,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
 //	double DotAbCb;
     int I1, I2, I3,i;
     gctools::Vec0<EnergyAngle>::iterator ai;
@@ -512,7 +512,7 @@ bool	calcOffDiagonalHessian = true;
 	    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
 	    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
+	    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
 	    int I1, I2, I3,i;
 	    gctools::Vec0<EnergyAngle>::iterator ai;
 	    for ( i=0,ai=this->_Terms.begin();
@@ -552,6 +552,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,angle);
 SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 SYMBOL_EXPORT_SC_(KeywordPkg,t0);
 SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
+
 
 core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
 {
@@ -593,7 +594,7 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
 //	    double DotAbCb;
     int I1, I2, I3,i;
     gctools::Vec0<EnergyAngle>::iterator ai;

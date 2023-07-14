@@ -643,7 +643,11 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
     core::HashTable_mv cips = cip->calculateStereochemistryTypeForAllAtoms(mol);
     core::MultipleValues &values = core::lisp_multipleValues();
-    core::HashTable_sp stereochemistryType = gc::As<core::HashTable_sp>(values.second( cip.number_of_values() ));
+    core::T_sp ret2 = values.second( cips.number_of_values());
+    if (ret2.nilp()) {
+      SIMPLE_ERROR("NIL was returned rather than a hash-table for stereochemistryType");
+    }
+    core::HashTable_sp stereochemistryType = gc::As<core::HashTable_sp>(ret2);
     stereochemistryType->mapHash([](core::T_sp key, core::T_sp val) {
       StereochemistryType st = translate::from_object<StereochemistryType,std::true_type>(val)._v;
         gc::As<Atom_sp>(key)->_StereochemistryType = st;
@@ -701,7 +705,11 @@ Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
   a->setConfiguration(n->_Configuration);
   LOG("Just set configuration of atom[{}] to config[{}]"
       , _rep_(a) , a->getConfigurationAsString() );
-  ASSERT(elementIsRealElement(a->getElement()));
+#if 0
+  if (!elementIsRealElement(a->getElement())) {
+    SIMPLE_ERROR("The element for atom {} must be a real element", _rep_(a) );
+  }
+#endif
   return a;
 }
 

@@ -95,10 +95,10 @@ struct	from_object<chem::EnergySketchNonbond>
 
 namespace chem {
 
-double	_evaluateEnergyOnly_Nonbond(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double dC );
+num_real	_evaluateEnergyOnly_Nonbond(
+		num_real x1, num_real y1, num_real z1,
+		num_real x2, num_real y2, num_real z2,
+		num_real dC );
 
 FORWARD(EnergySketchNonbond);
 class EnergySketchNonbond_O : public EnergyComponent_O
@@ -118,7 +118,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
  public:
 
   void setScaleSketchNonbond(double d);
-  double	getScaleSketchNonbond();
+  double getScaleSketchNonbond();
 
   void setFreezeFlags(size_t freezeFlags);
   
@@ -127,7 +127,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp componentEnergy,
                                        bool 		calcForce,
@@ -138,7 +138,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec);
 
-  double evaluateTerms( NVector_sp 	pos,
+ num_real  evaluateTerms( NVector_sp 	pos,
                         core::T_sp componentEnergy,
                       bool 		calcForce,
                       gc::Nilable<NVector_sp> 	force,
