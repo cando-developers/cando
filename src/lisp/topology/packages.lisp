@@ -82,6 +82,7 @@
    #:seen-index
    #:bad-fragment-internals
    #:fragment-conformations
+   #:merge-fragment-conformations
    #:fragment-internals
    #:out-of-focus-internal
    #:out-of-focus-internals
@@ -237,7 +238,9 @@
    #:translation
    #:monomer-shape
    #:set-to-closest-matching-fragment-conformation-index
-   #:coordinates))
+   #:coordinates
+   #:joint-with-name
+   #:residue-properties))
 
   
 (defpackage #:topology.dag

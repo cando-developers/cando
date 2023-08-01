@@ -27,6 +27,7 @@
 
 (defclass constitution ()
   ((name :initarg :name :accessor name)
+   (residue-properties :initform nil :initarg :residue-properties :accessor residue-properties)
    (constitution-atoms :initarg :constitution-atoms :accessor constitution-atoms)))
 
 (cando.serialize:make-class-save-load
@@ -643,6 +644,9 @@ Examples:
                    when (not (chem:is-bonded-to from-atm to-atm))
                      do (let ((order (order constitution-bond)))
                           (chem:bond-to from-atm to-atm order))))
+    ;; Add properties to the residue
+    (let ((residue-properties (residue-properties constitution)))
+      (chem:matter/set-properties residue (append residue-properties (chem:matter/properties residue))))
     #|
     for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) { ; ; ;
     Atom_sp fromAtom = atoms[i];        ; ; ;

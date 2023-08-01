@@ -254,6 +254,18 @@
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
+(defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table)
+  (let* ((joint (call-next-method))
+         (in-plug (in-plug joint-template))
+         (in-plug-name (name in-plug))
+         (coupling-name (coupling-name in-plug-name))
+         (out-plug-name (out-plug-name coupling-name)))
+    (if (= (length (plug-bonds in-plug)) 1)
+        (kin:joint/set-property joint :out-plug-name out-plug-name)
+        (let ((indexed-out-plug-name (intern (format nil "~a.0" out-plug-name) :keyword)))
+          (kin:joint/set-property joint :out-plug-name indexed-out-plug-name)))
+    joint))
+
 (defclass topology-graph ()
   ((topology :initarg :topology :reader topology)
    (nodes :initarg :nodes :reader nodes)

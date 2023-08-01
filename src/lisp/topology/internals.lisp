@@ -127,7 +127,7 @@
                  :coordinates (copy-seq (coordinates fragment-internals))
                  :out-of-focus-internals (let ((ht (make-hash-table)))
                                            (maphash (lambda (key value)
-                                                      (setf (gethash key ht) (copy-seq value)))
+                                                     (setf (gethash key ht) (copy-seq value)))
                                                     (out-of-focus-internals fragment-internals))
                                            ht)))
 
@@ -168,28 +168,15 @@
 
 (defun calculate-cluster-dihedral-names (focus-monomer oligomer)
   "Calculate the atom-names for dihedrals that are used to cluster fragment-internals"
-  (let* ((out-couplings (loop for coupling across (topology:couplings oligomer)
-                             when (eq (topology:source-monomer coupling) focus-monomer)
-                               collect (let* ((other-monomer (topology:target-monomer coupling))
-                                              (target-topology (topology:monomer-topology other-monomer oligomer))
-                                              (coupling-name (topology:target-plug-name coupling))
-                                              (target-constitution (topology:constitution target-topology))
-                                              (target-names (loop for ca across (topology:constitution-atoms target-constitution)
-                                                                  when (getf (topology:properties ca) :dihedral)
-                                                                  collect (topology:atom-name ca)))
-                                              )
-                                         (cons coupling-name (cond
-                                                               ((> (length target-names) 2)
-                                                                (subseq target-names 0 2))
-                                                               (t target-names))))))
-         (sorted-out (sort out-couplings #'string< :key (lambda (x) (string (car x)))))
-         (focus-topology (topology:monomer-topology focus-monomer oligomer))
+  (let* ((focus-topology (topology:monomer-topology focus-monomer oligomer))
          (focus-constitution (topology:constitution focus-topology))
-         (focus-names (loop for ca across (topology:constitution-atoms focus-constitution)
-                            when (getf (topology:properties ca) :dihedral)
-                              collect (topology:atom-name ca))))
-    (append focus-names sorted-out)
-  ))
+         (focus-residue-properties (topology:residue-properties focus-constitution))
+         (dihedral-info (getf focus-residue-properties :dihedrals))
+         (focus-names (loop for dihedral-name in dihedral-info
+                            for dihedral-atom-or-plug-name = (car dihedral-name)
+                            collect dihedral-atom-or-plug-name)))
+    focus-names
+    ))
 
 
 (defclass fragment-conformations (serial:serializable)
@@ -202,6 +189,22 @@
 
 (defmethod fragment-conformations ((obj fragment-conformations))
   obj)
+
+(defun merge-fragment-conformations (fragment-conformations-list)
+  (unless (> (length fragment-conformations-list) 0)
+    (error "There must be at least one fragment-conformations in list"))
+  (let ((unsorted-fragment-internals (make-array 1024 :adjustable t :fill-pointer 0))
+        (max-next-index 0))
+    (loop for one in fragment-conformations-list
+          do (setf max-next-index (max max-next-index (next-index one)))
+          do (loop for frag-int across (fragments one)
+                   do (vector-push-extend frag-int unsorted-fragment-internals)))
+    (let ((new-fragment-internals (sort unsorted-fragment-internals #'< :key #'trainer-index)))
+      (make-instance 'fragment-conformations
+                     :focus-monomer-name (focus-monomer-name (first fragment-conformations-list))
+                     :monomer-context (monomer-context (first fragment-conformations-list))
+                     :next-index max-next-index
+                     :fragments new-fragment-internals))))
 
 (defclass clusterable-fragment-conformations (serial:serializable)
   ((cluster-dihedral-names :initarg :cluster-dihedral-names :accessor cluster-dihedral-names)

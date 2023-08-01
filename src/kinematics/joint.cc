@@ -154,6 +154,8 @@ void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,name),this->_Name); // name
   node->field(INTERN_(kw,id),this->_Id);
   node->field(INTERN_(kw,posIndexX3),this->_PositionIndexX3);
+  node->field(INTERN_(kw,endPosIndexX3),this->_EndPositionIndexX3);
+  node->field(INTERN_(kw,properties),this->_Properties);
 }
 
 CL_NAME(KIN:JOINT/NAME);

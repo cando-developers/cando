@@ -109,6 +109,7 @@
 |#
 
 (defun get-dihedral-atom-names (to-topology dihedral-name name-to-parent)
+  (error "We should use the constituion residue-properties rather than atom :dihedral properties")
   (loop for constitution-atom across (topology:constitution-atoms (topology:constitution to-topology))
         for ca-name = (topology:atom-name constitution-atom)
         for properties = (topology:properties constitution-atom)

@@ -111,6 +111,13 @@
   (check-type joint kin:joint)
   (setf (aref (joints atresidue) index) joint))
 
+(defun joint-with-name (atresidue atom-name &optional (errorp t))
+  (loop for joint across (joints atresidue)
+        when (eq atom-name (kin:joint/name joint))
+          do (return-from joint-with-name joint))
+  (when errorp
+    (error "Could not find joint with name ~a" atom-name))
+  nil)
 
 
 (defmethod resize-atatoms ((atresidue atresidue) num-atatoms)

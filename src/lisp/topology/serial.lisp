@@ -1,4 +1,3 @@
-
 (in-package #:serial)
 
 (defclass serializable () ())

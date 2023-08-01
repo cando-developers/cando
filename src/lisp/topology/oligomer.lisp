@@ -53,6 +53,9 @@
           (when (not (eq (chem:get-stereochemistry-type atm) :chiral))
             (chem:set-stereochemistry-type atm :prochiral)
             (chem:set-configuration atm :left-handed))))
+      ;; Add properties to the residue
+      (let ((residue-properties (residue-properties constitution)))
+        (chem:matter/set-properties residue (append residue-properties (chem:matter/properties residue))))
       ;; Add restraints to the residue
       ;;  dihedral restraints is all we can specify here for the time being
       (loop for restraint in (restraints topology)

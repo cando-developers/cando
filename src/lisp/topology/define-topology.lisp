@@ -446,13 +446,8 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               for type = (second name-type)
               for ca = (constitution-atom-named constitution name)
               do (setf (atom-type ca) type)))
-      (loop for name-dihedral in dihedrals
-              for name = (first name-dihedral)
-              for dihedral = (second name-dihedral)
-              for ca = (constitution-atom-named constitution name)
-              do (push dihedral (properties ca))
-              do (push :dihedral (properties ca))
-              )
+      (push dihedrals (residue-properties constitution))
+      (push :dihedrals (residue-properties constitution))
       tops)))
 
 (defun do-define-topology (name sexp &key restraints types dihedrals)
