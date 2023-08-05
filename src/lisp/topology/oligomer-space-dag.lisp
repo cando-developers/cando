@@ -178,6 +178,7 @@
     dag))
 
 (defun parse-labeled-dag-for-oligomer-space (name labeled-tree)
+  (error "Deprecated")
   (let ((label (parse-label (car labeled-tree)))
         (tree (cdr labeled-tree)))
     (parse-dag-for-oligomer-space name tree :label label)))
@@ -189,10 +190,12 @@
       (values oligomer-space focus-monomer dag))))
 
 (defun parse-oligomer-space-labeled-dag (name foldamer labeled-context &key (topology-groups topology:*topology-groups*))
-  (let ((dag (parse-labeled-dag-for-oligomer-space name labeled-context)))
-    (multiple-value-bind (oligomer-space focus-monomer)
-        (oligomer-space-from-dag foldamer dag topology-groups)
-      (values oligomer-space focus-monomer dag))))
+  (destructuring-bind (&key description pattern kind)
+      labeled-context
+    (let ((dag (parse-dag-for-oligomer-space name pattern :label description)))
+      (multiple-value-bind (oligomer-space focus-monomer)
+          (oligomer-space-from-dag foldamer dag topology-groups)
+        (values oligomer-space focus-monomer dag description kind)))))
 
 (defun validate-dag (dag)
   (let ((label (label dag)))
