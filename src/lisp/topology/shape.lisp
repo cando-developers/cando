@@ -23,7 +23,6 @@
 (defclass oligomer-shape ()
   ((oligomer :initarg :oligomer :accessor oligomer)
    (matched-fragment-conformations-map :initarg :matched-fragment-conformations-map :accessor matched-fragment-conformations-map)
-   (foldamer :initarg :foldamer :accessor foldamer)
    (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector)
    (monomer-shape-map :initarg :monomer-shape-map :accessor monomer-shape-map)
    (the-root-monomer :initarg :the-root-monomer :accessor the-root-monomer)
@@ -37,7 +36,7 @@
   ((aggregate :initarg :aggregate :accessor aggregate)
     ))
 
-  
+
 
 (defun make-oligomer-shape (oligomer matched-fragment-conformations-map &key monomer-shape-factory)
   (multiple-value-bind (monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)
@@ -87,7 +86,6 @@
     (make-instance 'oligomer-shape
                    :oligomer oligomer
                    :matched-fragment-conformations-map matched-fragment-conformations-map
-                   :foldamer (foldamer (oligomer-space oligomer))
                    :monomer-shape-vector monomer-shape-vector
                    :monomer-shape-map monomer-shape-map
                    :the-root-monomer the-root-monomer
