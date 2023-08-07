@@ -20,7 +20,7 @@
 (defun more-parts-p (msg)
   (not (zerop (pzmq::%msg-more msg))))
 
-(defgeneric start (channel connection-path &key endpoint))
+(defgeneric start (channel connection-path &rest initargs &key))
 
 (defgeneric stop (channel))
 
@@ -51,13 +51,15 @@
         (broadcast instance) (pzmq:socket (context instance) :pub))
   instance)
 
-(defmethod start ((channel server) connection-path &key endpoint)
+(defmethod start ((channel server) connection-path &rest initargs
+                  &key control-endpoint broadcast-endpoint)
+  (declare (ignore initargs))
   (with-accessors ((control control)
                    (broadcast broadcast)
                    (thread thread))
       channel
-    (pzmq:bind control endpoint)
-    (pzmq:bind broadcast endpoint)
+    (pzmq:bind control control-endpoint)
+    (pzmq:bind broadcast broadcast-endpoint)
     (with-open-file (stream connection-path :direction :output
                                             :if-does-not-exist :create
                                             :if-exists :supersede)
@@ -113,7 +115,8 @@
         (broadcast instance) (pzmq:socket (context instance) :sub))
   instance)
 
-(defmethod start ((channel client) connection-path &key endpoint)
+(defmethod start ((channel client) connection-path &rest initargs &key)
+  (declare (ignore initargs))
   (with-accessors ((control control)
                    (broadcast broadcast)
                    (thread thread))

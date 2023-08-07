@@ -32,8 +32,11 @@
   (format *debug-io* "~&Received job-abort from ~s~%" identity))
 
 (defun make-server (connection-path)
-  (let ((channel (make-instance 'server)))
-    (yampi:start channel connection-path :endpoint "tcp://0.0.0.0:*")
+  (let ((channel (make-instance 'server))
+        (endpoint "tcp://0.0.0.0:*" (machine-instance)))
+    (yampi:start channel connection-path
+                 :control-endpoint endpoint
+                 :broadcast-endpoint endpoint)
     channel))
 
 (defclass client (yampi:client) ())
