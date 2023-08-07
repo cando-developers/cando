@@ -152,7 +152,7 @@
                             (apply #'receive channel nil
                                    (loop for position from 0
                                          while (or (zerop position) (more-parts-p msg))
-                                         collect (read-part control msg channel position))))))
+                                         collect (read-part socket msg channel position))))))
                    (pzmq:with-poll-items items ((control :pollin) (broadcast :pollin))
                      (catch 'shutdown
                        (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
