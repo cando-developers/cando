@@ -32,7 +32,11 @@
   ((context :reader context
             :initform (pzmq:ctx-new))
    (control :accessor control)
+   (control-send-lock :reader control-send-lock
+                      :initform (bordeaux-threads:make-lock))
    (broadcast :accessor broadcast)
+   (broadcast-send-lock :reader broadcast-send-lock
+                        :initform (bordeaux-threads:make-lock))
    (thread :accessor thread)))
 
 (defmethod stop ((channel channel))
@@ -89,23 +93,25 @@
                               (apply #'receive channel identity (aref code 0) parts))))))))))
 
 (defmethod send ((channel server) (identity null) code &rest parts)
-  (let ((broadcast (broadcast channel)))
-    (pzmq:send broadcast
-               (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
-               :sndmore (and parts t))
-    (loop for (part . remaining) on parts
-          do (pzmq:send broadcast part
-                        :sndmore (and remaining t)))))
+  (bordeaux-threads:with-lock-held ((broadcast-send-lock channel))
+    (let ((broadcast (broadcast channel)))
+      (pzmq:send broadcast
+                 (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
+                 :sndmore (and parts t))
+      (loop for (part . remaining) on parts
+            do (pzmq:send broadcast part
+                          :sndmore (and remaining t))))))
 
 (defmethod send ((channel server) identity code &rest parts)
-  (let ((control (control channel)))
-    (pzmq:send control identity :sndmore t)
-    (pzmq:send control
-               (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
-               :sndmore (and parts t))
-    (loop for (part . remaining) on parts
-          do (pzmq:send control part
-                        :sndmore (and remaining t)))))
+  (bordeaux-threads:with-lock-held ((control-send-lock channel))
+    (let ((control (control channel)))
+      (pzmq:send control identity :sndmore t)
+      (pzmq:send control
+                 (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
+                 :sndmore (and parts t))
+      (loop for (part . remaining) on parts
+            do (pzmq:send control part
+                          :sndmore (and remaining t))))))
 
 (defclass client (channel) ())
 
@@ -147,13 +153,14 @@
                            do (recv broadcast))))))))))
 
 (defmethod send ((channel client) (identity null) code &rest parts)
-  (let ((control (control channel)))
-    (pzmq:send control
-               (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
-               :sndmore (and parts t))
-    (loop for (part . remaining) on parts
-          do (pzmq:send control part
-                        :sndmore (and remaining t)))))
+  (bordeaux-threads:with-lock-held ((control-send-lock channel))
+    (let ((control (control channel)))
+      (pzmq:send control
+                 (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
+                 :sndmore (and parts t))
+      (loop for (part . remaining) on parts
+            do (pzmq:send control part
+                          :sndmore (and remaining t))))))
 
 (defun subscribe (channel code)
   (pzmq:setsockopt (broadcast channel)
