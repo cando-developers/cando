@@ -2,21 +2,6 @@
 
 (defconstant +zmq-poll-timeout+ 500)
 
-(defun read-binary-part (socket msg)
-  (pzmq:msg-recv msg socket)
-  (cffi:foreign-array-to-lisp (pzmq:msg-data msg)
-                              (list :array :uint8 (pzmq:msg-size msg))
-                              :element-type '(unsigned-byte 8)))
-
-(defun read-string-part (socket msg)
-  (pzmq:msg-recv msg socket)
-  (handler-case
-      (cffi:foreign-string-to-lisp (pzmq:msg-data msg)
-                                   :count (pzmq:msg-size msg)
-                                   :encoding :utf-8)
-    (babel-encodings:character-decoding-error ()
-      "")))
-
 (defun more-parts-p (msg)
   (not (zerop (pzmq::%msg-more msg))))
 
@@ -27,6 +12,40 @@
 (defgeneric send (channel identity code &rest parts))
 
 (defgeneric receive (channel identity code &rest parts))
+
+(defgeneric serialize (channel position part)
+  (:method (channel position part)
+    (declare (ignore channel position))
+    part)
+  (:method (channel position (part symbol))
+    (declare (ignore channel position))
+    (symbol-name part)))
+
+(defgeneric translate (channel position part length)
+  (:method (channel position part length)
+    (declare (ignore channel position))
+    (handler-case
+        (cffi:foreign-string-to-lisp part
+                                     :count length
+                                     :encoding :utf-8)
+      (babel-encodings:character-decoding-error ()
+        "")))
+  (:method (channel (position (eql nil)) part length)
+    (cffi:foreign-array-to-lisp part
+                                (list :array :uint8 length)
+                                :element-type '(unsigned-byte 8))))
+
+(defgeneric deserialize (channel position part)
+  (:method (channel position part)
+    (declare (ignore channel position))
+    part))
+
+(defun read-part (socket msg channel position)
+  (pzmq:msg-recv msg socket)
+  (deserialize channel position
+               (translate channel position
+                          (pzmq:msg-data msg)
+                          (pzmq:msg-size msg))))
 
 (defclass channel ()
   ((context :reader context
@@ -74,43 +93,36 @@
     (setf thread
           (bordeaux-threads:make-thread
            (lambda ()
-             (pzmq:with-poll-items items ((control :pollin))
-               (catch 'shutdown
-                 (loop with identity
-                       with code
-                       with parts
-                       for poll = (pzmq:poll items +zmq-poll-timeout+)
-                       unless (zerop poll)
-                         do (pzmq:with-message msg
-                              (setf identity (read-binary-part control msg))
-                              (unless (more-parts-p msg)
-                                (error "Need more parts"))
-                              (setf code (read-binary-part control msg))
-                              (unless (= (length code) 1)
-                                (error "Code should only have length 1"))
-                              (setf parts (loop while (more-parts-p msg)
-                                                collect (read-string-part control msg)))
-                              (apply #'receive channel identity (aref code 0) parts))))))))))
+             (handler-case
+                 (pzmq:with-poll-items items ((control :pollin))
+                   (catch 'shutdown
+                     (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
+                           unless (zerop poll)
+                             do (pzmq:with-message msg
+                                  (apply #'receive channel (read-part control msg channel nil)
+                                         (loop for position from 0
+                                               while (more-parts-p msg)
+                                               collect (read-part control msg channel position)))))))
+               (error (condition)
+                 (format t "~a" condition))))))))
 
 (defmethod send ((channel server) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((broadcast-send-lock channel))
     (let ((broadcast (broadcast channel)))
-      (pzmq:send broadcast
-                 (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
-                 :sndmore (and parts t))
+      (pzmq:send broadcast (serialize channel 0 code) :sndmore (and parts t))
       (loop for (part . remaining) on parts
-            do (pzmq:send broadcast part
+            for position from 1
+            do (pzmq:send broadcast (serialize channel position part)
                           :sndmore (and remaining t))))))
 
 (defmethod send ((channel server) identity code &rest parts)
   (bordeaux-threads:with-lock-held ((control-send-lock channel))
     (let ((control (control channel)))
-      (pzmq:send control identity :sndmore t)
-      (pzmq:send control
-                 (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
-                 :sndmore (and parts t))
+      (pzmq:send control (serialize channel nil identity) :sndmore t)
+      (pzmq:send control (serialize channel 0 code) :sndmore (and parts t))
       (loop for (part . remaining) on parts
-            do (pzmq:send control part
+            for position from 1
+            do (pzmq:send control (serialize channel position part)
                           :sndmore (and remaining t))))))
 
 (defclass client (channel) ())
@@ -134,40 +146,44 @@
     (setf thread
           (bordeaux-threads:make-thread
            (lambda ()
-             (flet ((recv (socket)
-                      (pzmq:with-message msg
-                        (setf code (read-binary-part socket msg))
-                        (unless (= (length code) 1)
-                          (error "Code should only have length 1"))
-                        (setf parts (loop while (more-parts-p msg)
-                                          collect (read-string-part socket msg)))
-                        (apply #'receive channel nil (aref code 0) parts))))
-               (pzmq:with-poll-items items ((control :pollin) (broadcast :pollin))
-                 (catch 'shutdown
-                   (loop with code
-                         with parts
-                         for poll = (pzmq:poll items +zmq-poll-timeout+)
-                         when (pzmq:revents items 0)
-                           do (recv control)
-                         when (pzmq:revents items 1)
-                           do (recv broadcast))))))))))
+             (handler-case
+                 (flet ((recv (socket)
+                          (pzmq:with-message msg
+                            (apply #'receive channel nil
+                                   (loop for position from 0
+                                         while (or (zerop position) (more-parts-p msg))
+                                         collect (read-part control msg channel position))))))
+                   (pzmq:with-poll-items items ((control :pollin) (broadcast :pollin))
+                     (catch 'shutdown
+                       (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
+                             when (pzmq:revents items 0)
+                               do (recv control)
+                             when (pzmq:revents items 1)
+                               do (recv broadcast)))))
+               (error (condition)
+                 (format t "~a" condition))))))))
 
 (defmethod send ((channel client) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((control-send-lock channel))
     (let ((control (control channel)))
-      (pzmq:send control
-                 (make-array 1 :initial-element code :element-type '(unsigned-byte 8))
-                 :sndmore (and parts t))
+      (pzmq:send control (serialize channel 0 code) :sndmore (and parts t))
       (loop for (part . remaining) on parts
-            do (pzmq:send control part
+            for position from 1
+            do (pzmq:send control (serialize channel position part)
                           :sndmore (and remaining t))))))
 
 (defun subscribe (channel code)
   (pzmq:setsockopt (broadcast channel)
                    :subscribe
-                   (make-array 1 :initial-element code :element-type '(unsigned-byte 8))))
+                   (typecase code
+                     (symbol (symbol-name code))
+                     (string code)
+                     (otherwise (prin1-to-string code)))))
 
 (defun unsubscribe (channel code)
   (pzmq:setsockopt (broadcast channel)
                    :unsubscribe
-                   (make-array 1 :initial-element code :element-type '(unsigned-byte 8))))
+                   (typecase code
+                     (symbol (symbol-name code))
+                     (string code)
+                     (otherwise (prin1-to-string code)))))
