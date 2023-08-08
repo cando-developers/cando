@@ -13,6 +13,14 @@
 
 (defgeneric receive (channel identity code &rest parts))
 
+(defgeneric idle (channel)
+  (:method (channel)
+    (declare (ignore channel))))
+
+(defgeneric initialize (channel)
+  (:method (channel)
+    (declare (ignore channel))))
+
 (defgeneric serialize (channel position part)
   (:method (channel position part)
     (declare (ignore channel position))
@@ -56,15 +64,16 @@
    (broadcast :accessor broadcast)
    (broadcast-send-lock :reader broadcast-send-lock
                         :initform (bordeaux-threads:make-lock))
-   (thread :accessor thread)))
+   (thread :accessor thread
+           :initform nil)))
 
 (defmethod stop ((channel channel))
-  (bordeaux-threads:interrupt-thread (thread channel)
-                                     (lambda ()
-                                       (throw 'shutdown nil)))
-  (pzmq:close (control channel))
-  (pzmq:close (broadcast channel))
-  (pzmq:ctx-destroy (context channel)))
+  (if (thread channel)
+      (bordeaux-threads:interrupt-thread
+       (thread channel)
+       (lambda ()
+         (throw 'shutdown nil)))
+      (throw 'shutdown nil)))
 
 (defclass server (channel) ())
 
@@ -74,8 +83,27 @@
         (broadcast instance) (pzmq:socket (context instance) :pub))
   instance)
 
+(defun server-message-loop (channel)
+  (catch 'shutdown
+    (with-accessors ((control control)
+                     (broadcast broadcast))
+        channel
+      (unwind-protect
+           (pzmq:with-poll-items items ((control :pollin))
+             (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
+                   unless (zerop poll)
+                     do (pzmq:with-message msg
+                          (apply #'receive channel (read-part control msg channel nil)
+                                 (loop for position from 0
+                                       while (more-parts-p msg)
+                                       collect (read-part control msg channel position))))
+                   do (idle channel)))
+        (pzmq:close control)
+        (pzmq:close broadcast)
+        (pzmq:ctx-destroy (context channel))))))
+
 (defmethod start ((channel server) connection-path &rest initargs
-                  &key control-endpoint broadcast-endpoint)
+                  &key threaded control-endpoint broadcast-endpoint)
   (declare (ignore initargs))
   (with-accessors ((control control)
                    (broadcast broadcast)
@@ -90,21 +118,16 @@
         (write `(:control ,(pzmq:getsockopt control :last-endpoint)
                  :broadcast ,(pzmq:getsockopt broadcast :last-endpoint))
                :stream stream)))
-    (setf thread
-          (bordeaux-threads:make-thread
-           (lambda ()
-             (handler-case
-                 (pzmq:with-poll-items items ((control :pollin))
-                   (catch 'shutdown
-                     (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
-                           unless (zerop poll)
-                             do (pzmq:with-message msg
-                                  (apply #'receive channel (read-part control msg channel nil)
-                                         (loop for position from 0
-                                               while (more-parts-p msg)
-                                               collect (read-part control msg channel position)))))))
-               (error (condition)
-                 (format t "~a" condition))))))))
+    (initialize channel)
+    (if threaded
+        (setf thread
+              (bordeaux-threads:make-thread
+               (lambda ()
+                 (handler-case
+                     (server-message-loop channel)
+                   (error (condition)
+                     (format t "~a" condition))))))
+        (server-message-loop channel))))
 
 (defmethod send ((channel server) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((broadcast-send-lock channel))
@@ -133,7 +156,30 @@
         (broadcast instance) (pzmq:socket (context instance) :sub))
   instance)
 
-(defmethod start ((channel client) connection-path &rest initargs &key)
+(defun client-message-loop (channel)
+  (catch 'shutdown
+    (with-accessors ((control control)
+                     (broadcast broadcast))
+        channel
+      (unwind-protect
+           (flet ((recv (socket)
+                    (pzmq:with-message msg
+                      (apply #'receive channel nil
+                             (loop for position from 0
+                                   while (or (zerop position) (more-parts-p msg))
+                                   collect (read-part socket msg channel position))))))
+             (pzmq:with-poll-items items ((control :pollin) (broadcast :pollin))
+               (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
+                     when (pzmq:revents items 0)
+                       do (recv control)
+                     when (pzmq:revents items 1)
+                       do (recv broadcast)
+                     do (idle channel))))
+        (pzmq:close control)
+        (pzmq:close broadcast)
+        (pzmq:ctx-destroy (context channel))))))
+
+(defmethod start ((channel client) connection-path &rest initargs &key threaded)
   (declare (ignore initargs))
   (with-accessors ((control control)
                    (broadcast broadcast)
@@ -143,25 +189,16 @@
       (let ((data (with-standard-io-syntax (read stream nil nil))))
         (pzmq:connect control (getf data :control))
         (pzmq:connect broadcast (getf data :broadcast))))
-    (setf thread
-          (bordeaux-threads:make-thread
-           (lambda ()
-             (handler-case
-                 (flet ((recv (socket)
-                          (pzmq:with-message msg
-                            (apply #'receive channel nil
-                                   (loop for position from 0
-                                         while (or (zerop position) (more-parts-p msg))
-                                         collect (read-part socket msg channel position))))))
-                   (pzmq:with-poll-items items ((control :pollin) (broadcast :pollin))
-                     (catch 'shutdown
-                       (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
-                             when (pzmq:revents items 0)
-                               do (recv control)
-                             when (pzmq:revents items 1)
-                               do (recv broadcast)))))
-               (error (condition)
-                 (format t "~a" condition))))))))
+    (initialize channel)
+    (if threaded
+        (setf thread
+              (bordeaux-threads:make-thread
+               (lambda ()
+                 (handler-case
+                     (client-message-loop channel)
+                   (error (condition)
+                     (format t "~a" condition))))))
+        (client-message-loop channel))))
 
 (defmethod send ((channel client) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((control-send-lock channel))

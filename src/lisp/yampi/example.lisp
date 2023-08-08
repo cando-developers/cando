@@ -30,6 +30,7 @@
   (let ((channel (make-instance 'server))
         (endpoint "tcp://0.0.0.0:*" (machine-instance)))
     (yampi:start channel connection-path
+                 :threaded t
                  :control-endpoint endpoint
                  :broadcast-endpoint endpoint)
     channel))
@@ -46,7 +47,7 @@
 
 (defun make-client (connection-path)
   (let ((channel (make-instance 'client)))
-    (yampi:start channel connection-path)
+    (yampi:start channel connection-path :threaded t)
     (yampi:subscribe channel :stop)
     channel))
 
