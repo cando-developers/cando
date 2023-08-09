@@ -185,7 +185,12 @@
    (next-index :initform 0 :initarg :next-index :accessor next-index)
    (fragments :initform (make-array 16 :adjustable t :fill-pointer 0) :initarg :fragments :accessor fragments)))
 
-(cando.serialize:make-class-save-load fragment-conformations)
+(cando.serialize:make-class-save-load
+ fragment-conformations
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~s number-of-fragments ~a" (monomer-context obj) (length (fragments obj))))))
 
 (defmethod fragment-conformations ((obj fragment-conformations))
   obj)
