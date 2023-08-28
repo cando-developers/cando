@@ -117,7 +117,7 @@ int   Kmeans_O::NearestCenter(core::SimpleVector_sp centers, Point p)
   size_t centersIter(0);
   for (int k = 0; k < _K; k++, centersIter++ )
   {
-    dis = Distance(p, gc::As<Point>((*centers)[k]) );
+    dis = Distance<floatType>(p, gc::As<Point>((*centers)[k]) );
     if (dis < minDistance)
     {
       minDistance = dis;
@@ -198,7 +198,7 @@ CL_DEFMETHOD core::SimpleVector_sp Kmeans_O::CenterOnPoints(core::SimpleVector_s
   std::vector<float> closestDistances(this->_K,std::numeric_limits<float>::max());
   for (int pi=0; pi<this->_Points->length(); pi++ ) {
     int cluster = (*clusters)[pi];
-    float distToCenter = Distance(gc::As<Point>((*centers)[cluster]),gc::As<Point>((*this->_Points)[pi]));
+    float distToCenter = Distance<floatType>(gc::As<Point>((*centers)[cluster]),gc::As<Point>((*this->_Points)[pi]));
     if (distToCenter < closestDistances[cluster]) {
       closestDistances[cluster] = distToCenter;
       (*centerPoints)[cluster] = (*this->_Points)[pi];
@@ -215,7 +215,7 @@ CL_DEFMETHOD core::SimpleVector_float_sp Kmeans_O::PointDistancesToClusterCenter
   core::SimpleVector_float_sp pointDistances = core::SimpleVector_float_O::make(this->_Points->length(),std::numeric_limits<float>::max(),true);
   for (int pi=0; pi<this->_Points->length(); pi++ ) {
     int cluster = (*clusters)[pi];
-    float distToCenter = Distance(gc::As<Point>((*centers)[cluster]),gc::As<Point>((*this->_Points)[pi]));
+    float distToCenter = Distance<floatType>(gc::As<Point>((*centers)[cluster]),gc::As<Point>((*this->_Points)[pi]));
     (*pointDistances)[pi] = distToCenter;
   }
   return pointDistances;
@@ -276,7 +276,7 @@ CL_DEFMETHOD int Kmeans_O::RunKmean(core::SimpleVector_sp centers, Clusters clus
     size_t oldIter = 0;
     for (int k = 0; k < _K;k++)
     {
-      sum += Distance(gc::As<Point>((*oldCenter)[oldIter]), gc::As<Point>((*centers)[currentIter]));
+      sum += Distance<floatType>(gc::As<Point>((*oldCenter)[oldIter]), gc::As<Point>((*centers)[currentIter]));
       oldIter++;
       currentIter++;
     }
@@ -314,7 +314,7 @@ int KmeansPlusPlus_O::NearestCenter(core::SimpleVector_sp centers, Point p, int 
 #endif
   for (int k = 0; k <= alreadyInitCenterNumber; centersIter++, k++)
   {
-    dis = Distance(p, gc::As<Point>((*centers)[centersIter]));
+    dis = Distance<floatType>(p, gc::As<Point>((*centers)[centersIter]));
     if (dis < minDistance)
     {
       minDistance = dis;
@@ -408,7 +408,7 @@ CL_DEFMETHOD float Kmeans_O::Wcss(core::SimpleVector_sp centers, Clusters cluste
   std::vector<float> sums2(centers->length(),0.0);
   for ( int ii; ii < this->_Points->length(); ii++ ) {
     int cluster = (*clusters)[ii];
-    sums2[cluster] += Distance2(gc::As<Point>((*this->_Points)[ii]),gc::As<Point>((*centers)[cluster]));
+    sums2[cluster] += Distance2<floatType>(gc::As<Point>((*this->_Points)[ii]),gc::As<Point>((*centers)[cluster]));
   }
   return std::accumulate(sums2.begin(),sums2.end(),0.0);
 }
@@ -427,10 +427,10 @@ CL_DEFMETHOD core::T_mv Kmeans_O::SilhouetteCoefficient(Clusters clusters) {
     for (int j = 0; j < this->_Points->length(); j++) {
       if (i == j) continue;
       if ((*clusters)[i] == (*clusters)[j]) {
-        float d = Distance(gc::As<Point>((*this->_Points)[i]),gc::As<Point>((*this->_Points)[j]));
+        float d = Distance<floatType>(gc::As<Point>((*this->_Points)[i]),gc::As<Point>((*this->_Points)[j]));
         a += d;
       } else {
-        b = fmin(b, Distance(gc::As<Point>((*this->_Points)[i]),gc::As<Point>((*this->_Points)[j])));
+        b = fmin(b, Distance<floatType>(gc::As<Point>((*this->_Points)[i]),gc::As<Point>((*this->_Points)[j])));
       }
     }
     if (counts[(*clusters)[i]] > 1) {

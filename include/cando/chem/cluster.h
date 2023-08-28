@@ -42,18 +42,7 @@ inline void ScalePoint(Point dest, float scale ) {
   }
 }
 
-
-inline float Distance(Point p1, Point p2)
-{
-  float sum = 0.0;
-  for ( size_t ii=0; ii<p1->length(); ii++ ) {
-    float delta = (*p1)[ii] - (*p2)[ii];
-    sum += delta * delta;
-  };
-  return std::sqrt(sum);
-}
-
-
+template <typename Type=float>
 inline float Distance2(Point p1, Point p2)
 {
   float sum = 0.0;
@@ -63,6 +52,61 @@ inline float Distance2(Point p1, Point p2)
   };
   return sum;
 }
+
+template <typename Type=float>
+inline float Distance(Point p1, Point p2)
+{
+  float sum2 = Distance2(p1,p2);
+  return std::sqrt(sum2);
+}
+
+#define SIMD_CHUNK_SIZE 8
+typedef float v8sf __attribute__((vector_size(SIMD_CHUNK_SIZE*sizeof(float))));
+typedef v8sf floatType; // can be float
+
+
+template <>
+inline float Distance2<v8sf>(Point p1, Point p2)
+{
+  size_t chunks = p1->length()/SIMD_CHUNK_SIZE;
+  size_t remainder = p1->length() - (chunks*SIMD_CHUNK_SIZE);
+  float sum = 0.0;
+  float* pf1 = &(*p1)[0];
+  float* pf2 = &(*p2)[0];
+  if (chunks) {
+    for ( size_t chunk = 0; chunk<chunks; chunk+=SIMD_CHUNK_SIZE ) {
+      // handle full chunks
+      v8sf v1 = {pf1[chunk+0], pf1[chunk+1], pf1[chunk+2], pf1[chunk+3], pf1[chunk+4], pf1[chunk+5], pf1[chunk+6], pf1[chunk+7] };
+      v8sf v2 = {pf2[chunk+0], pf2[chunk+1], pf2[chunk+2], pf2[chunk+3], pf2[chunk+4], pf2[chunk+5], pf2[chunk+6], pf2[chunk+7] };
+      v8sf delta = v1 - v2;
+      v8sf delta2 = delta*delta;
+      sum += delta2[0]+ delta2[1]+ delta2[2]+ delta2[3]+ delta2[4]+ delta2[5]+ delta2[6]+ delta2[7];
+    }
+  }
+  if (remainder) {
+    v8sf vr1 = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+    v8sf vr2 = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+    size_t remainder_chunk = chunks*SIMD_CHUNK_SIZE;
+    for ( size_t rem = 0; rem<remainder; rem++ ) {
+      vr1[rem] = pf1[remainder_chunk+rem];
+      vr2[rem] = pf2[remainder_chunk+rem];
+    }
+    v8sf delta = vr1 - vr2;
+    v8sf delta2 = delta*delta;
+    for ( size_t rem = 0; rem<remainder; rem++ ) {
+      sum += delta2[rem];
+    }
+  }
+  return sum;
+}
+
+template <>
+inline float Distance<v8sf>(Point p1, Point p2)
+{
+  float sum2 = Distance2<v8sf>(p1,p2);
+  return std::sqrt(sum2);
+}
+
 
 class Kmeans_O : public core::CxxObject_O
 {
@@ -107,6 +151,7 @@ public:
 private:
 
 };
+
 
 };
 
