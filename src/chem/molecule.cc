@@ -389,14 +389,18 @@ AtomIdMap_sp Molecule_O::buildAtomIdMap() const
 #define ARGS_Molecule_O_make "(&key (name \"\"))"
 #define DECL_Molecule_O_make ""
 #define DOCS_Molecule_O_make "make Molecule args: &key name"
-CL_LAMBDA(&optional (name nil));
+CL_LAMBDA(&optional (name nil) residues);
 CL_LISPIFY_NAME(make-molecule);
 DOCGROUP(cando);
-CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name)
+CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name, core::List_sp residues)
 {
   auto me = gctools::GC<Molecule_O>::allocate_with_default_constructor();
-    me->setName(name);
-    return me;
+  me->setName(name);
+  for ( auto cur : residues ) {
+    auto res = gc::As<Residue_sp>(CONS_CAR(cur));
+    me->addMatter(res);
+  }
+  return me;
 };
 
 

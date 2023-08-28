@@ -885,15 +885,21 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 #define ARGS_Aggregate_O_make "(&key (name :agg))"
 #define DECL_Aggregate_O_make ""
 #define DOCS_Aggregate_O_make "make Aggregate args: &key name"
-CL_LAMBDA(&optional (name nil));
+CL_LAMBDA(&optional (name nil) (molecules nil));
 CL_LISPIFY_NAME(make-aggregate);
 DOCGROUP(cando);
-CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name)
-    {
-      auto me = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
-	me->setName(name);
-	return me;
-    };
+CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name, core::List_sp molecules)
+{
+  auto me = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
+  me->setName(name);
+  if (molecules.notnilp()) {
+    for ( auto cur : molecules ) {
+      auto mol = gc::As<Molecule_sp>(CONS_CAR(cur));
+      me->addMatter(mol);
+    }
+  }
+  return me;
+};
 
 
 CL_DEFMETHOD void Aggregate_O::setf_force_field_name(core::T_sp name) {

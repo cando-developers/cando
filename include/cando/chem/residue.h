@@ -121,7 +121,7 @@ namespace chem {
     gc::Nilable<MatterName>	        _UniqueLabel;
     gc::Nilable<adapt::SymbolSet_sp>	_MonomerAliases;
   public:
-    static Residue_sp make(MatterName name);
+    static Residue_sp make(MatterName name,core::List_sp atoms = nil<core::T_O>());
   private:
     void	duplicateFrom(const Residue_O* r );
   public:

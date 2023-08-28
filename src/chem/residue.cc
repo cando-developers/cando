@@ -771,10 +771,15 @@ uint Residue_O::numberOfAtoms()
 
 CL_LISPIFY_NAME(make-residue);
 DOCGROUP(cando);
-CL_DEFUN Residue_sp Residue_O::make(core::Symbol_sp name)
+CL_LAMBDA(&optional (name nil) atoms)
+CL_DEFUN Residue_sp Residue_O::make(core::Symbol_sp name, core::List_sp atoms)
 {
   auto me = gctools::GC<Residue_O>::allocate_with_default_constructor();
-    me->setName(name);
+  me->setName(name);
+  for ( auto cur : atoms ) {
+    auto atm = gc::As<Atom_sp>(CONS_CAR(cur));
+    me->addMatter(atm);
+  }
     return me;
 };
 

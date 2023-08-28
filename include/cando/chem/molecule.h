@@ -67,7 +67,7 @@ namespace chem {
 
 
   public:
-    static Molecule_sp make(MatterName name);
+    static Molecule_sp make(MatterName name, core::List_sp residues = nil<core::T_O>());
 
   private:
     void	duplicate(const Molecule_O* m );

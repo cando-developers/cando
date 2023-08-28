@@ -128,7 +128,7 @@ public:
   bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
 public:
-    static Aggregate_sp make(MatterName name);
+  static Aggregate_sp make(MatterName name, core::List_sp molecules = nil<core::T_O>());
 
 public:
     static Aggregate_sp	open(const string& name);
