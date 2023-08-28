@@ -52,8 +52,8 @@ monomer-context-index indexes into ...
     :initarg :monomer-context-to-fragment-conformations)
    (focus-monomer-names :accessor focus-monomer-names
                         :initarg :focus-monomer-names)
-   (fragment-matches :accessor fragment-matches
-                                :initarg :fragment-matches)
+   (fragment-context-connections :accessor fragment-context-onnections
+                         :initarg :fragment-context-connections)
    ))
 
 (defclass linearized-fragment-conformations ()
@@ -187,7 +187,7 @@ monomer-context-index indexes into ...
                        (vector-push-extend count fragment-match-count-vector)
                        (debug-linearize dl "fragment-match-count-vector ~a~%" count))
                      )))
-               (fragment-matches matched-fragment-conformations-map))
+               (fragment-context-connections matched-fragment-conformations-map))
       (make-instance 'linearized-matched-fragment-conformations-holder
                      :internals-values (copy-seq internals-values)
                      :internals-types (copy-seq internals-types)
@@ -535,16 +535,17 @@ monomer-context-index indexes into ...
                  fragment-match-fragment-conformations-index-vector
                  )
         linearized-matched-fragment-conformations-holder
-      (let ((fragment-matches (make-hash-table :test 'equal)))
+      (let ((fragment-context-connections (make-fragment-context-connections)))
         (loop for ii below (length fragment-match-key-from-vector)
-          for from-index = (elt fragment-match-key-from-vector ii)
-          for to-index = (elt fragment-match-key-to-vector ii)
-          for from-key = (elt monomer-contexts from-index)
+              for from-index = (elt fragment-match-key-from-vector ii)
+              for to-index = (elt fragment-match-key-to-vector ii)
+              for from-key = (elt monomer-contexts from-index)
               for to-key = (elt monomer-contexts to-index)
               for fragment-match-start = (elt fragment-match-start-vector ii)
               for fragment-match-count = (elt fragment-match-count-vector ii)
-              for key = (cons from-key to-key)
-              do (let ((vec (make-array fragment-match-count)))
+              do (let ((vec (progn
+                              (error "the following make-array needs to be a make-fragment-shape-connections ")
+                              (make-array fragment-match-count))))
                    (loop for oii from 0 below fragment-match-count
                          for fragment-match-fragment-conformations-start = (elt fragment-match-fragment-conformations-start-vector (+ oii fragment-match-start))
                          for fragment-match-fragment-conformations-count = (elt fragment-match-fragment-conformations-count-vector (+ oii fragment-match-start))
@@ -553,13 +554,14 @@ monomer-context-index indexes into ...
                                                 :displaced-to fragment-match-fragment-conformations-index-vector
                                                 :displaced-index-offset fragment-match-fragment-conformations-start)
                          do (setf (elt vec oii) disp))
-                   (setf (gethash key fragment-matches) vec)))
+                   (set-fragment-context-connections fragment-context-connections from-key to-key vec)
+                   ))
     (make-instance 'linearized-matched-fragment-conformations-map
                    :linearized-matched-fragment-conformations-holder linearized-matched-fragment-conformations-holder
                    :monomer-context-to-fragment-conformations monomer-context-to-fragment-conformations
                    :monomer-context-to-index monomer-context-to-index
                    :focus-monomer-names focus-monomer-names
-                   :fragment-matches fragment-matches)))))
+                   :fragment-context-connections fragment-context-connections)))))
 
 (defun load-linearized-matched-fragment-conformations-map (filename)
   (let ((linearized-matched-fragment-conformations-holder (read-linearized-matched-fragment-conformations-holder filename)))

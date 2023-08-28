@@ -155,7 +155,7 @@
    #:in-plug-name-p
    #:out-plug-name-p
    #:coupling-name
-   
+
    ;;;
    #:update-joint-tree-internal-coordinates
    #:build-all-atom-tree-external-coordinates
@@ -165,10 +165,16 @@
 
    #:missing-fragment-match
    #:matched-fragment-conformations-map
-   #:fragment-matches
+   #:fragment-context-connections
+   #:make-fragment-context-connections
+   #:set-fragment-context-connections
+   #:get-fragment-context-connections
+   #:map-fragment-context-connections
+   #:fragment-context-connections-count
+
    #:oligomer-monomer-name-at-index
    #:oligomer-monomer-name-for-monomer
-   #:missing-fragment-matches-count
+   #:missing-fragment-context-connections-count
    #:matched-fragment-conformations-summary
 
    #:fragment-match-key-before-monomer-context-index
@@ -177,7 +183,7 @@
    #:missing-fragment-match-key-after-monomer-context-index
    #:monomer-contexts-vector
    #:focus-monomer-name
-   
+
    #:build-shapes
    #:monomer-shapes
    #:monomer-shape-vector

@@ -241,7 +241,7 @@
   "Loop through every backbone residue and generate fragment-conformations for every pair of phi/psi angles at 10 degree increments"
   (let ((context-pairs (foldamer:all-matching-monomer-contexts foldamer))
         (monomer-context-to-fragment-conformations (make-hash-table))
-        (fragment-matches (make-hash-table :test 'equal)))
+        (fragment-context-connections (make-fragment-context-connections)))
     (loop for monomer-contexts in context-pairs
           for from-monomer-context = (car monomer-contexts)
           for to-monomer-context = (cdr monomer-contexts)
@@ -260,11 +260,12 @@
                         ;; set the monomer-context-to-fragment-conformations for the;
                         ;; from-monomer-context -> from-fragments
                         ;; to-monomer-context -> to-fragments
-                        ;; and the fragment-matches hash-table 
+                        ;; and the fragment-context-connections object
                         ;; (cons from-monomer-context to-monomer-context) -> indices
                         (setf (gethash from-monomer-context monomer-context-to-fragment-conformations) from-fragments
                               (gethash to-monomer-context monomer-context-to-fragment-conformations) to-fragments
-                              (gethash (cons from-monomer-context to-monomer-context) fragment-matches ) indices)
+                              )
+                        (set-fragment-context-connections fragment-context-connections from-monomer-context to-monomer-context indices)
                         ))
                      ((string= (string from-name) "AA")
                       (let ((to-name (topology:oligomer-monomer-name-for-monomer to-oligomer to-focus-monomer)))
@@ -281,7 +282,7 @@
                  )))
     (make-instance 'topology:matched-fragment-conformations-map
                    :monomer-context-to-fragment-conformations monomer-context-to-fragment-conformations
-                   :fragment-matches fragment-matches)
+                   :fragment-context-connections fragment-context-connections)
     ))
 
 
@@ -292,7 +293,7 @@
     #+(or)(let ((matched (protein:optimize-fragment-conformations-map protein-conformations-map protein verbose)))
       (loop while (> (protein-report-conformations matched) 0)
             do (format t "Eliminating missing matches~%")
-            do (setf matched (protein-eliminate-missing-fragment-matches matched protein)))
+            do (setf matched (protein-eliminate-missing-fragment-context-connections matched protein)))
       (format t "Saving ~a~%" path)
       (save-protein-conformations-map matched path)
       (values matched protein-conformations-map)

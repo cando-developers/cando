@@ -111,7 +111,7 @@
     (loop for out-monomer in out-monomers
           for out-monomer-shape = (gethash out-monomer (monomer-shape-map oligomer-shape))
           for fragment-match-key = (cons (monomer-context root-monomer-shape) (monomer-context out-monomer-shape))
-          for allowed-fragment-vec = (let* ((ht (topology:fragment-matches (topology:matched-fragment-conformations-map oligomer-shape)))
+          for allowed-fragment-vec = (let* ((ht (topology:fragment-context-connections (topology:matched-fragment-conformations-map oligomer-shape)))
                                             (val (gethash fragment-match-key ht)))
                                        (unless val (break "Could not find value for key ~a in ht: ~a" fragment-match-key ht))
                                        val)

@@ -227,17 +227,52 @@
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t))))
 
+(defclass fragment-shape-connections ()
+  ((fragment-shape-connections-map :initform (make-hash-table :test 'equal)
+        :accessor fragment-shape-connections-map)))
+
+(defun make-fragment-shape-connections ()
+  (make-instance 'fragment-shape-connections))
+
+(defclass fragment-context-connections ()
+  ((fmap :initform (make-hash-table :test 'eq)
+        :accessor fmap)))
+
+(defun make-fragment-context-connections (&optional monomer-context-to-fragment-conformations)
+  (make-instance 'fragment-context-connections))
+
+(defun map-fragment-context-connections (op fcc)
+  (maphash (lambda (key value)
+             (let ((from (car key))
+                   (to (cdr key)))
+               (funcall op from to value)))
+           (fmap fcc)))
+
+(defun fragment-context-connections-count (fcc)
+  (hash-table-count (fmap fcc)))
+
+(defun set-fragment-context-connections (fcc from to value)
+  (check-type value fragment-shape-connections)
+  (setf (gethash (cons from to) (fmap fcc)) value))
+
+(defun get-fragment-context-connections (fcc from to)
+  (let* ((key (cons from to))
+         (res (gethash (cons from to) (fmap fcc))))
+    (if res
+        res
+        (let ((fsc (make-fragment-shape-connections)))
+          (setf (gethash key (fmap fcc)) fsc)))))
+
 (defclass matched-fragment-conformations-map (fragment-conformations-map)
-  ((fragment-matches :initform (make-hash-table :test 'equal)
-                     :initarg :fragment-matches
-                     :accessor fragment-matches)))
+  ((fragment-context-connections :initform (make-fragment-context-connections)
+                     :accessor fragment-context-connections)))
 
 (cando.serialize:make-class-save-load
  matched-fragment-conformations-map
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream " length-fragment-matches ~d length-fragments ~d" (hash-table-count (fragment-matches obj))
+     (format stream " fragment-context-connections-count ~d length-fragments ~d" (fragment-context-connections-count (fragment-context-connections obj))
              (hash-table-count (monomer-context-to-fragment-conformations obj))))))
 
 (defun matched-fragment-conformations-summary (matched-fragment-conformations-map)
@@ -248,26 +283,29 @@
                (declare (ignore key))
                (incf total-fragment-conformations (length (fragments value))))
              (monomer-context-to-fragment-conformations matched-fragment-conformations-map))
-    (maphash (lambda (key value)
-               (declare (ignore key))
-               (incf matching-fragment-conformations (length value)))
-             (fragment-matches matched-fragment-conformations-map))
-    (maphash (lambda (key value)
-               (declare (ignore key))
-               (loop for val across value
-                     when (= (length val) 0)
-                       do (incf missing-fragment-conformations)))
-             (fragment-matches matched-fragment-conformations-map))
+    (map-fragment-context-connections
+     (lambda (from-monomer-context to-monomer-context value)
+       (declare (ignore from-monomer-context to-monomer-context))
+       (incf matching-fragment-conformations (length value)))
+     (fragment-context-connections matched-fragment-conformations-map))
+    (map-fragment-context-connections
+     (lambda (from-monomer-context to-monomer-context value)
+       (declare (ignore from-monomer-context to-monomer-context))
+       (loop for val across value
+             when (= (length val) 0)
+               do (incf missing-fragment-conformations)))
+     (fragment-context-connections matched-fragment-conformations-map))
     (let ((missing-monomer-contexts nil))
       (maphash (lambda (monomer-context fragment-conformations)
                  (declare (ignore fragment-conformations))
                  (block inner-search
-                   (maphash (lambda (monomer-context-pair allowed-fragment-indices)
-                              (declare (ignore allowed-fragment-indices))
-                              (when (or (string= (car monomer-context-pair) monomer-context)
-                                        (string= (cdr monomer-context-pair) monomer-context))
-                                (return-from inner-search nil)))
-                            (fragment-matches matched-fragment-conformations-map))
+                   (map-fragment-context-connections
+                    (lambda (from-monomer-context to-monomer-context allowed-fragment-indices)
+                      (declare (ignore allowed-fragment-indices))
+                      (when (or (string= from-monomer-context monomer-context)
+                                (string= to-monomer-context monomer-context))
+                        (return-from inner-search nil)))
+                    (fragment-context-connections matched-fragment-conformations-map))
                    (push monomer-context missing-monomer-contexts)))
                (monomer-context-to-fragment-conformations matched-fragment-conformations-map))
       (values total-fragment-conformations matching-fragment-conformations missing-fragment-conformations missing-monomer-contexts))))
