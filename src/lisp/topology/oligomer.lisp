@@ -277,6 +277,16 @@
                                     residue2
                                     plug2name))
       (chem:add-matter aggregate molecule)
+      (maphash (lambda (name monomer)
+                 (let* ((monpos (let ((mp (gethash (first monomer) monomer-positions-accumulator)))
+                                  (unless mp (error "Check mp ~s monomer ~s and monomer-positions-accumulator ~s"
+                                                    mp
+                                                    monomer
+                                                    monomer-positions-accumulator))
+                                  mp))
+                        (res (chem:content-at molecule (topology:monomer-position-residue-index monpos))))
+                   (chem:set-property res :label name)))
+               (labeled-monomers (oligomer-space oligomer)))
       (values molecule monomer-positions-accumulator))))
 
 
