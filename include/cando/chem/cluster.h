@@ -62,7 +62,8 @@ inline float Distance(Point p1, Point p2)
 
 #define SIMD_CHUNK_SIZE 8
 typedef float v8sf __attribute__((vector_size(SIMD_CHUNK_SIZE*sizeof(float))));
-typedef v8sf floatType; // can be float
+typedef float floatType; // can be float
+//typedef v8sf floatType; // can be float
 
 
 template <>
