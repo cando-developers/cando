@@ -190,12 +190,12 @@
       (values oligomer-space focus-monomer dag))))
 
 (defun parse-oligomer-space-labeled-dag (name foldamer labeled-context &key (topology-groups topology:*topology-groups*))
-  (destructuring-bind (&key description pattern kind)
+  (destructuring-bind (&key description pattern shape-kind)
       labeled-context
     (let ((dag (parse-dag-for-oligomer-space name pattern :label description)))
       (multiple-value-bind (oligomer-space focus-monomer)
           (oligomer-space-from-dag foldamer dag topology-groups)
-        (values oligomer-space focus-monomer dag description kind)))))
+        (values oligomer-space focus-monomer dag description shape-kind)))))
 
 (defun validate-dag (dag)
   (let ((label (label dag)))

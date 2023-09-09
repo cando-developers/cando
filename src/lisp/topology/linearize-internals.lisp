@@ -1,6 +1,6 @@
 (in-package :topology)
 
-(defclass linearized-matched-fragment-conformations-holder ()
+(defclass linearized-matched-context-rotamers-holder ()
   ((internals-values :initarg :internals-values :accessor internals-values)
    (internals-types :initarg :internals-types :accessor internals-types)
    (internals-index-vector :initarg :internals-index-vector :accessor internals-index-vector)
@@ -8,17 +8,17 @@
    (probabilities-vector :initarg :probabilities-vector :accessor probabilities-vector)
    (energies-vector :initarg :energies-vector :accessor energies-vector)
    (trainer-index-vector :initarg :trainer-index-vector :accessor trainer-index-vector)
-   (fragment-conformations-start-vector :initarg :fragment-conformations-start-vector :accessor fragment-conformations-start-vector)
-   (fragment-conformations-count-vector :initarg :fragment-conformations-count-vector :accessor fragment-conformations-count-vector)
+   (context-rotamers-start-vector :initarg :context-rotamers-start-vector :accessor context-rotamers-start-vector)
+   (context-rotamers-count-vector :initarg :context-rotamers-count-vector :accessor context-rotamers-count-vector)
    (monomer-context-names-vector :initarg :monomer-context-names-vector :accessor monomer-context-names-vector)
    (monomer-context-names-start :initarg :monomer-context-names-start :accessor monomer-context-names-start)
    (monomer-context-names-count :initarg :monomer-context-names-count :accessor monomer-context-names-count)
    (focus-monomer-names-vector :initarg :focus-monomer-names-vector :accessor focus-monomer-names-vector)
    (focus-monomer-names-start :initarg :focus-monomer-names-start :accessor focus-monomer-names-start)
    (focus-monomer-names-count :initarg :focus-monomer-names-count :accessor focus-monomer-names-count)
-   (fragment-match-fragment-conformations-index-vector  :initarg :fragment-match-fragment-conformations-index-vector  :accessor fragment-match-fragment-conformations-index-vector )
-   (fragment-match-fragment-conformations-start-vector  :initarg :fragment-match-fragment-conformations-start-vector  :accessor fragment-match-fragment-conformations-start-vector )
-   (fragment-match-fragment-conformations-count-vector  :initarg :fragment-match-fragment-conformations-count-vector  :accessor fragment-match-fragment-conformations-count-vector )
+   (fragment-match-context-rotamers-index-vector  :initarg :fragment-match-context-rotamers-index-vector  :accessor fragment-match-context-rotamers-index-vector )
+   (fragment-match-context-rotamers-start-vector  :initarg :fragment-match-context-rotamers-start-vector  :accessor fragment-match-context-rotamers-start-vector )
+   (fragment-match-context-rotamers-count-vector  :initarg :fragment-match-context-rotamers-count-vector  :accessor fragment-match-context-rotamers-count-vector )
    (fragment-match-start-vector  :initarg :fragment-match-start-vector  :accessor fragment-match-start-vector )
    (fragment-match-count-vector  :initarg :fragment-match-count-vector  :accessor fragment-match-count-vector )
    (fragment-match-key-from-vector  :initarg :fragment-match-key-from-vector  :accessor fragment-match-key-from-vector )
@@ -27,8 +27,8 @@
 #|
 monomer-context-to-index maps monomer-context to a monomer-context-index
 monomer-context-index indexes into ...
-... fragment-conformations-start-vector
-... fragment-conformations-count-vector
+... context-rotamers-start-vector
+... context-rotamers-count-vector
 ...... these index into ...
 ...... probabilities-vector
 ...... energies-vector
@@ -41,22 +41,22 @@ monomer-context-index indexes into ...
 
 
 |#
-(defclass linearized-matched-fragment-conformations-map ()
-  ((linearized-matched-fragment-conformations-holder
-    :accessor linearized-matched-fragment-conformations-holder
-    :initarg :linearized-matched-fragment-conformations-holder )
+(defclass linearized-connected-rotamers-map ()
+  ((linearized-matched-context-rotamers-holder
+    :accessor linearized-matched-context-rotamers-holder
+    :initarg :linearized-matched-context-rotamers-holder )
    (monomer-context-to-index :accessor monomer-context-to-index
                              :initarg :monomer-context-to-index)
-   (monomer-context-to-fragment-conformations
-    :accessor monomer-context-to-fragment-conformations
-    :initarg :monomer-context-to-fragment-conformations)
+   (monomer-context-to-context-rotamers
+    :accessor monomer-context-to-context-rotamers
+    :initarg :monomer-context-to-context-rotamers)
    (focus-monomer-names :accessor focus-monomer-names
                         :initarg :focus-monomer-names)
-   (fragment-context-connections :accessor fragment-context-onnections
-                         :initarg :fragment-context-connections)
+   (rotamer-context-connections :accessor rotamer-context-onnections
+                         :initarg :rotamer-context-connections)
    ))
 
-(defclass linearized-fragment-conformations ()
+(defclass linearized-context-rotamers ()
   ((fragments :initarg :fragments :accessor fragments)))
 
 (defclass linearized-fragment-internals ()
@@ -79,8 +79,8 @@ monomer-context-index indexes into ...
 
 (defmethod fill-vector-values ((internal bonded-internal) internals-values)
   (vector-push-extend (bond internal) internals-values)
-  (vector-push-extend (angle internal) internals-values)
-  (vector-push-extend (dihedral internal) internals-values))
+  (vector-push-extend (angle-rad internal) internals-values)
+  (vector-push-extend (dihedral-rad internal) internals-values))
 
 (defun fill-vectors (internal internals-types internals-values)
   (vector-push-extend (compact-fragment-internal-type internal) internals-types)
@@ -98,7 +98,7 @@ monomer-context-index indexes into ...
 (defmacro debug-linearize-decf (limit)
   `(decf ,limit))
 
-(defun create-linearized-matched-fragment-conformations-holder (matched-fragment-conformations-map &key (debug-limit 0))
+(defun create-linearized-matched-context-rotamers-holder (connected-rotamers-map &key (debug-limit 0))
   (let ((internals-values (make-array (* 1024 1024 16) :element-type 'single-float :adjustable t :fill-pointer 0))
         (internals-types (make-array (* 1024 1024 16) :element-type 'simple-char :adjustable t :fill-pointer 0))
         (monomer-context-to-index (make-hash-table))
@@ -108,8 +108,8 @@ monomer-context-index indexes into ...
         (trainer-index-vector (make-array (* 1024 1024 2) :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
         (internals-index-vector (make-array (* 1024 1024 2) :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
         (internals-count-vector (make-array (* 1024 1024 2) :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
-        (fragment-conformations-start-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
-        (fragment-conformations-count-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
+        (context-rotamers-start-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
+        (context-rotamers-count-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
         (monomer-context-names-vector (make-array 65536 :element-type 'base-char :adjustable t :fill-pointer 0))
         (monomer-context-names-start (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
         (monomer-context-names-count (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
@@ -117,11 +117,11 @@ monomer-context-index indexes into ...
         (focus-monomer-names-start (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
         (focus-monomer-names-count (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
         (dl debug-limit))
-    (maphash (lambda (key fragment-conformations)
+    (maphash (lambda (key context-rotamers)
                (debug-linearize-decf dl)
                (debug-linearize dl "Looking at monomer-context ~a~%" key)
                (let ((compact-fragments-start-index (length internals-index-vector)))
-                 (loop for fragment-internals across (fragments fragment-conformations)
+                 (loop for fragment-internals across (fragments context-rotamers)
                        for internals-index = (fill-pointer internals-values)
                        do (loop for internal across (internals fragment-internals)
                                 do (fill-vectors internal internals-types internals-values))
@@ -137,19 +137,19 @@ monomer-context-index indexes into ...
                        do (vector-push-extend internals-index internals-index-vector)
                        do (vector-push-extend (length (internals fragment-internals)) internals-count-vector))
                  (let ((compact-fragments-end-index (length internals-index-vector)))
-                   (vector-push-extend compact-fragments-start-index fragment-conformations-start-vector)
-                   (vector-push-extend (- compact-fragments-end-index compact-fragments-start-index) fragment-conformations-count-vector))
+                   (vector-push-extend compact-fragments-start-index context-rotamers-start-vector)
+                   (vector-push-extend (- compact-fragments-end-index compact-fragments-start-index) context-rotamers-count-vector))
                  (setf (gethash key monomer-context-to-index) (incf monomer-context-index))
                  (vector-push-extend (length monomer-context-names-vector) monomer-context-names-start)
                  (let ((count (vector-push-cstring (string key) monomer-context-names-vector)))
                    (vector-push-extend count monomer-context-names-count))
                  (vector-push-extend (length focus-monomer-names-vector) focus-monomer-names-start)
-                 (let ((count (vector-push-cstring (string (focus-monomer-name fragment-conformations)) focus-monomer-names-vector)))
+                 (let ((count (vector-push-cstring (string (focus-monomer-name context-rotamers)) focus-monomer-names-vector)))
                    (vector-push-extend count focus-monomer-names-count))))
-             (monomer-context-to-fragment-conformations matched-fragment-conformations-map))
-    (let ((fragment-match-fragment-conformations-index-vector (make-array (* 1024 1024 2) :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
-          (fragment-match-fragment-conformations-start-vector (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
-          (fragment-match-fragment-conformations-count-vector (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
+             (monomer-context-to-context-rotamers connected-rotamers-map))
+    (let ((fragment-match-context-rotamers-index-vector (make-array (* 1024 1024 2) :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
+          (fragment-match-context-rotamers-start-vector (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
+          (fragment-match-context-rotamers-count-vector (make-array 65536 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
           (fragment-match-start-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
           (fragment-match-count-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
           (fragment-match-key-from-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
@@ -164,37 +164,37 @@ monomer-context-index indexes into ...
                    (debug-linearize dl "fragment-match key ~s~%" key)
                    (vector-push-extend key-from-index fragment-match-key-from-vector)
                    (vector-push-extend key-to-index fragment-match-key-to-vector)
-                   (let ((fm-start (length fragment-match-fragment-conformations-start-vector))) ; was fragment-match-start-vector)))
+                   (let ((fm-start (length fragment-match-context-rotamers-start-vector))) ; was fragment-match-start-vector)))
                      (debug-linearize dl "fm-start ~a~%" fm-start)
                      (vector-push-extend fm-start fragment-match-start-vector)
                      (debug-linearize dl "fragment-match-start-vector ~a~%" fm-start)
                      (loop for fragment-conformation-indices across fragment-conformation-indices-vectors
-                           do (let ((fc-start (length fragment-match-fragment-conformations-index-vector)))
+                           do (let ((fc-start (length fragment-match-context-rotamers-index-vector)))
                                 (debug-linearize dl "fc-start = ~a~%" fc-start) 
-                                (vector-push-extend fc-start fragment-match-fragment-conformations-start-vector)
-                                (debug-linearize dl "fragment-match-fragment-conformations-start-vector ~a~%" fc-start)
+                                (vector-push-extend fc-start fragment-match-context-rotamers-start-vector)
+                                (debug-linearize dl "fragment-match-context-rotamers-start-vector ~a~%" fc-start)
                                 (when fragment-conformation-indices
                                   (loop for fragment-conformation-index across fragment-conformation-indices
                                         do (progn
-                                             (vector-push-extend fragment-conformation-index fragment-match-fragment-conformations-index-vector)
-                                             (debug-linearize dl "fragment-match-fragment-conformations-index-vector ~a~%" fragment-conformation-index)
+                                             (vector-push-extend fragment-conformation-index fragment-match-context-rotamers-index-vector)
+                                             (debug-linearize dl "fragment-match-context-rotamers-index-vector ~a~%" fragment-conformation-index)
                                         )))
-                                (let ((count (- (length fragment-match-fragment-conformations-index-vector) fc-start)))
-                                  (vector-push-extend count fragment-match-fragment-conformations-count-vector)
-                                  (debug-linearize dl "fragment-match-fragment-conformations-count-vector ~a~%" count)
+                                (let ((count (- (length fragment-match-context-rotamers-index-vector) fc-start)))
+                                  (vector-push-extend count fragment-match-context-rotamers-count-vector)
+                                  (debug-linearize dl "fragment-match-context-rotamers-count-vector ~a~%" count)
                                   )))
-                     (let ((count (- (length fragment-match-fragment-conformations-start-vector) fm-start)))
+                     (let ((count (- (length fragment-match-context-rotamers-start-vector) fm-start)))
                        (vector-push-extend count fragment-match-count-vector)
                        (debug-linearize dl "fragment-match-count-vector ~a~%" count))
                      )))
-               (fragment-context-connections matched-fragment-conformations-map))
-      (make-instance 'linearized-matched-fragment-conformations-holder
+               (rotamer-context-connections connected-rotamers-map))
+      (make-instance 'linearized-matched-context-rotamers-holder
                      :internals-values (copy-seq internals-values)
                      :internals-types (copy-seq internals-types)
                      :internals-index-vector (copy-seq internals-index-vector)
                      :internals-count-vector (copy-seq internals-count-vector)
-                     :fragment-conformations-start-vector (copy-seq fragment-conformations-start-vector)
-                     :fragment-conformations-count-vector (copy-seq fragment-conformations-count-vector)
+                     :context-rotamers-start-vector (copy-seq context-rotamers-start-vector)
+                     :context-rotamers-count-vector (copy-seq context-rotamers-count-vector)
                      :monomer-context-names-vector (copy-seq monomer-context-names-vector)
                      :monomer-context-names-start (copy-seq monomer-context-names-start)
                      :monomer-context-names-count (copy-seq monomer-context-names-count)
@@ -204,9 +204,9 @@ monomer-context-index indexes into ...
                      :probabilities-vector probabilities-vector
                      :energies-vector energies-vector
                      :trainer-index-vector trainer-index-vector
-                     :fragment-match-fragment-conformations-index-vector  (copy-seq fragment-match-fragment-conformations-index-vector)
-                     :fragment-match-fragment-conformations-start-vector  (copy-seq fragment-match-fragment-conformations-start-vector)
-                     :fragment-match-fragment-conformations-count-vector  (copy-seq fragment-match-fragment-conformations-count-vector)
+                     :fragment-match-context-rotamers-index-vector  (copy-seq fragment-match-context-rotamers-index-vector)
+                     :fragment-match-context-rotamers-start-vector  (copy-seq fragment-match-context-rotamers-start-vector)
+                     :fragment-match-context-rotamers-count-vector  (copy-seq fragment-match-context-rotamers-count-vector)
                      :fragment-match-start-vector  (copy-seq fragment-match-start-vector)
                      :fragment-match-count-vector  (copy-seq fragment-match-count-vector)
                      :fragment-match-key-from-vector  (copy-seq fragment-match-key-from-vector)
@@ -218,8 +218,8 @@ monomer-context-index indexes into ...
      #+(or)(format t "Initializing ~a~%" ',sym)
      ,sym))
 
-(defun save-linearized-matched-fragment-conformations-holder (linearized-fragment-conformations-holder filename)
-  (format t "save-compact-matched-fragment-conformations-holder~%")
+(defun save-linearized-matched-context-rotamers-holder (linearized-context-rotamers-holder filename)
+  (format t "save-compact-matched-context-rotamers-holder~%")
   (with-accessors ((internals-values internals-values)
                    (internals-types internals-types)
                    (monomer-context-names-vector monomer-context-names-vector)
@@ -233,17 +233,17 @@ monomer-context-index indexes into ...
                    (probabilities-vector probabilities-vector)
                    (energies-vector energies-vector)
                    (trainer-index-vector trainer-index-vector)
-                   (fragment-conformations-start-vector fragment-conformations-start-vector)
-                   (fragment-conformations-count-vector fragment-conformations-count-vector)
-                   (fragment-match-fragment-conformations-index-vector fragment-match-fragment-conformations-index-vector )
-                   (fragment-match-fragment-conformations-start-vector fragment-match-fragment-conformations-start-vector )
-                   (fragment-match-fragment-conformations-count-vector fragment-match-fragment-conformations-count-vector )
+                   (context-rotamers-start-vector context-rotamers-start-vector)
+                   (context-rotamers-count-vector context-rotamers-count-vector)
+                   (fragment-match-context-rotamers-index-vector fragment-match-context-rotamers-index-vector )
+                   (fragment-match-context-rotamers-start-vector fragment-match-context-rotamers-start-vector )
+                   (fragment-match-context-rotamers-count-vector fragment-match-context-rotamers-count-vector )
                    (fragment-match-start-vector  fragment-match-start-vector )
                    (fragment-match-count-vector  fragment-match-count-vector )
                    (fragment-match-key-from-vector  fragment-match-key-from-vector )
                    (fragment-match-key-to-vector fragment-match-key-to-vector)
                    )
-      linearized-fragment-conformations-holder
+      linearized-context-rotamers-holder
     (static-vectors:with-static-vectors ((static-internals-values (length internals-values)
                                                                   :element-type 'single-float
                                                                   :initial-contents (maybe-describe internals-values))
@@ -253,17 +253,17 @@ monomer-context-index indexes into ...
                                          (static-probabilities-vector (length probabilities-vector) :element-type 'single-float :initial-contents (maybe-describe probabilities-vector))
                                          (static-energies-vector (length energies-vector) :element-type 'single-float :initial-contents (maybe-describe energies-vector))
                                          (static-trainer-index-vector (length trainer-index-vector) :element-type 'ext:byte32 :initial-contents (maybe-describe trainer-index-vector))
-                                         (static-fragment-conformations-start-vector (length fragment-conformations-start-vector) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-conformations-start-vector))
-                                         (static-fragment-conformations-count-vector (length fragment-conformations-count-vector) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-conformations-count-vector))
+                                         (static-context-rotamers-start-vector (length context-rotamers-start-vector) :element-type 'ext:byte32 :initial-contents (maybe-describe context-rotamers-start-vector))
+                                         (static-context-rotamers-count-vector (length context-rotamers-count-vector) :element-type 'ext:byte32 :initial-contents (maybe-describe context-rotamers-count-vector))
                                          (static-monomer-context-names-vector (length monomer-context-names-vector) :element-type 'base-char :initial-contents (maybe-describe monomer-context-names-vector))
                                          (static-monomer-context-names-start (length monomer-context-names-start) :element-type 'ext:byte32 :initial-contents (maybe-describe monomer-context-names-start))
                                          (static-monomer-context-names-count (length monomer-context-names-count) :element-type 'ext:byte32 :initial-contents (maybe-describe monomer-context-names-count))
                                          (static-focus-monomer-names-vector (length focus-monomer-names-vector) :element-type 'base-char :initial-contents (maybe-describe focus-monomer-names-vector))
                                          (static-focus-monomer-names-start (length focus-monomer-names-start) :element-type 'ext:byte32 :initial-contents (maybe-describe focus-monomer-names-start))
                                          (static-focus-monomer-names-count (length focus-monomer-names-count) :element-type 'ext:byte32 :initial-contents (maybe-describe focus-monomer-names-count))
-                                         (static-fragment-match-fragment-conformations-index-vector  (length fragment-match-fragment-conformations-index-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-fragment-conformations-index-vector ))
-                                         (static-fragment-match-fragment-conformations-start-vector  (length fragment-match-fragment-conformations-start-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-fragment-conformations-start-vector ))
-                                         (static-fragment-match-fragment-conformations-count-vector  (length fragment-match-fragment-conformations-count-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-fragment-conformations-count-vector ))
+                                         (static-fragment-match-context-rotamers-index-vector  (length fragment-match-context-rotamers-index-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-context-rotamers-index-vector ))
+                                         (static-fragment-match-context-rotamers-start-vector  (length fragment-match-context-rotamers-start-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-context-rotamers-start-vector ))
+                                         (static-fragment-match-context-rotamers-count-vector  (length fragment-match-context-rotamers-count-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-context-rotamers-count-vector ))
                                          (static-fragment-match-start-vector  (length fragment-match-start-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-start-vector ))
                                          (static-fragment-match-count-vector  (length fragment-match-count-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-count-vector ))
                                          (static-fragment-match-key-from-vector  (length fragment-match-key-from-vector ) :element-type 'ext:byte32 :initial-contents (maybe-describe fragment-match-key-from-vector ))
@@ -295,16 +295,16 @@ monomer-context-index indexes into ...
         (nc:def-var cdf "internals-index-vector" nc-c:+int+ '("internals-index-vector"))
         (nc:def-dim cdf "internals-count-vector" (length static-internals-count-vector))
         (nc:def-var cdf "internals-count-vector" nc-c:+int+ '("internals-count-vector"))
-        (nc:def-dim cdf "fragment-conformations-start-vector" (length static-fragment-conformations-start-vector))
-        (nc:def-var cdf "fragment-conformations-start-vector" nc-c:+int+ '("fragment-conformations-start-vector"))
-        (nc:def-dim cdf "fragment-conformations-count-vector" (length static-fragment-conformations-count-vector))
-        (nc:def-var cdf "fragment-conformations-count-vector" nc-c:+int+ '("fragment-conformations-count-vector"))
-        (nc:def-dim cdf "fragment-match-fragment-conformations-index-vector" (length static-fragment-match-fragment-conformations-index-vector ))
-        (nc:def-var cdf "fragment-match-fragment-conformations-index-vector" nc-c:+int+ '("fragment-match-fragment-conformations-index-vector"))
-        (nc:def-dim cdf "fragment-match-fragment-conformations-start-vector" (length static-fragment-match-fragment-conformations-start-vector ))
-        (nc:def-var cdf "fragment-match-fragment-conformations-start-vector" nc-c:+int+ '("fragment-match-fragment-conformations-start-vector"))
-        (nc:def-dim cdf "fragment-match-fragment-conformations-count-vector" (length static-fragment-match-fragment-conformations-count-vector ))
-        (nc:def-var cdf "fragment-match-fragment-conformations-count-vector" nc-c:+int+ '("fragment-match-fragment-conformations-count-vector"))
+        (nc:def-dim cdf "context-rotamers-start-vector" (length static-context-rotamers-start-vector))
+        (nc:def-var cdf "context-rotamers-start-vector" nc-c:+int+ '("context-rotamers-start-vector"))
+        (nc:def-dim cdf "context-rotamers-count-vector" (length static-context-rotamers-count-vector))
+        (nc:def-var cdf "context-rotamers-count-vector" nc-c:+int+ '("context-rotamers-count-vector"))
+        (nc:def-dim cdf "fragment-match-context-rotamers-index-vector" (length static-fragment-match-context-rotamers-index-vector ))
+        (nc:def-var cdf "fragment-match-context-rotamers-index-vector" nc-c:+int+ '("fragment-match-context-rotamers-index-vector"))
+        (nc:def-dim cdf "fragment-match-context-rotamers-start-vector" (length static-fragment-match-context-rotamers-start-vector ))
+        (nc:def-var cdf "fragment-match-context-rotamers-start-vector" nc-c:+int+ '("fragment-match-context-rotamers-start-vector"))
+        (nc:def-dim cdf "fragment-match-context-rotamers-count-vector" (length static-fragment-match-context-rotamers-count-vector ))
+        (nc:def-var cdf "fragment-match-context-rotamers-count-vector" nc-c:+int+ '("fragment-match-context-rotamers-count-vector"))
         (nc:def-dim cdf "fragment-match-start-vector" (length static-fragment-match-start-vector ))
         (nc:def-var cdf "fragment-match-start-vector" nc-c:+int+ '("fragment-match-start-vector"))
         (nc:def-dim cdf "fragment-match-count-vector" (length static-fragment-match-count-vector ))
@@ -327,11 +327,11 @@ monomer-context-index indexes into ...
         (nc:put-var-static-vector-uint cdf "focus-monomer-names-count" static-focus-monomer-names-count)
         (nc:put-var-static-vector-uint cdf "internals-index-vector" static-internals-index-vector)
         (nc:put-var-static-vector-uint cdf "internals-count-vector" static-internals-count-vector)
-        (nc:put-var-static-vector-uint cdf "fragment-conformations-start-vector" static-fragment-conformations-start-vector)
-        (nc:put-var-static-vector-uint cdf "fragment-conformations-count-vector" static-fragment-conformations-count-vector)
-        (nc:put-var-static-vector-uint cdf "fragment-match-fragment-conformations-index-vector" static-fragment-match-fragment-conformations-index-vector )
-        (nc:put-var-static-vector-uint cdf "fragment-match-fragment-conformations-start-vector" static-fragment-match-fragment-conformations-start-vector )
-        (nc:put-var-static-vector-uint cdf "fragment-match-fragment-conformations-count-vector" static-fragment-match-fragment-conformations-count-vector )
+        (nc:put-var-static-vector-uint cdf "context-rotamers-start-vector" static-context-rotamers-start-vector)
+        (nc:put-var-static-vector-uint cdf "context-rotamers-count-vector" static-context-rotamers-count-vector)
+        (nc:put-var-static-vector-uint cdf "fragment-match-context-rotamers-index-vector" static-fragment-match-context-rotamers-index-vector )
+        (nc:put-var-static-vector-uint cdf "fragment-match-context-rotamers-start-vector" static-fragment-match-context-rotamers-start-vector )
+        (nc:put-var-static-vector-uint cdf "fragment-match-context-rotamers-count-vector" static-fragment-match-context-rotamers-count-vector )
         (nc:put-var-static-vector-uint cdf "fragment-match-start-vector" static-fragment-match-start-vector )
         (nc:put-var-static-vector-uint cdf "fragment-match-count-vector" static-fragment-match-count-vector )
         (nc:put-var-static-vector-uint cdf "fragment-match-key-from-vector" static-fragment-match-key-from-vector )
@@ -340,7 +340,7 @@ monomer-context-index indexes into ...
 
 
 
-(defun read-linearized-matched-fragment-conformations-holder (filename)
+(defun read-linearized-matched-context-rotamers-holder (filename)
   (let* ((cdf (nc:nc-open (namestring (merge-pathnames filename))))
          (dim-internals-values (nc:len (nc:get-dimension cdf "internals-values")))
          (dim-probabilities-vector (nc:len (nc:get-dimension cdf "probabilities-vector")))
@@ -349,17 +349,17 @@ monomer-context-index indexes into ...
          (dim-internals-types (nc:len (nc:get-dimension cdf "internals-types")))
          (dim-internals-index-vector (nc:len (nc:get-dimension cdf "internals-index-vector")))
          (dim-internals-count-vector (nc:len (nc:get-dimension cdf "internals-count-vector")))
-         (dim-fragment-conformations-start-vector (nc:len (nc:get-dimension cdf "fragment-conformations-start-vector")))
-         (dim-fragment-conformations-count-vector (nc:len (nc:get-dimension cdf "fragment-conformations-count-vector")))
+         (dim-context-rotamers-start-vector (nc:len (nc:get-dimension cdf "context-rotamers-start-vector")))
+         (dim-context-rotamers-count-vector (nc:len (nc:get-dimension cdf "context-rotamers-count-vector")))
          (dim-monomer-context-names-vector (nc:len (nc:get-dimension cdf "monomer-context-names-vector")))
          (dim-monomer-context-names-start (nc:len (nc:get-dimension cdf "monomer-context-names-start")))
          (dim-monomer-context-names-count (nc:len (nc:get-dimension cdf "monomer-context-names-count")))
          (dim-focus-monomer-names-vector (nc:len (nc:get-dimension cdf "focus-monomer-names-vector")))
          (dim-focus-monomer-names-start (nc:len (nc:get-dimension cdf "focus-monomer-names-start")))
          (dim-focus-monomer-names-count (nc:len (nc:get-dimension cdf "focus-monomer-names-count")))
-         (dim-fragment-match-fragment-conformations-index-vector (nc:len (nc:get-dimension cdf "fragment-match-fragment-conformations-index-vector")))
-         (dim-fragment-match-fragment-conformations-start-vector (nc:len (nc:get-dimension cdf "fragment-match-fragment-conformations-start-vector")))
-         (dim-fragment-match-fragment-conformations-count-vector (nc:len (nc:get-dimension cdf "fragment-match-fragment-conformations-count-vector")))
+         (dim-fragment-match-context-rotamers-index-vector (nc:len (nc:get-dimension cdf "fragment-match-context-rotamers-index-vector")))
+         (dim-fragment-match-context-rotamers-start-vector (nc:len (nc:get-dimension cdf "fragment-match-context-rotamers-start-vector")))
+         (dim-fragment-match-context-rotamers-count-vector (nc:len (nc:get-dimension cdf "fragment-match-context-rotamers-count-vector")))
          (dim-fragment-match-start-vector (nc:len (nc:get-dimension cdf "fragment-match-start-vector")))
          (dim-fragment-match-count-vector (nc:len (nc:get-dimension cdf "fragment-match-count-vector")))
          (dim-fragment-match-key-from-vector (nc:len (nc:get-dimension cdf "fragment-match-key-from-vector")))
@@ -378,11 +378,11 @@ monomer-context-index indexes into ...
                                          (static-focus-monomer-names-count dim-focus-monomer-names-count :element-type 'ext:byte32)
                                          (static-internals-index-vector dim-internals-index-vector :element-type 'ext:byte32)
                                          (static-internals-count-vector dim-internals-count-vector :element-type 'ext:byte32)
-                                         (static-fragment-conformations-start-vector dim-fragment-conformations-start-vector :element-type 'ext:byte32)
-                                         (static-fragment-conformations-count-vector dim-fragment-conformations-count-vector :element-type 'ext:byte32)
-                                         (static-fragment-match-fragment-conformations-index-vector dim-fragment-match-fragment-conformations-index-vector :element-type 'ext:byte32)
-                                         (static-fragment-match-fragment-conformations-start-vector dim-fragment-match-fragment-conformations-start-vector :element-type 'ext:byte32)
-                                         (static-fragment-match-fragment-conformations-count-vector dim-fragment-match-fragment-conformations-count-vector :element-type 'ext:byte32)
+                                         (static-context-rotamers-start-vector dim-context-rotamers-start-vector :element-type 'ext:byte32)
+                                         (static-context-rotamers-count-vector dim-context-rotamers-count-vector :element-type 'ext:byte32)
+                                         (static-fragment-match-context-rotamers-index-vector dim-fragment-match-context-rotamers-index-vector :element-type 'ext:byte32)
+                                         (static-fragment-match-context-rotamers-start-vector dim-fragment-match-context-rotamers-start-vector :element-type 'ext:byte32)
+                                         (static-fragment-match-context-rotamers-count-vector dim-fragment-match-context-rotamers-count-vector :element-type 'ext:byte32)
                                          (static-fragment-match-start-vector dim-fragment-match-start-vector :element-type 'ext:byte32)
                                          (static-fragment-match-count-vector dim-fragment-match-count-vector :element-type 'ext:byte32)
                                          (static-fragment-match-key-from-vector dim-fragment-match-key-from-vector :element-type 'ext:byte32)
@@ -400,11 +400,11 @@ monomer-context-index indexes into ...
       (nc:get-var-static-vector-uint cdf "focus-monomer-names-count" static-focus-monomer-names-count)
       (nc:get-var-static-vector-uint cdf "internals-index-vector" static-internals-index-vector)
       (nc:get-var-static-vector-uint cdf "internals-count-vector" static-internals-count-vector)
-      (nc:get-var-static-vector-uint cdf "fragment-conformations-start-vector" static-fragment-conformations-start-vector)
-      (nc:get-var-static-vector-uint cdf "fragment-conformations-count-vector" static-fragment-conformations-count-vector)
-      (nc:get-var-static-vector-uint cdf "fragment-match-fragment-conformations-index-vector" static-fragment-match-fragment-conformations-index-vector )
-      (nc:get-var-static-vector-uint cdf "fragment-match-fragment-conformations-start-vector" static-fragment-match-fragment-conformations-start-vector )
-      (nc:get-var-static-vector-uint cdf "fragment-match-fragment-conformations-count-vector" static-fragment-match-fragment-conformations-count-vector )
+      (nc:get-var-static-vector-uint cdf "context-rotamers-start-vector" static-context-rotamers-start-vector)
+      (nc:get-var-static-vector-uint cdf "context-rotamers-count-vector" static-context-rotamers-count-vector)
+      (nc:get-var-static-vector-uint cdf "fragment-match-context-rotamers-index-vector" static-fragment-match-context-rotamers-index-vector )
+      (nc:get-var-static-vector-uint cdf "fragment-match-context-rotamers-start-vector" static-fragment-match-context-rotamers-start-vector )
+      (nc:get-var-static-vector-uint cdf "fragment-match-context-rotamers-count-vector" static-fragment-match-context-rotamers-count-vector )
       (nc:get-var-static-vector-uint cdf "fragment-match-start-vector" static-fragment-match-start-vector )
       (nc:get-var-static-vector-uint cdf "fragment-match-count-vector" static-fragment-match-count-vector )
       (nc:get-var-static-vector-uint cdf "fragment-match-key-from-vector" static-fragment-match-key-from-vector )
@@ -424,16 +424,16 @@ monomer-context-index indexes into ...
             (focus-monomer-names-count (make-array (length static-focus-monomer-names-count) :element-type 'ext:byte32 :initial-contents static-focus-monomer-names-count))
             (internals-index-vector (make-array (length static-internals-index-vector) :element-type 'ext:byte32 :initial-contents static-internals-index-vector))
             (internals-count-vector (make-array (length static-internals-count-vector) :element-type 'ext:byte32 :initial-contents static-internals-count-vector))
-            (fragment-conformations-start-vector (make-array (length static-fragment-conformations-start-vector) :element-type 'ext:byte32 :initial-contents static-fragment-conformations-start-vector :element-type 'ex))
-            (fragment-conformations-count-vector (make-array (length static-fragment-conformations-count-vector) :element-type 'ext:byte32 :initial-contents static-fragment-conformations-count-vector))
-            (fragment-match-fragment-conformations-index-vector (make-array (length static-fragment-match-fragment-conformations-index-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-fragment-conformations-index-vector))
-            (fragment-match-fragment-conformations-start-vector (make-array (length static-fragment-match-fragment-conformations-start-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-fragment-conformations-start-vector))
-            (fragment-match-fragment-conformations-count-vector (make-array (length static-fragment-match-fragment-conformations-count-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-fragment-conformations-count-vector))
+            (context-rotamers-start-vector (make-array (length static-context-rotamers-start-vector) :element-type 'ext:byte32 :initial-contents static-context-rotamers-start-vector :element-type 'ex))
+            (context-rotamers-count-vector (make-array (length static-context-rotamers-count-vector) :element-type 'ext:byte32 :initial-contents static-context-rotamers-count-vector))
+            (fragment-match-context-rotamers-index-vector (make-array (length static-fragment-match-context-rotamers-index-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-context-rotamers-index-vector))
+            (fragment-match-context-rotamers-start-vector (make-array (length static-fragment-match-context-rotamers-start-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-context-rotamers-start-vector))
+            (fragment-match-context-rotamers-count-vector (make-array (length static-fragment-match-context-rotamers-count-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-context-rotamers-count-vector))
             (fragment-match-start-vector (make-array (length static-fragment-match-start-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-start-vector))
             (fragment-match-count-vector (make-array (length static-fragment-match-count-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-count-vector))
             (fragment-match-key-from-vector (make-array (length static-fragment-match-key-from-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-key-from-vector))
             (fragment-match-key-to-vector (make-array (length static-fragment-match-key-to-vector) :element-type 'ext:byte32 :initial-contents static-fragment-match-key-to-vector)))
-        (make-instance 'linearized-matched-fragment-conformations-holder
+        (make-instance 'linearized-matched-context-rotamers-holder
                        :internals-values internals-values
                        :internals-types internals-types
                        :probabilities-vector probabilities-vector
@@ -447,25 +447,25 @@ monomer-context-index indexes into ...
                        :focus-monomer-names-count focus-monomer-names-count
                        :internals-index-vector internals-index-vector
                        :internals-count-vector internals-count-vector
-                       :fragment-conformations-start-vector fragment-conformations-start-vector
-                       :fragment-conformations-count-vector fragment-conformations-count-vector
-                       :fragment-match-fragment-conformations-index-vector fragment-match-fragment-conformations-index-vector
-                       :fragment-match-fragment-conformations-start-vector fragment-match-fragment-conformations-start-vector
-                       :fragment-match-fragment-conformations-count-vector fragment-match-fragment-conformations-count-vector
+                       :context-rotamers-start-vector context-rotamers-start-vector
+                       :context-rotamers-count-vector context-rotamers-count-vector
+                       :fragment-match-context-rotamers-index-vector fragment-match-context-rotamers-index-vector
+                       :fragment-match-context-rotamers-start-vector fragment-match-context-rotamers-start-vector
+                       :fragment-match-context-rotamers-count-vector fragment-match-context-rotamers-count-vector
                        :fragment-match-start-vector fragment-match-start-vector
                        :fragment-match-count-vector fragment-match-count-vector
                        :fragment-match-key-from-vector fragment-match-key-from-vector
                        :fragment-match-key-to-vector fragment-match-key-to-vector
                        )))))
 
-(defun mimic-matched-fragment-conformations-map (linearized-matched-fragment-conformations-holder)
+(defun mimic-connected-rotamers-map (linearized-matched-context-rotamers-holder)
   (let* ((monomer-context-to-index (make-hash-table))
-         (monomer-context-to-fragment-conformations (make-hash-table :test 'equal))
-         (monomer-contexts (make-array (length (focus-monomer-names-start linearized-matched-fragment-conformations-holder))))
-         (focus-monomer-names (make-array (length (focus-monomer-names-start linearized-matched-fragment-conformations-holder)))))
+         (monomer-context-to-context-rotamers (make-hash-table :test 'equal))
+         (monomer-contexts (make-array (length (focus-monomer-names-start linearized-matched-context-rotamers-holder))))
+         (focus-monomer-names (make-array (length (focus-monomer-names-start linearized-matched-context-rotamers-holder)))))
     (with-slots (
-                 fragment-conformations-start-vector
-                 fragment-conformations-count-vector
+                 context-rotamers-start-vector
+                 context-rotamers-count-vector
                  internals-index-vector
                  internals-count-vector
                  internals-values
@@ -474,10 +474,10 @@ monomer-context-index indexes into ...
                  energies-vector
                  trainer-index-vector
                  )
-        linearized-matched-fragment-conformations-holder
-      (loop with monomer-context-names-vector = (monomer-context-names-vector linearized-matched-fragment-conformations-holder)
-            with monomer-context-names-start = (monomer-context-names-start linearized-matched-fragment-conformations-holder)
-            with monomer-context-names-count = (monomer-context-names-count linearized-matched-fragment-conformations-holder)
+        linearized-matched-context-rotamers-holder
+      (loop with monomer-context-names-vector = (monomer-context-names-vector linearized-matched-context-rotamers-holder)
+            with monomer-context-names-start = (monomer-context-names-start linearized-matched-context-rotamers-holder)
+            with monomer-context-names-count = (monomer-context-names-count linearized-matched-context-rotamers-holder)
             for index below (length monomer-context-names-start)
             for start across monomer-context-names-start
             for count across monomer-context-names-count
@@ -488,11 +488,11 @@ monomer-context-index indexes into ...
             for monomer-context = (intern monomer-context-string :keyword)
             do (setf (elt monomer-contexts index) monomer-context)
             do (setf (gethash monomer-context monomer-context-to-index) index)
-            do (let* ((fragment-conformations-start (elt fragment-conformations-start-vector index))
-                      (fragment-conformations-count (elt fragment-conformations-count-vector index))
-                      (linearized-fragment-conformations (make-array fragment-conformations-count)))
-                 (loop for fci from 0 below fragment-conformations-count
-                       for fcio = (+ fci fragment-conformations-start)
+            do (let* ((context-rotamers-start (elt context-rotamers-start-vector index))
+                      (context-rotamers-count (elt context-rotamers-count-vector index))
+                      (linearized-context-rotamers (make-array context-rotamers-count)))
+                 (loop for fci from 0 below context-rotamers-count
+                       for fcio = (+ fci context-rotamers-start)
                        for internals-index = (elt internals-index-vector fcio)
                        for internals-count = (elt internals-count-vector fcio)
                        for the-internals-values = (make-array (* 3 internals-count)
@@ -509,14 +509,14 @@ monomer-context-index indexes into ...
                                                                              :trainer-index (elt trainer-index-vector fcio)
                                                                              :internals-types the-internals-types
                                                                              :internals-values the-internals-values)
-                       do (setf (elt linearized-fragment-conformations fci) linearized-fragment-conformation))
-                 (setf (gethash monomer-context monomer-context-to-fragment-conformations)
-                       (make-instance 'linearized-fragment-conformations
-                                      :fragments linearized-fragment-conformations)))
+                       do (setf (elt linearized-context-rotamers fci) linearized-fragment-conformation))
+                 (setf (gethash monomer-context monomer-context-to-context-rotamers)
+                       (make-instance 'linearized-context-rotamers
+                                      :fragments linearized-context-rotamers)))
             ))
-    (loop with focus-monomer-names-vector = (focus-monomer-names-vector linearized-matched-fragment-conformations-holder)
-          with focus-monomer-names-start = (focus-monomer-names-start linearized-matched-fragment-conformations-holder)
-          with focus-monomer-names-count = (focus-monomer-names-count linearized-matched-fragment-conformations-holder)
+    (loop with focus-monomer-names-vector = (focus-monomer-names-vector linearized-matched-context-rotamers-holder)
+          with focus-monomer-names-start = (focus-monomer-names-start linearized-matched-context-rotamers-holder)
+          with focus-monomer-names-count = (focus-monomer-names-count linearized-matched-context-rotamers-holder)
           for index below (length focus-monomer-names-start)
           for start across focus-monomer-names-start
           for count across focus-monomer-names-count
@@ -530,12 +530,12 @@ monomer-context-index indexes into ...
                  fragment-match-key-to-vector
                  fragment-match-start-vector
                  fragment-match-count-vector
-                 fragment-match-fragment-conformations-start-vector
-                 fragment-match-fragment-conformations-count-vector
-                 fragment-match-fragment-conformations-index-vector
+                 fragment-match-context-rotamers-start-vector
+                 fragment-match-context-rotamers-count-vector
+                 fragment-match-context-rotamers-index-vector
                  )
-        linearized-matched-fragment-conformations-holder
-      (let ((fragment-context-connections (make-fragment-context-connections)))
+        linearized-matched-context-rotamers-holder
+      (let ((rotamer-context-connections (make-rotamer-context-connections)))
         (loop for ii below (length fragment-match-key-from-vector)
               for from-index = (elt fragment-match-key-from-vector ii)
               for to-index = (elt fragment-match-key-to-vector ii)
@@ -544,32 +544,32 @@ monomer-context-index indexes into ...
               for fragment-match-start = (elt fragment-match-start-vector ii)
               for fragment-match-count = (elt fragment-match-count-vector ii)
               do (let ((vec (progn
-                              (error "the following make-array needs to be a make-fragment-shape-connections ")
+                              (error "the following make-array needs to be a make-rotamer-shape-connections ")
                               (make-array fragment-match-count))))
                    (loop for oii from 0 below fragment-match-count
-                         for fragment-match-fragment-conformations-start = (elt fragment-match-fragment-conformations-start-vector (+ oii fragment-match-start))
-                         for fragment-match-fragment-conformations-count = (elt fragment-match-fragment-conformations-count-vector (+ oii fragment-match-start))
-                         for disp = (make-array fragment-match-fragment-conformations-count
+                         for fragment-match-context-rotamers-start = (elt fragment-match-context-rotamers-start-vector (+ oii fragment-match-start))
+                         for fragment-match-context-rotamers-count = (elt fragment-match-context-rotamers-count-vector (+ oii fragment-match-start))
+                         for disp = (make-array fragment-match-context-rotamers-count
                                                 :element-type 'ext:byte32
-                                                :displaced-to fragment-match-fragment-conformations-index-vector
-                                                :displaced-index-offset fragment-match-fragment-conformations-start)
+                                                :displaced-to fragment-match-context-rotamers-index-vector
+                                                :displaced-index-offset fragment-match-context-rotamers-start)
                          do (setf (elt vec oii) disp))
-                   (set-fragment-context-connections fragment-context-connections from-key to-key vec)
+                   (set-rotamer-context-connections rotamer-context-connections from-key to-key vec)
                    ))
-    (make-instance 'linearized-matched-fragment-conformations-map
-                   :linearized-matched-fragment-conformations-holder linearized-matched-fragment-conformations-holder
-                   :monomer-context-to-fragment-conformations monomer-context-to-fragment-conformations
+    (make-instance 'linearized-connected-rotamers-map
+                   :linearized-matched-context-rotamers-holder linearized-matched-context-rotamers-holder
+                   :monomer-context-to-context-rotamers monomer-context-to-context-rotamers
                    :monomer-context-to-index monomer-context-to-index
                    :focus-monomer-names focus-monomer-names
-                   :fragment-context-connections fragment-context-connections)))))
+                   :rotamer-context-connections rotamer-context-connections)))))
 
-(defun load-linearized-matched-fragment-conformations-map (filename)
-  (let ((linearized-matched-fragment-conformations-holder (read-linearized-matched-fragment-conformations-holder filename)))
-    (mimic-matched-fragment-conformations-map linearized-matched-fragment-conformations-holder)))
+(defun load-linearized-connected-rotamers-map (filename)
+  (let ((linearized-matched-context-rotamers-holder (read-linearized-matched-context-rotamers-holder filename)))
+    (mimic-connected-rotamers-map linearized-matched-context-rotamers-holder)))
 
-(defun linearize-and-save-matched-fragment-conformations-map (map filename)
-  (let ((linearized (create-linearized-matched-fragment-conformations-holder map)))
-    (save-linearized-matched-fragment-conformations-holder linearized filename)))
+(defun linearize-and-save-connected-rotamers-map (map filename)
+  (let ((linearized (create-linearized-matched-context-rotamers-holder map)))
+    (save-linearized-matched-context-rotamers-holder linearized filename)))
 
 (defmethod apply-fragment-internals-to-atresidue ((fragment-internals linearized-fragment-internals) atresidue)
   (loop for joint across (joints atresidue)

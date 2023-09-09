@@ -68,7 +68,7 @@
          (ring-closing-monomer-map (make-hash-table))
          (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule))
          (monomer-position (gethash root-monomer monomer-positions))
-         (residue-index (monomer-position-residue-index monomer-position))
+         (residue-index (residue-index monomer-position))
          (residue (chem:content-at molecule residue-index))
          (topology (monomer-topology root-monomer oligomer))
          (root-atresidue (atresidue-factory residue ring-closing-monomer-map root-monomer topology)))
@@ -159,7 +159,7 @@
                      (let* ((other-monomer (target-monomer directional-coupling))
                             (other-topology (monomer-topology other-monomer oligomer))
                             (other-monomer-position (gethash other-monomer monomer-positions))
-                            (other-residue-index (monomer-position-residue-index other-monomer-position))
+                            (other-residue-index (residue-index other-monomer-position))
                             (other-residue (chem:content-at molecule other-residue-index))
                             (other-atresidue (atresidue-factory other-residue
                                                                 ring-closing-monomer-map

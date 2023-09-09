@@ -182,7 +182,7 @@
            (let* ((monomer-position (gethash next-monomer monomer-positions))
                   (next-residue-index (chem:content-size molecule)))
              (declare (ignore next-residue-index))
-             (chem:put-matter molecule (monomer-position-residue-index monomer-position) next-residue))
+             (chem:put-matter molecule (residue-index monomer-position) next-residue))
            (connect-residues prev-topology 
                                   prev-residue
                                   (source-plug-name out-coupling)
@@ -233,14 +233,15 @@
       (let ((number-of-residues (length (monomers oligomer))))
         (loop for count from 0 below (length (monomers oligomer))
               for monomer = (elt (monomers oligomer) count)
-              do (setf (gethash monomer monomer-positions-accumulator) (make-monomer-position
-                                                            :molecule-index molecule-index
-                                                            :residue-index count)))
+              do (setf (gethash monomer monomer-positions-accumulator)
+                       (make-instance 'monomer-position
+                                      :molecule-index molecule-index
+                                      :residue-index count)))
         (let* ((monomer-position (gethash root-monomer monomer-positions-accumulator))
                (next-residue-index (chem:content-size molecule)))
           (declare (ignore next-residue-index))
           (chem:resize-contents molecule number-of-residues)
-          (chem:put-matter molecule (monomer-position-residue-index monomer-position) root-residue))
+          (chem:put-matter molecule (residue-index monomer-position) root-residue))
         (recursively-build-molecule oligomer
                                     root-monomer
                                     root-topology
@@ -284,7 +285,7 @@
                                                     monomer
                                                     monomer-positions-accumulator))
                                   mp))
-                        (res (chem:content-at molecule (topology:monomer-position-residue-index monpos))))
+                        (res (chem:content-at molecule (topology:residue-index monpos))))
                    (chem:set-property res :label name)))
                (labeled-monomers (oligomer-space oligomer)))
       (values molecule monomer-positions-accumulator))))

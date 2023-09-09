@@ -340,6 +340,29 @@ NVector_sp chem__apply_transform_to_coordinates(NVector_sp destination, NVector_
   return destination;
 };
 
+CL_DOCSTRING(R"dx(Apply the transform matrix to the coordinates in place.)dx");
+DOCGROUP(cando);
+CL_DEFUN
+NVector_sp chem__apply_transform_to_coordinates_in_place(NVector_sp coordinates, const Matrix& transform )
+{
+  Vector3* pos;
+  Vector3* dest;
+  size_t len = coordinates->length();
+  for ( size_t index = 0; index < len; index+=3) {
+//    printf("%s:%d  coordinates[%lu/%lu] -> %lf %lf %lf\n", __FILE__, __LINE__, index, len, (*coordinates)[index],(*coordinates)[index+1],(*coordinates)[index+2]);
+    Vector3 pos;
+    transform.transform_nvector_point(pos.getX(),
+                                      pos.getY(),
+                                      pos.getZ(),
+                                      coordinates,index);
+    (*coordinates)[index+0] = pos.getX();
+    (*coordinates)[index+1] = pos.getY();
+    (*coordinates)[index+2] = pos.getZ();
+// //    printf("%s:%d  destination[%lu/%lu] -> %lf %lf %lf\n", __FILE__, __LINE__, index, len, (*destination)[index],(*destination)[index+1],(*destination)[index+2]);
+  }
+  return coordinates;
+};
+
 
 inline double dist_squared(const Vector3& pos1, const Vector3& pos2)
 {

@@ -83,8 +83,8 @@
          (out-aa (gethash :-amide oofi))
          (psi-n (find-and-clone :n out-aa :-amide oofi))
          (psi-o (find-and-clone :o (topology:internals new-fragment)))
-         (delta-phi (topology:degree-difference (topology:rad-to-deg (topology:dihedral phi-c)) phi-deg))
-         (delta-psi (topology:degree-difference (topology:rad-to-deg (topology:dihedral psi-n)) psi-deg)))
+         (delta-phi (topology:degree-difference (topology:rad-to-deg (topology:dihedral-rad phi-c)) phi-deg))
+         (delta-psi (topology:degree-difference (topology:rad-to-deg (topology:dihedral-rad psi-n)) psi-deg)))
     #+(or)
     (progn
       (format t "---- target phi deg = ~a~%" phi-deg)
@@ -92,11 +92,11 @@
       (format t "before phi = ~a  psi = ~a~%" phi-c psi-n)
       (format t "delta-phi deg = ~a~%" delta-phi)
       (format t "delta-psi deg = ~a~%" delta-psi))
-    (topology:radians-incf (topology:dihedral phi-c) (topology:deg-to-rad delta-phi))
-    (topology:radians-incf (topology:dihedral phi-cb) (topology:deg-to-rad delta-phi))
-    (topology:radians-incf (topology:dihedral phi-ha) (topology:deg-to-rad delta-phi))
-    (topology:radians-incf (topology:dihedral psi-n) (topology:deg-to-rad delta-psi))
-    (topology:radians-incf (topology:dihedral psi-o) (topology:deg-to-rad delta-psi))
+    (topology:radians-incf (topology:dihedral-rad phi-c) (topology:deg-to-rad delta-phi))
+    (topology:radians-incf (topology:dihedral-rad phi-cb) (topology:deg-to-rad delta-phi))
+    (topology:radians-incf (topology:dihedral-rad phi-ha) (topology:deg-to-rad delta-phi))
+    (topology:radians-incf (topology:dihedral-rad psi-n) (topology:deg-to-rad delta-psi))
+    (topology:radians-incf (topology:dihedral-rad psi-o) (topology:deg-to-rad delta-psi))
     #+(or)(format t "after  phi = ~a  psi = ~a~%" phi-c psi-n)
     new-fragment))
 
@@ -138,8 +138,8 @@
          (out-aa (gethash :-amide oofi))
          (psi-n (find-and-clone :n out-aa :-amide oofi))
          (psi-o (find-and-clone :o (topology:internals new-fragment)))
-         (delta-phi (topology:degree-difference (topology:rad-to-deg (topology:dihedral phi-c)) phi-deg))
-         (delta-psi (topology:degree-difference (topology:rad-to-deg (topology:dihedral psi-n)) psi-deg)))
+         (delta-phi (topology:degree-difference (topology:rad-to-deg (topology:dihedral-rad phi-c)) phi-deg))
+         (delta-psi (topology:degree-difference (topology:rad-to-deg (topology:dihedral-rad psi-n)) psi-deg)))
     #+(or)
     (progn
       (format t "---- target phi deg = ~a~%" phi-deg)
@@ -147,11 +147,11 @@
       (format t "before phi = ~a  psi = ~a~%" phi-c psi-n)
       (format t "delta-phi deg = ~a~%" delta-phi)
       (format t "delta-psi deg = ~a~%" delta-psi))
-    (topology:radians-incf (topology:dihedral phi-c) (topology:deg-to-rad delta-phi))
-    (topology:radians-incf (topology:dihedral phi-cb) (topology:deg-to-rad delta-phi))
-    (topology:radians-incf (topology:dihedral phi-ha) (topology:deg-to-rad delta-phi))
-    (topology:radians-incf (topology:dihedral psi-n) (topology:deg-to-rad delta-psi))
-    (topology:radians-incf (topology:dihedral psi-o) (topology:deg-to-rad delta-psi))
+    (topology:radians-incf (topology:dihedral-rad phi-c) (topology:deg-to-rad delta-phi))
+    (topology:radians-incf (topology:dihedral-rad phi-cb) (topology:deg-to-rad delta-phi))
+    (topology:radians-incf (topology:dihedral-rad phi-ha) (topology:deg-to-rad delta-phi))
+    (topology:radians-incf (topology:dihedral-rad psi-n) (topology:deg-to-rad delta-psi))
+    (topology:radians-incf (topology:dihedral-rad psi-o) (topology:deg-to-rad delta-psi))
     #+(or)(format t "after  phi = ~a  psi = ~a~%" phi-c psi-n)
     new-fragment))
 
@@ -159,7 +159,7 @@
   (let ((atom-names (get-dihedral-atom-names to-topology dihedral-name name-to-parent)))
     (when atom-names
       (let* ((internals (mapcar (lambda (name) (find-and-clone name (topology:internals dup-fragment-internals))) atom-names))
-             (current-dihedral (topology:rad-to-deg (topology:dihedral (elt internals 0))))
+             (current-dihedral (topology:rad-to-deg (topology:dihedral-rad (elt internals 0))))
              (delta-deg (topology:angle-sub target-dihedral-deg current-dihedral))
              (new-dihedral (topology:degrees-add current-dihedral delta-deg)))
         #+(or)(format t "maybe-adjust-dihedral current-dihedral ~a ~a ~a delta-deg ~a -> new-dihedral ~a target: ~a~%"
@@ -171,7 +171,7 @@
                 target-dihedral-deg)
         (when (> (abs (topology:angle-sub new-dihedral target-dihedral-deg)) 0.1)
           (error "Bad dihedral calculation ~a vs ~a" new-dihedral target-dihedral-deg))
-        (setf (topology:dihedral (elt internals 0)) new-dihedral)))))
+        (setf (topology:dihedral-rad (elt internals 0)) new-dihedral)))))
 
 (defun lookup-rotamers (rotamers name)
   (let* ((key (cond
@@ -190,8 +190,8 @@
                                            rotamers protein-conformations-map)
   (let* ((from-name (topology:oligomer-monomer-name-for-monomer from-oligomer from-focus-monomer))
          (to-name (topology:oligomer-monomer-name-for-monomer to-oligomer to-focus-monomer))
-         (from-fragments (gethash from-monomer-context (topology:monomer-context-to-fragment-conformations protein-conformations-map)))
-         (to-fragments (gethash to-monomer-context (topology:monomer-context-to-fragment-conformations protein-conformations-map)))
+         (from-fragments (gethash from-monomer-context (topology:monomer-context-to-context-rotamers protein-conformations-map)))
+         (to-fragments (gethash to-monomer-context (topology:monomer-context-to-context-rotamers protein-conformations-map)))
          (new-from-fragment-vector (make-array 256 :adjustable t :fill-pointer 0))
          (new-to-fragment-vector (make-array 256 :adjustable t :fill-pointer 0))
          (from-fragment-template (elt (topology:fragments from-fragments) 0))
@@ -238,10 +238,10 @@
     (values new-from-fragment-vector new-to-fragment-vector indices)))
 
 (defun apply-backbone-rotamers (foldamer rotamers protein-conformations-map)
-  "Loop through every backbone residue and generate fragment-conformations for every pair of phi/psi angles at 10 degree increments"
+  "Loop through every backbone residue and generate context-rotamers for every pair of phi/psi angles at 10 degree increments"
   (let ((context-pairs (foldamer:all-matching-monomer-contexts foldamer))
-        (monomer-context-to-fragment-conformations (make-hash-table))
-        (fragment-context-connections (make-fragment-context-connections)))
+        (monomer-context-to-context-rotamers (make-hash-table))
+        (rotamer-context-connections (make-rotamer-context-connections)))
     (loop for monomer-contexts in context-pairs
           for from-monomer-context = (car monomer-contexts)
           for to-monomer-context = (cdr monomer-contexts)
@@ -257,15 +257,15 @@
                           (adjust-backbone-dependent-rotamers from-monomer-context from-oligomer from-focus-monomer
                                                               to-monomer-context to-oligomer to-focus-monomer
                                                               rotamers protein-conformations-map)
-                        ;; set the monomer-context-to-fragment-conformations for the;
+                        ;; set the monomer-context-to-context-rotamers for the;
                         ;; from-monomer-context -> from-fragments
                         ;; to-monomer-context -> to-fragments
-                        ;; and the fragment-context-connections object
+                        ;; and the rotamer-context-connections object
                         ;; (cons from-monomer-context to-monomer-context) -> indices
-                        (setf (gethash from-monomer-context monomer-context-to-fragment-conformations) from-fragments
-                              (gethash to-monomer-context monomer-context-to-fragment-conformations) to-fragments
+                        (setf (gethash from-monomer-context monomer-context-to-context-rotamers) from-fragments
+                              (gethash to-monomer-context monomer-context-to-context-rotamers) to-fragments
                               )
-                        (set-fragment-context-connections fragment-context-connections from-monomer-context to-monomer-context indices)
+                        (set-rotamer-context-connections rotamer-context-connections from-monomer-context to-monomer-context indices)
                         ))
                      ((string= (string from-name) "AA")
                       (let ((to-name (topology:oligomer-monomer-name-for-monomer to-oligomer to-focus-monomer)))
@@ -280,20 +280,20 @@
                       (break "check from-focus-monomer ~a to-focus-monomer ~a" from-focus-monomer to-focus-monomer))
                      ))
                  )))
-    (make-instance 'topology:matched-fragment-conformations-map
-                   :monomer-context-to-fragment-conformations monomer-context-to-fragment-conformations
-                   :fragment-context-connections fragment-context-connections)
+    (make-instance 'topology:connected-rotamers-map
+                   :monomer-context-to-context-rotamers monomer-context-to-context-rotamers
+                   :rotamer-context-connections rotamer-context-connections)
     ))
 
 
 (defun extract-conformations-apply-rotamers (&key rotamers (path foldamer::*conformations-path*) foldamer (verbose t))
   (format t "Extracting conformations for the path: ~a~%" path)
-  (let ((protein-conformations-map (foldamer:extract-fragment-conformations-map "./")))
+  (let ((protein-conformations-map (foldamer:extract-context-rotamers-map "./")))
     (format t "Matching fragment conformations~%")
-    #+(or)(let ((matched (protein:optimize-fragment-conformations-map protein-conformations-map protein verbose)))
+    #+(or)(let ((matched (protein:optimize-context-rotamers-map protein-conformations-map protein verbose)))
       (loop while (> (protein-report-conformations matched) 0)
             do (format t "Eliminating missing matches~%")
-            do (setf matched (protein-eliminate-missing-fragment-context-connections matched protein)))
+            do (setf matched (protein-eliminate-missing-rotamer-context-connections matched protein)))
       (format t "Saving ~a~%" path)
       (save-protein-conformations-map matched path)
       (values matched protein-conformations-map)

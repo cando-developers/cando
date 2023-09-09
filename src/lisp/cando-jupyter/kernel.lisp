@@ -1,5 +1,9 @@
 (in-package :cando-jupyter)
 
+;; Create a :cando-jupyter feature
+(eval-when (:load-toplevel :execute)
+  (push :cando-jupyter *features*))
+
 (defvar +display-name+ "Cando")
 (defvar +language+ "cando")
 
