@@ -251,6 +251,9 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t))))
 
+(defclass rotamer-shape-connections ()
+  ())
+
 (defclass sidechain-rotamer-shape-connections ()
   ((fmap :initform (make-hash-table :test 'equal)
          :initarg :fmap
