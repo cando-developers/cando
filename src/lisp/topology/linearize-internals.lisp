@@ -1,5 +1,46 @@
 (in-package :topology)
 
+
+#|
+
+Linearize a data structure that looks like the following JSON file ...
+
+{
+    "foldamer-name" : "spiroligomers",
+    "rotamers" : {
+        [
+            "csar_pro4ss" : {
+                "focus-monomer-name" : "csar",
+                "rotamers" : [ ; <- (A)
+                               {
+                                   "index" : 123,
+                                   "energy" : 1.0,
+                                   "probability" : 2.0,
+                                   "internals" : [ 1.09, 120.0, 60.0, ... ]
+                               },
+                               ...
+                             ]
+            }
+            ...
+        ],
+        ...
+    },
+    "backbone-dependent-rotamer-indices" : {
+        "csar_pro4ss" : [
+            [ 180, 150, 1, 2, 9, 20, 34, ... ], ; <- first two numbers are dihedral angle key, remaining are indices into (A)
+            [ 180, 160, 1, 3, 5, ... ],
+            [ 170, 160, 0, 3, 5, ... ],
+            ...
+        ],
+        ...
+    }
+}
+
+
+|#
+
+
+
 (defclass linearized-matched-fragment-conformations-holder ()
   ((internals-values :initarg :internals-values :accessor internals-values)
    (internals-types :initarg :internals-types :accessor internals-types)
@@ -97,6 +138,8 @@ monomer-context-index indexes into ...
 
 (defmacro debug-linearize-decf (limit)
   `(decf ,limit))
+
+
 
 (defun create-linearized-matched-fragment-conformations-holder (matched-fragment-conformations-map &key (debug-limit 0))
   (let ((internals-values (make-array (* 1024 1024 16) :element-type 'single-float :adjustable t :fill-pointer 0))
@@ -235,13 +278,13 @@ monomer-context-index indexes into ...
                    (trainer-index-vector trainer-index-vector)
                    (fragment-conformations-start-vector fragment-conformations-start-vector)
                    (fragment-conformations-count-vector fragment-conformations-count-vector)
-                   (fragment-match-fragment-conformations-index-vector fragment-match-fragment-conformations-index-vector )
+                   (fragment-match-fragment-conformations-index-vector fragment-match-fragment-conformations-index-vector ) ; changed
                    (fragment-match-fragment-conformations-start-vector fragment-match-fragment-conformations-start-vector )
                    (fragment-match-fragment-conformations-count-vector fragment-match-fragment-conformations-count-vector )
                    (fragment-match-start-vector  fragment-match-start-vector )
                    (fragment-match-count-vector  fragment-match-count-vector )
-                   (fragment-match-key-from-vector  fragment-match-key-from-vector )
-                   (fragment-match-key-to-vector fragment-match-key-to-vector)
+                   (fragment-match-key-from-vector  fragment-match-key-from-vector )  ; changed
+                   (fragment-match-key-to-vector fragment-match-key-to-vector)        ; changed
                    )
       linearized-fragment-conformations-holder
     (static-vectors:with-static-vectors ((static-internals-values (length internals-values)
