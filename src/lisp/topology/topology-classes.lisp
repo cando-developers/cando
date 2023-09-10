@@ -20,9 +20,6 @@
 
 (cando.serialize:make-class-save-load constitution-bond)
 
-#+(or)(defclass constitution-atoms ()
-  ((atoms :initarg :atoms :accessor atoms)))
-
 #+(or)(cando.serialize:make-class-save-load constitution-atoms)
 
 (defclass constitution ()
@@ -322,6 +319,23 @@
              (when (in-plug-name-p plug-name)
                (return-from has-in-coupling-p t)))
            (couplings monomer)))
+
+(defun in-coupling-plug-name (monomer)
+  (maphash (lambda (plug-name coupling)
+             (declare (ignore coupling))
+             (when (in-plug-name-p plug-name)
+               (return-from in-coupling-plug-name plug-name)))
+           (couplings monomer))
+  nil)
+
+(defun out-coupling-plug-names (monomer)
+  (let ((out-coupling-plug-names nil))
+    (maphash (lambda (plug-name coupling)
+               (declare (ignore coupling))
+               (when (not (in-plug-name-p plug-name))
+                 (push plug-name out-coupling-plug-names)))
+             (couplings monomer))
+    out-coupling-plug-names))
 
 (defun monomer-plug-named (monomer plug-name)
   (gethash plug-name (couplings monomer)))

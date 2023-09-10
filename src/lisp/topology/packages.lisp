@@ -81,8 +81,8 @@
    #:seen-fragment-internals
    #:seen-index
    #:bad-fragment-internals
-   #:fragment-conformations
-   #:merge-fragment-conformations
+   #:context-rotamers
+   #:merge-context-rotamers
    #:fragment-internals
    #:out-of-focus-internal
    #:out-of-focus-internals
@@ -93,14 +93,14 @@
    #:fragments
    #:internals
    #:bond
-   #:angle
-   #:dihedral
+   #:angle-rad
+   #:dihedral-rad
    #:foldamer-monomer-context
-   #:save-clusterable-fragment-conformations
-   #:load-clusterable-fragment-conformations
-   #:fragment-conformations
-   #:fragment-conformations-map
-   #:monomer-context-to-fragment-conformations
+   #:save-clusterable-context-rotamers
+   #:load-clusterable-context-rotamers
+   #:context-rotamers
+   #:context-rotamers-map
+   #:monomer-context-to-context-rotamers
    #:dump-fragment-internals
    #:index
    #:next-index
@@ -130,8 +130,8 @@
    #:other-monomer
    #:goto-sequence
    #:monomer-positions
-   #:monomer-position-molecule-index
-   #:monomer-position-residue-index
+   #:molecule-index
+   #:residue-index
    #:residue
    #:copy-externals
    #:ataggregate
@@ -155,7 +155,7 @@
    #:in-plug-name-p
    #:out-plug-name-p
    #:coupling-name
-   
+
    ;;;
    #:update-joint-tree-internal-coordinates
    #:build-all-atom-tree-external-coordinates
@@ -164,12 +164,18 @@
    #:restraints
 
    #:missing-fragment-match
-   #:matched-fragment-conformations-map
-   #:fragment-matches
+   #:connected-rotamers-map
+   #:rotamer-context-connections
+   #:make-rotamer-context-connections
+   #:set-rotamer-context-connections
+   #:get-rotamer-context-connections
+   #:map-rotamer-context-connections
+   #:rotamer-context-connections-count
+
    #:oligomer-monomer-name-at-index
    #:oligomer-monomer-name-for-monomer
-   #:missing-fragment-matches-count
-   #:matched-fragment-conformations-summary
+   #:missing-rotamer-context-connections-count
+   #:matched-context-rotamers-summary
 
    #:fragment-match-key-before-monomer-context-index
    #:fragment-match-key-after-monomer-context-index
@@ -177,7 +183,7 @@
    #:missing-fragment-match-key-after-monomer-context-index
    #:monomer-contexts-vector
    #:focus-monomer-name
-   
+
    #:build-shapes
    #:monomer-shapes
    #:monomer-shape-vector
@@ -210,10 +216,10 @@
    #:monomer-indices
    #:internals-values
    #:internals-types
-   #:save-linearized-matched-fragment-conformations-holder
-   #:create-linearized-matched-fragment-conformations-holder
-   #:linearized-matched-fragment-conformations-map
-   #:read-linearized-matched-fragment-conformations-holder
+   #:save-linearized-matched-context-rotamers-holder
+   #:create-linearized-matched-context-rotamers-holder
+   #:linearized-connected-rotamers-map
+   #:read-linearized-matched-context-rotamers-holder
    #:constitution-atom-named
    #:constitution-atom-names-with-dihedrals
    #:monomer-topology
@@ -225,22 +231,55 @@
    #:build-all-molecules
    #:energy
    #:monomer-context
-   #:clusterable-fragment-conformations
+   #:clusterable-context-rotamers
    #:fill-internals-from-oligomer-shape
    #:monomer-shape-map
    #:in-monomers
    #:out-monomers
    #:fragment-conformation-index
-   #:load-linearized-fragment-conformations
-   #:linearize-and-save-matched-fragment-conformations-map
-   #:load-linearized-matched-fragment-conformations-map
+   #:load-linearized-context-rotamers
+   #:linearize-and-save-connected-rotamers-map
+   #:load-linearized-connected-rotamers-map
    #:rotor3
    #:translation
    #:monomer-shape
    #:set-to-closest-matching-fragment-conformation-index
    #:coordinates
    #:joint-with-name
-   #:residue-properties))
+   #:residue-properties
+   #:merge-clusterable-context-rotamers
+   #:foldamer-name
+   #:monomer-on-other-side
+   #:in-coupling-plug-name
+   #:make-shape-info
+   #:foldamer
+   #:shape-info
+   #:shape-key
+   #:shape-kind
+   #:keys
+   #:kind
+   #:kind-keys
+   #:monomer-shape-build-order
+   #:assign-monomer-shapes
+   #:lookup-allowed-rotamers
+   #:make-rotamer-shape-connections
+   #:lookup-rotamer-context-connections
+   #:lookup-rotamer-shape-connections
+   #:out-coupling-plug-names
+   #:append-rotamer-shape-connections
+   #:bin-dihedral
+   #:shape-key-dihedral-name-p
+   #:*phi*
+   #:*phi-1*
+   #:*psi*
+   #:*psi-1*
+   #:+phi+
+   #:+phi-1+
+   #:+psi+
+   #:+psi-1+
+   #:rotamer-indices
+   #:make-backbone-rotamer-shape-connections
+   #:make-sidechain-rotamer-shape-connections))
 
   
 (defpackage #:topology.dag

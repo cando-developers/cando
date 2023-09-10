@@ -12,6 +12,10 @@
   (setf *default-pane* pane)
   (values))
 
+;; push the cando-widgets feature
+(eval-when (:load-toplevel :execute)
+  (push :cando-widgets *features*))
+
 (defun show (object &rest rest &key (pane *default-pane*) &allow-other-keys)
   "Display a residue, molecule, aggregate or a trajectory in a Jupyter notebook"
   (if pane

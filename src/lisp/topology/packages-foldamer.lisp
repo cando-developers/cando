@@ -18,5 +18,5 @@
    #:calculate-files
    #:verify-foldamer-describes-oligomer-space
    #:valid-trainer-contexts
-   #:assemble-fragment-conformations-map
+   #:assemble-context-rotamers-map
    ))

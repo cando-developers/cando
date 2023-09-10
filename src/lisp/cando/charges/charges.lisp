@@ -62,7 +62,7 @@ charge."
                  (mapc #'constrain-residue-charges aggs)
                  (loop for agg in aggs
                        for mol-res = (gethash focus-monomer monomer-to-mol-res-ids)
-                       for residue-index = (topology:monomer-position-residue-index mol-res)
+                       for residue-index = (topology:residue-index mol-res)
                        for residue = (chem:content-at (chem:content-at agg 0) residue-index)
                        do (push (residue-charges residue) residue-charges)))))
     residue-charges))

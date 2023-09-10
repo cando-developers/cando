@@ -73,24 +73,24 @@
 
 (defclass bonded-internal (internal)
   ((bond :initarg :bond :accessor bond)
-   (angle :initarg :angle :accessor angle)
-   (dihedral :initarg :dihedral :accessor dihedral)))
+   (angle-rad :initarg :angle-rad :accessor angle-rad)
+   (dihedral-rad :initarg :dihedral-rad :accessor dihedral-rad)))
 
 (defmethod copy-internal ((internal bonded-internal))
-  (when (ext:float-nan-p (dihedral internal))
+  (when (ext:float-nan-p (dihedral-rad internal))
     (error "Found a NAN dihedral"))
   (make-instance 'bonded-internal
                  :name (name internal)
                  :bond (bond internal)
-                 :angle (angle internal)
-                 :dihedral (dihedral internal)))
+                 :angle-rad (angle-rad internal)
+                 :dihedral-rad (dihedral-rad internal)))
 
 (cando.serialize:make-class-save-load
  bonded-internal
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a :d ~5,2f" (name obj) (rad-to-deg (dihedral obj))))))
+     (format stream "~a :d ~5,2f" (name obj) (rad-to-deg (dihedral-rad obj))))))
 
 (defclass complex-bonded-internal (bonded-internal)
   ())
@@ -105,10 +105,11 @@
 (defclass fragment-internals (serial:serializable)
   ((trainer-index :initarg :trainer-index :accessor trainer-index)
    (probability :initform 1.0s0 :initarg :probability :accessor probability)
-   (internals :initarg :internals :accessor internals)
    (energy :initform 0.0s0 :initarg :energy :accessor energy)
-   (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
+   (internals :initarg :internals :accessor internals)
+   (shape-key-values :initform nil :initarg :shape-key-values :accessor shape-key-values)
    (coordinates :initarg :coordinates :accessor coordinates)
+   (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
    ))
 
 (cando.serialize:make-class-save-load
@@ -118,12 +119,19 @@
    (let ((*print-pretty* nil))
    (print-unreadable-object (obj stream :type t)
      (let ((internals (coerce (subseq (internals obj) 0 (min (length (internals obj)) 4) ) 'list)))
-       (format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral x)))) internals )))))))
+       (format stream ":trainer-index ~a :energy ~5,2f"
+               (trainer-index obj)
+               (energy obj)
+               )
+       #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals )))))))
 
 (defun copy-fragment-internals (fragment-internals)
   (make-instance 'fragment-internals
                  :trainer-index (trainer-index fragment-internals)
+                 :probability (probability fragment-internals)
+                 :energy (energy fragment-internals)
                  :internals (copy-seq (internals fragment-internals))
+                 :shape-key-values (copy-seq (shape-key-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
                  :out-of-focus-internals (let ((ht (make-hash-table)))
                                            (maphash (lambda (key value)
@@ -138,7 +146,7 @@
            when (eq name-or-plug-names (name internal))
              do (cond
                   ((typep internal 'bonded-internal)
-                   (return (list (topology:dihedral internal))))
+                   (return (list (topology:dihedral-rad internal))))
                   (t (return (list 0.0))))
            finally (error "Could not find internal with atom-name ~a" name-or-plug-names)))
     ((consp name-or-plug-names)
@@ -147,7 +155,7 @@
        (loop for name in (cdr name-or-plug-names)
              collect (loop for internal across out-of-focus-internals
                            when (eq (name internal) name)
-                             do (return (topology:dihedral internal))))))
+                             do (return (topology:dihedral-rad internal))))))
     (t (error "Handle arg ~a" name-or-plug-names))))
 
 (defun cluster-dihedral-vector (fragment-internals names)
@@ -179,98 +187,186 @@
     ))
 
 
-(defclass fragment-conformations (serial:serializable)
+(defclass context-rotamers (serial:serializable)
   ((focus-monomer-name :initarg :focus-monomer-name :accessor focus-monomer-name)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
    (next-index :initform 0 :initarg :next-index :accessor next-index)
    (fragments :initform (make-array 16 :adjustable t :fill-pointer 0) :initarg :fragments :accessor fragments)))
 
 (cando.serialize:make-class-save-load
- fragment-conformations
+ context-rotamers
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
      (format stream "~s number-of-fragments ~a" (monomer-context obj) (length (fragments obj))))))
 
-(defmethod fragment-conformations ((obj fragment-conformations))
+(defmethod context-rotamers ((obj context-rotamers))
   obj)
 
-(defun merge-fragment-conformations (fragment-conformations-list)
-  (unless (> (length fragment-conformations-list) 0)
-    (error "There must be at least one fragment-conformations in list"))
+(defun merge-context-rotamers (context-rotamers-list)
+  (unless (> (length context-rotamers-list) 0)
+    (error "There must be at least one context-rotamers in list"))
   (let ((unsorted-fragment-internals (make-array 1024 :adjustable t :fill-pointer 0))
         (max-next-index 0))
-    (loop for one in fragment-conformations-list
+    (loop for one in context-rotamers-list
           do (setf max-next-index (max max-next-index (next-index one)))
           do (loop for frag-int across (fragments one)
                    do (vector-push-extend frag-int unsorted-fragment-internals)))
     (let ((new-fragment-internals (sort unsorted-fragment-internals #'< :key #'trainer-index)))
-      (make-instance 'fragment-conformations
-                     :focus-monomer-name (focus-monomer-name (first fragment-conformations-list))
-                     :monomer-context (monomer-context (first fragment-conformations-list))
+      (make-instance 'context-rotamers
+                     :focus-monomer-name (focus-monomer-name (first context-rotamers-list))
+                     :monomer-context (monomer-context (first context-rotamers-list))
                      :next-index max-next-index
                      :fragments new-fragment-internals))))
 
-(defclass clusterable-fragment-conformations (serial:serializable)
-  ((cluster-dihedral-names :initarg :cluster-dihedral-names :accessor cluster-dihedral-names)
-   (fragment-conformations :initarg :fragment-conformations :accessor fragment-conformations)))
+(defclass clusterable-context-rotamers (serial:serializable)
+  ((foldamer-name :initform :spiroligomer
+                   :initarg :foldamer-name :accessor foldamer-name)
+   (cluster-dihedral-names :initarg :cluster-dihedral-names :accessor cluster-dihedral-names)
+   (context-rotamers :initarg :context-rotamers :accessor context-rotamers)))
 
-(cando.serialize:make-class-save-load clusterable-fragment-conformations)
+(cando.serialize:make-class-save-load clusterable-context-rotamers)
 
-(defclass fragment-conformations-map (serial:serializable)
-  ((monomer-context-to-fragment-conformations :initform (make-hash-table :test 'equal)
-                                              :initarg :monomer-context-to-fragment-conformations
-                                              :accessor monomer-context-to-fragment-conformations)))
+(defun merge-clusterable-context-rotamers (clusterable-context-rotamers-list)
+  "Merge a list of clusterable-context-rotamers.
+No checking is done to make sure that the list of clusterable-context-rotamers are all compatible"
+  (let* ((context-rotamers-list (loop for one in clusterable-context-rotamers-list
+                                           collect (context-rotamers one)))
+        (context-rotamers (merge-context-rotamers context-rotamers-list))
+         (dihedral-names (cluster-dihedral-names (first clusterable-context-rotamers-list)))
+         (foldamer-name (foldamer-name (first clusterable-context-rotamers-list)))
+         )
+    (make-instance 'clusterable-context-rotamers
+                   :foldamer-name foldamer-name
+                   :cluster-dihedral-names dihedral-names
+                   :context-rotamers context-rotamers)))
 
-(cando.serialize:make-class-save-load fragment-conformations-map
+(defclass context-rotamers-map (serial:serializable)
+  ((monomer-context-to-context-rotamers :initform (make-hash-table :test 'equal)
+                                              :initarg :monomer-context-to-context-rotamers
+                                              :accessor monomer-context-to-context-rotamers)))
+
+(cando.serialize:make-class-save-load context-rotamers-map
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t))))
 
-(defclass matched-fragment-conformations-map (fragment-conformations-map)
-  ((fragment-matches :initform (make-hash-table :test 'equal)
-                     :initarg :fragment-matches
-                     :accessor fragment-matches)))
+(defclass rotamer-shape-connections ()
+  ())
+
+(defclass sidechain-rotamer-shape-connections ()
+  ((fmap :initform (make-hash-table :test 'equal)
+         :initarg :fmap
+         :accessor fmap)))
 
 (cando.serialize:make-class-save-load
- matched-fragment-conformations-map
+ sidechain-rotamer-shape-connections)
+
+(defun make-sidechain-rotamer-shape-connections ()
+  (make-instance 'sidechain-rotamer-shape-connections))
+
+(defclass backbone-rotamer-shape-connections (rotamer-shape-connections)
+  ((rotamer-indices :initform (make-array 16 :element-type 'ext:byte32 :fill-pointer 0 :adjustable t)
+         :initarg :rotamer-indices
+         :accessor rotamer-indices)))
+
+(cando.serialize:make-class-save-load
+ backbone-rotamer-shape-connections)
+
+(defun make-backbone-rotamer-shape-connections ()
+  (make-instance 'backbone-rotamer-shape-connections))
+
+(defmethod lookup-rotamer-shape-connections ((fsc sidechain-rotamer-shape-connections) key)
+  (gethash key (fmap fsc)))
+
+(defmethod lookup-rotamer-shape-connections ((fsc backbone-rotamer-shape-connections) key)
+  (rotamer-indices fsc))
+
+(defun append-rotamer-shape-connections (rsc key index)
+  (let ((allowed-rotamer-vector (gethash key (fmap rsc))))
+    (unless allowed-rotamer-vector
+      (setf allowed-rotamer-vector (make-array 16 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
+      (setf (gethash key (fmap rsc)) allowed-rotamer-vector))
+    (vector-push-extend index allowed-rotamer-vector)))
+
+(defclass rotamer-context-connections ()
+  ((fmap :initform (make-hash-table :test 'eq)
+         :initarg :fmap
+         :accessor fmap)))
+
+(cando.serialize:make-class-save-load
+ rotamer-context-connections)
+
+(defun make-rotamer-context-connections ()
+  (make-instance 'rotamer-context-connections))
+
+(defun map-rotamer-context-connections (op fcc)
+  (maphash (lambda (key value)
+             (let ((from (car key))
+                   (to (cdr key)))
+               (funcall op from to value)))
+           (fmap fcc)))
+
+(defun rotamer-context-connections-count (fcc)
+  (hash-table-count (fmap fcc)))
+
+(defun set-rotamer-context-connections (fcc from to value)
+  (check-type value rotamer-shape-connections)
+  (setf (gethash (cons from to) (fmap fcc)) value))
+
+(defun lookup-rotamer-context-connections (fcc key)
+  (gethash key (fmap fcc)))
+
+(defun set-rotamer-context-connections (rcc key value)
+  (setf (gethash key (fmap rcc)) value))
+
+(defclass connected-rotamers-map (context-rotamers-map)
+  ((rotamer-context-connections :initform (make-rotamer-context-connections)
+                                :initarg :rotamer-context-connections
+                                :accessor rotamer-context-connections)))
+
+(cando.serialize:make-class-save-load
+ connected-rotamers-map
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream " length-fragment-matches ~d length-fragments ~d" (hash-table-count (fragment-matches obj))
-             (hash-table-count (monomer-context-to-fragment-conformations obj))))))
+     (format stream " rotamer-context-connections-count ~d length-fragments ~d" (rotamer-context-connections-count (rotamer-context-connections obj))
+             (hash-table-count (monomer-context-to-context-rotamers obj))))))
 
-(defun matched-fragment-conformations-summary (matched-fragment-conformations-map)
-  (let ((total-fragment-conformations 0)
-        (matching-fragment-conformations 0)
-        (missing-fragment-conformations 0))
+(defun matched-context-rotamers-summary (connected-rotamers-map)
+  (let ((total-context-rotamers 0)
+        (matching-context-rotamers 0)
+        (missing-context-rotamers 0))
     (maphash (lambda (key value)
                (declare (ignore key))
-               (incf total-fragment-conformations (length (fragments value))))
-             (monomer-context-to-fragment-conformations matched-fragment-conformations-map))
-    (maphash (lambda (key value)
-               (declare (ignore key))
-               (incf matching-fragment-conformations (length value)))
-             (fragment-matches matched-fragment-conformations-map))
-    (maphash (lambda (key value)
-               (declare (ignore key))
-               (loop for val across value
-                     when (= (length val) 0)
-                       do (incf missing-fragment-conformations)))
-             (fragment-matches matched-fragment-conformations-map))
+               (incf total-context-rotamers (length (fragments value))))
+             (monomer-context-to-context-rotamers connected-rotamers-map))
+    (map-rotamer-context-connections
+     (lambda (from-monomer-context to-monomer-context value)
+       (declare (ignore from-monomer-context to-monomer-context))
+       (incf matching-context-rotamers (length value)))
+     (rotamer-context-connections connected-rotamers-map))
+    (map-rotamer-context-connections
+     (lambda (from-monomer-context to-monomer-context value)
+       (declare (ignore from-monomer-context to-monomer-context))
+       (loop for val across value
+             when (= (length val) 0)
+               do (incf missing-context-rotamers)))
+     (rotamer-context-connections connected-rotamers-map))
     (let ((missing-monomer-contexts nil))
-      (maphash (lambda (monomer-context fragment-conformations)
-                 (declare (ignore fragment-conformations))
+      (maphash (lambda (monomer-context context-rotamers)
+                 (declare (ignore context-rotamers))
                  (block inner-search
-                   (maphash (lambda (monomer-context-pair allowed-fragment-indices)
-                              (declare (ignore allowed-fragment-indices))
-                              (when (or (string= (car monomer-context-pair) monomer-context)
-                                        (string= (cdr monomer-context-pair) monomer-context))
-                                (return-from inner-search nil)))
-                            (fragment-matches matched-fragment-conformations-map))
+                   (map-rotamer-context-connections
+                    (lambda (from-monomer-context to-monomer-context allowed-fragment-indices)
+                      (declare (ignore allowed-fragment-indices))
+                      (when (or (string= from-monomer-context monomer-context)
+                                (string= to-monomer-context monomer-context))
+                        (return-from inner-search nil)))
+                    (rotamer-context-connections connected-rotamers-map))
                    (push monomer-context missing-monomer-contexts)))
-               (monomer-context-to-fragment-conformations matched-fragment-conformations-map))
-      (values total-fragment-conformations matching-fragment-conformations missing-fragment-conformations missing-monomer-contexts))))
+               (monomer-context-to-context-rotamers connected-rotamers-map))
+      (values total-context-rotamers matching-context-rotamers missing-context-rotamers missing-monomer-contexts))))
 
 (defparameter *dihedral-threshold* 20.0)
 (defparameter *dihedral-rms-threshold* 15.0)
@@ -280,8 +376,8 @@
         for frag2-int across (internals frag2)
         do (when (and (typep frag1-int 'bonded-internal)
                       (typep frag2-int 'bonded-internal))
-             (let* ((dihedral-frag1 (rad-to-deg (dihedral frag1-int)))
-                    (dihedral-frag2 (rad-to-deg (dihedral frag2-int)))
+             (let* ((dihedral-frag1 (rad-to-deg (dihedral-rad frag1-int)))
+                    (dihedral-frag2 (rad-to-deg (dihedral-rad frag2-int)))
                     (aa (degree-difference dihedral-frag1 dihedral-frag2))
                     (different-p (> (abs aa) *dihedral-threshold*)))
                (when different-p
@@ -295,8 +391,8 @@
         for frag2-int across (internals frag2)
         do (when (and (typep frag1-int 'bonded-internal)
                       (typep frag2-int 'bonded-internal))
-             (let* ((dihedral-frag1 (rad-to-deg (dihedral frag1-int)))
-                    (dihedral-frag2 (rad-to-deg (dihedral frag2-int)))
+             (let* ((dihedral-frag1 (rad-to-deg (dihedral-rad frag1-int)))
+                    (dihedral-frag2 (rad-to-deg (dihedral-rad frag2-int)))
                     (aa (degree-difference dihedral-frag1 dihedral-frag2)))
                (incf sum-of-squares (* aa aa))
                (incf num-squares))))
@@ -306,8 +402,8 @@
 (defun rms-internals-are-different-p (frag1 frag2)
   (> (dihedrals-rms frag1 frag2) *dihedral-rms-threshold*))
 
-(defun seen-fragment-internals (fragment-conformations fragment-internals)
-  (loop for seen-frag across (fragments fragment-conformations)
+(defun seen-fragment-internals (context-rotamers fragment-internals)
+  (loop for seen-frag across (fragments context-rotamers)
         unless (rms-internals-are-different-p seen-frag fragment-internals)
           do (progn
                (return-from seen-fragment-internals (trainer-index seen-frag))))
@@ -327,10 +423,10 @@
         do (setf previous-internal internal))
   nil)
 
-(defun save-clusterable-fragment-conformations (clusterable-fragment-conformations filename)
-  (cando.serialize:save-cando clusterable-fragment-conformations filename))
+(defun save-clusterable-context-rotamers (clusterable-context-rotamers filename)
+  (cando.serialize:save-cando clusterable-context-rotamers filename))
 
-(defun load-clusterable-fragment-conformations (filename)
+(defun load-clusterable-context-rotamers (filename)
   (cando.serialize:load-cando filename))
 
 (defun dump-fragment-internals (fragment-internals finternals)
@@ -345,14 +441,14 @@
                 (format finternals "complex-bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
                         (topology:name internal)
                         (topology:bond internal)
-                        (to-deg (topology:angle internal))
-                        (to-deg (topology:dihedral internal))))
+                        (to-deg (topology:angle-rad internal))
+                        (to-deg (topology:dihedral-rad internal))))
                ((typep internal 'topology:bonded-internal)
                 (format finternals "bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
                         (topology:name internal)
                         (topology:bond internal)
-                        (to-deg (topology:angle internal))
-                        (to-deg (topology:dihedral internal))))
+                        (to-deg (topology:angle-rad internal))
+                        (to-deg (topology:dihedral-rad internal))))
                ))
     (format finternals "end-conformation~%")
     (let ((unique-internals (let (unique-internals)
@@ -371,14 +467,14 @@
                              (format finternals "complex-bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
                                      (topology:name internal)
                                      (topology:bond internal)
-                                     (to-deg (topology:angle internal))
-                                     (to-deg (topology:dihedral internal))))
+                                     (to-deg (topology:angle-rad internal))
+                                     (to-deg (topology:dihedral-rad internal))))
                             ((typep internal 'topology:bonded-internal)
                              (format finternals "bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
                                      (topology:name internal)
                                      (topology:bond internal)
-                                     (to-deg (topology:angle internal))
-                                     (to-deg (topology:dihedral internal))))
+                                     (to-deg (topology:angle-rad internal))
+                                     (to-deg (topology:dihedral-rad internal))))
                             )))))))
 
 
@@ -400,7 +496,7 @@
 
 (defmethod extract-bond-angle-rad-dihedral-rad ((internal bonded-internal))
   (break "Check that internal angles are in radians")
-  (values (bond internal) (angle internal) (dihedral internal)))
+  (values (bond internal) (angle-rad internal) (dihedral-rad internal)))
 
 (defgeneric apply-fragment-internals-to-atresidue (fragment-internals atresidue))
 
