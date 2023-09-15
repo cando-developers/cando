@@ -279,7 +279,11 @@
    #:+psi-1+
    #:rotamer-indices
    #:make-backbone-rotamer-shape-connections
-   #:make-sidechain-rotamer-shape-connections))
+   #:make-sidechain-rotamer-shape-connections
+   #:assign-backbone-allowed-rotamers
+   #:assign-backbone-random-rotamer-indices
+   #:allowed-rotamer-indices
+   #:assign-backbone-shape-keys))
 
   
 (defpackage #:topology.dag

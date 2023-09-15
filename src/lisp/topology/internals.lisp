@@ -255,12 +255,16 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   ())
 
 (defclass sidechain-rotamer-shape-connections ()
-  ((fmap :initform (make-hash-table :test 'equal)
-         :initarg :fmap
-         :accessor fmap)))
+  ((phi-psi-map :initform (make-hash-table :test 'equal)
+         :initarg :phi-psi-map
+         :accessor phi-psi-map)))
 
 (cando.serialize:make-class-save-load
- sidechain-rotamer-shape-connections)
+ sidechain-rotamer-shape-connections
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (hash-table-count (phi-psi-map obj))))))
 
 (defun make-sidechain-rotamer-shape-connections ()
   (make-instance 'sidechain-rotamer-shape-connections))
@@ -271,22 +275,28 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
          :accessor rotamer-indices)))
 
 (cando.serialize:make-class-save-load
- backbone-rotamer-shape-connections)
+ backbone-rotamer-shape-connections
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (length (rotamer-indices obj))))))
 
-(defun make-backbone-rotamer-shape-connections ()
-  (make-instance 'backbone-rotamer-shape-connections))
+(defun make-backbone-rotamer-shape-connections (&optional (rotamer-indices nil rotamer-indices-p))
+  (if rotamer-indices-p
+      (make-instance 'backbone-rotamer-shape-connections :rotamer-indices rotamer-indices)
+      (make-instance 'backbone-rotamer-shape-connections)))
 
 (defmethod lookup-rotamer-shape-connections ((fsc sidechain-rotamer-shape-connections) key)
-  (gethash key (fmap fsc)))
+  (gethash key (phi-psi-map fsc)))
 
 (defmethod lookup-rotamer-shape-connections ((fsc backbone-rotamer-shape-connections) key)
   (rotamer-indices fsc))
 
 (defun append-rotamer-shape-connections (rsc key index)
-  (let ((allowed-rotamer-vector (gethash key (fmap rsc))))
+  (let ((allowed-rotamer-vector (gethash key (phi-psi-map rsc))))
     (unless allowed-rotamer-vector
       (setf allowed-rotamer-vector (make-array 16 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
-      (setf (gethash key (fmap rsc)) allowed-rotamer-vector))
+      (setf (gethash key (phi-psi-map rsc)) allowed-rotamer-vector))
     (vector-push-extend index allowed-rotamer-vector)))
 
 (defclass rotamer-context-connections ()
@@ -309,10 +319,6 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 
 (defun rotamer-context-connections-count (fcc)
   (hash-table-count (fmap fcc)))
-
-(defun set-rotamer-context-connections (fcc from to value)
-  (check-type value rotamer-shape-connections)
-  (setf (gethash (cons from to) (fmap fcc)) value))
 
 (defun lookup-rotamer-context-connections (fcc key)
   (gethash key (fmap fcc)))
