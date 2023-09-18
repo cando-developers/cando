@@ -283,7 +283,17 @@
    #:assign-backbone-allowed-rotamers
    #:assign-backbone-random-rotamer-indices
    #:allowed-rotamer-indices
-   #:assign-backbone-shape-keys))
+   #:assign-backbone-shape-keys
+   #:focus-monomer
+   #:focused-assembler-atresidue
+   #:assembler-atresidue
+   #:make-focused-assembler
+   #:dihedral-info
+   #:dihedral-info-atom
+   #:dihedral-info-external
+   #:plug-name
+   #:external-dihedral-name
+   #:oligomer-containing-monomer))
 
   
 (defpackage #:topology.dag

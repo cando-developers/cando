@@ -15,6 +15,39 @@
 
 (cando.serialize:make-class-save-load assembler)
 
+(defclass focused-assembler (assembler)
+  ((focus-monomer :initarg :focus-monomer :accessor focus-monomer))
+  (:documentation "An assembler with a focus monomer"))
+
+(defun make-focused-assembler (oligomers focus-monomer)
+  (let ((assembler (make-assembler oligomers)))
+    (change-class assembler 'focused-assembler :focus-monomer focus-monomer)
+    assembler))
+
+(defun oligomer-containing-monomer (assembler monomer &optional errorp)
+  "Return the oligomer that contains the monomer"
+  (loop for oligomer in (oligomers assembler)
+        do (loop for mon across (monomers oligomer)
+                 when (eq mon monomer)
+                   do (return-from oligomer-containing-monomer oligomer)))
+  (if errorp
+      (error "Could not find ~s in ~s" monomer assembler)
+      nil))
+
+(defun assembler-atresidue (assembler monomer)
+  "Return the atresidue corresponding to the monomer"
+  (let* ((pos (gethash monomer (monomer-positions assembler)))
+         (mol-index (molecule-index pos))
+         (res-index (residue-index pos))
+         (atagg (ataggregate assembler))
+         (atmol (aref (atmolecules atagg) mol-index))
+         (atres (aref (atresidues atmol) res-index)))
+    atres))
+
+(defun focused-assembler-atresidue (focused-assembler)
+  "Return the atresidue corresponding to the focus-monomer"
+  (assembler-atresidue focused-assembler (focus-monomer focused-assembler)))
+
 (defgeneric foldamer-monomer-context (focus-monomer oligomer foldamer)
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))

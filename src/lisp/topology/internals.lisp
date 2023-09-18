@@ -48,6 +48,42 @@
 (defun angle-sub (b2 b1)
   (degree-difference b1 b2))
 
+(defclass dihedral-info ()
+  ((name :initarg :name :accessor name)))
+
+(defclass dihedral-info-atom (dihedral-info)
+  ((atom-name :initarg :atom-name :accessor atom-name)))
+
+(cando.serialize:make-class-save-load
+ dihedral-info-atom
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a ~a" (name obj) (atom-name obj)))))
+
+(defclass dihedral-info-external (dihedral-info)
+  ((plug-path :initarg :plug-path :accessor plug-path)
+   (external-dihedral-name :initarg :external-dihedral-name :accessor external-dihedral-name)))
+
+(cando.serialize:make-class-save-load
+ dihedral-info-external
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a ~a ~a" (name obj) (plug-path obj) (external-dihedral-name obj)))))
+
+(defun parse-dihedral-info (dihedrals)
+  (loop for one in dihedrals
+        for name = (second one)
+        for info = (first one)
+        collect (cond
+                  ((symbolp info) (make-instance 'dihedral-info-atom :name name :atom-name info))
+                  ((consp info) (make-instance 'dihedral-info-external
+                                               :name name
+                                               :plug-path (first info)
+                                               :external-dihedral-name (second info)))
+                  (t (error "Could not parse ~s as dihedral-info" one)))))
+
 (defclass internal (serial:serializable)
   ((name :initarg :name :accessor name)
    ))
@@ -139,28 +175,43 @@
                                                     (out-of-focus-internals fragment-internals))
                                            ht)))
 
-(defun find-named-fragment-internals (fragment-internals name-or-plug-names)
-  (cond
-    ((symbolp name-or-plug-names)
-     (loop for internal across (internals fragment-internals)
-           when (eq name-or-plug-names (name internal))
-             do (cond
-                  ((typep internal 'bonded-internal)
-                   (return (list (topology:dihedral-rad internal))))
-                  (t (return (list 0.0))))
-           finally (error "Could not find internal with atom-name ~a" name-or-plug-names)))
-    ((consp name-or-plug-names)
-     (let* ((plug-name (first name-or-plug-names))
-            (out-of-focus-internals (gethash plug-name (out-of-focus-internals fragment-internals))))
-       (loop for name in (cdr name-or-plug-names)
-             collect (loop for internal across out-of-focus-internals
-                           when (eq (name internal) name)
-                             do (return (topology:dihedral-rad internal))))))
-    (t (error "Handle arg ~a" name-or-plug-names))))
 
+(defun extract-dihedral-rad (assembler monomer atom-name)
+  (let* ((atres (assembler-atresidue assembler monomer))
+         (joint (joint-with-name atres atom-name)))
+    (kin:bonded-joint/get-phi joint)))
+
+(defun find-named-fragment-internals-rad (focused-assembler fragment-internals dihedral-names)
+  (let* ((focus-monomer (focus-monomer focused-assembler))
+         (oligomer (oligomer-containing-monomer focused-assembler focus-monomer))
+         (focus-topology (chem:find-topology (oligomer-monomer-name-for-monomer oligomer focus-monomer)))
+         (focus-constitution (constitution focus-topology))
+         (focus-dihedrals (getf (residue-properties focus-constitution) :dihedrals))
+         (focus-dihedral-info (loop for name in dihedral-names
+                                    collect (find name focus-dihedrals :key #'name)))
+         )
+    (loop for info in focus-dihedral-info
+          collect (cond
+                    ((typep info 'dihedral-info-external)
+                     (with-slots (plug-path external-dihedral-name) info
+                       (let ((cur-monomer focus-monomer))
+                         (loop for plug-name in plug-path
+                               do (setf cur-monomer (monomer-on-other-side cur-monomer plug-name)))
+                         (let* ((cur-topology (chem:find-topology (oligomer-monomer-name-for-monomer oligomer cur-monomer)))
+                                (cur-constitution (constitution cur-topology))
+                                (cur-dihedrals (getf (residue-properties cur-constitution) :dihedrals))
+                                (cur-dihedral-info (find external-dihedral-name cur-dihedrals :key #'name)))
+                           (with-slots (name atom-name) cur-dihedral-info
+                             (extract-dihedral-rad focused-assembler cur-monomer atom-name))))))
+                    ((typep info 'dihedral-info-atom)
+                     (with-slots (name atom-name) info
+                       (extract-dihedral-rad focused-assembler focus-monomer atom-name)))))))
+
+#+(or)
 (defun cluster-dihedral-vector (fragment-internals names)
-  (coerce (loop for name-or-plug-names in names
-                append (find-named-fragment-internals fragment-internals name-or-plug-names))
+  (error "Where am I called from")
+  (coerce (loop for dihedral-name in names
+                append (find-named-fragment-internals fragment-internals names))
           'vector))
 
 (defun convert-dihedral-rad-vector-to-xy-vector (rad-vector)
@@ -169,21 +220,21 @@
                                                                 collect (cos dihedral)
                                                                 collect (sin dihedral))))
 
-(defun cluster-dihedral-rad-vector (fragment-internals names)
-  (let ((dihedrals (loop for name-or-plug-names in names
-                         append (find-named-fragment-internals fragment-internals name-or-plug-names))))
-    dihedrals))
+(defun cluster-dihedral-rad-vector (focused-assembler fragment-internals names)
+(let ((coords (coordinates fragment-internals)))
+  (update-joint-tree-internal-coordinates focused-assembler coords)
+  (let ((dihedrals (find-named-fragment-internals-rad focused-assembler fragment-internals names)))
+    dihedrals)))
 
 (defun calculate-cluster-dihedral-names (focus-monomer oligomer)
   "Calculate the atom-names for dihedrals that are used to cluster fragment-internals"
   (let* ((focus-topology (topology:monomer-topology focus-monomer oligomer))
          (focus-constitution (topology:constitution focus-topology))
          (focus-residue-properties (topology:residue-properties focus-constitution))
-         (dihedral-info (getf focus-residue-properties :dihedrals))
-         (focus-names (loop for dihedral-name in dihedral-info
-                            for dihedral-atom-or-plug-name = (car dihedral-name)
-                            collect dihedral-atom-or-plug-name)))
-    focus-names
+         (dihedral-infos (getf focus-residue-properties :dihedrals))
+         (dihedral-names (loop for one-dihedral-info in dihedral-infos
+                               collect (name one-dihedral-info))))
+    dihedral-names
     ))
 
 
