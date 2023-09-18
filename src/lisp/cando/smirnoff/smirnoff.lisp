@@ -125,16 +125,23 @@ The chem:force-field-type-rules-merged generic function was used to organize the
    (a2-a3-bond-order :initarg :a2-a3-bond-order :accessor a2-a3-bond-order)
    (a3-a4-bond-order :initarg :a3-a4-bond-order :accessor a3-a4-bond-order))
   (:report (lambda (obj stream)
-             (format stream "~a(~a) ~a(~a) ~a(~a) ~a(~a)"
-                     (a1-name obj)
-                     (a1-element obj)
-                     (a2-name obj)
-                     (a2-element obj)
-                     (a3-name obj)
-                     (a3-element obj)
-                     (a4-name obj)
-                     (a4-element obj)
-                     ))))
+             (let* ((name (chem:get-name (molecule obj)))
+                    (properties (chem:matter/properties (molecule obj)))
+                    (maybe-description (getf properties :description)))
+               (format stream "Molecule name: ~s missing dihedral ~a(~a) ~a(~a) ~a(~a) ~a(~a) / ~a"
+                       (chem:get-name molecule)
+                       (a1-name obj)
+                       (a1-element obj)
+                       (a2-name obj)
+                       (a2-element obj)
+                       (a3-name obj)
+                       (a3-element obj)
+                       (a4-name obj)
+                       (a4-element obj)
+                       (if maybe-description
+                           maybe-description
+                           "")
+                       )))))
 
 (defun missing-dihedral-error (a1 a2 a3 a4 molecule)
   (let ((a1-name (chem:get-name a1))
