@@ -55,11 +55,8 @@
                      (setf (consistent-index conformation-selector) 0
                            (consistent-conformations conformation-selector) (all-conformations conformation-selector))
                      (let* ((previous-conformation (elt (consistent-conformations previous-conformation-selector)
-                                                        (consistent-index previous-conformation-selector)))
-                            (out-of-focus (out-of-focus-internals previous-conformation)))
-                     
+                                                        (consistent-index previous-conformation-selector))))
                        (format t "Look for consistent-conformations for ~a : ~a~%" monomer (length (all-conformations conformation-selector)))
-                       (format t "out-of-focus ~s~%" out-of-focus)
                        (loop for conf in (all-conformations conformation-selector)
                              for internals = (internals conf)
                              for internal0 = (first internals)

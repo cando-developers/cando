@@ -1,8 +1,27 @@
 (in-package :monomer-context)
 
 
+(defgeneric %copy-specialize (obj)
+  (:documentation "Deep copy the node except for some slots that I know are immutable"))
+
+(defmethod %copy-specialize ((obj null))
+  nil)
+
 (defclass monomer-match-node ()
-  ((names :initarg :names :accessor names)))
+  ((names :initarg :names :reader names)))
+
+(defclass untrained-monomer-match-node ()
+  ())
+
+(defclass trained-monomer-match-node (untrained-monomer-match-node)
+  ((name :initarg :name :accessor name)))
+
+(defmethod print-object ((obj trained-monomer-match-node) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~s" (name obj))))
+
+(defmethod %copy-specialize ((obj monomer-match-node))
+  (make-instance 'untrained-monomer-match-node))
 
 (cando.serialize:make-class-save-load monomer-match-node
  :print-unreadably
@@ -11,8 +30,13 @@
      (format stream "~a" (names obj)))))
 
 (defclass plug-to-monomer-node ()
-  ((plug-name :initarg :plug-name :accessor plug-name)
+  ((plug-name :initarg :plug-name :reader plug-name)
    (monomer-match-node :initarg :monomer-match-node :accessor monomer-match-node)))
+
+(defmethod %copy-specialize ((obj plug-to-monomer-node))
+  (make-instance 'plug-to-monomer-node
+                 :plug-name (plug-name obj)
+                 :monomer-match-node (%copy-specialize (monomer-match-node obj))))
 
 (cando.serialize:make-class-save-load plug-to-monomer-node
  :print-unreadably
@@ -21,8 +45,13 @@
      (format stream "~a ~a" (plug-name obj) (monomer-match-node obj)))))
 
 (defclass chain-node ()
-  ((head :initarg :head :accessor head)
-   (tail :initarg :tail :accessor tail)))
+  ((head :initarg :head :reader head)
+   (tail :initarg :tail :reader tail)))
+
+(defmethod %copy-specialize ((obj chain-node))
+  (make-instance 'chain-node
+                 :head (%copy-specialize (head obj))
+                 :tail (%copy-specialize (tail obj))))
 
 (cando.serialize:make-class-save-load chain-node
  :print-unreadably
@@ -30,10 +59,14 @@
    (print-unreadable-object (obj stream :type t)
      (format stream "~a ~a" (head obj) (tail obj)))))
 
-
 (defclass branch-node ()
-  ((left :initarg :left :accessor left)
-   (right :initarg :right :accessor right)))
+  ((left :initarg :left :reader left)
+   (right :initarg :right :reader right)))
+
+(defmethod %copy-specialize ((obj branch-node))
+  (make-instance 'branch-node
+                 :left (%copy-specialize (left obj))
+                 :right (%copy-specialize (right obj))))
 
 (cando.serialize:make-class-save-load branch-node
  :print-unreadably
@@ -163,6 +196,18 @@
        (add-match match monomer-name monomer)
        monomer))))
 
+(defmethod matches-impl ((pattern trained-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match)
+   (let ((monomer-name (topology:current-stereoisomer-name monomer oligomer)))
+     (when (eq monomer-name (name pattern))
+       (add-match match monomer-name monomer)
+       monomer)))
+
+(defmethod matches-impl ((pattern untrained-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match)
+  (let ((monomer-name (topology:current-stereoisomer-name monomer oligomer)))
+    (change-class pattern 'trained-monomer-match-node
+                  :name monomer-name)
+    monomer))
+
 (defmethod matches-impl ((pattern plug-to-monomer-node) (monomer topology:monomer) oligomer match)
   (ensure-monomer-or-nil
    (let* ((plug-name (plug-name pattern))
@@ -198,3 +243,9 @@ all monomer-contexts that match.  Use (match-iterator match) to generate that it
   (let ((match (make-instance 'match)))
     (when (matches-impl pattern monomer oligomer-or-space match)
       match)))
+
+
+(defun copy-specialized (matcher focus-monomer oligomer)
+  (let ((untrained (%copy-specialize matcher)))
+    (monomer-context:match untrained focus-monomer oligomer)
+    untrained))

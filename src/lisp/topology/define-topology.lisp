@@ -422,7 +422,8 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                  :weight weight))))
                  (t (error "Add support for restraint ~a" kind)))))
 
-(defun topologies-from-graph (graph group-names restraints &key types dihedrals)
+(defun topologies-from-graph (graph group-names restraints
+                              &key types dihedrals cluster-dihedrals)
   (multiple-value-bind (constitution plugs stereoisomers)
       (parse-graph graph)
     (let* ((tops (loop for stereoisomer in stereoisomers
@@ -448,9 +449,12 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               do (setf (atom-type ca) type)))
       (push (parse-dihedral-info dihedrals) (residue-properties constitution))
       (push :dihedrals (residue-properties constitution))
+      (when cluster-dihedrals
+        (push cluster-dihedrals (residue-properties constitution))
+        (push :cluster-dihedrals (residue-properties constitution)))
       tops)))
 
-(defun do-define-topology (name sexp &key restraints types dihedrals)
+(defun do-define-topology (name sexp &key restraints types dihedrals cluster-dihedrals)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -460,12 +464,11 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         (group-names (if (consp name)
                          name
                          (list name))))
-    (topologies-from-graph graph group-names restraints :types types
-                           :dihedrals dihedrals)))
+    (topologies-from-graph graph group-names restraints
+                           :types types
+                           :dihedrals dihedrals
+                           :cluster-dihedrals cluster-dihedrals)))
 
-(defmacro define-topology (name sexp &key restraints types dihedrals)
-  `(do-define-topology ',name ',sexp :restraints ',restraints :dihedrals ',dihedrals))
-
-
-
-  
+(defmacro define-topology (name sexp &key restraints types dihedrals cluster-dihedrals)
+  `(do-define-topology ',name ',sexp :restraints ',restraints :dihedrals ',dihedrals
+     :cluster-dihedrals ',cluster-dihedrals))

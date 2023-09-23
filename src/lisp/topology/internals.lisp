@@ -145,7 +145,6 @@
    (internals :initarg :internals :accessor internals)
    (shape-key-values :initform nil :initarg :shape-key-values :accessor shape-key-values)
    (coordinates :initarg :coordinates :accessor coordinates)
-   (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
    ))
 
 (cando.serialize:make-class-save-load
@@ -153,13 +152,12 @@
  :print-unreadably
  (lambda (obj stream)
    (let ((*print-pretty* nil))
-   (print-unreadable-object (obj stream :type t)
-     (let ((internals (coerce (subseq (internals obj) 0 (min (length (internals obj)) 4) ) 'list)))
+     (print-unreadable-object (obj stream :type t)
        (format stream ":trainer-index ~a :energy ~5,2f"
                (trainer-index obj)
                (energy obj)
                )
-       #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals )))))))
+       #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals ))))))
 
 (defun copy-fragment-internals (fragment-internals)
   (make-instance 'fragment-internals
@@ -169,17 +167,19 @@
                  :internals (copy-seq (internals fragment-internals))
                  :shape-key-values (copy-seq (shape-key-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
-                 :out-of-focus-internals (let ((ht (make-hash-table)))
-                                           (maphash (lambda (key value)
-                                                     (setf (gethash key ht) (copy-seq value)))
-                                                    (out-of-focus-internals fragment-internals))
-                                           ht)))
+                 ))
 
 
 (defun extract-dihedral-rad (assembler monomer atom-name)
   (let* ((atres (assembler-atresidue assembler monomer))
          (joint (joint-with-name atres atom-name)))
-    (kin:bonded-joint/get-phi joint)))
+    (cond
+      ((typep joint 'kin:bonded-joint)
+       (kin:bonded-joint/get-phi joint))
+      (t
+       (error "The joint ~s in monomer ~s must be a bonded-joint"
+              joint
+              monomer)))))
 
 (defun find-named-fragment-internals-rad (focused-assembler fragment-internals dihedral-names)
   (let* ((focus-monomer (focus-monomer focused-assembler))
@@ -227,13 +227,18 @@
     dihedrals)))
 
 (defun calculate-cluster-dihedral-names (focus-monomer oligomer)
-  "Calculate the atom-names for dihedrals that are used to cluster fragment-internals"
+  "Calculate the dihedral names for dihedrals that are used to cluster fragment-internals"
   (let* ((focus-topology (topology:monomer-topology focus-monomer oligomer))
          (focus-constitution (topology:constitution focus-topology))
          (focus-residue-properties (topology:residue-properties focus-constitution))
+         (cluster-dihedrals-names (getf focus-residue-properties :cluster-dihedrals))
          (dihedral-infos (getf focus-residue-properties :dihedrals))
-         (dihedral-names (loop for one-dihedral-info in dihedral-infos
-                               collect (name one-dihedral-info))))
+         ;; If the property cluster-dihedrals exists then use the dihedral names provided
+         ;; otherwise use the names in the :dihedrals property
+         (dihedral-names (if cluster-dihedrals-names
+                             cluster-dihedrals-names
+                             (loop for one-dihedral-info in dihedral-infos
+                                   collect (name one-dihedral-info)))))
     dihedral-names
     ))
 
@@ -428,6 +433,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (defparameter *dihedral-threshold* 20.0)
 (defparameter *dihedral-rms-threshold* 15.0)
 
+#+(or)
 (defun internals-are-different-p (frag1 frag2 &optional )
   (loop for frag1-int across (internals frag1)
         for frag2-int across (internals frag2)
@@ -456,6 +462,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
     (let ((rms (sqrt (/ sum-of-squares (float num-squares)))))
       rms)))
 
+#+(or)
 (defun rms-internals-are-different-p (frag1 frag2)
   (> (dihedrals-rms frag1 frag2) *dihedral-rms-threshold*))
 
@@ -508,31 +515,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
                         (to-deg (topology:dihedral-rad internal))))
                ))
     (format finternals "end-conformation~%")
-    (let ((unique-internals (let (unique-internals)
-                              (maphash (lambda (key internals)
-                                         (declare (ignore key))
-                                         (pushnew internals unique-internals))
-                                       (topology:out-of-focus-internals fragment-internals))
-                              unique-internals)))
-      (loop for internals in unique-internals
-            do (when internals
-                 (loop for internal across internals
-                       do (cond
-                            ((typep internal 'topology:jump-internal)
-                             (format finternals "jump-joint ~a~%" (topology:name internal)))
-                            ((typep internal 'topology:complex-bonded-internal)
-                             (format finternals "complex-bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
-                                     (topology:name internal)
-                                     (topology:bond internal)
-                                     (to-deg (topology:angle-rad internal))
-                                     (to-deg (topology:dihedral-rad internal))))
-                            ((typep internal 'topology:bonded-internal)
-                             (format finternals "bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
-                                     (topology:name internal)
-                                     (topology:bond internal)
-                                     (to-deg (topology:angle-rad internal))
-                                     (to-deg (topology:dihedral-rad internal))))
-                            )))))))
+    ))
 
 
 (defgeneric fill-joint-internals (joint bond angle-rad dihedral-rad))

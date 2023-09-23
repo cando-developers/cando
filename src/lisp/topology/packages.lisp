@@ -84,8 +84,6 @@
    #:context-rotamers
    #:merge-context-rotamers
    #:fragment-internals
-   #:out-of-focus-internal
-   #:out-of-focus-internals
    #:internal
    #:jump-internal
    #:bonded-internal
@@ -314,7 +312,7 @@
    #:match-as-symbol
    #:match
    #:match-iterator
-   ))
+   #:copy-specialized))
 
 (defpackage #:topology.graphviz
   (:use #:common-lisp)

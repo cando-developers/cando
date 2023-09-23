@@ -73,7 +73,9 @@
     new-internal))
 
 (defun adjust-phi-psi (first-fragment phi-deg psi-deg)
+  (error "deprecated")
   #+(or)(format t "adjust-phi-psi ~a ~a~%" phi-deg psi-deg)
+  #+(or)
   (let* ((new-fragment (topology:copy-fragment-internals first-fragment))
          (phi-c (find-and-clone :c (topology:internals new-fragment)))
          (phi-ha (find-and-clone :ha (topology:internals new-fragment)))
@@ -129,6 +131,8 @@
 
 (defun adjust-chi (first-fragment phi-deg psi-deg)
   #+(or)(format t "adjust-phi-psi ~a ~a~%" phi-deg psi-deg)
+  (error "deprecated")
+  #+(or)
   (let* ((new-fragment (topology:copy-fragment-internals first-fragment))
          (phi-c (find-and-clone :c (topology:internals new-fragment)))
          (phi-ha (find-and-clone :ha (topology:internals new-fragment)))
