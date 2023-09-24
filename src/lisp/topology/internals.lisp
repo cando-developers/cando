@@ -139,7 +139,8 @@
      (format stream "~a" (name obj)))))
 
 (defclass fragment-internals (serial:serializable)
-  ((trainer-index :initarg :trainer-index :accessor trainer-index)
+  ((monomer-context :initarg :monomer-context :accessor monomer-context)
+   (trainer-index :initarg :trainer-index :accessor trainer-index)
    (probability :initform 1.0s0 :initarg :probability :accessor probability)
    (energy :initform 0.0s0 :initarg :energy :accessor energy)
    (internals :initarg :internals :accessor internals)
@@ -161,6 +162,7 @@
 
 (defun copy-fragment-internals (fragment-internals)
   (make-instance 'fragment-internals
+                 :monomer-context (monomer-context fragment-internals)
                  :trainer-index (trainer-index fragment-internals)
                  :probability (probability fragment-internals)
                  :energy (energy fragment-internals)
@@ -176,10 +178,11 @@
     (cond
       ((typep joint 'kin:bonded-joint)
        (kin:bonded-joint/get-phi joint))
-      (t
-       (error "The joint ~s in monomer ~s must be a bonded-joint"
-              joint
-              monomer)))))
+      ;; Otherwise return zero because its
+      ;; a jump-joint or a complex-bonded-joint
+      ;; and the user said it was an important dihedral
+      ;; which it shouldn't be
+      (t 0.0))))
 
 (defun find-named-fragment-internals-rad (focused-assembler fragment-internals dihedral-names)
   (let* ((focus-monomer (focus-monomer focused-assembler))
