@@ -108,8 +108,11 @@
   (all-edges *workspace*))
 
 
-(cando.serialize:make-class-save-load workspace :skip-slot-names (jupyter-widgets:on-trait-change))
-   
+(defmethod cando.serialize:skip-slot-names ((obj workspace))
+  '(jupyter-widgets:on-trait-change))
+
+(cando.serialize:make-class-save-load workspace)
+
 (defvar *workspace* nil)
 
 

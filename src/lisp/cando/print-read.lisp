@@ -77,13 +77,17 @@ Save the object to the file PATHNAME as an s-expression."
   "Create a serializer for class-name. Slots that have :initarg defined and do not appear in
   skip-slot-names will be serialized."
   (unless (and (listp skip-slot-names)
-               (every #'symbolp skip-slot-names))
+               (every #'symbolp skip-slot-names)
     (error "The skip-slot-names must be a list of symbols - instead it is ~s" skip-slot-names))
+  (append
+   (when skip-slot-names
+     `(defmethod skip-slot-names ((obj ,class-name))
+        ',@skip-slot-names))
   `(defmethod print-object ((obj ,class-name) stream)
      (if *print-readably*
          (progn
-           (cando.serialize:print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
-         (funcall ,print-unreadably obj stream))))
+           (cando.serialize:print-object-readably-with-slots obj stream))
+         (funcall ,print-unreadably obj stream)))))
 
 
 #+use-mpi

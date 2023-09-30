@@ -11,7 +11,6 @@
   (:export
    #:make-topology-from-residue
    #:topologyp
-   #:degree-difference
    #:constitution-atom-index
    #:atom-name
    #:element
@@ -199,7 +198,7 @@
    #:rad-to-deg
    #:radians-add
    #:radians-incf
-   #:radians-difference
+   #:radians-sub
    #:angle-sub
    #:walk-joint-template
    #:properties
@@ -259,13 +258,12 @@
    #:kind-keys
    #:monomer-shape-build-order
    #:assign-monomer-shapes
-   #:lookup-allowed-rotamers
    #:make-rotamer-shape-connections
    #:lookup-rotamer-context-connections
    #:lookup-rotamer-shape-connections
    #:out-coupling-plug-names
    #:append-rotamer-shape-connections
-   #:bin-dihedral
+   #:bin-dihedral-deg
    #:shape-key-dihedral-name-p
    #:*phi*
    #:*phi-1*
@@ -291,7 +289,31 @@
    #:dihedral-info-external
    #:plug-name
    #:external-dihedral-name
-   #:oligomer-containing-monomer))
+   #:oligomer-containing-monomer
+   #:delta-energy
+   #:lookup-rotamers-for-context
+   #:monomer-shape-kind
+   #:only-other-out-coupling-plug-name
+   #:sorted-build-order
+   #:adjustment
+   #:external-adjustment
+   #:internal-adjustment
+   #:apply-fragment-internals-to-atresidue
+   #:extract-bond-angle-rad-dihedral-rad
+   #:fill-joint-internals
+   #:make-coordinates-for-assembler
+   #:initialize-adjustment
+   #:do-adjustment
+   #:find-joint-for-atom
+   #:adjust-all-atom-tree-external-coordinates
+   #:external-adjust
+   #:internal-adjust
+   #:adjust-internals
+   #:radians-limit
+   #:degrees-limit
+   #:degrees-sub
+   #:fill-internals-from-oligomer-shape-and-adjust
+   #:build-all-atom-tree-external-coordinates-and-adjust))
 
   
 (defpackage #:topology.dag

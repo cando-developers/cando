@@ -44,8 +44,19 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <cando/geom/matrix.h>
 #include <clasp/core/wrappers.h>
+#include <clasp/core/array.h>
 
 
+Vector3::Vector3(core::SimpleVector_float_sp svf, size_t index) {
+  if (index+2<svf->length()) {
+    this->coords[0] = (*svf)[index];
+    this->coords[1] = (*svf)[index+1];
+    this->coords[2] = (*svf)[index+2];
+    return;
+  }
+  SIMPLE_ERROR("The index {} is out of range for a 3D vector within the array of length {}",
+               index, svf->length());
+}
 
 Vector3 Vector3::inNanometers() const
 {
@@ -327,6 +338,9 @@ float safe_asin( float d )
 
 
 namespace geom {
+
+
+
 DOCGROUP(cando);
 CL_DEFUN double	calculateDistance( const Vector3& va,
                                    const Vector3& vb)
@@ -361,7 +375,6 @@ CL_DEFUN double calculateAngle( const Vector3& va,
 /*! Return the dihedral in radians
  */
 DOCGROUP(cando);
-__attribute__((optnone))
 CL_DEFUN double calculateDihedral( const Vector3& va,
                                    const Vector3& vb,
                                    const Vector3& vc,
@@ -387,6 +400,26 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
   return dih*sgn;
 }
 
+CL_DEFUN double calculateDihedralArray( size_t iva,
+                                        size_t ivb,
+                                        size_t ivc,
+                                        size_t ivd,
+                                        core::Array_sp array) {
+  size_t len = array->length();
+  int64_t max_index = len-2;
+  if (max_index<=0) {
+    SIMPLE_ERROR("The array does not contain 3D vectors");
+  }
+  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_float_sp>(array);
+    Vector3 va(sfa,iva);
+    Vector3 vb(sfa,ivb);
+    Vector3 vc(sfa,ivc);
+    Vector3 vd(sfa,ivd);
+    return calculateDihedral(va,vb,vc,vd);
+  }
+  SIMPLE_ERROR("Handle array type {}", _rep_(array));
+}
 
 
 CL_DOCSTRING(R"dx(Return a vector (0 0 0))dx");

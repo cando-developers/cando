@@ -23,14 +23,62 @@
    (print-unreadable-object (obj stream :type t)
      (format stream "~a" (atom-name obj)))))
 
+(defclass adjustable-bonded-joint-mixin ()
+  ((adjustment :initarg :adjustment :accessor adjustment)))
+
+(defclass adjustment ()
+  ((joint :initarg :joint :accessor joint)))
+
+(defclass external-adjustment (adjustment) ())
+
+(defclass internal-adjustment (adjustment) ())
+
+(defclass adjustments ()
+  ((internal-adjustments :initform (make-hash-table) :initarg :internal-adjustments :accessor internal-adjustments)
+   (external-adjustments :initform (make-hash-table) :initarg :external-adjustments :accessor external-adjustments)))
+
+(defgeneric add-to-adjustments (adjustments adjustment atresidue))
+
+(defmethod add-to-adjustments (adjustments (adjustment internal-adjustment) atresidue)
+  (push adjustment (gethash atresidue (internal-adjustments adjustments) nil)))
+
+(defmethod add-to-adjustments (adjustments (adjustment external-adjustment) atresidue)
+  (push adjustment (gethash atresidue (external-adjustments adjustments) nil)))
+
+(defgeneric initialize-adjustment (adjustment assembler))
+
+(defgeneric external-adjust (adjustment assembler coordinates))
+(defmethod external-adjust ((adjustment internal-adjustment) assembler coordinates)
+  "default - don't do anything"
+  nil)
+
+(defgeneric internal-adjust (adjustment assembler))
+(defmethod internal-adjust ((adjustment external-adjustment) assembler)
+  "default - don't do anything"
+  nil)
+  
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
   (make-instance 'bonded-joint-template
                  :constitution-atoms-index constitution-atoms-index
                  :atom-name atom-name
                  :parent parent))
 
+(defun make-adjustable-bonded-joint-template (constitution-atoms-index &key atom-name parent adjustment)
+  (make-instance 'adjustable-bonded-joint-template
+                 :constitution-atoms-index constitution-atoms-index
+                 :atom-name atom-name
+                 :parent parent
+                 :adjustment adjustment))
 (defclass in-plug-bonded-joint-template (bonded-joint-template)
   ((in-plug :initarg :in-plug :accessor in-plug)))
+
+(defclass adjustable-in-plug-bonded-joint-template (in-plug-bonded-joint-template
+                                                    adjustable-bonded-joint-mixin)
+  ())
+
+(defclass adjustable-bonded-joint-template (bonded-joint-template
+                                            adjustable-bonded-joint-mixin)
+  ())
 
 (cando.serialize:make-class-save-load
  in-plug-bonded-joint-template
@@ -45,6 +93,14 @@
                  :atom-name atom-name
                  :parent parent
                  :in-plug in-plug))
+
+(defun make-adjustable-in-plug-bonded-joint-template (constitution-atoms-index &key atom-name parent in-plug adjustment)
+  (make-instance 'adjustable-in-plug-bonded-joint-template
+                 :constitution-atoms-index constitution-atoms-index
+                 :atom-name atom-name
+                 :parent parent
+                 :in-plug in-plug
+                 :adjustment adjustment))
 
 (defclass complex-bonded-joint-template (bonded-joint-template)
   ((input-stub-joints :initform (make-array 2) :initarg :input-stub-joints :accessor input-stub-joints)))
@@ -116,14 +172,29 @@
                                 nil)))
     (cond
       ((and (null parent-template) (typep in-plug 'topology:in-plug))
-       (make-in-plug-bonded-joint-template constitution-atoms-index
-                                           :atom-name atom-name
-                                           :parent nil
-                                           :in-plug in-plug))
+       (let ((adjust (getf (property-list node) :adjust)))
+         (if adjust
+             (make-adjustable-in-plug-bonded-joint-template
+              constitution-atoms-index
+              :atom-name atom-name
+              :parent nil
+              :in-plug in-plug
+              :adjustment adjust)
+             (make-in-plug-bonded-joint-template constitution-atoms-index
+                                                 :atom-name atom-name
+                                                 :parent nil
+                                                 :in-plug in-plug))))
       ((typep in-plug 'topology:in-plug)
-       (make-bonded-joint-template constitution-atoms-index
-                                   :atom-name atom-name
-                                   :parent parent-template))
+       (let ((adjust (getf (property-list node) :adjust)))
+         (if adjust
+             (make-adjustable-bonded-joint-template
+              constitution-atoms-index
+              :atom-name atom-name
+              :parent nil
+              :adjustment adjust)
+             (make-bonded-joint-template constitution-atoms-index
+                                         :atom-name atom-name
+                                         :parent parent-template))))
       ((null parent-template)
        (make-jump-joint-template constitution-atoms-index
                                  :atom-name atom-name
@@ -159,11 +230,19 @@
                                    gparent-template
                                    (sibling gparent-template 0))))))
          (make-complex-bonded-joint-template constitution-atoms-index
-                                                               :atom-name atom-name
-                                                               :stub-joints stub-joints)))
-      (t (make-bonded-joint-template constitution-atoms-index
-                                                       :atom-name atom-name
-                                                       :parent parent-template)))))
+                                             :atom-name atom-name
+                                             :stub-joints stub-joints)))
+      (t
+       (let ((adjust (getf (property-list node) :adjust)))
+         (if adjust
+             (make-adjustable-bonded-joint-template
+              constitution-atoms-index
+              :atom-name atom-name
+              :parent parent-template
+              :adjustment adjust)
+             (make-bonded-joint-template constitution-atoms-index
+                                         :atom-name atom-name
+                                         :parent parent-template)))))))
 
 
 (defun build-joint-template-recursively (parent root in-plug)
@@ -199,13 +278,13 @@
                           res)))
           index*3)))))
 
-(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table))
+(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments))
 
-(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index atom-table)
+(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
   (error "write-into-joint-tree - handle joint-template ~a" joint-template))
 
 
-(defmethod write-into-joint-tree ((joint-template jump-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table)
+(defmethod write-into-joint-tree ((joint-template jump-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -214,7 +293,7 @@
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table)
+(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -245,7 +324,7 @@
       (when parent-joint (kin:joint/add-child parent-joint joint))
       joint)))
 
-(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table)
+(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -254,7 +333,14 @@
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table)
+(defmethod write-into-joint-tree ((joint-template adjustable-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+  (let ((joint (call-next-method)))
+    (add-to-adjustments adjustments
+                        (make-instance (adjustment joint-template) :joint joint)
+                        atresidue)
+    joint))
+
+(defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
   (let* ((joint (call-next-method))
          (in-plug (in-plug joint-template))
          (in-plug-name (name in-plug))
@@ -264,6 +350,13 @@
         (kin:joint/set-property joint :out-plug-name out-plug-name)
         (let ((indexed-out-plug-name (intern (format nil "~a.0" out-plug-name) :keyword)))
           (kin:joint/set-property joint :out-plug-name indexed-out-plug-name)))
+    joint))
+
+(defmethod write-into-joint-tree ((joint-template adjustable-in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+  (let ((joint (call-next-method)))
+    (add-to-adjustments adjustments
+                        (make-instance (adjustment joint-template) :joint joint)
+                        atresidue)
     joint))
 
 (defclass topology-graph ()

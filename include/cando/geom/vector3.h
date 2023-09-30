@@ -56,6 +56,8 @@ public:
   ~Vector3() {};
   Vector3( vecreal x, vecreal y, vecreal z ) : coords{x,y,z} {};
 
+  Vector3( core::SimpleVector_float_sp svf, size_t index );
+
   /*! Return the vector in nanometers */
   Vector3 inNanometers() const;
 

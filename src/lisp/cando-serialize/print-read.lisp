@@ -25,15 +25,23 @@
 ;; -^-
 (in-package :cando.serialize)
 
-(defun print-object-readably-with-slots (obj stream skip-slot-names)
+(defgeneric skip-slot-names (obj)
+  (:documentation "Specialize this method on classes that have slots that we don't want to serialize.
+Return a list of slot names that shouldn't be serialized."))
+(defmethod skip-slot-names ((obj t))
+  "All slots that can be serialized will be serialized"
+  nil)
+
+(defun print-object-readably-with-slots (obj stream)
   (format stream "#$(~s " (class-name (class-of obj)))
-  (loop for slot in (clos:class-slots (class-of obj))
-        for slot-name = (clos:slot-definition-name slot)
-        for initargs = (clos:slot-definition-initargs slot)
-        if (and (car initargs)
-                (not (position slot-name skip-slot-names))
-                (slot-boundp obj slot-name))
-          do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
+  (let ((skip-slot-names (skip-slot-names obj)))
+    (loop for slot in (clos:class-slots (class-of obj))
+          for slot-name = (clos:slot-definition-name slot)
+          for initargs = (clos:slot-definition-initargs slot)
+          if (and (car initargs)
+                  (not (position slot-name skip-slot-names))
+                  (slot-boundp obj slot-name))
+            do (format stream "~s ~s " (car initargs) (slot-value obj slot-name))))
   (format stream ") "))
 
 (export '(print-object-readably-with-slots))
@@ -98,9 +106,18 @@ Save the object to the file PATHNAME as an s-expression."
   `(defmethod print-object ((obj ,class-name) stream)
      (if *print-readably*
          (progn
-           (print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
+           (print-object-readably-with-slots obj stream))
          (funcall ,print-unreadably obj stream))))
 
+
+(defclass serializable ()
+  ())
+
+(defmethod print-object ((obj serializable) stream)
+  (if *print-readably*
+      (progn
+        (print-object-readably-with-slots obj stream))
+      (print-unreadable-object (obj stream :type t))))
 
 #+use-mpi
 (eval-when (:load-toplevel :execute)
@@ -120,4 +137,5 @@ Save the object to the file PATHNAME as an s-expression."
                   (*package* (find-package :keyword)))
               (cl:print obj fout))
             (copy-seq str))))))
+
 

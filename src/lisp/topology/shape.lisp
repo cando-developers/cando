@@ -10,9 +10,9 @@
 (defun shape-key-dihedral-name-p (name)
   (member name (list +phi+ +phi-1+ +psi+ +psi-1+)))
 
-(defun bin-dihedral (dih)
+(defun bin-dihedral-deg (dih-deg)
   "Take a dihedral in degrees and round it to the nearest 10 degrees"
-  (floor (* 10 (round dih 10.0))))
+  (floor (degrees-limit (floor (* 10 (round dih-deg 10.0))))))
 
 (defclass monomer-shape ()
   ((fragment-conformation-index :initarg :fragment-conformation-index :accessor fragment-conformation-index)
@@ -22,7 +22,6 @@
    (monomer-shape-kind :initarg :monomer-shape-kind :accessor monomer-shape-kind)
    (shape-key :initarg :shape-key :accessor shape-key)
    (context-rotamers :initarg :context-rotamers :accessor context-rotamers)
-   (allowed-rotamer-indices :initarg :allowed-rotamer-indices :accessor allowed-rotamer-indices)
    (keys :initarg :keys :accessor keys)
    ))
 
@@ -79,7 +78,8 @@
 
 (defclass kind-key ()
   ((kind :initarg :kind :accessor kind)
-   (keys :initarg :keys :accessor keys)))
+   (keys :initarg :keys :accessor keys)
+   (properties :initarg :properties :accessor properties)))
 
 (cando.serialize:make-class-save-load kind-key)
 
@@ -92,7 +92,8 @@
   (let ((kind-keys (mapcar (lambda (kind-key-list)
                                    (make-instance 'kind-key
                                                   :kind (car kind-key-list)
-                                                  :keys (cadr kind-key-list)))
+                                                  :keys (cadr kind-key-list)
+                                                  :properties (cddr kind-key-list)))
                                  info)))
     (make-instance 'shape-info
                    :kind-keys kind-keys)))
@@ -122,7 +123,7 @@
          (cons in-plug-monomer-shape other-monomer-shape)))
       (t (error "Unrecognized shape-kind ~a" shape-kind)))))
 
-(defun make-oligomer-shape (oligomer connected-rotamers-map &key monomer-shape-factory)
+(defun make-oligomer-shape (oligomer rotamers-db &key monomer-shape-factory)
   (let* ((foldamer (topology:foldamer (topology:oligomer-space oligomer)))
          (shape-info (shape-info foldamer))
          (kind-order (loop for kind-keys in (kind-keys shape-info)
@@ -137,10 +138,7 @@
               for index from 0
               for monomer in (ordered-monomers oligomer)
               for monomer-context = (topology:foldamer-monomer-context monomer oligomer foldamer)
-              for context-rotamers = (let ((fc (gethash monomer-context (topology:monomer-context-to-context-rotamers connected-rotamers-map))))
-                                             (unless fc
-                                               (error "Could not find monomer-context ~s" monomer-context))
-                                             fc)
+              for context-rotamers = (topology:lookup-rotamers-for-context rotamers-db monomer-context)
               for shape-kind = (topology:shape-kind foldamer monomer oligomer)
               for couplings = (couplings monomer)
               for in-monomer = (let (in-monomer)
@@ -151,11 +149,11 @@
                                           couplings)
                                  in-monomer)
               for out-mons = (let (out-monomers)
-                                 (maphash (lambda (key coupling)
-                                            (unless (in-plug-name-p key)
-                                              (push (topology:target-monomer coupling) out-monomers)
-                                              #+(or)(format t "Out plug coupling ~a ~a~%" key coupling)))
-                                          couplings)
+                               (maphash (lambda (key coupling)
+                                          (unless (in-plug-name-p key)
+                                            (push (topology:target-monomer coupling) out-monomers)
+                                            #+(or)(format t "Out plug coupling ~a ~a~%" key coupling)))
+                                        couplings)
                                out-monomers)
               for in-monomer-context = (if in-monomer
                                            (topology:foldamer-monomer-context in-monomer oligomer foldamer)
@@ -179,18 +177,16 @@
               do (unless in-monomer (setf the-root-monomer monomer))
               do (setf (gethash monomer out-monomers) out-mons)
               do (setf (aref monomer-shape-vector index) monomer-shape)
-                 ;;            do (format t "monomer-context ~a~%" monomer-context)
+              ;;            do (format t "monomer-context ~a~%" monomer-context)
               finally (return (values monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)))
-      (let ((monomer-build-order (sorted-build-order foldamer oligomer kind-order)))
-        (make-instance 'oligomer-shape
-                       :oligomer oligomer
-                       :connected-rotamers-map connected-rotamers-map
-                       :monomer-shape-vector monomer-shape-vector
-                       :monomer-shape-map monomer-shape-map
-                       :monomer-shape-build-order (mapcar (lambda (monomer) (gethash monomer monomer-shape-map)) monomer-build-order)
-                       :the-root-monomer the-root-monomer
-                       :in-monomers in-monomers
-                       :out-monomers out-monomers)))))
+      (make-instance 'oligomer-shape
+                     :oligomer oligomer
+                     :connected-rotamers-map rotamers-db
+                     :monomer-shape-vector monomer-shape-vector
+                     :monomer-shape-map monomer-shape-map
+                     :the-root-monomer the-root-monomer
+                     :in-monomers in-monomers
+                     :out-monomers out-monomers))))
 
 
 (defun all-monomers-impl (root shape)
@@ -246,23 +242,23 @@
                (length (topology:fragments context-rotamers))))
       (random-fragment-conformation-index-impl root-monomer-shape oligomer-shape))))
 
-(defun build-shapes (oligomer-shapes conf &key monomer-order)
-  (let ((coordinates (chem:make-coordinates (topology:energy-function conf))))
-    (chem:energy-function/load-coordinates-into-vector (topology:energy-function conf) coordinates)
+(defun build-shapes (oligomer-shapes assembler &key monomer-order)
+  (let ((coordinates (chem:make-coordinates (topology:energy-function assembler))))
+    (chem:energy-function/load-coordinates-into-vector (topology:energy-function assembler) coordinates)
     (loop for oligomer-shape in oligomer-shapes
           for oligomer = (oligomer oligomer-shape)
-          do (topology:fill-internals-from-oligomer-shape conf oligomer-shape)
+          do (topology:fill-internals-from-oligomer-shape assembler oligomer-shape)
              (if monomer-order
                  (loop for monomer in monomer-order
-                       for monomer-position = (gethash monomer (monomer-positions conf))
+                       for monomer-position = (gethash monomer (monomer-positions assembler))
                        for molecule-index = (molecule-index monomer-position)
                        for residue-index = (residue-index monomer-position)
-                       for atmolecule = (aref (ataggregate conf) molecule-index)
+                       for atmolecule = (aref (ataggregate assembler) molecule-index)
                        for atresidue = (aref (atresidues atmolecule) residue-index)
                        do (build-atresidue-atom-tree-external-coordinates atresidue coordinates))
-                 (topology:build-all-atom-tree-external-coordinates conf oligomer coordinates)))
-    (chem:energy-function/save-coordinates-from-vector (topology:energy-function conf) coordinates)
-    (topology:aggregate conf)))
+                 (topology:build-all-atom-tree-external-coordinates assembler oligomer coordinates)))
+    (chem:energy-function/save-coordinates-from-vector (topology:energy-function assembler) coordinates)
+    (topology:aggregate assembler)))
 
 
 (defun extract-shape-key (monomer-shape)
@@ -274,115 +270,4 @@
        (cons (fragment-conformation-index (car shape-key))
              (fragment-conformation-index (cdr shape-key))))
       (t (fragment-conformation-index shape-key)))))
-
-(defun lookup-allowed-rotamers (monomer-shape oligomer-shape)
-  (let* ((connected-rotamers-map (connected-rotamers-map oligomer-shape))
-         (monomer-context-key (monomer-context-key monomer-shape))
-         (rotamer-shape-connections (lookup-rotamer-context-connections (rotamer-context-connections connected-rotamers-map) monomer-context-key))
-         (shape-key (extract-shape-key monomer-shape))
-         (allowed-rotamers (lookup-rotamer-shape-connections rotamer-shape-connections shape-key)))
-    allowed-rotamers))
-
-(defun maybe-set-shape-key (monomer-shape oligomer-shape connected-rotamers-map rotamer-index)
-  "If the monomer-shape is a shape-kind :backbone then look for the :phi,:psi,:phi-1,:psi-1 dihedrals and store them
-in the shape-key slot of the monomer-shape corresponding to the sidechain"
-  (cond
-    ((eq :backbone (monomer-shape-kind monomer-shape))
-     (error "Do what you need for a backbone"))
-    ((eq :sidechain (monomer-shape-kind monomer-shape))
-     (error "Do what you need for a side-chain"))
-    (t (error "Unknown shape-kind ~s" (monomer-shape-kind monomer-shape)))))
-
-
-(defun incoming-and-following-monomers-for-sidechain (oligomer sidechain-monomer)
-  "Given a sidechain-monomer - find the monomer that is on the other side of
-the in-plug (in-monomer) and also the monomer that follows the in-monomer
-through its other out-plug"
-  (let* ((focus-monomer sidechain-monomer)
-         (in-coupling-plug-name (topology:in-coupling-plug-name focus-monomer))
-         (in-monomer (topology:monomer-on-other-side focus-monomer in-coupling-plug-name))
-         (in-monomer-out-plug-names (topology:out-coupling-plug-names in-monomer))
-         (next-monomer (loop for in-monomer-out-plug-name in in-monomer-out-plug-names
-                             for other-monomer = (topology:monomer-on-other-side in-monomer in-monomer-out-plug-name)
-                             when (not (eq other-monomer focus-monomer))
-                               do (return other-monomer))))
-    (values in-monomer next-monomer)
-    ))
-
-
-(defun assign-backbone-allowed-rotamers (oligomer-shape
-                                        &key (monomer-shape-build-order (monomer-shape-build-order oligomer-shape)))
-  "For each backbone monomer-shape set the rotamer-indices."
-  (loop with rotamers-database = (connected-rotamers-map oligomer-shape)
-        for monomer-shape in monomer-shape-build-order
-        for monomer-context = (monomer-context monomer-shape)
-        for shape-kind = (monomer-shape-kind monomer-shape)
-        if (eq (monomer-shape-kind monomer-shape) :backbone)
-          do (let ((backbone-rotamer-shape-connections (lookup-rotamer-context-connections (rotamer-context-connections rotamers-database) monomer-context)))
-               (check-type backbone-rotamer-shape-connections backbone-rotamer-shape-connections)
-               (setf (allowed-rotamer-indices monomer-shape) (rotamer-indices backbone-rotamer-shape-connections)))
-        else                         ; once we hit a sidechain we stop
-        do (return nil)))
-
-(defun assign-backbone-random-rotamer-indices (oligomer-shape
-                                               &key (monomer-shape-build-order (monomer-shape-build-order oligomer-shape)))
-  (loop with rotamers-database = (connected-rotamers-map oligomer-shape)
-        for monomer-shape in monomer-shape-build-order
-        if (eq (monomer-shape-kind monomer-shape) :backbone)
-          do (let ((rnd (random (length (allowed-rotamer-indices monomer-shape)))))
-               (setf (fragment-conformation-index monomer-shape) (aref (allowed-rotamer-indices monomer-shape) rnd)))
-        else ; stop once we hit a sidechain
-          do (return nil)))
-
-
-(defun assign-sidechain-shape-keys (oligomer-shape
-                                    &key (monomer-shape-build-order (monomer-shape-build-order oligomer-shape)))
-  (let ((oligomer (oligomer oligomer-shape)))
-    (loop with rotamers-database = (connected-rotamers-map oligomer-shape)
-          with monomer-shape-map = (monomer-shape-map oligomer-shape)
-          for monomer-shape in monomer-shape-build-order
-          if (eq (monomer-shape-kind monomer-shape) :sidechain)
-            do (let* ((sidechain-monomer (monomer monomer-shape)))
-                 (multiple-value-bind (in-monomer next-monomer)
-                     (incoming-and-following-monomers-for-sidechain oligomer sidechain-monomer)
-                   (let* ((in-monomer-shape (gethash in-monomer monomer-shape-map))
-                          (in-monomer-rotamer-index (fragment-conformation-index in-monomer-shape))
-                          (in-monomer-rotamers (context-rotamers in-monomer-shape))
-                          (in-monomer-rotamer (aref (fragments in-monomer-rotamers) in-monomer-rotamer-index))
-                          (in-monomer-shape-key-values (shape-key-values in-monomer-rotamer))
-                          (next-monomer-shape (gethash next-monomer monomer-shape-map))
-                          (next-monomer-rotamer-index (fragment-conformation-index next-monomer-shape))
-                          (next-monomer-rotamers (context-rotamers next-monomer-shape))
-                          (next-monomer-rotamer (aref (fragments next-monomer-rotamers) next-monomer-rotamer-index))
-                          (next-monomer-shape-key-values (shape-key-values next-monomer-rotamer))
-                          (phi-key-value (or (cdr (assoc :phi (shape-key-values in-monomer-rotamer)))
-                                             (cdr (assoc :phi-1 (shape-key-values next-monomer-rotamer)))
-                                             (error "Could not find :phi or :phi-1")))
-                          (psi-key-value (or (cdr (assoc :psi (shape-key-values in-monomer-rotamer)))
-                                             (cdr (assoc :psi-1 (shape-key-values next-monomer-rotamer)))
-                                             (error "Could not find :psi or :psi-1")))
-                          )
-                     (setf (shape-key monomer-shape) (cons phi-key-value psi-key-value))))))))
-
-
-(defun assign-sidechain-allowed-rotamers (oligomer-shape 
-                                          &key (monomer-shape-build-order (monomer-shape-build-order oligomer-shape)))
-  "For each backbone monomer-shape set the rotamer-indices."
-  (format t "In fn~%")
-  (loop with rotamers-database = (connected-rotamers-map oligomer-shape)
-        for monomer-shape in monomer-shape-build-order
-        for monomer-context = (monomer-context monomer-shape)
-        for shape-kind = (monomer-shape-kind monomer-shape)
-        do (format t "monomer-shape ~a~%" monomer-shape)
-        if (eq (monomer-shape-kind monomer-shape) :sidechain)
-          do (let ((sidechain-rotamer-shape-connections (lookup-rotamer-context-connections (rotamer-context-connections rotamers-database) monomer-context)))
-               (check-type sidechain-rotamer-shape-connections sidechain-rotamer-shape-connections)
-               (format t "Setting allowed-rotamer-indices for ~a~%" monomer-shape)
-               (let* ((phi-psi-map (phi-psi-map sidechain-rotamer-shape-connections))
-                      (shape-key (shape-key monomer-shape))
-                      (rotamer-indices (gethash shape-key phi-psi-map)))
-                 (unless rotamer-indices
-                   (break "rotamer-indices is nil for key: ~s keys: ~s" shape-key (alexandria:hash-table-keys phi-psi-map)))
-                   (setf (allowed-rotamer-indices monomer-shape) rotamer-indices)))
-               ))
 

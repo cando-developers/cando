@@ -213,7 +213,8 @@
            #:make-rapid-starting-geometry
            #:next-rapid-starting-geometry
            #:stereochemistry-from-structure
-           #:superpose-all))
+           #:superpose-all
+           #:skip-slot-names))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

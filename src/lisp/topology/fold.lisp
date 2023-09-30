@@ -63,7 +63,7 @@
     (error "Implement me")))
              
 
-(defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree atom-table)
+(defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree atom-table adjustments)
   (let* ((root-monomer (root-monomer oligomer))
          (ring-closing-monomer-map (make-hash-table))
          (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule))
@@ -88,6 +88,7 @@
                                 residue-index
                                 nil
                                 atom-table
+                                adjustments
                                 )
     (make-ring-closing-connections ring-closing-monomer-map)
     (setf (root-atresidue atmolecule) root-atresidue)
@@ -140,13 +141,14 @@
                                    atmolecule-index
                                    atresidue-index
                                    parent-joint
-                                   atom-table)
+                                   atom-table
+                                   adjustments)
   "Recursively build a atmolecule from an oligomer by linking together kin:atresidues"
   (when parent-atresidue
     (setf (parent atresidue) parent-atresidue))
   (when coupling
     (setf (parent-plug-name atresidue) (target-plug-name coupling)))
-  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree oligomer atresidue parent-joint atmolecule-index atresidue-index atom-table))
+  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree oligomer atresidue parent-joint atmolecule-index atresidue-index atom-table adjustments))
         (current-topology (monomer-topology monomer oligomer)))
     (setf (stereoisomer-name atresidue) (current-stereoisomer-name monomer oligomer)
           (topology atresidue) current-topology
@@ -182,7 +184,8 @@
                                                      atmolecule-index
                                                      other-residue-index
                                                      new-parent-joint
-                                                     atom-table)))))))
+                                                     atom-table
+                                                     adjustments)))))))
              (couplings monomer))))
 
 (defun describe-recursively (atresidue prefix stream)

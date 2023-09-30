@@ -173,7 +173,7 @@
                                        1.0s0)))
            (expt 10.0d0 exponent))))))
 
-(defun parse-vec-real-line (line result width)
+(defun parse-vecreal-line (line result width)
   (loop for start = 0 then end
      for end = (+ start width)
      until (< (length line) end)

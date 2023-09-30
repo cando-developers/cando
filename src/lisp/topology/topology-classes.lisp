@@ -17,7 +17,6 @@
   ((to-atom-index :initarg :to-atom-index :accessor to-atom-index)
    (order :initarg :order :accessor order)))
 
-
 (cando.serialize:make-class-save-load constitution-bond)
 
 #+(or)(cando.serialize:make-class-save-load constitution-atoms)
@@ -348,6 +347,23 @@
       (error "Coupling for plug ~a was not found" plug-name))
     (other-monomer coupling monomer)))
 
+(defun only-other-out-coupling-plug-name (monomer avoid-out-coupling-plug-name)
+  "The monomer must have two outgoing couplings. Return the outgoing plug-name
+that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
+  (let ((out-coupling-plug-names (out-coupling-plug-names monomer)))
+    (cond
+      ((= (length out-coupling-plug-names) 2)
+       (cond
+         ((eq (first out-coupling-plug-names) avoid-out-coupling-plug-name)
+          (second out-coupling-plug-names))
+         ((eq (second out-coupling-plug-names) avoid-out-coupling-plug-name)
+          (first out-coupling-plug-names))
+         (t (error "The plug name ~s was not found in the available plug names ~s"
+                   avoid-out-coupling-plug-name
+                   out-coupling-plug-names))))
+      (t (error "The monomer ~s must have two out plug names and one of them must be ~s"
+                monomer
+                avoid-out-coupling-plug-name)))))
 
 (defclass coupling ()
   ((name :initarg :name :accessor name)))
@@ -486,6 +502,8 @@ Examples:
 (defun oligomer-monomer-name-for-monomer (oligomer monomer)
   "Return the monomer name at index in the oligomer"
   (let ((monomer-index (position monomer (monomers oligomer))))
+    (unless monomer-index
+      (error "The monomer ~s is not in the oligomer ~s" monomer oligomer))
     (elt (monomers monomer) (elt (monomer-indices oligomer) monomer-index))))
 
 (defun oligomer-monomer-name-at-index (oligomer index)
@@ -593,22 +611,10 @@ Examples:
 
 (defun build-residue-for-topology (topology)
   (let* ((stereoisomer (stereoisomer topology))
+         (constitution (constitution topology))
          (residue-name (name stereoisomer))
          (residue (chem:make-residue residue-name))
-         #|         
-         CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const ; ; ;
-         {                              ; ; ;
-         //  core::write_bf_stream(fmt::sprintf("%s:%d Topology_O::buildResidueForIsomer\n" , __FILE__ , __LINE__ )); ; ; ;
-         StereoisomerAtoms_sp info = this->_StereoisomerAtomProperties[isomer]; ; ; ;
-         //  printf("%s:%d buildResidueForIsomer isomer = %lu  stereoisomerAtoms = %s\n", __FILE__, __LINE__, isomer, _rep_(info).c_str()); ; ; ;
-         LOG("creating residue\n");     ; ; ;
-         core::Symbol_sp residueName = info->getName(); ; ; ;
-         if (residueName.unboundp()) {  ; ; ;
-         SIMPLE_ERROR(("residueName for %s was unbound") , _rep_(info)); ; ; ;
-         }                              ; ; ;
-         Residue_sp res = Residue_O::make(residueName); ; ; ;
-         |#
-         (constitution-atoms (constitution-atoms (constitution topology)))
+         (constitution-atoms (constitution-atoms constitution))
          (num-atoms (length constitution-atoms))
          (atoms (make-array num-atoms)))
     ;; Create the atoms

@@ -28,4 +28,5 @@
   (:export #:make-class-save-load
            #:save-cando
            #:load-cando
-           ))
+           #:skip-slot-names
+           #:serializable))

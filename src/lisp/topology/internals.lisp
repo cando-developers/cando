@@ -10,43 +10,43 @@
 (defun rad-to-deg (rad)
   (/ rad 0.0173433s0))
 
-(defun radians-difference (b1 b2)
-  (let ((diff (float (mod (- b2 b1) *2pi-s*) 1.0s0)))
-    (if (< diff *-pi-s*)
-        (incf diff *2pi-s*)
-        (if (> diff *pi-s*)
-            (decf diff *2pi-s*)
-            diff))))
+(defun radians-limit (rad)
+  "Limit the range of the angle in radians to greater than -PI and less or equal to PI"
+  (if (<= rad *-pi-s*)
+      (incf rad *2pi-s*)
+      (if (> rad *pi-s*)
+          (decf rad *2pi-s*)
+          rad)))
+
+(defun degrees-limit (deg)
+  "Limit the range of the angle in degrees to greater than -180.0 and less or equal to 180.0"
+  (if (<= deg -180.0s0)
+      (incf deg 360.0s0)
+      (if (> deg 180.0s0)
+          (decf deg 360.0s0)
+          deg)))
+
+(defun radians-sub (b1 b2)
+  (let ((diff (float (- b1 b2) 1.0s0)))
+    (radians-limit diff)))
 
 (defun radians-add (r1 r2)
-  (let ((sum (float (mod (+ r2 r1) *2pi-s*) 1.0s0)))
-    (if (< sum *-pi-s*)
-        (incf sum *2pi-s*)
-        (if (> sum *pi-s*)
-            (decf sum *2pi-s*)
-            sum))))
+  (let ((sum (float (+ r2 r1) 1.0s0)))
+    (radians-limit sum)))
 
 (defmacro radians-incf (place rad)
   `(setf ,place (radians-add ,place ,rad)))
 
-(defun degree-difference (b1 b2)
-  (let ((diff (float (mod (- b2 b1) 360.0s0) 1.0s0)))
-    (if (< diff -180.0s0)
-        (incf diff 360.0s0)
-        (if (> diff 180.0s0)
-            (decf diff 360.0s0)
-            diff))))
+(defun degrees-sub (b1 b2)
+  (let ((diff (float (- b1 b2) 1.0s0)))
+    (degrees-limit diff)))
 
 (defun degrees-add (b1 b2)
-  (let ((sum (float (mod (+ b2 b1) 360.0s0) 1.0s0)))
-    (if (< sum -180.0s0)
-        (incf sum 360.0s0)
-        (if (> sum 180.0s0)
-            (decf sum 360.0s0)
-            sum))))
+  (let ((sum (float (+ b2 b1) 1.0s0)))
+    (degrees-limit sum)))
 
-(defun angle-sub (b2 b1)
-  (degree-difference b1 b2))
+(defun angle-sub (b1 b2)
+  (degrees-sub b1 b2))
 
 (defclass dihedral-info ()
   ((name :initarg :name :accessor name)))
@@ -143,6 +143,7 @@
    (trainer-index :initarg :trainer-index :accessor trainer-index)
    (probability :initform 1.0s0 :initarg :probability :accessor probability)
    (energy :initform 0.0s0 :initarg :energy :accessor energy)
+   (delta-energy :initform 0.0s0 :initarg :delta-energy :accessor delta-energy)
    (internals :initarg :internals :accessor internals)
    (shape-key-values :initform nil :initarg :shape-key-values :accessor shape-key-values)
    (coordinates :initarg :coordinates :accessor coordinates)
@@ -154,9 +155,10 @@
  (lambda (obj stream)
    (let ((*print-pretty* nil))
      (print-unreadable-object (obj stream :type t)
-       (format stream ":trainer-index ~a :energy ~5,2f"
+       (format stream "~a :trainer-index ~a :delta-energy ~5,2f"
+               (monomer-context obj)
                (trainer-index obj)
-               (energy obj)
+               (delta-energy obj)
                )
        #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals ))))))
 
@@ -166,6 +168,7 @@
                  :trainer-index (trainer-index fragment-internals)
                  :probability (probability fragment-internals)
                  :energy (energy fragment-internals)
+                 :delta-energy (delta-energy fragment-internals)
                  :internals (copy-seq (internals fragment-internals))
                  :shape-key-values (copy-seq (shape-key-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
@@ -209,6 +212,7 @@
                     ((typep info 'dihedral-info-atom)
                      (with-slots (name atom-name) info
                        (extract-dihedral-rad focused-assembler focus-monomer atom-name)))))))
+
 
 #+(or)
 (defun cluster-dihedral-vector (fragment-internals names)
@@ -379,6 +383,8 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (defun rotamer-context-connections-count (fcc)
   (hash-table-count (fmap fcc)))
 
+(defgeneric lookup-rotamers-for-context (fcc context &optional errorp))
+
 (defun lookup-rotamer-context-connections (fcc key)
   (gethash key (fmap fcc)))
 
@@ -459,7 +465,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
                       (typep frag2-int 'bonded-internal))
              (let* ((dihedral-frag1 (rad-to-deg (dihedral-rad frag1-int)))
                     (dihedral-frag2 (rad-to-deg (dihedral-rad frag2-int)))
-                    (aa (degree-difference dihedral-frag1 dihedral-frag2)))
+                    (aa (degrees-sub dihedral-frag2 dihedral-frag1)))
                (incf sum-of-squares (* aa aa))
                (incf num-squares))))
     (let ((rms (sqrt (/ sum-of-squares (float num-squares)))))
@@ -538,7 +544,6 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   (values 0.0 0.0 0.0))
 
 (defmethod extract-bond-angle-rad-dihedral-rad ((internal bonded-internal))
-  (break "Check that internal angles are in radians")
   (values (bond internal) (angle-rad internal) (dihedral-rad internal)))
 
 (defgeneric apply-fragment-internals-to-atresidue (fragment-internals atresidue))
