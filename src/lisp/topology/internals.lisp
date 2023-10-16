@@ -20,9 +20,9 @@
 
 (defun degrees-limit (deg)
   "Limit the range of the angle in degrees to greater than -180.0 and less or equal to 180.0"
-  (if (<= deg -180.0s0)
+  (if (< deg -180.0s0)
       (incf deg 360.0s0)
-      (if (> deg 180.0s0)
+      (if (>= deg 180.0s0)
           (decf deg 360.0s0)
           deg)))
 
@@ -71,6 +71,16 @@
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
      (format stream "~a ~a ~a" (name obj) (plug-path obj) (external-dihedral-name obj)))))
+
+(defun create-dihedral-info-from-constitution (constitution)
+  ;; Build dihedrals using heavy atoms with more than one bond
+  (loop for ca across (constitution-atoms constitution)
+        with index = 0
+        for element = (element ca)
+        when (not (eq element :H))
+          collect (make-instance 'dihedral-info-atom
+                                 :name (intern (format nil "BB~a" (incf index)) :keyword)
+                                 :atom-name (atom-name ca))))
 
 (defun parse-dihedral-info (dihedrals)
   (loop for one in dihedrals
@@ -138,31 +148,41 @@
    (print-unreadable-object (obj stream :type t)
      (format stream "~a" (name obj)))))
 
-(defclass fragment-internals (serial:serializable)
-  ((monomer-context :initarg :monomer-context :accessor monomer-context)
-   (trainer-index :initarg :trainer-index :accessor trainer-index)
+(defclass rotamer (cando.serialize:serializable)
+  ((internals :initarg :internals :accessor internals)
+   (delta-energy :initform 1.0s0 :initarg :delta-energy :accessor delta-energy)
    (probability :initform 1.0s0 :initarg :probability :accessor probability)
+   (monomer-context :initarg :monomer-context :accessor monomer-context)))
+
+(defclass fragment-internals (rotamer)
+  ((trainer-index :initarg :trainer-index :accessor trainer-index)
    (energy :initform 0.0s0 :initarg :energy :accessor energy)
-   (delta-energy :initform 0.0s0 :initarg :delta-energy :accessor delta-energy)
-   (internals :initarg :internals :accessor internals)
-   (shape-key-values :initform nil :initarg :shape-key-values :accessor shape-key-values)
    (coordinates :initarg :coordinates :accessor coordinates)
+   (shape-key-values :initarg :shape-key-values :accessor shape-key-values :documentation "Not needed")
    ))
 
-(cando.serialize:make-class-save-load
- fragment-internals
- :print-unreadably
- (lambda (obj stream)
-   (let ((*print-pretty* nil))
-     (print-unreadable-object (obj stream :type t)
-       (format stream "~a :trainer-index ~a :delta-energy ~5,2f"
-               (monomer-context obj)
-               (trainer-index obj)
-               (delta-energy obj)
-               )
-       #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals ))))))
+(defmethod print-object ((obj fragment-internals) stream)
+  (if *print-readably*
+      (call-next-method)
+      (let ((*print-pretty* nil))
+        (print-unreadable-object (obj stream :type t)
+          (format stream "~a :trainer-index ~a :delta-energy ~5,2f"
+                  (monomer-context obj)
+                  (trainer-index obj)
+                  (delta-energy obj)
+                  )
+          #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals ))))))
+
+
+(defclass sidechain-rotamer (rotamer)
+  (()))
+
+(defclass backbone-rotamer (rotamer)
+  ((backbone-dihedral-cache-deg :initarg :backbone-dihedral-cache-deg :accessor backbone-dihedral-cache-deg)))
+
 
 (defun copy-fragment-internals (fragment-internals)
+  "Shallow copy of fragment-internals"
   (make-instance 'fragment-internals
                  :monomer-context (monomer-context fragment-internals)
                  :trainer-index (trainer-index fragment-internals)
@@ -170,10 +190,46 @@
                  :energy (energy fragment-internals)
                  :delta-energy (delta-energy fragment-internals)
                  :internals (copy-seq (internals fragment-internals))
-                 :shape-key-values (copy-seq (shape-key-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
                  ))
 
+(defclass rotamers (cando.serialize:serializable)
+  ((rotamers :initarg :rotamers :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor rotamers)))
+
+(defclass sidechain-rotamers (rotamers)
+  ((shape-key-to-index :initarg :shape-key-to-index :initform (make-hash-table :test 'equal) :accessor shape-key-to-index)))
+
+
+(defclass backbone-rotamers (rotamers)
+  ())
+
+(defclass rotamers-database (cando.serialize:serializable)
+  ((context-to-rotamers :initarg :context-to-rotamers :initform (make-hash-table) :accessor context-to-rotamers)))
+
+(defmethod print-object ((obj rotamers-database) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t )
+        (format stream "~a contexts" (hash-table-count (context-to-rotamers obj))))))
+
+(defmethod apply-fragment-internals-to-atresidue ((obj rotamer) atresidue)
+ (loop for joint across (topology:joints atresidue)
+       for internal across (internals obj)
+       do (multiple-value-bind (bond angle-rad dihedral-rad)
+              (topology:extract-bond-angle-rad-dihedral-rad internal)
+            (topology:fill-joint-internals joint bond angle-rad dihedral-rad))))
+
+
+(defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
+  (context-to-rotamers obj))
+
+(defmethod lookup-rotamers-for-context ((db rotamers-database) monomer-context &optional (errorp t))
+  (let ((rot (gethash monomer-context (context-to-rotamers db))))
+    (if rot
+        rot
+        (if errorp
+            (error "Could not find rotamers for ~s" monomer-context)
+            nil))))
 
 (defun extract-dihedral-rad (assembler monomer atom-name)
   (let* ((atres (assembler-atresidue assembler monomer))
@@ -312,7 +368,8 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (cando.serialize:make-class-save-load context-rotamers-map
  :print-unreadably
  (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t))))
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~s members" (hash-table-count (monomer-context-to-context-rotamers obj))))))
 
 (defclass rotamer-shape-connections ()
   ())

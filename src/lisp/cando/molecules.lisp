@@ -525,6 +525,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                        :energy-function energy-function)))))
 
 
+#+(or)
 (defun next-rapid-starting-geometry (rapid-starting-geometry &key verbose)
   (with-slots (dynamics energy-function) rapid-starting-geometry
     (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
@@ -583,16 +584,21 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
         (values dynamics energy-function total-energy)
         ))))
 
+(defparameter *build-agg* nil)
 (defun build-good-geometry-from-random (agg)
   (let (bad-geom)
-    (dotimes (i 3)
+    (dotimes (i 10)
       (format t "Attempt ~a to build good geometry from a random starting point~%" i)
       (scramble-positions agg)
-      (optimize-structure agg)
+      (setf *build-agg* agg)
+      (handler-case
+       (optimize-structure agg)
+       (error (e) (warn "error: ~a" e))
+       )
       (setf bad-geom (bad-geometry-p agg))
       (when (not bad-geom)
         (return-from build-good-geometry-from-random)))
-    (warn "Exceeded max number of tries to build good geometry~%Bad geometry:~%~a" bad-geom)))
+    (error "Exceeded max number of tries to build good geometry~%Bad geometry:~%~a" bad-geom)))
 
 
 (defun save-mol2 (matter pathname &key use-sybyl-types)

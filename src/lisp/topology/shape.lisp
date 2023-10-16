@@ -1,6 +1,6 @@
 (in-package :topology)
 
-(defgeneric set-to-closest-matching-fragment-conformation-index (monomer-shape oligomer)
+(defgeneric set-to-closest-matching-fragment-conformation-index (monomer-shape oligomer info)
   (:documentation "Set the fragment-conformation-index to the closest matching context-rotamers index"))
 
 (defconstant +phi+   :phi)
@@ -35,7 +35,7 @@
 
 (defclass oligomer-shape ()
   ((oligomer :initarg :oligomer :accessor oligomer)
-   (connected-rotamers-map :initarg :connected-rotamers-map :accessor connected-rotamers-map)
+   (rotamers-map :initarg :rotamers-map :accessor rotamers-map)
    (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector)
    (monomer-shape-map :initarg :monomer-shape-map :accessor monomer-shape-map)
    (the-root-monomer :initarg :the-root-monomer :accessor the-root-monomer)
@@ -181,7 +181,7 @@
               finally (return (values monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)))
       (make-instance 'oligomer-shape
                      :oligomer oligomer
-                     :connected-rotamers-map rotamers-db
+                     :rotamers-map rotamers-db
                      :monomer-shape-vector monomer-shape-vector
                      :monomer-shape-map monomer-shape-map
                      :the-root-monomer the-root-monomer
@@ -199,15 +199,14 @@
   (let ((root (the-root-monomer shape)))
     (all-monomers-impl root shape)))
 
-
-
-
+#|
 (defun random-fragment-conformation-index-impl (root-monomer-shape oligomer-shape)
   (let ((out-monomers (gethash (monomer root-monomer-shape) (out-monomers oligomer-shape))))
     (loop for out-monomer in out-monomers
           for out-monomer-shape = (gethash out-monomer (monomer-shape-map oligomer-shape))
           for fragment-match-key = (cons (monomer-context root-monomer-shape) (monomer-context out-monomer-shape))
-          for allowed-fragment-vec = (let* ((ht (topology:rotamer-context-connections (topology:connected-rotamers-map oligomer-shape)))
+          for allowed-fragment-vec = (let* ((thing (rotamers-map oligomer-shape))
+                                            (ht (topology:context-to-rotamers thing))
                                             (val (gethash fragment-match-key ht)))
                                        (unless val (break "Could not find value for key ~a in ht: ~a" fragment-match-key ht))
                                        val)
@@ -234,13 +233,15 @@
     (let* ((context-rotamers (context-rotamers root-monomer-shape)))
       (format t "context-rotamers: ~a~%" context-rotamers)
       (setf (fragment-conformation-index root-monomer-shape)
-            (random (length (topology:fragments context-rotamers))))
+            (random (length (topology:rotamers context-rotamers))))
       (unless (< (fragment-conformation-index root-monomer-shape)
-                 (length (topology:fragments context-rotamers)))
+                 (length (topology:rotamers context-rotamers)))
         (error "fragment-conformation-index ~a is out of bounds ~a"
                (fragment-conformation-index root-monomer-shape)
-               (length (topology:fragments context-rotamers))))
+               (length (topology:rotamers context-rotamers))))
       (random-fragment-conformation-index-impl root-monomer-shape oligomer-shape))))
+|#
+
 
 (defun build-shapes (oligomer-shapes assembler &key monomer-order)
   (let ((coordinates (chem:make-coordinates (topology:energy-function assembler))))
@@ -271,3 +272,57 @@
              (fragment-conformation-index (cdr shape-key))))
       (t (fragment-conformation-index shape-key)))))
 
+
+(defun lookup-dihedral-cache (oligomer-shape monomer-shape dihedral-name)
+  "Return the list of plug names to get from a monomer to another monomer that
+provides the dihedral angle with the given dihedral-name"
+  (let* ((monomer (monomer monomer-shape))
+         (oligomer (oligomer oligomer-shape))
+         (monomer-name (oligomer-monomer-name oligomer monomer))
+         (topology (chem:find-topology monomer-name))
+         (constitution (constitution topology))
+         (residue-properties (residue-properties constitution))
+         (dihedrals (getf residue-properties :dihedrals)))
+    (when dihedrals
+      (let* ((dihedral-info (find dihedral-name dihedrals :key #'name)))
+        (etypecase dihedral-info
+         (dihedral-info-external
+          (loop for plug-name in (plug-path dihedral-info)
+                do (setf monomer (monomer-on-other-side monomer plug-name)))
+          (let* ((monomer-shape (gethash monomer (topology:monomer-shape-map oligomer-shape)))
+                 (monomer-context (monomer-context monomer-shape))
+                 (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-map oligomer-shape)))))
+                 (rotamer-index (fragment-conformation-index monomer-shape))
+                 (rotamer (aref rotamers rotamer-index))
+                 (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
+                 (deg (getf dihedral-cache-deg (external-dihedral-name dihedral-info))))
+            (values deg monomer-shape)))
+          (dihedral-info-atom
+           (let* ((monomer-context (monomer-context monomer-shape))
+                  (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-map oligomer-shape)))))
+                  (rotamer-index (fragment-conformation-index monomer-shape))
+                  (rotamer (aref rotamers rotamer-index))
+                  (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
+                  (deg (getf dihedral-cache-deg dihedral-name)))
+             (values deg monomer-shape))))))))
+
+(defun lookup-dihedral-cache-monomer-shape (oligomer-shape monomer-shape dihedral-name)
+  "Return the list of plug names to get from a monomer to another monomer that
+provides the dihedral angle with the given dihedral-name"
+  (let* ((monomer (monomer monomer-shape))
+         (oligomer (oligomer oligomer-shape))
+         (monomer-name (oligomer-monomer-name oligomer monomer))
+         (topology (chem:find-topology monomer-name))
+         (constitution (constitution topology))
+         (residue-properties (residue-properties constitution))
+         (dihedrals (getf residue-properties :dihedrals)))
+    (when dihedrals
+      (let* ((dihedral-info (find dihedral-name dihedrals :key #'name)))
+        (etypecase dihedral-info
+         (dihedral-info-external
+          (loop for plug-name in (plug-path dihedral-info)
+                do (setf monomer (monomer-on-other-side monomer plug-name)))
+          (let* ((monomer-shape (gethash monomer (topology:monomer-shape-map oligomer-shape))))
+            monomer-shape))
+         (dihedral-info-atom
+          monomer-shape))))))

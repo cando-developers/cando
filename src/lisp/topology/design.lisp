@@ -12,9 +12,9 @@
   (let* ((out-plug (topology:plug-named prev-topology out-plug-name))
          (in-plug (topology:plug-named next-topology in-plug-name)))
     (unless out-plug
-      (error "Could not find plug in ~a named ~a" prev-topology out-plug-name))
+      (error "Could not find out-plug in ~s named ~s - available plugs: ~s" prev-topology out-plug-name (alexandria:hash-table-keys (topology:plugs prev-topology))))
     (unless in-plug
-      (error "Could not find plug in ~a named ~a" next-topology in-plug-name))
+      (error "Could not find in-plug in ~s named ~s - available plugs: ~s" next-topology in-plug-name (alexandria:hash-table-keys (topology:plugs next-topology))))
     (unless (= (length (topology:plug-bonds out-plug)) (length (topology:plug-bonds in-plug)))
       (error "There is a mismatch between the number of plug-bonds in ~s and ~s" out-plug in-plug))
     (loop for bond-index below (length (topology:plug-bonds out-plug))
@@ -202,12 +202,12 @@ This is for looking up parts but if the thing returned is not a part then return
   (let ((part (make-part name tree)))
     (setf (gethash name *parts*) part)))
 
-(defun my-add-monomers (oligomer names)
+(defun my-add-monomers (oligomer names &key id)
   (when (consp (car names))
     (error "Illegal names - must be simple list - instead got ~s" names))
   (when (and (= (length names) 1) (null (car names)))
     (error "Illegal monomer names ~s" names))
-  (let ((monomer (make-instance 'monomer :monomers names)))
+  (let ((monomer (make-instance 'monomer :monomers names :id id)))
     (vector-push-extend monomer (monomers oligomer))
     (values (list monomer) nil)))
 
@@ -220,27 +220,36 @@ This is for looking up parts but if the thing returned is not a part then return
       ((symbolp names)
        (when (null names)
          (error "In translate-part illegal name ~s part-info ~s" names part-info))
-       (my-add-monomers oligomer (list names)))
+       (my-add-monomers oligomer (list names) :id part-info))
       ((consp names)
        (if (and (symbolp (first names)) (string= (first names) :cycle))
-           (values (gethash (second names) labels) (list (third names) (fourth names)))
-           (my-add-monomers oligomer names)))
-      (t (error "Handle ~a" names)))))
+           (let ((ringa (third names))
+                 (ringb (fourth names)))
+             (unless (and ringa ringb)
+               (error "You must provide two additional arguments for ~s" names))
+             (values (gethash (second names) labels) (list ringa ringb)))
+           (my-add-monomers oligomer names :id part-info)))
+      (t (error "Handle translate-part for ~s" names)))))
 
 (defun interpret-part (oligomer part-info labels &key (parts *parts*))
   (destructuring-bind (names &key label)
       (cond
-        ((and (consp part-info) (symbolp (first part-info)) (string= (first part-info) :cycle))
+        ;; Handle (:cycle ...)
+        ((and (consp part-info) (symbolp (first part-info)) (string= (string (first part-info)) "CYCLE"))
          (list part-info))
-        ((and (consp part-info) (gethash (car part-info) *topology-groups*))
-         (let ((group-names (gethash (car part-info) *topology-groups*)))
+        ;; Handle (group-name ... plist)
+        ((and (consp part-info) (gethash (first part-info) *topology-groups*))
+         (let ((group-names (gethash (first part-info) *topology-groups*)))
            (list* group-names (cdr part-info))))
         ((consp part-info)
+         (error "Handle part-info ~s" part-info)
          part-info)
         ((symbolp part-info)
          (let ((group-names (gethash part-info *topology-groups*)))
-           (list part-info)
-           (list group-names))))
+           (if (null group-names)
+               (list part-info)
+               (list group-names))))
+        (t (error "Handle part-info ~s" part-info)))
     (multiple-value-bind (new-parts ringp)
         (translate-part oligomer names labels part-info :parts parts)
       (when label
@@ -289,25 +298,43 @@ This is for looking up parts but if the thing returned is not a part then return
     (loop
       (when (null subtree) (return accumulated-parts))
       (let ((info (pop subtree)))
-        (if (consp info)
-            (progn
-              #+(or)(format *debug-io* "interpret-subtree info: ~s~%" info)
-              (let* ((coupling (first info)) ; interpret a branch
-                     (node-info (cadr info))) ;; CHECK
-                (multiple-value-bind (new-parts ringp)
-                    (interpret-part oligomer node-info labels :parts parts)
-                  (setf accumulated-parts (append accumulated-parts new-parts))
-                  (do-coupling oligomer coupling ringp previous-parts new-parts))))
-            (progn
-              #+(or)(format *debug-io* "interpret-subtree info: ~s~%" info)
-              (let* ((coupling info)    ; Interpret a chain
-                     (node-info (pop subtree)))
-                (multiple-value-bind (new-parts ringp)
-                    (interpret-part oligomer node-info labels :parts parts)
-                  (setf accumulated-parts (append accumulated-parts new-parts))
-                  (do-coupling oligomer coupling ringp previous-parts new-parts)
-                  (setf previous-parts new-parts)))))))))
-
+        (cond
+          ((and (consp info) (consp (car info)) (string= (string (car (car info))) "RING"))
+           (let ((ring-info (cdr (car info))))
+             (unless (= (length ring-info) 3)
+               (error "A RING specifier must have 3 arguments (RING prev-plug-name next-plug-name next-label) but only has ~s" ring-info))
+             (let* ((previous-plug-name (first ring-info))
+                    (next-plug-name (second ring-info))
+                    (label (third ring-info))
+                    (next-monomer (gethash label labels))
+                    (previous-monomer (parts-with-plugs previous-parts previous-plug-name))
+                    )
+               (unless previous-monomer
+                 (error "Could not find previous monomer ~s with plug-name ~s" previous-parts previous-plug-name))
+               (ring-couple-with-plug-names oligomer
+                                            (first previous-monomer)
+                                            previous-plug-name
+                                            (first next-monomer)
+                                            next-plug-name)
+               )))
+          ((and (consp info) (consp (car info)))
+           (error "Add support to handle ~s - currently only RING is allowed as a special edge"))
+          ((consp info)
+           #+(or)(format *debug-io* "interpret-subtree info: ~s~%" info)
+           (let* ((coupling (first info))  ; interpret a branch
+                  (node-info (cadr info))) ;; CHECK
+             (multiple-value-bind (new-parts ringp)
+                 (interpret-part oligomer node-info labels :parts parts)
+               (setf accumulated-parts (append accumulated-parts new-parts))
+               (do-coupling oligomer coupling ringp previous-parts new-parts))))
+         (t
+          (let* ((coupling info)        ; Interpret a chain
+                 (node-info (pop subtree)))
+            (multiple-value-bind (new-parts ringp)
+                (interpret-part oligomer node-info labels :parts parts)
+              (setf accumulated-parts (append accumulated-parts new-parts))
+              (do-coupling oligomer coupling ringp previous-parts new-parts)
+              (setf previous-parts new-parts)))))))))
 
 (defun classify-topologys (topology-hash-table)
   (let ((origins (make-hash-table))
@@ -408,6 +435,7 @@ of out-plugs."
                        (error "Illegal monomer with name ~s" (name other-topology)))
                      (let ((other-monomer (make-instance 'monomer
                                                          :monomers (list (name other-topology)))))
+                       (break "one-round-extend Assign the id to the monomer")
                        (when verbose (format *debug-io* "Adding new monomer ~s~%" other-monomer))
                        (add-monomer oligomer-space other-monomer)
                        (etypecase plug
@@ -464,6 +492,7 @@ add cap monomers until no more cap monomers are needed."
         (focus-monomer (let ((names (mapcar #'name focus-topologys-in-list)))
                          (when (null (car names))
                            (error "Illegal names for monomer ~s" names))
+                         (break "build-one-training-oligomer-space Assign the id to the monomer using names")
                          (make-instance 'monomer :monomers names))))
     (format *debug-io* "focus-monomer: ~a~%" focus-monomer)
     (add-monomer oligomer-space focus-monomer)

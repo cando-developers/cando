@@ -28,6 +28,7 @@
                  for atresidue = (aref (atresidues atmolecule) residue-index)
                  do (loop for atom-index below (length (joints atresidue))
                           for joint = (aref (joints atresidue) atom-index)
+                          do (unless joint (error "joint is NIL in atresidue ~s" atresidue))
                           do (funcall callback joint (list molecule-index residue-index atom-index))))))
 
 (defclass atmolecule (atmatter)
@@ -63,7 +64,14 @@
     (error "Implement me")))
              
 
-(defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree atom-table adjustments)
+(defun build-atmolecule-using-oligomer (oligomer
+                                        molecule
+                                        molecule-index
+                                        monomer-positions
+                                        joint-tree
+                                        atom-table
+                                        adjustments
+                                        orientation)
   (let* ((root-monomer (root-monomer oligomer))
          (ring-closing-monomer-map (make-hash-table))
          (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule))
@@ -89,6 +97,7 @@
                                 nil
                                 atom-table
                                 adjustments
+                                orientation
                                 )
     (make-ring-closing-connections ring-closing-monomer-map)
     (setf (root-atresidue atmolecule) root-atresidue)
@@ -142,13 +151,22 @@
                                    atresidue-index
                                    parent-joint
                                    atom-table
-                                   adjustments)
+                                   adjustments
+                                   orientation)
   "Recursively build a atmolecule from an oligomer by linking together kin:atresidues"
   (when parent-atresidue
     (setf (parent atresidue) parent-atresidue))
   (when coupling
     (setf (parent-plug-name atresidue) (target-plug-name coupling)))
-  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree oligomer atresidue parent-joint atmolecule-index atresidue-index atom-table adjustments))
+  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree
+                                                          oligomer
+                                                          atresidue
+                                                          parent-joint
+                                                          atmolecule-index
+                                                          atresidue-index
+                                                          atom-table
+                                                          adjustments
+                                                          orientation))
         (current-topology (monomer-topology monomer oligomer)))
     (setf (stereoisomer-name atresidue) (current-stereoisomer-name monomer oligomer)
           (topology atresidue) current-topology
@@ -185,7 +203,8 @@
                                                      other-residue-index
                                                      new-parent-joint
                                                      atom-table
-                                                     adjustments)))))))
+                                                     adjustments
+                                                     orientation)))))))
              (couplings monomer))))
 
 (defun describe-recursively (atresidue prefix stream)
@@ -203,6 +222,7 @@
     (format stream "~a[~a]" (class-name (class-of object)) (stereoisomer-name object))))
 
 (defun add-joint (atresidue index joint)
+  (check-type joint kin:joint)
   (when (< (length (joints atresidue)) index)
     (adjust-array (joints atresidue) (1+ index)))
   (setf (aref (joints atresidue) index) joint))

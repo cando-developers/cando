@@ -1505,10 +1505,11 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
 
 
 
-(defun sketch2d (molecule &key accumulate-coordinates verbose one-shot use-structure )
+(defun sketch2d (molecule &key accumulate-coordinates verbose one-shot use-structure show-names)
   "Calculate a sketch2d from the molecule.  If use-structure is set then calculate the stereochemical configuration of atoms
 using the positions of the atoms in the molecule, otherwise get the configuration from the _Configuration slot."
-  (let ((sketch2d (do-sketch2d molecule :accumulate-coordinates accumulate-coordinates :verbose verbose :one-shot one-shot)))
+  (let ((*show-names* (or *show-names* show-names))
+        (sketch2d (do-sketch2d molecule :accumulate-coordinates accumulate-coordinates :verbose verbose :one-shot one-shot)))
     (multiple-value-bind (stereochemistry-types configurations cips)
         (chem:calculate-stereochemistry molecule :use-structure use-structure)
       (augment-sketch-with-stereochemistry use-structure sketch2d cips stereochemistry-types configurations)

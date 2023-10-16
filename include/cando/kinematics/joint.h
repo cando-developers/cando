@@ -109,6 +109,9 @@ public:
 	/*! Destructors need to delete all Children */
   virtual void _releaseAllChildren() = 0;
   virtual core::List_sp jointChildren() const;
+  Joint_sp onlyOtherChild(Joint_sp child) const;
+
+  
   CL_DEFMETHOD int positionIndexX3() const { return this->_PositionIndexX3; };
 public:
 

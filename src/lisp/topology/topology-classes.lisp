@@ -108,12 +108,21 @@
              (dihedral-max-degrees obj)
              (weight obj)))))
 
-(defclass topology ()
+(defclass abstract-topology (cando.serialize:serializable)
   ((name :initarg :name :accessor name)
-   (constitution :initarg :constitution :accessor constitution)
-   (stereoisomer :initarg :stereoisomer :accessor stereoisomer)
    (property-list :initform nil :initarg :property-list :accessor property-list)
    (plugs :initform (make-hash-table) :type hash-table :initarg :plugs :accessor plugs)
+   ))
+
+(defmethod print-object ((obj abstract-topology) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~s" (name obj)))))
+
+(defclass topology (abstract-topology)
+  ((constitution :initarg :constitution :accessor constitution)
+   (stereoisomer :initarg :stereoisomer :accessor stereoisomer)
    (joint-template :initarg :joint-template :accessor joint-template)
    (restraints :initform nil :initarg :restraints :accessor restraints)
    ))
@@ -129,12 +138,7 @@
 
 (defmethod topologyp ((obj t)) nil)
 (defmethod topologyp ((obj topology)) t)
-
-(cando.serialize:make-class-save-load topology
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~s" (name obj)))))
+(defmethod topologyp ((obj abstract-topology)) t)
 
 (defun has-plug-named (topology plug-name)
   (gethash plug-name (plugs topology)))
@@ -170,6 +174,7 @@
              (plugs topology))
     out-plugs))
 
+
 (defun plugs-as-list (topology)
   (let (plugs)
     (maphash (lambda (name plug)
@@ -178,36 +183,30 @@
              (plugs topology))
     plugs))
 
-(defclass plug-bond ()
+(defclass plug-bond (cando.serialize:serializable)
   ((atom-name :initarg :atom-name :accessor atom-name)
    (bond-order :initarg :bond-order :accessor bond-order)))
 
-(cando.serialize:make-class-save-load
- plug-bond
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (atom-name obj)))))
+(defclass abstract-plug (cando.serialize:serializable)
+  ((name :initarg :name :accessor name)))
 
-(defclass plug ()
-  ((name :initarg :name :accessor name)
-   (plug-bonds :initform (make-array 2) :initarg :plug-bonds :accessor plug-bonds)))
+(defmethod print-object ((obj abstract-plug) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~s" (name obj)))))
 
-(cando.serialize:make-class-save-load plug
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a ~a" (name obj) (plug-bonds obj)))))
+(defclass abstract-in-plug (abstract-plug)
+  ())
+
+(defclass abstract-out-plug (abstract-plug)
+  ())
+
+(defclass plug (abstract-plug)
+  ((plug-bonds :initform (make-array 2) :initarg :plug-bonds :accessor plug-bonds)))
 
 (defclass in-plug (plug)
   ())
-
-(cando.serialize:make-class-save-load
- in-plug
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a ~a" (name obj) (plug-bonds obj)))))
 
 (defun make-in-plug (name bond0 bond-order0 &optional bond1 bond-order1)
   (make-instance 'in-plug
@@ -225,13 +224,6 @@
 
 (defclass out-plug (plug)
   ())
-
-(cando.serialize:make-class-save-load
- out-plug
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a ~a" (name obj) (plug-bonds obj)))))
 
 (defun make-out-plug (name bond0 bond-order0 &optional bond1 bond-order1)
   (make-instance 'out-plug
@@ -257,10 +249,17 @@
   (let ((first-char (elt (string name) 0)))
     (char= first-char #\-)))
 
+(defun is-out-plug-name (name)
+  (let ((first-char (elt (string name) 0)))
+    (char= first-char #\+)))
+
 (defun other-plug-name (name)
-  (if (is-in-plug-name name)
-      (intern (format nil "~c~a" #\+ (subseq (string name) 1)) :keyword)
-      (intern (format nil "~c~a" #\- (subseq (string name) 1)) :keyword)))
+  (cond
+    ((is-in-plug-name name)
+     (intern (format nil "~c~a" #\+ (subseq (string name) 1)) :keyword))
+    ((is-out-plug-name name)
+     (intern (format nil "~c~a" #\- (subseq (string name) 1)) :keyword))
+    (t (error "~s must be a in-plug or out-plug name" name))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -268,7 +267,7 @@
 ;;;
 
 
-(defclass monomer ()
+(defclass monomer (cando.serialize:serializable)
   ((id :initform nil
        :initarg :id
        :accessor id)
@@ -278,11 +277,11 @@
               :accessor couplings)
    (monomers :initarg :monomers :accessor monomers)))
 
-(cando.serialize:make-class-save-load monomer
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t :identity t )
-     (format stream ":id ~a :monomers ~s" (id obj) (monomers obj)))))
+(defmethod print-object ((obj monomer) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream ":id ~s" (id obj)))))
 
 (defun number-of-stereoisomers (monomer)
   (length (monomers monomer)))
@@ -340,6 +339,13 @@
   (gethash plug-name (couplings monomer)))
 
 (defgeneric other-monomer (coupling monomer))
+
+(defun follow-plug-path (monomer plug-path)
+  "Follow the plug-path from monomer and return the monomer at the end"
+  (loop for plug-name in plug-path
+        do (setf monomer (monomer-on-other-side monomer plug-name)))
+  monomer)
+
 
 (defun monomer-on-other-side (monomer plug-name)
   (let ((coupling (monomer-plug-named monomer plug-name)))
@@ -441,17 +447,22 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
 (defun add-monomer (oligomer-space monomer)
   (vector-push-extend monomer (monomers oligomer-space)))
 
-(defun calculate-number-of-sequences (oligomer-space)
+(defgeneric calculate-number-of-sequences (obj))
+
+(defmethod calculate-number-of-sequences (oligomer-space)
   (let ((num 1))
   (loop for monomer across (monomers oligomer-space)
         do (setf num (* num (length (monomers monomer)))))
     num))
 
-(defun number-of-sequences (oligomer-space)
+(defgeneric number-of-sequences (oligomer-thing))
+
+(defmethod number-of-sequences ((oligomer-space oligomer-space))
   ;; Lazy calculate number-of-sequences
   (when (null (%number-of-sequences oligomer-space))
     (setf (%number-of-sequences oligomer-space) (calculate-number-of-sequences oligomer-space)))
   (%number-of-sequences oligomer-space))
+
 
 (defun make-oligomer-space (foldamer tree &key (parts *parts*))
   "Make an oligomer-space from a description in the **tree**.
@@ -475,6 +486,17 @@ Examples:
     (setf (%number-of-sequences oligomer-space)
           (calculate-number-of-sequences oligomer-space))
     (setf (labeled-monomers oligomer-space) labels)
+    oligomer-space))
+
+
+(defvar *debug-oligomer-space*)
+(defun is-oligomer-space-supported (foldamer tree &key (parts *parts*))
+  (let* ((oligomer-space (make-instance 'oligomer-space :foldamer foldamer))
+         (labels (make-hash-table)))
+    (interpret-subtree oligomer-space tree labels :parts parts)
+    (setf *debug-oligomer-space* oligomer-space)
+    (loop for monomer across (monomers oligomer-space)
+          for monomer-context = (topology:foldamer-monomer-context monomer oligomer-space foldamer))
     oligomer-space))
 
 (defclass oligomer ()
@@ -510,6 +532,15 @@ Examples:
   "Return the monomer name at index in the oligomer"
   (let ((monomer (elt (monomers oligomer) index)))
     (elt (monomers monomer) (elt (monomer-indices oligomer) index))))
+
+(defgeneric oligomer-monomer-name (oligomer thing)
+  (:documentation "Return the monomer name of either a monomer or the monomer at the index in the oligomer"))
+
+(defmethod oligomer-monomer-name (oligomer (monomer monomer))
+  (oligomer-monomer-name-for-monomer oligomer monomer))
+
+(defmethod oligomer-monomer-name (oligomer (index integer))
+  (oligomer-monomer-name-at-index oligomer index))
 
 (defun oligomer-monomer-names (oligomer)
   "Return a list of monomer names for this oligomer"
@@ -740,4 +771,3 @@ Examples:
 
 (defun chem:stereoisomer-atom-type (stereoisomer-atom)
   (atom-type stereoisomer-atom))
-

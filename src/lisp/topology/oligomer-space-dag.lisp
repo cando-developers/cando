@@ -1,5 +1,29 @@
 (in-package :topology.dag)
 
+#|
+
+Example of oligomer-space-dag
+
+
+(topology:is-oligomer-space-supported
+ spiros:*spiros*
+ `(spiros::cala
+   :amide spiros:apro4 (:side spiros:side)
+   (:sideamide (spiros::sideamide :label :ringc))
+   :dkp spiros:pro4 (:side spiros:side)
+   :dkp spiros:pro4 (:side spiros:side)
+   :dkp spiros::ampro
+   :amide spiros::ala
+   :amide spiros::apro4 (:side spiros:side)
+   (:sideamide spiros:sideamide)
+   :dkp spiros:pro4 (:side spiros:side)
+   :dkp spiros:pro4 (:side spiros:side)
+   :dkp spiros::ampro-ring ((ring :+ring :+ring :ringc))
+   )
+   )
+
+
+|#
 
 (define-condition no-matching-context ()
   ((context :initarg :context :accessor context))
@@ -139,6 +163,12 @@
 (defun parse-recursive (name tree-name sub-tree prev-node dag label)
   (cond
     ((null sub-tree))
+    ((and (consp (car sub-tree))
+          (consp (car (car sub-tree)))
+          (string= (string (car (car (car sub-tree)))) "RING"))
+     (break "break subtree starts with a ring")
+     (parse-recursive name tree-name (car sub-tree) prev-node dag :head-cons )
+     (parse-recursive name tree-name (cdr sub-tree) prev-node dag :tail-cons))
     ((consp (car sub-tree))
      (parse-recursive name tree-name (car sub-tree) prev-node dag :head-cons )
      (parse-recursive name tree-name (cdr sub-tree) prev-node dag :tail-cons))

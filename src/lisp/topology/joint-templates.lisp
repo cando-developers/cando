@@ -29,9 +29,11 @@
 (defclass adjustment ()
   ((joint :initarg :joint :accessor joint)))
 
-(defclass external-adjustment (adjustment) ())
+(defclass internal-adjustment (adjustment) ()
+  (:documentation "Adjust the internal coordinates of the joint when you can use internal coordinates. This is the best way to adjust coordinates.  If you need to adjust an internal coordinate to be planar relative to the other child of the parent of joing use topology:internal-planar-adjustment"))
 
-(defclass internal-adjustment (adjustment) ())
+(defclass external-adjustment (adjustment) ()
+  (:documentation "Adjust the external coordinates of the joint when you cannot use internal coordinates but can only use external coordinates"))
 
 (defclass adjustments ()
   ((internal-adjustments :initform (make-hash-table) :initarg :internal-adjustments :accessor internal-adjustments)
@@ -53,10 +55,31 @@
   nil)
 
 (defgeneric internal-adjust (adjustment assembler))
+
 (defmethod internal-adjust ((adjustment external-adjustment) assembler)
   "default - don't do anything"
   nil)
-  
+
+(defclass internal-planar-adjustment (internal-adjustment)
+  ((other :initarg :other :accessor other))
+  (:documentation "Adjust joint to be rotated 180 degrees from other"))
+
+(defmethod initialize-adjustment ((adjustment internal-planar-adjustment) assembler)
+  (let* ((joint (joint adjustment))
+         (jparent (kin:parent joint))
+         (jother (kin:joint/only-other-child jparent joint)))
+    (setf (other adjustment) jother)))
+
+(defmethod internal-adjust ((adjustment internal-planar-adjustment) assembler)
+  (let* ((joint (joint adjustment))
+         (other (other adjustment))
+         (phi-other (kin:bonded-joint/get-phi other))
+         (adjust-phi (radians-add phi-other PI)))
+    (kin:bonded-joint/set-phi joint adjust-phi)))
+
+
+
+
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
   (make-instance 'bonded-joint-template
                  :constitution-atoms-index constitution-atoms-index
@@ -278,22 +301,34 @@
                           res)))
           index*3)))))
 
-(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments))
+(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation))
 
-(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (error "write-into-joint-tree - handle joint-template ~a" joint-template))
 
 
-(defmethod write-into-joint-tree ((joint-template jump-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+(defmethod write-into-joint-tree ((joint-template jump-joint-template)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (kin:make-jump-joint atomid atom-name atom-table)))
+         (joint (if one-orientation
+                    (kin:make-jump-joint atomid atom-name atom-table
+                                         (parent-to-relative-transform one-orientation)
+                                         (lab-frame one-orientation)
+                                         )
+                    (kin:make-jump-joint atomid atom-name atom-table nil nil))))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -324,7 +359,7 @@
       (when parent-joint (kin:joint/add-child parent-joint joint))
       joint)))
 
-(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -333,14 +368,14 @@
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template adjustable-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+(defmethod write-into-joint-tree ((joint-template adjustable-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (let ((joint (call-next-method)))
     (add-to-adjustments adjustments
                         (make-instance (adjustment joint-template) :joint joint)
                         atresidue)
     joint))
 
-(defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+(defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (let* ((joint (call-next-method))
          (in-plug (in-plug joint-template))
          (in-plug-name (name in-plug))
@@ -352,7 +387,7 @@
           (kin:joint/set-property joint :out-plug-name indexed-out-plug-name)))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template adjustable-in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments)
+(defmethod write-into-joint-tree ((joint-template adjustable-in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (let ((joint (call-next-method)))
     (add-to-adjustments adjustments
                         (make-instance (adjustment joint-template) :joint joint)

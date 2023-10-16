@@ -189,6 +189,9 @@ public:
 
   void setAll(const Matrix &p);
 
+  core::List_sp encode() const;
+  void decode(core::List_sp alist);
+
 #ifdef USEBOOSTPYTHON
   void boost_set(boost::python::list names);
 //	void		boost_eigenSystem( boost::python::list evals, Matrix& evecs );

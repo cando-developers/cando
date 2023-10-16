@@ -551,20 +551,19 @@ string isolateElementName(const string& name, bool caseInsensitive)
                       
 
   
-Element elementFromAtomNameStringBasic(const std::string& name, bool caseInsensitive)
+Element elementFromAtomNameStringBasic(const std::string& name, bool caseInsensitive, size_t& elementLen )
 {
   ElementsInfo_sp ei = elementsInfo();
   string elementName = isolateElementName(name,caseInsensitive);
+  elementLen = elementName.size();
   core::Symbol_sp se = chemkw_intern(elementName);
   core::T_mv val = ei->_elementFromAtomicSymbol->gethash(se);
-
   if (val.notnilp()) {
     Element element = (Element)val.unsafe_fixnum();
     if (ei->_atomicInfo[element]._RealElement) {
       return element;
     }
   }
-
   core::eval::funcall(cl::_sym_warn,
                       core::Str_O::create("Could not determine element from name ~a case-insensitive(~a)"),
                       core::Str_O::create(name),
@@ -577,14 +576,25 @@ Element elementFromAtomNameStringBasic(const std::string& name, bool caseInsensi
 DOCGROUP(cando);
 CL_DEFUN ::chem::Element elementFromAtomNameStringCaseInsensitive(const std::string& name)
 {
-    return elementFromAtomNameStringBasic(name,true);
+  size_t elementLen = 0;
+  return elementFromAtomNameStringBasic(name,true,elementLen);
 }
 
 DOCGROUP(cando);
-CL_DEFUN ::chem::Element elementFromAtomNameString(const string& name)
+::chem::Element elementFromAtomNameString(const string& name)
 {
-    return elementFromAtomNameStringBasic(name,false);
+  size_t elementLen = 0;
+  return elementFromAtomNameStringBasic(name,false,elementLen);
 }
+
+
+CL_DEFUN core::T_mv chem__elementFromAtomNameString(const string& name)
+{
+  size_t elementLen = 0;
+  chem::Element element = elementFromAtomNameStringBasic(name,false,elementLen);
+  return Values( translate::to_object<::chem::Element>::convert(element), core::make_fixnum(elementLen));
+}
+
 
 DOCGROUP(cando);
 CL_DEFUN core::List_sp all_element_symbols() {

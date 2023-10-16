@@ -19,7 +19,6 @@
                (:file "fold")
                (:file "conformation")
                (:file "internals")
-               (:file "linearize-internals")
                (:file "design")
                (:file "oligomer-space-dag")
                (:file "context")

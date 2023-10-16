@@ -36,15 +36,29 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
+JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame ) : Joint_O(atomId,name,atomTable) {
+  if (parentRelativeTransform.notnilp()) {
+    geom::OMatrix_sp prt = gc::As<geom::OMatrix_sp>(parentRelativeTransform);
+    this->_ParentRelativeTransform = prt->_Value;
+  }
+  if (labFrame.notnilp()) {
+    geom::OMatrix_sp lf = gc::As<geom::OMatrix_sp>(labFrame);
+    this->_LabFrame = lf->_Value;
+  }
+};
+
+
 CL_LAMBDA(atom-id name atom-table);
 CL_LISPIFY_NAME("make_JumpJoint");
 CL_DEF_CLASS_METHOD
-JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) {
-  return gctools::GC<JumpJoint_O>::allocate(atomId, name, atomTable);
+JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame ) {
+  return gctools::GC<JumpJoint_O>::allocate( atomId, name, atomTable, parentRelativeTransform, labFrame );
 }
 
 void JumpJoint_O::fields(core::Record_sp node) {
   node->field_if_not_empty(INTERN_(kw,children),this->_Children);
+  node->field(INTERN_(kw,labFrame),this->_LabFrame);
+  node->field(INTERN_(kw,parentRelativeTransform),this->_ParentRelativeTransform);
   this->Base::fields(node);
 }
 
@@ -155,15 +169,13 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 void JumpJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
   ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n{}") , stub.asString());
-  this->_LabFrame = stub._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
-  this->setPosition(coords,this->_LabFrame.getTranslation());
+  this->setPosition(coords,stub._Transform.getTranslation());
   KIN_LOG("LabFrame.getTranslation() = {}\n", this->_LabFrame.getTranslation().asString());
 }
 
 void JumpJoint_O::updateXyzCoord(chem::NVector_sp coords)
 {
-  Stub newStub;
-  newStub._Transform = this->_LabFrame;
+  Stub newStub = this->getInputStub(coords);
   this->_updateXyzCoord(coords,newStub);
 }
 
@@ -185,7 +197,14 @@ void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords)
 
 Stub JumpJoint_O::getInputStub(chem::NVector_sp coords) const {
   Stub jj;
+#if 1
+  // I think this is the correct order of transforms
+  jj._Transform = this->_ParentRelativeTransform;
+  jj._Transform = jj._Transform.multiplyByMatrix(this->_LabFrame);
+#else
   jj._Transform = this->_LabFrame;
+  jj._Transform = jj._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
+#endif
   return jj;
 }
 

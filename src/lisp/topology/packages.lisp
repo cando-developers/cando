@@ -213,10 +213,6 @@
    #:monomer-indices
    #:internals-values
    #:internals-types
-   #:save-linearized-matched-context-rotamers-holder
-   #:create-linearized-matched-context-rotamers-holder
-   #:linearized-connected-rotamers-map
-   #:read-linearized-matched-context-rotamers-holder
    #:constitution-atom-named
    #:constitution-atom-names-with-dihedrals
    #:monomer-topology
@@ -234,9 +230,6 @@
    #:in-monomers
    #:out-monomers
    #:fragment-conformation-index
-   #:load-linearized-context-rotamers
-   #:linearize-and-save-connected-rotamers-map
-   #:load-linearized-connected-rotamers-map
    #:rotor3
    #:translation
    #:monomer-shape
@@ -313,7 +306,33 @@
    #:degrees-limit
    #:degrees-sub
    #:fill-internals-from-oligomer-shape-and-adjust
-   #:build-all-atom-tree-external-coordinates-and-adjust))
+   #:build-all-atom-tree-external-coordinates-and-adjust
+   #:rotamers-map
+   #:orientation
+   #:lab-frame
+   #:parent-relative-transform
+   #:oligomer-monomer-name
+   #:lookup-dihedral-cache
+   #:lookup-dihedral-cache-monomer-shape
+   #:shape-key-values
+   #:rotamer
+   #:sidechain-rotamer
+   #:backbone-rotamer
+   #:rotamers
+   #:sidechain-rotamers
+   #:shape-key-to-index
+   #:backbone-rotamers
+   #:rotamers-database
+   #:context-to-rotamers
+   #:backbone-dihedral-cache-deg
+   #:sidechain-monomer-stepper
+   #:backbone-monomer-stepper
+   #:is-oligomer-space-supported
+   #:abstract-topology
+   #:define-abstract-topology
+   #:is-out-plug-name
+   #:joint
+   #:internal-planar-adjustment))
 
   
 (defpackage #:topology.dag

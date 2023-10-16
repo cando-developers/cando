@@ -98,14 +98,69 @@ Create topology instances using a graph described using an s-expression.
                                         :bond-order :single-bond)))
           (setf (aref (plug-bonds plug) plug-index) plug-bond))))))
 
-(defun node-from-symbol-entry (keyword-atm graph)
-  (let ((keyword-element (chem:element-from-atom-name-string (symbol-name keyword-atm))))
-    (when (bond-symbol keyword-atm)
-      (error "Don't create atoms with name ~a" keyword-atm))
-    (make-instance 'atom-node
-                   :name keyword-atm
-                   :element keyword-element
-                   :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph))))))
+(defun node-from-symbol-entry (keyword-atm graph &optional properties element)
+  (let* ((name-string (string keyword-atm))
+         (dot-position (position #\. name-string))
+         (name-only (if dot-position
+                        (subseq name-string 0 dot-position)
+                        name-string))
+         (keyword-element (if element
+                              element
+                              (chem:element-from-atom-name-string name-only))))
+    (cond
+      ;; Names like:
+      ;;   "CA.HA" generates CA -> HA
+      ;;   "CB.2HB" generates CB -> (HB1 HB2)
+      ;;   "CM.3HM" generates CM -> (HM1 HM2 HM3)
+      ((and dot-position (< dot-position (length name-string)))
+       (let ((hydrogen-specifier (subseq name-string (1+ dot-position) (length name-string))))
+         (multiple-value-bind (num-hydrogens hprefix-start)
+             (cond
+               ((member (elt hydrogen-specifier 0) '(#\2 #\3))
+                (values (- (char-code (elt hydrogen-specifier 0)) (char-code #\0)) 1))
+               ((or (char= (elt hydrogen-specifier 0) #\H)
+                    (char= (elt hydrogen-specifier 0) #\h))
+                (values 1 0))
+               (t (error "Cannot translate ~s to atom" name-string)))
+           (let* ((hprefix (subseq hydrogen-specifier (if (= 1 num-hydrogens) 0 1) (length hydrogen-specifier)))
+                  (node (let ((node (make-instance 'atom-node
+                                                   :name (intern name-only :keyword)
+                                                   :element keyword-element
+                                                   :property-list properties
+                                                   :constitution-atom-index (prog1 (next-atom-index graph)
+                                                                              (incf (next-atom-index graph))))))
+                          (setf (gethash (name node) (nodes graph)) node)
+                          node))
+                  (hydrogens (loop for hindex from 1 to num-hydrogens
+                                   for hname = (if (= num-hydrogens 1)
+                                                   (string-upcase hprefix)
+                                                   (format nil "~a~a" (string-upcase hprefix) hindex))
+                                   for hydrogen = (make-instance 'atom-node
+                                                                 :name (intern hname :keyword)
+                                                                 :element :H
+                                                                 :constitution-atom-index (prog1 (next-atom-index graph)
+                                                                                            (incf (next-atom-index graph))))
+                                   do (setf (gethash (name hydrogen) (nodes graph)) hydrogen)
+                                   do (push (make-instance 'edge
+                                                           :from-node node
+                                                           :to-node hydrogen
+                                                           :edge-type :-)
+                                            (edges graph))
+                                   collect hydrogen)))
+             (setf (children node) hydrogens)
+             node))))
+      (dot-position
+       (error "Can not interpret ~s" name-string))
+      (t (when (bond-symbol keyword-atm)
+           (error "Don't create atoms with name ~a" keyword-atm))
+         (let ((node (make-instance 'atom-node
+                                    :name keyword-atm
+                                    :element keyword-element
+                                    :property-list properties
+                                    :constitution-atom-index (prog1 (next-atom-index graph)
+                                                               (incf (next-atom-index graph))))))
+           (setf (gethash (name node) (nodes graph)) node)
+           node)))))
 
 (defun ensure-keyword (name)
   (intern (symbol-name name) :keyword))
@@ -117,9 +172,7 @@ Create topology instances using a graph described using an s-expression.
             (seen-node (gethash keyword-atm (nodes graph))))
        (if seen-node
            (values seen-node t)
-           (let ((node (node-from-symbol-entry keyword-atm graph)))
-             (setf (gethash keyword-atm (nodes graph)) node)
-             node))))
+           (node-from-symbol-entry keyword-atm graph))))
     ((consp atm)
      (let* ((keyword-atm (ensure-keyword (car atm)))
             (element (if (cadr atm)
@@ -134,16 +187,10 @@ Create topology instances using a graph described using an s-expression.
                                                 finally (return-from keywords t))
                                           t)
                                (error "Atom sexp ~s should end with a property list" atm))
-                             pl))
-            (node (progn
-                    (when (bond-symbol keyword-atm)
-                      (error "Don't create atoms with name ~a" keyword-atm))
-                    (make-instance 'atom-node :name keyword-atm
-                                              :element element
-                                              :property-list property-list
-                                              :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph)))))))
-       (setf (gethash keyword-atm (nodes graph)) node)
-       node))
+                             pl)))
+       (when (bond-symbol keyword-atm)
+         (error "Don't create atoms with name ~a" keyword-atm))
+       (node-from-symbol-entry keyword-atm graph property-list element)))
     (t (error "Illegal atm ~s" atm))))
 
 (defun bond-symbol (name)
@@ -309,7 +356,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                     collect stereoisomer)))
         stereoisomers))))
 
-(defun parse-graph (graph)
+(defun parse-graph (graph plug-names)
   (let ((constitution-atoms (make-array (hash-table-count (nodes graph)))))
     #+(or)(format t "graph = ~a~%" (name graph))
     (maphash (lambda (key node)
@@ -422,10 +469,39 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                  :weight weight))))
                  (t (error "Add support for restraint ~a" kind)))))
 
+(defun make-abstract-topology (group-names &key properties plug-names)
+  (let* ((plugs (let ((ht (make-hash-table)))
+                  (mapcar (lambda (plug-name)
+                            (let ((plug (cond
+                                          ((is-in-plug-name plug-name)
+                                           (make-instance 'abstract-in-plug :name plug-name))
+                                          ((is-out-plug-name plug-name)
+                                           (make-instance 'abstract-out-plug :name plug-name))
+                                          (t
+                                           (make-instance 'abstract-out-plug :name plug-name)))))
+                              (setf (gethash plug-name ht) plug)))
+                          plug-names)
+                  ht))
+         (tops (loop for name in group-names
+                     for topology = (make-instance 'topology:abstract-topology
+                                                   :name name
+                                                   :plugs plugs
+                                                   :property-list properties)
+                     do (loop for group-name in group-names
+                              do (pushnew name (gethash group-name *topology-groups* nil)))
+                     do (if properties
+                            (setf (topology:property-list topology)
+                                  (append (topology:property-list topology)
+                                          properties)))
+                     do (chem:register-topology topology name)
+                     collect topology)))
+    tops))
+
+
 (defun topologies-from-graph (graph group-names restraints
-                              &key types dihedrals cluster-dihedrals)
+                              &key types dihedrals cluster-dihedrals properties plug-names)
   (multiple-value-bind (constitution plugs stereoisomers)
-      (parse-graph graph)
+      (parse-graph graph plug-names)
     (let* ((tops (loop for stereoisomer in stereoisomers
                        for name = (topology:name stereoisomer)
                        for joint-template = (build-joint-template graph)
@@ -439,6 +515,10 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                        do (loop for group-name in (list* name group-names)
                                 do (pushnew name (gethash group-name *topology-groups* nil)))
                        do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
+                       do (if properties
+                              (setf (topology:property-list topology)
+                                    (append (topology:property-list topology)
+                                            properties)))
                        do (chem:register-topology topology name)
                        collect topology)))
       (when types
@@ -447,14 +527,17 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               for type = (second name-type)
               for ca = (constitution-atom-named constitution name)
               do (setf (atom-type ca) type)))
-      (push (parse-dihedral-info dihedrals) (residue-properties constitution))
-      (push :dihedrals (residue-properties constitution))
+      (let ((dihedral-info (if dihedrals
+                               (parse-dihedral-info dihedrals)
+                               (create-dihedral-info-from-constitution constitution))))
+        (setf (residue-properties constitution)
+              (list* :dihedrals dihedral-info (residue-properties constitution))))
       (when cluster-dihedrals
-        (push cluster-dihedrals (residue-properties constitution))
-        (push :cluster-dihedrals (residue-properties constitution)))
+        (setf (residue-properties constitution)
+              (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution))))
       tops)))
 
-(defun do-define-topology (name sexp &key restraints types dihedrals cluster-dihedrals)
+(defun do-define-topology (name sexp &key restraints types dihedrals cluster-dihedrals properties plug-names)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -467,8 +550,28 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
     (topologies-from-graph graph group-names restraints
                            :types types
                            :dihedrals dihedrals
-                           :cluster-dihedrals cluster-dihedrals)))
+                           :cluster-dihedrals cluster-dihedrals
+                           :properties properties
+                           :plug-names plug-names
+                           )))
 
-(defmacro define-topology (name sexp &key restraints types dihedrals cluster-dihedrals)
-  `(do-define-topology ',name ',sexp :restraints ',restraints :dihedrals ',dihedrals
-     :cluster-dihedrals ',cluster-dihedrals))
+(defmacro define-topology (name sexp &key restraints types dihedrals cluster-dihedrals properties plugs)
+  `(do-define-topology ',name ',sexp
+     :restraints ',restraints
+     :dihedrals ',dihedrals
+     :properties ',properties
+     :cluster-dihedrals ',cluster-dihedrals
+     :plug-names ',plugs
+     ))
+
+(defun do-define-abstract-topology (name &key properties plug-names)
+  (make-abstract-topology (list name)
+                          :properties properties
+                          :plug-names plug-names
+                          ))
+
+(defmacro define-abstract-topology (name &key properties plugs)
+  `(do-define-abstract-topology ',name 
+     :properties ',properties
+     :plug-names ',plugs
+     ))

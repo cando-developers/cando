@@ -71,7 +71,7 @@ public:
           rigidBodyL(cl),
           pointL(pl) {};
   EnergyRigidBodyStaple() {};
-  
+
   core::List_sp encode() const;
   void decode(core::List_sp alist);
 };

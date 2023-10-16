@@ -341,7 +341,17 @@ CL_DEFMETHOD core::List_sp Joint_O::jointChildren() const
   }
   return l.cons();
 }
-    
+
+CL_DEFMETHOD Joint_sp Joint_O::onlyOtherChild(Joint_sp child) const
+{
+  if (this->_numberOfChildren()!=2) {
+    SIMPLE_ERROR("There must be two children but there are {}", this->_numberOfChildren());
+  }
+  if (this->_child(0) == child) return this->_child(1);
+  if (this->_child(1) == child) return this->_child(0);
+  SIMPLE_ERROR("Could not find child {} in the two children ({} and {})",
+               _rep_(child), _rep_(this->_child(0)), _rep_(this->_child(1)));
+}
 
     /*! See file:///Users/meister/Development/rosetta3.3/rosetta_source/html/core+numeric+protocols/dc/db0/_atom___8hh-source.html#l00475
       For definition

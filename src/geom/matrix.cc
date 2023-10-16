@@ -44,6 +44,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <clasp/core/lispStream.h>
 #include <clasp/core/lisp.h>
 #include <cando/chem/nVector.h>
+#include <clasp/core/ql.h>
 //#include "core/archiveNode.h"
 
 Matrix benchmarkMatrixMultiplications(int num);
@@ -166,6 +167,28 @@ Matrix::Matrix(bool identity) {
 }
 
 Matrix::~Matrix() {}
+
+
+
+
+core::List_sp Matrix::encode() const
+{
+  ql::list ll;
+  for ( size_t ii=0; ii<16; ii++ ) {
+    ll << core::make_single_float(this->elements[ii]);
+  }
+  return core::Cons_O::create(INTERN_(kw,terms),ll.cons());
+}
+
+void Matrix::decode(core::List_sp alist)
+{
+  size_t zi = 0;
+  for ( auto cur : (core::List_sp)core::oCdr(alist) ) {
+    this->elements[zi] = CONS_CAR(cur).unsafe_single_float();
+    zi++;
+  }
+}
+
 
 void Matrix::setToIdentity() {
   Matrix::iterator mi = this->elements.begin();

@@ -129,7 +129,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                     (properties (chem:matter/properties (molecule obj)))
                     (maybe-description (getf properties :description)))
                (format stream "Molecule name: ~s missing dihedral ~a(~a) ~a(~a) ~a(~a) ~a(~a) / ~a"
-                       (chem:get-name molecule)
+                       (chem:get-name (molecule obj))
                        (a1-name obj)
                        (a1-element obj)
                        (a2-name obj)
@@ -140,7 +140,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                        (a4-element obj)
                        (if maybe-description
                            maybe-description
-                           "")
+                           "no description ")
                        )))))
 
 (defun missing-dihedral-error (a1 a2 a3 a4 molecule)

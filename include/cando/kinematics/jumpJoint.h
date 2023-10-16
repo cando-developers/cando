@@ -52,7 +52,7 @@ namespace kinematics
 	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
   public:
-    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
+    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame );
   protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};
@@ -74,10 +74,10 @@ namespace kinematics
     virtual void _releaseAllChildren();
 
   public:
+    JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame );
+
 	/*! Empty ctor */
     JumpJoint_O() {};
-
-    JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) : Joint_O(atomId,name,atomTable) {};
 
     // Return the 'external' coordinate    
     CL_DEFMETHOD Matrix getLabFrame() const { return this->_LabFrame; };
