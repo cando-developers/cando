@@ -2,4 +2,6 @@
 
 (k:systems :cando-user)
 
-(k:sources :install-bin #~"cando-user-install")
+(k:sources :install-bin
+           #~"cando-user-install"
+           #~"cando-apptainer-install")
