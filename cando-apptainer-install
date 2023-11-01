@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+mkdir -p "$HOME/.local/bin" # TODO Check to see if it is in the path
+
+if [ ! -f "$HOME/quicklisp/setup.lisp" ]; then
+  echo "Installing Quicklisp..."
+  tmpfile=$(mktemp)
+  curl -fsLo $tmpfile https://beta.quicklisp.org/quicklisp.lisp
+  clasp --non-interactive --load $tmpfile --eval "(quicklisp-quickstart:install)" --eval "(ql-util:without-prompting (ql:add-to-init-file))"
+  rm $tmpfile
+elif [ ! -f "$HOME/.clasprc" ]; then
+  echo "Creating clasprc..."
+  clasp --non-interactive --load $HOME/quicklisp/setup.lisp --eval "(ql-util:without-prompting (ql:add-to-init-file))"
+fi
+
+echo "Updating Quicklisp..."
+clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://thirdlaw.tech/quickclasp/quickclasp.txt\" :prompt nil))" \
+  --eval "(ql:update-all-dists :prompt nil)"
+
+echo "Installing CANDO user features..."
+cando --eval "(ql:quickload :cando-jupyter)" --eval "(cando-jupyter:install :implementation \"apptainer\")" --eval "(sys:quit)"
