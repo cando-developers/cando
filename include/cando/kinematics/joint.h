@@ -50,7 +50,7 @@ namespace kinematics
 
 
 #if 0
-#define KIN_LOG(...) core::clasp_write_string(fmt::format("{}:{}:{} - " , __FILE__ , __LINE__ , __FUNCTION__ )); core::clasp_write_string(fmt::format(__VA_ARGS__))
+#define KIN_LOG(...) if (chem::chem__verbose(3)) core::clasp_write_string(fmt::format("{}:{}:{} - " , __FILE__ , __LINE__ , __FUNCTION__ )); core::clasp_write_string(fmt::format(__VA_ARGS__));
 #else
 #define KIN_LOG(...)
 #endif

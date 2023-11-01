@@ -242,7 +242,6 @@ This is for looking up parts but if the thing returned is not a part then return
          (let ((group-names (gethash (first part-info) *topology-groups*)))
            (list* group-names (cdr part-info))))
         ((consp part-info)
-         (error "Handle part-info ~s" part-info)
          part-info)
         ((symbolp part-info)
          (let ((group-names (gethash part-info *topology-groups*)))

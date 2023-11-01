@@ -332,7 +332,11 @@
    #:define-abstract-topology
    #:is-out-plug-name
    #:joint
-   #:internal-planar-adjustment))
+   #:internal-planar-adjustment
+   #:read-rotamers
+   #:write-rotamers
+   #:labeled-monomers
+   #:at-position))
 
   
 (defpackage #:topology.dag

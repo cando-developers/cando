@@ -15,7 +15,7 @@
   (floor (degrees-limit (floor (* 10 (round dih-deg 10.0))))))
 
 (defclass monomer-shape ()
-  ((fragment-conformation-index :initarg :fragment-conformation-index :accessor fragment-conformation-index)
+  ((fragment-conformation-index :initform 0 :initarg :fragment-conformation-index :accessor fragment-conformation-index)
    (monomer :initarg :monomer :accessor monomer)
    (monomer-context-key :initarg :monomer-context-key :accessor monomer-context-key)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
@@ -46,6 +46,11 @@
    (monomer-shape-build-order :initarg :monomer-shape-build-order
                               :accessor monomer-shape-build-order)
    ))
+
+(defmethod print-object ((obj oligomer-shape) stream)
+  (let ((indices (mapcar (lambda (ms) (fragment-conformation-index ms)) (coerce (monomer-shape-vector obj) 'list))))
+    (print-unreadable-object (obj stream :type t)
+      (format stream "~s" indices))))
 
 (defclass receptor-shape (oligomer-shape)
   ((aggregate :initarg :aggregate :accessor aggregate)
@@ -84,7 +89,8 @@
 (cando.serialize:make-class-save-load kind-key)
 
 (defclass shape-info ()
-  ((kind-keys :initarg :kind-keys :accessor kind-keys)))
+  ((kind-keys :initarg :kind-keys :accessor kind-keys)
+   (in-plug-names :initarg :in-plug-names :accessor in-plug-names)))
 
 (cando.serialize:make-class-save-load shape-info)
 
@@ -150,9 +156,14 @@
                                  in-monomer)
               for out-mons = (let (out-monomers)
                                (maphash (lambda (key coupling)
-                                          (unless (in-plug-name-p key)
-                                            (push (topology:target-monomer coupling) out-monomers)
-                                            #+(or)(format t "Out plug coupling ~a ~a~%" key coupling)))
+                                          (cond
+                                            ((in-plug-name-p key)
+                                             )
+                                            ((typep coupling 'topology::ring-coupling)
+                                             (push (topology:other-monomer coupling monomer) out-monomers))
+                                            (t 
+                                             (push (topology:target-monomer coupling) out-monomers)
+                                            #+(or)(format t "Out plug coupling ~a ~a~%" key coupling))))
                                         couplings)
                                out-monomers)
               for in-monomer-context = (if in-monomer
@@ -188,6 +199,22 @@
                      :in-monomers in-monomers
                      :out-monomers out-monomers))))
 
+
+(defgeneric read-rotamers (obj)
+  (:documentation "Read the rotamers from the object"))
+
+(defgeneric write-rotamers (obj vec)
+  (:documentation "Write the rotamers into the object"))
+
+(defmethod read-rotamers ((obj oligomer-shape))
+  (let ((vec (make-array (length (monomer-shape-vector obj)) :element-type 'ext:byte32)))
+    (map-into vec #'fragment-conformation-index (monomer-shape-vector obj))
+    vec))
+
+(defmethod write-rotamers ((obj oligomer-shape) vec)
+  (loop for rotamer-index across vec
+        for monomer-shape across (monomer-shape-vector obj)
+        do (setf (fragment-conformation-index monomer-shape) rotamer-index)))
 
 (defun all-monomers-impl (root shape)
   #+(or)(format t "monomer ~a in: ~a~%" root (gethash root (in-monomers shape)))

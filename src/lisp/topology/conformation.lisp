@@ -14,6 +14,19 @@
   ((molecule-index :initarg :molecule-index :reader molecule-index)
    (residue-index :initarg :residue-index :reader residue-index)))
 
+(defmethod print-object ((obj monomer-position) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a ~a" (molecule-index obj) (residue-index obj))))
+
+(defgeneric at-position (obj pos)
+  (:documentation "Return the object by following the monomer-position"))
+
+(defmethod at-position ((obj chem:aggregate) pos)
+  (let* ((mol (chem:content-at obj (molecule-index pos)))
+         (res (chem:content-at mol (residue-index pos))))
+    res))
+
+
 (defclass assembler ()
   ((monomer-positions :initarg :monomer-positions :accessor monomer-positions)
    (monomer-contexts :type hash-table :initarg :monomer-contexts :accessor monomer-contexts)

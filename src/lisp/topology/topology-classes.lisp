@@ -414,8 +414,9 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
   (maphash (lambda (plug-name coupling)
              (declare (ignore plug-name))
              (when (typep coupling 'ring-coupling)
-               (return-from has-ring-closing-coupling t)))
-           (couplings monomer)))
+               (return-from has-ring-closing-coupling coupling)))
+           (couplings monomer))
+  nil)
 
 (defclass oligomer-space ()
   ((foldamer :initarg :foldamer :accessor foldamer)

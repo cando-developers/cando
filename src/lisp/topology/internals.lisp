@@ -87,7 +87,9 @@
         for name = (second one)
         for info = (first one)
         collect (cond
-                  ((symbolp info) (make-instance 'dihedral-info-atom :name name :atom-name info))
+                  ((symbolp info)
+                   (let ((atom-name (intern (string info) :keyword)))
+                     (make-instance 'dihedral-info-atom :name name :atom-name atom-name)))
                   ((consp info) (make-instance 'dihedral-info-external
                                                :name name
                                                :plug-path (first info)

@@ -342,6 +342,10 @@ CL_DEFMETHOD core::List_sp Joint_O::jointChildren() const
   return l.cons();
 }
 
+CL_DEFUN size_t kin__numberOfChildren(Joint_sp joint) {
+  return joint->_numberOfChildren();
+}
+
 CL_DEFMETHOD Joint_sp Joint_O::onlyOtherChild(Joint_sp child) const
 {
   if (this->_numberOfChildren()!=2) {

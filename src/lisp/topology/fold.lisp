@@ -48,10 +48,15 @@
 
 (defun atresidue-factory (residue ring-closing-monomer-map monomer topology)
   (cond
-    ((has-ring-closing-coupling monomer)
-     (let ((atresidue (make-instance 'ring-closing-atresidue :residue residue)))
-       (setf (gethash ring-closing-monomer-map monomer atresidue) atresidue)
-       atresidue))
+    ((let ((ring-closing-coupling (has-ring-closing-coupling monomer)))
+       (when ring-closing-coupling
+         (let ((atresidue (make-instance 'ring-closing-atresidue
+                                         :name (chem:get-name residue)
+                                         :residue residue
+                                         :topology topology
+                                         :ring-closing-coupling ring-closing-coupling)))
+           (setf (gethash monomer ring-closing-monomer-map) atresidue)
+           atresidue))))
     (t (make-instance 'atresidue :name (chem:get-name residue)
                                  :residue residue
                                  :topology topology))))
@@ -59,10 +64,26 @@
 (defun lookup-atresidue-id (atmolecule atresidue-id)
   (aref (atresidues atmolecule) atresidue-id))
 
-(defun make-ring-closing-connections (ring-closing-monomer-map)
-  (when (> (hash-table-count ring-closing-monomer-map) 0)
-    (error "Implement me")))
-             
+(defun make-ring-closing-connections (oligomer monomer-positions molecule ring-closing-monomer-map)
+  (let ((ring-couplings nil))
+    (when (> (hash-table-count ring-closing-monomer-map) 0)
+      (maphash (lambda (monomer atresidue)
+                 (pushnew (topology::ring-closing-coupling atresidue) ring-couplings))
+               ring-closing-monomer-map)
+      (loop for ring-coupling in ring-couplings
+            for monomer1 = (topology::monomer1 ring-coupling)
+            for monomer2 = (topology::monomer2 ring-coupling)
+            for monomer1-pos = (gethash monomer1 monomer-positions)
+            for monomer2-pos = (gethash monomer2 monomer-positions)
+            for plug1 = (topology::plug1 ring-coupling)
+            for plug2 = (topology::plug2 ring-coupling)
+            for topology1 = (chem:find-topology (topology:oligomer-monomer-name oligomer monomer1))
+            for topology2 = (chem:find-topology (topology:oligomer-monomer-name oligomer monomer2))
+            for residue1 = (chem:content-at molecule (topology:residue-index monomer1-pos))
+            for residue2 = (chem:content-at molecule (topology:residue-index monomer2-pos))
+            do (format t "Connecting residue ~a to ~a~%" residue1 residue2)
+            do (topology:connect-residues topology1 residue1 plug1 topology2 residue2 plug2)
+            ))))
 
 (defun build-atmolecule-using-oligomer (oligomer
                                         molecule
@@ -99,7 +120,7 @@
                                 adjustments
                                 orientation
                                 )
-    (make-ring-closing-connections ring-closing-monomer-map)
+    #+(or)(make-ring-closing-connections oligomer monomer-positions molecule ring-closing-monomer-map)
     (setf (root-atresidue atmolecule) root-atresidue)
     atmolecule))
 
@@ -126,7 +147,7 @@
         when (eq atom-name (kin:joint/name joint))
           do (return-from joint-with-name joint))
   (when errorp
-    (error "Could not find joint with name ~a" atom-name))
+    (error "Could not find joint with name ~a in ~s" atom-name atresidue))
   nil)
 
 
@@ -135,7 +156,7 @@
 
 
 (defclass ring-closing-atresidue (atresidue)
-  ())
+  ((ring-closing-coupling :initarg :ring-closing-coupling :accessor ring-closing-coupling)))
 
 (defun recursively-build-children (joint-tree
                                    atresidue

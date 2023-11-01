@@ -1,27 +1,20 @@
 (in-package :topology)
 
-(defclass joint-template ()
+(defclass joint-template (cando.serialize:serializable)
   ((parent :initform nil :initarg :parent :accessor parent)
    (atom-name :initarg :atom-name :accessor atom-name)
    (constitution-atoms-index :initarg :constitution-atoms-index :accessor constitution-atoms-index)
    ))
 
-(cando.serialize:make-class-save-load joint-template
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (atom-name obj)))))
+(defmethod print-object ((obj joint-template) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~a" (atom-name obj)))))
 
 (defclass bonded-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)
    ))
-
-(cando.serialize:make-class-save-load
- bonded-joint-template
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (atom-name obj)))))
 
 (defclass adjustable-bonded-joint-mixin ()
   ((adjustment :initarg :adjustment :accessor adjustment)))
@@ -67,18 +60,21 @@
 (defmethod initialize-adjustment ((adjustment internal-planar-adjustment) assembler)
   (let* ((joint (joint adjustment))
          (jparent (kin:parent joint))
-         (jother (kin:joint/only-other-child jparent joint)))
-    (setf (other adjustment) jother)))
+         (jother (when (= (kin:number-of-children jparent) 2)
+                   (kin:joint/only-other-child jparent joint))))
+    ;; Only when there is an other joint do we set (other adjustment)
+    ;; for ring closing connections we need to do something else
+    (when jother
+      (setf (other adjustment) jother))))
 
 (defmethod internal-adjust ((adjustment internal-planar-adjustment) assembler)
-  (let* ((joint (joint adjustment))
-         (other (other adjustment))
-         (phi-other (kin:bonded-joint/get-phi other))
-         (adjust-phi (radians-add phi-other PI)))
-    (kin:bonded-joint/set-phi joint adjust-phi)))
-
-
-
+  ;; Only when the "other" slot is bound do we make adjustment
+  (when (slot-boundp adjustment 'other)
+    (let* ((joint (joint adjustment))
+           (other (other adjustment))
+           (phi-other (kin:bonded-joint/get-phi other))
+           (adjust-phi (radians-add phi-other PI)))
+      (kin:bonded-joint/set-phi joint adjust-phi))))
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
   (make-instance 'bonded-joint-template
@@ -103,13 +99,6 @@
                                             adjustable-bonded-joint-mixin)
   ())
 
-(cando.serialize:make-class-save-load
- in-plug-bonded-joint-template
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (atom-name obj)))))
-
 (defun make-in-plug-bonded-joint-template (constitution-atoms-index &key atom-name parent in-plug)
   (make-instance 'in-plug-bonded-joint-template
                  :constitution-atoms-index constitution-atoms-index
@@ -128,12 +117,14 @@
 (defclass complex-bonded-joint-template (bonded-joint-template)
   ((input-stub-joints :initform (make-array 2) :initarg :input-stub-joints :accessor input-stub-joints)))
 
-(cando.serialize:make-class-save-load
- complex-bonded-joint-template
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (atom-name obj)))) )
+(defmethod print-object ((obj complex-bonded-joint-template) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (let ((stubs (loop for stub across (input-stub-joints obj)
+                           when (not (null stub))
+                             count 1)))
+          (format stream "~a :stubs ~a" (atom-name obj) (1+ stubs))))))
 
 (defun make-complex-bonded-joint-template (constitution-atoms-index &key atom-name stub-joints)
   (cond
@@ -161,8 +152,6 @@
 
 (defclass jump-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)))
-
-(cando.serialize:make-class-save-load jump-joint-template)
 
 (defun make-jump-joint-template (constitution-atoms-index &key atom-name)
   (make-instance 'jump-joint-template
@@ -224,34 +213,36 @@
                                  ))
       ((null gparent-template)
        (let ((stub-joints (cond
-                            ((eql 0 (first child-indexes))
+                            ((= 1 constitution-atoms-index)
                              (list parent-template))
-                            ((eql 1 (first child-indexes))
+                            ((= 2 constitution-atoms-index)
                              (list parent-template (sibling parent-template 0)))
                             (t
                              (list parent-template
-                                   (sibling parent-template 1)
-                                   (sibling parent-template 0))))))
+                                   (sibling parent-template 0)
+                                   (sibling parent-template 1))))))
          (make-complex-bonded-joint-template constitution-atoms-index
                                              :atom-name atom-name
                                              :stub-joints stub-joints)))
       ((null ggparent-template)
-       (let ((stub-joints (cond
-                            ((and (>= (length child-indexes) 2)
-                                  (eql 0 (first child-indexes))
-                                  (eql 0 (second child-indexes)))
+       (let* ((sibling (when (> (length (children parent-template)) 0)
+                         (elt (children parent-template) 0)))
+              (aunt (when (> (length (children gparent-template)) 0)
+                      (elt (children gparent-template) 0)))
+              (stub-joints (cond
+                            ((= constitution-atoms-index 2)
                              (list parent-template
                                    gparent-template))
-                            ((and (>= (length child-indexes) 2)
-                                  (> 0 (first child-indexes))
-                                  (eql 0 (second child-indexes)))
+                            (sibling
+                             (list parent-template
+                                   sibling
+                                   gparent-template))
+                            (aunt
                              (list parent-template
                                    gparent-template
-                                   (sibling parent-template 0)))
+                                   aunt))
                             (t
-                             (list parent-template
-                                   gparent-template
-                                   (sibling gparent-template 0))))))
+                             (error "One of the previous cases must be true")))))
          (make-complex-bonded-joint-template constitution-atoms-index
                                              :atom-name atom-name
                                              :stub-joints stub-joints)))
