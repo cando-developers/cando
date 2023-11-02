@@ -24,7 +24,7 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
 
 1. Install jupyter-lab using [miniconda](https://docs.conda.io/en/latest/miniconda.html). This can be skipped for distributions with very new JupyterLab versions like Arch.
    ```bash
-   conda install -c conda-forge jupyterlab nodejs=17.9.0
+   conda install -c conda-forge jupyterlab nodejs=17.9.0 sidecar
    ```
   
 2. Install Cando (this should detect and work for both Ubuntu or Debian)
