@@ -139,10 +139,28 @@
 
 
 ;; cando doesn't create images on the fly yet.
-#+(or)(defclass user-image-installer (jupyter:user-image-installer cando-installer)
+(defclass user-image-installer (jupyter:user-image-installer cando-installer)
   ()
   (:documentation "cando user image installer."))
 
+
+(defmethod jupyter:installer-path ((instance user-image-installer) (name (eql :image)))
+  (ensure-directories-exist (jupyter:installer-path instance :program))
+  (merge-pathnames (make-pathname :name "cando" :type "snapshot")
+                   (jupyter:installer-path instance :program)))
+
+(defmethod jupyter:command-line ((instance user-image-installer))
+  (list (or (jupyter:installer-implementation instance)
+            (first (uiop:raw-command-line-arguments))
+            (format nil "~(~A~)" (uiop:implementation-type)))
+        "--snapshot"
+        (namestring (jupyter:installer-path instance :image))
+        "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
+        "--"
+        "{connection_file}"))
+
+(defmethod jupyter:install ((instance user-image-installer))
+  (ext:save-lisp-and-die (namestring (jupyter:installer-path instance :image))))
 
 (defmethod jupyter:command-line ((instance cando-installer))
   "Get the command line for a cando installation."
@@ -158,7 +176,7 @@
                           "--" "{connection_file}"))))))
 
 
-(defun install (&key bin-path system local prefix jupyter program fork implementation (load-system t))
+(defun install (&key bin-path image system local prefix jupyter program fork implementation (load-system t))
   "Install Cando kernel.
 - `bin-path` specifies path to LISP binary.
 - `system` toggles system versus user installation.
@@ -169,9 +187,12 @@
 - `fork` toggles a normal client versus a fork client."
   (jupyter:install
     (make-instance
-      (if system
-        'system-installer
-        'user-installer)
+     (cond (system
+            'system-installer)
+           (image
+            'user-image-installer)
+           (t
+            'user-installer))
       :implementation bin-path
       :display-name (format nil "~A~:[~; (Fork)~]~@[ (~A)~]"
                                 +display-name+ fork implementation)
@@ -189,16 +210,6 @@
       :fork-client fork
       :jupyter-path jupyter
       :program-path program)))
-
-
-;; cando doesn't create images on the fly yet.
-#+(or)(defun install-image (&key prefix)
-  "Install Cando kernel based on image.
-- `prefix` key specifies directory prefix for packaging."
-  (jupyter:install
-    (make-instance 'user-image-installer
-      :prefix prefix)))
-
 
 (defun do-run-kernel-from-slime ()
   (jupyter:run-kernel 'cando-jupyter:kernel (clasp-posix:argv (1- (clasp-posix:argc)))))

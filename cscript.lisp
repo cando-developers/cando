@@ -4,4 +4,5 @@
 
 (k:sources :install-bin
            #~"cando-user-install"
-           #~"cando-apptainer-install")
+           #~"cando-apptainer-install"
+           #~"scando-apptainer-install")
