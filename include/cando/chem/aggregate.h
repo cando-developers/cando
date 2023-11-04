@@ -48,18 +48,20 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-struct AtomInfo {
-  Atom_sp _Atom;
-  Residue_sp _Residue;
+class AtomInfo {
+public:
+  Atom_sp         _Atom;
+  Residue_sp      _Residue;
   core::Symbol_sp _Type;
   size_t          _MoleculeIndex;
   size_t          _ResidueIndex;
 };
 
-struct ResidueOut {
-  Molecule_sp mol;
-  Residue_sp res;
-  uint firstAtom;
+class ResidueOut {
+public:
+  Molecule_sp    mol;
+  Residue_sp     res;
+  uint           firstAtom;
 };
 
 SMART(Restraint);

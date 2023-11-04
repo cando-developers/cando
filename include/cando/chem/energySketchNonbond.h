@@ -49,10 +49,9 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-
-
-struct EnergySketchNonbond
+class EnergySketchNonbond
 {
+public:
   size_t        _FreezeFlags;
   REAL          _Constant;
   INT		I1; //!< i*3 index into coordinate vector, must match Mathematica code!

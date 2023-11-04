@@ -45,7 +45,8 @@ SMART(Atom);
 
 
 
-struct AtomPriority {
+class AtomPriority {
+public:
   AtomPriority(Atom_sp a, int p) : _Atom(a), _relativePriority(p) {};
   AtomPriority() : _Atom(nil<Atom_O>()), _relativePriority(0) {};
   Atom_sp _Atom;

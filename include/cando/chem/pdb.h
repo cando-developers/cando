@@ -39,8 +39,9 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
   FORWARD(Atom);
-    struct	AtomPdbRec
+    class AtomPdbRec
     {
+    public:
 	string _line;
 	// pdb stuff
 	string	_recordName;

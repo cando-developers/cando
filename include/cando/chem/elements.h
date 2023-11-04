@@ -93,7 +93,8 @@ Element elementForIntegerAtomicMass(int atomicMass); // this is used in SMARTS
 
   double maximumBondLengthBetweenElements(Element element1, Element element2 );
 
-struct	AtomicInfo {
+class	AtomicInfo {
+public:
   bool	_Valid;
   bool	_RealElement;
   Element	_ElementEnum;
@@ -107,10 +108,11 @@ struct	AtomicInfo {
 };
 
 
-struct HybridizationInfo
+class HybridizationInfo
 {
-  Hybridization	_HybridizationEnum;
-  core::Symbol_sp		_HybridizationSymbol;
+public:
+  Hybridization	   _HybridizationEnum;
+  core::Symbol_sp  _HybridizationSymbol;
 };
 
 FORWARD(ElementsInfo);

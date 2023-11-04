@@ -51,7 +51,8 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace       chem {
 
 
-struct RigidBodyNonbondCrossTerm {
+class RigidBodyNonbondCrossTerm {
+public:
   REAL      dA;
   REAL      dC;
   RigidBodyNonbondCrossTerm(double a, double c) : dA(a), dC(c) {};
@@ -61,7 +62,8 @@ struct RigidBodyNonbondCrossTerm {
 };
 
   
-struct RigidBodyAtomInfo {
+class RigidBodyAtomInfo {
+public:
   core::T_sp   _Object;  // can be NIL
   INT          _TypeIndex;
   REAL         _Radius;
