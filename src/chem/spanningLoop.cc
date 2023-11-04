@@ -312,8 +312,7 @@ Atom_sp SpanningLoop_O::nextSpanningAtom(std::function<bool(Atom_sp fromAtom, Bo
   /* some stuff on the first ATOM_CLASS */
 
   if (!this->initialized) {
-    SpanningInfo_sp sitop = this->storeSpanningInfo(this->top, 0, nil<core::T_O>());
-    // printf("%s:%d initialize sitop -> %s\n", __FILE__, __LINE__, _rep_(sitop).c_str());
+    this->storeSpanningInfo(this->top, 0, nil<core::T_O>());
     this->initialized = true;
   }
 

@@ -199,7 +199,6 @@ void	EnergyRigidBodyNonbond_O::dumpTerms(core::HashTable_sp atomTypes)
 CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp pos)
 {
   ql::list result;
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -234,7 +233,6 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
 
 size_t EnergyRigidBodyNonbond_O::partsCoordinates(NVector_sp pos, size_t idx, core::SimpleVector_float_sp coords )
 {
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -289,7 +287,6 @@ output : A complex-vector-float where the transformed points are written.
 )dx")
 CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output)
 {
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -303,7 +300,6 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
   num_real am, bm, cm, dm, xm, ym, zm;
   num_real pxm, pym, pzm;
   int	I1;
-  size_t coordIndex = 0;
   size_t I1start = 0;
   coordinate_lookup ea1(coordinates); 
   for ( size_t iI1 = 0; iI1<end_indicesx3->length(); ++iI1 ) {

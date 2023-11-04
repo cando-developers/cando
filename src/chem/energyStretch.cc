@@ -457,7 +457,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg,force);
 core::List_sp	EnergyStretch_O::checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold)
 {
   ql::list result;
-  int	fails = 0;
   bool calcForce = true;
 //	bool	calcForce = false;
 //	bool	calcDiagonalHessian = false;
@@ -691,8 +690,6 @@ core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_s
   core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
   if (!tia1.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a1));
   if (!tia2.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a2));
-  int ia1 = tia1.unsafe_fixnum();
-  int ia2 = tia2.unsafe_fixnum();
   for (auto edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {
     if ((edi->_Atom1==a1 &&
          edi->_Atom2==a2)

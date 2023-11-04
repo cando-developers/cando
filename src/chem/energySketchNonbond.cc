@@ -148,7 +148,13 @@ num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 #define	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 #define MAYBE_BAIL(val) {} if (val <=0.1 ) goto TOO_CLOSE; if ( val >= this->_LongDistanceCutoff) goto TOO_FAR;
   
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+
+// Your code where the unused variable warning is to be suppressed
 #include <cando/chem/energy_functions/_Erep_termDeclares.cc>
+
+#pragma clang diagnostic pop
 
 //  vecreal* coordinates_ptr = (vecreal*)(pos->rowMajorAddressOfElement_(0));
 //  vecreal* force_ptr = (vecreal*)(force->rowMajorAddressOfElement_(0));

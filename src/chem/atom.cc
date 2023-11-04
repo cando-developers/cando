@@ -1218,7 +1218,6 @@ Matter_sp Atom_O::copy(core::T_sp new_to_old)
 Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {
   LOG("Copying atom @{}" , this );
-  Atom_sp myself = this->sharedThis<Atom_O>();
   auto  aNew  = gctools::GC<Atom_O>::copy( *this); // = RP_Copy<Atom_O>(this);
   aNew->_Bonds.clear();
   this->_CopyAtom = aNew;

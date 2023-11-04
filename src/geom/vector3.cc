@@ -508,7 +508,7 @@ double
 dVectorAbsAngle( const Vector3& vX, const Vector3& vY, const Vector3& vRef )
 {
   Vector3  vT1, vT2, vT;
-  double  dLen, dAngle;
+  double   dAngle;
 
   vT1 = vX.normalized();
   vT2 = vY.normalized();
@@ -767,7 +767,6 @@ DOCGROUP(cando);
 CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coordinates, size_t index0, const Matrix& transform)
 {
   if ((index0+2)<coordinates->length()) {
-    double xp, yp, zp;
     transform.transform_nvector_point(vec.getX(),vec.getY(),vec.getZ(),coordinates,index0);
     return;
   }

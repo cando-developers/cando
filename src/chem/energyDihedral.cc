@@ -427,10 +427,6 @@ core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom
   if (!tia2.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a2));
   if (!tia3.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a3));
   if (!tia4.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a4));
-  int ia1 = tia1.unsafe_fixnum();
-  int ia2 = tia2.unsafe_fixnum();
-  int ia3 = tia3.unsafe_fixnum();
-  int ia4 = tia4.unsafe_fixnum();
   for (edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {
     if ((edi->_Atom1==a1 &&
          edi->_Atom2==a2 &&
@@ -576,6 +572,9 @@ num_real	EnergyDihedral_O::evaluateAllComponentSingle(
   gctools::Vec0<EnergyDihedral>::iterator di;
 
   int i = 0;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpass-failed"
+  
 #pragma clang loop vectorize(enable)
 #pragma clang loop interleave(enable)
 
@@ -663,7 +662,9 @@ num_real	EnergyDihedral_O::evaluateAllComponentSingle(
     }
     i++;
   }
-  if ( this->_DebugEnergy ) 
+#pragma diagnostic pop
+
+  if ( this->_DebugEnergy )
   {
     LOG_ENERGY(("%s }\n") , this->className());
   }
@@ -1555,7 +1556,6 @@ num_real	EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
 {
   num_real  energy = 0.0;
   this->_Evaluations++;
-  gctools::Vec0<EnergyDihedral>::iterator di_vector_end8 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL8_WIDTH))*VREAL8_WIDTH;
   if (cando::global_simd_width == 8 ) {
     gctools::Vec0<EnergyDihedral>::iterator di_vector_end8 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL8_WIDTH))*VREAL8_WIDTH;
     energy += this->evaluateAllComponentSimd8(this->_Terms.begin(),

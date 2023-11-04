@@ -132,10 +132,6 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
                                                             AbstractLargeSquareMatrix_sp m )
 {
   bool		calcForce = true;
-  bool		calcDiagonalHessian = true;
-  bool		calcOffDiagonalHessian = true;
-  num_real        ks;
-  size_t        rba, rbb;
   num_real        pxk, pyk, pzk;
   num_real        pxl, pyl, pzl;
   num_real        ak, bk, ck, dk, xk, yk, zk;
@@ -203,10 +199,7 @@ num_real EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score
   ANN(hdvec);
   ANN(dvec);
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
   num_real        ks, r0;
-  size_t        rba, rbb;
   num_real        pxk, pyk, pzk;
   num_real        pxl, pyl, pzl;
   num_real        ak, bk, ck, dk, xk, yk, zk;
@@ -354,7 +347,6 @@ void EnergyRigidBodyStaple_O::addTerm(const EnergyRigidBodyStaple& term)
 CL_DEFMETHOD core::List_sp EnergyRigidBodyStaple_O::parts_as_list(NVector_sp 	pos) {
   ql::list result;
   num_real        ks, r0;
-  size_t        rba, rbb;
   num_real        pxk, pyk, pzk;
   num_real        pxl, pyl, pzl;
   num_real        ak, bk, ck, dk, xk, yk, zk;
@@ -396,7 +388,6 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyStaple_O::parts_as_list(NVector_sp 	po
 
 size_t EnergyRigidBodyStaple_O::partsCoordinates(NVector_sp 	pos, size_t idx, core::SimpleVector_float_sp coords) {
   double        ks, r0;
-  size_t        rba, rbb;
   num_real        pxk, pyk, pzk;
   num_real        pxl, pyl, pzl;
   num_real        ak, bk, ck, dk, xk, yk, zk;

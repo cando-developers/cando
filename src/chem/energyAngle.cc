@@ -557,7 +557,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
 core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
 {
   ql::list result;
-  int	fails = 0;
 #if 0
   bool	calcForce = false;
   bool	calcDiagonalHessian = false;
@@ -732,9 +731,6 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
   if (!tia1.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a1));
   if (!tia2.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a2));
   if (!tia3.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a3));
-  int ia1 = tia1.unsafe_fixnum();
-  int ia2 = tia2.unsafe_fixnum();
-  int ia3 = tia3.unsafe_fixnum();
   for (auto edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {
     if ((edi->_Atom1==a1 &&
          edi->_Atom2==a2 &&

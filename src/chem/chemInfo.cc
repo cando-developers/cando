@@ -3297,7 +3297,7 @@ public:
           this->_results->vectorPushExtend(core::make_fixnum(get(correspondence_map_1_to_2, vertex1)));
         }
       }
-      core::T_sp bres = core::eval::funcall(this->m_callback, this->_results, core::make_fixnum((*this->_count_callbacks)),
+      [[maybe_unused]]core::T_sp bres = core::eval::funcall(this->m_callback, this->_results, core::make_fixnum((*this->_count_callbacks)),
                                             this->m_graph1, this->m_graph2);
     }
     if (this->_count_callbacks != NULL) {

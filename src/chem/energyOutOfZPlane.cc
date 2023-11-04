@@ -210,8 +210,8 @@ num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 {
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  [[maybe_unused]]bool	hasHessian = hessian.notnilp();
+  [[maybe_unused]]bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //
 // Copy from implementAmberFunction::evaluateAll
 //

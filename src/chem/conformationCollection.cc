@@ -107,7 +107,6 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 CL_DEFMETHOD void	ConformationCollectionEntry_O::extractCoordinatesFromMatter(Matter_sp matter)
 {
 ConformationCollection_sp	sl;
-vector<Vector3>::iterator	ci;
 #ifdef	DEBUG_ConformationCollectionEntry
     this->_Status->addMessage("extractCoordinatesFromMatter");
 #endif

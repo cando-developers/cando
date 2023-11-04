@@ -49,7 +49,6 @@ template <>
 struct to_object<gctools::SmallOrderedSet<chem::Atom_sp>, translate::dont_adopt_pointer> {
   static core::T_sp convert(gctools::SmallOrderedSet<chem::Atom_sp> atoms) {
     ql::list res;
-    int i(0);
     for (auto ai = atoms.begin(); ai != atoms.end(); ai++) {
       res << *ai;
     }

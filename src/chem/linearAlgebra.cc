@@ -72,8 +72,6 @@ double	epsilon, betaSquared, delta,cjk;
 uint	cjkIndex;
 double	djbar, djtilde, dj, theta, cik, cij;
 double	ddim;
-int	rowFirstIndex, rowLastIndex, ii,xII;
-double	ldltJk;
 #define	TAO	10.0	// See Schlick paper page 10, top paragraph
 
 //_lisp->profiler().timer(core::timerPreconditioner).start();

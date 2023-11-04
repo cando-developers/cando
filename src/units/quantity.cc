@@ -62,7 +62,10 @@ core::T_sp Quantity_O::copyAndScaleValue(core::T_sp obj, double conversion) {
     geom::OVector3_sp nval = geom::OVector3_O::create(oval->get().multiplyByScalar(conversion));
     return nval;
   } else if (obj.isA<core::Array_O>()) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
     core::Array_sp array = obj.as<core::Array_O>();
+#pragma clang diagnostic pop
     // core::Array_sp narray = array->deepCopy().as<core::Array_O>();
     FIX_ME();
 #if 0

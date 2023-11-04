@@ -1427,11 +1427,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
   core::Symbol_sp  t1, t2, t3, t4, t141, t144;
-  EnergyAtom      *eaCenter, *ea1, *ea2, *ea3, *ea4;
+  EnergyAtom       *ea1, *ea2, *ea3, *ea4;
   FFPtor_sp        ffPtor;
   FFItor_sp        ffItor;
-  FFNonbond_sp	ffNonbond1, ffNonbond2;
-  int             coordinateIndex;
+  FFNonbond_sp	   ffNonbond1, ffNonbond2;
+  int              coordinateIndex;
 
   //
   // Define a Nonbond cross term table
@@ -1700,7 +1700,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFPtor_sp        ffPtor;
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
-  int             coordinateIndex;
   if (chem__verbose(1)) core::lisp_write(fmt::format("In generateRestraintEnergyFunctionTables keepInteraction = {}\n", keepInteraction) );
   if (keepInteraction.nilp()) return;
     	//

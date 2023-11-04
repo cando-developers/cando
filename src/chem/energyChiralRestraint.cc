@@ -210,7 +210,7 @@ bool		calcOffDiagonalHessian = true;
 #include	<cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
-	int	I1, I2, I3, I4, i;
+	int	I1, I2, I3, I4;
 	for ( gctools::Vec0<EnergyChiralRestraint>::iterator cri=this->_Terms.begin();
 		    cri!=this->_Terms.end(); cri++ ) {
 #include	<cando/chem/energy_functions/_ChiralRestraint_termCode.cc>

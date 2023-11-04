@@ -87,7 +87,7 @@ CL_DEFMETHOD void  Kmeans_O::InitCenters(core::SimpleVector_sp centers)
   {
 
     int id = itMap->first;
-    size_t it;
+    size_t it = 0;
     int count = 0;
     while (count != id)
     {
@@ -147,7 +147,6 @@ void  Kmeans_O::Cluster(core::SimpleVector_sp centers, Clusters clusters)
 {
 //  core::List_sp pointsIter = this->_Points;
   size_t pointsIter(0);
-  float minDistance;
   for (int p = 0; p < _PointNumber; p++, pointsIter++)
   {
 ///    pointsIter = CONS_CDR(pointsIter);
@@ -406,7 +405,7 @@ CL_DEFMETHOD void KmeansPlusPlus_O::InitCenters(core::SimpleVector_sp centers)
 }
 CL_DEFMETHOD float Kmeans_O::Wcss(core::SimpleVector_sp centers, Clusters clusters) {
   std::vector<float> sums2(centers->length(),0.0);
-  for ( int ii; ii < this->_Points->length(); ii++ ) {
+  for ( int ii=0; ii < this->_Points->length(); ii++ ) {
     int cluster = (*clusters)[ii];
     sums2[cluster] += Distance2<floatType>(gc::As<Point>((*this->_Points)[ii]),gc::As<Point>((*centers)[cluster]));
   }

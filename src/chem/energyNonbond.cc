@@ -441,7 +441,7 @@ num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
 
-  num_real vdwScale = this->getVdwScale();
+  [[maybe_unused]]num_real vdwScale = this->getVdwScale();
   num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
 
@@ -478,7 +478,7 @@ num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
+  num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
   int	I1, I2;
   int i = 0;
   int endIndex = pos->length()/3;
@@ -499,7 +499,7 @@ num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
     bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     num_real charge11 = (*this->_charge_vector)[index1];
-    num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
+    [[maybe_unused]]num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
       // state TOP-INNER
@@ -629,7 +629,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
   num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   LOG("Nonbond component is enabled" );
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
+  num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
   int	I1, I2;
   int i = 0;
 //  int endIndex = pos->length()/3;
@@ -682,7 +682,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
     bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     num_real charge11 = (*this->_charge_vector)[index1];
-    num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
+    [[maybe_unused]]num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> {}    index2 -> {}\n" , numberOfExcludedAtomsRemaining , index2 );
       int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];

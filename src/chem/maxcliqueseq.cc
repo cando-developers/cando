@@ -1236,7 +1236,7 @@ public:
             std::cout << "-- " << std::setw(80-3) << std::setfill('-') << std::left << algorithmName.str();
             std::cout.flags(basefmt);
             std::cout << std::setfill(baseFill) << "\n";
-            unsigned long long steps = 0, sorts = 0;
+            unsigned long long steps = 0;
             for (size_t i = 0; i < workerSteps.size(); ++i) {
                 steps += workerSteps[i];
             }

@@ -30,7 +30,6 @@ typedef core::SimpleVector_float_sp     Point;
 typedef core::SimpleVector_int32_t_sp    Clusters;
 
 inline void AddToPoint(Point dest, Point source ) {
-  float sum = 0.0;
   for ( size_t ii=0; ii<dest->length(); ii++ ) {
     (*dest)[ii] += (*source)[ii];
   }

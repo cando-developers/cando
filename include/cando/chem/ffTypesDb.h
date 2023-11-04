@@ -102,7 +102,6 @@ public:
       size_t new_size = other_types_db->_TypeAssignmentRules.size() + this->_TypeAssignmentRules.size();
       gctools::Vec0<FFTypeRule_sp> newRules;
       newRules.reserve(new_size);
-      size_t idx;
       for ( auto it : other_types_db->_TypeAssignmentRules ) {
         newRules.push_back(it);
       }

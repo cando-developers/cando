@@ -106,8 +106,6 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
     {
       Root_sp root = (*it)->_Test;
       core::T_mv matches_mv = chem::chem__chem_info_match(root,atom);
-      core::MultipleValues &values = core::lisp_multipleValues();
-      ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(matches_mv.number_of_values()));
       if ( matches_mv.notnilp() ) {
         LOG("Rule MATCH!!!" );
         if (chem__verbose(2)) core::clasp_write_string(fmt::format("Matched {} type-> {}\n" , _rep_(root) , _rep_((*it)->_Type)));

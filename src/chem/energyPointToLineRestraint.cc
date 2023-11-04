@@ -63,8 +63,8 @@ num_real EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp 
   num_real totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  [[maybe_unused]]bool	hasHessian = hessian.notnilp();
+  [[maybe_unused]]bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //
 // Copy from implementAmberFunction::evaluateAll
 //

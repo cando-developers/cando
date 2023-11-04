@@ -255,7 +255,6 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   this->forceFieldMergeGlobalParameters(other);
   // Merge the terms and overwrite old ones with the same name
   for ( size_t i(0), iEnd(other->_Terms.size()); i<iEnd; ++i ) {
-    bool new_type = true;
     core::T_sp found = this->_Parameters->gethash(other->_Terms[i]->getType());
     if (found.notnilp()) {
       this->_Terms[found.unsafe_fixnum()] = other->_Terms[i];

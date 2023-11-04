@@ -1683,7 +1683,9 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   int				kk;
   double				alphaK, delta, rmsMagXKNext;
   bool				b1aTest, b1bTest;
-  double		prevAlphaK, dirMag, forceMag, cosAngle;
+  double		prevAlphaK = 0.0;
+  double                dirMag, forceMag;
+  double                cosAngle = 0.0;
 #define	TENEMINUS8	10.0e-8
 
   alphaK = 1.0;

@@ -292,7 +292,6 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
     C.clear();
     int pcur = -1;
     for ( uint ai=0; ai<mAtoms.size(); ai++ ) {
-      AtomPriority& ap = mAtoms[ai];
       Atom_sp a = mAtoms[ai]._Atom;
       uint idx = mAtoms[ai]._relativePriority;
       if (pcur != this->_p[idx])
