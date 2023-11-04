@@ -74,31 +74,31 @@ typedef	enum { singleCDBond,
 
 SMART(CDNode );
 class CDNode_O : public core::CxxObject_O
-{	
+{
   friend class CDFragment_O;
   LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode",core::CxxObject_O);
- public:
+public:
   uint				_Id;
   uint                          _Color;
   geom::Vector2                 _Pos;
   std::string       		_Label;
   StereochemistryType		_StereochemistryType;
   ConfigurationEnum		_Configuration;
-  core::List_sp _AtomProperties;
-  core::List_sp _ResidueProperties;
-  core::List_sp _MoleculeProperties;
- private:	// generated
+  core::List_sp                 _AtomProperties;
+  core::List_sp                 _ResidueProperties;
+  core::List_sp                  _MoleculeProperties;
+private:	// generated
   gc::Nilable<Atom_sp>		_Atom;
-  gc::Nilable<CDNode_sp>		_BackSpan;
-  gc::Nilable<CDNode_sp>		_NextSpan;
- public:
+  gc::Nilable<CDNode_sp>	_BackSpan;
+  gc::Nilable<CDNode_sp>	_NextSpan;
+public:
   void	initialize();
- public:
+public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
- private:
+private:
   std::string	_extractLabel(adapt::QDomNode_sp node);
- public:
+public:
   uint	getId() const { return this->_Id;};
   void    setId(uint i) { this->_Id = i; };
 //        core::Symbol_sp getLabel() const { return this->_Label;};
@@ -111,19 +111,20 @@ class CDNode_O : public core::CxxObject_O
 
   CL_DEFMETHOD geom::Vector2 getPosition() const { return this->_Pos; };
   CL_DEFMETHOD std::string getLabel() const { return this->_Label; };
-  
+
   void	bondTo( CDNode_sp neighbor, CDBondOrder order);
 
   string __repr__() const;
 
   CDNode_O( const CDNode_O& ss ); //!< Copy constructor
 
- CDNode_O() : _Atom(nil<core::T_O>())
-    , _BackSpan(nil<core::T_O>())
-    , _NextSpan(nil<core::T_O>())
-    , _AtomProperties(nil<core::T_O>())
-    , _ResidueProperties(nil<core::T_O>())
-    , _MoleculeProperties(nil<core::T_O>())
+  CDNode_O() :
+      _AtomProperties(nil<core::T_O>())
+      , _ResidueProperties(nil<core::T_O>())
+      , _MoleculeProperties(nil<core::T_O>())
+      , _Atom(nil<core::T_O>())
+      , _BackSpan(nil<core::T_O>())
+      , _NextSpan(nil<core::T_O>())
   {};
   virtual ~CDNode_O() {};
 };

@@ -325,7 +325,11 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
 
     adapt::QDomNode_sp	asXml();
 
-    Minimizer_O() : _PrintIntermediateResults(1), _StepCallback(nil<core::T_O>()), _Frozen(nil<core::T_O>()) {};
+    Minimizer_O() :
+        _PrintIntermediateResults(1),
+        _Frozen(nil<core::T_O>()),
+        _StepCallback(nil<core::T_O>())
+    {};
   };
 
   extern core::Symbol_sp& _sym__PLUS_minimizerStatusConverter_PLUS_;

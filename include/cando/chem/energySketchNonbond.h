@@ -153,7 +153,12 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   void modifySketchNonbondTermConstant(size_t index, float constant);
 
  public:
-  EnergySketchNonbond_O() : _LongDistanceCutoff(80.0), _ScaleSketchNonbond(1.0), _IgnoreHydrogensAndLps(false), _FreezeFlags() {};
+  EnergySketchNonbond_O() :
+      _ScaleSketchNonbond(1.0),
+      _LongDistanceCutoff(80.0),
+      _IgnoreHydrogensAndLps(false),
+      _FreezeFlags()
+  {};
   void reset();
 };
 

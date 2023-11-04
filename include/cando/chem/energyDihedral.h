@@ -116,7 +116,15 @@ public:
 	double		getCalculatedDihedralDeviation() { return this->_CalculatedDihedralDeviation;};
 
 public:
- EnergyDihedral(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, size_t i1, size_t i2, size_t i3, size_t i4, double sinp, double cosp, double v, double dn, int in) : term(sinp,cosp,v,dn,in,i1,i2,i3,i4),_Atom1(a1),_Atom2(a2),_Atom3(a3),_Atom4(a4), _PhaseRad(phase), _Proper(proper) {};
+ EnergyDihedral(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, size_t i1, size_t i2, size_t i3, size_t i4, double sinp, double cosp, double v, double dn, int in) :
+     _Proper(proper),
+     _Atom1(a1),
+     _Atom2(a2),
+     _Atom3(a3),
+     _Atom4(a4),
+     _PhaseRad(phase),
+     term(sinp,cosp,v,dn,in,i1,i2,i3,i4)
+  {};
   EnergyDihedral() {};
 public:
 	adapt::QDomNode_sp	asXml();

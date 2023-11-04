@@ -78,8 +78,8 @@ size_t calculate_maxtag(ChemInfoNode_sp node);
   public:
     static ChemInfoMatch_sp make(Root_sp root,size_t maxtag, core::HashTableEql_sp ring);
   public:
-    bool		_Matches;
-    size_t              _MaxTagPlus1;
+    bool		  _Matches;
+    size_t                _MaxTagPlus1;
     Root_sp               _Root;
     core::HashTableEql_sp _RingLookup;
     core::SimpleVector_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
@@ -114,7 +114,12 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
 	 */
     BoundFrame_sp boundFrame();
 
-    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) : _Root(root), _Matches(false), _MaxTagPlus1(maxtagPlus1), _TagHistory(nil<core::T_O>()) {};
+    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) :
+        _Matches(false),
+        _MaxTagPlus1(maxtagPlus1),
+        _Root(root),
+        _TagHistory(nil<core::T_O>())
+    {};
   };
 
 
@@ -1037,7 +1042,6 @@ SMART(Root);
 class Root_O : public AtomOrBondMatchNode_O
 {
   LISP_CLASS(chem,ChemPkg,Root_O,"Root",AtomOrBondMatchNode_O);
-
 public:
   void initialize();
 public:
@@ -1051,9 +1055,8 @@ public:
 	 These can be incorporated into the smarts code as <xxxx> where xxxx is the symbol
 	name of the test. */
   core::T_sp		_Tests;
-  size_t _MaxTag;
-  std::string _Code;
-//    core::HashTableEql_sp               _RingTags;
+  size_t                _MaxTag;
+  std::string           _Code;
 public:
   virtual uint depth() const;
   virtual string originalCode() const { return this->_Code;};
@@ -1074,9 +1077,19 @@ public:
   virtual	ChemInfoType	type() { return root; };
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : _Code(code), _Node(node), _Tests(nil<core::T_O>()), _MaxTag(maxtag) {}
   Root_O(const std::string& code) : _Code(code) {};
-  Root_O() : _Code(""), _Node(nil<core::T_O>()), _Tests(nil<core::T_O>()), _MaxTag(0) {};
+  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) :
+      _Node(node),
+      _Tests(nil<core::T_O>()),
+      _MaxTag(maxtag),
+      _Code(code)
+  {};
+  Root_O() :
+      _Node(nil<core::T_O>()),
+      _Tests(nil<core::T_O>()),
+      _MaxTag(0),
+      _Code("")
+  {};
 };
 
 

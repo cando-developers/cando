@@ -297,7 +297,10 @@ class EnergyNonbond_O : public EnergyComponent_O
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
 
-  EnergyNonbond_O() : _FFNonbondDb(unbound<core::T_O>()), _UsesExcludedAtoms(true) {};
+  EnergyNonbond_O() :
+      _UsesExcludedAtoms(true),
+      _FFNonbondDb(unbound<core::T_O>())
+  {};
 };
 
 };

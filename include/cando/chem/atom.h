@@ -149,206 +149,206 @@ struct gctools::GCInfo<chem::Atom_O> {
 namespace chem {
   // Every atom gets a unique atom 64-bit index
   // 64 bits means we should never run out of unique
-  SMART(Atom);
-  class Atom_O : public Matter_O {
-    LISP_CLASS(chem,ChemPkg,Atom_O,"Atom",Matter_O);	
-    friend	class	Loop;
-    friend	class	Bond_O;
-    friend	class	Residue_O;
-  public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-  public:
-    typedef VectorBond::iterator bondIterator;
-  public:
-    size_t              _UniqueAtomOrder;
-    core::Symbol_sp	_Alias;	//!< alias name
-    ATOM_FLAGS	        _Flags;
-    Vector3		_Position;
+SMART(Atom);
+class Atom_O : public Matter_O {
+  LISP_CLASS(chem,ChemPkg,Atom_O,"Atom",Matter_O);	
+  friend	class	Loop;
+  friend	class	Bond_O;
+  friend	class	Residue_O;
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  typedef VectorBond::iterator bondIterator;
+public:
+  size_t              _UniqueAtomOrder;
+  core::Symbol_sp	_Alias;	//!< alias name
+  ATOM_FLAGS	        _Flags;
+  Vector3		_Position;
 //    AtomType	        _Type;
-    VectorBond	        _Bonds;
-    double		_Charge;
+  VectorBond	        _Bonds;
+  double		_Charge;
     //! Used to duplicate matter - NOT THREAD SAFE - switch to hashtable
-    Atom_sp		_CopyAtom;
+  Atom_sp		_CopyAtom;
     //! What uses this? - NOT THREAD SAFE - switch to hashtable
-    int		        _BackCount;
+  int		        _BackCount;
     //! Used for a variety of things - NOT THREAD SAFE - switch to hashtable
-    int		        _TempInt;
+  int		        _TempInt;
     /*! Used for octree code - NOT THREAD SAFE - switch to hashtable and tagged float?
        Does octree code require higher precision? It subdivides space.
        Is there a non IEEE double precision value that can be tagged
        and quickly converted into a double???
        I wish, I wish we had a way to store a double in a tagged word.
     */
-    double              _dAtomTemp; // a temporary double value - terrible idea
-    float		_VdwRadius;
-    float		_CovalentRadius;
-    StereochemistryType _StereochemistryType;
-    ConfigurationEnum   _Configuration;
+  double              _dAtomTemp; // a temporary double value - terrible idea
+  float		_VdwRadius;
+  float		_CovalentRadius;
+  StereochemistryType _StereochemistryType;
+  ConfigurationEnum   _Configuration;
 	// Selection mask
-    unsigned int	_Mask;
-    Element		_Element;
-    Hybridization 	_Hybridization;
+  unsigned int	_Mask;
+  Element		_Element;
+  Hybridization 	_Hybridization;
 	// Ring membership
-    ushort              _RingMembershipCount;
-    short               _Ionization;
-  public:
-    static Atom_sp make(MatterName name, Element element);
-  public:
-      static int priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp cip_priority);
-  public:
-    uint	getMask() { return this->_Mask; };
-    void	setMask(uint m) { this->_Mask = m; };
+  ushort              _RingMembershipCount;
+  short               _Ionization;
+public:
+  static Atom_sp make(MatterName name, Element element);
+public:
+  static int priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp cip_priority);
+public:
+  uint	getMask() { return this->_Mask; };
+  void	setMask(uint m) { this->_Mask = m; };
 
 //	void	duplicateFrom(Atom_O* a);
-    Atom_sp	getCopyAtom()			{return this->_CopyAtom;};
+  Atom_sp	getCopyAtom()			{return this->_CopyAtom;};
 
 
-    void	_addHydrogenWithName(Residue_sp residueContainedBy, core::Symbol_sp name);
-    void _addExistingBond(Bond_sp const& bond);
-  public:
+  void	_addHydrogenWithName(Residue_sp residueContainedBy, core::Symbol_sp name);
+  void _addExistingBond(Bond_sp const& bond);
+public:
 
-    inline size_t atLowerUniqueAtomOrderThan(Atom_sp a) const {
-      return this->_UniqueAtomOrder < a->_UniqueAtomOrder;
-    };
-    CL_LISPIFY_NAME("isAromatic");
-    CL_DEFMETHOD 	bool isAromatic() const { return this->testAnyFlags(Aromatic);};
-    CL_LISPIFY_NAME("setIsAromatic");
-    CL_DEFMETHOD 	void setIsAromatic(bool b) { if (b) turnOnFlags(Aromatic); else turnOffFlags(Aromatic);};
+  inline size_t atLowerUniqueAtomOrderThan(Atom_sp a) const {
+    return this->_UniqueAtomOrder < a->_UniqueAtomOrder;
+  };
+  CL_LISPIFY_NAME("isAromatic");
+  CL_DEFMETHOD 	bool isAromatic() const { return this->testAnyFlags(Aromatic);};
+  CL_LISPIFY_NAME("setIsAromatic");
+  CL_DEFMETHOD 	void setIsAromatic(bool b) { if (b) turnOnFlags(Aromatic); else turnOffFlags(Aromatic);};
 
-    virtual	char	getClass()	{return atomId;};
+  virtual	char	getClass()	{return atomId;};
 
-    CL_LISPIFY_NAME("atomName");
-    CL_DEFMETHOD         core::Symbol_sp atomName() const { return this->getName();};
-    bool	Atom_equal(core::T_sp obj) const;
-    virtual void	transferCoordinates(Matter_sp other);
+  CL_LISPIFY_NAME("atomName");
+  CL_DEFMETHOD         core::Symbol_sp atomName() const { return this->getName();};
+  bool	Atom_equal(core::T_sp obj) const;
+  virtual void	transferCoordinates(Matter_sp other);
 
-    int	totalNetResidueCharge() { THROW_HARD_ERROR("Atoms can't calculate totalNetResidueCharge");};
-    VectorBond::iterator bonds_begin() { return this->_Bonds.begin(); };
-    VectorBond::iterator bonds_end() {return this->_Bonds.end(); };
+  int	totalNetResidueCharge() { THROW_HARD_ERROR("Atoms can't calculate totalNetResidueCharge");};
+  VectorBond::iterator bonds_begin() { return this->_Bonds.begin(); };
+  VectorBond::iterator bonds_end() {return this->_Bonds.end(); };
 
-    char	getMatterType()	{ return ATOM_CLASS; };
+  char	getMatterType()	{ return ATOM_CLASS; };
 
 //    CL_LISPIFY_NAME("getAtomId");
 //    CL_DEFMETHOD 	int	getAtomId() { return this->getId(); };
-    int	getTempInt() { return this->_TempInt; };
-    void	setTempInt(int o) { this->_TempInt = o;};
+  int	getTempInt() { return this->_TempInt; };
+  void	setTempInt(int o) { this->_TempInt = o;};
 
-      int getRelativePriority(core::HashTable_sp cip) const;
+  int getRelativePriority(core::HashTable_sp cip) const;
       
-    CL_LISPIFY_NAME("getAlias");
-    CL_DEFMETHOD 	core::Symbol_sp	getAlias() { return this->_Alias; };
-    CL_LISPIFY_NAME("setAlias");
-    CL_DEFMETHOD 	void setAlias(core::Symbol_sp alias) { this->_Alias = alias;};
+  CL_LISPIFY_NAME("getAlias");
+  CL_DEFMETHOD 	core::Symbol_sp	getAlias() { return this->_Alias; };
+  CL_LISPIFY_NAME("setAlias");
+  CL_DEFMETHOD 	void setAlias(core::Symbol_sp alias) { this->_Alias = alias;};
 
 
-    CL_LISPIFY_NAME("getFlags");
-    CL_DEFMETHOD 	ATOM_FLAGS	getFlags() { return this->_Flags; };
-    CL_LISPIFY_NAME("resetFlags");
-    CL_DEFMETHOD 	void	resetFlags() { this->_Flags = 0; };
-    CL_LISPIFY_NAME("turnOnFlags");
-    CL_DEFMETHOD 	void	turnOnFlags(ATOM_FLAGS o) { this->_Flags |= o; };
-    CL_LISPIFY_NAME("turnOffFlags");
-    CL_DEFMETHOD 	void	turnOffFlags(ATOM_FLAGS o) { this->_Flags &= ~o; };
-    void	modifyFlags(int op, ATOM_FLAGS o);
-    CL_LISPIFY_NAME("testAllFlags");
-    CL_DEFMETHOD 	bool    testAllFlags( ATOM_FLAGS o ) const { return (this->_Flags&o)==o;};
-    CL_LISPIFY_NAME("testAnyFlags");
-    CL_DEFMETHOD 	bool    testAnyFlags( ATOM_FLAGS o ) const { return (this->_Flags&o)!=0;};
-    void	clearAllRingMembershipFlags();
-    CL_LISPIFY_NAME("isInRing");
-    CL_DEFMETHOD 	bool    isInRing() const { return (this->_Flags&inRing)!= 0; };
-    CL_DEFMETHOD bool needs_build() const { return (this->_Flags&needsBuild)!=0;};
-    CL_DEFMETHOD void setf_needs_build(bool val) {
-      if (val) this->turnOnFlags(needsBuild);
-      else this->turnOffFlags(needsBuild);
-    }
-    bool    inRingSize(int s) const;
-    void	setInRingOfSize(int s);
-    void	incrementRingMembershipCount() { this->_RingMembershipCount++;};
-    CL_LISPIFY_NAME("getRingMembershipCount");
-    CL_DEFMETHOD 	int     getRingMembershipCount() { return this->_RingMembershipCount;};
-    CL_LISPIFY_NAME("setRingMembershipCount");
-    CL_DEFMETHOD 	void    setRingMembershipCount(int r) {this->_RingMembershipCount = r;};
-    string	getNameIndex();
-    void	setElementFromAtomName();
-    void	setElementFromString(const string& elementSymbol);
+  CL_LISPIFY_NAME("getFlags");
+  CL_DEFMETHOD 	ATOM_FLAGS	getFlags() { return this->_Flags; };
+  CL_LISPIFY_NAME("resetFlags");
+  CL_DEFMETHOD 	void	resetFlags() { this->_Flags = 0; };
+  CL_LISPIFY_NAME("turnOnFlags");
+  CL_DEFMETHOD 	void	turnOnFlags(ATOM_FLAGS o) { this->_Flags |= o; };
+  CL_LISPIFY_NAME("turnOffFlags");
+  CL_DEFMETHOD 	void	turnOffFlags(ATOM_FLAGS o) { this->_Flags &= ~o; };
+  void	modifyFlags(int op, ATOM_FLAGS o);
+  CL_LISPIFY_NAME("testAllFlags");
+  CL_DEFMETHOD 	bool    testAllFlags( ATOM_FLAGS o ) const { return (this->_Flags&o)==o;};
+  CL_LISPIFY_NAME("testAnyFlags");
+  CL_DEFMETHOD 	bool    testAnyFlags( ATOM_FLAGS o ) const { return (this->_Flags&o)!=0;};
+  void	clearAllRingMembershipFlags();
+  CL_LISPIFY_NAME("isInRing");
+  CL_DEFMETHOD 	bool    isInRing() const { return (this->_Flags&inRing)!= 0; };
+  CL_DEFMETHOD bool needs_build() const { return (this->_Flags&needsBuild)!=0;};
+  CL_DEFMETHOD void setf_needs_build(bool val) {
+    if (val) this->turnOnFlags(needsBuild);
+    else this->turnOffFlags(needsBuild);
+  }
+  bool    inRingSize(int s) const;
+  void	setInRingOfSize(int s);
+  void	incrementRingMembershipCount() { this->_RingMembershipCount++;};
+  CL_LISPIFY_NAME("getRingMembershipCount");
+  CL_DEFMETHOD 	int     getRingMembershipCount() { return this->_RingMembershipCount;};
+  CL_LISPIFY_NAME("setRingMembershipCount");
+  CL_DEFMETHOD 	void    setRingMembershipCount(int r) {this->_RingMembershipCount = r;};
+  string	getNameIndex();
+  void	setElementFromAtomName();
+  void	setElementFromString(const string& elementSymbol);
 
 
-    virtual bool isAtom() { return true;};
-    gc::Nilable<Atom_sp> highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a, core::HashTable_sp cip);
-      gc::Nilable<Atom_sp> lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a, core::HashTable_sp cip);
+  virtual bool isAtom() { return true;};
+  gc::Nilable<Atom_sp> highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a, core::HashTable_sp cip);
+  gc::Nilable<Atom_sp> lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a, core::HashTable_sp cip);
 
-    bool	hasAtomNameAttribute(char c);
+  bool	hasAtomNameAttribute(char c);
 
-    core::T_sp getType(core::HashTable_sp atomTypes) const;
+  core::T_sp getType(core::HashTable_sp atomTypes) const;
 
-    AtomType atomType() const;
-    void	setAtomType(AtomType o);
+  AtomType atomType() const;
+  void	setAtomType(AtomType o);
 
-    CL_LISPIFY_NAME("getHybridization");
-    CL_DEFMETHOD         Hybridization getHybridization() { return this->_Hybridization; };
-    string getHybridizationAsString();
-    CL_LISPIFY_NAME("setHybridization");
-    CL_DEFMETHOD 	void	setHybridization(Hybridization o) { this->_Hybridization = (o); };
-    void	setHybridizationFromString(const string& h);
-    bool	getHintLP() { return this->testAnyFlags(HintLp); };
-    void	setHintLP(bool o) { if (o) turnOnFlags(HintLp); else turnOffFlags(HintLp); };
-    CL_LISPIFY_NAME("GET-ELEMENT");
-    CL_DEFMETHOD 	Element getElement() const { return this->_Element; };
-    string	getElementAsString() const;
-    core::Symbol_sp	getElementAsSymbol() const;
-    CL_LISPIFY_NAME("SET-ELEMENT");
-    CL_DEFMETHOD 	void	setElement(Element o) { this->_Element= o; };
-    int     getAtomicNumber();
-    int     getIntegerAtomicMass();
-    double	getAtomicWeight();
-    int     getValence();
-    virtual bool isVirtual() const { return false;};
-    void getPosition_BANG_(Vector3& pos);
-    CL_LISPIFY_NAME("getPosition");
-    CL_DEFMETHOD 	Vector3 getPosition() { return this->_Position; };
-    CL_DEFMETHOD bool atomWithinAngstroms(Atom_sp other, float angstroms) const;
-    CL_LISPIFY_NAME("getPositionInNanometers");
-    CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->_Position.inNanometers(); };
-    Vector3& getPositionRef() { return this->_Position; };
-    CL_LISPIFY_NAME("setPosition");
-    CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->_Position= o; };
-    CL_DEFMETHOD 	void	setPositionXYZ(double x, double y, double z) {
-      this->_Position.getX() = x;
-      this->_Position.getY() = y;
-      this->_Position.getZ() = z;
-    }
-    void	setPositionInNanometers(Vector3 o);
-    float distanceSquaredToAtom(Atom_sp other);
+  CL_LISPIFY_NAME("getHybridization");
+  CL_DEFMETHOD         Hybridization getHybridization() { return this->_Hybridization; };
+  string getHybridizationAsString();
+  CL_LISPIFY_NAME("setHybridization");
+  CL_DEFMETHOD 	void	setHybridization(Hybridization o) { this->_Hybridization = (o); };
+  void	setHybridizationFromString(const string& h);
+  bool	getHintLP() { return this->testAnyFlags(HintLp); };
+  void	setHintLP(bool o) { if (o) turnOnFlags(HintLp); else turnOffFlags(HintLp); };
+  CL_LISPIFY_NAME("GET-ELEMENT");
+  CL_DEFMETHOD 	Element getElement() const { return this->_Element; };
+  string	getElementAsString() const;
+  core::Symbol_sp	getElementAsSymbol() const;
+  CL_LISPIFY_NAME("SET-ELEMENT");
+  CL_DEFMETHOD 	void	setElement(Element o) { this->_Element= o; };
+  int     getAtomicNumber();
+  int     getIntegerAtomicMass();
+  double	getAtomicWeight();
+  int     getValence();
+  virtual bool isVirtual() const { return false;};
+  void getPosition_BANG_(Vector3& pos);
+  CL_LISPIFY_NAME("getPosition");
+  CL_DEFMETHOD 	Vector3 getPosition() { return this->_Position; };
+  CL_DEFMETHOD bool atomWithinAngstroms(Atom_sp other, float angstroms) const;
+  CL_LISPIFY_NAME("getPositionInNanometers");
+  CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->_Position.inNanometers(); };
+  Vector3& getPositionRef() { return this->_Position; };
+  CL_LISPIFY_NAME("setPosition");
+  CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->_Position= o; };
+  CL_DEFMETHOD 	void	setPositionXYZ(double x, double y, double z) {
+    this->_Position.getX() = x;
+    this->_Position.getY() = y;
+    this->_Position.getZ() = z;
+  }
+  void	setPositionInNanometers(Vector3 o);
+  float distanceSquaredToAtom(Atom_sp other);
 	//! Atoms should throw an exception
-    void	makeAllAtomNamesInEachResidueUnique();
-    CL_DEFMETHOD 	void setMembershipAr1(bool b) { if (b) turnOnFlags(MembershipAr1); else turnOffFlags(MembershipAr1);};
-    CL_DEFMETHOD 	void setMembershipAr2(bool b) { if (b) turnOnFlags(MembershipAr2); else turnOffFlags(MembershipAr2);};
-    CL_DEFMETHOD 	void setMembershipAr3(bool b) { if (b) turnOnFlags(MembershipAr3); else turnOffFlags(MembershipAr3);};
-    CL_DEFMETHOD 	void setMembershipAr4(bool b) { if (b) turnOnFlags(MembershipAr4); else turnOffFlags(MembershipAr4);};
-    CL_DEFMETHOD 	void setMembershipAr5(bool b) { if (b) turnOnFlags(MembershipAr5); else turnOffFlags(MembershipAr5);};
-    CL_DEFMETHOD 	bool     getMembershipAr1()	{ return testAllFlags(MembershipAr1); };
-    CL_DEFMETHOD 	bool     getMembershipAr2()	{ return testAllFlags(MembershipAr2); };
-    CL_DEFMETHOD 	bool     getMembershipAr3()	{ return testAllFlags(MembershipAr3); };
-    CL_DEFMETHOD 	bool     getMembershipAr4()	{ return testAllFlags(MembershipAr4); };
-    CL_DEFMETHOD 	bool     getMembershipAr5()	{ return testAllFlags(MembershipAr5); };
-    CL_LISPIFY_NAME("getIonization");
-    CL_DEFMETHOD 	int     getIonization()	{ return this->_Ionization; };
-    CL_LISPIFY_NAME("setIonization");
-    CL_DEFMETHOD 	void	setIonization(int c)	{ this->_Ionization = c; };
-    CL_LISPIFY_NAME("getCharge");
-    CL_DEFMETHOD 	double	getCharge()	{ return this->_Charge; };
-    CL_LISPIFY_NAME("setCharge");
-    CL_DEFMETHOD 	void	setCharge(double c)	{ this->_Charge = c; };
-    CL_LISPIFY_NAME("getVdwRadius");
-    CL_DEFMETHOD 	double	getVdwRadius()	{ return this->_VdwRadius; };
-    CL_LISPIFY_NAME("setVdwRadius");
-    CL_DEFMETHOD 	void	setVdwRadius(double c)	{ this->_VdwRadius = c; };
-    CL_LISPIFY_NAME("getCovalentRadius");
-    CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->_CovalentRadius; };
-    CL_LISPIFY_NAME("setCovalentRadius");
-    CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->_CovalentRadius = c; };
+  void	makeAllAtomNamesInEachResidueUnique();
+  CL_DEFMETHOD 	void setMembershipAr1(bool b) { if (b) turnOnFlags(MembershipAr1); else turnOffFlags(MembershipAr1);};
+  CL_DEFMETHOD 	void setMembershipAr2(bool b) { if (b) turnOnFlags(MembershipAr2); else turnOffFlags(MembershipAr2);};
+  CL_DEFMETHOD 	void setMembershipAr3(bool b) { if (b) turnOnFlags(MembershipAr3); else turnOffFlags(MembershipAr3);};
+  CL_DEFMETHOD 	void setMembershipAr4(bool b) { if (b) turnOnFlags(MembershipAr4); else turnOffFlags(MembershipAr4);};
+  CL_DEFMETHOD 	void setMembershipAr5(bool b) { if (b) turnOnFlags(MembershipAr5); else turnOffFlags(MembershipAr5);};
+  CL_DEFMETHOD 	bool     getMembershipAr1()	{ return testAllFlags(MembershipAr1); };
+  CL_DEFMETHOD 	bool     getMembershipAr2()	{ return testAllFlags(MembershipAr2); };
+  CL_DEFMETHOD 	bool     getMembershipAr3()	{ return testAllFlags(MembershipAr3); };
+  CL_DEFMETHOD 	bool     getMembershipAr4()	{ return testAllFlags(MembershipAr4); };
+  CL_DEFMETHOD 	bool     getMembershipAr5()	{ return testAllFlags(MembershipAr5); };
+  CL_LISPIFY_NAME("getIonization");
+  CL_DEFMETHOD 	int     getIonization()	{ return this->_Ionization; };
+  CL_LISPIFY_NAME("setIonization");
+  CL_DEFMETHOD 	void	setIonization(int c)	{ this->_Ionization = c; };
+  CL_LISPIFY_NAME("getCharge");
+  CL_DEFMETHOD 	double	getCharge()	{ return this->_Charge; };
+  CL_LISPIFY_NAME("setCharge");
+  CL_DEFMETHOD 	void	setCharge(double c)	{ this->_Charge = c; };
+  CL_LISPIFY_NAME("getVdwRadius");
+  CL_DEFMETHOD 	double	getVdwRadius()	{ return this->_VdwRadius; };
+  CL_LISPIFY_NAME("setVdwRadius");
+  CL_DEFMETHOD 	void	setVdwRadius(double c)	{ this->_VdwRadius = c; };
+  CL_LISPIFY_NAME("getCovalentRadius");
+  CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->_CovalentRadius; };
+  CL_LISPIFY_NAME("setCovalentRadius");
+  CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->_CovalentRadius = c; };
 	/*! Return a ConstitutionAtom for this atom and give it the ConstitutionAtomIndex0N (index)
 	  @param index The ConstitutionAtomIndex0N that will be assigned to the new ConstitutionAtom */
 //    ConstitutionAtom_sp asConstitutionAtom(ConstitutionAtomIndex0N index);
@@ -358,105 +358,105 @@ namespace chem {
 	  @param atomMap   A map of Atoms to ConstitutionAtomIndex0N values */
 //    void defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtomsToConstitutionAtomIndex0N atomMap);
 
-  private:
-    core::List_sp 	_expandLocalSpanningTree(Atom_sp avoid, Bond_sp bond, uint depth);
-  public:
-    core::List_sp	localSpanningTree(uint depth);
+private:
+  core::List_sp 	_expandLocalSpanningTree(Atom_sp avoid, Bond_sp bond, uint depth);
+public:
+  core::List_sp	localSpanningTree(uint depth);
 
 
-    Atom_sp	aliasAtomOrNil(Alias_sp alias) {IMPLEMENT_ME();};
-    Residue_sp aliasResidueOrNil(Alias_sp alias) {IMPLEMENT_ME();};
+  Atom_sp	aliasAtomOrNil(Alias_sp alias) {IMPLEMENT_ME();};
+  Residue_sp aliasResidueOrNil(Alias_sp alias) {IMPLEMENT_ME();};
 
-    CL_LISPIFY_NAME("flagsSet");
-    CL_DEFMETHOD 	bool	flagsSet(int f)	{return (bool)((this->_Flags&f)!=0);};
-    void	applyTransformToAtoms(const Matrix& m);
-    VectorBond& getBonds()		{return this->_Bonds; };
-    VectorAtom getBondedAtoms();
-    core::List_sp	bondedAtomsAsList() const;
+  CL_LISPIFY_NAME("flagsSet");
+  CL_DEFMETHOD 	bool	flagsSet(int f)	{return (bool)((this->_Flags&f)!=0);};
+  void	applyTransformToAtoms(const Matrix& m);
+  VectorBond& getBonds()		{return this->_Bonds; };
+  VectorAtom getBondedAtoms();
+  core::List_sp	bondedAtomsAsList() const;
 
-    Bond_sp	basicBondTo(  Atom_sp a, BondOrder o );
-    Bond_sp	bondTo(  Atom_sp a, BondOrder o, bool error_if_exists = true, bool error_if_exceed_valence = true );
-    Bond_sp	bondToSingle(  Atom_sp a );
-    Bond_sp	bondToOrderInt(  Atom_sp a, int o );
-    Bond_sp	getBondTo(Atom_sp a);
-    bool 	hasBondWithOrder(BondOrder o) const;
-    bool	isBondedToAtomNamed( MatterName name );
-    bool	isBondedToElementOrder( Element element, BondOrder o );
-    bool	isBondedToElementHybridization( Element element, Hybridization hybrid );
-    bool	isBondedToElementHybridizationElementHybridization(Element element1 , Hybridization hybrid1, Element element2 , Hybridization hybrid2 );
-    bool	isBondedToWithBondOrder( Atom_sp a1, BondOrder o );
-    bool	isBondedTo( Atom_sp a1 );
-    void	basicRemoveBondTo( Atom_sp a );
-    void	removeBondTo(Atom_sp a);
-    void	removeAllBonds();
-    int	coordination();
-    void reorderBonds(core::List_sp atoms);
-    Bond_sp bondAtIndex(int i);
-    Atom_sp	bondedNeighbor(int i);
-    Atom_sp	bondedNeighborWithName(MatterName name);
-    BondOrder bondOrderTo( Atom_sp aTarget );
-    int	numberOfBonds() const;
-    BondOrder	bondedOrder(int i);
+  Bond_sp	basicBondTo(  Atom_sp a, BondOrder o );
+  Bond_sp	bondTo(  Atom_sp a, BondOrder o, bool error_if_exists = true, bool error_if_exceed_valence = true );
+  Bond_sp	bondToSingle(  Atom_sp a );
+  Bond_sp	bondToOrderInt(  Atom_sp a, int o );
+  Bond_sp	getBondTo(Atom_sp a);
+  bool 	hasBondWithOrder(BondOrder o) const;
+  bool	isBondedToAtomNamed( MatterName name );
+  bool	isBondedToElementOrder( Element element, BondOrder o );
+  bool	isBondedToElementHybridization( Element element, Hybridization hybrid );
+  bool	isBondedToElementHybridizationElementHybridization(Element element1 , Hybridization hybrid1, Element element2 , Hybridization hybrid2 );
+  bool	isBondedToWithBondOrder( Atom_sp a1, BondOrder o );
+  bool	isBondedTo( Atom_sp a1 );
+  void	basicRemoveBondTo( Atom_sp a );
+  void	removeBondTo(Atom_sp a);
+  void	removeAllBonds();
+  int	coordination();
+  void reorderBonds(core::List_sp atoms);
+  Bond_sp bondAtIndex(int i);
+  Atom_sp	bondedNeighbor(int i);
+  Atom_sp	bondedNeighborWithName(MatterName name);
+  BondOrder bondOrderTo( Atom_sp aTarget );
+  int	numberOfBonds() const;
+  BondOrder	bondedOrder(int i);
 	/*! Total all of the bond orders.  */
-    uint totalBondOrder();
-    uint maxTotalBondOrder();
-    uint numberOfOpenValence();
-    core::List_sp createImplicitHydrogenNames();
-    size_t fillInImplicitHydrogensWithResidue(Residue_sp residue);
+  uint totalBondOrder();
+  uint maxTotalBondOrder();
+  uint numberOfOpenValence();
+  core::List_sp createImplicitHydrogenNames();
+  size_t fillInImplicitHydrogensWithResidue(Residue_sp residue);
     
-    size_t fillInImplicitHydrogens(); // signals error - use fillInImplicitHydrogensWithResidue
+  size_t fillInImplicitHydrogens(); // signals error - use fillInImplicitHydrogensWithResidue
 
-    void randomizeAtomPosition(double width);
-    void perturbAtomPosition(double dist);
+  void randomizeAtomPosition(double width);
+  void perturbAtomPosition(double dist);
 
 	/*! Calculate the stereochemical configuration "R" or "S"
 	 * based on the positions of this atom and the four attached atoms
 	 */
-      ConfigurationEnum calculateStereochemicalConfiguration(core::HashTable_sp cip_priority);
-    string calculateStereochemicalConfigurationAsString(core::HashTable_sp cip_priority);
+  ConfigurationEnum calculateStereochemicalConfiguration(core::HashTable_sp cip_priority);
+  string calculateStereochemicalConfigurationAsString(core::HashTable_sp cip_priority);
 
-    core::List_sp	bondsAsList() const;
-    BondList_sp	getBondList();
-    bool		isHeavyAtom();
-    BondList_sp	getHeavyAtomBondList();
-    int             getBondedHydrogenCount();
+  core::List_sp	bondsAsList() const;
+  BondList_sp	getBondList();
+  bool		isHeavyAtom();
+  BondList_sp	getHeavyAtomBondList();
+  int             getBondedHydrogenCount();
 
-    virtual	bool testConsistancy(Matter_sp c);
-    void invertStructureAndRestraints();
-    core::List_sp	getNeighborsByRelativePriority(core::HashTable_sp cip_priority);
-    core::List_sp	getNeighborsForAbsoluteConfiguration();
-    bool	isConfigurable();
+  virtual	bool testConsistancy(Matter_sp c);
+  void invertStructureAndRestraints();
+  core::List_sp	getNeighborsByRelativePriority(core::HashTable_sp cip_priority);
+  core::List_sp	getNeighborsForAbsoluteConfiguration();
+  bool	isConfigurable();
 //	void	setConfigurationInfo(ConfigurationInfo& conf);
-    void	setConfiguration(ConfigurationEnum conf);
-    CL_LISPIFY_NAME("setStereochemistryType");
-    CL_DEFMETHOD 	void	setStereochemistryType(StereochemistryType conf) { this->_StereochemistryType = conf;};
+  void	setConfiguration(ConfigurationEnum conf);
+  CL_LISPIFY_NAME("setStereochemistryType");
+  CL_DEFMETHOD 	void	setStereochemistryType(StereochemistryType conf) { this->_StereochemistryType = conf;};
 
-    virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
+  virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
 
-    CL_LISPIFY_NAME("getStereochemistryType");
-    CL_DEFMETHOD 	StereochemistryType getStereochemistryType() { return this->_StereochemistryType; };
-    CL_LISPIFY_NAME("getConfiguration");
-    CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration;};
-    string	getConfigurationAsString();
+  CL_LISPIFY_NAME("getStereochemistryType");
+  CL_DEFMETHOD 	StereochemistryType getStereochemistryType() { return this->_StereochemistryType; };
+  CL_LISPIFY_NAME("getConfiguration");
+  CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration;};
+  string	getConfigurationAsString();
 
-    void setAbsoluteConfiguration(ConfigurationEnum config, Atom_sp n1, Atom_sp n2, Atom_sp n3);
+  void setAbsoluteConfiguration(ConfigurationEnum config, Atom_sp n1, Atom_sp n2, Atom_sp n3);
 
-    void	addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
-    void	addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
+  void	addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
+  void	addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
 
-    core::HashTable_sp atomToResidueMap() { SIMPLE_ERROR("You cannot call atomToResidueMap with an atom"); };
+  core::HashTable_sp atomToResidueMap() { SIMPLE_ERROR("You cannot call atomToResidueMap with an atom"); };
 	//! Downgrade this
 //	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(adapt::QDomNode_sp node);
 	//! Downgrade this
-    void	addUniqueIntraResidueBondsToVectorBonds(core::HashTable_sp atomToResidue, VectorBond& bonds);
+  void	addUniqueIntraResidueBondsToVectorBonds(core::HashTable_sp atomToResidue, VectorBond& bonds);
 	//! Downgrade this
-    void	addInterResidueBondsToBondList(core::HashTable_sp atomToResidue, BondList_sp bonds);
+  void	addInterResidueBondsToBondList(core::HashTable_sp atomToResidue, BondList_sp bonds);
 
-    void	failIfInvalid();
-    bool	invalid();
+  void	failIfInvalid();
+  bool	invalid();
 
 	//! Add a random perturbation to the atom position
-    void	bumpPosition(double dist);
+  void	bumpPosition(double dist);
 
 
 	//
@@ -465,68 +465,68 @@ namespace chem {
 //	void	setAtomStorageId(int sid) { this->setStorageId(sid);};
 //	int	getAtomStorageId() { return this->getStorageId();};
 
-    virtual string	subMatter() { return "Undefined"; };
-    virtual	string	description() const;
-    string __repr__() const;
+  virtual string	subMatter() { return "Undefined"; };
+  virtual	string	description() const;
+  string __repr__() const;
 
-    void setConformation(Conformation_sp b);
-    Conformation_sp getWeakConformation();
+  void setConformation(Conformation_sp b);
+  Conformation_sp getWeakConformation();
 
-    void setAtomHolderIndex(uint i);
-    uint getAtomHolderIndex();
+  void setAtomHolderIndex(uint i);
+  uint getAtomHolderIndex();
 
-  private:
-    void _describeAtomRecursively(string prefix, Atom_sp parent, BondOrder order, int maxDepth, stringstream& ss) const;
-  public:
-    string localEnvironment(int maxDepth) const;
+private:
+  void _describeAtomRecursively(string prefix, Atom_sp parent, BondOrder order, int maxDepth, stringstream& ss) const;
+public:
+  string localEnvironment(int maxDepth) const;
 //	virtual Atom_sp	copyDropExternalResidueBonds();
 	//! Copy constructor
-    Atom_O( const Atom_O& ss );
+  Atom_O( const Atom_O& ss );
 
 	/*! Build a map of AtomIds to Atoms */
-    virtual AtomIdMap_sp buildAtomIdMap() const;
+  virtual AtomIdMap_sp buildAtomIdMap() const;
 
-    virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
+  virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
 
 
-  public:
-    virtual Matter_sp	copy(core::T_sp new_to_old);
-  protected:
-    virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
-    virtual void redirectAtoms();
+public:
+  virtual Matter_sp	copy(core::T_sp new_to_old);
+protected:
+  virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
+  virtual void redirectAtoms();
 
 	/*! Used by Bond to connect a copied atom to a bond */
-  public:
-    void addBond(Bond_sp bond);
+public:
+  void addBond(Bond_sp bond);
 
 /*! There is so much crap in this class that should be removed.
     Use alists for some of these things like aromatic ring membership
 */
   Atom_O() :
-    _UniqueAtomOrder(nextUniqueAtomOrder()),
-    _Alias(nil<core::Symbol_O>()),
-      _Element(element_Undefined),
-      _Hybridization(hybridization_undefined),
-//      _Type(nil<core::Symbol_O>()),
+      _UniqueAtomOrder(nextUniqueAtomOrder()),
+      _Alias(nil<core::Symbol_O>()),
       _Flags(0),
-      _StereochemistryType(undefinedCenter),
-      _Configuration(undefinedConfiguration),
-      _Ionization(0),
+//      _Type(nil<core::Symbol_O>()),
       _Charge(0.0),
+      _CopyAtom(unbound<chem::Atom_O>()),
+      _TempInt(0),
       _VdwRadius(0.0),
       _CovalentRadius(0.0),
+      _StereochemistryType(undefinedCenter),
+      _Configuration(undefinedConfiguration),
       _Mask(0),
-      _CopyAtom(unbound<chem::Atom_O>()),
+      _Element(element_Undefined),
+      _Hybridization(hybridization_undefined),
       _RingMembershipCount(0),
-      _TempInt(0)
+      _Ionization(0)
 //      moeIndex(0),
 //      moeType(_Nil<core::Symbol_O>())
-      {};
-    virtual ~Atom_O() {};
-  };
+  {};
+  virtual ~Atom_O() {};
+};
 
-  extern core::Symbol_sp& _sym__PLUS_atomFlagSymbolConverter_PLUS_;
+extern core::Symbol_sp& _sym__PLUS_atomFlagSymbolConverter_PLUS_;
 
 };
 
