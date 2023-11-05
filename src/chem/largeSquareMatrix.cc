@@ -160,7 +160,7 @@ void	AbstractLargeSquareMatrix_O::dumpMatrix( uint upto)
       uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
       if (idx != UndefinedUnsignedInt) {
         vecreal val = this->element(x,y);
-        core::clasp_write_string(fmt::format("{} {} -> {:12.7f}\n" , x, y, this->element(x,y)));
+        core::clasp_write_string(fmt::format("{} {} -> {:12.7f}\n" , x, y, val ));
       }
     }
   }

@@ -326,8 +326,6 @@ DOCGROUP(cando);
 CL_DEFUN
 NVector_sp chem__apply_transform_to_coordinates(NVector_sp destination, NVector_sp coordinates, const Matrix& transform )
 {
-  Vector3* pos;
-  Vector3* dest;
   size_t len = coordinates->length();
   for ( size_t index = 0; index < len; index+=3) {
 //    printf("%s:%d  coordinates[%lu/%lu] -> %lf %lf %lf\n", __FILE__, __LINE__, index, len, (*coordinates)[index],(*coordinates)[index+1],(*coordinates)[index+2]);
@@ -345,8 +343,6 @@ DOCGROUP(cando);
 CL_DEFUN
 NVector_sp chem__apply_transform_to_coordinates_in_place(NVector_sp coordinates, const Matrix& transform )
 {
-  Vector3* pos;
-  Vector3* dest;
   size_t len = coordinates->length();
   for ( size_t index = 0; index < len; index+=3) {
 //    printf("%s:%d  coordinates[%lu/%lu] -> %lf %lf %lf\n", __FILE__, __LINE__, index, len, (*coordinates)[index],(*coordinates)[index+1],(*coordinates)[index+2]);
@@ -532,7 +528,6 @@ CL_DEFUN void chem__nvector_add(NVector_sp result, NVector_sp veca, NVector_sp v
   num_real vala;
   num_real valb;
   num_real val;
-  num_real sum2 = 0.0;
   vecreal* vecvr = &(*result)[0];
   vecreal* vecva = &(*veca)[0];
   vecreal* vecvb = &(*vecb)[0];

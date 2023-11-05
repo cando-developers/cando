@@ -126,9 +126,6 @@ num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 {
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
   num_real totalEnergy = 0.0;
 #define Log(x) log(x)
 #define EREP_CALC_FORCE
@@ -160,9 +157,8 @@ num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 //  vecreal* force_ptr = (vecreal*)(force->rowMajorAddressOfElement_(0));
   num_real x1,y1,z1,x2,y2,z2,crep;
   num_real dx, dy, dz;
-  num_real dsq, ERepDistance;
+  num_real dsq;
   num_real crep_over_dsq;
-  num_real cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
   for ( size_t index = 0; index<this->_Terms.size(); ++index ) {
     EnergySketchNonbond& ea = this->_Terms[index];
     if (this->_FreezeFlags&ea._FreezeFlags) continue;

@@ -280,7 +280,6 @@ CL_LISPIFY_NAME("extractCoordinatesFromMatter");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::extractCoordinatesFromMatter(Matter_sp matter)
     {
 	ConformationExplorer_sp	sl;
-        geom::SimpleVectorCoordinate_O::iterator	ci;
 	LOG("About to get ConformationExplorer" );
 	sl = this->getConformationExplorer();
 	LOG("Got ConformationExplorer" );

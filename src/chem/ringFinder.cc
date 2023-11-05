@@ -432,7 +432,6 @@ void AGVertex_O::receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, 
 	    //
   {
     vertexDict->maphash( [this,&graph,stage] (core::T_sp key, core::T_sp value) {
-      AGVertex_sp nodeId = gc::As<AGVertex_sp>(key);
       core::List_sp list = gc::As<core::List_sp>(value);
 		    // If there is more than one PathMessage 
 		    // with the same FirstVertex then there is 

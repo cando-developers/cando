@@ -167,7 +167,7 @@ void        SuperposeEngine_O::doSuperpose()
 {
     VectorVector3s                        Sj;
     VectorVector3s                        Si;
-    VectorVector3s::iterator        itS,itSi,itSj;
+    VectorVector3s::iterator        itSi,itSj;
     Vector3                                fixedCenter,vTemp;
     Vector3                                moveableCenter;
     Matrix                                mat,M, MT, trM, P,evecs,em,trans,rot;
@@ -358,8 +358,6 @@ double        SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorer
 CL_DEFMETHOD
 double        SuperposeEngine_O::sumOfSquaresOfDifferences()
 {
-  size_t                itFixed;
-  size_t                 ititMoved;
   Vector3                                moved, diff;
   double                                sum;
 

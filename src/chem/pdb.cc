@@ -407,7 +407,6 @@ void	PdbReader_O::archive(core::ArchiveP node)
 
 Aggregate_sp PdbReader_O::parse(core::T_sp stream)
 {
-  char buffer[1024];
   EntirePdbRec pdbRec;
   int moleculeIdx = 0;
   {

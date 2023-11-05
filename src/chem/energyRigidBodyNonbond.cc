@@ -333,7 +333,6 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
 
 CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts)
 {
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -389,7 +388,6 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
 
 CL_DEFMETHOD core::ComplexVector_sp EnergyRigidBodyNonbond_O::write_nonbond_atoms_to_complex_vector(core::ComplexVector_sp parts)
 {
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -399,7 +397,6 @@ CL_DEFMETHOD core::ComplexVector_sp EnergyRigidBodyNonbond_O::write_nonbond_atom
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
-#pragma clang diagnostic pop
   num_real am, bm, cm, dm, xm, ym, zm;
   num_real pxm, pym, pzm;
   int	I1;
@@ -412,6 +409,7 @@ CL_DEFMETHOD core::ComplexVector_sp EnergyRigidBodyNonbond_O::write_nonbond_atom
     }
     I1start = I1end;
   }
+#pragma clang diagnostic pop
   return parts;
 }
 
@@ -444,14 +442,9 @@ num_real	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp scor
 {
   this->_Evaluations++;
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
-  num_real vdwScale = this->getVdwScale();
   num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
-  num_real energyElectrostatic = 0.0;
-  num_real energyVdw = 0.0;
   num_real totalEnergy = 0.0;
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
   RigidBodyEnergyFunction_sp rigidBodyEnergyFunction = gc::As<RigidBodyEnergyFunction_sp>(score);
   BoundingBox_sp boundingBox = rigidBodyEnergyFunction->boundingBox();
   if (boundingBox.unboundp()) {

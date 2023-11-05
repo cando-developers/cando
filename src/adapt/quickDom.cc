@@ -204,7 +204,6 @@ bool    QDomNode_O::dataIsAllWhiteSpace()
 {
   bool                        sawChar;
   string                      val;
-  string::iterator    it;
   sawChar = false;
   for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {
     claspCharacter c = cl__char(this->characters->_Contents,idx).unsafe_character();
@@ -222,7 +221,6 @@ bool    QDomNode_O::dataIsAllWhiteSpace()
 int	QDomNode_O::dataCountNewLines()
 {
   string			val;
-  string::iterator	it;
   int			newLines;
   newLines = 0;
   for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {

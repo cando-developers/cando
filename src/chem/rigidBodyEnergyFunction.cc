@@ -380,9 +380,6 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
   } else if (tfrozen.notnilp()) {
     SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
   }
-  double delta_tsquared = delta_t*delta_t;
-  double delta_tsquared_div2 = delta_tsquared/2.0;
-  NVector_sp position_dt = NVector_O::create(position->size());
   size_t body_idx = 0;
   size_t body_limited = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 7) {
@@ -455,7 +452,6 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
 CL_DEFMETHOD Aggregate_sp RigidBodyEnergyFunction_O::buildPseudoAggregate(NVector_sp pos) const {
   core::SimpleVector_float_sp coords = this->buildPseudoAggregateCoordinates(pos);
   size_t idx = 0;
-  core::List_sp terms = this->_Terms;
   EnergyRigidBodyNonbond_sp nonbondTerm = unbound<EnergyRigidBodyNonbond_O>();
   EnergyRigidBodyStaple_sp stapleTerm = unbound<EnergyRigidBodyStaple_O>();
   for ( auto cur : this->_Terms ) {
@@ -501,7 +497,6 @@ CL_DEFMETHOD Aggregate_sp RigidBodyEnergyFunction_O::buildPseudoAggregate(NVecto
     }
   }
   if (stapleTerm.boundp()) {
-    size_t prevAtomInfoEnd = 0;
     for ( size_t ii = 0; ii < stapleTerm->_Terms.size(); ii++ ) {
       Molecule_sp molecule = Molecule_O::make(nil<core::T_O>());
       Residue_sp residue = Residue_O::make(nil<core::T_O>());
@@ -529,7 +524,6 @@ CL_DEFMETHOD Aggregate_sp RigidBodyEnergyFunction_O::buildPseudoAggregate(NVecto
 
 CL_DEFMETHOD core::SimpleVector_float_sp RigidBodyEnergyFunction_O::buildPseudoAggregateCoordinates(NVector_sp pos) const {
   core::SimpleVector_float_sp coords = core::SimpleVector_float_O::make(this->numberOfPoints()*3);
-  core::List_sp terms = this->_Terms;
   EnergyRigidBodyNonbond_sp nonbondTerm = unbound<EnergyRigidBodyNonbond_O>();
   EnergyRigidBodyStaple_sp stapleTerm = unbound<EnergyRigidBodyStaple_O>();
   for ( auto cur : this->_Terms ) {
@@ -541,7 +535,6 @@ CL_DEFMETHOD core::SimpleVector_float_sp RigidBodyEnergyFunction_O::buildPseudoA
     }
   }
   size_t idx = 0;
-  Aggregate_sp aggregate = Aggregate_O::make(nil<core::T_O>());
   if (nonbondTerm.boundp()) {
     idx = nonbondTerm->partsCoordinates(pos,idx,coords);
   }
@@ -553,7 +546,6 @@ CL_DEFMETHOD core::SimpleVector_float_sp RigidBodyEnergyFunction_O::buildPseudoA
 
 
 CL_DEFMETHOD size_t RigidBodyEnergyFunction_O::numberOfPoints() const {
-  core::List_sp terms = this->_Terms;
   EnergyRigidBodyNonbond_sp nonbondTerm = unbound<EnergyRigidBodyNonbond_O>();
   EnergyRigidBodyStaple_sp stapleTerm = unbound<EnergyRigidBodyStaple_O>();
   for ( auto cur : this->_Terms ) {

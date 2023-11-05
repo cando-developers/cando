@@ -243,9 +243,6 @@ CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
   } else if (tfrozen.notnilp()) {
     SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
   }
-  double delta_tsquared = delta_t*delta_t;
-  double delta_tsquared_div2 = delta_tsquared/2.0;
-  NVector_sp position_dt = NVector_O::create(position->size());
   size_t atom_idx = 0;
   if (frozen) {
     for ( size_t idx = 0; idx<position->size(); idx += 3) {
@@ -329,9 +326,6 @@ CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp
   } else if (tfrozen.notnilp()) {
     SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
   }
-  double delta_tsquared = delta_t*delta_t;
-  double delta_tsquared_div2 = delta_tsquared/2.0;
-  NVector_sp position_dt = NVector_O::create(position->size());
   size_t atom_idx = 0;
   size_t atoms_limited = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 3) {

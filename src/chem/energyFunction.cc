@@ -1234,7 +1234,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
     while (moleculeLoop.advanceLoopAndProcess() ) {
       Molecule_sp molecule = moleculeLoop.getMolecule();
       core::T_sp force_field_name = molecule->force_field_name();
-      core::T_sp use_given_types = molecule->force_field_use_given_types();
+      [[maybe_unused]]core::T_sp use_given_types = molecule->force_field_use_given_types();
 //      if (use_given_types.nilp()) {
         core::T_sp combined_force_field = force_fields->gethash(force_field_name);
         if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types for molecule {} using {}.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));

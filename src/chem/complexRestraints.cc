@@ -283,18 +283,11 @@ void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTab
     Atom_sp exoCyclicAtom = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->_ExoCyclicAtomName));
     Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
     core::T_mv match_mv = chem__chem_info_match(atomExoToSixMemberedRing,exoCyclicAtom);
-    core::MultipleValues &values = core::lisp_multipleValues();
     if ( match_mv.nilp() )
     {
 	SIMPLE_ERROR("In residue({}) the atom with name({}) is not exo-cyclic to a six-membered ring" , residue->description() , _rep_(this->_ExoCyclicAtomName) );
     }
-    ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(match_mv.number_of_values()));
-    Atom_sp a1 = match->tag(core::make_fixnum(1));
-    Atom_sp a2 = match->tag(core::make_fixnum(2));
-    Atom_sp a3 = match->tag(core::make_fixnum(3));
-    Atom_sp a4 = match->tag(core::make_fixnum(4));
-    Atom_sp a5 = match->tag(core::make_fixnum(5));
-    Atom_sp a6 = match->tag(core::make_fixnum(6));
+    //ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(match_mv.number_of_values()));
     FIX_ME(); // is the above correct?
 }
 

@@ -625,11 +625,10 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  num_real vdwScale = this->getVdwScale();
   num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   LOG("Nonbond component is enabled" );
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
+  num_real dA,dC;
   int	I1, I2;
   int i = 0;
 //  int endIndex = pos->length()/3;

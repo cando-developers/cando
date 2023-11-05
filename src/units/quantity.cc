@@ -87,7 +87,7 @@ core::T_sp Quantity_O::copyAndScaleValueElement(core::T_sp obj, uint index, doub
 
 core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index) {
   if (obj.isA<core::Vector_O>()) {
-    core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
+//    core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
     FIX_ME(); // implement copy of object?
 #if 0
           // Why am I copying objects?

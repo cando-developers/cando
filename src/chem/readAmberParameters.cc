@@ -522,7 +522,6 @@ string ReadAmberParameters_O::parseNonbondLabelKindNB(core::T_sp fin)
 SYMBOL_EXPORT_SC_(KeywordPkg,end);
 void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
 {
-  bool done = false;
   while ( 1 ) {
     core::T_sp tline = core::cl__read_line(fin,nil<T_O>(),nil<T_O>());
     if (tline.nilp()) break;
