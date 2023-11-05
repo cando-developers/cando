@@ -1057,7 +1057,7 @@ public:
         void threadFunc() {
             localMaxSize = parent->maxSize;
             TRACE("threadFunc start", TRACE_MASK_THREAD, 1);
-            int jobsDone = 0;
+            [[maybe_unused]]int jobsDone = 0;
             try {
                 { // this scope is for the scope timer in the next line: the scope must end before the function sends the results to the parent thread
                     ScopeTimer t(timer);

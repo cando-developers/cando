@@ -41,7 +41,7 @@ FORWARD(BondedJoint);
     {
 	LISP_CLASS(kinematics,KinPkg,BondedJoint_O,"BondedJoint",Joint_O);
     public:
-        bool fieldsp() { return true; };
+        bool fieldsp() const { return true; };
         void fields(core::Record_sp node); 
         void initialize();
     public:
