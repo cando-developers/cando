@@ -301,7 +301,9 @@ given in 'combined-force-field-class-name'.  I'm not sure what 'force-field-info
               ((pathname obj) obj)
               ((stringp obj) (pathname obj))
               (t (pathname (string obj)))))
-         (search-path (leap.core:search-path pn)))
+         (search-path (if (char= #\/ (elt (namestring pn) 0)) ;; leave absolute paths alone
+                          pn
+                          (leap.core:search-path pn))))
     (unless search-path
       (error "Could not find ~a in directories ~a" pn *path*))
     search-path))

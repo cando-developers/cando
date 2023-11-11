@@ -15,7 +15,12 @@ fi
 
 echo "Updating Quicklisp..."
 clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://thirdlaw.tech/quickclasp/quickclasp.txt\" :prompt nil))" \
-  --eval "(ql:update-all-dists :prompt nil)"
+      --eval "(ql:update-all-dists :prompt nil)"
+
+if [ ! -d "~/.config/common-lisp/source-registry.conf.d/" ]; then
+    mkdir -p ~/.config/common-lisp/source-registry.conf.d
+    echo "(:tree \"/home/cando/common-lisp/\")" >~/.config/common-lisp/source-registry.conf.d/apptainer.conf
+fi
 
 echo "Installing CANDO user features..."
 cando --eval "(ql:quickload :cando-jupyter)" --eval "(cando-jupyter:install :implementation \"apptainer\" :image t)"

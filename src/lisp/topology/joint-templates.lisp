@@ -311,7 +311,7 @@
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (if one-orientation
                     (kin:make-jump-joint atomid atom-name atom-table
-                                         (parent-to-relative-transform one-orientation)
+                                         (parent-relative-frame one-orientation)
                                          (lab-frame one-orientation)
                                          )
                     (kin:make-jump-joint atomid atom-name atom-table nil nil))))

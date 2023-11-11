@@ -129,7 +129,9 @@
          (cons in-plug-monomer-shape other-monomer-shape)))
       (t (error "Unrecognized shape-kind ~a" shape-kind)))))
 
-(defun make-oligomer-shape (oligomer rotamers-db &key monomer-shape-factory)
+(defgeneric make-oligomer-shape (oligomer-or-space rotamers-db &key))
+
+(defmethod make-oligomer-shape ((oligomer oligomer) rotamers-db &key monomer-shape-factory)
   (let* ((foldamer (topology:foldamer (topology:oligomer-space oligomer)))
          (shape-info (shape-info foldamer))
          (kind-order (loop for kind-keys in (kind-keys shape-info)
@@ -163,7 +165,7 @@
                                              (push (topology:other-monomer coupling monomer) out-monomers))
                                             (t 
                                              (push (topology:target-monomer coupling) out-monomers)
-                                            #+(or)(format t "Out plug coupling ~a ~a~%" key coupling))))
+                                             #+(or)(format t "Out plug coupling ~a ~a~%" key coupling))))
                                         couplings)
                                out-monomers)
               for in-monomer-context = (if in-monomer
@@ -188,17 +190,23 @@
               do (unless in-monomer (setf the-root-monomer monomer))
               do (setf (gethash monomer out-monomers) out-mons)
               do (setf (aref monomer-shape-vector index) monomer-shape)
-              ;;            do (format t "monomer-context ~a~%" monomer-context)
+                 ;;            do (format t "monomer-context ~a~%" monomer-context)
               finally (return (values monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)))
-      (make-instance 'oligomer-shape
-                     :oligomer oligomer
-                     :rotamers-map rotamers-db
-                     :monomer-shape-vector monomer-shape-vector
-                     :monomer-shape-map monomer-shape-map
-                     :the-root-monomer the-root-monomer
-                     :in-monomers in-monomers
-                     :out-monomers out-monomers))))
+      (let* ((os (make-instance 'oligomer-shape
+                                :oligomer oligomer
+                                :rotamers-map rotamers-db
+                                :monomer-shape-vector monomer-shape-vector
+                                :monomer-shape-map monomer-shape-map
+                                :the-root-monomer the-root-monomer
+                                :in-monomers in-monomers
+                                :out-monomers out-monomers))
+             (ss (make-sidechain-rotamer-stepper os)))
+        (write-rotamers ss (first-rotamers ss))
+        os))))
 
+(defmethod make-oligomer-shape ((oligomer-space oligomer-space) rotamers-db &key (oligomer-index 0))
+  (let ((oligomer (make-oligomer oligomer-space oligomer-index)))
+    (make-oligomer-shape oligomer rotamers-db)))
 
 (defgeneric read-rotamers (obj)
   (:documentation "Read the rotamers from the object"))
@@ -353,3 +361,38 @@ provides the dihedral angle with the given dihedral-name"
             monomer-shape))
          (dihedral-info-atom
           monomer-shape))))))
+
+
+(defun random-oligomer-shape-aggregate (oligomer-shape)
+  "Generate a random oligomer-shape and return the aggregate"
+  (let* ((bs (make-backbone-rotamer-stepper oligomer-shape)))
+    (write-rotamers bs (random-rotamers bs))
+    (let ((ss (make-sidechain-rotamer-stepper oligomer-shape)))
+      (write-rotamers ss (random-rotamers ss))
+      (let* ((ass (make-assembler (list (oligomer oligomer-shape))))
+             (coords (make-coordinates-for-assembler ass))
+             )
+        (fill-internals-from-oligomer-shape-and-adjust ass oligomer-shape)
+        (build-all-atom-tree-external-coordinates-and-adjust ass coords)
+        (copy-joint-positions-into-atoms ass coords)
+        (aggregate ass)))))
+
+
+(defun assembler-aggregate (assembler oligomer-shapes)
+  (let ((coords (make-coordinates-for-assembler assembler)))
+    (loop for oligomer-shape in oligomer-shapes
+          do (progn
+               (fill-internals-from-oligomer-shape-and-adjust assembler oligomer-shape)
+               (build-all-atom-tree-external-coordinates-and-adjust assembler coords)
+               (copy-joint-positions-into-atoms assembler coords)))
+    (aggregate assembler)))
+
+(defmethod aggregate ((oligomer-shape oligomer-shape))
+  "Generate an aggregate for the oligomer-shape"
+  (let* ((ass (make-assembler (list (oligomer oligomer-shape))))
+         (coords (make-coordinates-for-assembler ass))
+         )
+    (fill-internals-from-oligomer-shape-and-adjust ass oligomer-shape)
+    (build-all-atom-tree-external-coordinates-and-adjust ass coords)
+    (copy-joint-positions-into-atoms ass coords)
+    (aggregate ass)))

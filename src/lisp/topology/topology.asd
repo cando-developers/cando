@@ -24,4 +24,5 @@
                (:file "context")
                (:file "badgeom")
                (:file "shape")
+               (:file "steppers")
                ))

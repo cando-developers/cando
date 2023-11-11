@@ -310,7 +310,7 @@
    #:rotamers-map
    #:orientation
    #:lab-frame
-   #:parent-relative-transform
+   #:parent-relative-frame
    #:oligomer-monomer-name
    #:lookup-dihedral-cache
    #:lookup-dihedral-cache-monomer-shape
@@ -336,7 +336,26 @@
    #:read-rotamers
    #:write-rotamers
    #:labeled-monomers
-   #:at-position))
+   #:at-position
+   #:no-rotamers
+   #:rotamer-stepper
+   #:oligomer-shape
+   #:allowed-rotamer-indexes-vector
+   #:sidechain-rotamer-stepper
+   #:backbone-rotamer-stepper
+   #:make-backbone-rotamer-stepper
+   #:make-sidechain-rotamer-stepper
+   #:max-rotamers
+   #:zero-rotamers
+   #:random-rotamers
+   #:build-all-sidechains
+   #:make-binned-key-deg
+   #:random-oligomer-shape-aggregate
+   #:first-rotamers
+   #:number-of-rotamers
+   #:goto-rotamer
+   #:make-orientation
+   #:assembler-aggregate))
 
   
 (defpackage #:topology.dag

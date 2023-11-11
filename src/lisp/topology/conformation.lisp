@@ -4,8 +4,14 @@
 (defclass orientation ()
   ((lab-frame :initarg :lab-frame :accessor lab-frame
               :documentation "This is the stub for children")
-   (parent-relative-transform :initarg :parent-relative-transform :accessor parent-relative-transform
+   (parent-relative-frame :initarg :parent-relative-frame :accessor parent-relative-frame
                               :documentation "Keep track of the transform for the jump-joint that is relative to the parent (or the origin)")))
+
+(defun make-orientation (&key (parent-relative-frame  (geom:make-matrix-identity))
+                           (lab-frame (geom:make-matrix-identity)))
+  (make-instance 'orientation
+                 :parent-relative-frame parent-relative-frame
+                 :lab-frame lab-frame))
 
 (defclass orientations ()
   ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations)))
@@ -85,10 +91,25 @@
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))
 
-(defun make-assembler (oligomers &key monomer-order orientations focus-monomer)
+(defun make-assembler (oligomers-or-shapes &key monomer-order orientations focus-monomer)
   "Build a assembler for the oligomers."
-  (let* ((aggregate (chem:make-aggregate :all))
+  (let* ((full-orientations (cond
+                              ((null orientations)
+                               (loop for os in oligomers-or-shapes
+                                     collect (topology:make-orientation)))
+                              ((and (listp orientations) (= (length orientations) (length oligomers-or-shapes)))
+                               orientations)
+                              (t (error "Either provide no orientations or one orientation for each oligomer"))))
+         (aggregate (chem:make-aggregate :all))
          (monomer-positions (make-hash-table))
+         (oligomers (mapcar (lambda (oligomer-or-shape)
+                              (cond
+                                ((typep oligomer-or-shape 'oligomer-shape)
+                                 (oligomer oligomer-or-shape))
+                                ((typep oligomer-or-shape 'oligomer)
+                                 oligomer-or-shape)
+                                (t (error "You must supply an oligomer or oligomer-shape but got ~s" oligomer-or-shape))))
+                            oligomers-or-shapes))
          (oligomer-molecules (loop for oligomer in oligomers
                                    for molecule-index from 0
                                    for molecule = (topology:build-molecule oligomer
@@ -105,6 +126,7 @@ Specialize the foldamer argument to provide methods"))
          (adjustments (make-instance 'adjustments))
          (assembler (loop for oligomer-molecule in oligomer-molecules
                           for oligomer = (car oligomer-molecule)
+                          for one-orientation in full-orientations
                           for molecule = (cdr oligomer-molecule)
                           for oligomer-space = (oligomer-space oligomer)
                           for foldamer = (foldamer oligomer-space)
@@ -118,10 +140,7 @@ Specialize the foldamer argument to provide methods"))
                                        do (setf (gethash monomer monomer-contexts) monomer-context)))
                              ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
                              ;; Use the monomers-to-topologys
-                          do (let* ((one-orientation (if orientations
-                                                         (gethash oligomer (orientations orientations))
-                                                         nil))
-                                    (atmolecule (build-atmolecule-using-oligomer
+                          do (let* ((atmolecule (build-atmolecule-using-oligomer
                                                 oligomer
                                                 molecule
                                                 molecule-index
