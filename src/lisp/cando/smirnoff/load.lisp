@@ -315,7 +315,7 @@
                (if found
                  (let ((handler (cdr found)))
                    (funcall handler node))
-                 (warn "Ignoring tag: ~a~%" tag)))))
+                 #+cando-warnings(warn "Ignoring tag: ~a~%" tag)))))
 
 (defun parse-root (root)
   (loop for node across (plump:children root)

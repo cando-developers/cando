@@ -76,7 +76,7 @@
         (let ((bond-type (second label-bond-type))
               (label (first label-bond-type)))
           (when bond-type
-            (warn "What do I do with <bond-type><label> bond-type ~s flag - look at https://github.com/openforcefield/openforcefield-forcebalance/issues/15" bond-type))
+            #+cando-warnings(warn "What do I do with <bond-type><label> bond-type ~s flag - look at https://github.com/openforcefield/openforcefield-forcebalance/issues/15" bond-type))
 ;;          (format t "atom-pattern got label |~s| of type |~s|~%" label (class-of label))
           (bp:node* (:labeled :label label :bounds (cons start end))
                                                (1 :atom atom)))
