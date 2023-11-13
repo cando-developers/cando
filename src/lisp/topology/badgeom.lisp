@@ -219,7 +219,7 @@
             finally (return nil)))))
 
 (defun nan-in-coordinates-p (agg)
-  (chem:do-atoms (atm aggregate)
+  (chem:do-atoms (atm agg)
     (let* ((pos (chem:get-position atm)))
       (when (or (ext:float-nan-p (geom:vx pos))
                 (ext:float-nan-p (geom:vy pos))
