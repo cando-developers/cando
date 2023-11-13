@@ -193,8 +193,7 @@
                  ))
 
 (defclass rotamers (cando.serialize:serializable)
-  ((internals :initarg :internals :accessor internals)
-   (rotamers :initarg :rotamers :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor rotamers)))
+  ((rotamers :initarg :rotamers :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor rotamers)))
 
 (defclass sidechain-rotamers (rotamers)
   ((shape-key-to-index :initarg :shape-key-to-index :initform (make-hash-table :test 'equal) :accessor shape-key-to-index)))
