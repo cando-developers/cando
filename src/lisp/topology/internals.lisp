@@ -120,25 +120,22 @@
      (format stream "~a" (name obj)))))
 
 (defclass bonded-internal (internal)
+  ()
+  #+(or)
   ((bond :initarg :bond :accessor bond)
    (angle-rad :initarg :angle-rad :accessor angle-rad)
    (dihedral-rad :initarg :dihedral-rad :accessor dihedral-rad)))
 
 (defmethod copy-internal ((internal bonded-internal))
-  (when (ext:float-nan-p (dihedral-rad internal))
-    (error "Found a NAN dihedral"))
   (make-instance 'bonded-internal
-                 :name (name internal)
-                 :bond (bond internal)
-                 :angle-rad (angle-rad internal)
-                 :dihedral-rad (dihedral-rad internal)))
+                 :name (name internal)))
 
 (cando.serialize:make-class-save-load
  bonded-internal
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a :d ~5,2f" (name obj) (rad-to-deg (dihedral-rad obj))))))
+     (format stream "~a" (name obj)))))
 
 (defclass complex-bonded-internal (bonded-internal)
   ())
@@ -151,13 +148,13 @@
      (format stream "~a" (name obj)))))
 
 (defclass rotamer (cando.serialize:serializable)
-  ((internals :initarg :internals :accessor internals)
+  ((internals-values :initarg :internals-values :accessor internals-values)
    (delta-energy :initform 1.0s0 :initarg :delta-energy :accessor delta-energy)
-   (probability :initform 1.0s0 :initarg :probability :accessor probability)
-   (monomer-context :initarg :monomer-context :accessor monomer-context)))
+   (probability :initform 1.0s0 :initarg :probability :accessor probability)))
 
 (defclass fragment-internals (rotamer)
   ((trainer-index :initarg :trainer-index :accessor trainer-index)
+   (monomer-context :initarg :monomer-context :accessor monomer-context)
    (energy :initform 0.0s0 :initarg :energy :accessor energy)
    (coordinates :initarg :coordinates :accessor coordinates)
    (shape-key-values :initarg :shape-key-values :accessor shape-key-values :documentation "Not needed")
@@ -191,12 +188,13 @@
                  :probability (probability fragment-internals)
                  :energy (energy fragment-internals)
                  :delta-energy (delta-energy fragment-internals)
-                 :internals (copy-seq (internals fragment-internals))
+                 :internals-values (copy-seq (internals-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
                  ))
 
 (defclass rotamers (cando.serialize:serializable)
-  ((rotamers :initarg :rotamers :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor rotamers)))
+  ((internals :initarg :internals :accessor internals)
+   (rotamers :initarg :rotamers :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor rotamers)))
 
 (defclass sidechain-rotamers (rotamers)
   ((shape-key-to-index :initarg :shape-key-to-index :initform (make-hash-table :test 'equal) :accessor shape-key-to-index)))
@@ -215,11 +213,11 @@
         (format stream "~a contexts" (hash-table-count (context-to-rotamers obj))))))
 
 (defmethod apply-fragment-internals-to-atresidue ((obj rotamer) atresidue)
- (loop for joint across (topology:joints atresidue)
-       for internal across (internals obj)
-       do (multiple-value-bind (bond angle-rad dihedral-rad)
-              (topology:extract-bond-angle-rad-dihedral-rad internal)
-            (topology:fill-joint-internals joint bond angle-rad dihedral-rad))))
+  (loop for joint across (topology:joints atresidue)
+        for index from 0
+        do (multiple-value-bind (bond angle-rad dihedral-rad)
+               (topology:extract-bond-angle-rad-dihedral-rad obj index)
+             (topology:fill-joint-internals joint bond angle-rad dihedral-rad))))
 
 
 (defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
@@ -312,6 +310,7 @@
   ((focus-monomer-name :initarg :focus-monomer-name :accessor focus-monomer-name)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
    (next-index :initform 0 :initarg :next-index :accessor next-index)
+   (internals :initarg :internals :accessor :internals)
    (fragments :initform (make-array 16 :adjustable t :fill-pointer 0) :initarg :fragments :accessor fragments)))
 
 (cando.serialize:make-class-save-load
@@ -501,38 +500,6 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (defparameter *dihedral-threshold* 20.0)
 (defparameter *dihedral-rms-threshold* 15.0)
 
-#+(or)
-(defun internals-are-different-p (frag1 frag2 &optional )
-  (loop for frag1-int across (internals frag1)
-        for frag2-int across (internals frag2)
-        do (when (and (typep frag1-int 'bonded-internal)
-                      (typep frag2-int 'bonded-internal))
-             (let* ((dihedral-frag1 (rad-to-deg (dihedral-rad frag1-int)))
-                    (dihedral-frag2 (rad-to-deg (dihedral-rad frag2-int)))
-                    (aa (degree-difference dihedral-frag1 dihedral-frag2))
-                    (different-p (> (abs aa) *dihedral-threshold*)))
-               (when different-p
-                 (return-from internals-are-different-p t)))))
-  nil)
-
-(defun dihedrals-rms (frag1 frag2)
-  (let ((sum-of-squares 0.0)
-        (num-squares 0))
-  (loop for frag1-int across (internals frag1)
-        for frag2-int across (internals frag2)
-        do (when (and (typep frag1-int 'bonded-internal)
-                      (typep frag2-int 'bonded-internal))
-             (let* ((dihedral-frag1 (rad-to-deg (dihedral-rad frag1-int)))
-                    (dihedral-frag2 (rad-to-deg (dihedral-rad frag2-int)))
-                    (aa (degrees-sub dihedral-frag2 dihedral-frag1)))
-               (incf sum-of-squares (* aa aa))
-               (incf num-squares))))
-    (let ((rms (sqrt (/ sum-of-squares (float num-squares)))))
-      rms)))
-
-#+(or)
-(defun rms-internals-are-different-p (frag1 frag2)
-  (> (dihedrals-rms frag1 frag2) *dihedral-rms-threshold*))
 
 (defun seen-fragment-internals (context-rotamers fragment-internals)
   (loop for seen-frag across (fragments context-rotamers)
@@ -542,16 +509,20 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   nil)
 
 
-(defun bad-fragment-internals (fragment-internals)
-  (loop for internal across (internals fragment-internals)
+(defun bad-fragment-internals (internals-vector fragment-internals)
+  (loop for internal across internals-vector
+        for index from 0
         with previous-internal
-        do (cond
-             ((typep internal 'jump-internal) nil)
-             ((> (bond internal) 3.0)
-              (return-from bad-fragment-internals
-                (if previous-internal
-                    (format nil "For atom ~a to ~a bad (bond internal) 3.0 .lt. ~7,2f" (name internal) (name previous-internal) (bond internal))
-                    (format nil "For atom ~a bad (bond internal) 3.0 .lt. ~7,2f" (name internal) (bond internal))))))
+        do (multiple-value-bind (bond angle-rad dihedral-rad)
+               (topology:extract-bond-angle-rad-dihedral-rad fragment-internals index)
+             (declare (ignore angle-rad dihedral-rad))
+             (cond
+               ((typep internal 'jump-internal) nil)
+               ((> bond 3.0)
+                (return-from bad-fragment-internals
+                  (if previous-internal
+                      (format nil "For atom ~a to ~a bad (bond internal) 3.0 .lt. ~7,2f" (name internal) (name previous-internal) bond)
+                      (format nil "For atom ~a bad (bond internal) 3.0 .lt. ~7,2f" (name internal) bond))))))
         do (setf previous-internal internal))
   nil)
 
@@ -561,27 +532,26 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (defun load-clusterable-context-rotamers (filename)
   (cando.serialize:load-cando filename))
 
-(defun dump-fragment-internals (fragment-internals finternals)
+(defun dump-fragment-internals (internals fragment-internals finternals)
   (format finternals "begin-conformation ~a~%" (trainer-index fragment-internals))
   (flet ((to-deg (rad)
            (/ rad 0.0174533)))
-    (loop for internal across (topology:internals fragment-internals)
-          do (cond
-               ((typep internal 'topology:jump-internal)
-                (format finternals "jump-joint ~a~%" (topology:name internal)))
-               ((typep internal 'topology:complex-bonded-internal)
-                (format finternals "complex-bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
-                        (topology:name internal)
-                        (topology:bond internal)
-                        (to-deg (topology:angle-rad internal))
-                        (to-deg (topology:dihedral-rad internal))))
-               ((typep internal 'topology:bonded-internal)
-                (format finternals "bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
-                        (topology:name internal)
-                        (topology:bond internal)
-                        (to-deg (topology:angle-rad internal))
-                        (to-deg (topology:dihedral-rad internal))))
-               ))
+    (loop for internal across internals
+          for index from 0
+          do (multiple-value-bind (bond angle-rad dihedral-rad)
+                 (extract-bond-angle-rad-dihedral-rad fragment-internals index)
+               (cond
+                 ((typep internal 'topology:jump-internal)
+                  (format finternals "jump-joint ~a~%" (topology:name internal)))
+                 ((typep internal 'topology:complex-bonded-internal)
+                  (format finternals "complex-bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
+                          (topology:name internal)
+                          bond (to-deg angle-rad) (to-deg dihedral-rad)))
+                 ((typep internal 'topology:bonded-internal)
+                  (format finternals "bonded-joint ~a ~8,3f ~8,3f ~8,3f~%"
+                          (topology:name internal)
+                          bond (to-deg angle-rad) (to-deg dihedral-rad)))
+                 )))
     (format finternals "end-conformation~%")
     ))
 
@@ -597,20 +567,18 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   (kin:set-phi joint dihedral-rad)
   )
 
-(defgeneric extract-bond-angle-rad-dihedral-rad (internal))
-
-(defmethod extract-bond-angle-rad-dihedral-rad ((internal jump-internal))
-  (values 0.0 0.0 0.0))
-
-(defmethod extract-bond-angle-rad-dihedral-rad ((internal bonded-internal))
-  (values (bond internal) (angle-rad internal) (dihedral-rad internal)))
+(defun extract-bond-angle-rad-dihedral-rad (rotamer index)
+  (let ((index3 (* 3 index)))
+    (values (aref (internals-values rotamer) index3)
+            (aref (internals-values rotamer) (+ 1 index3))
+            (aref (internals-values rotamer) (+ 2 index3)))))
 
 (defgeneric apply-fragment-internals-to-atresidue (fragment-internals atresidue))
 
 (defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) atresidue)
- (loop for joint across (joints atresidue)
-       for internal across (internals fragment-internals)
-       do (multiple-value-bind (bond angle-rad dihedral-rad)
-              (extract-bond-angle-rad-dihedral-rad internal)
-            (fill-joint-internals joint bond angle-rad dihedral-rad))))
+  (loop for joint across (joints atresidue)
+        for index from 0
+        do (multiple-value-bind (bond angle-rad dihedral-rad)
+               (extract-bond-angle-rad-dihedral-rad fragment-internals index)
+             (fill-joint-internals joint bond angle-rad dihedral-rad))))
 

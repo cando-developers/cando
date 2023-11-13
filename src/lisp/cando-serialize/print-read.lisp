@@ -52,7 +52,7 @@ Return a list of slot names that shouldn't be serialized."))
         (sys:*print-dense* t)
         (*print-circle* t))
     (with-output-to-string (sout)
-      (print obj sout))))
+      (prin1 obj sout))))
 
 (defun from-string (str)
   (with-input-from-string (sin str)
@@ -73,7 +73,7 @@ Save the object to the file PATHNAME as an s-expression."
             (sys:*print-dense* t)
             (*print-circle* t)
             (*package* (find-package :keyword)))
-        (cl:print obj fout)))
+        (cl:prin1 obj fout)))
     (rename-file temp-pathname new-pathname :if-exists :supersede)))
 
 
@@ -138,7 +138,7 @@ Save the object to the file PATHNAME as an s-expression."
                   (sys:*print-dense* t)
                   (*print-circle* t)
                   (*package* (find-package :keyword)))
-              (cl:print obj fout))
+              (cl:prin1 obj fout))
             (copy-seq str))))))
 
 

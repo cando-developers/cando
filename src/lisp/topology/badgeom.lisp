@@ -218,12 +218,21 @@
               do (return (format nil "bad-aromatic-geometry-p ~a-~a-~a-~a ~a" h1n c1n c2n h2n (/ torsion 0.0174533)))
             finally (return nil)))))
 
+(defun nan-in-coordinates-p (agg)
+  (chem:do-atoms (atm aggregate)
+    (let* ((pos (chem:get-position atm)))
+      (when (or (ext:float-nan-p (geom:vx pos))
+                (ext:float-nan-p (geom:vy pos))
+                (ext:float-nan-p (geom:vz pos)))
+        (return-from nan-in-coordinates-p t))))
+  nil)
 
 (defun bad-geometry-p (agg)
   "Test for different kinds of common bad geometry 
 - return true if there was any bad geometry and nil if there wasn't"
   (or (let ((chem:*current-rings* (chem:identify-rings agg)))
         (when chem:*current-rings*
-          (or (bad-carbon-geometry-p agg)
+          (or (nan-in-coordinates-p agg)
+              (bad-carbon-geometry-p agg)
               (bad-aromatic-geometry-p agg)
               (bad-dkp-geometry-p agg))))))
