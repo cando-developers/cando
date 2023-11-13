@@ -34,7 +34,8 @@
                 "#<unbound>"))))
 
 (defclass oligomer-shape ()
-  ((oligomer :initarg :oligomer :accessor oligomer)
+  ((orientation :initarg :orientation :accessor orientation)
+   (oligomer :initarg :oligomer :accessor oligomer)
    (rotamers-map :initarg :rotamers-map :accessor rotamers-map)
    (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector)
    (monomer-shape-map :initarg :monomer-shape-map :accessor monomer-shape-map)
@@ -131,7 +132,7 @@
 
 (defgeneric make-oligomer-shape (oligomer-or-space rotamers-db &key))
 
-(defmethod make-oligomer-shape ((oligomer oligomer) rotamers-db &key monomer-shape-factory)
+(defmethod make-oligomer-shape ((oligomer oligomer) rotamers-db &key monomer-shape-factory (orientation (make-orientation)))
   (let* ((foldamer (topology:foldamer (topology:oligomer-space oligomer)))
          (shape-info (shape-info foldamer))
          (kind-order (loop for kind-keys in (kind-keys shape-info)
@@ -193,6 +194,7 @@
                  ;;            do (format t "monomer-context ~a~%" monomer-context)
               finally (return (values monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)))
       (let* ((os (make-instance 'oligomer-shape
+                                :orientation orientation
                                 :oligomer oligomer
                                 :rotamers-map rotamers-db
                                 :monomer-shape-vector monomer-shape-vector
@@ -204,9 +206,9 @@
         (write-rotamers ss (first-rotamers ss))
         os))))
 
-(defmethod make-oligomer-shape ((oligomer-space oligomer-space) rotamers-db &key (oligomer-index 0))
+(defmethod make-oligomer-shape ((oligomer-space oligomer-space) rotamers-db &key (oligomer-index 0) (orientation (make-orientation)))
   (let ((oligomer (make-oligomer oligomer-space oligomer-index)))
-    (make-oligomer-shape oligomer rotamers-db)))
+    (make-oligomer-shape oligomer rotamers-db :orientation orientation)))
 
 (defgeneric read-rotamers (obj)
   (:documentation "Read the rotamers from the object"))
