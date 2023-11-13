@@ -23,4 +23,7 @@ if [ ! -d "~/.config/common-lisp/source-registry.conf.d/" ]; then
 fi
 
 echo "Installing CANDO user features..."
-cando --eval "(ql:quickload :cando-jupyter)" --eval "(cando-jupyter:install :implementation \"apptainer\" :image t)"
+cando --eval "(ql:quickload :cando-jupyter)" \
+      --eval "(ql:quickload :metal-binder)" \
+      --eval "(metal-binder::load-rotamers)" \
+      --eval "(cando-jupyter:install :implementation \"apptainer\" :image t)"
