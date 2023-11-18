@@ -4,6 +4,10 @@
 
 (defparameter *default-pane* nil)
 
+(defparameter *pick-list* nil)
+
+(defparameter *pick-limit* 6)
+
 (defgeneric make-pane (object &rest rest &key &allow-other-keys))
 
 (defgeneric show-on-pane (pane-instance object &rest rest &key &allow-other-keys))
@@ -272,6 +276,11 @@
               (ngl-pane-auto-view instance)
               (ngl-pane-camera instance)
               (ngl-pane-stage instance)))
+  (ngl:on-stage-pick (ngl-pane-stage instance)
+                     (lambda (instance data &aux (tail (nthcdr (- *pick-limit* 2) *pick-list*)))
+                       (when tail
+                         (setf (cdr tail) nil))
+                       (push data *pick-list*)))
   (jw:on-button-click (ngl-pane-auto-view instance)
     (lambda (inst)
       (declare (ignore inst))

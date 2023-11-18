@@ -36,6 +36,8 @@
     #:ngl-structure-viewer
     #:page
     #:picked-atoms
+    #:*pick-list*
+    #:*pick-limit*
     #:pick-history
     #:repr
     #:rotate-x
