@@ -273,7 +273,6 @@
    #:focus-monomer
    #:focused-assembler-atresidue
    #:assembler-atresidue
-   #:make-focused-assembler
    #:dihedral-info
    #:dihedral-info-atom
    #:dihedral-info-external
@@ -352,9 +351,16 @@
    #:number-of-rotamers
    #:goto-rotamer
    #:make-orientation
-   #:assembler-aggregate))
+   #:assembler-aggregate
+   #:make-training-assembler
+   #:make-focused-training-assembler
+   #:training-assembler
+   #:dihedral-rad
+   #:build-atom-tree-external-coordinates
+   #:adjust-atom-tree-external-coordinates
+   #:build-atom-tree-external-coordinates-and-adjust
+   #:copy-all-joint-positions-into-atoms))
 
-  
 (defpackage #:topology.dag
   (:use #:common-lisp)
   (:nicknames #:tsd)

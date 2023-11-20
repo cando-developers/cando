@@ -43,16 +43,10 @@ namespace kinematics
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    Matrix        _LabFrame; // This is the stub for children
-    // _RelativeTransform keeps track of the transform for this JumpJoint that is relative
-    // to the parent. These are like internal coordinates that can move the children
-    // relative to the parent.
-    Matrix        _ParentRelativeTransform;
-    
+    core::T_sp _Orientation; // This is the stub for children
 	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
-  public:
-    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame );
+    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation );
   protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};
@@ -74,17 +68,14 @@ namespace kinematics
     virtual void _releaseAllChildren();
 
   public:
-    JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame );
+    JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation );
 
 	/*! Empty ctor */
     JumpJoint_O() {};
 
-    // Return the 'external' coordinate    
-    CL_DEFMETHOD Matrix getLabFrame() const { return this->_LabFrame; };
-    CL_DEFMETHOD void setLabFrame(const Matrix& m) { this->_LabFrame = m; };
-    // Return the 'internal' coordinate
-    CL_DEFMETHOD Matrix getParentRelativeTransform() const { return this->_ParentRelativeTransform; };
-    CL_DEFMETHOD void setParentRelativeTransform(const Matrix& m) { this->_ParentRelativeTransform = m; };
+    // Return the 'external' coordinate
+    CL_DEFMETHOD core::T_sp getOrientation() const { return this->_Orientation; };
+    CL_DEFMETHOD void setOrientation(core::T_sp orientation) { this->_Orientation = orientation; };
 
     virtual core::Symbol_sp typeSymbol() const;
 
@@ -104,7 +95,7 @@ namespace kinematics
 	/*! Return the stubJoint2 */
     virtual Joint_sp inputStubJoint2() const { return unbound<Joint_O>(); };
 
-    const Matrix& transform() const { return this->_LabFrame; };
+    Matrix transform() const;
 
     bool keepDofFixed(DofType dof) const;
 

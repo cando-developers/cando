@@ -13,6 +13,20 @@
                  :parent-relative-frame parent-relative-frame
                  :lab-frame lab-frame))
 
+(defmethod print-object ((obj orientation) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream ":parent-relative-frame~%~s~%:lab-frame~%~s~%" (parent-relative-frame obj) (lab-frame obj)))))
+
+(defgeneric kin:orientation-transform (orientation))
+
+(defmethod kin:orientation-transform ((orientation orientation))
+  (let* ((parent-relative-frame (topology:parent-relative-frame orientation))
+         (lab-frame (lab-frame orientation))
+         (transform (geom:m*m parent-relative-frame lab-frame)))
+    transform))
+
 (defclass orientations ()
   ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations)))
 
@@ -33,31 +47,34 @@
     res))
 
 
-(defclass assembler ()
+(defclass assembler-base (cando.serialize:serializable)
   ((monomer-positions :initarg :monomer-positions :accessor monomer-positions)
    (monomer-contexts :type hash-table :initarg :monomer-contexts :accessor monomer-contexts)
-   (oligomers :initarg :oligomers :accessor oligomers)
    (aggregate :initarg :aggregate :accessor aggregate)
    (energy-function :initarg :energy-function :accessor energy-function)
    (ataggregate :initarg :ataggregate :accessor ataggregate)
-   (joint-tree :initarg :joint-tree :accessor joint-tree)
-   (adjustments :initarg :adjustments :accessor adjustments)
-   ))
+   (joint-tree :initarg :joint-tree :accessor joint-tree)))
 
-(cando.serialize:make-class-save-load assembler)
+(defclass assembler (assembler-base)
+  ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
+   (adjustments :initarg :adjustments :accessor adjustments)))
 
-(defclass focused-assembler (assembler)
+(defclass training-assembler (assembler-base)
+  ((oligomers :initarg :oligomers :accessor oligomers)))
+
+(defclass focused-training-assembler (training-assembler)
   ((focus-monomer :initarg :focus-monomer :accessor focus-monomer))
   (:documentation "An assembler with a focus monomer"))
 
-(defun make-focused-assembler (oligomers focus-monomer)
-  (let ((assembler (make-assembler oligomers :focus-monomer focus-monomer)))
-    (change-class assembler 'focused-assembler :focus-monomer focus-monomer)
+(defun make-focused-training-assembler (oligomers focus-monomer)
+  (let ((assembler (make-training-assembler oligomers :focus-monomer focus-monomer)))
+    (change-class assembler 'focused-training-assembler :focus-monomer focus-monomer)
     assembler))
 
 (defun oligomer-containing-monomer (assembler monomer &optional errorp)
   "Return the oligomer that contains the monomer"
-  (loop for oligomer in (oligomers assembler)
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        for oligomer = (oligomer oligomer-shape)
         do (loop for mon across (monomers oligomer)
                  when (eq mon monomer)
                    do (return-from oligomer-containing-monomer oligomer)))
@@ -91,31 +108,30 @@
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))
 
-(defun make-assembler (oligomers-or-shapes &key monomer-order orientations focus-monomer)
+(defun make-assembler (oligomer-shapes &key monomer-order)
   "Build a assembler for the oligomers."
-  (let* ((full-orientations (cond
-                              ((null orientations)
-                               (loop for os in oligomers-or-shapes
-                                     collect (topology:make-orientation)))
-                              ((and (listp orientations) (= (length orientations) (length oligomers-or-shapes)))
-                               orientations)
-                              (t (error "Either provide no orientations or one orientation for each oligomer"))))
+  (unless (every (lambda (os) (typep os 'oligomer-shape)) oligomer-shapes)
+    (error "You must provide a list of oligomer-shapes"))
+  (let* ((full-orientations oligomer-shapes)
          (aggregate (chem:make-aggregate :all))
          (monomer-positions (make-hash-table))
-         (oligomers (mapcar (lambda (oligomer-or-shape)
-                              (cond
-                                ((typep oligomer-or-shape 'oligomer-shape)
-                                 (oligomer oligomer-or-shape))
-                                ((typep oligomer-or-shape 'oligomer)
-                                 oligomer-or-shape)
-                                (t (error "You must supply an oligomer or oligomer-shape but got ~s" oligomer-or-shape))))
-                            oligomers-or-shapes))
+         (oligomers (mapcar (lambda (oligomer-shape)
+                              (oligomer oligomer-shape))
+                            oligomer-shapes))
+         (foldamers (mapcar (lambda (oligomer)
+                              (let* ((oligomer-space (oligomer-space oligomer))
+                                     (foldamer (foldamer oligomer-space)))
+                                foldamer))
+                            oligomers))
          (oligomer-molecules (loop for oligomer in oligomers
+                                   for oligomer-space = (oligomer-space oligomer)
+                                   for foldamer = (foldamer oligomer-space)
                                    for molecule-index from 0
                                    for molecule = (topology:build-molecule oligomer
                                                                            :aggregate aggregate
                                                                            :molecule-index molecule-index
                                                                            :monomer-positions-accumulator monomer-positions)
+                                   do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
                                    collect (cons oligomer molecule)))
          (monomer-contexts (make-hash-table))
          (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
@@ -131,13 +147,9 @@ Specialize the foldamer argument to provide methods"))
                           for oligomer-space = (oligomer-space oligomer)
                           for foldamer = (foldamer oligomer-space)
                           for molecule-index from 0
-                          do (if focus-monomer
-                                 (let ((focus-monomer-context (foldamer-monomer-context focus-monomer oligomer foldamer)))
-                                   (setf (gethash focus-monomer monomer-contexts) focus-monomer-context)
-                                   )
-                                 (loop for monomer across (monomers oligomer-space)
-                                       for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
-                                       do (setf (gethash monomer monomer-contexts) monomer-context)))
+                          do (loop for monomer across (monomers oligomer-space)
+                                   for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
+                                   do (setf (gethash monomer monomer-contexts) monomer-context))
                              ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
                              ;; Use the monomers-to-topologys
                           do (let* ((atmolecule (build-atmolecule-using-oligomer
@@ -153,7 +165,7 @@ Specialize the foldamer argument to provide methods"))
                           finally (return (make-instance 'assembler
                                                          :monomer-positions monomer-positions
                                                          :monomer-contexts monomer-contexts
-                                                         :oligomers oligomers
+                                                         :oligomer-shapes oligomer-shapes
                                                          :aggregate aggregate
                                                          :energy-function energy-function
                                                          :ataggregate ataggregate
@@ -174,7 +186,76 @@ Specialize the foldamer argument to provide methods"))
                               do (initialize-adjustment adjust assembler))))
     assembler))
 
-(defun walk-atoms-joints (assembler callback)
+
+(defun make-training-assembler (oligomers &key monomer-order focus-monomer)
+  "Build a assembler for the oligomers."
+  (unless (every (lambda (os) (typep os 'oligomer)) oligomers)
+    (error "You must provide a list of oligomers"))
+  (let* ((aggregate (chem:make-aggregate :all))
+         (monomer-positions (make-hash-table))
+         (oligomer-molecules (loop for oligomer in oligomers
+                                   for molecule-index from 0
+                                   for molecule = (topology:build-molecule oligomer
+                                                                           :aggregate aggregate
+                                                                           :molecule-index molecule-index
+                                                                           :monomer-positions-accumulator monomer-positions)
+                                   collect (cons oligomer molecule)))
+         (monomer-contexts (make-hash-table))
+         (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
+                        (resize-atmolecules atagg (length oligomers))
+                        atagg))
+         (joint-tree (make-joint-tree))
+         (energy-function (chem:make-energy-function :matter aggregate))
+         (assembler (loop for oligomer-molecule in oligomer-molecules
+                          for oligomer = (car oligomer-molecule)
+                          for molecule = (cdr oligomer-molecule)
+                          for oligomer-space = (oligomer-space oligomer)
+                          for foldamer = (foldamer oligomer-space)
+                          for molecule-index from 0
+                          do (if focus-monomer
+                                 (progn
+                                   (let ((focus-monomer-context (foldamer-monomer-context focus-monomer oligomer foldamer)))
+                                     (setf (gethash focus-monomer monomer-contexts) focus-monomer-context)
+                                     ))
+                                 (loop for monomer across (monomers oligomer-space)
+                                       for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
+                                       do (setf (gethash monomer monomer-contexts) monomer-context)))
+                             ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
+                             ;; Use the monomers-to-topologys
+                          do (let* ((atmolecule (build-atmolecule-using-oligomer
+                                                 oligomer
+                                                 molecule
+                                                 molecule-index
+                                                 monomer-positions
+                                                 joint-tree
+                                                 (chem:atom-table energy-function)
+                                                 nil
+                                                 nil)))
+                               (put-atmolecule ataggregate atmolecule molecule-index))
+                          finally (return (make-instance 'training-assembler
+                                                         :monomer-positions monomer-positions
+                                                         :monomer-contexts monomer-contexts
+                                                         :oligomers oligomers
+                                                         :aggregate aggregate
+                                                         :energy-function energy-function
+                                                         :ataggregate ataggregate
+                                                         :joint-tree joint-tree)))))
+    assembler))
+
+(defun walk-atoms-joints (assembler molecule-index callback)
+  (let* ((aggregate (aggregate assembler))
+        (ataggregate (ataggregate assembler))
+        (molecule (chem:content-at aggregate molecule-index))
+         (atmolecule (aref (atmolecules ataggregate) molecule-index)))
+    (loop for residue-index below (chem:content-size molecule)
+          for residue = (chem:content-at molecule residue-index)
+          for atresidue = (aref (atresidues atmolecule) residue-index)
+          do (loop for atom-index below (chem:content-size residue)
+                   for atom = (chem:content-at residue atom-index)
+                   for joint = (aref (joints atresidue) atom-index)
+                   do (funcall callback atom joint (list molecule-index residue-index atom-index))))))
+
+(defun old-walk-atoms-joints (assembler molecule-index callback)
   (let ((aggregate (aggregate assembler))
         (ataggregate (ataggregate assembler)))
     (loop for molecule-index below (chem:content-size aggregate)
@@ -187,7 +268,6 @@ Specialize the foldamer argument to provide methods"))
                            for atom = (chem:content-at residue atom-index)
                            for joint = (aref (joints atresidue) atom-index)
                            do (funcall callback atom joint (list molecule-index residue-index atom-index)))))))
-
 #+(or)
 (defun copy-atom-positions-into-joints (assembler)
   (walk-atoms-joints assembler
@@ -212,11 +292,19 @@ Specialize the foldamer argument to provide methods"))
     (error "Could not find atom ~s" atom)
     ))
 
-(defun copy-joint-positions-into-atoms (assembler coords)
-  (walk-atoms-joints assembler
+(defun copy-joint-positions-into-atoms (assembler coords oligomer-shape)
+  (let ((pos (position oligomer-shape (oligomer-shapes assembler))))
+    (walk-atoms-joints assembler pos
+                       (lambda (atm jnt atomid)
+                         (declare (ignore atomid))
+                         (chem:set-position atm (kin:joint/position jnt coords))))))
+
+(defun copy-all-joint-positions-into-atoms (assembler coords)
+  (loop for index below (length (oligomer-shapes aseembler))
+        do (walk-atoms-joints assembler index
                      (lambda (atm jnt atomid)
                        (declare (ignore atomid))
-                       (chem:set-position atm (kin:joint/position jnt coords)))))
+                       (chem:set-position atm (kin:joint/position jnt coords))))))
 
 (defun update-joint-tree-internal-coordinates (assembler coordinates)
   (let ((ataggregate (ataggregate assembler)))
@@ -225,24 +313,36 @@ Specialize the foldamer argument to provide methods"))
                                (declare (ignore atom-id))
                                (kin:update-internal-coord joint coordinates)))))
 
+(defun build-atom-tree-external-coordinates (assembler coords oligomer-shape)
+  (let* ((one-oligomer (oligomer oligomer-shape))
+         (joint (gethash one-oligomer (root-map (joint-tree assembler)))))
+    (unless joint
+      (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
+    (kin:update-xyz-coords joint coords)))
+
 (defun build-all-atom-tree-external-coordinates (assembler coords)
-  (loop for one-oligomer in (oligomers assembler)
-        for joint = (gethash one-oligomer (root-map (joint-tree assembler)))
-        unless joint
-          do (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler)))
-        do (kin:update-xyz-coords joint coords)))
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        do (build-atom-tree-external-coordinates assembler coords oligomer-shape)))
+
+(defun adjust-atom-tree-external-coordinates (assembler coords oligomer-shape)
+  (let* ((pos (position oligomer-shape (oligomer-shapes assembler)))
+         (atmol (elt (atmolecules (ataggregate assembler)) pos)))
+    (loop for atres across (atresidues atmol)
+          for adjustments = (gethash atres (external-adjustments (adjustments assembler)))
+          do (loop for adjustment in adjustments
+                   do (external-adjust adjustment assembler coords)))))
 
 (defun adjust-all-atom-tree-external-coordinates (assembler coords)
-  (let* ((ataggregate (ataggregate assembler)))
-    (loop for atmol across (atmolecules ataggregate)
-          do (loop for atres across (atresidues atmol)
-                   for adjustments = (gethash atres (external-adjustments (adjustments assembler)))
-                   do (loop for adjustment in adjustments
-                            do (external-adjust adjustment assembler coords))))))
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        do (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))
 
 (defun build-all-atom-tree-external-coordinates-and-adjust (assembler coords)
   (build-all-atom-tree-external-coordinates assembler coords)
   (adjust-all-atom-tree-external-coordinates assembler coords))
+
+(defun build-atom-tree-external-coordinates-and-adjust (assembler coords oligomer-shape)
+  (build-atom-tree-external-coordinates assembler coords oligomer-shape)
+  (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
 
 (defun build-atresidue-atom-tree-external-coordinates (atresidue coords)
   (loop for atom-index below (length (joints atresidue))
@@ -258,20 +358,26 @@ Specialize the foldamer argument to provide methods"))
                                (declare (ignore atom-id))
                                (kin:set-position joint (geom:vec 0.0 0.0 0.0))))))
 
-(defun adjust-internals (assembler)
+(defun adjust-internals (assembler oligomer-shape)
   "Do the adjustment of internal coordinates"
-  (let* ((ataggregate (ataggregate assembler)))
-    (loop for atmol across (atmolecules ataggregate)
-          do (loop for atres across (atresidues atmol)
-                   for adjustments = (gethash atres (internal-adjustments (adjustments assembler)))
-                   do (loop for adjustment in adjustments
-                            do (internal-adjust adjustment assembler))))))
+  (let* ((pos (position oligomer-shape (oligomer-shapes assembler)))
+         (atmol (aref (atmolecules (ataggregate assembler)) pos)))
+    (loop for atres across (atresidues atmol)
+          for adjustments = (gethash atres (internal-adjustments (adjustments assembler)))
+          do (loop for adjustment in adjustments
+                   do (internal-adjust adjustment assembler)))))
+
+(defun adjust-all-internals (assembler)
+  "Do the adjustment of internal coordinates"
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        do (adjust-internals assembler oligomer-shape)))
 
 (defun fill-internals-from-oligomer-shape (assembler oligomer-shape &optional monomers)
   "Fill internal coordinates from the fragments"
   (let ((fragments (rotamers-map oligomer-shape)))
-    (loop for oligomer in (oligomers assembler)
-          when (eq oligomer (oligomer oligomer-shape))
+    (loop for ass-oligomer-shape in (oligomer-shapes assembler)
+          for oligomer = (oligomer ass-oligomer-shape)
+          when (eq ass-oligomer-shape oligomer-shape)
             do (loop with atagg = (ataggregate assembler)
                      for monomer in (ordered-monomers oligomer)
                      when (or (null monomers)
@@ -305,7 +411,7 @@ Specialize the foldamer argument to provide methods"))
 
 (defun fill-internals-from-oligomer-shape-and-adjust (assembler oligomer-shape &optional monomers)
   (fill-internals-from-oligomer-shape assembler oligomer-shape monomers)
-  (adjust-internals assembler))
+  (adjust-internals assembler oligomer-shape))
 
 (defun search-conformations (oligomer-space context-rotamers monomer-names sdf-filename &optional (number-struct 50) (number-conf 100))
   (error "Implement search-conformations")
@@ -323,9 +429,11 @@ Specialize the foldamer argument to provide methods"))
                    do (topology:copy-joint-positions-into-atoms conf)
                    do (sdf:write-sdf-stream (topology:aggregate conf) fout)))))
 
+#+(or)
 (defun fill-internals-from-fragments-for-monomers-named (assembler fragments monomer-names)
   "Fill internal coordinates from the fragments"
-  (loop for oligomer in (oligomers assembler)
+  (loop for ass-oligomer-shape in (oligomer-shapes assembler)
+        for oligomer = (oligomer ass-oligomer-shape)
         do (loop with atagg = (ataggregate assembler)
                  for monomer across (monomers oligomer)
                  when (member (topology:current-stereoisomer-name monomer oligomer) monomer-names)

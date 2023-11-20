@@ -310,11 +310,8 @@
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (if one-orientation
-                    (kin:make-jump-joint atomid atom-name atom-table
-                                         (parent-relative-frame one-orientation)
-                                         (lab-frame one-orientation)
-                                         )
-                    (kin:make-jump-joint atomid atom-name atom-table nil nil))))
+                    (kin:make-jump-joint atomid atom-name atom-table one-orientation)
+                    (kin:make-jump-joint atomid atom-name atom-table (make-orientation)))))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
@@ -361,9 +358,10 @@
 
 (defmethod write-into-joint-tree ((joint-template adjustable-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (let ((joint (call-next-method)))
-    (add-to-adjustments adjustments
-                        (make-instance (adjustment joint-template) :joint joint)
-                        atresidue)
+    (when adjustments
+      (add-to-adjustments adjustments
+                          (make-instance (adjustment joint-template) :joint joint)
+                          atresidue))
     joint))
 
 (defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
@@ -380,9 +378,10 @@
 
 (defmethod write-into-joint-tree ((joint-template adjustable-in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
   (let ((joint (call-next-method)))
-    (add-to-adjustments adjustments
+    (when adjustments
+      (add-to-adjustments adjustments
                         (make-instance (adjustment joint-template) :joint joint)
-                        atresidue)
+                        atresidue))
     joint))
 
 (defclass topology-graph ()

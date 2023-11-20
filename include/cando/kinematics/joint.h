@@ -50,7 +50,7 @@ namespace kinematics
 
 
 #if 0
-#define KIN_LOG(...) if (chem::chem__verbose(3)) core::clasp_write_string(fmt::format("{}:{}:{} - " , __FILE__ , __LINE__ , __FUNCTION__ )); core::clasp_write_string(fmt::format(__VA_ARGS__));
+#define KIN_LOG(...) if (chem::chem__verbose(3)) {core::clasp_write_string(fmt::format("{}:{}:{} - " , __FILE__ , __LINE__ , __FUNCTION__ )); core::clasp_write_string(fmt::format(__VA_ARGS__));};
 #else
 #define KIN_LOG(...)
 #endif
@@ -110,8 +110,8 @@ public:
   virtual void _releaseAllChildren() = 0;
   virtual core::List_sp jointChildren() const;
   Joint_sp onlyOtherChild(Joint_sp child) const;
+  Joint_sp childWithName(core::T_sp name) const;
 
-  
   CL_DEFMETHOD int positionIndexX3() const { return this->_PositionIndexX3; };
 public:
 

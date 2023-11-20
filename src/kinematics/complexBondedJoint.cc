@@ -71,8 +71,8 @@ Stub ComplexBondedJoint_O::getInputStub(chem::NVector_sp coords) const
     if (gc::IsA<JumpJoint_sp>(this->parent())) {
       JumpJoint_sp jumpJoint = gc::As_unsafe<JumpJoint_sp>(this->parent());
 //      Matrix flipped = jumpJoint->transform().flipXY();
-      Matrix flipped = jumpJoint->transform(); // .flipXY();
-      stub.fromMatrix(flipped);
+      stub = jumpJoint->getInputStub(coords); // .flipXY();
+      KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
       return stub;
     }
     SIMPLE_ERROR("Illegal to getInputStub with only a parent and that parent is not a JumpJoint_sp - it's a {}" , _rep_(this->parent()));
@@ -87,15 +87,18 @@ Stub ComplexBondedJoint_O::getInputStub(chem::NVector_sp coords) const
       Vector3 originPY = origin.add(axisY);
 //      stub.fromFourPoints(origin, originPX, origin, originPY);
       stub.fromThreePoints(origin, originPX, originPY);
+      KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
       return stub;
     }
     stub.fromCenterAndRotation( this->inputStubJoint0()->position(coords), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform().flipXY());
 //    stub.fromCenterAndRotation( this->inputStubJoint0()->getPosition(), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform());
+    KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
     return stub;
   }
   stub.fromThreePoints(this->inputStubJoint0()->position(coords),
                        this->inputStubJoint1()->position(coords),
                        this->inputStubJoint2()->position(coords));
+  KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
   return stub;
 }
 

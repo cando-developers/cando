@@ -320,6 +320,7 @@ public:
     this->_Position.getZ() = z;
   }
   void	setPositionInNanometers(Vector3 o);
+  CL_DEFMETHOD 	void	copyPosition(Atom_sp source) { this->_Position = source->_Position; };
   float distanceSquaredToAtom(Atom_sp other);
 	//! Atoms should throw an exception
   void	makeAllAtomNamesInEachResidueUnique();

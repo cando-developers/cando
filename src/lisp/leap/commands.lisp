@@ -219,7 +219,7 @@ Download a Cando package from the internet, compile it and make it available for
 This command opens the file with the file name _filename_ as a log
 file.  User input and ALL output is written to the log file.  Output
 is written to the log file as if the verbosity level were set to 2."
-  (let ((filename (pathname (ensure-string entry))))
+  #+(or)(let ((filename (pathname (ensure-string entry))))
     (let* ((log-stream (open filename :direction :output :if-exists :supersede))
            (broadcast (make-broadcast-stream cl:*standard-output* #+(or)ext:+process-standard-output+ log-stream)))
       (setf cl:*standard-output* broadcast))))

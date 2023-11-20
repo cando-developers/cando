@@ -172,6 +172,16 @@
                   )
           #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals ))))))
 
+(defun dihedral-rad (internals-values joint-template)
+  "Return the dihedral angle corresponding to the joint-template"
+  (let ((dihedral-index (+ (* 3 (constitution-atoms-index joint-template)) 2)))
+    (aref internals-values dihedral-index)))
+
+(defun (setf dihedral-rad) (value internals-values joint-template)
+  "Return the dihedral angle corresponding to the joint-template"
+  (let ((dihedral-index (+ (* 3 (constitution-atoms-index joint-template)) 2)))
+    (setf (aref internals-values dihedral-index) value)))
+
 
 (defclass sidechain-rotamer (rotamer)
   (()))
@@ -203,7 +213,8 @@
   ())
 
 (defclass rotamers-database (cando.serialize:serializable)
-  ((context-to-rotamers :initarg :context-to-rotamers :initform (make-hash-table) :accessor context-to-rotamers)))
+  ((context-to-rotamers :initarg :context-to-rotamers :initform (make-hash-table) :accessor context-to-rotamers)
+   (foldamer-name :initarg :foldamer-name :accessor foldamer-name)))
 
 (defmethod print-object ((obj rotamers-database) stream)
   (if *print-readably*

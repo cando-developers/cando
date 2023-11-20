@@ -355,6 +355,14 @@ CL_DEFMETHOD Joint_sp Joint_O::onlyOtherChild(Joint_sp child) const
                _rep_(child), _rep_(this->_child(0)), _rep_(this->_child(1)));
 }
 
+CL_DEFMETHOD Joint_sp Joint_O::childWithName(core::T_sp name) const
+{
+  for ( size_t ii=0; ii<this->_numberOfChildren(); ii++ ) {
+    if (this->_child(ii)->name() == name) return this->_child(ii);
+  }
+  SIMPLE_ERROR("Could not find child with name {}", _rep_(name));
+}
+
     /*! See file:///Users/meister/Development/rosetta3.3/rosetta_source/html/core+numeric+protocols/dc/db0/_atom___8hh-source.html#l00475
       For definition
     */

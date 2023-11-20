@@ -281,7 +281,7 @@
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t)
-        (format stream ":id ~s" (id obj)))))
+        (format stream ":id ~s :monomers ~s" (id obj) (monomers obj)))))
 
 (defun number-of-stereoisomers (monomer)
   (length (monomers monomer)))

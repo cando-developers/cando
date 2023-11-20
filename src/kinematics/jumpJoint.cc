@@ -30,35 +30,33 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
+#include <clasp/core/evaluator.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/jumpJoint.h>
 
 namespace kinematics
 {
 
-JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame ) : Joint_O(atomId,name,atomTable) {
-  if (parentRelativeTransform.notnilp()) {
-    geom::OMatrix_sp prt = gc::As<geom::OMatrix_sp>(parentRelativeTransform);
-    this->_ParentRelativeTransform = prt->_Value;
-  }
-  if (labFrame.notnilp()) {
-    geom::OMatrix_sp lf = gc::As<geom::OMatrix_sp>(labFrame);
-    this->_LabFrame = lf->_Value;
-  }
-};
+SYMBOL_EXPORT_SC_(KinPkg,orientation_selfFrame);
+SYMBOL_EXPORT_SC_(KinPkg,orientation_labFrame);
+SYMBOL_EXPORT_SC_(KinPkg,orientation_transform);
 
+JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation ) : Joint_O(atomId,name,atomTable) {
+  if (orientation.notnilp()) {
+    this->_Orientation = orientation;
+  };
+};
 
 CL_LAMBDA(atom-id name atom-table);
 CL_LISPIFY_NAME("make_JumpJoint");
 CL_DEF_CLASS_METHOD
-JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp parentRelativeTransform, core::T_sp labFrame ) {
-  return gctools::GC<JumpJoint_O>::allocate( atomId, name, atomTable, parentRelativeTransform, labFrame );
+    JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation ) {
+  return gctools::GC<JumpJoint_O>::allocate( atomId, name, atomTable, orientation );
 }
 
 void JumpJoint_O::fields(core::Record_sp node) {
   node->field_if_not_empty(INTERN_(kw,children),this->_Children);
-  node->field(INTERN_(kw,labFrame),this->_LabFrame);
-  node->field(INTERN_(kw,parentRelativeTransform),this->_ParentRelativeTransform);
+  node->field(INTERN_(kw,orientation),this->_Orientation);
   this->Base::fields(node);
 }
 
@@ -97,66 +95,6 @@ void JumpJoint_O::_releaseAllChildren()
 void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
 {
   KIN_LOG(" <<< {}\n", _rep_(this->asSmartPtr()));
-#if 0
-  Vector3 O = this->position(coords);
-  if (this->_numberOfChildren()>=2) {
-    Vector3 A = this->_child(0)->position(coords);
-    Vector3 B = this->_child(1)->position(coords);
-    Vector3 OA = A - O;
-    double lengthOA = OA.length();
-    if (lengthOA<1e-6) SIMPLE_ERROR("You are about to divide by zero");
-    Vector3 a = OA*(1.0/lengthOA);
-    Vector3 OB = B - O;
-    Vector3 OBxa = OB.crossProduct(a);
-    double lengthOBxa = OBxa.length();
-    if (lengthOBxa<1e-6) SIMPLE_ERROR("You are about to divide by zero");
-    Vector3 c = OBxa*(1.0/lengthOBxa);
-    Vector3 b = c.crossProduct(a);
-    Matrix labFrame;
-    labFrame.colX(a);
-    labFrame.colY(b);
-    labFrame.colZ(c);
-    labFrame.setTranslate(O);
-    this->_LabFrame = labFrame;
-    JumpJoint_sp jjParent = gc::As<JumpJoint_sp>(this->parent());
-    Matrix parentInverted = jjParent->_LabFrame.invertTransform();
-    this->_ParentRelativeTransform = labFrame*parentInverted;
-    KIN_LOG("relativeTransform = \n{}\n" , this->_ParentRelativeTransform.asString());
-  } else if (this->_numberOfChildren()==1) {
-    Vector3 A = this->_child(0)->position(coords);
-    Vector3 OA = A - O;
-    double lengthOA = OA.length();
-    if (lengthOA<1e-6) SIMPLE_ERROR("You are about to divide by zero");
-    Vector3 a = OA*(1.0/lengthOA);
-      // We need a vector orthogonal to a - used the following reference
-      // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-    Vector3& x = a;  // alias a with x to match algorithm
-    Vector3 y(0.0,0.0,0.0);
-    int m = 0;
-    int n = 0;
-    if (std::fabs(x[0]) > 1e-3) { m = 0; n = 1; }
-    else if (std::fabs(x[1]) > 1e-3 ) { m = 1; n = 2; }
-    else { m = 2; n = 0; };
-    y[n] = x[m];
-    y[m] = -x[n];
-    double lengthy = y.length();
-    if (lengthy<1e-6) SIMPLE_ERROR("You are about to divide by zero");
-    y = y * (1.0/lengthy);
-    // Now y should be orthogonal to a
-    Vector3& b = y;
-    Vector3 c = a.crossProduct(b);
-    Matrix labFrame;
-    labFrame.colX(a);
-    labFrame.colY(b);
-    labFrame.colZ(c);
-    labFrame.setTranslate(O);
-    this->_LabFrame = labFrame;
-    JumpJoint_sp jjParent = gc::As<JumpJoint_sp>(this->parent());
-    Matrix parentInverted = jjParent->_LabFrame.invertTransform();
-    this->_ParentRelativeTransform = labFrame*parentInverted;
-    KIN_LOG("relativeTransform = \n{}\n", this->_ParentRelativeTransform.asString());
-  }
-#endif
 }
 
 
@@ -170,7 +108,7 @@ void JumpJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
   ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n{}") , stub.asString());
   this->setPosition(coords,stub._Transform.getTranslation());
-  KIN_LOG("LabFrame.getTranslation() = {}\n", this->_LabFrame.getTranslation().asString());
+  KIN_LOG("orientation {}\n", _rep_(orientation) );
 }
 
 void JumpJoint_O::updateXyzCoord(chem::NVector_sp coords)
@@ -183,7 +121,7 @@ void JumpJoint_O::updateXyzCoord(chem::NVector_sp coords)
 void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords)
 {
   Stub newStub;
-  newStub._Transform = this->_LabFrame;
+  newStub._Transform = this->transform();
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
     this->_child(ii)->_updateXyzCoord(coords,newStub);
     // ratchet newStub
@@ -195,17 +133,17 @@ void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords)
   }
 }
 
+ Matrix JumpJoint_O::transform() const {
+   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->_Orientation))->ref();
+   return m;
+ }
+
 Stub JumpJoint_O::getInputStub(chem::NVector_sp coords) const {
-  Stub jj;
-#if 1
+  Stub stub;
   // I think this is the correct order of transforms
-  jj._Transform = this->_ParentRelativeTransform;
-  jj._Transform = jj._Transform.multiplyByMatrix(this->_LabFrame);
-#else
-  jj._Transform = this->_LabFrame;
-  jj._Transform = jj._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
-#endif
-  return jj;
+  stub._Transform = this->transform();
+  KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
+  return stub;
 }
 
 

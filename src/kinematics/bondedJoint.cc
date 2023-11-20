@@ -274,6 +274,7 @@ Stub BondedJoint_O::getInputStub(chem::NVector_sp coords) const
   stub.fromThreePoints(this->inputStubJoint0()->position(coords),
                       this->inputStubJoint1()->position(coords),
                       this->inputStubJoint2()->position(coords));
+  KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
   return stub;
 }
 

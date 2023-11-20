@@ -340,8 +340,11 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (ext:system cmd))))
 
 (defun bad-geometry-p (agg)
-  (let ((energy-function (chem:make-energy-function :matter agg)))
-    (let ((fails (chem:check-for-beyond-threshold-interactions energy-function 0.2)))
+  (let ((coords (chem:matter-extract-coordinates agg)))
+    (when (not (ext:array-no-nans-p coords))
+      (return-from bad-geometry-p t))
+    (let* ((energy-function (chem:make-energy-function :matter agg))
+           (fails (chem:check-for-beyond-threshold-interactions energy-function 0.2)))
       (if (> (length fails) 0)
           fails
           nil))))
