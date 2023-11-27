@@ -259,7 +259,7 @@ namespace chem {
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
 
-    virtual uint	numberOfAtoms( );
+    virtual uint	numberOfAtoms() const;
 
   Residue_O() : Base(), _Type(nil<core::Symbol_O>()) {};
     Residue_O( const Residue_O& res );

@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
+#include <clasp/core/evaluator.h>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -358,141 +359,6 @@ CL_DEFUN double	calculateDistanceSquared( const Vector3& va,
 }
 
 
-/*! Return the angle in radians
- */
-DOCGROUP(cando);
-CL_DEFUN double calculateAngle( const Vector3& va,
-                                const Vector3& vb,
-                                const Vector3& vc )
-{
-  Vector3	vab = (va-vb).normalized();
-  Vector3	vcb = (vc-vb).normalized();
-  double ang = safe_acos(vab.dotProduct(vcb));
-  return ang;
-}
-
-
-/*! Return the dihedral in radians
- */
-DOCGROUP(cando);
-CL_DEFUN double calculateDihedral( const Vector3& va,
-                                   const Vector3& vb,
-                                   const Vector3& vc,
-                                   const Vector3& vd)
-{
-  Vector3 vab = (va - vb);
-  Vector3 vcb = (vc - vb);
-  Vector3 vdc = (vd - vc);
-  Vector3 vacCross = (vab.crossProduct(vcb)).normalized();
-  LOG("vacCross = {},{},{}" , (vacCross.getX()) , (vacCross.getY()) , (vacCross.getZ() ) );
-  Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized();
-  LOG("vdcCross = {},{},{}" , (vdcCross.getX()) , (vdcCross.getY()) , (vdcCross.getZ() ) );
-  Vector3 vCross = vacCross.crossProduct(vdcCross);
-  LOG("vCross = {},{},{}" , (vCross.getX()) , (vCross.getY()) , (vCross.getZ() ) );
-  double dot = vacCross.dotProduct(vdcCross);
-  double dih = safe_acos(dot);
-  if (isnan(dih)) {
-    SIMPLE_ERROR("dihedral is NAN");
-  }
-  LOG("dih = {}" , (dih ) );
-  double sgn = (vCross.dotProduct(vcb))<0.0?-1.0:+1.0;
-//    if ( enantiomer ) return -dih*sgn;
-  return dih*sgn;
-}
-
-CL_DEFUN double calculateDihedralArray( size_t iva,
-                                        size_t ivb,
-                                        size_t ivc,
-                                        size_t ivd,
-                                        core::Array_sp array) {
-  size_t len = array->length();
-  int64_t max_index = len-2;
-  if (max_index<=0) {
-    SIMPLE_ERROR("The array does not contain 3D vectors");
-  }
-  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
-    auto sfa = gc::As<core::SimpleVector_float_sp>(array);
-    Vector3 va(sfa,iva);
-    Vector3 vb(sfa,ivb);
-    Vector3 vc(sfa,ivc);
-    Vector3 vd(sfa,ivd);
-    return calculateDihedral(va,vb,vc,vd);
-  }
-  SIMPLE_ERROR("Handle array type {}", _rep_(array));
-}
-
-
-CL_DOCSTRING(R"dx(Return a vector (0 0 0))dx");
-DOCGROUP(cando);
-CL_DEFUN Vector3 geom__build_origin()
-{
-  return Vector3(0.0,0.0,0.0);
-}
-
-
-CL_DOCSTRING(R"dx(Return a vector along the x axis distance away from vb)dx");
-DOCGROUP(cando);
-CL_DEFUN Vector3 geom__build_using_bond( double distance, const Vector3& vb )
-{
-  Vector3	vTarget;
-  vTarget = Vector3(distance,0.0,0.0);
-  return vTarget+vb;
-}
-
-//! Build a vector at distance from vb and angle from va
-DOCGROUP(cando);
-CL_DEFUN Vector3 geom__build_using_bond_angle( double distance, const Vector3& vb,
-                                               double angle, const Vector3& va)
-{
-  Vector3 vd, vdn, vr;
-  double	ca, sa;
-  vd = va-vb;
-  vdn = vd.normalized();
-  ca = cos(angle);
-  sa = sin(angle);
-  vr = Vector3(vdn.getX()*cos(angle)+vdn.getY()*sin(angle),
-               -vdn.getX()*sin(angle)+vdn.getY()*cos(angle), 0.0);
-  vr = vr.multiplyByScalar(distance);
-  vr = vr+vb;
-  return vr;
-}
-
-
-DOCGROUP(cando);
-CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const Vector3& vc,
-                                                        double angle, const Vector3& vb,
-                                                        double dihedral, const Vector3& va)
-{
-  Vector3 bcDir = vb-vc;
-  if ( bcDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
-  Vector3 bcDirNorm = bcDir.normalized();
-  Vector3 dPosDist = bcDirNorm.multiplyByScalar(distance);
-    //
-    // Now find the axis around which to rotate the bond angle
-    //
-  Vector3	abDir = va-vb;
-  if ( abDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
-  Vector3 abDirNorm = abDir.normalizedOrZero();
-  Vector3 angleAxis = bcDirNorm.crossProduct(abDirNorm);
-  if ( angleAxis.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
-  Vector3 angleAxisNorm = angleAxis.normalizedOrZero();
-  Matrix angleRotation;
-  angleRotation.rotationAxis(angle,&angleAxisNorm);
-  Vector3 dPosAngle = angleRotation.multiplyByVector3(dPosDist);
-
-	    //
-	    // Now rotate around the dihedral bond
-	    //
-  Matrix dihedralRotation;
-  dihedralRotation.rotationAxis(-dihedral,&bcDirNorm);
-  Vector3 dPosDihedral = dihedralRotation.multiplyByVector3(dPosAngle);
-	    //
-	    // Now translate it to atom C
-	    //
-  Vector3 dPos = dPosDihedral.add(vc);
-  return dPos;
-}
-
 
 
 /*
@@ -529,7 +395,7 @@ dVectorAbsAngle( const Vector3& vX, const Vector3& vY, const Vector3& vRef )
  *      Use NEWTON-RAPHSON method for finding the coordinate for the
  *      vector(vC) which is dAngleA from the vector vA (on the X axis)
  *	and dAngleB from a vector (vB) which lies in the XY plane
- *	dAngleC from the X axis.
+*	dAngleC from the X axis.
  *
  *      The point is dBond from the origin.
  *
@@ -715,23 +581,6 @@ CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation(
   LOG( "ZMatrix2Angle:  {}\n", vNew.asString() );
   return vNew;
 }
-
-DOCGROUP(cando);
-CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
-{
-  double dlen = std::sqrt(dx*dx+dy*dy);
-  if (dlen<SMALL_NUMBER) return 0.0;
-  dx = dx/dlen;
-  dy = dy/dlen;
-  if (std::fabs(dx)<SMALL_NUMBER) {
-    return (MY_PI/2.0) * (dy<0.0? -1.0 : 1.0);
-  } else if (dy<0.0) {
-    return - safe_acos(dx);
-  } else {
-    return safe_acos(dx);
-  }
-}
-
 
 CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx");
 CL_LISPIFY_NAME("vec-extract");

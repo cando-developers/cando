@@ -79,14 +79,8 @@ Stub ComplexBondedJoint_O::getInputStub(chem::NVector_sp coords) const
   }
   if (this->inputStubJoint2().unboundp()) {
     if (gc::IsA<JumpJoint_sp>(this->parent())) {
-      Vector3 origin = this->parent()->position(coords);
-      Vector3 axisX = Vector3(1.0,0.0,0.0);
-      Vector3 axisY = Vector3(0.0,1.0,0.0);
-      Vector3 axisZ = Vector3(0.0,0.0,1.0);
-      Vector3 originPX = origin.add(axisX);
-      Vector3 originPY = origin.add(axisY);
-//      stub.fromFourPoints(origin, originPX, origin, originPY);
-      stub.fromThreePoints(origin, originPX, originPY);
+      JumpJoint_sp jumpJoint = gc::As_unsafe<JumpJoint_sp>(this->parent());
+      stub = jumpJoint->getInputStub(coords); // .flipXY();
       KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
       return stub;
     }
@@ -95,9 +89,10 @@ Stub ComplexBondedJoint_O::getInputStub(chem::NVector_sp coords) const
     KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
     return stub;
   }
-  stub.fromThreePoints(this->inputStubJoint0()->position(coords),
-                       this->inputStubJoint1()->position(coords),
-                       this->inputStubJoint2()->position(coords));
+  geom::stubFromThreePoints(stub._Transform,
+                      this->inputStubJoint0()->position(coords),
+                      this->inputStubJoint1()->position(coords),
+                      this->inputStubJoint2()->position(coords));
   KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
   return stub;
 }

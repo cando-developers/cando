@@ -59,8 +59,8 @@
                          (aa-name (name rotamer-values))
                          (residue-rotamers (alexandria:ensure-gethash aa-name rotamers (make-hash-table :test 'equal))))
                     (let* ((backbone-key (cons (phi rotamer-values) (psi rotamer-values)))
-                           (rotamers-vector (alexandria:ensure-gethash backbone-key residue-rotamers (make-array 16 :adjustable t :fill-pointer 0))))
-                      (vector-push-extend rotamer-values rotamers-vector)))))))
+                           (rotamers (alexandria:ensure-gethash backbone-key residue-rotamers (make-array 16 :adjustable t :fill-pointer 0))))
+                      (vector-push-extend rotamer-values rotamers)))))))
     rotamers))
 
 (defun find-and-clone (name vector &optional key dict)

@@ -2,6 +2,7 @@
 
 (defclass line-filter ()
   ((chain-ids :initform :all :initarg :chain-ids :accessor chain-ids)
+   (alt-loc :initform nil :initarg :alt-loc :accessor alt-loc)
    (ignore-residues :initform (make-hash-table) :initarg :ignore-residues :accessor ignore-residues)
    (rename-residues :initform nil :initarg :rename-residues :accessor rename-residues)
    (ignore-atoms :initform (make-hash-table) :initarg :ignore-atoms :accessor ignore-atoms)
@@ -178,6 +179,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
 (defclass scanner ()
   ((big-z :accessor big-z) ; If the pdb file has an extra big z coordinate
    (seen-residues :initform (make-hash-table) :accessor seen-residues)
+   (alt-locs :initform nil :accessor alt-locs)
    (sequences :initform nil :accessor sequences)
    (lineno-to-sequence-index :initform (make-hash-table :test 'eql) :accessor lineno-to-sequence-index)
    (matrices :initform nil  :accessor matrices)
@@ -292,7 +294,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
   ((lineno :initarg :lineno :accessor lineno)
    (atom-serial :initarg :atom-serial :accessor atom-serial)
    (atom-name :initarg :atom-name :accessor atom-name)
-   (alt-loc :initarg :alt-loc :accessor alt-log)
+   (alt-loc :initform nil :initarg :alt-loc :accessor alt-loc)
    (residue-name :initarg :residue-name :accessor residue-name)
    (chain-id :initarg :chain-id :accessor chain-id)
    (residue-sequence-number :initarg :residue-sequence-number :accessor residue-sequence-number)
@@ -380,7 +382,8 @@ If you want to check if it's a big-z file then pass check-big-z = T."
                                  :atom-serial (parse-integer line :start 6 :end 12) ; atom-serial
                                  :atom-name (let ((*readtable* *quote-readtable*))
                                               (parse-atom-name line))
-                                 :alt-loc (read-one-char line 16) ; alt-loc
+                                 :alt-loc (let ((chr (read-one-char line 16)))
+                                            (when (not (char= chr #\space)) chr))
                                  :residue-name (intern (string-trim '(#\space) (subseq line 17 20)) :keyword) ; residue-name
                                  :chain-id (read-one-char line 21) ; chainid
                                  :residue-sequence-number (parse-integer line :start 22 :end 26) ; res-seq
@@ -504,7 +507,7 @@ create more problems."
 
 (defun apply-filter-to-scanner (line-filter scanner)
   (check-type scanner pdb-scanner)
-  (with-slots (chain-ids ignore-residues rename-residues ignore-atoms rename-atoms)
+  (with-slots (chain-ids alt-loc ignore-residues rename-residues ignore-atoms rename-atoms)
       line-filter
     (loop named outer-loop
           for cur-sequence = (sequences scanner) then (cdr cur-sequence)
@@ -568,6 +571,14 @@ create more problems."
   (typecase original
     (atom-line
      (let ((data original))
+       ;; Apply alt-loc filter if it's defined
+       (setf data (if (alt-loc line-filter)
+                      (cond
+                        ((or (eq nil (alt-loc data))
+                             (char= (alt-loc line-filter) (alt-loc data)))
+                         data)
+                        (t (return-from apply-filter-to-line nil)))
+                      data))
        ;; Apply chain-id filter
        (setf data (if (chain-ids line-filter)
                       (cond
@@ -640,7 +651,8 @@ MTRIX- Used to build a list of matrices."
                            (when big-z (warn "This is a BIG-Z PDB file (The Z-coordinate contains an extra digit)"))))
                      (with-slots (atom-serial atom-name alt-loc residue-name chain-id residue-sequence-number i-code)
                          line-data
-                       (declare (ignore alt-loc))
+                       (when alt-loc
+                         (pushnew alt-loc (alt-locs pdb-scanner)))
                        (setf (previous-chain-id pdb-scanner) (current-chain-id pdb-scanner)
                              (current-chain-id pdb-scanner) chain-id)
                        ;; Deal with the current line of data
@@ -939,6 +951,12 @@ values residue-sequences matrices"
                        :ignore-missing-topology ignore-missing-topology)
       )))
 
+(defun scanSelectAltLoc (scanner alt-loc)
+  (unless (and (symbolp alt-loc)
+               (member alt-loc (alt-locs scanner)))
+    (error "You must specify an alt-loc - one of ~s" (alt-locs scanner)))
+  (setf (alt-loc (line-filter scanner)) alt-loc))
+
 (defun scanSelectChainIds (scanner list-or-all)
   (unless (or (eq list-or-all :all)
               (listp list-or-all))
@@ -1034,6 +1052,13 @@ T if the it's an AMBER PDB and NIL if not."
                                   (member (chain-id pdb-residue) (chain-ids (line-filter pdb-scanner))))
                           (push pdb-residue pdb-residues)))))
     (format t "Chain-ids: ~s~%" (chain-ids (line-filter pdb-scanner)))
+    (when (alt-locs pdb-scanner)
+      (format t "Alt-locs: ~s~%" (alt-locs pdb-scanner))
+      (if (alt-loc (line-filter pdb-scanner))
+          (format t "Selected alt-loc: ~s~%" (alt-loc (line-filter pdb-scanner)))
+          (progn
+            (format t "You must provide an alt-loc~%")
+            (setf amber-pdb nil))))
     ;; Look for unrecognized residue names
     (let (unknown-residue-names)
       (loop for pres in pdb-residues
@@ -1152,7 +1177,6 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               (atom-line
                (with-slots (atom-line-lineno atom-serial atom-name alt-loc residue-name chain-id residue-sequence-number i-code x y z)
                    line-data
-                 (declare (ignore alt-loc))
                  (setf (previous-chain-id reader) (current-chain-id reader)
                        (current-chain-id reader) chain-id)
                  (when (chem:verbose 2) (format t "At top of atom residue-name: ~a residue-sequence-number: ~a i-code: ~a reader: ~a~%"

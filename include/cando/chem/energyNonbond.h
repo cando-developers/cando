@@ -282,7 +282,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, core::T_sp nbforceField);
   void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes);
-  void constructNonbondTermsBetweenResidues( AtomTable_sp atomTable, Residue_sp res1, Residue_sp res2, core::T_sp nbforceField, core::HashTable_sp atomTypes);
+  void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction );
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
   void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField);
 

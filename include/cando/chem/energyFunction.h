@@ -131,7 +131,11 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
   public:
-    static EnergyFunction_sp make(core::T_sp matter, bool useExcludedAtoms=false, core::T_sp keepInteraction=nil<core::T_O>(), bool assign_types=false, core::T_sp bounding_box=nil<core::T_sp>());
+    static EnergyFunction_sp make(core::T_sp matter,
+                                  bool useExcludedAtoms=false,
+                                  core::T_sp keepInteraction=nil<core::T_O>(),
+                                  bool assign_types=false,
+                                  core::T_sp bounding_box=nil<core::T_sp>());
   public:
     void initialize();
   public:

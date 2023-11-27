@@ -153,10 +153,19 @@
 (defclass jump-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)))
 
+(defclass xyz-joint-template (joint-template)
+  ((children :initform nil :initarg :children :accessor children)))
+
 (defun make-jump-joint-template (constitution-atoms-index &key atom-name)
   (make-instance 'jump-joint-template
                  :constitution-atoms-index constitution-atoms-index
                  :atom-name atom-name))
+
+(defun make-xyz-joint-template (constitution-atoms-index &key atom-name parent)
+  (make-instance 'xyz-joint-template
+                 :constitution-atoms-index constitution-atoms-index
+                 :atom-name atom-name
+                 :parent parent))
 
 (defun add-child (joint-template child-template)
   (setf (parent child-template) joint-template)
@@ -172,7 +181,7 @@
   (loop for child in (children joint-template)
         do (walk-joint-template child callback)))
 
-(defun new-joint-template-factory (parent-template node in-plug)
+(defun new-joint-template-factory (parent-template node in-plug xyz-joints)
   (let* ((atom-name (topology:name node))
          (child-indexes (mapcar #'topology:constitution-atom-index (topology:children node)))
          (constitution-atoms-index (topology:constitution-atom-index node))
@@ -183,6 +192,12 @@
                                 (parent gparent-template)
                                 nil)))
     (cond
+      ((and xyz-joints
+            (or (eq xyz-joints :all)
+                (member atom-name xyz-joints)))
+       (make-xyz-joint-template constitution-atoms-index
+                                :atom-name atom-name
+                                :parent parent-template))
       ((and (null parent-template) (typep in-plug 'topology:in-plug))
        (let ((adjust (getf (property-list node) :adjust)))
          (if adjust
@@ -259,20 +274,21 @@
                                          :parent parent-template)))))))
 
 
-(defun build-joint-template-recursively (parent root in-plug)
-  (let ((root-template (new-joint-template-factory parent root in-plug))
+(defun build-joint-template-recursively (parent root in-plug xyz-joints)
+  (let ((root-template (new-joint-template-factory parent root in-plug xyz-joints))
         (children (topology:children root)))
     (loop for child in children
           for sub-child-index from 0
           do (let ((child-template (build-joint-template-recursively root-template
                                                                      child
-                                                                     in-plug)))
+                                                                     in-plug
+                                                                     xyz-joints)))
                (add-child root-template child-template)))
     root-template))
 
-(defun build-joint-template (graph)
+(defun build-joint-template (graph xyz-joints)
   (let ((root-node (topology:root-node graph)))
-    (build-joint-template-recursively nil root-node (topology:in-plug graph))))
+    (build-joint-template-recursively nil root-node (topology:in-plug graph) xyz-joints)))
 
 (defun kin:joint-calculate-position-index (joint atom-table)
   (let ((atom-id (kin:joint/id joint)))
@@ -352,6 +368,15 @@
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (kin:make-bonded-joint atomid atom-name atom-table)))
+    (put-joint atresidue joint constitution-atoms-index)
+    (when parent-joint (kin:joint/add-child parent-joint joint))
+    joint))
+
+(defmethod write-into-joint-tree ((joint-template xyz-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-xyz-joint atomid atom-name atom-table one-orientation)))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))

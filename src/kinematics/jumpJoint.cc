@@ -108,7 +108,7 @@ void JumpJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
   ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n{}") , stub.asString());
   this->setPosition(coords,stub._Transform.getTranslation());
-  KIN_LOG("orientation {}\n", _rep_(orientation) );
+  KIN_LOG("orientation {}\n", stub.asString() );
 }
 
 void JumpJoint_O::updateXyzCoord(chem::NVector_sp coords)
@@ -140,7 +140,6 @@ void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords)
 
 Stub JumpJoint_O::getInputStub(chem::NVector_sp coords) const {
   Stub stub;
-  // I think this is the correct order of transforms
   stub._Transform = this->transform();
   KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
   return stub;

@@ -183,7 +183,7 @@ CL_DEFMETHOD     void	addMolecule( Molecule_sp a ) {this->addMatter(a);};
 
     bool		testForVdwOverlap(Aggregate_sp other);
 
-    virtual uint	numberOfAtoms( );
+    virtual uint	numberOfAtoms() const;
     virtual bool isAggregate() { return true;};
 
     /*! Return a Cons with all molecules */

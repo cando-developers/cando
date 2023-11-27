@@ -144,6 +144,19 @@ public:
     uint rs = this->rowIndex(r);
     return Vector4(this->elements[rs + 0], this->elements[rs + 1], this->elements[rs + 2], this->elements[rs + 3]);
   };
+  void setRow(int r, double v0, double v1, double v2, double v3 ) {
+    uint rs = this->rowIndex(r);
+    this->elements[rs+0] = v0;
+    this->elements[rs+1] = v1;
+    this->elements[rs+2] = v2;
+    this->elements[rs+3] = v3;
+  };
+  void setCol(int c, double v0, double v1, double v2, double v3 ) {
+    this->elements[c] = v0;
+    this->elements[this->index(1,c)] = v1;
+    this->elements[this->index(2,c)] = v2;
+    this->elements[this->index(3,c)] = v3;
+  };
   void dump();
   void writeToStream(string prefix, std::ostream &out);
   void writeToXMLStream(string prefix, std::ostream &out);
@@ -249,10 +262,39 @@ void rotor3_to_matrix(Matrix &matrix, double scalar, double xy, double yz, doubl
 void normalized_rotor3_to_matrix(Matrix &matrix, double scalar, double xy, double yz, double zx, double tx, double ty, double tz);
 void rotation_matrix_to_rotor3(double &scalar, double &xy, double &yz, double &zx, const Matrix &m);
 
-Vector3 pointFromMatrixAndInternalCoordinates(const Matrix &coordinateSystem, double distance, double angle, double dihedral,
+namespace geom {
+Vector3 pointFromStubAndInternalCoordinates(const Matrix &stub, double distance, double angle, double dihedral,
                                               Vector3 &d2);
 
-void internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D, const Matrix &coordinateSystem, double &distance,
+void internalCoordinatesFromPointAndStub(const Vector3 &D, const Matrix &stub, double &distance,
                                                      double &theta, double &phi);
+
+void stubFromThreePoints(
+    Matrix& transform,
+    Vector3 const& parent,
+    Vector3 const& grand_parent,
+    Vector3 const& great_grand_parent );
+
+
+Vector3	geom__build_origin();
+Vector3	geom__build_using_bond( double distance, const Vector3& vb );
+//! Build a vector at distance from vb and angle from v
+Vector3 geom__build_using_bond_angle( double distance, const Vector3& vb,
+                                      double angleRad, const Vector3& va );
+Vector3 geom__build_using_bond_angle_dihedral( double distance, const Vector3& vc,
+                                               double angleRad, const Vector3& vb,
+                                               double dihedralRad, const Vector3& va );
+
+double	calculateDihedral( const Vector3& va,
+                           const Vector3& vb,
+                           const Vector3& vc,
+                           const Vector3& vd );
+double	calculateAngle( const Vector3& va,
+                        const Vector3& vb,
+                        const Vector3& vc );
+
+double  geom__planeVectorAngle(double dx, double dy);
+
+};
 
 #endif

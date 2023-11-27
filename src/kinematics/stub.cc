@@ -52,89 +52,21 @@ bool Stub::isOrthogonal(double tol) const
 
 
 /** Generate a Stub using four points centered on center.
-    The Stub axes are e1_ = normalized(b-a).
-                      e3_ = normalized(crossProduct(e1_,(c-a)))
+    The Stub axes are e1_ = normalized(b-c).
+                      e3_ = normalized(crossProduct(e1_,(a-c)))
                       e2_ = crossProduct(e3_,e1_)
-    Stub is colX(e1).colY(e2).colZ(e3).setTranslate(a)
+    Stub is colX(e1).colY(e2).colZ(e3).setTranslate(c)
+    c = parent
+    b = grand-parent
+    a = great-grand-parent
+    SEE DIHEDRAL_DEFINITION
 */
-void Stub::fromThreePoints(Vector3 const& a,
-                           Vector3 const& b,
-                           Vector3 const& c)
+void Stub::fromThreePoints(Vector3 const& parent,
+                           Vector3 const& grand_parent,
+                           Vector3 const& great_grand_parent)
 {
-  LOG(("a = %s") , a.asString());
-  LOG(("b = %s") , b.asString());
-  LOG(("c = %s") , c.asString());
-  Vector3 e1(b-a);
-  e1 = e1.normalized();
-  LOG(("e1 = (b-a).normalized : %s") , e1.asString() );
-  Vector3 e3(e1.crossProduct(c-a));
-  e3 = e3.normalized();
-  LOG(("e3 = (e1.crossProduct(c-b)).normalized : %s") , e3.asString() );
-  Vector3 e2(e3.crossProduct(e1));
-  LOG(("e2 = (e3.crossProduct(e1)): %s") , e2.asString() );
-  LOG(("Stub before being set: %s") , this->_Transform.asStringFormatted());
-  this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(a);
-  LOG(("Stub = \n%s") , this->_Transform.asStringFormatted());
+  geom::stubFromThreePoints(this->_Transform, parent, grand_parent, great_grand_parent);
 }
-
-#if 0
-/** Generate a Stub using four points centered on center.
-    The Stub axes are e1_ = normalized(a-b).
-                      e3_ = normalized(crossProduct(e1_,(c-b)))
-                      e2_ = crossProduct(e3_,e1_)
-    Stub is colX(e1).colY(e2).colZ(e3).setTranslate(center)
-*/
-void Stub::fromFourPoints(Vector3 const& center,
-                          Vector3 const& a,
-                          Vector3 const& b,
-                          Vector3 const& c)
-{
-  LOG(("center = %s") , center.asString());
-  LOG(("a = %s") , a.asString());
-  LOG(("b = %s") , b.asString());
-  LOG(("c = %s") , c.asString());
-  Vector3 e1(a-b);
-  e1 = e1.normalized();
-  LOG(("e1 = (a-b).normalized : %s") , e1.asString() );
-  Vector3 e3(e1.crossProduct(c-b));
-  e3 = e3.normalized();
-  LOG(("e3 = (e1.crossProduct(c-b)).normalized : %s") , e3.asString() );
-  Vector3 e2(e3.crossProduct(e1));
-  LOG(("e2 = (e3.crossProduct(e1)): %s") , e2.asString() );
-  LOG(("Stub before being set: %s") , this->_Transform.asStringFormatted());
-  this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
-  LOG(("Stub = \n%s") , this->_Transform.asStringFormatted());
-}
-#endif
-
-
-#if 0
-void Stub::fromTwoPoints(Vector3 const& center,
-                         Vector3 const& a)
-{
-  LOG(BF("center = %s") % center.asString());
-  LOG(BF("a = %s") % a.asString());
-  Vector3 e1(a-center);
-  e1 = e1.normalized();
-  LOG(BF("e1 = (a-b).normalized : %s") % e1.asString() );
-  Vector3 unit1(0.0,1.0,0.0);
-  Vector3 e2;
-  Vector3 e3Try1(e1.crossProduct(unit1));
-  Vector3 e3;
-  if (e3Try1.lengthSquared()<0.01) {
-    Vector3 unit2(0.0,0.0,1.0);
-    e3 = e1.crossProduct(unit2);
-    e3 = e3.normalized();
-  } else {
-    e3 = e3Try1.normalized();
-  }
-  e2 = e3.crossProduct(e1);
-  LOG(BF("e2 = (e3.crossProduct(e1)): %s") % e2.asString() );
-  LOG(BF("Stub before being set: %s") % this->_Transform.asStringFormatted());
-  this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
-  LOG(BF("Stub = \n%s") % this->_Transform.asStringFormatted());
-}
-#endif
 
 void Stub::fromCenterAndRotation(const Vector3& center,
                                  const Matrix& transform) {

@@ -28,7 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-  typedef enum { unused, jumpJoint, originJumpJoint, bondedJoint, rootBondedJoint, delayedBondedJoint } NodeType;
+typedef enum { unused, jumpJoint, originJumpJoint, xyzJoint, bondedJoint, rootBondedJoint, delayedBondedJoint } NodeType;
 
   class AtomHolder;
   FORWARD(Joint);

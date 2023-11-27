@@ -704,12 +704,24 @@ CL_DEFUN void chem__matter_apply_coordinates(Matter_sp matter, core::Array_sp co
 
 }
 
-CL_DEFUN NVector_sp chem__matter_extract_coordinates(Matter_sp matter)
+CL_LAMBDA((self chem:matter) &optional coordinates)
+CL_DEFMETHOD NVector_sp Matter_O::extract_coordinates(core::T_sp coordinates) const
 {
-  size_t numberOfAtoms = matter->numberOfAtoms();
-  NVector_sp coords = NVector_O::create(numberOfAtoms*3);
+  size_t numberOfAtoms = this->numberOfAtoms();
+  size_t numberOfValues = numberOfAtoms*3;
+  NVector_sp coords;
+  if ( coordinates.notnilp() ) {
+    if (gc::IsA<NVector_sp>(coordinates)) {
+      coords = gc::As_unsafe<NVector_sp>(coordinates);
+      if (coords->length()!=numberOfValues) {
+        SIMPLE_ERROR("The passed coordinates vector length {} must be {}", coords->length(), numberOfValues);
+      }
+    }
+  } else {
+    coords = NVector_O::create(numberOfValues);
+  }
   size_t idx = 0;
-  Loop lAtoms2(matter, ATOMS);
+  Loop lAtoms2(this->asSmartPtr(), ATOMS);
   vecreal* cur = &(*coords)[0];
   while (lAtoms2.advanceLoopAndProcess()) {
     Atom_sp atm = lAtoms2.getAtom();

@@ -74,7 +74,7 @@ If (null parent-joint) then this is the root atresidue
                                                          atom-table
                                                          adjustments
                                                          orientation)))
-      (when (typep root-joint 'kin:jump-joint)
+      (when (null (gethash oligomer (root-map joint-tree)))
         (setf (gethash oligomer (root-map joint-tree)) root-joint))
       (let ((outgoing-plug-names-to-joint-map (make-hash-table)))
         (maphash (lambda (plug-name plug)

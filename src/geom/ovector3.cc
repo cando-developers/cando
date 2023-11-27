@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/ovector3.h>
 #include <clasp/core/multipleValues.h>
 #include <cando/geom/vector3.h>
+#include <cando/geom/matrix.h>
 //#include "core/serializerNode.h"
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>

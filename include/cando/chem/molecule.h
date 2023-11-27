@@ -137,7 +137,7 @@ namespace chem {
 
     virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
 
-    virtual uint	numberOfAtoms( );
+    virtual uint	numberOfAtoms() const;
 
 	/*! Build a map of AtomIds to Atoms */
     virtual AtomIdMap_sp buildAtomIdMap() const;

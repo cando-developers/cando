@@ -295,7 +295,7 @@
 
 (defun cluster-dihedral-rad-vector (focused-assembler fragment-internals names)
 (let ((coords (coordinates fragment-internals)))
-  (update-joint-tree-internal-coordinates focused-assembler coords)
+  (update-ataggregate-joint-tree-internal-coordinates focused-assembler coords)
   (let ((dihedrals (find-named-fragment-internals-rad focused-assembler fragment-internals names)))
     dihedrals)))
 

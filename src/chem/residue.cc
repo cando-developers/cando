@@ -727,7 +727,7 @@ CL_DEFMETHOD void	Residue_O::useAtomCoordinatesToDefineAnchors()
     IMPLEMENT_ME();
 }
 
-uint Residue_O::numberOfAtoms()
+uint Residue_O::numberOfAtoms() const
 {
     return this->_Contents.size();
 }

@@ -515,6 +515,9 @@
 (defmethod show-on-pane (pane-instance (object dynamics:simulation) &rest rest &key &allow-other-keys)
   (apply #'ngl-show-on-pane pane-instance (dynamics:make-trajectory object) rest))
 
+(defmethod show-on-pane (pane-instance (object topology:assembler-base) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance (topology:aggregate object) rest))
+
 (defmethod show-on-pane (pane-instance (object leap.topology:amber-topology-trajectory-pair) &rest rest &key &allow-other-keys)
   (apply #'ngl-show-on-pane pane-instance object rest))
 

@@ -24,6 +24,11 @@ fi
 
 echo "Installing CANDO user features..."
 cando --eval "(ql:quickload :cando-jupyter)" \
-      --eval "(ql:quickload :metal-binder)" \
-      --eval "(metal-binder::load-rotamers)" \
+      --eval "(ql:quickload :spiros)" \
+      --eval "(leap:source \"leaprc.protein.ff14SB\")" \
+      --eval "(foldamer:load-force-field t)" \
+      --eval "(spiros:load-rotamers)" \
+      --eval "(ql:quickload :amber-protein)" \
+      --eval "(amber-protein:transfer-amber-atom-types-to-foldamer amber-protein:*foldamer*)" \
+      --eval "(amber-protein:load-rotamers)" \
       --eval "(cando-jupyter:install :implementation \"apptainer\" :image t)"

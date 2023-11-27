@@ -42,6 +42,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lispStream.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/lisp.h>
 #include <cando/chem/nVector.h>
 #include <clasp/core/ql.h>
@@ -686,97 +687,6 @@ bool Matrix::is3x3Orthogonal(double tol) const {
   return ((delta.colX().length() + delta.colY().length() + delta.colZ().length()) < tol);
 }
 
-#if 0
-namespace client
-{
-    namespace qi = boost::spirit::qi;
-    namespace karma = boost::spirit::karma;
-    namespace ascii = boost::spirit::ascii;
-
-    ///////////////////////////////////////////////////////////////////////////
-    //  Our number list parser, please see the example qi/numlist1.cpp for
-    //  more information
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Iterator>
-    bool parse_numbers(Iterator first, Iterator last, Matrix& m)
-    {
-        using qi::double_;
-        using qi::phrase_parse;
-        using ascii::space;
-	vector<double> v;
-        bool r = phrase_parse(first, last, *double_, space, v);
-        if (first != last)
-	{
-          core::clasp_write_string(fmt::format("first!=last  v.size() = {}\n" , v.size()));
-          return false;
-	}
-	m.setFromDoubleVector(v);
-        return r;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    //  Our number list generator
-    ///////////////////////////////////////////////////////////////////////////
- template <typename Num>
- struct scientific_policy : karma::real_policies<Num>
- {
-     // we want the numbers always to be in scientific format
-//     static int floatfield(Num n) { return karma::real_policies::fmtflags::scientific; }
-     static int floatfield(Num n)
-     {
-	 if (karma::detail::is_zero(n))
-	     return karma::real_policies<Num>::fmtflags::fixed;
-	 Num abs_n = karma::detail::absolute_value(n);
-	 return (abs_n >= 1e5 || abs_n < 1e-5)
-	       ? karma::real_policies<Num>::fmtflags::scientific : karma::real_policies<Num>::fmtflags::fixed;
-     }
-
-     static unsigned precision(Num n) { return 5; };
- };
-
- // define a new generator type based on the new policy
- typedef karma::real_generator<double, scientific_policy<double> > science_type;
- science_type const scientific = science_type();
-
-    //[tutorial_karma_numlist1
-    template <typename OutputIterator>
-    bool generate_numbers(OutputIterator& sink, vector<double> const& m )
-    {
-        using karma::double_;
-        using karma::char_;
-        using karma::generate_delimited;
-        using ascii::space;
-
-// define a new real number formatting policy
-        bool r = generate_delimited(
-            sink,                           // destination: output iterator
-            *scientific,
-//            *double_,
-#if 0
-	    << double_ << double_ << double_ << char_('\n')
-            << double_ << double_ << double_ << double_ << char_('\n')
-            << double_ << double_ << double_ << double_ << char_('\n')
-            << double_ << double_ << double_ << double_, // the generator
-#endif
-            space,                          // the delimiter-generator
-            m                              // the data to output
-        );
-        return r;
-    }
-    //]
-}
-
-
-string	Matrix::asStringFast() const
-{
-    vector<double>	v(this->elements.begin(),this->elements.end());
-    string generated;
-    std::back_insert_iterator<std::string> sink(generated);
-    bool r = client::generate_numbers<std::back_insert_iterator<std::string> >(sink,v);
-    return generated;
-}
-#endif
-
 string Matrix::asString() const {
   char cstr[1024];
   string out;
@@ -792,13 +702,13 @@ string Matrix::asString() const {
     for (c = 0; c < 4; c++) {
       val = at(r, c);
       if (val == 0.0) {
-        strcpy(cstr, "0");
+        strcpy(cstr, "    0.0");
       } else if (val == 1.0) {
-        strcpy(cstr, "1");
+        strcpy(cstr, "    1.0");
       } else if (val == -1.0) {
-        strcpy(cstr, "-1");
+        strcpy(cstr, "   -1.0");
       } else {
-        sprintf(cstr, "%lf", val);
+        sprintf(cstr, " %6.3lf", val);
       }
       ss << cstr << " ";
     }
@@ -824,20 +734,6 @@ string Matrix::asStringFormatted() const {
   return ss.str();
 }
 
-//
-//
-// setFromString
-//
-// Set the matrix from a string of 16 numbers.
-// Row major, column minor
-//
-#if 0
-void	Matrix::setFromStringFast(const string& input,const core::LispPtr& lisp)
-{
-    bool r = client::parse_numbers(input.begin(),input.end(),*this,lisp);
-    ASSERTP(r,"Could not parse matrix from: "+input);
-}
-#endif
 void Matrix::setFromString(const string &str) {
   double vals[16];
   vector<string> tokens;
@@ -890,22 +786,6 @@ void Matrix::setFromQuaternion(Vector4 &q) {
   this->elements[this->index(3, 2)] = -q.getY();
   this->elements[this->index(3, 3)] = q.getZ();
 }
-
-#ifdef USEBOOSTPYTHON
-void Matrix::boost_set(boost::python::list values) {
-  int i;
-  double val;
-  boost::python::object obj;
-  vector<double> vs;
-
-  for (i = 0; i < values.attr("__len__")(); ++i) {
-    obj = values[i];
-    val = boost::python::extract<double>(obj);
-    vs.push_back(val);
-  }
-  this->setFromDoubleVector(vs);
-}
-#endif
 
 std::ostream &operator<<(std::ostream &out, Matrix m) {
   int r, c;
@@ -1334,25 +1214,6 @@ void rotation_matrix_to_rotor3(double &scalar, double &xy, double &yz, double &z
   zx = -y;
 };
 
-/*! Build Vector3 external coordinate using a coordinate system in a matrix
-and a distance, angle and dihedral angle.
-The matrix has the columns (nx ny nz origin)
-where nx, ny, nz are the orthogonal unit vectors of the coordinate system
-and origin is the origin.
-This uses the technique described in J Comput Chem 26: 1063–1068, 2005
-but it fixes an error in the paper.  The angle here is wrt the nx axis and not
-the preceeding atoms D C B.
- */
-Vector3 pointFromMatrixAndInternalCoordinates(const Matrix &coordinateSystem, double distance, double angle, double dihedral,
-                                              Vector3 &d2) {
-  double cosTheta = std::cos(angle);
-  double sinTheta = std::sin(angle);
-  double cosPhi = std::cos(-dihedral);
-  double sinPhi = std::sin(-dihedral);
-  d2.set(distance * cosTheta, distance * cosPhi * sinTheta, distance * sinPhi * sinTheta);
-  Vector3 d2p = coordinateSystem * d2;
-  return d2p;
-}
 
 #if 0
 #define VEC_LOG(...)                                                                                                               \
@@ -1362,8 +1223,55 @@ Vector3 pointFromMatrixAndInternalCoordinates(const Matrix &coordinateSystem, do
 #define VEC_LOG(...)
 #endif
 
-void internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D, const Matrix &coordinateSystem, double &distance,
-                                                     double &theta, double &phi) {
+
+//
+// All code for internal/external coordinate conversions
+//
+//
+/* The definition of torsion angle with sign convention
+torsion angle
+Also contains definitions of: anticlinal, antiperiplanar, clinal, periplanar, synclinal, synperiplanar
+    https://doi.org/10.1351/goldbook.T06406
+    In a chain of atoms A-B-C-D, the dihedral angle between the plane containing
+    the atoms A,B,C and that containing B,C,D. In a Newman projection the torsion
+    angle is the angle (having an absolute value between 0° and 180°) between bonds
+    to two specified (fiducial) groups, one from the atom nearer (proximal) to the
+    observer and the other from the further (distal) atom. The torsion angle between
+    groups A and D is then considered to be positive if the bond A-B is rotated in
+    a clockwise direction through less than 180° in order that it may eclipse the
+    bond C-D: a negative torsion angle requires rotation in the opposite sense.
+*/    
+namespace geom {
+
+DOCGROUP(cando);
+CL_DOCSTRING(R"doc(Return the angle in radians between (1.0,0.0) and (dx,dy).
+The result will be positive or negative depending on the quadrant of dx,dy.
+dx>0,dy>0 negative;
+dx<0,dy>0 negative;
+dx>0,dy<0 positive;
+dx<0,dy<0 positive)doc");
+
+CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
+{
+  double dlen = std::sqrt(dx*dx+dy*dy);
+  if (dlen<SMALL_NUMBER) return 0.0;
+  dx = dx/dlen;
+  dy = dy/dlen;
+  if (std::fabs(dx)<SMALL_NUMBER) {
+    return (MY_PI/2.0) * (dy<0.0? 1.0 : -1.0);
+  } else if (dy<0.0) {
+    return safe_acos(dx);
+  } else {
+    return -safe_acos(dx);
+  }
+}
+
+
+void internalCoordinatesFromPointAndStub(const Vector3 &D,
+                                         const Matrix &coordinateSystem,
+                                                     double &distance,
+                                                     double &theta,
+                                                     double &phi) {
   VEC_LOG("stub = \n{}\n", coordinateSystem.asString());
   Vector3 x = coordinateSystem.colX();
   Vector3 y = coordinateSystem.colY();
@@ -1408,26 +1316,227 @@ void internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D, const Mat
   double eoy = dop.dotProduct(doy);
   VEC_LOG("eox = {}  eoy = {}\n", eox, eoy);
   //  double eoz = dop.dotProduct(doz); // Must be 0.0
-  theta = geom::geom__planeVectorAngle(eox, eoy);
+  theta = - geom::geom__planeVectorAngle(eox, eoy);
+  if (theta<0.0) {
+    SIMPLE_WARN("Theta {} should never be less than zero", theta);
+  }
   VEC_LOG("    theta = {} deg\n", (theta / 0.0174533));
 }
 
-namespace geom {
+/** Generate a Stub using four points centered on center.
+    The Stub axes are e1_ = normalized(b-c).
+                      e3_ = normalized(crossProduct(e1_,(a-c)))
+                      e2_ = crossProduct(e3_,e1_)
+    Stub is colX(e1).colY(e2).colZ(e3).setTranslate(c)
+    c = parent
+    b = grand-parent
+    a = great-grand-parent
+    SEE DIHEDRAL_DEFINITION
+*/
+void stubFromThreePoints(
+    Matrix& transform,
+    Vector3 const& parent,
+    Vector3 const& grand_parent,
+    Vector3 const& great_grand_parent )
+{
+  const Vector3& c = parent;
+  const Vector3& b = grand_parent;
+  const Vector3& a = great_grand_parent;
+  LOG(("a = %s") , a.asString());
+  LOG(("b = %s") , b.asString());
+  LOG(("c = %s") , c.asString());
+  Vector3 e1(b-c);
+  e1 = e1.normalized();
+  LOG(("e1 = (b-c).normalized : %s") , e1.asString() );
+  Vector3 e3(e1.crossProduct(a-c));
+  e3 = e3.normalized();
+  LOG(("e3 = (e1.crossProduct(a-c)).normalized : %s") , e3.asString() );
+  Vector3 e2(e3.crossProduct(e1));
+  LOG(("e2 = (e3.crossProduct(e1)): %s") , e2.asString() );
+  LOG(("Stub before being set: %s") , this->_Transform.asStringFormatted());
+  transform.colX(e1).colY(e2).colZ(e3).setTranslate(c);
+  LOG(("Stub = \n%s") , this->_Transform.asStringFormatted());
+} 
+
+
 DOCGROUP(cando);
-CL_DEFUN Vector3 geom__pointFromMatrixAndInternalCoordinates(const Matrix &coordinateSystem, double distance, double angle,
+CL_DEFUN Vector3 geom__pointFromStubAndInternalCoordinates(const Matrix &coordinateSystem, double distance, double angle,
                                                              double dihedral) {
   Vector3 d2;
-  return pointFromMatrixAndInternalCoordinates(coordinateSystem, distance, angle, dihedral, d2);
+  return pointFromStubAndInternalCoordinates(coordinateSystem, distance, angle, dihedral, d2);
 };
 
 DOCGROUP(cando);
-CL_DEFUN core::DoubleFloat_mv geom__internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D,
-                                                                                    const Matrix &coordinateSystem) {
+CL_DEFUN core::DoubleFloat_mv geom__internalCoordinatesFromPointAndStub(const Vector3 &D,
+                                                                        const Matrix &coordinateSystem) {
   double distance;
   double theta;
   double phi;
-  internalCoordinatesFromPointAndCoordinateSystem(D, coordinateSystem, distance, theta, phi);
+  internalCoordinatesFromPointAndStub(D, coordinateSystem, distance, theta, phi);
   return Values(core::clasp_make_double_float(distance), core::clasp_make_double_float(theta), core::clasp_make_double_float(phi));
 }
 
-}; // namespace geom
+/*! Build Vector3 external coordinate using a coordinate system in a matrix
+and a distance, angle and dihedral angle.
+The matrix has the columns (nx ny nz origin)
+where nx, ny, nz are the orthogonal unit vectors of the coordinate system
+and origin is the origin.
+This uses the technique described in J Comput Chem 26: 1063–1068, 2005
+but it fixes an error in the paper.  The angle here is wrt the nx axis and not
+the preceeding atoms D C B.
+ */
+Vector3 pointFromStubAndInternalCoordinates(const Matrix &coordinateSystem, double distance, double angle, double dihedral,
+                                              Vector3 &d2) {
+  double cosTheta = std::cos(angle);
+  double sinTheta = std::sin(angle);
+  // I'm very certain this should NOT be the negative of the dihedral angle Nov 2023 to be consistent
+  //  with the sign of the dihedral calculated by geom::calculateDihedral
+  //  There is a regression test for this sign-inv-dihedral
+  double cosPhi = std::cos(dihedral);
+  double sinPhi = std::sin(dihedral);
+  d2.set(distance * cosTheta,
+         distance * sinTheta * cosPhi ,
+         distance * sinTheta * (-sinPhi) ); 
+  Vector3 d2p = coordinateSystem * d2;
+  return d2p;
+}
+
+
+CL_DOCSTRING(R"dx(Return a vector (0 0 0))dx");
+DOCGROUP(cando);
+CL_DEFUN Vector3 geom__build_origin()
+{
+  return Vector3(0.0,0.0,0.0);
+}
+
+
+CL_DOCSTRING(R"dx(Return a vector along the x axis distance away from vb)dx");
+DOCGROUP(cando);
+CL_DEFUN Vector3 geom__build_using_bond( double distance, const Vector3& vb )
+{
+  Vector3	vTarget;
+  vTarget = Vector3(distance,0.0,0.0);
+  return vTarget+vb;
+}
+
+//! Build a vector at distance from vb and angle from va
+DOCGROUP(cando);
+CL_DEFUN Vector3 geom__build_using_bond_angle( double distance, const Vector3& vb,
+                                               double angle, const Vector3& va)
+{
+  Vector3 vd, vdn, vr;
+  double	ca, sa;
+  vd = va-vb;
+  vdn = vd.normalized();
+  ca = cos(angle);
+  sa = sin(angle);
+  vr = Vector3(vdn.getX()*cos(angle)+vdn.getY()*sin(angle),
+               -vdn.getX()*sin(angle)+vdn.getY()*cos(angle), 0.0);
+  vr = vr.multiplyByScalar(distance);
+  vr = vr+vb;
+  return vr;
+}
+
+
+DOCGROUP(cando);
+/* There is a regression test for this function to make sure dihedral angle sign is correct */
+CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const Vector3& vc,
+                                                        double angle, const Vector3& vb,
+                                                        double dihedral, const Vector3& va)
+{
+  Vector3 bcDir = vb-vc;
+  if ( bcDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
+  Vector3 bcDirNorm = bcDir.normalized();
+  Vector3 dPosDist = bcDirNorm.multiplyByScalar(distance);
+    //
+    // Now find the axis around which to rotate the bond angle
+    //
+  Vector3	abDir = va-vb;
+  if ( abDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
+  Vector3 abDirNorm = abDir.normalizedOrZero();
+  Vector3 angleAxis = bcDirNorm.crossProduct(abDirNorm);
+  if ( angleAxis.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
+  Vector3 angleAxisNorm = angleAxis.normalizedOrZero();
+  Matrix angleRotation;
+  angleRotation.rotationAxis(angle,&angleAxisNorm);
+  Vector3 dPosAngle = angleRotation.multiplyByVector3(dPosDist);
+
+	    //
+	    // Now rotate around the dihedral bond
+	    //
+  Matrix dihedralRotation;
+  dihedralRotation.rotationAxis(-dihedral,&bcDirNorm);
+  Vector3 dPosDihedral = dihedralRotation.multiplyByVector3(dPosAngle);
+	    //
+	    // Now translate it to atom C
+	    //
+  Vector3 dPos = dPosDihedral.add(vc);
+  return dPos;
+}
+
+/*! Return the dihedral in radians
+ */
+DOCGROUP(cando);
+CL_DEFUN double calculateDihedral( const Vector3& va,
+                                   const Vector3& vb,
+                                   const Vector3& vc,
+                                   const Vector3& vd)
+{
+  Vector3 vab = (va - vb);
+  Vector3 vcb = (vc - vb);
+  Vector3 vdc = (vd - vc);
+  Vector3 vacCross = (vab.crossProduct(vcb)).normalized();
+  LOG("vacCross = {},{},{}" , (vacCross.getX()) , (vacCross.getY()) , (vacCross.getZ() ) );
+  Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized();
+  LOG("vdcCross = {},{},{}" , (vdcCross.getX()) , (vdcCross.getY()) , (vdcCross.getZ() ) );
+  Vector3 vCross = vacCross.crossProduct(vdcCross);
+  LOG("vCross = {},{},{}" , (vCross.getX()) , (vCross.getY()) , (vCross.getZ() ) );
+  double dot = vacCross.dotProduct(vdcCross);
+  double dih = safe_acos(dot);
+  if (isnan(dih)) {
+    SIMPLE_ERROR("dihedral is NAN");
+  }
+  LOG("dih = {}" , (dih ) );
+  double sgn = (vCross.dotProduct(vcb))<0.0?-1.0:+1.0;
+//    if ( enantiomer ) return -dih*sgn;
+  // The sign is applied correctly here.
+  // There is a regression test for this: sign-dihedral
+  return dih*sgn;
+}
+
+CL_DEFUN double calculateDihedralArray( size_t iva,
+                                        size_t ivb,
+                                        size_t ivc,
+                                        size_t ivd,
+                                        core::Array_sp array) {
+  size_t len = array->length();
+  int64_t max_index = len-2;
+  if (max_index<=0) {
+    SIMPLE_ERROR("The array does not contain 3D vectors");
+  }
+  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_float_sp>(array);
+    Vector3 va(sfa,iva);
+    Vector3 vb(sfa,ivb);
+    Vector3 vc(sfa,ivc);
+    Vector3 vd(sfa,ivd);
+    return calculateDihedral(va,vb,vc,vd);
+  }
+  SIMPLE_ERROR("Handle array type {}", _rep_(array));
+}
+
+/*! Return the angle in radians
+ */
+DOCGROUP(cando);
+CL_DEFUN double calculateAngle( const Vector3& va,
+                                const Vector3& vb,
+                                const Vector3& vc )
+{
+  Vector3	vab = (va-vb).normalized();
+  Vector3	vcb = (vc-vb).normalized();
+  double ang = safe_acos(vab.dotProduct(vcb));
+  return ang;
+}
+
+
+};

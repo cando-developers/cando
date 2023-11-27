@@ -119,6 +119,7 @@
    #:scanPdb
    #:scanAmberCheck
    #:make-filter-scanner
+   #:scanSelectAltLoc
    #:scanSelectChainIds
    #:scanIgnoreResidues
    #:scanRenameResidues
@@ -227,7 +228,7 @@
 (defpackage #:leap
   (:shadowing-import-from :chem "ATOM")
   (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
-  (:shadowing-import-from :energy "MINIMIZE")
+  (:shadowing-import-from :energy "ENERGY-MINIMIZE")
   (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
   (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
   (:import-from :core #:quit)

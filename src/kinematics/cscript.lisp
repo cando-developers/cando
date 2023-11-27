@@ -6,6 +6,7 @@
            #~"joint.cc"
            #~"jump.cc"
            #~"jumpJoint.cc"
+           #~"xyzJoint.cc"
            #~"kinematicsPackage.cc"
            #~"stub.cc"
 )

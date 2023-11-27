@@ -56,6 +56,11 @@ buffer object, which extends either type of box by an arbitrary amount.
     (leap.pdb:scanSelectChainIds pdb-scanner chainIds))
   :no-output)
 
+(defun leap.scanSelectAltLoc (scan alt-loc)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanSelectAltLoc pdb-scanner alt-loc))
+  :no-output)
+
 (defun leap.scanIgnoreResidues (scan residues)
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
     (leap.pdb:scanIgnoreResidues pdb-scanner residues))
@@ -836,7 +841,7 @@ Add a random displacement to every atom in the matter."
                         (assign-types t)
                         (save-trajectory nil)
                         )
-  "     minimize matter &key (restraints-on t)
+  "     energy-minimize matter &key (restraints-on t)
                           (max-sd-steps 1000)
                           (max-cg-steps 50000)
                           (max-tn-steps 0)
@@ -853,7 +858,7 @@ then the atom types are assigned using the rules defined by the force-field
 of each molecule. "
   (let ((matter (leap.core:lookup-variable matter)))
     (format t "args -> ~s~%" args)
-    (apply 'energy:minimize matter args)))
+    (apply 'energy:energy-minimize matter args)))
 
 (defun leap.load-chem-draw (filename)
   (load-chem-draw filename))
@@ -1612,6 +1617,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("loadPdb" . leap.pdb:loadPdb)
           ("scanPdb" . leap.pdb:scanPdb)
           ("scanAmberCheck" . leap.scanAmberCheck)
+          ("scanSelectAltLoc" . leap.scanSelectAltLoc)
           ("scanSelectChainIds" . leap.scanSelectChainIds)
           ("scanIgnoreResidues" . leap.scanIgnoreResidues)
           ("scanRenameResidues" . leap.scanRenameResidues )

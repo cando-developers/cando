@@ -334,13 +334,13 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
     }
 #endif
 
-    uint	Molecule_O::numberOfAtoms()
+    uint	Molecule_O::numberOfAtoms() const
     {
 	Loop				lb;
 	Vector3				v,vd;
 	int				numberOfAtoms;
 	numberOfAtoms = 0;
-	lb.loopTopMoleculeGoal( this->sharedThis<Molecule_O>(), RESIDUES);
+	lb.loopTopMoleculeGoal( this->asSmartPtr(), RESIDUES);
 	while ( lb.advanceLoopAndProcess() ) 
 	{
 	    numberOfAtoms += lb.getResidue()->numberOfAtoms();

@@ -156,29 +156,10 @@ typedef	vector<Vector3>	VectorVector3s;
  * require a square root
  */
 namespace geom {
-  double	calculateDihedral( const Vector3& va,
-                                   const Vector3& vb,
-                                   const Vector3& vc,
-                                   const Vector3& vd );
-  double	calculateAngle( const Vector3& va,
-				const Vector3& vb,
-                                const Vector3& vc );
-
   double	calculateDistance( const Vector3& va,
                                    const Vector3& vb );
   double	calculateDistanceSquared( const Vector3& va,
                                           const Vector3& vb);
-Vector3	geom__build_origin();
-  Vector3	geom__build_using_bond( double distance, const Vector3& vb );
-//! Build a vector at distance from vb and angle from v
-  Vector3 geom__build_using_bond_angle( double distance, const Vector3& vb,
-                               double angleRad, const Vector3& va );
-  Vector3 geom__build_using_bond_angle_dihedral( double distance, const Vector3& vc,
-                                       double angleRad, const Vector3& vb,
-                                       double dihedralRad, const Vector3& va );
-
-/*! Return the angle in radians between (1.0,0.0) and (dx,dy). The result will be positive or negative depending on the quadrant of dx,dy */
-double  geom__planeVectorAngle(double dx, double dy);
 
 };
 

@@ -2,29 +2,29 @@
 
 
 (defclass orientation ()
-  ((lab-frame :initarg :lab-frame :accessor lab-frame
-              :documentation "This is the stub for children")
-   (parent-relative-frame :initarg :parent-relative-frame :accessor parent-relative-frame
-                              :documentation "Keep track of the transform for the jump-joint that is relative to the parent (or the origin)")))
+  ((to-origin :initarg :to-origin :accessor to-origin
+              :documentation "This is the transform that takes the object to the origin")
+   (from-origin :initarg :from-origin :accessor from-origin
+                              :documentation "This is the second transform that takes the object after to-origin is applied")))
 
-(defun make-orientation (&key (parent-relative-frame  (geom:make-matrix-identity))
-                           (lab-frame (geom:make-matrix-identity)))
+(defun make-orientation (&key (from-origin  (geom:make-matrix-identity))
+                           (to-origin (geom:make-matrix-identity)))
   (make-instance 'orientation
-                 :parent-relative-frame parent-relative-frame
-                 :lab-frame lab-frame))
+                 :from-origin from-origin
+                 :to-origin to-origin))
 
 (defmethod print-object ((obj orientation) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t)
-        (format stream ":parent-relative-frame~%~s~%:lab-frame~%~s~%" (parent-relative-frame obj) (lab-frame obj)))))
+        (format stream ":from-origin~%~s~%:to-origin~%~s~%" (from-origin obj) (to-origin obj)))))
 
 (defgeneric kin:orientation-transform (orientation))
 
 (defmethod kin:orientation-transform ((orientation orientation))
-  (let* ((parent-relative-frame (topology:parent-relative-frame orientation))
-         (lab-frame (lab-frame orientation))
-         (transform (geom:m*m parent-relative-frame lab-frame)))
+  (let* ((from-origin (topology:from-origin orientation))
+         (to-origin (to-origin orientation))
+         (transform (geom:m*m from-origin to-origin)))
     transform))
 
 (defclass orientations ()
@@ -46,6 +46,11 @@
          (res (chem:content-at mol (residue-index pos))))
     res))
 
+(defmethod at-position ((ataggregate ataggregate) pos)
+  (let* ((atmol (aref (atmolecules ataggregate) (molecule-index pos)))
+         (atres (aref (atresidues atmol) (residue-index pos))))
+  atres))
+
 
 (defclass assembler-base (cando.serialize:serializable)
   ((monomer-positions :initarg :monomer-positions :accessor monomer-positions)
@@ -59,6 +64,13 @@
   ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
    (adjustments :initarg :adjustments :accessor adjustments)))
 
+
+(defun aggregate* (assembler &optional coordinates)
+  "Return a copy of the aggregate with coordinates if provided"
+  (let ((agg (chem:matter-copy (topology:aggregate assembler))))
+    (when coordinates (chem:matter-apply-coordinates agg coordinates))
+    agg))
+
 (defclass training-assembler (assembler-base)
   ((oligomers :initarg :oligomers :accessor oligomers)))
 
@@ -71,7 +83,19 @@
     (change-class assembler 'focused-training-assembler :focus-monomer focus-monomer)
     assembler))
 
-(defun oligomer-containing-monomer (assembler monomer &optional errorp)
+(defgeneric oligomer-containing-monomer (assembler monomer &optional errorp))
+
+(defmethod oligomer-containing-monomer ((assembler training-assembler) monomer &optional errorp)
+  "Return the oligomer that contains the monomer"
+  (loop for oligomer in (oligomers assembler)
+        do (loop for mon across (monomers oligomer)
+                 when (eq mon monomer)
+                   do (return-from oligomer-containing-monomer oligomer)))
+  (if errorp
+      (error "Could not find ~s in ~s" monomer assembler)
+      nil))
+
+(defmethod oligomer-containing-monomer ((assembler assembler) monomer &optional errorp)
   "Return the oligomer that contains the monomer"
   (loop for oligomer-shape in (oligomer-shapes assembler)
         for oligomer = (oligomer oligomer-shape)
@@ -81,7 +105,6 @@
   (if errorp
       (error "Could not find ~s in ~s" monomer assembler)
       nil))
-
 (defun make-coordinates-for-assembler (assembler)
   (let ((number-of-atoms (chem:number-of-atoms (topology:aggregate assembler))))
     (make-array (* 3 number-of-atoms) :element-type (geom:vecreal-type)
@@ -108,8 +131,9 @@
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))
 
-(defun make-assembler (oligomer-shapes &key monomer-order)
-  "Build a assembler for the oligomers."
+(defun make-assembler (oligomer-shapes &key monomer-order tune-energy-function)
+  "Build a assembler for the oligomers.
+energy-function-factory - provide a function that takes an aggregate and returns an energy-function."
   (unless (every (lambda (os) (typep os 'oligomer-shape)) oligomer-shapes)
     (error "You must provide a list of oligomer-shapes"))
   (let* ((full-orientations oligomer-shapes)
@@ -138,7 +162,9 @@ Specialize the foldamer argument to provide methods"))
                         (resize-atmolecules atagg (length oligomers))
                         atagg))
          (joint-tree (make-joint-tree))
-         (energy-function (chem:make-energy-function :matter aggregate))
+         (energy-function (let ((ef (chem:make-energy-function :matter aggregate)))
+                            (when tune-energy-function (funcall tune-energy-function ef))
+                            ef))
          (adjustments (make-instance 'adjustments))
          (assembler (loop for oligomer-molecule in oligomer-molecules
                           for oligomer = (car oligomer-molecule)
@@ -300,18 +326,39 @@ Specialize the foldamer argument to provide methods"))
                          (chem:set-position atm (kin:joint/position jnt coords))))))
 
 (defun copy-all-joint-positions-into-atoms (assembler coords)
-  (loop for index below (length (oligomer-shapes aseembler))
+  (loop for index below (length (oligomer-shapes assembler))
         do (walk-atoms-joints assembler index
                      (lambda (atm jnt atomid)
                        (declare (ignore atomid))
                        (chem:set-position atm (kin:joint/position jnt coords))))))
 
-(defun update-joint-tree-internal-coordinates (assembler coordinates)
+(defun update-atresidue-joint-tree-internal-coordinates (assembler atresidue coordinates)
+  (walk-atresidue-joints atresidue
+                         (lambda (joint atom-id)
+                           (declare (ignore atom-id))
+                           (kin:update-internal-coord joint coordinates)
+                           )))
+
+(defun update-atmolecule-joint-tree-internal-coordinates (assembler atmolecule coordinates)
+  (walk-atmolecule-joints atmolecule
+                          (lambda (joint atom-id)
+                            (declare (ignore atom-id))
+                            (kin:update-internal-coord joint coordinates))))
+
+(defun update-ataggregate-joint-tree-internal-coordinates (assembler coordinates)
   (let ((ataggregate (ataggregate assembler)))
     (walk-ataggregate-joints ataggregate
                              (lambda (joint atom-id)
                                (declare (ignore atom-id))
                                (kin:update-internal-coord joint coordinates)))))
+
+(defun build-external-coordinates (assembler &key oligomer-shape (coords (topology:make-coordinates-for-assembler assembler)))
+  (if oligomer-shape
+      (progn
+        (build-atom-tree-external-coordinates assembler coords oligomer-shape)
+        (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
+      (loop for oligomer-shape in (oligomer-shapes assembler)
+            do (build-external-coordinates assembler :oligomer-shape oligomer-shape :coords coords))))
 
 (defun build-atom-tree-external-coordinates (assembler coords oligomer-shape)
   (let* ((one-oligomer (oligomer oligomer-shape))
@@ -320,7 +367,7 @@ Specialize the foldamer argument to provide methods"))
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
     (kin:update-xyz-coords joint coords)))
 
-(defun build-all-atom-tree-external-coordinates (assembler coords)
+(defun build-all-external-coordinates (assembler &key (coords (topology:make-coordinates-for-assembler assembler)))
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (build-atom-tree-external-coordinates assembler coords oligomer-shape)))
 
@@ -408,6 +455,17 @@ Specialize the foldamer argument to provide methods"))
                                  )
                             (apply-fragment-internals-to-atresidue fragment-internals atres)
                             )))))
+
+#|
+;;;Idea to make monomer-shape subclasses control how internal coordinates get generated.
+
+(defmethod apply-monomer-shape-to-atresidue ((monomer-shape monomer-shape) atresidue context-rotamers)
+  (let* ((fragments (rotamers context-rotamers))
+         (fragment-conformation-index (fragment-conformation-index monomer-shape))
+         (fragment-internals (elt fragments fragment-conformation-index)))
+    (apply-fragment-internals-to-atresidue fragment-internals atresidue)))
+|#
+
 
 (defun fill-internals-from-oligomer-shape-and-adjust (assembler oligomer-shape &optional monomers)
   (fill-internals-from-oligomer-shape assembler oligomer-shape monomers)

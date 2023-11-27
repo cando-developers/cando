@@ -182,6 +182,7 @@ protected:
   virtual void redirectRestraintAtoms();
 
  public:
+  NVector_sp extract_coordinates(core::T_sp coords) const;
   contentIterator begin_contents() { return this->_Contents.begin(); };
   contentIterator end_contents() { return this->_Contents.end(); };
   const_contentIterator begin_contents() const { return this->_Contents.begin(); };
@@ -244,7 +245,7 @@ protected:
   bool	hasProperty(core::Symbol_sp propertySymbol );
 
   CL_LISPIFY_NAME("numberOfAtoms");
-  CL_DEFMETHOD   virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+  CL_DEFMETHOD   virtual uint	numberOfAtoms() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
   void	eraseContents(); // Empty the contents vector, don't free the memory
 

@@ -51,5 +51,6 @@
     #:show-amber-netcdf-trajectory
     #:sketch-molecule
     #:sketch-molecules
-    #:trajectory))
+    #:trajectory
+    #:ngl-pane-stage))
 

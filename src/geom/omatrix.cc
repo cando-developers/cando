@@ -196,6 +196,61 @@ CL_DEFUN OMatrix_sp make_m4_translate(const Vector3& pos)
   return res;
 }
 
+CL_LISPIFY_NAME("make-m4-rotation-rows");
+DOCGROUP(cando);
+CL_DEFUN OMatrix_sp make_m4_rotation_rows(const Vector3& row0, const Vector3& row1, const Vector3& row2)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.setRow(0
+                     ,row0.getX()
+                     ,row0.getY()
+                     ,row0.getZ()
+                     ,0.0);
+  res->_Value.setRow(1
+                     ,row1.getX()
+                     ,row1.getY()
+                     ,row1.getZ()
+                     ,0.0);
+  res->_Value.setRow(2
+                     ,row2.getX()
+                     ,row2.getY()
+                     ,row2.getZ()
+                     ,0.0);
+  res->_Value.setRow(3
+                     , 0.0
+                     , 0.0
+                     , 0.0
+                     , 1.0 );
+  return res;
+}
+
+CL_LISPIFY_NAME("make-m4-rotation-columns");
+DOCGROUP(cando);
+CL_DEFUN OMatrix_sp make_m4_rotation_columns(const Vector3& col0, const Vector3& col1, const Vector3& col2)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.setCol(0
+                     ,col0.getX()
+                     ,col0.getY()
+                     ,col0.getZ()
+                     ,0.0);
+  res->_Value.setCol(1
+                     ,col1.getX()
+                     ,col1.getY()
+                     ,col1.getZ()
+                     ,0.0);
+  res->_Value.setCol(2
+                     ,col2.getX()
+                     ,col2.getY()
+                     ,col2.getZ()
+                     ,0.0);
+  res->_Value.setCol(3
+                     , 0.0
+                     , 0.0
+                     , 0.0
+                     , 1.0 );
+  return res;
+}
 CL_LISPIFY_NAME("make-m4-rotate-x");
 DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)

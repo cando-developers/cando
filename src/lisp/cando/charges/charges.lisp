@@ -46,7 +46,7 @@ charge."
   (loop for residue-charge in residue-charges
         do (format stream "~a~%" residue-charge)))
 
-(defun calculate-charge-trainers (foldamer charge-trainers)
+(defun calculate-charge-trainers (foldamer charge-trainers &key intermediate-file-directory)
   (let ((residue-charges nil))
     (loop for os-desc in charge-trainers
           do (multiple-value-bind (oligomer-space focus-monomer)
@@ -54,16 +54,27 @@ charge."
                (format t "Building molecules for ~s~%" os-desc)
                (multiple-value-bind (aggs monomer-to-mol-res-ids)
                    (topology:build-all-molecules oligomer-space)
-                 (format t "starting-geometry for ~s~%" os-desc)
-                 (lparallel:pmapcar #'cando:starting-geometry aggs)
-                 (format t "calculate-am1-bcc-charges for ~s~%" os-desc)
-                 (lparallel:pmapcar #'charges:calculate-am1-bcc-charges aggs)
-                 (format t "Finishing ~s~%" os-desc)
-                 (mapc #'constrain-residue-charges aggs)
-                 (loop for agg in aggs
-                       for mol-res = (gethash focus-monomer monomer-to-mol-res-ids)
-                       for residue-index = (topology:residue-index mol-res)
-                       for residue = (chem:content-at (chem:content-at agg 0) residue-index)
-                       do (push (residue-charges residue) residue-charges)))))
+                 (let ((mol-res-id (gethash focus-monomer monomer-to-mol-res-ids)))
+                   (format t "starting-geometry for ~s~%" os-desc)
+                   (lparallel:pmapcar #'cando:starting-geometry aggs)
+                   (when intermediate-file-directory
+                     (loop for agg in aggs
+                           for mol = (cando:mol agg 0)
+                           for focus-res = (cando:res mol (topology:residue-index mol-res-id))
+                           for focus-res-name = (string (chem:matter/get-name focus-res))
+                           for filename = (merge-pathnames (make-pathname :name focus-res-name :type "mol2" :directory (list :relative focus-res-name)) intermediate-file-directory)
+                           do (format t "Writing agg ~s to ~s~%" focus-res-name filename)
+                           do (ensure-directories-exist filename)
+                           do (cando:save-mol2 agg filename :use-sybyl-types t)
+                           ))
+                   (format t "calculate-am1-bcc-charges for ~s~%" os-desc)
+                   (lparallel:pmapcar #'charges:calculate-am1-bcc-charges aggs)
+                   (format t "Finishing ~s~%" os-desc)
+                   (mapc #'constrain-residue-charges aggs)
+                   (loop for agg in aggs
+                         for mol-res = (gethash focus-monomer monomer-to-mol-res-ids)
+                         for residue-index = (topology:residue-index mol-res)
+                         for residue = (chem:content-at (chem:content-at agg 0) residue-index)
+                         do (push (residue-charges residue) residue-charges))))))
     residue-charges))
 

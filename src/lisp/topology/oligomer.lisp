@@ -274,7 +274,9 @@
                                     plug2name))
       (chem:add-matter aggregate molecule)
       (maphash (lambda (name monomer)
-                 (let* ((monpos (let ((mp (gethash (first monomer) monomer-positions-accumulator)))
+                 (unless (atom monomer)
+                   (error "The monomer ~s cannot be a list" monomer))
+                 (let* ((monpos (let ((mp (gethash monomer monomer-positions-accumulator)))
                                   (unless mp (error "Check mp ~s monomer ~s and monomer-positions-accumulator ~s"
                                                     mp
                                                     monomer

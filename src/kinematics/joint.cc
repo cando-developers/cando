@@ -144,7 +144,7 @@ string Joint_O::__repr__() const {
   stringstream ss;
   ss << "#<";
   ss << this->className();
-  ss << " " << _rep_(this->_Name) << ">";
+  ss << " " << _rep_(this->_Name) << " @" << (void*)this << ">";
   return ss.str();
 }
  

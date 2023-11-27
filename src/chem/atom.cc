@@ -1785,6 +1785,19 @@ CL_DEFUN double chem__calculate_dihedral_for_atoms(Atom_sp a, Atom_sp b, Atom_sp
   return geom::calculateDihedral(va,vb,vc,vd);
 }
 
+CL_DOCSTRING(R"doc(Fill the x,y,z position of the atom into the nvector starting at index3.
+Return the index3 for the next atom)doc");
+CL_DEFUN size_t chem__write_position(Atom_sp atom, NVector_sp pos, size_t index3)
+{
+  if (index3+2<pos->length()) {
+    const Vector3& vec = atom->getPosition();
+    (*pos)[index3] = vec.getX();
+    (*pos)[index3+1] = vec.getY();
+    (*pos)[index3+2] = vec.getZ();
+    return index3+3;
+  }
+  SIMPLE_ERROR("The index {} will write the Vector3 out of bounds in nvector of length {}", index3, pos->length());
+}
 
 
 }; // namespace chem

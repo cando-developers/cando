@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/lisp.h>
 #include <cando/geom/matrix.h>
 #include <clasp/core/lispStream.h>
@@ -83,13 +84,13 @@ void BondedJoint_O::initialize() {
   }
 }
 
-	/*! Return the stubJoint1 */
+	/*! Return the stubJoint1 = point c */
 CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint0() const { return this->parent();}
 
-	/*! Return the stubJoint2 */
+	/*! Return the stubJoint2 = point b */
 CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint1() const { return this->parent()->parent();};
 
-	/*! Return the stubJoint3 */
+	/*! Return the stubJoint3 = point a */
 CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
 
@@ -170,52 +171,9 @@ void BondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
     KIN_LOG("_Phi = {}\n", (this->_Phi/0.0174533));
     return;
   }
-#if 1
-  internalCoordinatesFromPointAndCoordinateSystem(this->position(coords),this->getInputStub(coords)._Transform,
-                                                  this->_Distance, this->_Theta, this->_Phi );
-#else
-  KIN_LOG("gc::IsA<JumpJoint_sp>(jC)   jC = {}\n", _rep_(jC));
-  Stub stub = jC->getStub();
-  KIN_LOG("stub = \n{}\n", stub._Transform.asString());
-  Vector3 x = stub._Transform.colX();
-  Vector3 y = stub._Transform.colY();
-  Vector3 z = stub._Transform.colZ();
-  KIN_LOG("x = {}\n", x.asString());
-  KIN_LOG("y = {}\n", y.asString());
-  KIN_LOG("z = {}\n", z.asString());
-  Vector3 D = this->position(coords);
-  Vector3 CD = D - C;
-  double lengthCD = CD.length();
-  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR("About to divide by zero");
-  Vector3 d = CD*(1.0/lengthCD);
-  KIN_LOG("d = {}\n", d.asString());
-  double dx = d.dotProduct(x);
-  double dy = d.dotProduct(y);
-  double dz = d.dotProduct(z);
-  KIN_LOG("dx = {}  dy = {}  dz = {}\n", dx , dy , dz );
-  this->_Phi = geom::geom__planeVectorAngle(dy,dz);
-  KIN_LOG("  dy = {}   dz = {}\n", dy , dz );
-  KIN_LOG("_Phi = {} deg\n", (this->_Phi/0.0174533));
-  Vector3 dox(1.0,0.0,0.0);
-  Vector3 dop(dx,dy,dz);
-  KIN_LOG("dop = {}\n", dop.asString());
-  KIN_LOG("dop.dotProduct(dox) = {}\n", dop.dotProduct(dox));
-  if (dop.dotProduct(dox) > (1.0-SMALL_NUMBER)) {
-    this->_Theta = 0.0;
-    return;
-  }
-  Vector3 doz = dox.crossProduct(dop);
-  doz = doz.normalized();
-  KIN_LOG("doz = {}\n", doz.asString());
-  Vector3 doy = doz.crossProduct(dox);
-  KIN_LOG("doy = {}\n", doy.asString());
-  double eox = dop.dotProduct(dox);
-  double eoy = dop.dotProduct(doy);
-  KIN_LOG("eox = {}  eoy = {}\n", eox , eoy );
-//  double eoz = dop.dotProduct(doz); // Must be 0.0
-  this->_Theta = geom::geom__planeVectorAngle(eox,eoy);
-  KIN_LOG("    this->_Theta = {} deg\n", (this->_Theta/0.0174533));
-#endif
+  geom::internalCoordinatesFromPointAndStub(this->position(coords),
+                                            this->getInputStub(coords)._Transform,
+                                            this->_Distance, this->_Theta, this->_Phi );
 }
 
 bool BondedJoint_O::keepDofFixed(DofType dof) const
@@ -271,7 +229,8 @@ CL_DEFMETHOD void BondedJoint_O::setPhi(double dihedral) {
 Stub BondedJoint_O::getInputStub(chem::NVector_sp coords) const
 {
   Stub stub;
-  stub.fromThreePoints(this->inputStubJoint0()->position(coords),
+  geom::stubFromThreePoints(stub._Transform,
+                      this->inputStubJoint0()->position(coords),
                       this->inputStubJoint1()->position(coords),
                       this->inputStubJoint2()->position(coords));
   KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
@@ -309,29 +268,30 @@ void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
   KIN_LOG("name = {} stub = \n{}\n", _rep_(this->_Name), stub._Transform.asString());
   KIN_LOG("_Distance = {}  _Theta = {} deg   _Phi = {} deg\n", this->_Distance , (this->_Theta/0.0174533) , (this->_Phi/0.0174533) );
   double bcTheta = this->_Theta;
-#if 1
   Vector3 d2;
 //  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
 //  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 );
-  this->setPosition(coords,pointFromMatrixAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 ));
-//  printf("%s:%d:%s d2 = %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, d2.getX(), d2.getY(), d2.getZ() );
-  Vector3 colX = stub._Transform.colX();
-  Vector3 colY = stub._Transform.colY();
-  Vector3 colZ = stub._Transform.colZ();
-  Vector3 trans = stub._Transform.getTranslation();
-//  printf("%s:%d:%s transform = \n%s\n", __FILE__, __LINE__, __FUNCTION__, stub._Transform.asString().c_str());
-//  printf("%s:%d:%s ==== Resulting position: %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Position.getX(), this->_Position.getY(), this->_Position.getZ() );
-#else
-  KIN_LOG(" rtTheta = {} deg\n", (bcTheta/0.0174533));
-  double cosTheta = std::cos(bcTheta);
-  double sinTheta = std::sin(bcTheta);
-  double cosPhi = std::cos(this->_Phi);
-  double sinPhi = std::sin(this->_Phi);
-  Vector3 d2(this->_Distance*cosTheta,this->_Distance*cosPhi*sinTheta,this->_Distance*sinPhi*sinTheta);
-  KIN_LOG("d2 = {}\n", d2.asString());
-  this->setPosition(coords, stub._Transform * d2);
-  KIN_LOG("this->position(coords) = {}\n", this->position(coords).asString());
+  Vector3 newpos = geom::pointFromStubAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 );
+  this->setPosition(coords,newpos);
+#if 0
+  // The following code prints everything for the calculation of newpos for a particular joint
+  if (this->_PositionIndexX3 == 465) {
+    core::clasp_write_string(fmt::format("{}:{}:{} distance = {}  angle_deg = {}   dihedral_deg = {}\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 ));
+    core::clasp_write_string(fmt::format("{}:{}:{}  ggp = {}\n", __FILE__, __LINE__, __FUNCTION__, this->parent()->parent()->parent()->position(coords).asString() ));
+    core::clasp_write_string(fmt::format("{}:{}:{}   gp = {}\n", __FILE__, __LINE__, __FUNCTION__, this->parent()->parent()->position(coords).asString() ));
+    core::clasp_write_string(fmt::format("{}:{}:{}    p = {}\n", __FILE__, __LINE__, __FUNCTION__, this->parent()->position(coords).asString() ));
+    core::clasp_write_string(fmt::format("{}:{}:{}  _PositionIndex3 {} stub = {}\n", __FILE__, __LINE__, __FUNCTION__, this->_PositionIndexX3, stub._Transform.asString() ));
+    core::clasp_write_string(fmt::format("{}:{}:{} newp = {}\n", __FILE__, __LINE__, __FUNCTION__, newpos.asString() ));
+    core::clasp_write_string(fmt::format("{}:{}:{}   d2 = {}, {}, {}\n", __FILE__, __LINE__, __FUNCTION__, d2.getX(), d2.getY(), d2.getZ() ));
+    double cdih = geom::calculateDihedral(
+        this->parent()->parent()->parent()->position(coords),
+        this->parent()->parent()->position(coords),
+        this->parent()->position(coords),
+        newpos);
+    core::clasp_write_string(fmt::format("{}:{}:{} calculated dihedral = {}\n", __FILE__, __LINE__, __FUNCTION__, cdih/0.0174533 ));
+  }
 #endif
+  
 }
 
 CL_DEFMETHOD void BondedJoint_O::updateXyzCoord(chem::NVector_sp coords) {

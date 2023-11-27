@@ -499,12 +499,21 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
 
 
 (defun topologies-from-graph (graph group-names restraints
-                              &key types dihedrals cluster-dihedrals properties plug-names)
+                              &key types xyz-joints dihedrals cluster-dihedrals
+                                properties plug-names)
+  (unless (or (listp xyz-joints)
+              (eq :all xyz-joints))
+    (error "xyz-joints must be either a list of atom-names or :all"))
   (multiple-value-bind (constitution plugs stereoisomers)
       (parse-graph graph plug-names)
+    (when (listp xyz-joints)
+      (loop for name in xyz-joints
+            unless (gethash name (nodes graph))
+              do (error "The name ~s in xyz-joint is not one of the names in the topology ~s"
+                        name (mapcar #'name nodes))))
     (let* ((tops (loop for stereoisomer in stereoisomers
                        for name = (topology:name stereoisomer)
-                       for joint-template = (build-joint-template graph)
+                       for joint-template = (build-joint-template graph xyz-joints)
                        for topology = (make-instance 'topology:topology
                                                      :name name
                                                      :constitution constitution
@@ -537,7 +546,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution))))
       tops)))
 
-(defun do-define-topology (name sexp &key restraints types dihedrals cluster-dihedrals properties plug-names)
+(defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals properties plug-names)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -553,15 +562,17 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                            :cluster-dihedrals cluster-dihedrals
                            :properties properties
                            :plug-names plug-names
+                           :xyz-joints xyz-joints
                            )))
 
-(defmacro define-topology (name sexp &key restraints types dihedrals cluster-dihedrals properties plugs)
+(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals properties plugs)
   `(do-define-topology ',name ',sexp
      :restraints ',restraints
      :dihedrals ',dihedrals
      :properties ',properties
      :cluster-dihedrals ',cluster-dihedrals
      :plug-names ',plugs
+     :xyz-joints ',xyz-joints
      ))
 
 (defun do-define-abstract-topology (name &key properties plug-names)
@@ -571,6 +582,9 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                           ))
 
 (defmacro define-abstract-topology (name &key properties plugs)
+  "Abstract-topoology is for development of topology and foldamer rules.
+Abstract-topology doesn't have any atoms.  Once you have an abstract-topology that
+can build spiroligomers then you want to convert it into a real topology."
   `(do-define-abstract-topology ',name 
      :properties ',properties
      :plug-names ',plugs

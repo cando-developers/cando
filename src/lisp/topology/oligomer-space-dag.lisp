@@ -214,7 +214,7 @@ Example of oligomer-space-dag
     (parse-dag-for-oligomer-space name tree :label label)))
 
 (defun parse-oligomer-space-dag (foldamer context &key (topology-groups topology:*topology-groups*))
-  (let ((dag (parse-dag-for-oligomer-space context)))
+  (let ((dag (parse-dag-for-oligomer-space (car context) context)))
     (multiple-value-bind (oligomer-space focus-monomer)
         (oligomer-space-from-dag foldamer dag topology-groups)
       (values oligomer-space focus-monomer dag))))

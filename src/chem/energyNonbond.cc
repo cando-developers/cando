@@ -978,31 +978,37 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
 }
 
 
-void EnergyNonbond_O::constructNonbondTermsBetweenResidues( AtomTable_sp atomTable, Residue_sp res1, Residue_sp res2, core::T_sp nbForceField, core::HashTable_sp atomTypes )
+/* Construct nonbond terms between two molecules or two residues or a residue and a molecule that are not
+bonded to each other */
+CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
+                                                                       EnergyFunction_sp energyFunction )
 {
-
+  auto atomTable = energyFunction->atomTable();
+  auto nbForceField = atomTable->nonbondForceFieldForAggregate();
+  auto atomTypes = energyFunction->atomTypes();
   // ------------------------------------------------------------
   //
   // The old code created terms for each nonbonded interaction
   // this will use waaaay too much memory for large systems
   //
+  this->_Terms.clear();
   this->_UsesExcludedAtoms = false;
   {
     LOG("Defining NONBONDS" );
-    Loop lRes1( res1, ATOMS );
-    while ( lRes1.advanceLoopAndProcess() ) {
-      Atom_sp a1 = lRes1.getAtom();
+    Loop lMat1( mat1, ATOMS );
+    while ( lMat1.advanceLoopAndProcess() ) {
+      Atom_sp a1 = lMat1.getAtom();
       size_t a1CoordinateIndexTimes3 = atomTable->getCoordinateIndexTimes3(a1);
-      Loop lRes2( res2, ATOMS );
-      while ( lRes2.advanceLoopAndProcess() ) {
-        Atom_sp a2 = lRes2.getAtom();
+      Loop lMat2( mat2, ATOMS );
+      while ( lMat2.advanceLoopAndProcess() ) {
+        Atom_sp a2 = lMat2.getAtom();
         size_t a2CoordinateIndexTimes3 = atomTable->getCoordinateIndexTimes3(a2);
         EnergyNonbond energyNonbond;
         bool in14 = false; // Should this be conditional
         if ( energyNonbond.defineForAtomPair(nbForceField, in14, a1, a2, a1CoordinateIndexTimes3, a2CoordinateIndexTimes3,
                                              this->sharedThis<EnergyNonbond_O>(), atomTypes) )  {
           this->addTerm(energyNonbond);
-          LOG_ENERGY(("nonbond  interaction between {} - {} in14[{}] dA {}\n") , _rep_(a1) , _rep_(a2) , in14  , energyNonbond.term.dA);                 
+          LOG_ENERGY(("nonbond  interaction between {} - {} in14[{}] dA {}\n") , _rep_(a1) , _rep_(a2) , in14  , energyNonbond.term.dA);
         }
       }
     }

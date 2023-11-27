@@ -21,7 +21,24 @@
   (adjust-array (atmolecules ataggregate) num-atmolecules))
 
 
+(defun walk-atresidue-joints (atresidue callback)
+  "Walk the joints of the atresidue"
+  (loop for atom-index below (length (joints atresidue))
+        for joint = (aref (joints atresidue) atom-index)
+        do (unless joint (error "joint is NIL in atresidue ~s" atresidue))
+        do (funcall callback joint (list :no-molecule-index :no-residue-index atom-index))))
+
+(defun walk-atmolecule-joints (atmolecule callback)
+  "Walk the joints of the atmolecule"
+  (loop for residue-index below (length (atresidues atmolecule))
+        for atresidue = (aref (atresidues atmolecule) residue-index)
+        do (loop for atom-index below (length (joints atresidue))
+                 for joint = (aref (joints atresidue) atom-index)
+                 do (unless joint (error "joint is NIL in atresidue ~s" atresidue))
+                 do (funcall callback joint (list :no-molecule-index residue-index atom-index)))))
+
 (defun walk-ataggregate-joints (ataggregate callback)
+  "Walk the joints of the ataggregate"
   (loop for molecule-index below (length (atmolecules ataggregate))
         for atmolecule = (aref (atmolecules ataggregate) molecule-index)
         do (loop for residue-index below (length (atresidues atmolecule))

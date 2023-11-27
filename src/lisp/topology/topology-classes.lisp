@@ -280,7 +280,7 @@
 (defmethod print-object ((obj monomer) stream)
   (if *print-readably*
       (call-next-method)
-      (print-unreadable-object (obj stream :type t)
+      (print-unreadable-object (obj stream :type t :identity t)
         (format stream ":id ~s :monomers ~s" (id obj) (monomers obj)))))
 
 (defun number-of-stereoisomers (monomer)
@@ -289,6 +289,11 @@
 (defun current-stereoisomer-name (monomer oligomer)
   (let ((monomer-index (position monomer (monomers (oligomer-space oligomer)))))
     (unless monomer-index
+  (loop for monomer-shape across (topology:monomer-shape-vector oligomer-shape)
+        for monomer = (topology:monomer monomer-shape)
+        for pos = (gethash monomer (topology:monomer-positions assembler))
+        do (unless pos
+             (error "Could not find ~s in assembler" monomer)))
       (error "Could not find monomer ~a in ~a" monomer oligomer))
     (elt (monomers monomer) (aref (monomer-indices oligomer) monomer-index))))
 

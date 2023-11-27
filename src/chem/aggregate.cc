@@ -771,7 +771,7 @@ CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
     }
 
 
-    uint	Aggregate_O::numberOfAtoms()
+    uint	Aggregate_O::numberOfAtoms() const
     {
 	Atom_sp				a;
 	Loop				lb;
@@ -779,7 +779,7 @@ CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
         gctools::Vec0<Atom_sp>			atoms;
 	int				numberOfAtoms;
 	numberOfAtoms = 0;
-	lb.loopTopAggregateGoal( this->sharedThis<Aggregate_O>(), MOLECULES );
+	lb.loopTopAggregateGoal( this->asSmartPtr(), MOLECULES );
 	while ( lb.advanceLoopAndProcess() ) 
 	{
 	    numberOfAtoms += lb.getMolecule()->numberOfAtoms();

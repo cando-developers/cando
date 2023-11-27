@@ -227,7 +227,11 @@ This is for looking up parts but if the thing returned is not a part then return
                  (ringb (fourth names)))
              (unless (and ringa ringb)
                (error "You must provide two additional arguments for ~s" names))
-             (values (gethash (second names) labels) (list ringa ringb)))
+             (values (let ((res (gethash (second names) labels)))
+                       (unless (atom res)
+                         (error "The value in labels must be a single atom"))
+                       res)
+                       (list ringa ringb)))
            (my-add-monomers oligomer names :id part-info)))
       (t (error "Handle translate-part for ~s" names)))))
 
@@ -253,7 +257,10 @@ This is for looking up parts but if the thing returned is not a part then return
         (translate-part oligomer names labels part-info :parts parts)
       (when label
         (loop for new-part in new-parts
-              do (push new-part (gethash label labels))))
+              do (let ((res (gethash label labels)))
+                   (when res
+                     (error "There is already a monomer ~s with the label ~s" res label))
+                   (setf (gethash label labels) new-part))))
       (values new-parts ringp))))
 
 (defun parts-with-plugs (parts plug-name)

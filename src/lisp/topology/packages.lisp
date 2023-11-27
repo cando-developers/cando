@@ -151,7 +151,9 @@
    #:coupling-name
 
    ;;;
-   #:update-joint-tree-internal-coordinates
+   #:update-ataggregate-joint-tree-internal-coordinates
+   #:update-atmolecule-joint-tree-internal-coordinates
+   #:update-atresidue-joint-tree-internal-coordinates
    #:build-all-atom-tree-external-coordinates
    #:define-part
    #:*topology-groups*
@@ -305,8 +307,8 @@
    #:build-all-atom-tree-external-coordinates-and-adjust
    #:rotamers-map
    #:orientation
-   #:lab-frame
-   #:parent-relative-frame
+   #:to-origin
+   #:from-origin
    #:oligomer-monomer-name
    #:lookup-dihedral-cache
    #:lookup-dihedral-cache-monomer-shape
@@ -334,13 +336,13 @@
    #:labeled-monomers
    #:at-position
    #:no-rotamers
-   #:rotamer-stepper
+   #:permissible-rotamers
    #:oligomer-shape
    #:allowed-rotamer-indexes-vector
-   #:sidechain-rotamer-stepper
-   #:backbone-rotamer-stepper
-   #:make-backbone-rotamer-stepper
-   #:make-sidechain-rotamer-stepper
+   #:permissible-sidechain-rotamers
+   #:permissible-backbone-rotamers
+   #:make-permissible-backbone-rotamers
+   #:make-permissible-sidechain-rotamers
    #:max-rotamers
    #:zero-rotamers
    #:random-rotamers
@@ -359,7 +361,15 @@
    #:build-atom-tree-external-coordinates
    #:adjust-atom-tree-external-coordinates
    #:build-atom-tree-external-coordinates-and-adjust
-   #:copy-all-joint-positions-into-atoms))
+   #:copy-all-joint-positions-into-atoms
+   #:assembler
+   #:assembler-base
+   #:oligomer-shapes
+   #:build-oligomer-shape-in-coordinates
+   #:walk-atmolecule-joints
+   #:build-all-oligomer-shapes-in-coordinates
+   #:build-external-coordinates
+   #:aggregate*))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

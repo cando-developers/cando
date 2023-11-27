@@ -84,7 +84,7 @@
 
 (defpackage #:energy
   (:use #:common-lisp)
-  (:export #:minimize
+  (:export #:energy-minimize
            #:minimize-minimizer
            #:minimize-energy-function
            #:minimize-from-bad-geometry

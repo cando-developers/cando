@@ -763,7 +763,7 @@ keeps track if the minimization encountered a problem."
                  do (format t "Minimizing ~a for the ~a time~%" mol time)
                  do (setf fail nil)
                     (handler-case
-                        (energy:minimize agg :print-intermediate-results nil
+                        (energy:energy-minimize agg :print-intermediate-results nil
                                              :resignal-error t)
                       (chem:minimizer-error (err)
                         (setf fail t)

@@ -209,7 +209,7 @@
                                 :the-root-monomer the-root-monomer
                                 :in-monomers in-monomers
                                 :out-monomers out-monomers))
-             (ss (make-sidechain-rotamer-stepper os)))
+             (ss (make-permissible-sidechain-rotamers os)))
         (write-rotamers ss (first-rotamers ss))
         os))))
 
@@ -347,61 +347,11 @@
 (defun lookup-dihedral-cache (oligomer-shape monomer-shape dihedral-name)
   (lookup-dihedral-cache-impl oligomer-shape monomer-shape dihedral-name))
 
-#+(or)
-(defun lookup-dihedral-cache (oligomer-shape monomer-shape dihedral-name)
-  "Return the list of plug names to get from a monomer to another monomer that
-provides the dihedral angle with the given dihedral-name"
-  (let* ((monomer (monomer monomer-shape))
-         (oligomer (oligomer oligomer-shape))
-         (monomer-name (oligomer-monomer-name oligomer monomer))
-         (topology (chem:find-topology monomer-name))
-         (constitution (constitution topology))
-         (residue-properties (residue-properties constitution))
-         (dihedrals (getf residue-properties :dihedrals)))
-    (when dihedrals
-      (let* ((dihedral-info (find dihedral-name dihedrals :key #'name)))
-        (etypecase dihedral-info
-         (dihedral-info-external
-          (loop for plug-name in (plug-path dihedral-info)
-                do (setf monomer (monomer-on-other-side monomer plug-name)))
-          (let* ((monomer-shape (gethash monomer (topology:monomer-shape-map oligomer-shape)))
-                 (monomer-context (monomer-context monomer-shape))
-                 (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-map oligomer-shape)))))
-                 (rotamer-index (fragment-conformation-index monomer-shape))
-                 (rotamer (aref rotamers rotamer-index))
-                 (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
-                 (deg (getf dihedral-cache-deg (external-dihedral-name dihedral-info))))
-            (values deg monomer-shape)))
-          (dihedral-info-atom
-           (let* ((monomer-context (monomer-context monomer-shape))
-                  (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-map oligomer-shape)))))
-                  (rotamer-index (fragment-conformation-index monomer-shape))
-                  (rotamer (aref rotamers rotamer-index))
-                  (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
-                  (deg (getf dihedral-cache-deg dihedral-name)))
-             (values deg monomer-shape))))))))
 
-#+(or)(defun lookup-dihedral-cache-monomer-shape (oligomer-shape monomer-shape dihedral-name)
-  "Return the list of plug names to get from a monomer to another monomer that
-provides the dihedral angle with the given dihedral-name"
-  (let* ((monomer (monomer monomer-shape))
-         (oligomer (oligomer oligomer-shape))
-         (monomer-name (oligomer-monomer-name oligomer monomer))
-         (topology (chem:find-topology monomer-name))
-         (constitution (constitution topology))
-         (residue-properties (residue-properties constitution))
-         (dihedrals (getf residue-properties :dihedrals)))
-    (when dihedrals
-      (let* ((dihedral-info (find dihedral-name dihedrals :key #'name)))
-        (etypecase dihedral-info
-         (dihedral-info-external
-          (loop for plug-name in (plug-path dihedral-info)
-                do (setf monomer (monomer-on-other-side monomer plug-name)))
-          (let* ((monomer-shape (gethash monomer (topology:monomer-shape-map oligomer-shape))))
-            monomer-shape))
-         (dihedral-info-atom
-          monomer-shape))))))
-
+(defun build-externals-from-internals (assembler &key oligomer-shape into-coords)
+  (let ((coords (make-coordinates-for-assembler assembler)))
+    (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
+    (copy-joint-positions-into-atoms assembler coords oligomer-shape)))
 
 (defun build-oligomer-shape-in-aggregate (assembler oligomer-shape)
   (let ((coords (make-coordinates-for-assembler assembler)))
@@ -409,18 +359,27 @@ provides the dihedral angle with the given dihedral-name"
     (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
     (copy-joint-positions-into-atoms assembler coords oligomer-shape)))
 
-(defun test-build-oligomer-shape-in-aggregate (assembler oligomer-shape)
-  (let ((coords (make-coordinates-for-assembler assembler)))
+(defun build-oligomer-shape-in-coordinates (assembler oligomer-shape coords)
     (fill-internals-from-oligomer-shape-and-adjust assembler oligomer-shape)
-    (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
-    (copy-joint-positions-into-atoms assembler coords oligomer-shape)
-    ))
+    (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))
+
+(defun build-oligomer-shape-keep-internals-in-coordinates (assembler oligomer-shape coords)
+  (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))
+
+(defun build-all-oligomer-shapes-in-coordinates (assembler coords)
+  (loop for oligomer-shape in (topology:oligomer-shapes assembler)
+        do (fill-internals-from-oligomer-shape-and-adjust assembler oligomer-shape)
+        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)))
+
+(defun build-all-oligomer-shapes-from-internals-in-coordinates (assembler coords)
+  (loop for oligomer-shape in (topology:oligomer-shapes assembler)
+        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)))
 
 (defun random-oligomer-shape-aggregate (oligomer-shape)
   "Generate a random oligomer-shape and return the aggregate"
-  (let* ((bs (make-backbone-rotamer-stepper oligomer-shape)))
+  (let* ((bs (make-permissible-backbone-rotamers oligomer-shape)))
     (write-rotamers bs (random-rotamers bs))
-    (let ((ss (make-sidechain-rotamer-stepper oligomer-shape)))
+    (let ((ss (make-permissible-sidechain-rotamers oligomer-shape)))
       (write-rotamers ss (random-rotamers ss))
       (let* ((ass (make-assembler (list oligomer-shape)))
              (coords (make-coordinates-for-assembler ass))
