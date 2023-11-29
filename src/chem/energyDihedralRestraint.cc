@@ -223,16 +223,18 @@ bool		calcOffDiagonalHessian = true;
 
 
 num_real EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                        chem::NVector_sp 	pos,
-                                                        core::T_sp componentEnergy,
-                                                        bool 		calcForce,
-                                                        gc::Nilable<chem::NVector_sp> 	force,
-                                                        bool		calcDiagonalHessian,
-                                                        bool		calcOffDiagonalHessian,
-                                                        gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                                        gc::Nilable<chem::NVector_sp>	hdvec,
-                                                        gc::Nilable<chem::NVector_sp> dvec)
+                                                          chem::NVector_sp 	pos,
+                                                          core::T_sp componentEnergy,
+                                                          bool 		calcForce,
+                                                          gc::Nilable<chem::NVector_sp> 	force,
+                                                          bool		calcDiagonalHessian,
+                                                          bool		calcOffDiagonalHessian,
+                                                          gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                                          gc::Nilable<chem::NVector_sp>	hdvec,
+                                                          gc::Nilable<chem::NVector_sp> dvec,
+                                                          core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   num_real totalEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) {

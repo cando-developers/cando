@@ -339,8 +339,10 @@ num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             bool		calcOffDiagonalHessian,
                                             gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
                                             gc::Nilable<chem::NVector_sp> hdvec,
-                                            gc::Nilable<chem::NVector_sp> dvec)
+                                              gc::Nilable<chem::NVector_sp> dvec,
+                                              core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   num_real termEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 

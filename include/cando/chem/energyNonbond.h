@@ -239,36 +239,40 @@ class EnergyNonbond_O : public EnergyComponent_O
   void verifyExcludedAtoms(Matter_sp matter, ScoringFunction_sp score);
   
   virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
-                                       NVector_sp 	pos,
-                                       core::T_sp componentEnergy,
-                                       bool 		calcForce,
-                                       gc::Nilable<NVector_sp> 	force,
-                                       bool		calcDiagonalHessian,
-                                       bool		calcOffDiagonalHessian,
-                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                       gc::Nilable<NVector_sp>	hdvec,
-                                       gc::Nilable<NVector_sp> dvec);
+                                         NVector_sp 	pos,
+                                         core::T_sp componentEnergy,
+                                         bool 		calcForce,
+                                         gc::Nilable<NVector_sp> 	force,
+                                         bool		calcDiagonalHessian,
+                                         bool		calcOffDiagonalHessian,
+                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                         gc::Nilable<NVector_sp>	hdvec,
+                                         gc::Nilable<NVector_sp> dvec,
+                                         core::T_sp activeAtomMask
+                                         );
   virtual num_real evaluateTerms( ScoringFunction_sp score,
-                                NVector_sp 	pos,
-                                core::T_sp componentEnergy,
-                                bool 		calcForce,
-                                gc::Nilable<NVector_sp> 	force,
-                                bool		calcDiagonalHessian,
-                                bool		calcOffDiagonalHessian,
-                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                gc::Nilable<NVector_sp>	hdvec,
-                                gc::Nilable<NVector_sp> dvec);
+                                  NVector_sp 	pos,
+                                  core::T_sp componentEnergy,
+                                  bool 		calcForce,
+                                  gc::Nilable<NVector_sp> 	force,
+                                  bool		calcDiagonalHessian,
+                                  bool		calcOffDiagonalHessian,
+                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                  gc::Nilable<NVector_sp>	hdvec,
+                                  gc::Nilable<NVector_sp> dvec,
+                                  core::T_sp activeAtomMask );
   
   virtual num_real evaluateUsingExcludedAtoms( ScoringFunction_sp score,
-                                           NVector_sp 	pos,
-                                           core::T_sp componentEnergy,
-                                           bool 		calcFrce,
-                                           gc::Nilable<NVector_sp> 	force,
-                                           bool		calcDiagonalHessian,
-                                           bool		calcOffDiagonalHessian,
-                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                           gc::Nilable<NVector_sp>	hdvec,
-                                           gc::Nilable<NVector_sp> dvec);
+                                               NVector_sp 	pos,
+                                               core::T_sp componentEnergy,
+                                               bool 		calcFrce,
+                                               gc::Nilable<NVector_sp> 	force,
+                                               bool		calcDiagonalHessian,
+                                               bool		calcOffDiagonalHessian,
+                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                               gc::Nilable<NVector_sp>	hdvec,
+                                               gc::Nilable<NVector_sp> dvec,
+                                               core::T_sp activeAtomMask );
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm( ScoringFunction_sp score,
                                                                                 NVector_sp pos );
 

@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyRigidBodyStaple.h>
 #include <clasp/core/numerics.h>
 #include <clasp/core/lispStream.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/ql.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
@@ -177,16 +178,19 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 
   
 num_real EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                      NVector_sp 	pos,
-                                                      core::T_sp componentEnergy,
-                                                      bool 		calcForce,
-                                                      gc::Nilable<NVector_sp> 	force,
-                                                      bool		calcDiagonalHessian,
-                                                      bool		calcOffDiagonalHessian,
-                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                      gc::Nilable<NVector_sp>	hdvec,
-                                                      gc::Nilable<NVector_sp> dvec)
+                                                        NVector_sp 	pos,
+                                                        core::T_sp componentEnergy,
+                                                        bool 		calcForce,
+                                                        gc::Nilable<NVector_sp> 	force,
+                                                        bool		calcDiagonalHessian,
+                                                        bool		calcOffDiagonalHessian,
+                                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                        gc::Nilable<NVector_sp>	hdvec,
+                                                        gc::Nilable<NVector_sp> dvec,
+                                                        core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  SIMPLE_WARN("How do I deal with activeAtomMask");
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {

@@ -59,6 +59,7 @@
                                        (tn-tolerance *tn-tolerance*)
                                        (print-intermediate-results t)
                                        (report-every-n-steps 10)
+                                       active-atoms-mask
                                        resignal-error
                                        &allow-other-keys)
   "Minimize the conformational energy for an energy-function"
@@ -76,7 +77,7 @@
     (if print-intermediate-results
         (chem:enable-print-intermediate-results minimizer report-every-n-steps)
         (chem:disable-print-intermediate-results minimizer))
-    (cando:minimize-no-fail minimizer :resignal-error resignal-error)))
+    (cando:minimize-no-fail minimizer :active-atoms-mask active-atoms-mask :resignal-error resignal-error)))
 
 (defun save-minimizer-coordinates (coordinates minimizer-trajectory)
   (let ((single-float-coordinates (make-array (length coordinates) :element-type 'single-float :adjustable nil)))
@@ -100,8 +101,10 @@
                                    (print-intermediate-results t)
                                    (report-every-n-steps 10))
   "Minimize the conformational energy for an energy-function"
-  (let ((minimizer (chem:make-minimizer energy-function)))
-    (chem:minimizer-set-frozen minimizer frozen)
+  (when frozen
+    (warn "Switch from frozen to active-atoms-mask"))
+  (let* ((active-atoms-mask (when frozen (bit-nand frozen frozen)))
+         (minimizer (chem:make-minimizer energy-function)))
     (if save-trajectory
         (let ((minimizer-trajectory (make-array 16 :adjustable t :fill-pointer 0)))
           (chem:set-step-callback minimizer (lambda (coords) (save-minimizer-coordinates coords minimizer-trajectory)))

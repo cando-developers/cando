@@ -46,15 +46,17 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/chemPackage.h>
 
 namespace chem {
-double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen );
-  double	squared(NVector_sp me, core::T_sp frozen);
-  double        magnitude(NVector_sp me, core::T_sp frozen);
-  double	rmsMagnitude(NVector_sp me, core::T_sp frozen);
-  double	angleWithVector(NVector_sp me, NVector_sp other, core::T_sp frozen);
-  void          XPlusYTimesScalar( NVector_sp nvResult, NVector_sp nvX, NVector_sp nvD, double sigma, core::T_sp frozen);
+double	dotProduct( NVector_sp x, NVector_sp y );
+double	dotProductWithActiveAtomMask( NVector_sp x, NVector_sp y, core::T_sp activeAtomMask );
+  double	squaredWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
+  double        magnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
+  double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
+  double	angleWithVector(NVector_sp me, NVector_sp other);
+double	angleWithVectorWithActiveAtomMask(NVector_sp me, NVector_sp other, core::T_sp activeAtomMask);
+  void          XPlusYTimesScalarWithActiveAtomMask( NVector_sp nvResult, NVector_sp nvX, NVector_sp nvD, double sigma, core::T_sp activeAtomMask);
   void	        copyVector(NVector_sp dest, NVector_sp orig);
-  void	inPlaceAddTimesScalar( NVector_sp nvResult, NVector_sp nvY, double x, core::T_sp frozen);	// NVectorAdd(a,x,y)
-  double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen);
+  void	inPlaceAddTimesScalarWithActiveAtomMask( NVector_sp nvResult, NVector_sp nvY, double x, core::T_sp activeAtomMask );	// NVectorAdd(a,x,y)
+  double	rmsDistanceFromWithActiveAtomMask(NVector_sp u, NVector_sp v, core::T_sp activeAtomMask);
   NVector_sp  copy_nvector(NVector_sp original);
   
   void chem__nvector_ensure_identical(NVector_sp veca, NVector_sp vecb, double tol);

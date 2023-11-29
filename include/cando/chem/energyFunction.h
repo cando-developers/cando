@@ -202,7 +202,7 @@ namespace chem {
     void setBoundingBox(BoundingBox_sp bounding_box);
     void makUnboundBoundingBox();
     
-    ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
+    ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask );
 
     CL_LISPIFY_NAME("getMatter");
     CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
@@ -284,8 +284,8 @@ namespace chem {
     void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
 
 
-    double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
-    double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
+    double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i, core::T_sp activeAtomMask );
+    double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j, core::T_sp activeAtomMask );
     double	evaluateAll(NVector_sp pos,
                             core::T_sp componentEnergy,
                             bool calcForce,
@@ -294,7 +294,8 @@ namespace chem {
                             bool calcOffDiagonalHessian,
                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                             gc::Nilable<NVector_sp> hdvec,
-                            gc::Nilable<NVector_sp> dvec	);
+                            gc::Nilable<NVector_sp> dvec,
+                            core::T_sp activeAtomMask );
 
     string	summarizeBeyondThresholdInteractionsAsString();
     string	summarizeEnergyAsString();
@@ -304,8 +305,8 @@ namespace chem {
 //		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
     uint		countTermsBeyondThreshold();
 
-    void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
-    void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta);
+    void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta, core::T_sp activeAtomMask );
+    void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta, core::T_sp activeAtomMask);
 
     core::List_sp checkForBeyondThresholdInteractions(double threshold);
 

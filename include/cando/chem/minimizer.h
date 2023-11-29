@@ -159,7 +159,6 @@ struct RestartMinimizer {};
     NVector_sp		nvP1DSearchTemp2;
     NVector_sp		nvP1DSearchOrigin;
     NVector_sp		nvP1DSearchDirection;
-    core::T_sp          _Frozen;
         // Save coordinates and forces so that if we interrupt the minimization we can recover them
     gc::Nilable<NVector_sp> _Position;
     gc::Nilable<NVector_sp> _Force;
@@ -175,16 +174,17 @@ struct RestartMinimizer {};
                                   NVector_sp nvPos, NVector_sp nvDir,
                                   NVector_sp nvForce,
                                   double xa, double xx, double xb,
-                                  double fa, double fx, double fb);
+                                  double fa, double fx, double fb,
+                                  core::T_sp activeAtomMask );
     void lineSearchFinalReport( StepReport_sp report, double step, double fmin,
                                 int energyEvals, int forceEvals, int dbrentSteps );
-    void stepReport( StepReport_sp report, double energy,NVector_sp force );
+    void stepReport( StepReport_sp report, double energy,NVector_sp force,core::T_sp activeAtomMask );
 
-    void	getPosition(NVector_sp nvResult, NVector_sp nvOrigin, NVector_sp nvDirection, double x);
-    double dTotalEnergy(NVector_sp pos);
-    double dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce);
-    double d1DTotalEnergy(double x);
-    double d1DTotalEnergyForce( double x, double* fx, double* dfx );
+    void	getPosition(NVector_sp nvResult, NVector_sp nvOrigin, NVector_sp nvDirection, double x, core::T_sp activeAtomMask);
+    double dTotalEnergy(NVector_sp pos,core::T_sp activeAtomMask);
+    double dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce, core::T_sp activeAtomMask);
+    double d1DTotalEnergy(double x, core::T_sp activeAtomMask );
+    double d1DTotalEnergyForce( double x, double* fx, double* dfx, core::T_sp activeAtomMask );
     void   minBracket(	NVector_sp	nvOrigin,
                         NVector_sp	nvDir,
                         double		*dPxa,
@@ -192,12 +192,14 @@ struct RestartMinimizer {};
                         double		*dPxc,
                         double		*dPfa,
                         double		*dPfb,
-                        double		*dPfc );
+                        double		*dPfc,
+                        core::T_sp activeAtomMask );
     double 	dbrent(	double ax, double bx, double cx,
 			double tol, double& step,
 			int&	energyEvals,
 			int&	forceEvals,
-			int&	dbrentSteps );
+			int&	dbrentSteps,
+                        core::T_sp activeAtomMask );
     void	lineSearch(	double	*dPxnew,
 				double	*dPfnew,
 				NVector_sp nvOrigin,
@@ -206,7 +208,8 @@ struct RestartMinimizer {};
 				NVector_sp nvTemp1,
 				NVector_sp nvTemp2,
 	       			int	iteration,
-				StepReport_sp report );
+				StepReport_sp report,
+                                core::T_sp activeAtomMask );
     void		define1DSearch( NVector_sp o, NVector_sp d,
 					NVector_sp t1, NVector_sp t2 ) {
       this->nvP1DSearchOrigin = o;
@@ -217,18 +220,23 @@ struct RestartMinimizer {};
         /*! Return true on success */
     void	_steepestDescent( int numSteps,
 				  NVector_sp p,
-				  double rmsGradientTol );
+				  double rmsGradientTol,
+                                  core::T_sp activeAtomMask );
         /*! Return true on success */
     void	_conjugateGradient( int numSteps,
 				    NVector_sp p,
-				    double rmsGradientTol );
+				    double rmsGradientTol,
+                                    core::T_sp activeAtomMask );
     void	_truncatedNewton( int numSteps,
 				  NVector_sp p,
-				  double rmsGradientTol );
+				  double rmsGradientTol,
+                                  core::T_sp activeAtomMask );
 
 
-    void	_evaluateEnergyAndForceManyTimes( int numSteps, NVector_sp nvPos );
-    void	validateForce(NVector_sp pos, NVector_sp force);
+    void	_evaluateEnergyAndForceManyTimes( int numSteps, NVector_sp nvPos,
+                                                  core::T_sp activeAtomMask );
+    void	validateForce(NVector_sp pos, NVector_sp force,
+                              core::T_sp activeAtomMask );
 
     void	debugBeginIteration(int i);
 //	void	debugAdd(adapt::QDomNode_sp	node);
@@ -256,7 +264,8 @@ struct RestartMinimizer {};
                                    NVector_sp			rj,
                                    NVector_sp			dj,
                                    NVector_sp			zj,
-                                   NVector_sp			qj );
+                                   NVector_sp			qj,
+                                   core::T_sp activeAtomMask );
 
 
 
@@ -317,17 +326,16 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
 
     void	minimizeSteepestDescent();
     void	minimizeConjugateGradient();
-    void	resetAndMinimize();
-    core::T_mv minimize();
+    void	resetAndMinimize(core::T_sp activeAtomMask);
+    core::T_mv minimize(core::T_sp activeAtomMask);
         // If the minimization is aborted the intermediate results can be recovered
     void    writeIntermediateResultsToEnergyFunction();
-    void	evaluateEnergyAndForceManyTimes(int times);
+    void	evaluateEnergyAndForceManyTimes(int times,core::T_sp activeAtomMask );
 
     adapt::QDomNode_sp	asXml();
 
     Minimizer_O() :
         _PrintIntermediateResults(1),
-        _Frozen(nil<core::T_O>()),
         _StepCallback(nil<core::T_O>())
     {};
   };

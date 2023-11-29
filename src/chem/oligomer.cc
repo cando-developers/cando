@@ -478,7 +478,7 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 
 
 
-CL_LAMBDA("(oligomer !) source-monomer coupling-or-source-plug-name target-monomer &optional (target-plug-name nil)");
+CL_LAMBDA((oligomer chem:oligomer) source-monomer coupling-or-source-plug-name target-monomer &optional (target-plug-name nil));
 CL_NAME(CHEM:OLIGOMER/COUPLE);
 CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp sourceMon, core::T_sp couplingOrSourcePlugName, Monomer_sp targetMon, core::Symbol_sp targetPlugName  )
 {

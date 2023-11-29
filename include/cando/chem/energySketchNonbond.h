@@ -127,25 +127,28 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                                           AbstractLargeSquareMatrix_sp m );
     
   virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
-                                       NVector_sp 	pos,
-                                       core::T_sp componentEnergy,
-                                       bool 		calcForce,
-                                       gc::Nilable<NVector_sp> 	force,
-                                       bool		calcDiagonalHessian,
-                                       bool		calcOffDiagonalHessian,
-                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                       gc::Nilable<NVector_sp>	hdvec,
-                                       gc::Nilable<NVector_sp> dvec);
+                                         NVector_sp 	pos,
+                                         core::T_sp componentEnergy,
+                                         bool 		calcForce,
+                                         gc::Nilable<NVector_sp> 	force,
+                                         bool		calcDiagonalHessian,
+                                         bool		calcOffDiagonalHessian,
+                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                         gc::Nilable<NVector_sp>	hdvec,
+                                         gc::Nilable<NVector_sp> dvec,
+                                         core::T_sp activeAtomMask
+                                         );
 
  num_real  evaluateTerms( NVector_sp 	pos,
-                        core::T_sp componentEnergy,
-                      bool 		calcForce,
-                      gc::Nilable<NVector_sp> 	force,
-                      bool		calcDiagonalHessian,
-                      bool		calcOffDiagonalHessian,
-                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                      gc::Nilable<NVector_sp>	hdvec,
-                      gc::Nilable<NVector_sp> dvec);
+                          core::T_sp componentEnergy,
+                          bool 		calcForce,
+                          gc::Nilable<NVector_sp> 	force,
+                          bool		calcDiagonalHessian,
+                          bool		calcOffDiagonalHessian,
+                          gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                          gc::Nilable<NVector_sp>	hdvec,
+                          gc::Nilable<NVector_sp> dvec,
+                          core::T_sp activeAtomMask );
 
   void setLongDistanceCutoff(float cutoff);
   void walkSketchNonbondTerms(core::T_sp callback);

@@ -50,20 +50,40 @@ namespace chem {
  *      Return the DOT product of two vectors.
  *      return:  (this) . x
  */
-double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen )
+double	dotProduct( NVector_sp x, NVector_sp y )
 {
   ASSERT(x->length()==y->length());
-  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
-    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+  double          dDot;
+  dDot = 0.0;
+  Vector_real* px = &(*x)[0];
+  Vector_real* py = &(*y)[0];
+  for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) dDot += px[i]*py[i];
+  return dDot;
+}
+
+/*
+ *      dotProductWithActiveAtomMask
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Return the DOT product of two vectors.
+ *      Use activeAtomMask to select indices.
+ *      return:  (this) . x
+ */
+double	dotProductWithActiveAtomMask( NVector_sp x, NVector_sp y, core::T_sp activeAtomMask )
+{
+  ASSERT(x->length()==y->length());
+  if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    core::SimpleBitVector_sp activeAtomMask_ = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
     double          dDot;
     dDot = 0.0;
     Vector_real* px = &(*x)[0];
     Vector_real* py = &(*y)[0];
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
-      dDot += (px[i]*py[i])*(1-frozen_->testBit(i));
+      dDot += (px[i]*py[i])*(activeAtomMask_->testBit(i));
     }
     return dDot;
-  } else if (frozen.nilp()) {
+  } else if (activeAtomMask.nilp()) {
     double          dDot;
     dDot = 0.0;
     Vector_real* px = &(*x)[0];
@@ -71,22 +91,22 @@ double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen )
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) dDot += px[i]*py[i];
     return dDot;
   }
-  SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
+  SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
 }
 
 
-double	squared(NVector_sp x, core::T_sp frozen)
+double	squaredWithActiveAtomMask(NVector_sp x, core::T_sp activeAtomMask)
 {
-  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
-    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+  if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    core::SimpleBitVector_sp activeAtomMask_ = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
     double          dDot;
     dDot = 0.0;
     Vector_real* dp = &(*x)[0];
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
-      dDot += (dp[i]*dp[i])*(1-frozen_->testBit(i));
+      dDot += (dp[i]*dp[i])*(activeAtomMask_->testBit(i));
     }
     return(dDot);
-  } else if (frozen.nilp()) {
+  } else if (activeAtomMask.nilp()) {
     double          dDot;
     dDot = 0.0;
     Vector_real* dp = &(*x)[0];
@@ -95,47 +115,65 @@ double	squared(NVector_sp x, core::T_sp frozen)
     }
     return(dDot);
   }
-  SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
+  SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
 }
 
-double magnitude(NVector_sp me, core::T_sp frozen)
+double magnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask)
 {
   double  dDot;
-  dDot = squared(me,frozen);
+  dDot = squaredWithActiveAtomMask(me,activeAtomMask);
   return(sqrt(dDot));
 }
 
-
-double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
+double	rmsMagnitude(NVector_sp me)
 {
   ASSERT(me->length()>0);
-  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
-    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+  double dDot = 0.0;
+  Vector_real* dp = &(*me)[0];
+  for ( size_t i(0), iEnd(me->length()); i<iEnd; ++i ) {
+    dDot += dp[i]*dp[i];
+  }
+  if (chem__verbose(4)) {
+    core::clasp_write_string(fmt::format("{} w/o activeAtomMask dDot -> {}  me->length() -> {}\n" , __FUNCTION__ , dDot , me->length()));
+  }
+  if (chem__verbose(5)) {
+    for ( int zz=0; zz<me->length(); zz++ ) {
+      core::clasp_write_string(fmt::format("    nvector[{}] -> {}\n" , zz , (*me)[zz]));
+    }
+  }
+  return sqrt(dDot/me->length());
+}
+
+double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask)
+{
+  ASSERT(me->length()>0);
+  if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    core::SimpleBitVector_sp activeAtomMask_ = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
     size_t num = 0;
     double dDot = 0.0;
     Vector_real* dp = &(*me)[0];
     for ( size_t i(0), iEnd(me->length()); i<iEnd; ++i ) {
-      int moveable = (1-frozen_->testBit(i));
+      int moveable = (activeAtomMask_->testBit(i));
       num += moveable;
       dDot += (dp[i]*dp[i])*moveable;
     }
     if (chem__verbose(4)) {
-      core::clasp_write_string(fmt::format("{} w/frozen dDot -> {}  num -> {}\n" , __FUNCTION__ , dDot , num ));
+      core::clasp_write_string(fmt::format("{} w/activeAtomMask dDot -> {}  num -> {}\n" , __FUNCTION__ , dDot , num ));
       if (chem__verbose(5)) {
         for ( int zz=0; zz<me->length(); zz++ ) {
-          core::clasp_write_string(fmt::format("    frozen[{}] -> {}  nvector[{}] -> {}\n" , zz , frozen_->testBit(zz) , zz , (*me)[zz]));
+          core::clasp_write_string(fmt::format("    activeAtomMask[{}] -> {}  nvector[{}] -> {}\n" , zz , activeAtomMask_->testBit(zz) , zz , (*me)[zz]));
         }
       }
     }
     return sqrt(dDot/num);
-  } else if (frozen.nilp()) {
+  } else if (activeAtomMask.nilp()) {
     double dDot = 0.0;
     Vector_real* dp = &(*me)[0];
     for ( size_t i(0), iEnd(me->length()); i<iEnd; ++i ) {
       dDot += dp[i]*dp[i];
     }
     if (chem__verbose(4)) {
-      core::clasp_write_string(fmt::format("{} w/o frozen dDot -> {}  me->length() -> {}\n" , __FUNCTION__ , dDot , me->length()));
+      core::clasp_write_string(fmt::format("{} w/o activeAtomMask dDot -> {}  me->length() -> {}\n" , __FUNCTION__ , dDot , me->length()));
     }
     if (chem__verbose(5)) {
       for ( int zz=0; zz<me->length(); zz++ ) {
@@ -144,17 +182,17 @@ double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
     }
     return sqrt(dDot/me->length());
   }
-  SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
+  SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
 }
 
 
-double	angleWithVector(NVector_sp me, NVector_sp other, core::T_sp frozen)
+double	angleWithVector(NVector_sp me, NVector_sp other)
 {
 #define	VERY_SMALL 1.0e-6
   double	lenThis, lenOther, dot;
-  lenThis = magnitude(me,frozen);
-  lenOther = magnitude(other,frozen);
-  dot = dotProduct(me->asSmartPtr(),other,frozen);
+  lenThis = magnitudeWithActiveAtomMask(me,nil<core::T_O>());
+  lenOther = magnitudeWithActiveAtomMask(other,nil<core::T_O>());
+  dot = dotProductWithActiveAtomMask(me->asSmartPtr(),other,nil<core::T_O>());
   if ( fabs(lenThis) > VERY_SMALL && fabs(lenOther)>VERY_SMALL) {
     dot /= (lenThis*lenOther);
     if ( dot > 1.0 ) dot = 1.0;
@@ -164,8 +202,24 @@ double	angleWithVector(NVector_sp me, NVector_sp other, core::T_sp frozen)
   return 0.0;
 }
 
-/* Multiply each element of NVector Y by s and add to x and write into o IF frozen[index] == 0 */
-void XPlusYTimesScalar( NVector_sp output, NVector_sp x, NVector_sp y, double s, core::T_sp frozen )
+double	angleWithVectorWithActiveAtomMask(NVector_sp me, NVector_sp other, core::T_sp activeAtomMask)
+{
+#define	VERY_SMALL 1.0e-6
+  double	lenThis, lenOther, dot;
+  lenThis = magnitudeWithActiveAtomMask(me,activeAtomMask);
+  lenOther = magnitudeWithActiveAtomMask(other,activeAtomMask);
+  dot = dotProductWithActiveAtomMask(me->asSmartPtr(),other,activeAtomMask);
+  if ( fabs(lenThis) > VERY_SMALL && fabs(lenOther)>VERY_SMALL) {
+    dot /= (lenThis*lenOther);
+    if ( dot > 1.0 ) dot = 1.0;
+    if ( dot < -1.0 ) dot = -1.0;
+    return safe_acos(dot);
+  }
+  return 0.0;
+}
+
+/* Multiply each element of NVector Y by s and add to x and write into o IF activeAtomMask[index] == 0 */
+void XPlusYTimesScalarWithActiveAtomMask( NVector_sp output, NVector_sp x, NVector_sp y, double s, core::T_sp activeAtomMask )
 {
   LOG("this->_Values.size() = {}" , o->length() );
   LOG("x->size() = {}" , x->length() );
@@ -174,29 +228,29 @@ void XPlusYTimesScalar( NVector_sp output, NVector_sp x, NVector_sp y, double s,
       || output->length()!=y->length()) {
     SIMPLE_ERROR("Mismatch in lengths of nvectors - they are output, x, y -> {}, {}, {}" , output->length() , x->length() , y->length());
   }
-  core::SimpleBitVector_sp frozen_bitvector;
-  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
-    frozen_bitvector = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
-    if (frozen_bitvector->length()!=output->length()) {
-      SIMPLE_ERROR("frozen is defined but is not the correct length - it is {} and expected {}" , frozen_bitvector->length() , output->length());
+  core::SimpleBitVector_sp activeAtomMask_bitvector;
+  if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    activeAtomMask_bitvector = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
+    if (activeAtomMask_bitvector->length()!=output->length()) {
+      SIMPLE_ERROR("activeAtomMask is defined but is not the correct length - it is {} and expected {}" , activeAtomMask_bitvector->length() , output->length());
     }
-  } else if (frozen.notnilp()) {
-    SIMPLE_ERROR("Expected frozen to be a simple-bit-vector - but it is {}" , _rep_(frozen));
+  } else if (activeAtomMask.notnilp()) {
+    SIMPLE_ERROR("Expected activeAtomMask to be a simple-bit-vector - but it is {}" , _rep_(activeAtomMask));
   }
   Vector_real* poutput = &(*output)[0];
   Vector_real* px = &(*x)[0];
   Vector_real* py = &(*y)[0];
-  if (frozen_bitvector) {
-    // Some things may be frozen
+  if (activeAtomMask_bitvector) {
+    // Some things may be activeAtomMask
     for ( int i(0),iEnd(output->length()); i<iEnd; ++i ) {
-      poutput[i] = px[i]+py[i]*s*(1-frozen_bitvector->testBit(i));
+      poutput[i] = px[i]+py[i]*s*(activeAtomMask_bitvector->testBit(i));
     }
   } else {
-    // Nothing is frozen
+    // Nothing is activeAtomMask
     for ( int i(0),iEnd(output->length()); i<iEnd; ++i ) {
       poutput[i] = px[i]+py[i]*s;
     }
-  }    
+  }
 }
 
 /*
@@ -216,18 +270,18 @@ void	copyVector(NVector_sp dest, NVector_sp orig)
   }
 }
 
-void inPlaceAddTimesScalar( NVector_sp result, NVector_sp dir, double s, core::T_sp frozen )
+void inPlaceAddTimesScalarWithActiveAtomMask( NVector_sp result, NVector_sp dir, double s, core::T_sp activeAtomMask )
 {
   ASSERT( result->length() == dir->length());
-  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
-    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+  if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    core::SimpleBitVector_sp activeAtomMask_ = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
     Vector_real* presult = &(*result)[0];
     Vector_real* pdir = &(*dir)[0];
     for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
-      presult[i] += pdir[i]*s*(1-frozen_->testBit(i));
+      presult[i] += pdir[i]*s*(activeAtomMask_->testBit(i));
     }
     return;
-  } else if (frozen.nilp()) {
+  } else if (activeAtomMask.nilp()) {
     Vector_real* presult = &(*result)[0];
     Vector_real* pdir = &(*dir)[0];
     for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
@@ -235,29 +289,29 @@ void inPlaceAddTimesScalar( NVector_sp result, NVector_sp dir, double s, core::T
     }
     return;
   }
-  SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
+  SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
 }
 
 
-double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
+double	rmsDistanceFromWithActiveAtomMask(NVector_sp u, NVector_sp v, core::T_sp activeAtomMask)
 {
   ASSERT(u->length() == v->length());
-  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
-    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+  if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    core::SimpleBitVector_sp activeAtomMask_ = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
     size_t num = 0;
     double	e, sum;
     sum = 0.0;
     Vector_real* du = &(*u)[0];
     Vector_real* dv = &(*v)[0];
     for ( size_t i(0), iEnd(u->length()); i<iEnd; ++i ) {
-      int moveable = (1-frozen_->testBit(i));
+      int moveable = (activeAtomMask_->testBit(i));
       e = du[i]-dv[i];
       sum += e*e*moveable;
       num += moveable;
     }
     sum /= (float)(num);
     return sqrt(sum);
-  } else if (frozen.nilp()) {
+  } else if (activeAtomMask.nilp()) {
     double	e, sum;
     sum = 0.0;
     Vector_real* du = &(*u)[0];
@@ -269,7 +323,7 @@ double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
     sum /= (float)(u->length());
     return sqrt(sum);
   }
-  SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
+  SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
 }
 
 

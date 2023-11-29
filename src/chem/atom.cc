@@ -563,7 +563,7 @@ CL_DOCSTRING(R"doc(Create a bond between two atoms with the desired bond-order.
 If error-if-exists is T and the bond already exists then signal an error.
 If error-if-exists is NIL and the bond already exists then remove the old bond and create the new one.)doc");
 CL_LISPIFY_NAME("bondTo");
-CL_LAMBDA((from !) to bond_order &optional (error_if_exists t) (error_if_exceed_valence t));
+CL_LAMBDA((from chem:atom) to bond_order &optional (error_if_exists t) (error_if_exceed_valence t));
 CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_exists, bool error_if_exceed_valence )
 {
 	// Check if there is already a bond to this atom and

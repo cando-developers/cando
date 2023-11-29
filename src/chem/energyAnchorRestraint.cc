@@ -245,8 +245,10 @@ num_real EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score
                                                         bool		calcOffDiagonalHessian,
                                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                         gc::Nilable<NVector_sp>	hdvec,
-                                                        gc::Nilable<NVector_sp> dvec)
+                                                        gc::Nilable<NVector_sp> dvec,
+                                                        core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   num_real totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();

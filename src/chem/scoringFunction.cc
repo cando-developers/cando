@@ -42,6 +42,7 @@ __END_DOC
 
 #include <clasp/core/common.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/loop.h>
 #include <cando/adapt/indexedObjectBag.h>
@@ -92,7 +93,8 @@ core::HashTable_sp ScoringFunction_O::atomTypes() const {
 }
 
 CL_LISPIFY_NAME("evaluateEnergy");
-CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos )
+CL_LAMBDA((scoring-function chem:scoring-function) positions &optional active-atom-mask);
+CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos, core::T_sp activeAtomMask )
 {
   double		energy;
   energy = this->evaluateAll(pos,
@@ -102,14 +104,16 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos )
                              false, false,
                              nil<core::T_O>(),
                              nil<core::T_O>(),
-                             nil<core::T_O>() );
+                             nil<core::T_O>(),
+                             activeAtomMask );
   return energy;
 }
 
 
 
 CL_LISPIFY_NAME("evaluateEnergyForce");
-CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force )
+CL_LAMBDA((scoring-function chem:scoring-function) positions calc-force force &optional active-atom-mask);
+CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force, core::T_sp activeAtomMask )
 {
   double	energy;
   gc::Nilable<NVector_sp>	rawGrad;
@@ -126,7 +130,8 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool
                              false,
                              nil<core::T_O>(),
                              nil<core::T_O>(),
-                             nil<core::T_O>() );
+                             nil<core::T_O>(),
+                             activeAtomMask );
   return energy;
 }
 
@@ -138,12 +143,14 @@ CL_DEFMETHOD NVector_sp ScoringFunction_O::makeCoordinates() const
 
 
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessian");
+CL_LAMBDA((scoring-function chem:scoring-function) positions calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian &optional active-atom-mask );
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
                                                                           NVector_sp pos,
                                                                           bool calcForce, NVector_sp force,
                                                                           bool calcDiagonalHessian,
                                                                           bool calcOffDiagonalHessian,
-                                                                          AbstractLargeSquareMatrix_sp hessian )
+                                                                          AbstractLargeSquareMatrix_sp hessian,
+                                                                          core::T_sp activeAtomMask )
 {
   double	energy;
   gc::Nilable<NVector_sp> rawGrad;
@@ -156,13 +163,14 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
                               calcOffDiagonalHessian,
                               hessian,
                               nil<core::T_O>(),
-                              nil<core::T_O>() );
+                              nil<core::T_O>(),
+                              activeAtomMask );
   return energy;
 }
 
-
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessianForDebugging");
-CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebugging()
+CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask);
+CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebugging(core::T_sp activeAtomMask)
 {
   NVector_sp	pos, force;
   AbstractLargeSquareMatrix_sp	hessian;
@@ -179,25 +187,25 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebuggin
                              true,
                              hessian,
                              nil<core::T_O>(),
-                             nil<core::T_O>() );
+                             nil<core::T_O>(),
+                             activeAtomMask );
   return energy;
 }
 
-
-
-
 CL_LISPIFY_NAME("calculateEnergy");
-CL_DEFMETHOD double	ScoringFunction_O::calculateEnergy( )
+CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask);
+CL_DEFMETHOD double	ScoringFunction_O::calculateEnergy(core::T_sp activeAtomMask)
 {
   NVector_sp	pos;
   pos = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
-  return this->evaluateEnergy(pos);
+  return this->evaluateEnergy(pos,activeAtomMask);
 }
 
 
 CL_LISPIFY_NAME("calculateEnergyAndForce");
-CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( )
+CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask );
+CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp activeAtomMask )
 {
   NVector_sp	pos;
   NVector_sp	force;
@@ -205,7 +213,7 @@ CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( )
   pos = NVector_O::create(this->getNVectorSize());
   force = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
-  energy = this->evaluateEnergyForce(pos,true,force);
+  energy = this->evaluateEnergyForce(pos,true,force,activeAtomMask);
     	// To calculate the force magnitude use force->magnitude();
     	// To calculate the force rmsMagnitude use force->rmsMagnitude();
 //  this->writeForceToAtoms(force);
@@ -221,7 +229,7 @@ CL_DEFMETHOD core::List_sp	ScoringFunction_O::checkForBeyondThresholdInteraction
 
 
 
-CL_DOCSTRING(R"dx(Velocity-verlet-step moves the atoms one velocity-verlet-step.  
+CL_DOCSTRING(R"dx(Velocity-verlet-step moves the atoms one velocity-verlet-step.
 If tfrozen is a simple-bit-vector then it is used to determine frozen atoms.)dx")
 CL_LISPIFY_NAME("velocity-verlet-step");
 DOCGROUP(cando);
@@ -232,8 +240,10 @@ CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
                                          NVector_sp force_dt,
                                          NVector_sp delta_t_over_mass,
                                          double delta_t,
-                                         core::T_sp tfrozen)
+                                         core::T_sp tfrozen,
+                                         core::T_sp activeAtomMask)
 {
+  SIMPLE_WARN("is tfrozen and activeAtomMask the same?");
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
@@ -260,7 +270,7 @@ CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
       }
       atom_idx++;
     }
-    scoringFunc->evaluateEnergyForce(position,true,force_dt);
+    scoringFunc->evaluateEnergyForce(position,true,force_dt,activeAtomMask);
     atom_idx = 0;
     for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
       if (frozen->testBit(idx)==0) {
@@ -287,7 +297,7 @@ CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
       (*position)[idx+2] = (*position)[idx+2] + offsetz;
       atom_idx++;
     }
-    scoringFunc->evaluateEnergyForce(position,true,force_dt);
+    scoringFunc->evaluateEnergyForce(position,true,force_dt,activeAtomMask);
     atom_idx = 0;
     for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
       (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+0]+(*force_dt)[idx+0]))*scoringFunc->_VelocityScale.getX();
@@ -315,8 +325,10 @@ CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp
                                                               NVector_sp delta_t_over_mass,
                                                               double delta_t,
                                                               core::T_sp tfrozen,
-                                                              const Vector3& limit_displacement)
+                                                              const Vector3& limit_displacement,
+                                                              core::T_sp activeAtomMask )
 {
+  SIMPLE_WARN("Is tfrozen and activeAtomMask the same");
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
@@ -351,7 +363,7 @@ CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp
     if (!frozen || frozen->testBit(idx+2)==0) (*position)[idx+2] = (*position)[idx+2] + offsetz;
     atom_idx++;
   }
-  scoringFunc->evaluateEnergyForce(position,true,force_dt);
+  scoringFunc->evaluateEnergyForce(position,true,force_dt,activeAtomMask);
   atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
     if (!frozen || frozen->testBit(idx)==0) {

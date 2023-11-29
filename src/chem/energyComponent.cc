@@ -85,39 +85,45 @@ string	EnergyComponent_O::enabledAsString()
 
 
 CL_DOCSTRING(R"dx(Evaluate the energy of a component)dx");
+CL_LAMBDA(energy-function component pos &optional active-atom-mask);
 DOCGROUP(cando);
 CL_DEFUN
 num_real chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
-                                       EnergyComponent_sp component,
-                                       chem::NVector_sp pos)
+                                                EnergyComponent_sp component,
+                                                chem::NVector_sp pos,
+                                                core::T_sp activeAtomMask )
 {
   num_real val = component->evaluateAllComponent(energy_function,
-                                               pos,
-                                               nil<core::T_O>(),
-                                               false,nil<NVector_O>(),
-                                               false,false,
-                                               nil<AbstractLargeSquareMatrix_O>(),
-                                               nil<NVector_O>(),
-                                               nil<NVector_O>());
+                                                 pos,
+                                                 nil<core::T_O>(),
+                                                 false,nil<NVector_O>(),
+                                                 false,false,
+                                                 nil<AbstractLargeSquareMatrix_O>(),
+                                                 nil<NVector_O>(),
+                                                 nil<NVector_O>(),
+                                                 activeAtomMask );
   return val;
 };
 
 CL_DOCSTRING(R"dx(Evaluate the energy and force of a component)dx");
+CL_LAMBDA(energy-function component pos force &optional active-atom-mask);
 DOCGROUP(cando);
 CL_DEFUN
 num_real chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_function,
-                                             EnergyComponent_sp component,
-                                             NVector_sp pos,
-                                             NVector_sp force)
+                                                      EnergyComponent_sp component,
+                                                      NVector_sp pos,
+                                                      NVector_sp force,
+                                                      core::T_sp activeAtomMask )
 {
   num_real val = component->evaluateAllComponent(energy_function,
-                                               pos,
-                                               nil<core::T_O>(),
-                                               true,force,
-                                               false,false,
-                                               nil<AbstractLargeSquareMatrix_O>(),
-                                               nil<NVector_O>(),
-                                               nil<NVector_O>());
+                                                 pos,
+                                                 nil<core::T_O>(),
+                                                 true,force,
+                                                 false,false,
+                                                 nil<AbstractLargeSquareMatrix_O>(),
+                                                 nil<NVector_O>(),
+                                                 nil<NVector_O>(),
+                                                 activeAtomMask);
   return val;
 };
 

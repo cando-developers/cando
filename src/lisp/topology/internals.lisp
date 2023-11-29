@@ -571,6 +571,10 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (defmethod fill-joint-internals ((joint kin:jump-joint) bond angle-rad dihedral-rad)
   )
 
+(defmethod fill-joint-internals ((joint kin:xyz-joint) bond angle-rad dihedral-rad)
+  "Do nothing with xyz-joints"
+  )
+
 (defmethod fill-joint-internals ((joint kin:bonded-joint) bond angle-rad dihedral-rad)
   (kin:set-distance joint bond)
   (kin:set-theta joint angle-rad)

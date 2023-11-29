@@ -91,7 +91,7 @@ Root_sp FFTypeRule_O::getTest() const
 SYMBOL_EXPORT_SC_(ChemPkg,assignType);
 
 CL_LISPIFY_NAME("assignType");
-CL_LAMBDA((types-db !) atom);
+CL_LAMBDA((types-db chem:fftypes-db) atom);
 CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
   LOG("Got atom" );
   LOG("atom name: {}" , atom->getName().c_str() );

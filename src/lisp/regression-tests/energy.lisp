@@ -17,7 +17,16 @@
 (progn
 ;;  (gctools:wait-for-user-signal "signal")
   (time (dotimes (i 10000) (defparameter energy (chem:evaluate-energy-force ef pos t force)))))
-(format t "Energy = ~f~%" energy)
+(defparameter energy (chem:evaluate-energy-force ef pos t force))
+(defparameter expected-energy 20937032.6233387)
+(format t "         energy = ~f~%" energy)
+(format t "expected-energy = ~f~%" expected-energy)
+
+(defparameter delta (abs (- energy expected-energy)))
+
+(format t "delta = ~f~%" delta)
+;; These two tests are not yet reliable.
+(test-true energy-delta (< delta 3.0))
 
 (defparameter expected-force (coerce
   #(-86.73449263636415d0 -73.55316904531266d0 -5.346204607031707d0
@@ -112,12 +121,9 @@
 (defparameter expected-force-mag (chem:nvector-magnitude expected-force))
 (defparameter force-mag (chem:nvector-magnitude force))
 
-(defparameter delta (abs (- energy 20937035.650304314d0)))
-
-;; These two tests are not yet reliable.
-;(test-true energy-delta (< delta 0.0000000001))
-
-;(test-true force-mag (< (abs (- expected-force-mag force-mag)) 0.000001))
+(format t "         force-mag = ~f~%" force-mag)
+(format t "expected-force-mag = ~f~%" expected-force-mag)
+(test-true force-mag (< (abs (- expected-force-mag force-mag)) 1.0))
 
 (defparameter force-acos (/ (chem:nvector-dot expected-force force) expected-force-mag force-mag))
 

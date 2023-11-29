@@ -258,18 +258,18 @@ void	EnergyNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!! only the bonded components of energy are used for the precondition to keep it sparse");
 }
 
-num_real	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
-                                               NVector_sp 	pos,
-                                               core::T_sp componentEnergy,
-                                               bool 		calcForce,
-                                               gc::Nilable<NVector_sp> 	force,
-                                               bool		calcDiagonalHessian,
-                                               bool		calcOffDiagonalHessian,
-                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                               gc::Nilable<NVector_sp>	hdvec, 
-                                               gc::Nilable<NVector_sp> 	dvec )
+num_real EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
+                                                NVector_sp 	pos,
+                                                core::T_sp componentEnergy,
+                                                bool 		calcForce,
+                                                gc::Nilable<NVector_sp> 	force,
+                                                bool		calcDiagonalHessian,
+                                                bool		calcOffDiagonalHessian,
+                                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                gc::Nilable<NVector_sp>	hdvec, 
+                                                gc::Nilable<NVector_sp> 	dvec,
+                                                core::T_sp activeAtomMask )
 {
-
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   num_real energy = 0.0;
@@ -277,19 +277,22 @@ num_real	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   if (this->_UsesExcludedAtoms) {
     // Evaluate the nonbonds using the excluded atom list
     energy = this->evaluateUsingExcludedAtoms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
-                                     calcOffDiagonalHessian,hessian,hdvec,dvec);
+                                              calcOffDiagonalHessian,hessian,hdvec,dvec,
+                                              activeAtomMask);
     // Evaluate the 1-4 terms
     energy += this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
-                             calcOffDiagonalHessian,hessian,hdvec,dvec);
+                                  calcOffDiagonalHessian,hessian,hdvec,dvec,
+                                  activeAtomMask);
   } else {
     // Evaluate everything using terms
     energy = this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
-                             calcOffDiagonalHessian,hessian,hdvec,dvec);
+                                 calcOffDiagonalHessian,hessian,hdvec,dvec,
+                                 activeAtomMask);
   }
   return energy;
 }
-    
-    
+
+
 
 num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
                                        NVector_sp 	pos,
@@ -300,8 +303,10 @@ num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
                                        bool		calcOffDiagonalHessian,
                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                        gc::Nilable<NVector_sp>	hdvec, 
-                                       gc::Nilable<NVector_sp> 	dvec )
+                                        gc::Nilable<NVector_sp> 	dvec,
+                                        core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -424,16 +429,18 @@ num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
 
 
 num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
-                                                    NVector_sp 	pos,
-                                                    core::T_sp componentEnergy,
-                                                    bool 		calcForce,
-                                                    gc::Nilable<NVector_sp> 	force,
-                                                    bool		calcDiagonalHessian,
-                                                    bool		calcOffDiagonalHessian,
-                                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                    gc::Nilable<NVector_sp>	hdvec, 
-                                                    gc::Nilable<NVector_sp> 	dvec )
+                                                     NVector_sp 	pos,
+                                                     core::T_sp componentEnergy,
+                                                     bool 		calcForce,
+                                                     gc::Nilable<NVector_sp> 	force,
+                                                     bool		calcDiagonalHessian,
+                                                     bool		calcOffDiagonalHessian,
+                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                     gc::Nilable<NVector_sp>	hdvec, 
+                                                     gc::Nilable<NVector_sp> 	dvec,
+                                                     core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
     SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");

@@ -198,16 +198,18 @@ bool		calcOffDiagonalHessian = true;
 
 
 num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                  NVector_sp 	pos,
-                                                  core::T_sp componentEnergy,
-                                                  bool 		calcForce,
-                                                  gc::Nilable<NVector_sp> 	force,
-                                                  bool		calcDiagonalHessian,
-                                                  bool		calcOffDiagonalHessian,
-                                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                  gc::Nilable<NVector_sp>	hdvec,
-                                                  gc::Nilable<NVector_sp> dvec)
+                                                    NVector_sp 	pos,
+                                                    core::T_sp componentEnergy,
+                                                    bool 		calcForce,
+                                                    gc::Nilable<NVector_sp> 	force,
+                                                    bool		calcDiagonalHessian,
+                                                    bool		calcOffDiagonalHessian,
+                                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                    gc::Nilable<NVector_sp>	hdvec,
+                                                    gc::Nilable<NVector_sp> dvec,
+                                                    core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
   [[maybe_unused]]bool	hasHessian = hessian.notnilp();
@@ -258,11 +260,11 @@ num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
       OOZP_SET_POSITION(x1,I1,0);
       OOZP_SET_POSITION(y1,I1,1);
       OOZP_SET_POSITION(z1,I1,2);
-      if (z1 > 0.0) {
-        OOZP_FORCE_ACCUMULATE(I1,2,-kb);
-      } else {
-        OOZP_FORCE_ACCUMULATE(I1,2,kb);
-      }
+        if (z1 > 0.0) {
+          OOZP_FORCE_ACCUMULATE(I1,2,-kb);
+        } else {
+          OOZP_FORCE_ACCUMULATE(I1,2,kb);
+        }
 //#include <cando/chem/energy_functions/_Oozp_termCode.cc>
 #if 1
       if (chem__verbose(2)) {

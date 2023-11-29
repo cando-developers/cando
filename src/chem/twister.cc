@@ -209,8 +209,8 @@ CL_DEFMETHOD void	Twister_O::defineFixedAndMobile(Atom_sp fixed, Atom_sp mobile 
 
 
 CL_DOCSTRING(R"dx(Rotate the twister by a relative angle in radians.)dx");
-CL_LAMBDA(twister angle);
 CL_LISPIFY_NAME("twister_rotate");
+CL_LAMBDA((twister chem:twister) angle);
 CL_DEFMETHOD void	Twister_O::rotate(double angle)
 {
     Matrix	transform, tm;

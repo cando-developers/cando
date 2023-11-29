@@ -230,15 +230,17 @@ public:
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
   virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
-                                       NVector_sp 	pos,
-                                       core::T_sp componentEnergy,
-                                       bool 		calcForce,
-                                       gc::Nilable<NVector_sp> 	force,
-                                       bool		calcDiagonalHessian,
-                                       bool		calcOffDiagonalHessian,
-                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                       gc::Nilable<NVector_sp>	hdvec,
-                                       gc::Nilable<NVector_sp> dvec);
+                                         NVector_sp 	pos,
+                                         core::T_sp componentEnergy,
+                                         bool 		calcForce,
+                                         gc::Nilable<NVector_sp> 	force,
+                                         bool		calcDiagonalHessian,
+                                         bool		calcOffDiagonalHessian,
+                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                         gc::Nilable<NVector_sp>	hdvec,
+                                         gc::Nilable<NVector_sp> dvec,
+                                         core::T_sp activeAtomMask
+                                         );
 
   virtual num_real evaluateAllComponentSingle(
       gctools::Vec0<EnergyDihedral>::iterator di_start,
@@ -251,7 +253,8 @@ public:
       bool		calcOffDiagonalHessian,
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
-      gc::Nilable<NVector_sp> dvec);
+      gc::Nilable<NVector_sp> dvec,
+      core::T_sp activeAtomMask );
 
   virtual num_real evaluateAllComponentSimd8(
       gctools::Vec0<EnergyDihedral>::iterator di_start8,
@@ -264,7 +267,8 @@ public:
       bool		calcOffDiagonalHessian,
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
-      gc::Nilable<NVector_sp> dvec);
+      gc::Nilable<NVector_sp> dvec,
+      core::T_sp activeAtomMask );
 
   virtual num_real evaluateAllComponentSimd4(
       gctools::Vec0<EnergyDihedral>::iterator di_start4,
@@ -277,7 +281,8 @@ public:
       bool		calcOffDiagonalHessian,
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
-      gc::Nilable<NVector_sp> dvec);
+      gc::Nilable<NVector_sp> dvec,
+      core::T_sp activeAtomMask );
 
   virtual num_real evaluateAllComponentSimd2(
       gctools::Vec0<EnergyDihedral>::iterator di_start2,
@@ -290,7 +295,8 @@ public:
       bool		calcOffDiagonalHessian,
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
-      gc::Nilable<NVector_sp> dvec);
+      gc::Nilable<NVector_sp> dvec,
+      core::T_sp activeAtomMask );
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
       NVector_sp pos );

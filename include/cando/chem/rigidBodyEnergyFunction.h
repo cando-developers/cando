@@ -141,7 +141,7 @@ public:
   adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
-  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
+  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask );
 
   void	useDefaultSettings();
 
@@ -160,7 +160,8 @@ public:
                             bool calcOffDiagonalHessian,
                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                             gc::Nilable<NVector_sp> hdvec,
-                            gc::Nilable<NVector_sp> dvec	);
+                            gc::Nilable<NVector_sp> dvec,
+                            core::T_sp activeAtomMask );
 
   void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
   CL_LISPIFY_NAME("rigid-body-energy-function-set-position");

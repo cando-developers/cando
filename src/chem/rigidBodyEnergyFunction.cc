@@ -42,6 +42,7 @@ __END_DOC
 
 #include <clasp/core/common.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/numbers.h>
@@ -182,7 +183,7 @@ double	RigidBodyEnergyFunction_O::evaluateRaw( NVector_sp pos, NVector_sp force 
   adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
-ForceMatchReport_sp RigidBodyEnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force ) {
+ForceMatchReport_sp RigidBodyEnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask ) {
   IMPLEMENT_ME();
 }
 
@@ -218,8 +219,9 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
                                                 bool calcOffDiagonalHessian,
                                                 gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                 gc::Nilable<NVector_sp> hdvec,
-                                                gc::Nilable<NVector_sp> dvec	)
-{_G()
+                                                gc::Nilable<NVector_sp> dvec,
+                                                core::T_sp activeAtomMask )
+{
   bool	hasForce = force.notnilp();
   bool  hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -252,24 +254,25 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
     hdvec->zero();	// Zero the result
   }
 
-    LOG("Starting evaluation of energy" );
-    double totalEnergy = 0.0;
-    for ( auto cur : this->_Terms ) {
-      EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-      if (term->isEnabled()) {
-        totalEnergy += term->evaluateAllComponent(this->asSmartPtr(),
-                                                  pos,
-                                                  componentEnergy,
-                                                  calcForce,
-                                                  force,
-                                                  calcDiagonalHessian,
-                                                  calcOffDiagonalHessian,
-                                                  hessian,
-                                                  hdvec,
-                                                  dvec);
-      }
+  LOG("Starting evaluation of energy" );
+  double totalEnergy = 0.0;
+  for ( auto cur : this->_Terms ) {
+    EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
+    if (term->isEnabled()) {
+      totalEnergy += term->evaluateAllComponent(this->asSmartPtr(),
+                                                pos,
+                                                componentEnergy,
+                                                calcForce,
+                                                force,
+                                                calcDiagonalHessian,
+                                                calcOffDiagonalHessian,
+                                                hessian,
+                                                hdvec,
+                                                dvec,
+                                                activeAtomMask );
     }
-    return totalEnergy;
+  }
+  return totalEnergy;
 }
 
 
@@ -369,8 +372,10 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
                                                                          double delta_t,
                                                                          core::T_sp tfrozen,
                                                                          NVector_sp velocity_scale,
-                                                                         NVector_sp limit_displacement)
+                                                                         NVector_sp limit_displacement,
+                                                                         core::T_sp activeAtomMask )
 {
+  SIMPLE_WARN("Should tfrozen and activeAtomMask be the same");
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
@@ -424,7 +429,7 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
     }
     body_idx++;
   }
-  scoringFunc->evaluateEnergyForce(position,true,force_dt);
+  scoringFunc->evaluateEnergyForce(position,true,force_dt,activeAtomMask);
   body_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=7 ) {
     if (!frozen || frozen->testBit(body_idx)==0) {

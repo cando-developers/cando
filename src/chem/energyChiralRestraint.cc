@@ -225,24 +225,25 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-num_real	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                       chem::NVector_sp 	pos,
-                                                       core::T_sp componentEnergy,
-                                                       bool 		calcForce,
-                                                       gc::Nilable<chem::NVector_sp> 	force,
-                                                       bool		calcDiagonalHessian,
-                                                       bool		calcOffDiagonalHessian,
-                                                       gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                                       gc::Nilable<chem::NVector_sp>	hdvec,
-                                                       gc::Nilable<chem::NVector_sp> dvec)
+num_real EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+                                                        chem::NVector_sp 	pos,
+                                                        core::T_sp componentEnergy,
+                                                        bool 		calcForce,
+                                                        gc::Nilable<chem::NVector_sp> 	force,
+                                                        bool		calcDiagonalHessian,
+                                                        bool		calcOffDiagonalHessian,
+                                                        gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                                        gc::Nilable<chem::NVector_sp>	hdvec,
+                                                        gc::Nilable<chem::NVector_sp> dvec,
+                                                        core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(("%s {\n") , this->className());
   }
-
   num_real totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
@@ -299,7 +300,6 @@ num_real	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 			/* Obtain all the parameters necessary to calculate */
 			/* the amber and forces */
 #include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
-
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       cri->_calcForce = calcForce;
       cri->_calcDiagonalHessian = calcDiagonalHessian;

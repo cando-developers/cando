@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/evaluator.h>
 #include <cando/chem/energyFixedNonbond.h>
 #include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyComponent.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/largeSquareMatrix.h>
@@ -218,16 +219,18 @@ SYMBOL_EXPORT_SC_(ChemPkg,energyVdw);
 SYMBOL_EXPORT_SC_(ChemPkg,energyElectrostatic);
 
 num_real EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                            NVector_sp 	pos,
-                                                            core::T_sp componentEnergy,
-                                                            bool 		calcForce,
-                                                            gc::Nilable<NVector_sp> 	force,
-                                                            bool		calcDiagonalHessian,
-                                                            bool		calcOffDiagonalHessian,
-                                                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                            gc::Nilable<NVector_sp>	hdvec,
-                                                            gc::Nilable<NVector_sp> dvec)
+                                                              NVector_sp 	pos,
+                                                              core::T_sp componentEnergy,
+                                                              bool 		calcForce,
+                                                              gc::Nilable<NVector_sp> 	force,
+                                                              bool		calcDiagonalHessian,
+                                                              bool		calcOffDiagonalHessian,
+                                                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                              gc::Nilable<NVector_sp>	hdvec,
+                                                              gc::Nilable<NVector_sp> dvec,
+                                                              core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {

@@ -313,7 +313,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                        bool		calcOffDiagonalHessian,
                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                        gc::Nilable<NVector_sp>	hdvec,
-                                       gc::Nilable<NVector_sp> dvec)
+                                       gc::Nilable<NVector_sp> dvec,
+                                       core::T_sp activeAtomMask )
 {
   double totalEnergy = 0.0;
 #ifdef DEBUG_ENERGY_FUNCTION
@@ -404,7 +405,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                          calcForce, force,
                                                          calcDiagonalHessian,
                                                          calcOffDiagonalHessian,
-                                                         hessian, hdvec, dvec );
+                                                         hessian, hdvec, dvec,
+                                                         activeAtomMask );
 ////	_lisp->profiler().timer(core::timerBond).stop();
 ////	_lisp->profiler().timer(core::timerNonbond).start();
 #ifdef DUMP_FORCE
@@ -415,7 +417,12 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                          pos,
                                                          componentEnergy,
                                                          calcForce, force,
-                                                         calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+                                                         calcDiagonalHessian,
+                                                         calcOffDiagonalHessian,
+                                                         hessian,
+                                                         hdvec,
+                                                         dvec,
+                                                         activeAtomMask );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
@@ -427,7 +434,12 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                                       pos,
                                                                       componentEnergy,
                                                                       calcForce, force,
-                                                                      calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+                                                                      calcDiagonalHessian,
+                                                                      calcOffDiagonalHessian,
+                                                                      hessian,
+                                                                      hdvec,
+                                                                      dvec,
+                                                                      activeAtomMask );
 #ifdef DUMP_FORCE
   maybe_dump_force("pointToLineRestraint",force);
 #endif
@@ -436,7 +448,12 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                              pos,
                                                              componentEnergy,
                                                              calcForce, force,
-                                                             calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+                                                             calcDiagonalHessian,
+                                                             calcOffDiagonalHessian,
+                                                             hessian,
+                                                             hdvec,
+                                                             dvec,
+                                                             activeAtomMask );
 #ifdef DUMP_FORCE
   maybe_dump_force("oozp",force);
 #endif
@@ -502,33 +519,33 @@ string	SketchFunction_O::energyTermsEnabled()
 
 #define	DELTA	0.00000001
 
-double	SketchFunction_O::calculateNumericalDerivative(NVector_sp pos, double delta, uint i )
+double	SketchFunction_O::calculateNumericalDerivative(NVector_sp pos, double delta, uint i, core::T_sp activeAtomMask )
 {
   double x, ylow, yhigh, fval;
   double	deltaDiv2 = delta/2.0;
   x = pos->element(i);
   pos->setElement(i,x-deltaDiv2);
-  ylow = this->evaluateEnergy(pos);
+  ylow = this->evaluateEnergy(pos,activeAtomMask);
   pos->setElement(i,x+deltaDiv2);
-  yhigh = this->evaluateEnergy(pos);
+  yhigh = this->evaluateEnergy(pos,activeAtomMask);
   pos->setElement(i,x);
   fval = (yhigh-ylow)/delta;
   return fval;
 }
 
 
-double	SketchFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j )
+double	SketchFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j, core::T_sp activeAtomMask )
 {
   double	x, fxmh, fx, fxph, f2;
   double	y, fpipj, fpimj, fmipj, fmimj, fp, fm;
   if ( i==j ) {
     x = pos->element(i);
     pos->setElement(i,x-delta);
-    fxmh = this->evaluateEnergy(pos);
+    fxmh = this->evaluateEnergy(pos,activeAtomMask);
     pos->setElement(i,x+delta);
-    fxph = this->evaluateEnergy(pos);
+    fxph = this->evaluateEnergy(pos,activeAtomMask);
     pos->setElement(i,x);
-    fx = this->evaluateEnergy(pos);
+    fx = this->evaluateEnergy(pos,activeAtomMask);
     f2 = (fxph+fxmh-2.0*(fx))/(delta*delta);
   } else {
     double	deltaDiv2 = delta/2.0;
@@ -536,16 +553,16 @@ double	SketchFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, doub
     y = pos->element(j);
     pos->setElement(i,x+deltaDiv2);
     pos->setElement(j,y+deltaDiv2);
-    fpipj = this->evaluateEnergy(pos);
+    fpipj = this->evaluateEnergy(pos,activeAtomMask);
     pos->setElement(i,x+deltaDiv2);
     pos->setElement(j,y-deltaDiv2);
-    fpimj = this->evaluateEnergy(pos);
+    fpimj = this->evaluateEnergy(pos,activeAtomMask);
     pos->setElement(i,x-deltaDiv2);
     pos->setElement(j,y+deltaDiv2);
-    fmipj = this->evaluateEnergy(pos);
+    fmipj = this->evaluateEnergy(pos,activeAtomMask);
     pos->setElement(i,x-deltaDiv2);
     pos->setElement(j,y-deltaDiv2);
-    fmimj = this->evaluateEnergy(pos);
+    fmimj = this->evaluateEnergy(pos,activeAtomMask);
     pos->setElement(i,x);
     pos->setElement(j,y);
     LOG("fpipj = {}" , fpipj  );
@@ -567,13 +584,12 @@ double	SketchFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, doub
 
 /*! Calculate the force numerically
  */
-void	SketchFunction_O::evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta)
+void	SketchFunction_O::evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta, core::T_sp activeAtomMask )
 {
   double		fval;
   uint		i;
-
   for (i=0; i<pos->size(); i++ ) {
-    fval = -this->calculateNumericalDerivative(pos,delta,i);
+    fval = -this->calculateNumericalDerivative(pos,delta,i,activeAtomMask);
     numForce->setElement(i,fval);
   }
 }
@@ -581,7 +597,7 @@ void	SketchFunction_O::evaluateNumericalForce(NVector_sp pos, NVector_sp numForc
 
 /*! Calculate the hessian numerically
  */
-void	SketchFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp hessian, bool calcOffDiagonal, double delta )
+void	SketchFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp hessian, bool calcOffDiagonal, double delta, core::T_sp activeAtomMask )
 {
   double		fval;
   uint		c, r;
@@ -591,14 +607,14 @@ void	SketchFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSqu
   }
   hessian->zero();
   for ( c=0; c<pos->size(); c++ ) {
-    fval = this->calculateNumericalSecondDerivative(pos,delta,c,c);
+    fval = this->calculateNumericalSecondDerivative(pos,delta,c,c,activeAtomMask);
     hessian->setElement(c,c,fval);
   }
   if ( !calcOffDiagonal ) return;
   for ( c=0; c<pos->size(); c++ ) {
     for ( r=0; r<pos->size(); r++ ) {
       if ( c!=r) {
-        fval = this->calculateNumericalSecondDerivative(pos,delta,c,r);
+        fval = this->calculateNumericalSecondDerivative(pos,delta,c,r,activeAtomMask);
         hessian->setElement(c,r,fval);
       }
     }
@@ -613,7 +629,7 @@ void	SketchFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSqu
  * If there is a mis-match then dump the SketchFunction into the result.
  *
  */
-ForceMatchReport_sp SketchFunction_O::checkIfAnalyticalForceMatchesNumericalForce(NVector_sp pos, NVector_sp analyticalForce )
+ForceMatchReport_sp SketchFunction_O::checkIfAnalyticalForceMatchesNumericalForce(NVector_sp pos, NVector_sp analyticalForce, core::T_sp activeAtomMask )
 {
   ForceMatchReport_sp report;
   NVector_sp	numForce, tempForce;
@@ -624,13 +640,13 @@ ForceMatchReport_sp SketchFunction_O::checkIfAnalyticalForceMatchesNumericalForc
   report = ForceMatchReport_O::create();
 
   numForce = NVector_O::create(pos->size());
-  this->evaluateNumericalForce(pos,numForce,DELTA);
-  dot = dotProduct(numForce,analyticalForce,this->_Frozen);
-  numericalMag = magnitude(numForce,this->_Frozen);
-  analyticalMag = magnitude(analyticalForce,this->_Frozen);
+  this->evaluateNumericalForce(pos,numForce,DELTA,activeAtomMask);
+  dot = dotProductWithActiveAtomMask(numForce,analyticalForce,activeAtomMask);
+  numericalMag = magnitudeWithActiveAtomMask(numForce,activeAtomMask);
+  analyticalMag = magnitudeWithActiveAtomMask(analyticalForce,activeAtomMask);
   tempForce = NVector_O::create(pos->size());
     	// Evaluate the force at pos again
-  this->evaluateEnergyForce(pos,true,tempForce);
+  this->evaluateEnergyForce(pos,true,tempForce,activeAtomMask);
   avg = (analyticalMag+numericalMag)/2.0;
   if ( analyticalMag < VERYSMALL && numericalMag < VERYSMALL ) {
     result.str("");
@@ -797,8 +813,10 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
                                                         NVector_sp force_dt,
                                                         NVector_sp delta_t_over_mass,
                                                         double delta_t,
-                                                        core::T_sp tfrozen )
+                                                        core::T_sp tfrozen,
+                                                        core::T_sp activeAtomMask )
 {
+  SIMPLE_WARN("Is tfrozen and activeAtomMask the same");
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
@@ -831,7 +849,7 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
     }
     atom_idx++;
   }
-  sketchFunc->evaluateEnergyForce(position,true,force_dt);
+  sketchFunc->evaluateEnergyForce(position,true,force_dt,activeAtomMask);
   atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
     if (!frozen || frozen->testBit(idx+0)==0) {

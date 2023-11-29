@@ -26,6 +26,8 @@ This is an open source license for the CANDO software from Temple University, bu
        
 #define	DEBUG_LEVEL_NONE
 
+#include <clasp/core/foundation.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/energyPointToLineRestraint.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/largeSquareMatrix.h>
@@ -50,16 +52,19 @@ EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchS
 
 
 num_real EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                           NVector_sp 	pos,
-                                                           core::T_sp componentEnergy,
-                                                           bool 		calcForce,
-                                                           gc::Nilable<NVector_sp> 	force,
-                                                           bool		calcDiagonalHessian,
-                                                           bool		calcOffDiagonalHessian,
-                                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                           gc::Nilable<NVector_sp>	hdvec,
-                                                           gc::Nilable<NVector_sp> dvec)
+                                                             NVector_sp 	pos,
+                                                             core::T_sp componentEnergy,
+                                                             bool 		calcForce,
+                                                             gc::Nilable<NVector_sp> 	force,
+                                                             bool		calcDiagonalHessian,
+                                                             bool		calcOffDiagonalHessian,
+                                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                             gc::Nilable<NVector_sp>	hdvec,
+                                                             gc::Nilable<NVector_sp> dvec,
+                                                             core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  SIMPLE_WARN("What do we do with activeAtomMask in this function");
   num_real totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();

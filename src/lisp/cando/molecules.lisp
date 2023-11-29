@@ -154,7 +154,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
          ,@body))))
 
 ;; Recover from minimization problems using Common Lisp restarts
-(defun minimize-no-fail (minimizer &key resignal-error verbose)
+(defun minimize-no-fail (minimizer &key resignal-error verbose active-atoms-mask)
   (if verbose
       (progn
         (chem:enable-print-intermediate-results minimizer)
@@ -166,7 +166,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                    (warn "In minimize-no-fail - the minimizer reported: ~a" err)
                                    (invoke-restart 'cando:skip-rest-of-minimization err))))
         (with-handle-linear-angles-dihedrals (:max-times 3 :verbose verbose)
-            (chem:minimize minimizer)))
+            (chem:minimize minimizer active-atoms-mask)))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization (err)
       :report "Skip the rest of the current minimization - continue processing"

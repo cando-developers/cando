@@ -187,8 +187,8 @@ CL_DEFMETHOD core::List_sp StereoisomerAtoms_O::atomsAsList() const {
   return ll.cons();
 }
 
-CL_LAMBDA(name &optional (errorp t));
 CL_LISPIFY_NAME("atomWithName");
+CL_LAMBDA((stereoisomer-atoms chem:stereoisomer-atoms) name &optional (errorp t));
 CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool errorp)
 {
   for ( gctools::Vec0<StereoisomerAtom_sp>::const_iterator ci=this->_Atoms.begin();

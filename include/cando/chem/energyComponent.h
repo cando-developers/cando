@@ -76,6 +76,10 @@ const double ELECTROSTATIC_MODIFIER = (93865.10/3.53*93865.10/93958.78);
 namespace       chem {
 
 
+#define MAYBE_SETUP_ACTIVE_ATOM_MASK() \
+  bool hasActiveAtomMask = (activeAtomMask.notnilp()); \
+  auto bitvectorActiveAtomMask = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
+
 SMART(QDomNode);
 SMART(AbstractLargeSquareMatrix);
 FORWARD(EnergyFunction);
@@ -324,15 +328,17 @@ public:
   virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteraction);
   
   CL_DEFMETHOD virtual	num_real evaluateAllComponent( ScoringFunction_sp scorer,
-                                                     NVector_sp 	pos,
-                                                     core::T_sp componentEnergy,
-                                                     bool 		calcForce,
-                                                     gc::Nilable<NVector_sp> 	force,
-                                                     bool		calcDiagonalHessian,
-                                                     bool		calcOffDiagonalHessian,
-                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                     gc::Nilable<NVector_sp>	hdvec,
-                                                     gc::Nilable<NVector_sp> dvec) = 0;
+                                                       NVector_sp 	pos,
+                                                       core::T_sp componentEnergy,
+                                                       bool 		calcForce,
+                                                       gc::Nilable<NVector_sp> 	force,
+                                                       bool		calcDiagonalHessian,
+                                                       bool		calcOffDiagonalHessian,
+                                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                       gc::Nilable<NVector_sp>	hdvec,
+                                                       gc::Nilable<NVector_sp> dvec,
+                                                       core::T_sp activeAtomMask
+                                                       ) = 0;
 
   virtual core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 

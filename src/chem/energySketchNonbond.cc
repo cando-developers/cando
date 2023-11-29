@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/energySketchNonbond.h>
 #include <cando/chem/energyFunction.h>
+#include <cando/chem/energyComponent.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/array.h>
 #include <clasp/core/evaluator.h>
@@ -43,6 +44,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/aggregate.h>
+#include <cando/chem/energyComponent.h>
 #include <cando/chem/nVector.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/ffBaseDb.h>
@@ -50,6 +52,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
+#include <cando/chem/energyComponent.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
@@ -94,36 +97,39 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }
 
-num_real	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                     NVector_sp 	pos,
-                                                     core::T_sp componentEnergy,
-                                                     bool 		calcForce,
-                                                     gc::Nilable<NVector_sp> 	force,
-                                                     bool		calcDiagonalHessian,
-                                                     bool		calcOffDiagonalHessian,
-                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                     gc::Nilable<NVector_sp>	hdvec, 
-                                                     gc::Nilable<NVector_sp> 	dvec )
+num_real EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
+                                                      NVector_sp 	pos,
+                                                      core::T_sp componentEnergy,
+                                                      bool 		calcForce,
+                                                      gc::Nilable<NVector_sp> 	force,
+                                                      bool		calcDiagonalHessian,
+                                                      bool		calcOffDiagonalHessian,
+                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                      gc::Nilable<NVector_sp>	hdvec, 
+                                                      gc::Nilable<NVector_sp> 	dvec,
+                                                      core::T_sp activeAtomMask )
 {
 // Evaluate everything using terms
   num_real totalEnergy = this->evaluateTerms(pos,componentEnergy,
                                            calcForce,force,
-                                           calcDiagonalHessian, calcOffDiagonalHessian, hessian,hdvec,dvec);
+                                             calcDiagonalHessian, calcOffDiagonalHessian, hessian,hdvec,dvec,activeAtomMask);
   return totalEnergy;
 }
     
     
 
 num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
-                                             core::T_sp         componentEnergy,
-                                             bool 		calcForce,
-                                             gc::Nilable<NVector_sp> 	force,
-                                             bool		calcDiagonalHessian,
-                                             bool		calcOffDiagonalHessian,
-                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                             gc::Nilable<NVector_sp>	hdvec, 
-                                             gc::Nilable<NVector_sp> 	dvec )
+                                                     core::T_sp         componentEnergy,
+                                                     bool 		calcForce,
+                                                     gc::Nilable<NVector_sp> 	force,
+                                                     bool		calcDiagonalHessian,
+                                                     bool		calcOffDiagonalHessian,
+                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                     gc::Nilable<NVector_sp>	hdvec, 
+                                                     gc::Nilable<NVector_sp> 	dvec,
+                                                     core::T_sp activeAtomMask)
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   num_real totalEnergy = 0.0;

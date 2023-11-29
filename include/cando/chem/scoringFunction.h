@@ -115,7 +115,7 @@ public:
   NVector_sp makeCoordinates() const;
 //    virtual double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce ) = 0;
 
-  virtual ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force ) = 0;
+  virtual ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask ) = 0;
 
   CL_LISPIFY_NAME("useDefaultSettings");
   CL_DEFMETHOD    virtual void	useDefaultSettings() = 0;
@@ -170,14 +170,14 @@ public:
 
 #if 0
   CL_LISPIFY_NAME("calculateNumericalDerivative");
-  CL_DEFMETHOD double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
+  CL_DEFMETHOD double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i, core::T_sp activeAtomMask );
   CL_LISPIFY_NAME("calculateNumericalSecondDerivative");
-  CL_DEFMETHOD double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
+  CL_DEFMETHOD double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j, core::T_sp activeAtomMask );
 #endif
 
-  double calculateEnergy();
+  double calculateEnergy(core::T_sp activeAtomMask);
 
-  core::T_mv calculateEnergyAndForce();
+  core::T_mv calculateEnergyAndForce(core::T_sp activeAtomMask);
 
  
   CL_LISPIFY_NAME("evaluateAll");
@@ -190,15 +190,18 @@ public:
                                                 bool calcOffDiagonalHessian,
                                                 gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                 gc::Nilable<NVector_sp> hdvec,
-                                                gc::Nilable<NVector_sp> dvec	) = 0;
-  virtual double	evaluateEnergy( NVector_sp pos );
-  virtual double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
+                                                gc::Nilable<NVector_sp> dvec,
+                                                core::T_sp activeAtomMask
+                                                ) = 0;
+  virtual double	evaluateEnergy( NVector_sp pos, core::T_sp activeAtomMask );
+  virtual double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force, core::T_sp activeAtomMask );
   virtual double	evaluateEnergyForceFullHessian(NVector_sp pos,
                                                        bool calcForce, NVector_sp force,
                                                        bool calcDiagonalHessian,
                                                        bool calcOffDiagonalHessian,
-                                                       AbstractLargeSquareMatrix_sp hessian );
-  virtual double	evaluateEnergyForceFullHessianForDebugging();
+                                                       AbstractLargeSquareMatrix_sp hessian,
+                                                       core::T_sp activeAtomMask );
+  virtual double	evaluateEnergyForceFullHessianForDebugging(core::T_sp activeAtomMask );
 #if 0
 
   string	summarizeBeyondThresholdInteractionsAsString();

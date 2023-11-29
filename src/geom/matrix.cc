@@ -1240,7 +1240,44 @@ Also contains definitions of: anticlinal, antiperiplanar, clinal, periplanar, sy
     groups A and D is then considered to be positive if the bond A-B is rotated in
     a clockwise direction through less than 180° in order that it may eclipse the
     bond C-D: a negative torsion angle requires rotation in the opposite sense.
-*/    
+
+The code for calculating dihedral angles and generating externals from internals
+must be consistent - so I gathered it all together below.
+
+x^ = x unit vector.
+
+stub = [x^,y^,z^,translate] columns
+x^ = (b-a)/|b-a|
+z^ = Cross[x^,(a-c)]/|Cross[x^,(a-c)]|  (problem with linear angles denominator will go to zero)
+y^ = Cross[z^,x^]
+
+dihedral is defined as a->b->c->d with right hand convention.
+a->b->c curl of fingers then d points parallel to thumb is positive dihedral
+d = point being calculated
+c = parent of d
+b = parent of c (grand parent of d)
+a = parent of b (great grand parent of d)
+
+Calculating d from dist,theta,phi(dihedral)
+This calculates the x,y,z using polar coordinates.
+dist = distance to origin
+theta = angle between x^ and d-origin
+phi = dihedral angle between a-b and d-c,
+      positive is clockwise from a-b to d-c looking down b-c
+Positive dihedral angle
+        c-----b
+       /       \
+      d(out)    a
+  d is coming out of the plane, a,b,c are in the plane.
+
+dx = dist*cos(theta)
+dy = dist*sin(theta)*cos(phi)
+dz = -dist*sin(theta)*sin(phi) ; the negative sign is VERY important here
+d = stub*d   stub transforms coordinate system at origin along x^,y^,z^ to
+             one where the origin is on c, x-axis is b-c and a-b is in the x,y plane.
+
+
+*/
 namespace geom {
 
 DOCGROUP(cando);
