@@ -130,8 +130,10 @@ num_real	_evaluateEnergyOnly_STAPLE (num_real ak,
 
 void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
                                                             NVector_sp nvPosition,
-                                                            AbstractLargeSquareMatrix_sp m )
+                                                            AbstractLargeSquareMatrix_sp m,
+                                                            core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   bool		calcForce = true;
   num_real        pxk, pyk, pzk;
   num_real        pxl, pyl, pzl;

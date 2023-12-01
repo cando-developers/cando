@@ -170,7 +170,8 @@ public:
     virtual bool is_restraint() const { return true; };
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m );
+					    AbstractLargeSquareMatrix_sp m,
+                                            core::T_sp activeAtomMask );
   virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,

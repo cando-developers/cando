@@ -47,6 +47,18 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+#undef ZERO_SMALL_LEN
+#define ZERO_SMALL_LEN(RL,L) {double fabs_ = fabs(L); int cmp = (fabs_ < TENM3); RL = cmp ? 0.0 : RL; }
+
+#define IMPROPER_RESTRAINT_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         && bitvectorActiveAtomMask->testBit(I4/3)) \
+    ) goto SKIP_term;
+
+
 core::List_sp EnergyDihedralRestraint::encode() const {
   return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,k),core::clasp_make_double_float(this->term.K)),
                               core::Cons_O::create(core::Cons_O::create(INTERN_(kw,U),core::clasp_make_double_float(this->term.U)),
@@ -83,6 +95,8 @@ num_real	_evaluateEnergyOnly_ImproperRestraint(
 		num_real x4, num_real y4, num_real z4,
 		num_real K, num_real L, num_real U )
 {
+  IMPLEMENT_ME();
+  #if 0
 num_real	EraseLinearDihedral;
 num_real	UShift, PhiShift;
 bool	RestraintActive;
@@ -110,6 +124,7 @@ bool	RestraintActive;
 #include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
 
     return Energy;
+    #endif
 }
 
 
@@ -166,8 +181,10 @@ string EnergyDihedralRestraint_O::beyondThresholdInteractionsAsString()
 
 void	EnergyDihedralRestraint_O::setupHessianPreconditioner(
 					chem::NVector_sp nvPosition,
-					chem::AbstractLargeSquareMatrix_sp m )
+					chem::AbstractLargeSquareMatrix_sp m,
+                                        core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
 bool		calcForce = true;
 bool		calcDiagonalHessian = true;
 bool		calcOffDiagonalHessian = true;
@@ -416,6 +433,8 @@ num_real EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp sco
 
 void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos)
 {
+  IMPLEMENT_ME();
+  #if 0
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
@@ -467,7 +486,7 @@ void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
     }
   }
 
-
+#endif
 }
 
 
@@ -475,6 +494,8 @@ void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
 			stringstream& info, chem::NVector_sp pos )
 {
+  IMPLEMENT_ME();
+  #if 0
   int	fails = 0;
 
   this->_BeyondThresholdTerms.clear();
@@ -540,6 +561,7 @@ int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
     }
   }
   return fails;
+  #endif
 }
 
 EnergyDihedralRestraint_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keepInteraction) {

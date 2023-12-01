@@ -178,7 +178,8 @@ public:
   CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp object, double radius, double epsilon, double charge, const Vector3& position);
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-                                          AbstractLargeSquareMatrix_sp m );
+                                          AbstractLargeSquareMatrix_sp m,
+                                          core::T_sp activeAtomMask );
     
   virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,

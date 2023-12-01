@@ -49,7 +49,14 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-
+#define CHIRAL_RESTRAINT_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         && bitvectorActiveAtomMask->testBit(I4/3) \
+         ) \
+    ) goto SKIP_term;
 
 string	EnergyChiralRestraint::description()
 {
@@ -80,6 +87,8 @@ num_real	_evaluateEnergyOnly_ChiralRestraint(
 		num_real x4, num_real y4, num_real z4,
 		num_real K, num_real CO )
 {
+  IMPLEMENT_ME();
+  #if 0
 #undef	CHIRAL_RESTRAINT_SET_PARAMETER
 #define	CHIRAL_RESTRAINT_SET_PARAMETER(x)	{}
 #undef	CHIRAL_RESTRAINT_SET_POSITION
@@ -101,6 +110,7 @@ num_real	_evaluateEnergyOnly_ChiralRestraint(
 #include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 
     return Energy;
+    #endif
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,central_atom3);
@@ -168,10 +178,11 @@ string EnergyChiralRestraint_O::beyondThresholdInteractionsAsString()
 
 
 
-void	EnergyChiralRestraint_O::setupHessianPreconditioner(
-					chem::NVector_sp nvPosition,
-					chem::AbstractLargeSquareMatrix_sp m )
+void	EnergyChiralRestraint_O::setupHessianPreconditioner(chem::NVector_sp nvPosition,
+                                                            chem::AbstractLargeSquareMatrix_sp m,
+                                                            core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
 bool		calcForce = true;
 bool		calcDiagonalHessian = true;
 bool		calcOffDiagonalHessian = true;
@@ -216,9 +227,6 @@ bool		calcOffDiagonalHessian = true;
 #include	<cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 	}
     }
-
-
-
 }
 
 
@@ -379,10 +387,12 @@ num_real EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 void	EnergyChiralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 		chem::NVector_sp 	pos)
 {
-int	fails = 0;
-bool	calcForce = true;
-bool	calcDiagonalHessian = true;
-bool	calcOffDiagonalHessian = true;
+  IMPLEMENT_ME();
+#if 0
+  int	fails = 0;
+  bool	calcForce = true;
+  bool	calcDiagonalHessian = true;
+  bool	calcOffDiagonalHessian = true;
 
 
 //
@@ -409,37 +419,38 @@ bool	calcOffDiagonalHessian = true;
 #define	CHIRAL_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
- {
+  {
 		
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
-	    int	I1, I2, I3, I4, i;
-            gctools::Vec0<EnergyChiralRestraint>::iterator cri;
-	    for ( i=0,cri=this->_Terms.begin();
-			cri!=this->_Terms.end(); cri++,i++ ) {
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
+    int	I1, I2, I3, I4, i;
+    gctools::Vec0<EnergyChiralRestraint>::iterator cri;
+    for ( i=0,cri=this->_Terms.begin();
+          cri!=this->_Terms.end(); cri++,i++ ) {
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
 #include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
-		LOG("fx1 = {}" , fx1 );
-		LOG("fy1 = {}" , fy1 );
-		LOG("fz1 = {}" , fz1 );
-		LOG("fx2 = {}" , fx2 );
-		LOG("fy2 = {}" , fy2 );
-		LOG("fz2 = {}" , fz2 );
-		LOG("fx3 = {}" , fx3 );
-		LOG("fy3 = {}" , fy3 );
-		LOG("fz3 = {}" , fz3 );
-		LOG("fx4 = {}" , fx4 );
-		LOG("fy4 = {}" , fy4 );
-		LOG("fz4 = {}" , fz4 );
-		int index = i;
+      LOG("fx1 = {}" , fx1 );
+      LOG("fy1 = {}" , fy1 );
+      LOG("fz1 = {}" , fz1 );
+      LOG("fx2 = {}" , fx2 );
+      LOG("fy2 = {}" , fy2 );
+      LOG("fz2 = {}" , fz2 );
+      LOG("fx3 = {}" , fx3 );
+      LOG("fy3 = {}" , fy3 );
+      LOG("fz3 = {}" , fz3 );
+      LOG("fx4 = {}" , fx4 );
+      LOG("fy4 = {}" , fy4 );
+      LOG("fz4 = {}" , fz4 );
+      int index = i;
 #include <cando/chem/energy_functions/_ChiralRestraint_debugFiniteDifference.cc>
 
-	    }
-	}
+    }
+  }
+#endif
 }
 
 

@@ -443,23 +443,24 @@ public:
 //
 
 void EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
-                                                  AbstractLargeSquareMatrix_sp m )
+                                                  AbstractLargeSquareMatrix_sp m,
+                                                  core::T_sp activeAtomMask )
 {
   m->fill(0.0);
   if (this->_Stretch->isEnabled())
-    this->_Stretch->setupHessianPreconditioner(nvPosition, m );
+    this->_Stretch->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
   if (this->_Angle->isEnabled())
-    this->_Angle->setupHessianPreconditioner(nvPosition, m );
+    this->_Angle->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
   if (this->_Dihedral->isEnabled())
-    this->_Dihedral->setupHessianPreconditioner(nvPosition, m );
+    this->_Dihedral->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
 		// Nonbond doesn't contribute to hessian preconditioner
 //    this->_Nonbond->setupHessianPreconditioner(nvPosition, m );
   if (this->_ChiralRestraint->isEnabled())
-    this->_ChiralRestraint->setupHessianPreconditioner(nvPosition, m );
+    this->_ChiralRestraint->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
   if (this->_AnchorRestraint->isEnabled())
-    this->_AnchorRestraint->setupHessianPreconditioner(nvPosition, m );
+    this->_AnchorRestraint->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
   if (this->_DihedralRestraint->isEnabled())
-    this->_DihedralRestraint->setupHessianPreconditioner(nvPosition, m );
+    this->_DihedralRestraint->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
 //    this->_FixedNonbondRestraint->setupHessianPreconditioner(nvPosition, m );
 }
 
@@ -679,7 +680,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NVector_sp 	pos)
 {
   int	fails = 0;
-
+  IMPLEMENT_ME();
+  #if 0
   {
     this->_Stretch->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_Angle->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
@@ -695,6 +697,7 @@ int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
       component->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     }
   }
+  #endif
   return fails;
 }
 

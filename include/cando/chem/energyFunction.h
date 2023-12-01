@@ -243,7 +243,8 @@ namespace chem {
     CL_DEFMETHOD bool hasMissingParameters();
     CL_DEFMETHOD core::List_sp getMissingParameters();
 
-    void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian);
+    void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,
+                                            core::T_sp activeAtomMask );
 
     /*! Enable debugging on all energy components
      */

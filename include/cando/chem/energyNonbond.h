@@ -234,7 +234,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual core::List_sp extract_vectors_as_alist() const;
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-                                          AbstractLargeSquareMatrix_sp m );
+                                          AbstractLargeSquareMatrix_sp m,
+                                          core::T_sp activeAtomMask );
 
   void verifyExcludedAtoms(Matter_sp matter, ScoringFunction_sp score);
   

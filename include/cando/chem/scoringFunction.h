@@ -129,7 +129,8 @@ public:
   CL_DEFMETHOD     virtual void	setOptions( core::List_sp options ) = 0;
 
   CL_LISPIFY_NAME("setupHessianPreconditioner");
-  CL_DEFMETHOD virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) = 0;
+  CL_DEFMETHOD virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,
+                                                            core::T_sp activeAtomMask ) = 0;
 
             /*! Enable debugging on all scoring components
      */

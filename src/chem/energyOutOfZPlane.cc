@@ -72,6 +72,8 @@ num_real	_evaluateEnergyOnly_Oozp(
 		num_real za,
 		num_real kb)
 {
+  SIMPLE_ERROR("Fix this function");
+#if 0 // commented out
 #undef	OOZP_SET_PARAMETER
 #define	OOZP_SET_PARAMETER(x)	{}
 #undef	OOZP_SET_POSITION
@@ -94,6 +96,7 @@ num_real	_evaluateEnergyOnly_Oozp(
 #include <cando/chem/energy_functions/_Oozp_termCode.cc>
 
     return Energy;
+#endif
 }
 
 
@@ -140,8 +143,12 @@ string EnergyOutOfZPlane_O::beyondThresholdInteractionsAsString()
 
 void	EnergyOutOfZPlane_O::setupHessianPreconditioner(
 					NVector_sp nvPosition,
-					AbstractLargeSquareMatrix_sp m )
+					AbstractLargeSquareMatrix_sp m,
+                                        core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  SIMPLE_ERROR("Fix this function");
+#if 0 //commented out
 bool		calcForce = true;
 bool		calcDiagonalHessian = true;
 bool		calcOffDiagonalHessian = true;
@@ -189,7 +196,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-
+#endif
 
 }
 
@@ -288,6 +295,8 @@ num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 void	EnergyOutOfZPlane_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 		NVector_sp 	pos)
 {
+  SIMPLE_ERROR("Fix this function");
+#if 0 // commented out because termCode doesn't work
 int	fails = 0;
 bool	calcForce = true;
 bool	calcDiagonalHessian = true;
@@ -352,6 +361,7 @@ bool	calcOffDiagonalHessian = true;
 	    }
 	}
     IMPLEMENT_ME(); // must return some sort of integer value
+#endif
 }
 
 #if 0

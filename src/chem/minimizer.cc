@@ -1727,7 +1727,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
     // Setup the preconditioner and carry out UMC
     //
   LOG("Setting up preconditioner" );
-  this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
+  this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon,activeAtomMask);
   opt_mprecon = mprecon->optimized();
   // Insert entries once into ldlt based on mprecon so it has entries that can accept the factorization 
   unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt);
@@ -1843,7 +1843,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    //
 	    // Compute the preconditioner M at X{k+1}
 	    //
-      this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
+      this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon,activeAtomMask);
       opt_mprecon = mprecon->optimized();
       unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt,kSum);
       opt_ldlt = ldlt->optimized();

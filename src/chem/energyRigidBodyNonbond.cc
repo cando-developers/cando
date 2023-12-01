@@ -416,7 +416,8 @@ CL_DEFMETHOD core::ComplexVector_sp EnergyRigidBodyNonbond_O::write_nonbond_atom
 
 void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
-                                                    AbstractLargeSquareMatrix_sp m )
+                                                    AbstractLargeSquareMatrix_sp m,
+                                                    core::T_sp activeAtomMask )
 {
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }

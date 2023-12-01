@@ -48,6 +48,13 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+#define ANGLE_APPLY_ATOM_MASK(I1,I2,I3) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         ) \
+    ) goto SKIP_term;
 
 core::List_sp EnergyAngle::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kt),core::clasp_make_double_float(this->term.kt)),
@@ -193,6 +200,8 @@ num_real	_evaluateEnergyOnly_Angle(
 		num_real x3, num_real y3, num_real z3,
 		num_real t0, num_real kt )
 {
+  IMPLEMENT_ME();
+  #if 0
 #undef	ANGLE_SET_PARAMETER
 #define	ANGLE_SET_PARAMETER(x)	{}
 #undef	ANGLE_SET_POSITION
@@ -226,9 +235,11 @@ num_real	_evaluateEnergyOnly_Angle(
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    bool IllegalAngle = false;
 #include <cando/chem/energy_functions/_Angle_termCode.cc>
 
     return Energy;
+    #endif
 }
 
 
@@ -275,8 +286,10 @@ string				str1, str2, str3, str4;
 
 void	EnergyAngle_O::setupHessianPreconditioner(
 					chem::NVector_sp nvPosition,
-					chem::AbstractLargeSquareMatrix_sp m )
+					chem::AbstractLargeSquareMatrix_sp m,
+                                        core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
 bool		calcForce = true;
 bool		calcDiagonalHessian = true;
 bool		calcOffDiagonalHessian = true;
@@ -319,6 +332,7 @@ bool		calcOffDiagonalHessian = true;
 	for ( gctools::Vec0<EnergyAngle>::iterator ai=this->_Terms.begin();
 		    ai!=this->_Terms.end(); ai++ )
 	{
+          bool IllegalAngle = false;
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
 	}
     }
@@ -403,6 +417,7 @@ num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
         }
       }
 #endif
+      bool IllegalAngle = false;
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
                 
       if ( IllegalAngle ) {
@@ -479,10 +494,12 @@ num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 void	EnergyAngle_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 		chem::NVector_sp 	pos)
 {
-int	fails = 0;
-bool	calcForce = true;
-bool	calcDiagonalHessian = true;
-bool	calcOffDiagonalHessian = true;
+  IMPLEMENT_ME();
+#if 0
+  int	fails = 0;
+  bool	calcForce = true;
+  bool	calcDiagonalHessian = true;
+  bool	calcOffDiagonalHessian = true;
 
 
 //
@@ -505,49 +522,49 @@ bool	calcOffDiagonalHessian = true;
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
- {
+  {
 		
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
-	    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
-	    int I1, I2, I3,i;
-	    gctools::Vec0<EnergyAngle>::iterator ai;
-	    for ( i=0,ai=this->_Terms.begin();
-			ai!=this->_Terms.end(); ai++,i++ ) {
-		LOG("ai->term.kt = {}" , ai->term.kt  );
-		LOG("ai->term.t0 = {}" , ai->term.t0  );
-		LOG("angleScale = {}" , angleScale  );
-		LOG("ai->x1 = {}" , pos->element(ai->term.I1 ) );
-		LOG("ai->y1 = {}" , pos->element(ai->term.I1+1 ) );
-		LOG("ai->z1 = {}" , pos->element(ai->term.I1+2 ) );
-		LOG("ai->x2 = {}" , pos->element(ai->term.I2 ) );
-		LOG("ai->y2 = {}" , pos->element(ai->term.I2+1 ) );
-		LOG("ai->z2 = {}" , pos->element(ai->term.I2+2 ) );
-		LOG("ai->x3 = {}" , pos->element(ai->term.I3 ) );
-		LOG("ai->y3 = {}" , pos->element(ai->term.I3+1 ) );
-		LOG("ai->z3 = {}" , pos->element(ai->term.I3+2 ) );
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
+    int I1, I2, I3,i;
+    gctools::Vec0<EnergyAngle>::iterator ai;
+    for ( i=0,ai=this->_Terms.begin();
+          ai!=this->_Terms.end(); ai++,i++ ) {
+      LOG("ai->term.kt = {}" , ai->term.kt  );
+      LOG("ai->term.t0 = {}" , ai->term.t0  );
+      LOG("angleScale = {}" , angleScale  );
+      LOG("ai->x1 = {}" , pos->element(ai->term.I1 ) );
+      LOG("ai->y1 = {}" , pos->element(ai->term.I1+1 ) );
+      LOG("ai->z1 = {}" , pos->element(ai->term.I1+2 ) );
+      LOG("ai->x2 = {}" , pos->element(ai->term.I2 ) );
+      LOG("ai->y2 = {}" , pos->element(ai->term.I2+1 ) );
+      LOG("ai->z2 = {}" , pos->element(ai->term.I2+2 ) );
+      LOG("ai->x3 = {}" , pos->element(ai->term.I3 ) );
+      LOG("ai->y3 = {}" , pos->element(ai->term.I3+1 ) );
+      LOG("ai->z3 = {}" , pos->element(ai->term.I3+2 ) );
+      bool IllegalAngle = false;
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
-		LOG("Energy = {}" , Energy  );
-		LOG("x1 = {}" , x1  );
-		LOG("y1 = {}" , y1  );
-		LOG("z1 = {}" , z1  );
-		LOG("x2 = {}" , x2  );
-		LOG("y2 = {}" , y2  );
-		LOG("z2 = {}" , z2  );
-		LOG("x3 = {}" , x3  );
-		LOG("y3 = {}" , y3  );
-		LOG("z3 = {}" , z3  );
-		int index = i;
+      LOG("Energy = {}" , Energy  );
+      LOG("x1 = {}" , x1  );
+      LOG("y1 = {}" , y1  );
+      LOG("z1 = {}" , z1  );
+      LOG("x2 = {}" , x2  );
+      LOG("y2 = {}" , y2  );
+      LOG("z2 = {}" , z2  );
+      LOG("x3 = {}" , x3  );
+      LOG("y3 = {}" , y3  );
+      LOG("z3 = {}" , z3  );
+      int index = i;
 #include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
-	    }
-	}
-
-
+    }
+  }
+#endif
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,angle);
@@ -558,6 +575,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
 
 core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
 {
+  IMPLEMENT_ME();
+#if 0
   ql::list result;
 #if 0
   bool	calcForce = false;
@@ -601,6 +620,7 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
     gctools::Vec0<EnergyAngle>::iterator ai;
     for ( i=0,ai=this->_Terms.begin();
           ai!=this->_Terms.end(); ai++,i++ ) {
+      bool IllegalAngle = false;
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
       if ( fabs(AngleDeviation)/t0 > threshold ) {
         chem::Atom_sp a1, a2, a3;
@@ -617,6 +637,7 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
     }
   }
   return result.cons();
+#endif
 }
 
 

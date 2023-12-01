@@ -174,7 +174,8 @@ public:
   CL_LISPIFY_NAME("getOutOfZPlaneComponent");
   CL_DEFMETHOD     EnergyOutOfZPlane_sp	getOutOfZPlaneComponent() { return this->_OutOfZPlane; };
 
-  void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian);
+  void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,
+                                    core::T_sp activeAtomMask );
 
     /*! Enable debugging on all energy components
      */

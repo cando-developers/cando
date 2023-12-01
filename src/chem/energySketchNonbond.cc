@@ -92,7 +92,8 @@ void EnergySketchNonbond_O::addSketchNonbondTerm(size_t coordinate1IndexTimes3,
 
 void	EnergySketchNonbond_O::setupHessianPreconditioner(
                                                           NVector_sp nvPosition,
-                                                          AbstractLargeSquareMatrix_sp m )
+                                                          AbstractLargeSquareMatrix_sp m,
+                                                          core::T_sp activeAtomMask )
 {
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }

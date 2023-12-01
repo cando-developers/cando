@@ -61,7 +61,8 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
   LISP_CLASS(chem,ChemPkg,EnergyPeriodicBoundaryConditionsNonbond_O,"EnergyPeriodicBoundaryConditionsNonbond",EnergyNonbond_O);
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-                                          AbstractLargeSquareMatrix_sp m );
+                                          AbstractLargeSquareMatrix_sp m,
+                                          core::T_sp activeAtomMask );
     
   virtual void evaluateUsingExcludedAtoms( ScoringFunction_sp score,
                                            NVector_sp 	pos,
@@ -71,7 +72,8 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
                                            bool		calcOffDiagonalHessian,
                                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                            gc::Nilable<NVector_sp>	hdvec,
-                                           gc::Nilable<NVector_sp> dvec);
+                                           gc::Nilable<NVector_sp> dvec,
+                                           core::T_sp activeAtomMask );
   virtual void evaluateTerms( ScoringFunction_sp score,
                               NVector_sp 	pos,
                               bool 		calcForce,
@@ -80,7 +82,8 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
                               bool		calcOffDiagonalHessian,
                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                               gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                              gc::Nilable<NVector_sp> dvec,
+                              core::T_sp activeAtomMask );
   
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score, NVector_sp pos );
 

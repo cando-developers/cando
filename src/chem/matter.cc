@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <stdio.h>
 #include <clasp/core/common.h>
 #include <clasp/core/hashTableEq.h>
+#include <clasp/core/evaluator.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <cando/geom/omatrix.h>
@@ -1343,4 +1344,115 @@ CL_DEFUN Matter_sp chem__matter_copy(Matter_sp orig, core::T_sp new_to_old) {
   return copy;
 }
 
+CL_LAMBDA(matter &optional (initial-value 0));
+CL_DEFUN core::SimpleBitVector_sp chem__matter_SLASH_make_mask(Matter_sp matter, int initialValue)
+{
+  size_t sz = matter->numberOfAtoms();
+  auto bitvec = core::SimpleBitVector_O::make(sz,initialValue&1,true);
+  return bitvec;
+}
+
+CL_DOCSTRING(R"doc(Set bits to value in the mask for all atoms in submatter within matter.)doc");
+CL_DEFUN void chem__matter_SLASH_set_mask(Matter_sp matter, Matter_sp submatter, core::SimpleBitVector_sp bitvector, int value )
+{
+  size_t nextIndex = 0;
+  if (gc::IsA<Molecule_sp>(submatter)) {
+    if ((gc::IsA<Aggregate_sp>(matter))) {
+      Loop lsub;
+      lsub.loopTopGoal(matter,MOLECULES);
+      while (lsub.advance() ) {
+        Molecule_sp mol = lsub.getMolecule();
+        size_t numAtoms = mol->numberOfAtoms();
+        if (mol==submatter) {
+          for ( size_t idx=nextIndex; idx<nextIndex+numAtoms; idx++ ) {
+            bitvector->setBit(idx,value);
+          }
+        }
+        nextIndex += numAtoms;
+      }
+      return;
+    }
+  } else if (gc::IsA<Residue_sp>(submatter)) {
+    if ((gc::IsA<Aggregate_sp>(matter)||gc::IsA<Molecule_sp>(matter))) {
+      Loop lsub;
+      lsub.loopTopGoal(matter,RESIDUES);
+      while (lsub.advance() ) {
+        Residue_sp res = lsub.getResidue();
+        size_t numAtoms = res->numberOfAtoms();
+        if (res==submatter) {
+          for ( size_t idx=nextIndex; idx<nextIndex+numAtoms; idx++ ) {
+            bitvector->setBit(idx,value);
+          }
+        }
+        nextIndex += numAtoms;
+      }
+      return;
+    }
+  } else if (gc::IsA<Atom_sp>(submatter)) {
+    if ((gc::IsA<Aggregate_sp>(matter)||gc::IsA<Molecule_sp>(matter)||gc::IsA<Residue_sp>(matter))) {
+      Loop lsub;
+      lsub.loopTopGoal(matter,ATOMS);
+      while (lsub.advance() ) {
+        auto atm = lsub.getAtom();
+        if (atm==submatter) {
+          bitvector->setBit(nextIndex,value);
+        }
+        nextIndex += 1;
+      }
+      return;
+    }
+  }
+  SIMPLE_ERROR("Matter ({}) must be a container that contains submatter ({})", _rep_(matter), _rep_(submatter));
+}
+
+CL_DOCSTRING(R"doc(Walk the atoms in the matter hierarchy and call the callback with
+(atom-index atom residue molecule) for each atom.
+If the matter is an aggregate, call the callback with (atom-index atom residue molecule).
+If the matter is an molecule, call the callback with (atom-index atom residue).
+If the matter is a residue, call the callback with (atom-index atom).)doc");
+CL_DEFUN void chem__matter_SLASH_walk_atoms(Matter_sp matter, core::T_sp callback )
+{
+  size_t nextIndex = 0;
+  if (gc::IsA<Aggregate_sp>(matter)) {
+    Loop lmol, lres, latm;
+    lmol.loopTopGoal(matter,MOLECULES);
+    while (lmol.advance()) {
+      auto mol = lmol.getMolecule();
+      lres.loopTopGoal(mol,RESIDUES);
+      while (lres.advance()) {
+        auto res = lres.getResidue();
+        latm.loopTopGoal(res,ATOMS);
+        while (latm.advance()) {
+          auto atm = latm.getAtom();
+          core::eval::funcall(callback,core::make_fixnum(nextIndex),atm,res,mol);
+          nextIndex++;
+        }
+      }
+    }
+    return;
+  } else if (gc::IsA<Molecule_sp>(matter)) {
+    Loop lres, latm;
+    lres.loopTopGoal(matter,RESIDUES);
+    while (lres.advance()) {
+      auto res = lres.getResidue();
+      latm.loopTopGoal(res,ATOMS);
+      while (latm.advance()) {
+        auto atm = latm.getAtom();
+        core::eval::funcall(callback,core::make_fixnum(nextIndex),atm,res);
+        nextIndex++;
+      }
+    }
+    return;
+  } else if (gc::IsA<Residue_sp>(matter)) {
+    Loop latm;
+    latm.loopTopGoal(matter,ATOMS);
+    while (latm.advance()) {
+      auto atm = latm.getAtom();
+      core::eval::funcall(callback,core::make_fixnum(nextIndex),atm);
+      nextIndex++;
+    }
+    return;
+  }
+  SIMPLE_ERROR("Matter ({}) must be an aggregate, molecule or residue", _rep_(matter) );
+}
 };  // namespace chem

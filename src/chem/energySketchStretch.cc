@@ -46,6 +46,12 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+#define STRETCH_APPLY_ATOM_MASK(I1,I2) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         ) \
+    ) goto SKIP_term;
 
 core::List_sp EnergySketchStretch::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kb),core::clasp_make_double_float(this->term.kb)),
@@ -68,6 +74,8 @@ num_real	_evaluateEnergyOnly_SketchStretch (
                                      num_real r0,
                                      num_real kb )
 {
+  IMPLEMENT_ME();
+#if 0
 #undef	STRETCH_SET_PARAMETER
 #define	STRETCH_SET_PARAMETER(x)	{}
 #undef	STRETCH_SET_POSITION
@@ -102,6 +110,7 @@ num_real	_evaluateEnergyOnly_SketchStretch (
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
 
   return Energy;
+#endif
 }
 
 
@@ -109,8 +118,10 @@ num_real	_evaluateEnergyOnly_SketchStretch (
 
 void	EnergySketchStretch_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
-                                                    AbstractLargeSquareMatrix_sp m )
+                                                    AbstractLargeSquareMatrix_sp m,
+                                                    core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   bool		calcForce = true;
   bool		calcDiagonalHessian = true;
   bool		calcOffDiagonalHessian = true;

@@ -33,7 +33,8 @@
                            for ypos = (elt coordinates (+ 1 index))
                            for zpos = (elt coordinates (+ 2 index))
                            collect (geom:vec xpos ypos zpos)))) 
-      (format stream "A ~a occurred~%Atoms ~a~%Coordinates: ~a~%" (class-name (class-of condition)) (chem:atoms condition) positions))))
+      (format stream "A ~a occurred~%Atoms ~a~%Coordinates: ~a~%" (class-name (class-of condition)) (chem:atoms condition) positions)
+      (when (slot-boundp condition 'simd-index) (format stream ":simd-index ~d" (simd-index condition))))))
   
 
 (define-condition chem:minimizer-error (error)
@@ -46,6 +47,7 @@
 (define-condition chem::linear-atoms-error (chem:minimizer-error)
   ((atoms :initarg :atoms :reader chem:atoms)
    (coordinates :initarg :coordinates :reader coordinates)
+   (simd-index :initarg :simd-index :reader simd-index)
    (indices :initarg :indices :reader chem::indices))
   (:report linear-atoms-reporter))
 

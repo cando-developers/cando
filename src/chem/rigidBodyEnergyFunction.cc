@@ -150,7 +150,8 @@ void RigidBodyEnergyFunction_O::disableDebug() {
   }
 }
 
-void RigidBodyEnergyFunction_O::setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) {
+void RigidBodyEnergyFunction_O::setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,
+                                                            core::T_sp activeAtomMask ) {
   IMPLEMENT_ME();
 }
 

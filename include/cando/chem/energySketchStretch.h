@@ -162,7 +162,8 @@ public:
     virtual void fill_from_vectors_in_alist(core::List_sp vectors);
     
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m );
+					    AbstractLargeSquareMatrix_sp m,
+                                            core::T_sp activeAtomMask );
   virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,

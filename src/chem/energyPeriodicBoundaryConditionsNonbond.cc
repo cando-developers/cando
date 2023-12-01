@@ -63,6 +63,15 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+
+#define NONBOND_APPLY_ATOM_MASK(I1,I2) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         ) \
+    ) goto SKIP_term;
+
+
 inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& rsize, const num_real& size)
 {
   num_real result = delta;
@@ -131,7 +140,8 @@ num_real	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_s
 
 
 void	EnergyPeriodicBoundaryConditionsNonbond_O::setupHessianPreconditioner(NVector_sp nvPosition,
-                                                                              AbstractLargeSquareMatrix_sp m )
+                                                                              AbstractLargeSquareMatrix_sp m,
+                                                                              core::T_sp activeAtomMask )
 {
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }
@@ -145,8 +155,11 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
                                                                  bool		calcOffDiagonalHessian,
                                                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                                  gc::Nilable<NVector_sp>	hdvec, 
-                                                                 gc::Nilable<NVector_sp> 	dvec )
+                                                                 gc::Nilable<NVector_sp> 	dvec,
+                                                                 core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   this->_Evaluations++;
   ANN(force);
@@ -288,8 +301,10 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
                                                                               bool		calcOffDiagonalHessian,
                                                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                                               gc::Nilable<NVector_sp>	hdvec, 
-                                                                              gc::Nilable<NVector_sp> 	dvec )
+                                                                              gc::Nilable<NVector_sp> 	dvec,
+                                                                              core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   this->_Evaluations++;
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
@@ -485,6 +500,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
 
 void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score, NVector_sp 	pos)
 {
+  IMPLEMENT_ME();
+#if 0
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
@@ -548,6 +565,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalFor
 
     }
   }
+#endif
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,nonbond);
@@ -557,6 +575,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,force);
 
 core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThresholdInteractionsWithPosition(ScoringFunction_sp score, NVector_sp pos, double threshold )
 {
+  IMPLEMENT_ME();
+#if 0
   EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
   num_real x_rwidth = energyFunction->boundingBox()->get_x_rwidth();
   num_real y_rwidth = energyFunction->boundingBox()->get_y_rwidth();
@@ -708,6 +728,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
 
   }
   return result.result();
+#endif
 }
 
 };

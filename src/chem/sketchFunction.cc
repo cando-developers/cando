@@ -265,13 +265,14 @@ public:
 //
 
 void SketchFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
-                                                               AbstractLargeSquareMatrix_sp m )
+                                                  AbstractLargeSquareMatrix_sp m,
+                                                  core::T_sp activeAtomMask )
 {
   m->fill(0.0);
   if (this->_Stretch->isEnabled())
-    this->_Stretch->setupHessianPreconditioner(nvPosition, m );
+    this->_Stretch->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
   if (this->_OutOfZPlane->isEnabled())
-    this->_OutOfZPlane->setupHessianPreconditioner(nvPosition, m );
+    this->_OutOfZPlane->setupHessianPreconditioner(nvPosition, m, activeAtomMask );
 }
 
 

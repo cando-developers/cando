@@ -42,6 +42,12 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+#define ANCHOR_RESTRAINT_APPLY_ATOM_MASK(I1) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         ) \
+    ) goto SKIP_term;
+
 EnergyAnchorRestraint::EnergyAnchorRestraint()
 {
   this->_Atom1 = nil<Atom_O>();
@@ -128,8 +134,11 @@ void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 num_real	_evaluateEnergyOnly_AnchorRestraint(
                                                     num_real x1, num_real y1, num_real z1,
                                                     num_real xa, num_real ya, num_real za,
-                                                    num_real ka)
+                                                    num_real ka, core::T_sp activeAtomMask )
 {
+  IMPLEMENT_ME();
+  #if 0
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
 #undef	ANCHOR_RESTRAINT_SET_PARAMETER
 #define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{}
 #undef	ANCHOR_RESTRAINT_SET_POSITION
@@ -152,6 +161,7 @@ num_real	_evaluateEnergyOnly_AnchorRestraint(
 #include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
 
   return Energy;
+  #endif
 }
 
 
@@ -177,10 +187,11 @@ string EnergyAnchorRestraint_O::beyondThresholdInteractionsAsString()
 
 
 
-void	EnergyAnchorRestraint_O::setupHessianPreconditioner(
-                                                            NVector_sp nvPosition,
-                                                            AbstractLargeSquareMatrix_sp m )
+void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
+                                                            AbstractLargeSquareMatrix_sp m,
+                                                            core::T_sp activeAtomMask )
 {
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   bool		calcForce = true;
   bool		calcDiagonalHessian = true;
   bool		calcOffDiagonalHessian = true;
@@ -225,10 +236,6 @@ void	EnergyAnchorRestraint_O::setupHessianPreconditioner(
 #include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
     }
   }
-
-
-
-
 
 }
 
@@ -334,14 +341,15 @@ num_real EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 
 
 
-void	EnergyAnchorRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-                                                                                        NVector_sp 	pos)
+void	EnergyAnchorRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp 	pos,
+                                                                                        core::T_sp activeAtomMask )
 {
+#if 0
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
   bool	calcOffDiagonalHessian = true;
-
 
 //
 // copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
@@ -400,6 +408,7 @@ void	EnergyAnchorRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermBy
 
     }
   }
+  #endif
   IMPLEMENT_ME(); // must return some sort of integer value
 }
 

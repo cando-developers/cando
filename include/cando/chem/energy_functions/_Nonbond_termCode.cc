@@ -1,207 +1,185 @@
 // C-code
-	NONBOND_SET_PARAMETER(I1);
-	NONBOND_SET_PARAMETER(I2);
 	NONBOND_SET_PARAMETER(dQ1Q2);
 	NONBOND_SET_PARAMETER(dA);
 	NONBOND_SET_PARAMETER(dC);
+	NONBOND_SET_PARAMETER(I1);
+	NONBOND_SET_PARAMETER(I2);
+	NONBOND_APPLY_ATOM_MASK(I1,I2);
 	NONBOND_SET_POSITION(x1,I1,0);
 	NONBOND_SET_POSITION(y1,I1,1);
 	NONBOND_SET_POSITION(z1,I1,2);
 	NONBOND_SET_POSITION(x2,I2,0);
 	NONBOND_SET_POSITION(y2,I2,1);
 	NONBOND_SET_POSITION(z2,I2,2);
-	 tx81 = -x1; 		/* rule 12 */
-	 DeltaX = tx81 + x2; 		/* rule 13 */
-	 tx82 = -y1; 		/* rule 14 */
-	 DeltaY = tx82 + y2; 		/* rule 15 */
-	 tx83 = -z1; 		/* rule 16 */
-	 DeltaZ = tx83 + z2; 		/* rule 17 */
-	 tx84 = PBX(DeltaX); 		/* rule 18 */
-	 tx85 = PBY(DeltaY); 		/* rule 19 */
-	 tx86 = PBZ(DeltaZ); 		/* rule 20 */
-	 tx87 = power2(tx84); 		/* rule 21 */
-	 tx88 = power2(tx85); 		/* rule 22 */
-	 tx89 = power2(tx86); 		/* rule 23 */
-	 DistanceSquared = tx87 + tx88 + tx89; 		/* rule 24 */
+	 tx1 = -x1; 		/* rule 13 */
+	 DeltaX = tx1 + x2; 		/* rule 14 */
+	 tx2 = -y1; 		/* rule 15 */
+	 DeltaY = tx2 + y2; 		/* rule 16 */
+	 tx3 = -z1; 		/* rule 17 */
+	 DeltaZ = tx3 + z2; 		/* rule 18 */
+	 tx4 = PBX(DeltaX); 		/* rule 19 */
+	 tx5 = PBY(DeltaY); 		/* rule 20 */
+	 tx6 = PBZ(DeltaZ); 		/* rule 21 */
+	 tx7 = power2(tx4); 		/* rule 22 */
+	 tx8 = power2(tx5); 		/* rule 23 */
+	 tx9 = power2(tx6); 		/* rule 24 */
+	 DistanceSquared = tx7 + tx8 + tx9; 		/* rule 25 */
 	BAIL_OUT_IF_CUTOFF(DistanceSquared)
-	 tx192 = reciprocal(DistanceSquared); 		/* rule 26 */
-	 tx171 = power2(tx192); 		/* rule 27 */
-	 tx172 = tx192; 		/* rule 28 */
-	 tx161 = tx171*tx172; 		/* rule 29 */
-	 tx90 = power2(tx161); 		/* rule 30 */
-	 tx162 = power2(tx172); 		/* rule 31 */
-	 tx163 = tx172; 		/* rule 32 */
-	 tx91 = tx162*tx163; 		/* rule 33 */
-	 tx92 = dA*tx90; 		/* rule 34 */
-	 tx93 = -(dC*tx91); 		/* rule 35 */
-	 Evdw = tx92 + tx93; 		/* rule 36 */
+	 tx93 = reciprocal(DistanceSquared); 		/* rule 27 */
+	 tx91 = power2(tx93); 		/* rule 28 */
+	 tx92 = tx93; 		/* rule 29 */
+	 tx81 = tx91*tx92; 		/* rule 30 */
+	 tx10 = power2(tx81); 		/* rule 31 */
+	 tx82 = power2(tx92); 		/* rule 32 */
+	 tx83 = tx92; 		/* rule 33 */
+	 tx11 = tx82*tx83; 		/* rule 34 */
+	 tx12 = dA*tx10; 		/* rule 35 */
+	 tx13 = -(dC*tx11); 		/* rule 36 */
+	 Evdw = tx12 + tx13; 		/* rule 37 */
 	NONBOND_EVDW_ENERGY_ACCUMULATE(Evdw);
-	 tx164 = mysqrt(DistanceSquared); 		/* rule 38 */
-	 tx94 = reciprocal(tx164); 		/* rule 39 */
-	 Eeel = dQ1Q2*tx94; 		/* rule 40 */
+	 tx84 = mysqrt(DistanceSquared); 		/* rule 39 */
+	 tx14 = reciprocal(tx84); 		/* rule 40 */
+	 Eeel = dQ1Q2*tx14; 		/* rule 41 */
 	NONBOND_EEEL_ENERGY_ACCUMULATE(Eeel);
-	 Energy = Eeel + Evdw; 		/* rule 42 */
+	 Energy = Eeel + Evdw; 		/* rule 43 */
 	NONBOND_ENERGY_ACCUMULATE(Energy);
 	#ifdef NONBOND_CALC_FORCE //[
 	if ( calcForce ) {
-	 tx165 = power2(tx171); 		/* rule 46 */
-	 tx95 = tx161*tx165; 		/* rule 47 */
-	 tx96 = power2(tx162); 		/* rule 48 */
-	 tx166 = DistanceSquared; 		/* rule 49 */
-	 tx167 = tx94; 		/* rule 50 */
-	 tx168 = reciprocal(tx166); 		/* rule 51 */
-	 tx97 = tx167*tx168; 		/* rule 52 */
-	 tzz177 = dA*tx95; 		/* rule 53 */
-	 tzz188 = 12.*tzz177; 		/* rule 54 */
-	 tx98 = tx84*tzz188; 		/* rule 55 */
-	 tzz176 = dC*tx96; 		/* rule 56 */
-	 tzz190 = -6.*tzz176; 		/* rule 57 */
-	 tx99 = tx84*tzz190; 		/* rule 58 */
-	 tzz187 = dQ1Q2*tx97; 		/* rule 59 */
-	 tx100 = tx84*tzz187; 		/* rule 60 */
-	 gx1 = tx100 + tx98 + tx99; 		/* rule 61 */
-	 fx1 = -gx1; 		/* rule 62 */
+	 tx85 = power2(tx91); 		/* rule 47 */
+	 tx15 = tx81*tx85; 		/* rule 48 */
+	 tx16 = power2(tx82); 		/* rule 49 */
+	 tx86 = DistanceSquared; 		/* rule 50 */
+	 tx87 = tx14; 		/* rule 51 */
+	 tx88 = reciprocal(tx86); 		/* rule 52 */
+	 tx17 = tx87*tx88; 		/* rule 53 */
+	 tx18 = 12.*dA*tx15*tx4; 		/* rule 54 */
+	 tx19 = -6.*dC*tx16*tx4; 		/* rule 55 */
+	 tx20 = dQ1Q2*tx17*tx4; 		/* rule 56 */
+	 gx1 = tx18 + tx19 + tx20; 		/* rule 57 */
+	 fx1 = -gx1; 		/* rule 58 */
 	NONBOND_FORCE_ACCUMULATE(I1, 0, fx1 );
-	 tx101 = tx85*tzz188; 		/* rule 64 */
-	 tx102 = tx85*tzz190; 		/* rule 65 */
-	 tx103 = tx85*tzz187; 		/* rule 66 */
-	 gy1 = tx101 + tx102 + tx103; 		/* rule 67 */
-	 fy1 = -gy1; 		/* rule 68 */
+	 tx21 = 12.*dA*tx15*tx5; 		/* rule 60 */
+	 tx22 = -6.*dC*tx16*tx5; 		/* rule 61 */
+	 tx23 = dQ1Q2*tx17*tx5; 		/* rule 62 */
+	 gy1 = tx21 + tx22 + tx23; 		/* rule 63 */
+	 fy1 = -gy1; 		/* rule 64 */
 	NONBOND_FORCE_ACCUMULATE(I1, 1, fy1 );
-	 tx104 = tx86*tzz188; 		/* rule 70 */
-	 tx105 = tx86*tzz190; 		/* rule 71 */
-	 tx106 = tx86*tzz187; 		/* rule 72 */
-	 gz1 = tx104 + tx105 + tx106; 		/* rule 73 */
-	 fz1 = -gz1; 		/* rule 74 */
+	 tx24 = 12.*dA*tx15*tx6; 		/* rule 66 */
+	 tx25 = -6.*dC*tx16*tx6; 		/* rule 67 */
+	 tx26 = dQ1Q2*tx17*tx6; 		/* rule 68 */
+	 gz1 = tx24 + tx25 + tx26; 		/* rule 69 */
+	 fz1 = -gz1; 		/* rule 70 */
 	NONBOND_FORCE_ACCUMULATE(I1, 2, fz1 );
-	 tx107 = -tx100; 		/* rule 76 */
-	 tzz191 = -12.*tzz177; 		/* rule 77 */
-	 tx108 = tx84*tzz191; 		/* rule 78 */
-	 tzz189 = 6.*tzz176; 		/* rule 79 */
-	 tx109 = tx84*tzz189; 		/* rule 80 */
-	 gx2 = tx107 + tx108 + tx109; 		/* rule 81 */
-	 fx2 = -gx2; 		/* rule 82 */
+	 tx27 = -tx20; 		/* rule 72 */
+	 tx28 = -12.*dA*tx15*tx4; 		/* rule 73 */
+	 tx29 = 6.*dC*tx16*tx4; 		/* rule 74 */
+	 gx2 = tx27 + tx28 + tx29; 		/* rule 75 */
+	 fx2 = -gx2; 		/* rule 76 */
 	NONBOND_FORCE_ACCUMULATE(I2, 0, fx2 );
-	 tx110 = -tx103; 		/* rule 84 */
-	 tx111 = tx85*tzz191; 		/* rule 85 */
-	 tx112 = tx85*tzz189; 		/* rule 86 */
-	 gy2 = tx110 + tx111 + tx112; 		/* rule 87 */
-	 fy2 = -gy2; 		/* rule 88 */
+	 tx30 = -tx23; 		/* rule 78 */
+	 tx31 = -12.*dA*tx15*tx5; 		/* rule 79 */
+	 tx32 = 6.*dC*tx16*tx5; 		/* rule 80 */
+	 gy2 = tx30 + tx31 + tx32; 		/* rule 81 */
+	 fy2 = -gy2; 		/* rule 82 */
 	NONBOND_FORCE_ACCUMULATE(I2, 1, fy2 );
-	 tx113 = -tx106; 		/* rule 90 */
-	 tx114 = tx86*tzz191; 		/* rule 91 */
-	 tx115 = tx86*tzz189; 		/* rule 92 */
-	 gz2 = tx113 + tx114 + tx115; 		/* rule 93 */
-	 fz2 = -gz2; 		/* rule 94 */
+	 tx33 = -tx26; 		/* rule 84 */
+	 tx34 = -12.*dA*tx15*tx6; 		/* rule 85 */
+	 tx35 = 6.*dC*tx16*tx6; 		/* rule 86 */
+	 gz2 = tx33 + tx34 + tx35; 		/* rule 87 */
+	 fz2 = -gz2; 		/* rule 88 */
 	NONBOND_FORCE_ACCUMULATE(I2, 2, fz2 );
 	#ifdef NONBOND_CALC_DIAGONAL_HESSIAN //[
 	if ( calcDiagonalHessian ) {
-	 tx116 = power2(tx165); 		/* rule 98 */
-	 tx117 = tx161*tx162; 		/* rule 99 */
-	 tx169 = power2(tx166); 		/* rule 100 */
-	 tx170 = reciprocal(tx169); 		/* rule 101 */
-	 tx118 = tx167*tx170; 		/* rule 102 */
-	 tzz175 = dA*tx116; 		/* rule 103 */
-	 tzz181 = 168*tzz175; 		/* rule 104 */
-	 tx119 = tx87*tzz181; 		/* rule 105 */
-	 tzz174 = dC*tx117; 		/* rule 106 */
-	 tzz185 = -48*tzz174; 		/* rule 107 */
-	 tx120 = tx87*tzz185; 		/* rule 108 */
-	 tzz173 = dQ1Q2*tx118; 		/* rule 109 */
-	 tzz183 = 3*tzz173; 		/* rule 110 */
-	 tx121 = tx87*tzz183; 		/* rule 111 */
-	 tx122 = tzz191; 		/* rule 112 */
-	 tx123 = tzz189; 		/* rule 113 */
-	 tx124 = -tzz187; 		/* rule 114 */
-	 tzz195 = tx123 + tx124; 		/* rule 115 */
-	 tzz196 = tx122 + tzz195; 		/* rule 116 */
-	 dhx1x1 = tx119 + tx120 + tx121 + tzz196; 		/* rule 117 */
+	 tx36 = power2(tx85); 		/* rule 92 */
+	 tx37 = tx81*tx82; 		/* rule 93 */
+	 tx89 = power2(tx86); 		/* rule 94 */
+	 tx90 = reciprocal(tx89); 		/* rule 95 */
+	 tx38 = tx87*tx90; 		/* rule 96 */
+	 tx39 = -12.*dA*tx15; 		/* rule 97 */
+	 tx40 = 6.*dC*tx16; 		/* rule 98 */
+	 tx41 = -(dQ1Q2*tx17); 		/* rule 99 */
+	 tx42 = 168*dA*tx36*tx7; 		/* rule 100 */
+	 tx43 = -48*dC*tx37*tx7; 		/* rule 101 */
+	 tx44 = 3*dQ1Q2*tx38*tx7; 		/* rule 102 */
+	 dhx1x1 = tx39 + tx40 + tx41 + tx42 + tx43 + tx44; 		/* rule 103 */
 	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 0, dhx1x1);
-	 tx125 = tx88*tzz181; 		/* rule 119 */
-	 tx126 = tx88*tzz185; 		/* rule 120 */
-	 tx127 = tx88*tzz183; 		/* rule 121 */
-	 dhy1y1 = tx125 + tx126 + tx127 + tzz196; 		/* rule 122 */
+	 tx45 = 168*dA*tx36*tx8; 		/* rule 105 */
+	 tx46 = -48*dC*tx37*tx8; 		/* rule 106 */
+	 tx47 = 3*dQ1Q2*tx38*tx8; 		/* rule 107 */
+	 dhy1y1 = tx39 + tx40 + tx41 + tx45 + tx46 + tx47; 		/* rule 108 */
 	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I1, 1, dhy1y1);
-	 tx128 = tx89*tzz181; 		/* rule 124 */
-	 tx129 = tx89*tzz185; 		/* rule 125 */
-	 tx130 = tx89*tzz183; 		/* rule 126 */
-	 dhz1z1 = tx128 + tx129 + tx130 + tzz196; 		/* rule 127 */
+	 tx48 = 168*dA*tx36*tx9; 		/* rule 110 */
+	 tx49 = -48*dC*tx37*tx9; 		/* rule 111 */
+	 tx50 = 3*dQ1Q2*tx38*tx9; 		/* rule 112 */
+	 dhz1z1 = tx39 + tx40 + tx41 + tx48 + tx49 + tx50; 		/* rule 113 */
 	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I1, 2, dhz1z1);
-	 dhx2x2 = dhx1x1; 		/* rule 129 */
+	 dhx2x2 = dhx1x1; 		/* rule 115 */
 	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(I2, 0, I2, 0, dhx2x2);
-	 dhy2y2 = dhy1y1; 		/* rule 131 */
+	 dhy2y2 = dhy1y1; 		/* rule 117 */
 	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(I2, 1, I2, 1, dhy2y2);
-	 dhz2z2 = dhz1z1; 		/* rule 133 */
+	 dhz2z2 = dhz1z1; 		/* rule 119 */
 	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(I2, 2, I2, 2, dhz2z2);
 	#ifdef NONBOND_CALC_OFF_DIAGONAL_HESSIAN //[
 	if ( calcOffDiagonalHessian ) {
-	 tzz180 = tx84*tx85; 		/* rule 137 */
-	 tx131 = tzz180*tzz181; 		/* rule 138 */
-	 tx132 = tzz180*tzz185; 		/* rule 139 */
-	 tx133 = tzz180*tzz183; 		/* rule 140 */
-	 ohx1y1 = tx131 + tx132 + tx133; 		/* rule 141 */
+	 tx51 = 168*dA*tx36*tx4*tx5; 		/* rule 123 */
+	 tx52 = -48*dC*tx37*tx4*tx5; 		/* rule 124 */
+	 tx53 = 3*dQ1Q2*tx38*tx4*tx5; 		/* rule 125 */
+	 ohx1y1 = tx51 + tx52 + tx53; 		/* rule 126 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 1, ohx1y1);
-	 tzz179 = tx84*tx86; 		/* rule 143 */
-	 tx134 = tzz179*tzz181; 		/* rule 144 */
-	 tx135 = tzz179*tzz185; 		/* rule 145 */
-	 tx136 = tzz179*tzz183; 		/* rule 146 */
-	 ohx1z1 = tx134 + tx135 + tx136; 		/* rule 147 */
+	 tx54 = 168*dA*tx36*tx4*tx6; 		/* rule 128 */
+	 tx55 = -48*dC*tx37*tx4*tx6; 		/* rule 129 */
+	 tx56 = 3*dQ1Q2*tx38*tx4*tx6; 		/* rule 130 */
+	 ohx1z1 = tx54 + tx55 + tx56; 		/* rule 131 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 2, ohx1z1);
-	 tzz186 = -168*tzz175; 		/* rule 149 */
-	 tx137 = tx87*tzz186; 		/* rule 150 */
-	 tzz182 = 48*tzz174; 		/* rule 151 */
-	 tx138 = tx87*tzz182; 		/* rule 152 */
-	 tzz184 = -3*tzz173; 		/* rule 153 */
-	 tx139 = tx87*tzz184; 		/* rule 154 */
-	 tx140 = tzz188; 		/* rule 155 */
-	 tx141 = tzz190; 		/* rule 156 */
-	 tx142 = tzz187; 		/* rule 157 */
-	 tzz193 = tx141 + tx142; 		/* rule 158 */
-	 tzz194 = tx140 + tzz193; 		/* rule 159 */
-	 ohx1x2 = tx137 + tx138 + tx139 + tzz194; 		/* rule 160 */
+	 tx57 = 12.*dA*tx15; 		/* rule 133 */
+	 tx58 = -6.*dC*tx16; 		/* rule 134 */
+	 tx59 = dQ1Q2*tx17; 		/* rule 135 */
+	 tx60 = -168*dA*tx36*tx7; 		/* rule 136 */
+	 tx61 = 48*dC*tx37*tx7; 		/* rule 137 */
+	 tx62 = -3*dQ1Q2*tx38*tx7; 		/* rule 138 */
+	 ohx1x2 = tx57 + tx58 + tx59 + tx60 + tx61 + tx62; 		/* rule 139 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I2, 0, ohx1x2);
-	 tx143 = tzz180*tzz186; 		/* rule 162 */
-	 tx144 = tzz180*tzz182; 		/* rule 163 */
-	 tx145 = tzz180*tzz184; 		/* rule 164 */
-	 ohx1y2 = tx143 + tx144 + tx145; 		/* rule 165 */
+	 tx63 = -168*dA*tx36*tx4*tx5; 		/* rule 141 */
+	 tx64 = 48*dC*tx37*tx4*tx5; 		/* rule 142 */
+	 tx65 = -3*dQ1Q2*tx38*tx4*tx5; 		/* rule 143 */
+	 ohx1y2 = tx63 + tx64 + tx65; 		/* rule 144 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I2, 1, ohx1y2);
-	 tx146 = tzz179*tzz186; 		/* rule 167 */
-	 tx147 = tzz179*tzz182; 		/* rule 168 */
-	 tx148 = tzz179*tzz184; 		/* rule 169 */
-	 ohx1z2 = tx146 + tx147 + tx148; 		/* rule 170 */
+	 tx66 = -168*dA*tx36*tx4*tx6; 		/* rule 146 */
+	 tx67 = 48*dC*tx37*tx4*tx6; 		/* rule 147 */
+	 tx68 = -3*dQ1Q2*tx38*tx4*tx6; 		/* rule 148 */
+	 ohx1z2 = tx66 + tx67 + tx68; 		/* rule 149 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I2, 2, ohx1z2);
-	 tzz178 = tx85*tx86; 		/* rule 172 */
-	 tx149 = tzz178*tzz181; 		/* rule 173 */
-	 tx150 = tzz178*tzz185; 		/* rule 174 */
-	 tx151 = tzz178*tzz183; 		/* rule 175 */
-	 ohy1z1 = tx149 + tx150 + tx151; 		/* rule 176 */
+	 tx69 = 168*dA*tx36*tx5*tx6; 		/* rule 151 */
+	 tx70 = -48*dC*tx37*tx5*tx6; 		/* rule 152 */
+	 tx71 = 3*dQ1Q2*tx38*tx5*tx6; 		/* rule 153 */
+	 ohy1z1 = tx69 + tx70 + tx71; 		/* rule 154 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I1, 2, ohy1z1);
-	 ohy1x2 = ohx1y2; 		/* rule 178 */
+	 ohy1x2 = ohx1y2; 		/* rule 156 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I2, 0, ohy1x2);
-	 tx152 = tx88*tzz186; 		/* rule 180 */
-	 tx153 = tx88*tzz182; 		/* rule 181 */
-	 tx154 = tx88*tzz184; 		/* rule 182 */
-	 ohy1y2 = tx152 + tx153 + tx154 + tzz194; 		/* rule 183 */
+	 tx72 = -168*dA*tx36*tx8; 		/* rule 158 */
+	 tx73 = 48*dC*tx37*tx8; 		/* rule 159 */
+	 tx74 = -3*dQ1Q2*tx38*tx8; 		/* rule 160 */
+	 ohy1y2 = tx57 + tx58 + tx59 + tx72 + tx73 + tx74; 		/* rule 161 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I2, 1, ohy1y2);
-	 tx155 = tzz178*tzz186; 		/* rule 185 */
-	 tx156 = tzz178*tzz182; 		/* rule 186 */
-	 tx157 = tzz178*tzz184; 		/* rule 187 */
-	 ohy1z2 = tx155 + tx156 + tx157; 		/* rule 188 */
+	 tx75 = -168*dA*tx36*tx5*tx6; 		/* rule 163 */
+	 tx76 = 48*dC*tx37*tx5*tx6; 		/* rule 164 */
+	 tx77 = -3*dQ1Q2*tx38*tx5*tx6; 		/* rule 165 */
+	 ohy1z2 = tx75 + tx76 + tx77; 		/* rule 166 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I2, 2, ohy1z2);
-	 ohz1x2 = ohx1z2; 		/* rule 190 */
+	 ohz1x2 = ohx1z2; 		/* rule 168 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I2, 0, ohz1x2);
-	 ohz1y2 = ohy1z2; 		/* rule 192 */
+	 ohz1y2 = ohy1z2; 		/* rule 170 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I2, 1, ohz1y2);
-	 tx158 = tx89*tzz186; 		/* rule 194 */
-	 tx159 = tx89*tzz182; 		/* rule 195 */
-	 tx160 = tx89*tzz184; 		/* rule 196 */
-	 ohz1z2 = tx158 + tx159 + tx160 + tzz194; 		/* rule 197 */
+	 tx78 = -168*dA*tx36*tx9; 		/* rule 172 */
+	 tx79 = 48*dC*tx37*tx9; 		/* rule 173 */
+	 tx80 = -3*dQ1Q2*tx38*tx9; 		/* rule 174 */
+	 ohz1z2 = tx57 + tx58 + tx59 + tx78 + tx79 + tx80; 		/* rule 175 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I2, 2, ohz1z2);
-	 ohx2y2 = ohx1y1; 		/* rule 199 */
+	 ohx2y2 = ohx1y1; 		/* rule 177 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I2, 0, I2, 1, ohx2y2);
-	 ohx2z2 = ohx1z1; 		/* rule 201 */
+	 ohx2z2 = ohx1z1; 		/* rule 179 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I2, 0, I2, 2, ohx2z2);
-	 ohy2z2 = ohy1z1; 		/* rule 203 */
+	 ohy2z2 = ohy1z1; 		/* rule 181 */
 	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I2, 1, I2, 2, ohy2z2);
 	} /*if calcOffDiagonalHessian */ 
 	#endif /* NONBOND_CALC_OFF_DIAGONAL_HESSIAN ]*/
@@ -209,3 +187,4 @@
 	#endif /* NONBOND_CALC_DIAGONAL_HESSIAN ]*/
 	} /*calcForce */
 	#endif /* NONBOND_CALC_FORCE ]*/
+	SKIP_term:  (void)0;

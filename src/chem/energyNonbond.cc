@@ -61,6 +61,13 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+#define NONBOND_APPLY_ATOM_MASK(I1,I2) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         ) \
+    ) goto SKIP_term;
+
 /* No periodic boundary conditons/bounding-box is used in this code.
    So make these macros do nothing.
    See energyPeriodicBoundaryConditionsNonbond.cc for counter-example.
@@ -183,10 +190,12 @@ double	EnergyNonbond::getDistance()
 
 
 num_real	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
-                                    num_real x1, num_real y1, num_real z1,
-                                    num_real x2, num_real y2, num_real z2,
-                                    num_real dA, num_real dC, num_real dQ1Q2)
+                                            num_real x1, num_real y1, num_real z1,
+                                            num_real x2, num_real y2, num_real z2,
+                                            num_real dA, num_real dC, num_real dQ1Q2)
 {
+  IMPLEMENT_ME();
+  #if 0
 #undef	NONBOND_SET_PARAMETER
 #define	NONBOND_SET_PARAMETER(x)	{}
 #undef	NONBOND_SET_POSITION
@@ -213,6 +222,7 @@ num_real	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 
   return Energy;
+  #endif
 }
 
 
@@ -253,7 +263,8 @@ void	EnergyNonbond_O::dumpTerms(core::HashTable_sp atomTypes)
 
 void	EnergyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
-                                                    AbstractLargeSquareMatrix_sp m )
+                                                    AbstractLargeSquareMatrix_sp m,
+                                                    core::T_sp activeAtomMask )
 {
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!! only the bonded components of energy are used for the precondition to keep it sparse");
 }
@@ -788,6 +799,8 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
 void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score,
                                                                                 NVector_sp 	pos)
 {
+  IMPLEMENT_ME();
+#if 0
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
@@ -839,6 +852,7 @@ void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(Sco
 
     }
   }
+#endif
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,nonbond);

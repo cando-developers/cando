@@ -128,7 +128,8 @@ public:
 
   virtual string	energyTermsEnabled() override;
 
-  virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) override;
+  virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,
+                                            core::T_sp activeAtomMask ) override;
 
     /*! Load the coordinates in the ScoringFunction into the position vector */
   virtual void	loadCoordinatesIntoVector(NVector_sp pos);

@@ -142,7 +142,7 @@ eliminateTrivialRules[packet_,outputs_] := Module[{rules,trivRules,nonTrivRules,
 		(* then *) nonTrivRules = rules; (* nonTrivialRules[rules,trivRules]; *)
 				(*nonTrivRules = nonTrivRules//.trivRules;*)
 				Print["Trivial rules are being removed: "<>ToString[trivRules//MatrixForm]];
-				Print["After removal: " <> ToString[nonTrivRules//MatrixForm]];
+				(*Print["After removal: " <> ToString[nonTrivRules//MatrixForm]];*)
 				Return[{Rules->nonTrivRules,Changes->True}];
 		(* else *),
 				Print["There were no trivial rules"];
@@ -832,7 +832,7 @@ packOptimize[pack_] := Module[
 	Print[Style["Set TimesSimplify and PlusSimplify to turn these simplifications off and on",Blue,Italic,24]];
 	Print[Style["PlusOptimize = "<>ToString[PlusOptimize],Blue,Italic,20]];
 	Print[Style["TimesOptimize = "<>ToString[TimesOptimize],Blue,Italic,20]];
-	Print["Collecting terms"]
+	Print["Collecting terms"];
 	np = collectTerms[np,outs]/.simplifyRules;
 	np = collectTerms[np,outs]/.simplifyRules;
 	np = collectTerms[np,outs]/.simplifyRules;
@@ -860,7 +860,8 @@ packOptimize[pack_] := Module[
 '*)
 	fileNamePrefix = "_"<>(Name/.pack)<>"_math";
 	mathExp = packAsMathematicaBlock[rules,outs];
-	result = {
+
+		result = {
 				Name->(Name/.pack),
 				AdditionalCDeclares->(AdditionalCDeclares/.pack),
 				Input->(Input/.pack),
@@ -1174,6 +1175,7 @@ AppendGradientForceAndHessian[macroPrefix_,be_,outputs_,hessianStructure_,rawEne
 	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_DIAGONAL_HESSIAN ]*/"]];
 	AppendTo[be,CCode["} /*calcForce */"]];
 	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_FORCE ]*/"]];
+	AppendTo[be,CCode["SKIP_term:  (void)0;"]]
 ];
 SetAttributes[AppendGradientForceAndHessian,HoldAll];
 
@@ -1233,6 +1235,4 @@ SetAttributes[AppendGradientForceIfCalcForce,HoldAll];
 
 
 EndPackage[]
-
-
 
