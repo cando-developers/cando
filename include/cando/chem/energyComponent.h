@@ -346,7 +346,9 @@ public:
  public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
-  EnergyComponent_O() : _Evaluations(0) {};
+  EnergyComponent_O() : _Enabled(true),
+                        _Scale(1.0),
+                        _DebugEnergy(false), _Evaluations(0) {};
 };
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {

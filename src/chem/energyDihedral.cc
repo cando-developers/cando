@@ -51,6 +51,7 @@ This is an open source license for the CANDO software from Temple University, bu
   
 namespace chem {
 
+#undef DIHEDRAL_APPLY_ATOM_MASK
 #define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
@@ -351,6 +352,7 @@ num_real	_evaluateEnergyOnly_Dihedral(
 #undef DO_sinNPhiCosNPhi
 #define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_APPLY_ATOM_MASK
 
   return Energy;
 #endif
@@ -518,6 +520,7 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
     for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
           di!=this->_Terms.end(); di++ ) {
 #include	<cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_APPLY_ATOM_MASK
     }
   }
 }
@@ -536,6 +539,14 @@ num_real	EnergyDihedral_O::evaluateAllComponentSingle(
     gc::Nilable<NVector_sp> dvec,
     core::T_sp activeAtomMask )
 {
+#undef DIHEDRAL_APPLY_ATOM_MASK
+#define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         && bitvectorActiveAtomMask->testBit(I4/3)) \
+    ) goto SKIP_term_and_angle_test;
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   if ( this->_DebugEnergy ) 
   {
@@ -604,11 +615,14 @@ num_real	EnergyDihedral_O::evaluateAllComponentSingle(
 #undef DO_sinNPhiCosNPhi
 #define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_APPLY_ATOM_MASK
     if ( EraseLinearDihedral == 0.0 ) {
       ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4),
                                                                     kw::_sym_coordinates,pos,
                                                                     kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
     }
+  SKIP_term_and_angle_test: (void)0;
+
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
     di->_calcForce = calcForce;
     di->_calcDiagonalHessian = calcDiagonalHessian;
@@ -822,6 +836,7 @@ void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
     gctools::Vec0<EnergyDihedral>::iterator di;
     for ( i=0,di=this->_Terms.begin(); di!=this->_Terms.end(); di++,i++ ) {
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_APPLY_ATOM_MASK
       int index = i;
 #include <cando/chem/energy_functions/_Dihedral_debugFiniteDifference.cc>
     }
@@ -1216,6 +1231,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd8(
   int i=0;
   for ( di=di_start8; di<di_end8; di += VREAL8_WIDTH ) {
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_APPLY_ATOM_MASK
 #undef SIMD
 #undef MAYBE_ERROR_LINEAR_DIHEDRAL
 #define MAYBE_ERROR_LINEAR_DIHEDRAL(IDX,di,I1,I2,I3,I4) { \
@@ -1420,6 +1436,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd4(
   int i = 0;
   for ( di=di_start4; di<di_end4; di += VREAL4_WIDTH ) {
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_APPLY_ATOM_MASK
 #undef SIMD
 #undef MAYBE_ERROR_LINEAR_DIHEDRAL
 #define MAYBE_ERROR_LINEAR_DIHEDRAL(IDX,di,I1,I2,I3,I4) { \
@@ -1605,6 +1622,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd2(
   int i = 0;
   for ( di=di_start2; di<di_end2; di += VREAL2_WIDTH ) {
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_APPLY_ATOM_MASK
 #undef SIMD
 #undef MAYBE_ERROR_LINEAR_DIHEDRAL
 #define MAYBE_ERROR_LINEAR_DIHEDRAL(IDX,di,I1,I2,I3,I4) { \

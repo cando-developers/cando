@@ -485,7 +485,7 @@ uint	EnergyFunction_O::countTermsBeyondThreshold()
 
 
 //
-
+__attribute__((optnone))
 double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                        core::T_sp       componentEnergy,
                                        bool 		calcForce,
@@ -496,29 +496,10 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec,
                                        core::T_sp activeAtomMask )
-{_G()
-#ifdef DEBUG_ENERGY_FUNCTION
-    printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
-#endif
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
+{
   bool	hasForce = force.notnilp();
   bool   hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-
-#ifdef	DEBUG_ON //[
-	// Summarize entry state for debugging
-  LOG("calcForce = {}" , calcForce  );
-  LOG("calcDiagonalHessian = {}" , calcDiagonalHessian  );
-  LOG("calcOffDiagonalHessian = {}" , calcOffDiagonalHessian  );
-  LOG("hasForce = {}" , hasForce  );
-  LOG("hasHdAndD = {}" , hasHdAndD  );
-  if ( hasForce && force->size() < pos->size() ) {
-    SIMPLE_ERROR("Force does not have the necessary dimensions");
-  }
-#endif //]
 
   if ( !calcForce && ( calcDiagonalHessian || calcOffDiagonalHessian ) ) {
     SIMPLE_ERROR("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce");
@@ -527,7 +508,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
     SIMPLE_ERROR("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian");
   }
 
-////    _lisp->profiler().pushTimerStates();
   double totalEnergy = 0.0;
 
   if ( hasForce ) force->zero();
@@ -538,14 +518,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
   }
 
   LOG("Starting evaluation of energy" );
-////	_lisp->profiler().timer(core::timerEnergy).start();
-
-////	_lisp->profiler().timer(core::timerBondAngleDihedral).start();
-
-	//
-	// Evaluate the stretch term
-	//
-////	_lisp->profiler().timer(core::timerBond).start();
   if (this->_Stretch->isEnabled()) {
     totalEnergy += this->_Stretch->evaluateAllComponent( this->asSmartPtr(),
                                                          pos,
@@ -564,9 +536,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                        calcOffDiagonalHessian,
                                                        hessian, hdvec, dvec, activeAtomMask );
   }
-////	_lisp->profiler().timer(core::timerAngle).stop();
-
-////	_lisp->profiler().timer(core::timerDihedral).start();
   if(this->_Dihedral->isEnabled()) {
     totalEnergy += this->_Dihedral->evaluateAllComponent( this->asSmartPtr(),
                                                           pos, componentEnergy,
@@ -575,10 +544,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                           calcOffDiagonalHessian,
                                                           hessian, hdvec, dvec, activeAtomMask );
   }
-////	_lisp->profiler().timer(core::timerDihedral).stop();
-////	_lisp->profiler().timer(core::timerBondAngleDihedral).stop();
-
-////	_lisp->profiler().timer(core::timerNonbond).start();
   if(this->_Nonbond->isEnabled()) {
     totalEnergy += this->_Nonbond->evaluateAllComponent( this->asSmartPtr(),
                                                          pos,
@@ -586,9 +551,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                          calcForce, force,
                                                          calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec, activeAtomMask );
   }
-////	_lisp->profiler().timer(core::timerNonbond).stop();
-
-////	_lisp->profiler().timer(core::timerDihedralRestraint).start();
   if(this->_DihedralRestraint.boundp() && this->_DihedralRestraint->isEnabled()) {
     totalEnergy += this->_DihedralRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                    pos,
@@ -601,9 +563,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                    dvec,
                                                                    activeAtomMask );
   }
-////	_lisp->profiler().timer(core::timerDihedralRestraint).stop();
-
-////	_lisp->profiler().timer(core::timerChiralRestraint).start();
   if(this->_ChiralRestraint->isEnabled()) {
     totalEnergy += this->_ChiralRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                  pos,
@@ -617,9 +576,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                  dvec,
                                                                  activeAtomMask );
   }
-////	_lisp->profiler().timer(core::timerChiralRestraint).stop();
-
-//	_lisp->profiler().timer(core::timerAnchorRestraint).start();
   if(this->_AnchorRestraint->isEnabled()) {
     totalEnergy += this->_AnchorRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                  pos,
@@ -633,9 +589,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                  dvec,
                                                                  activeAtomMask );
   }
-////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
-
-////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).start();
   if(this->_FixedNonbondRestraint->isEnabled()) {
     totalEnergy += this->_FixedNonbondRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                        pos,
@@ -648,7 +601,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                        dvec,
                                                                        activeAtomMask );
   }
-////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).stop();
   for ( auto cur : this->_OtherEnergyComponents ) {
     core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
     EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
@@ -666,7 +618,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                     activeAtomMask );
     }
   }
-
   return totalEnergy;
 }
 

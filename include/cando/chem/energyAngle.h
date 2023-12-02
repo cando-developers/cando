@@ -230,7 +230,7 @@ public:
 
     EnergyAngle_O( const EnergyAngle_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergyAngle_O);
+  EnergyAngle_O() : EnergyComponent_O() {};
 };
 
 

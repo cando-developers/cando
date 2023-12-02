@@ -149,7 +149,6 @@
     (let ((dihedral (gethash 'chem:energy-dihedral ht)))
       (loop for idx below num
             for energy = (chem:energy-component-evaluate-energy en dihedral pos mask)))))
-
 (progn
   (format t "Running simd1~%")
   (core:set-simd-width 1)
@@ -162,7 +161,8 @@
 (progn
   (core:set-simd-width 1)
   (format t "no mask simd1 timing~%")
-  (time (energy-multiple-dihedral 100000 ef2 pos2 mask))
+  (time (energy-multiple-dihedral 100000 ef2 pos2 mask)))
+(progn
   (core:set-simd-width 8)
   (format t "no mask simd8 timing~%")
   (time (energy-multiple-dihedral 100000 ef2 pos2 mask)))

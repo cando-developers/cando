@@ -316,7 +316,7 @@ public:
 public:
   EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor
 
-  EnergyDihedral_O() {};
+  EnergyDihedral_O() : EnergyComponent_O() {};
 };
 
 

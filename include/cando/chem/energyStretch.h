@@ -224,7 +224,7 @@ public:
 public:
     EnergyStretch_O( const EnergyStretch_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergyStretch_O);
+  EnergyStretch_O() : EnergyComponent_O() {};
 };
 
 };

@@ -46,9 +46,6 @@ namespace chem {
 void	EnergyComponent_O::initialize()
 {
   this->Base::initialize();
-  this->enable();
-  this->disableDebug();
-  this->setScale(1.0);
   this->setDebug_NumberOfTermsToCalculate(-1);
 }
 
