@@ -505,11 +505,15 @@ Examples:
           for monomer-context = (topology:foldamer-monomer-context monomer oligomer-space foldamer))
     oligomer-space))
 
-(defclass oligomer ()
+(defclass oligomer (cando.serialize:serializable)
   ((monomer-indices :initarg :monomer-indices :accessor monomer-indices)
    (oligomer-space :initarg :oligomer-space :accessor oligomer-space)))
 
-(cando.serialize:make-class-save-load oligomer)
+(defmethod print-object ((oligomer oligomer) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (oligomer stream :type t)
+        (format stream "~s" (monomer-indices oligomer)))))
 
 (defun copy-oligomer (oligomer)
   (make-instance 'oligomer
