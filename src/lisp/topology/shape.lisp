@@ -42,10 +42,6 @@
    (the-root-monomer :initarg :the-root-monomer :accessor the-root-monomer)
    (in-monomers :initarg :in-monomers :accessor in-monomers)
    (out-monomers :initarg :out-monomers :accessor out-monomers)
-   (rotor3 :initarg :rotor3 :initform #(1.0 0.0 0.0 0.0) :accessor rotor3)
-   (translation :initarg :translation :initform (geom:vec 0 0 0) :accessor translation)
-   (monomer-shape-build-order :initarg :monomer-shape-build-order
-                              :accessor monomer-shape-build-order)
    ))
 
 (defmethod print-object ((obj oligomer-shape) stream)
