@@ -192,7 +192,7 @@ num_real EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score
                                                         core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  SIMPLE_WARN("How do I deal with activeAtomMask");
+//  SIMPLE_WARN("FIXactiveAtomMask How do I deal with activeAtomMask");
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {

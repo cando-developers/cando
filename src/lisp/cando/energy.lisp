@@ -95,15 +95,15 @@
                                    (cg-tolerance *cg-tolerance*)
                                    (max-tn-steps *max-tn-steps*)
                                    (tn-tolerance *tn-tolerance*)
-                                   (frozen nil)
+                                   (unfrozen nil)
                                    resignal-error
                                    (save-trajectory nil)
                                    (print-intermediate-results t)
                                    (report-every-n-steps 10))
   "Minimize the conformational energy for an energy-function"
-  (when frozen
-    (warn "Switch from frozen to active-atoms-mask"))
-  (let* ((active-atoms-mask (when frozen (bit-nand frozen frozen)))
+  (when unfrozen
+    (warn "Switch from unfrozen to active-atoms-mask"))
+  (let* (;;(active-atoms-mask (when unfrozen (bit-nand frozen frozen)))
          (minimizer (chem:make-minimizer energy-function)))
     (if save-trajectory
         (let ((minimizer-trajectory (make-array 16 :adjustable t :fill-pointer 0)))

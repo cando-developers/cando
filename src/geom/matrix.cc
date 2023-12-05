@@ -1329,6 +1329,7 @@ void internalCoordinatesFromPointAndStub(const Vector3 &D,
   double dz = d.dotProduct(z);
   VEC_LOG("dx = {}  dy = {}  dz = {}\n", dx, dy, dz);
   phi = geom::geom__planeVectorAngle(dy, dz);
+  if (std::isnan(phi)) core::lisp_nan_error();
   VEC_LOG("  dy = {}   dz = {}\n", dy, dz);
   VEC_LOG("_Phi = {} deg\n", (phi / 0.0174533));
   Vector3 dox(1.0, 0.0, 0.0);
@@ -1354,6 +1355,7 @@ void internalCoordinatesFromPointAndStub(const Vector3 &D,
   VEC_LOG("eox = {}  eoy = {}\n", eox, eoy);
   //  double eoz = dop.dotProduct(doz); // Must be 0.0
   theta = - geom::geom__planeVectorAngle(eox, eoy);
+  if (std::isnan(theta)) core::lisp_nan_error();
   if (theta<0.0) {
     SIMPLE_WARN("Theta {} should never be less than zero", theta);
   }

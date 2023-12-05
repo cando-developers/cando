@@ -37,7 +37,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include<iostream> 
 #include<list>
 #include <chrono>
-#include <random>
 #include <fstream>
 #include <iomanip>
 #include <map>
@@ -70,16 +69,13 @@ void Kmeans_O::InitSpecifiedCenters(core::SimpleVector_sp centers)
 }
 CL_DEFMETHOD void  Kmeans_O::InitCenters(core::SimpleVector_sp centers)
 {
-  std::random_device rd;  //Will be used to obtain a seed for the random number engine
-  std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-  std::uniform_int_distribution<int> distribution(0, _PointNumber - 1);
 #ifdef USING_OMP
 #pragma ompparallel for 
 #endif
   std::map<int, int> uniqueMap;
   while (uniqueMap.size() < _K)
   {
-    int id = distribution(gen);
+    int id = my_thread->random() % this->_PointNumber;
     uniqueMap.insert(std::pair<int, int>(id, id));
   }
   std::map<int, int>::iterator itMap = uniqueMap.begin();
@@ -301,23 +297,25 @@ KmeansPlusPlus_O::KmeansPlusPlus_O(int k) : Kmeans_O(k)
 {
 
 }
-int KmeansPlusPlus_O::NearestCenter(core::SimpleVector_sp centers, Point p, int alreadyInitCenterNumber, float &minDistance)
+
+int KmeansPlusPlus_O::NearestCenterDistance2(core::SimpleVector_sp centers, Point p, int numCenters, float &minDistance2)
 {
-  minDistance = std::numeric_limits<float>::max();
+  minDistance2 = std::numeric_limits<float>::max();
   int k_id = -1;
-  float dis;
+  float dis2;
 	// std::list<Point>::iterator centersIter = _Centers.begin();
   size_t centersIter(0);
 #ifdef USING_OMP
 #pragma ompparallel for 
 #endif
-  for (int k = 0; k <= alreadyInitCenterNumber; centersIter++, k++)
-  {
-    dis = Distance<floatType>(p, gc::As<Point>((*centers)[centersIter]));
-    if (dis < minDistance)
-    {
-      minDistance = dis;
-      k_id = k;
+  for (int kk = 0; kk < numCenters; kk++ ) {
+    core::T_sp tpnt = (*centers)[kk];
+    if (tpnt.nilp()) SIMPLE_ERROR("The center at index %d is NIL", kk );
+    Point pnt = gc::As<Point>(tpnt);
+    dis2 = Distance2<floatType>(p, pnt );
+    if (dis2 < minDistance2) {
+      minDistance2 = dis2;
+      k_id = kk;
     }
   }
   return k_id;
@@ -326,83 +324,44 @@ int KmeansPlusPlus_O::NearestCenter(core::SimpleVector_sp centers, Point p, int 
 
 CL_DEFMETHOD void KmeansPlusPlus_O::InitCenters(core::SimpleVector_sp centers)
 {
-  std::random_device rd;  //Will be used to obtain a seed for the random number engine
-  std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-  std::uniform_int_distribution<int> distribution(0, _PointNumber - 1);
-  int id = distribution(gen);
-        // std::list<Point>::iterator it = _Points.begin();
-  size_t it(id);
-	// std::advance(it, id);
-  for (int i = 0; i < _K; i++)
-  {
-    (*centers)[i] = (*this->_Points)[it];
-  }
-
-  float sum,min_distance;
- // std::list<Point>::iterator centersIter = _Centers.begin();
-  // std::list<Point>::iterator pointIter = _Points.begin();
-  size_t centersIter(0);
-  size_t pointIter(0);
-  std::list<float> nearestDis(_PointNumber,0);
-  std::list<float>::iterator floatIt = nearestDis.begin();
-	
-  for (int k = 1; k < _K; centersIter++, k++)
-  {
-    sum = 0;
-    pointIter = 0; //_Points.begin();
-    floatIt = nearestDis.begin();
-    for (int p = 0; p < _PointNumber; pointIter++, p++)
-    {
-      NearestCenter(centers, gc::As<Point>((*this->_Points)[pointIter]),k, min_distance);
-      *floatIt = min_distance;
-      sum += min_distance;
-      floatIt++;
+//  printf("%s:%d:%s  K = %d\n", __FILE__, __LINE__, __FUNCTION__, this->_K );
+  size_t it = my_thread->random() % this->_PointNumber;
+  (*centers)[0] = (*this->_Points)[it];
+  std::vector<float> nearestDis2(_PointNumber,0.0);
+  for ( int kk = 1; kk < _K; kk++ ) {
+    float min_distance2;
+    float sum = 0.0;
+    std::vector<float>::iterator dis2It = nearestDis2.begin();
+    for (int p = 0; p < _PointNumber; p++) {
+      core::T_sp tpnt = (*this->_Points)[p];
+      Point pnt = gc::As<Point>(tpnt);
+      int nearest = NearestCenterDistance2(centers, pnt, kk, min_distance2);
+      *dis2It = min_distance2;
+//      printf("%s:%d:%s p=%d/%d *dist2It = %f sum= %f\n", __FILE__, __LINE__, __FUNCTION__, p, _PointNumber, *dis2It, sum );
+      sum += *dis2It;
+      dis2It++;
     }
-    std::random_device rd;  //Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-    std::uniform_real_distribution<float> distribution(0.0, 1.0);
-    float probability = distribution(gen);
-		//std::cout << "orignional sum " << sum << std::endl;
-    sum = sum*probability;
-		//std::cout << "orignional sum " << sum << std::endl;
-    pointIter = 0; // _Points.begin();
-    floatIt = nearestDis.begin();
-    for (int p = 0; p < _PointNumber; pointIter++, floatIt++, p++)
-    {
-      sum =sum- *floatIt;
-			 //std::cout <<"p " << p<< " sum "<<sum << std::endl;
-      if (sum >0)
-        continue;
-      (*centers)[centersIter] = (*this->_Points)[pointIter];
-      // centersIter->_x = pointIter->_x;
-      // centersIter->_y = pointIter->_y;
-      break;
+//    printf("%s:%d:%s final sum = %f\n", __FILE__, __LINE__, __FUNCTION__, sum );
+    dis2It = nearestDis2.begin();
+    size_t it = my_thread->random() & 0xFFFFFFFF;
+    float div = (float)0x100000000;
+    float frac = it/div;
+    float probability = sum*frac;
+//    printf("%s:%d:%s  it = %lu frac = %f probability = %f\n", __FILE__, __LINE__, __FUNCTION__, it, frac, probability );
+    sum = 0.0;
+    for (int p=0; p < _PointNumber; p++ ) {
+      sum += *dis2It;
+//      printf("%s:%d:%s  sum= %f probability = %f\n", __FILE__, __LINE__, __FUNCTION__, sum, probability );
+      if ( probability < sum ) {
+//        printf("%s:%d:%s  match sum= %f\n", __FILE__, __LINE__, __FUNCTION__, sum );
+        (*centers)[kk] = (*this->_Points)[p];
+        break;
+      }
+      dis2It++;
     }
-		 
   }
-	/*float *d = malloc(sizeof(float)* len);
-
-	point p, c;
-	cent[0] = pts[rand() % len];
-	for (n_cluster = 1; n_cluster < n_cent; n_cluster++) {
-		sum = 0;
-		for (j = 0, p = pts; j < len; j++, p++)
-		{
-			nearest(p, cent, n_cluster, d + j);
-			sum += d[j];
-		}
-		sum = randf(sum);
-		for (j = 0, p = pts; j < len; j++, p++)
-		{
-			if ((sum -= d[j]) > 0) continue;
-			cent[n_cluster] = pts[j];
-			break;
-		}
-	}
-	for (j = 0, p = pts; j < len; j++, p++)
-		p->group = nearest(p, cent, n_cluster, 0);*/
-	
 }
+
 CL_DEFMETHOD float Kmeans_O::Wcss(core::SimpleVector_sp centers, Clusters clusters) {
   std::vector<float> sums2(centers->length(),0.0);
   for ( int ii=0; ii < this->_Points->length(); ii++ ) {

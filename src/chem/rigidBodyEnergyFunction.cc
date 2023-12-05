@@ -371,25 +371,24 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
                                                                          NVector_sp force_dt,
                                                                          NVector_sp delta_t_over_mass,
                                                                          double delta_t,
-                                                                         core::T_sp tfrozen,
+                                                                         core::T_sp tunfrozen,
                                                                          NVector_sp velocity_scale,
-                                                                         NVector_sp limit_displacement,
-                                                                         core::T_sp activeAtomMask )
+                                                                         NVector_sp limit_displacement )
 {
-  SIMPLE_WARN("Should tfrozen and activeAtomMask be the same");
-  core::SimpleBitVector_sp frozen;
-  if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
-    frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
-    if (frozen->length() != (position->length()/7)) {
+//  SIMPLE_WARN("FIXactiveAtomMask Should tunfrozen and activeAtomMask be the same");
+  core::SimpleBitVector_sp unfrozen;
+  if (gc::IsA<core::SimpleBitVector_sp>(tunfrozen)) {
+    unfrozen = gc::As_unsafe<core::SimpleBitVector_sp>(tunfrozen);
+    if (unfrozen->length() != (position->length()/7)) {
       SIMPLE_ERROR("frozen must be a simple-bit-vector of length {} or NIL - it is {}" , (position->length()/7) , _rep_(position));
     }
-  } else if (tfrozen.notnilp()) {
-    SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
+  } else if (tunfrozen.notnilp()) {
+    SIMPLE_ERROR("unfrozen must be a simple-bit-vector or NIL");
   }
   size_t body_idx = 0;
   size_t body_limited = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 7) {
-    if (!frozen || frozen->testBit(body_idx)==0) {
+    if (!unfrozen || unfrozen->testBit(body_idx)==1) {
       double offseta = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+0];
       double offsetb = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+1];
       double offsetc = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+2];
@@ -430,10 +429,10 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
     }
     body_idx++;
   }
-  scoringFunc->evaluateEnergyForce(position,true,force_dt,activeAtomMask);
+  scoringFunc->evaluateEnergyForce(position,true,force_dt,tunfrozen);
   body_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=7 ) {
-    if (!frozen || frozen->testBit(body_idx)==0) {
+    if (!unfrozen || unfrozen->testBit(body_idx)==1) {
       (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+0]+(*force_dt)[idx+0]))*(*velocity_scale)[0];
       (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+1]+(*force_dt)[idx+1]))*(*velocity_scale)[1];
       (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+2]+(*force_dt)[idx+2]))*(*velocity_scale)[2];

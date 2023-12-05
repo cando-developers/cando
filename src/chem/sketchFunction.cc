@@ -805,7 +805,8 @@ void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp 
 }
 
 
-CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
+CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional unfrozen)
+CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
 DOCGROUP(cando);
 CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc,
                                                         NVector_sp position,
@@ -814,35 +815,29 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
                                                         NVector_sp force_dt,
                                                         NVector_sp delta_t_over_mass,
                                                         double delta_t,
-                                                        core::T_sp tfrozen,
-                                                        core::T_sp activeAtomMask )
+                                                        core::T_sp tunfrozen)
 {
-  SIMPLE_WARN("Is tfrozen and activeAtomMask the same");
-  core::SimpleBitVector_sp frozen;
-  if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
-    frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
-    if (frozen->length() != (position->length())) {
-      SIMPLE_ERROR("frozen must be a simple-bit-vector of length {} or NIL" , (position->length()));
+//  SIMPLE_WARN("FIXactiveAtomMask - Is tunfrozen and activeAtomMask the same");
+  core::SimpleBitVector_sp unfrozen;
+  if (gc::IsA<core::SimpleBitVector_sp>(tunfrozen)) {
+    unfrozen = gc::As_unsafe<core::SimpleBitVector_sp>(tunfrozen);
+    if (unfrozen->length() != (position->length()/3)) {
+      SIMPLE_ERROR("unfrozen must be a simple-bit-vector of length {} or NIL, it is a simple-bit-vector of length {}" , (position->length()), unfrozen->length());
     }
-  } else if (tfrozen.notnilp()) {
-    SIMPLE_ERROR("frozen must be a simple-bit-vector or NIL");
+  } else if (tunfrozen.notnilp()) {
+    SIMPLE_ERROR("unfrozen must be a simple-bit-vector or NIL");
   }
-    
   size_t atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 3) {
-    if (!frozen || frozen->testBit(idx+0)==0) {
+    if (!unfrozen || unfrozen->testBit(atom_idx)==1) {
       double offsetx = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
       if (offsetx>1.5) offsetx = 1.5;
       if (offsetx<-1.5) offsetx = -1.5;
       (*position)[idx+0] = (*position)[idx+0] + offsetx;
-    }
-    if (!frozen || frozen->testBit(idx+1)==0) {
       double offsety = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
       if (offsety>1.5) offsety = 1.5;
       if (offsety<-1.5) offsety = -1.5;
       (*position)[idx+1] = (*position)[idx+1] + offsety;
-    }
-    if (!frozen || frozen->testBit(idx+2)==0) {
       double offsetz = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
       if (offsetz>1.5) offsetz = 1.5;
       if (offsetz<-1.5) offsetz = -1.5;
@@ -850,18 +845,14 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
     }
     atom_idx++;
   }
-  sketchFunc->evaluateEnergyForce(position,true,force_dt,activeAtomMask);
+  sketchFunc->evaluateEnergyForce(position,true,force_dt,tunfrozen);
   atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
-    if (!frozen || frozen->testBit(idx+0)==0) {
+    if (!unfrozen || unfrozen->testBit(atom_idx)==1) {
       (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+0]+(*force_dt)[idx+0]))*sketchFunc->_VelocityScale.getX();
       (*force)[idx+0] = (*force_dt)[idx+0];
-    }
-    if (!frozen || frozen->testBit(idx+1)==0) {
       (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+1]+(*force_dt)[idx+1]))*sketchFunc->_VelocityScale.getY();
       (*force)[idx+1] = (*force_dt)[idx+1];
-    }
-    if (!frozen || frozen->testBit(idx+2)==0) {
       (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+2]+(*force_dt)[idx+2]))*sketchFunc->_VelocityScale.getZ();
       (*force)[idx+2] = (*force_dt)[idx+2];
     }

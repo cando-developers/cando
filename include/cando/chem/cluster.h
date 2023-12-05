@@ -147,7 +147,7 @@ public:
   KmeansPlusPlus_O() : Kmeans_O(0) {};
   
   virtual void InitCenters(core::SimpleVector_sp centers);
-  int NearestCenter(core::SimpleVector_sp centers, Point p,int alreadyInitCenterNumber, float &minDistance);
+  int NearestCenterDistance2(core::SimpleVector_sp centers, Point p,int alreadyInitCenterNumber, float &minDistance2);
 private:
 
 };

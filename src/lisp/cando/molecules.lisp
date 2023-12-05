@@ -355,7 +355,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (declare (ignore force-field type))
   0)
 
-(defun randomize-coordinates (coordinates &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
+(defun randomize-coordinates (coordinates &key unfrozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
   "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (index)
            (when from-zero
@@ -373,8 +373,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                    (elt coordinates (+ index 2)) zn))))
     (loop for coord-index below (length coordinates) by 3
           for index from 0
-          do (if frozen
-                 (when (= (elt frozen (* 3 index)) 0)
+          do (if unfrozen
+                 (when (= (elt unfrozen index) 1)
                    (jostle-atom coord-index))
                  (jostle-atom coord-index)))))
 
@@ -450,11 +450,11 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                 (* 2.0 +stage1-bond-length+))))))
     sketch-function))
 
-(defun advance-simulation (dynamics &key frozen)
+(defun advance-simulation (dynamics &key unfrozen)
   (dynamics:velocity-verlet-step
    dynamics
    :velocity-verlet-function #'chem:sketch-function-velocity-verlet-step
-   :frozen frozen))
+   :unfrozen unfrozen))
 
 (defun starting-geometry (agg &key accumulate-coordinates verbose)
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
@@ -480,8 +480,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
         (prepare-stage1-sketch-function sketch-function)
         (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
         ;; Everything interesting happens in 1000 steps
-        (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
-        (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
+        (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :unfrozen nil)
+        (dotimes (i 1000) (advance-simulation dynamics :unfrozen nil)))
       (dynamics:write-coordinates-back-to-matter dynamics)
       (optimize-structure agg :turn-off-nonbond nil :verbose verbose)
       dynamics
@@ -531,8 +531,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 #+(or)
 (defun next-rapid-starting-geometry (rapid-starting-geometry &key verbose)
   (with-slots (dynamics energy-function) rapid-starting-geometry
-    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
-    (dotimes (i 1000) (advance-simulation dynamics :frozen nil))
+    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :unfrozen nil)
+    (dotimes (i 1000) (advance-simulation dynamics :unfrozen nil))
     (dynamics:write-coordinates-back-to-matter dynamics)
     (when verbose
       (format t "Optimizing structure~%"))
@@ -567,10 +567,10 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
         (format t "Generating starting structure~%"))
       (prepare-stage1-sketch-function sketch-function)
       (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
-      (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
+      (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :unfrozen nil)
       ;; The time consuming part of this happens next 1000 steps of dynamics
       ;;  followed by structure optimization
-      (dotimes (i 1000) (advance-simulation dynamics :frozen nil))
+      (dotimes (i 1000) (advance-simulation dynamics :unfrozen nil))
       (dynamics:write-coordinates-back-to-matter dynamics)
       (when verbose
         (format t "Optimizing structure~%"))

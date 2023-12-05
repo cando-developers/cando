@@ -443,7 +443,7 @@ num_real EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp scor
                                                          core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  SIMPLE_WARN("How do I deal with activeAtomMask");
+//  SIMPLE_WARN("FIXactiveAtomMask How do I deal with activeAtomMask");
   this->_Evaluations++;
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
   num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();

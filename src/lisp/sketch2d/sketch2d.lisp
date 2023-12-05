@@ -558,7 +558,7 @@ I'll use an angle term instead of a bond term.
                          :sketch-atoms-to-original sketch-atoms-to-original))))))
 
 
-(defun randomize-atoms (atom-table &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
+(defun randomize-atoms (atom-table &key unfrozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
   "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (atom)
            (when from-zero
@@ -571,12 +571,12 @@ I'll use an angle term instead of a bond term.
              (chem:set-position atom pos))))
     (loop for index from 0 below (chem:get-number-of-atoms atom-table)
           for atom = (chem:elt-atom atom-table index)
-          do (if frozen
-                 (when (= (elt frozen (* 3 index)) 0)
+          do (if unfrozen
+                 (when (= (elt unfrozen index) 1)
                    (jostle-atom atom))
                  (jostle-atom atom)))))
 
-(defun randomize-coordinates (coordinates &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
+(defun randomize-coordinates (coordinates &key unfrozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
   "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (index)
            (when from-zero
@@ -594,8 +594,8 @@ I'll use an angle term instead of a bond term.
                    (elt coordinates (+ index 2)) zn))))
     (loop for coord-index below (length coordinates) by 3
           for index from 0
-          do (if frozen
-                 (when (= (elt frozen (* 3 index)) 0)
+          do (if unfrozen
+                 (when (= (elt unfrozen index) 1)
                    (jostle-atom coord-index))
                  (jostle-atom coord-index)))))
 
@@ -614,11 +614,11 @@ I'll use an angle term instead of a bond term.
       (setf (dynamics sketch) dynamics)
       sketch)))
 
-(defun advance-simulation (dynamics &key frozen)
+(defun advance-simulation (dynamics &key unfrozen)
   (dynamics:velocity-verlet-step
    dynamics
    :velocity-verlet-function #'chem:sketch-function-velocity-verlet-step
-   :frozen frozen))
+   :unfrozen unfrozen))
 
 
 
@@ -854,15 +854,12 @@ to check if two line segments (bonds) overlap/intersect
                       (setf worst-problem-area problem-area))))
           (if worst-problem-area
               (let* ((number-of-atoms (chem:get-number-of-atoms atom-table))
-                     (frozen (make-array (* 3 number-of-atoms) :element-type 'bit :initial-element 1)))
-                (loop for unfrozen in (atoms worst-problem-area)
-                      for index = (distance-atom-index unfrozen)
-                      for atom = (distance-atom-atom unfrozen)
-                      do (setf (elt frozen (+ (* 3 index) 0)) 0
-                               (elt frozen (+ (* 3 index) 1)) 0
-                               (elt frozen (+ (* 3 index) 2)) 0
-                               ))
-                (values (+ (length bad-double-bonds) (length intersections)) frozen))
+                     (unfrozen (make-array number-of-atoms :element-type 'bit :initial-element 0)))
+                (loop for isunfrozen in (atoms worst-problem-area)
+                      for index = (distance-atom-index isunfrozen)
+                      for atom = (distance-atom-atom isunfrozen)
+                      do (setf (elt unfrozen index) 1))
+                (values (+ (length bad-double-bonds) (length intersections)) unfrozen))
               (values 0 nil)))
         (values 0 nil))))
 
@@ -877,34 +874,32 @@ to check if two line segments (bonds) overlap/intersect
           (elt coordinates (+ neighbor-index*3 1)) ypos
           (elt coordinates (+ neighbor-index*3 2)) zpos)))
 
-(defun unfreeze (atom-table coordinates frozen)
-  (let ((new-frozen (copy-seq frozen)))
-    (loop for index from 0 below (/ (length frozen) 3)
+(defun unfreeze (atom-table coordinates unfrozen)
+  (let ((new-unfrozen (copy-seq unfrozen)))
+    (loop for index from 0 below (length unfrozen)
           for atom = (chem:elt-atom atom-table index)
-          do (when (= (elt frozen (* 3 index)) 0)
+          do (when (= (elt unfrozen index) 1)
                (loop named inner
                      for bondi from 0 below (chem:number-of-bonds atom)
                      for neighbor = (chem:bonded-neighbor atom bondi)
                      for neighbor-index*3 = (chem:get-coordinate-index-times3 atom-table neighbor)
                      for neighbor-index = (/ neighbor-index*3 3)
-                     do (when (= (elt frozen (* 3 neighbor-index)) 1)
+                     do (when (= (elt unfrozen neighbor-index) 0)
                           (progn
-                            (setf (elt new-frozen (+ neighbor-index*3 0)) 0
-                                  (elt new-frozen (+ neighbor-index*3 1)) 0
-                                  (elt new-frozen (+ neighbor-index*3 2)) 0
-                                  )
+                            (setf (elt new-unfrozen neighbor-index) 1)
                             (randomize-neighbor-near-unfrozen-atom coordinates neighbor-index*3 (* index 3))
                             (return-from inner nil))))))
-    new-frozen))
+    new-unfrozen))
 
-(defun geometric-center-of-unfrozen-atoms (atom-table coordinates frozen)
+(defun geometric-center-of-unfrozen-atoms (atom-table coordinates unfrozen)
   (declare (ignore atom-table))
   (let ((xpos 0.0)
         (ypos 0.0)
         (zpos 0.0)
         (count 0))
-    (loop for coord-index from 0 below (length frozen) by 3
-          do (when (not (elt frozen coord-index))
+    (loop for coord-index from 0 below (length unfrozen) by 3
+          for bit-index from 0
+          do (when (= 1 (elt unfrozen bit-index))
                (setf xpos (+ (elt coordinates coord-index) xpos)
                      ypos (+ (elt coordinates (+ coord-index 1)) ypos)
                      zpos (+ (elt coordinates (+ coord-index 2)) zpos))
@@ -913,11 +908,12 @@ to check if two line segments (bonds) overlap/intersect
               (/ ypos (float count 1.0d0))
               (/ zpos (float count 1.0d0)))))
 
-(defun transform-unfrozen-atoms-center-to (to-center atom-table coordinates frozen)
-  (let* ((from-center (geometric-center-of-unfrozen-atoms atom-table coordinates frozen))
+(defun transform-unfrozen-atoms-center-to (to-center atom-table coordinates unfrozen)
+  (let* ((from-center (geometric-center-of-unfrozen-atoms atom-table coordinates unfrozen))
          (offset (geom:v- to-center from-center)))
-    (loop for coord-index from 0 below (length frozen) by 3
-          do (when (not (elt frozen coord-index))
+    (loop for coord-index from 0 below (length unfrozen) by 3
+          for bit-index from 0
+          do (when (= 1 (elt unfrozen bit-index))
                (let ((xpos (+ (geom:get-x offset) (elt coordinates coord-index)))
                      (ypos (+ (geom:get-y offset) (elt coordinates (+ 1 coord-index))))
                      (zpos (+ (geom:get-z offset) (elt coordinates (+ 2 coord-index)))))
@@ -1161,13 +1157,13 @@ to check if two line segments (bonds) overlap/intersect
                (fix-bad-angle-group group)))
     groups))
 
-(defun sketch2d-dynamics (sketch dynamics &key accumulate-coordinates (unfreeze t) frozen)
+(defun sketch2d-dynamics (sketch dynamics &key accumulate-coordinates (unfreeze t) unfrozen)
   (declare (ignore accumulate-coordinates))
   (let* ((sketch-function (dynamics:scoring-function dynamics))
          (atom-table (chem:node-table sketch-function))
          (energy-stretch (chem:get-stretch-component sketch-function))
          (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
-    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen frozen)
+    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :unfrozen unfrozen)
     (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
     (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
     ;; stage 1  step 0 - 4999
@@ -1175,11 +1171,11 @@ to check if two line segments (bonds) overlap/intersect
       (prepare-stage1-sketch-function sketch-function sketch)
       (chem:set-scale-sketch-nonbond energy-sketch-nonbond +stage1-nonbond-constant+)
       (when (verbose sketch) (describe-terms sketch-function "stage1"))
-      (dotimes (i 5000) (advance-simulation dynamics :frozen frozen)))
+      (dotimes (i 5000) (advance-simulation dynamics :unfrozen unfrozen)))
     ;; stage 2  step 5000 - 9999
     (progn
       (chem:set-scale-sketch-nonbond energy-sketch-nonbond +stage2-nonbond-constant+)
-      (dotimes (i 5000) (advance-simulation dynamics :frozen frozen)))
+      (dotimes (i 5000) (advance-simulation dynamics :unfrozen unfrozen)))
     ;; stage 3  step 10000-14999
     ;; Add the flattening force
     (progn
@@ -1190,15 +1186,15 @@ to check if two line segments (bonds) overlap/intersect
         (chem:load-coordinates-into-vector sketch-function coordinates))
       (apply #'chem:setf-velocity-scale sketch-function *stage3-flatten-force-components*)
       (add-flatten-function sketch-function (chem:get-graph sketch-function) *stage3-flatten-force*)
-      (if (and frozen unfreeze)
-          (let ((center (geometric-center-of-unfrozen-atoms atom-table (dynamics:coordinates dynamics) frozen)))
+      (if (and unfrozen unfreeze)
+          (let ((center (geometric-center-of-unfrozen-atoms atom-table (dynamics:coordinates dynamics) unfrozen)))
             ;; Four epochs of unfreezing frozen atoms connected to unfrozen atoms
             (loop for stage from 0 below 4
-                  do (dotimes (i 1000) (advance-simulation dynamics :frozen frozen))
-                  do (setf frozen (unfreeze atom-table (dynamics:coordinates dynamics) frozen)))
-            (dotimes (i 1000) (advance-simulation dynamics :frozen frozen))
-            (transform-unfrozen-atoms-center-to center atom-table (dynamics:coordinates dynamics) frozen))
-          (dotimes (i 5000) (advance-simulation dynamics :frozen frozen))))
+                  do (dotimes (i 1000) (advance-simulation dynamics :unfrozen unfrozen))
+                  do (setf unfrozen (unfreeze atom-table (dynamics:coordinates dynamics) unfrozen)))
+            (dotimes (i 1000) (advance-simulation dynamics :unfrozen unfrozen))
+            (transform-unfrozen-atoms-center-to center atom-table (dynamics:coordinates dynamics) unfrozen))
+          (dotimes (i 5000) (advance-simulation dynamics :unfrozen unfrozen))))
     ;; stage 4  step 15000-19999
     ;; Double the bond spring force
     ;; Drop the bond lengths to 1.5
@@ -1218,15 +1214,15 @@ to check if two line segments (bonds) overlap/intersect
       (loop for i from 0 below 5000
             for cutoff from 80.0 downto 1.0 by (/ 79.0 5000.0)
             do (chem:set-long-distance-cutoff energy-sketch-nonbond (* cutoff +stage4-bond-length+))
-               (advance-simulation dynamics :frozen (unless unfreeze frozen)))
+               (advance-simulation dynamics :unfrozen (unless unfreeze unfrozen)))
       )
     ;; stage 5 step 20000-24999
     (progn
       (chem:enable (chem:get-point-to-line-restraint-component sketch-function))
       (chem:set-freeze-flags energy-sketch-nonbond 1)
-      (when (verbose sketch) (format t "sketch2d-dynamics unfreeze: ~a frozen: ~a~%" unfreeze frozen))
+      (when (verbose sketch) (format t "sketch2d-dynamics unfreeze: ~a unfrozen: ~a~%" unfreeze unfrozen))
       (loop for i from 20000 below 25000
-            do (advance-simulation dynamics :frozen (unless unfreeze frozen))))
+            do (advance-simulation dynamics :unfrozen (unless unfreeze unfrozen))))
     (dynamics:write-coordinates-back-to-matter dynamics)
     dynamics
     ))
@@ -1279,13 +1275,13 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
 (defmethod do-sketch2d (molecule &key accumulate-coordinates (max-tries *max-tries*) (one-shot nil) verbose)
   (let ((count 1)
         problems
-        frozen
+        unfrozen
         sketch)
     (setf sketch (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates :verbose verbose))
     (when one-shot (return-from do-sketch2d sketch))
     (loop named problem-loop
           for try-index below max-tries
-          do (multiple-value-setq (problems frozen)
+          do (multiple-value-setq (problems unfrozen)
                (identify-problem-areas sketch))
           do (progn
                (when (= problems 0)
@@ -1297,7 +1293,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                (sketch2d-dynamics sketch (dynamics sketch)
                                   :accumulate-coordinates accumulate-coordinates
                                   :unfreeze nil
-                                  :frozen frozen)))
+                                  :unfrozen unfrozen)))
     (values sketch count)))
 
 (defun insert (item lst compare key)
@@ -1558,7 +1554,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
                    (atom-table (chem:atom-table energy-function))
                    (number-of-atoms (chem:get-number-of-atoms atom-table))
                    (debug-info (make-hash-table))
-                   (frozen (make-array (* 3 number-of-atoms) :element-type 'bit :initial-element 0)))
+                   (unfrozen (make-array number-of-atoms :element-type 'bit :initial-element 1)))
               #+(or)(format t "There are ~a atoms in atom-table~%" number-of-atoms)
               (loop for equiv-pair in equiv
                     for new-atom = (car equiv-pair)
@@ -1577,13 +1573,10 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
                                    (make-instance 'sketch-debug-info
                                                   :label (format nil "~a/~a" (chem:get-name new-atom) (chem:get-name anchor-atom))))
                              (chem:set-position new-sketch-atom anchor-pos)
-                             (setf (aref frozen (* 3 new-sketch-atom-index)) 1
-                                   (aref frozen (+ 1 (* 3 new-sketch-atom-index))) 1
-                                   (aref frozen (+ 2 (* 3 new-sketch-atom-index))) 1
-                                   )))))
-              #+(or)(format t "Using frozen: ~a  length: ~a~%" frozen (length frozen))
+                             (setf (aref unfrozen new-sketch-atom-index) 0)))))
+              #+(or)(format t "Using unfrozen: ~a  length: ~a~%" frozen (length unfrozen))
               (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
-              (sketch2d-dynamics new-sketch dynamics :frozen frozen :unfreeze nil
+              (sketch2d-dynamics new-sketch dynamics :unfrozen unfrozen :unfreeze nil
                                                      :accumulate-coordinates accumulate-coordinates)
               (augment-sketch-with-stereochemistry use-structure new-sketch cips sterechemistry-types configurations)
               #+debug-sketch2d(setf (debug-info new-sketch) debug-info)

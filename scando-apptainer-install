@@ -17,9 +17,13 @@ echo "Updating Quicklisp..."
 clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://thirdlaw.tech/quickclasp/quickclasp.txt\" :prompt nil))" \
       --eval "(ql:update-all-dists :prompt nil)"
 
-if [ ! -d "~/.config/common-lisp/source-registry.conf.d/" ]; then
+if ! [ -f ~/.config/common-lisp/source-registry.conf.d/apptainer.conf ]; then
+    echo "The file ~/.config/common-lisp/source-registry.conf.d/apptainer.conf is missing - creating it"
     mkdir -p ~/.config/common-lisp/source-registry.conf.d
     echo "(:tree \"/home/cando/common-lisp/\")" >~/.config/common-lisp/source-registry.conf.d/apptainer.conf
+else
+    echo "The file ~/.config/common-lisp/source-registry.conf.d/apptainer.conf already exists"
+    cat ~/.config/common-lisp/source-registry.conf.d/apptainer.conf
 fi
 
 echo "Installing CANDO user features..."
@@ -32,3 +36,11 @@ cando --eval "(ql:quickload :cando-jupyter)" \
       --eval "(amber-protein:transfer-amber-atom-types-to-foldamer amber-protein:*foldamer*)" \
       --eval "(amber-protein:load-rotamers)" \
       --eval "(cando-jupyter:install :implementation \"apptainer\" :image t)"
+
+echo "HOME = " $HOME
+echo "pwd ~ = " `pwd ~`
+echo "Following is the contents of ~/.config/common-lisp/source-registry.conf.d/apptainer.conf"
+cat ~/.config/common-lisp/source-registry.conf.d/apptainer.conf
+echo "Following is the contents of $HOME/.config/common-lisp/source-registry.conf.d/apptainer.conf"
+cat $HOME/.config/common-lisp/source-registry.conf.d/apptainer.conf
+

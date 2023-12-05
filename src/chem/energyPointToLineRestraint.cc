@@ -64,7 +64,7 @@ num_real EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp 
                                                              core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  SIMPLE_WARN("What do we do with activeAtomMask in this function");
+//  SIMPLE_WARN("FIXactiveAtomMask What do we do with activeAtomMask in this function");
   num_real totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
