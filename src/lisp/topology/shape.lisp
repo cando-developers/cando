@@ -381,7 +381,7 @@
              (coords (make-coordinates-for-assembler ass))
              )
         (fill-internals-from-oligomer-shape-and-adjust ass oligomer-shape)
-        (build-all-atom-tree-external-coordinates-and-adjust ass coords)
+        (build-all-oligomer-shapes-from-internals-in-coordinates ass coords)
         (copy-all-joint-positions-into-atoms ass coords)
         (aggregate ass)))))
 

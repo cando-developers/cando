@@ -162,7 +162,7 @@ energy-function-factory - provide a function that takes an aggregate and returns
                         (resize-atmolecules atagg (length oligomers))
                         atagg))
          (joint-tree (make-joint-tree))
-         (energy-function (let ((ef (chem:make-energy-function :matter aggregate)))
+         (energy-function (let ((ef (chem:make-energy-function :keep-interaction keep-interaction :matter aggregate)))
                             (when tune-energy-function (funcall tune-energy-function ef))
                             ef))
          (adjustments (make-instance 'adjustments))
@@ -213,7 +213,7 @@ energy-function-factory - provide a function that takes an aggregate and returns
     assembler))
 
 
-(defun make-training-assembler (oligomers &key monomer-order focus-monomer)
+(defun make-training-assembler (oligomers &key focus-monomer)
   "Build a assembler for the oligomers."
   (unless (every (lambda (os) (typep os 'oligomer)) oligomers)
     (error "You must provide a list of oligomers"))
