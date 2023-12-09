@@ -180,12 +180,13 @@
       (midpoint-x atom1 atom2) (midpoint-y atom1 atom2) (midpoint-z atom1 atom2)
       (rotation-axis-x atom1 atom2) (rotation-axis-y atom1 atom2) (rotation-axis-z atom1 atom2) (rotation-angle atom1 atom2))))
 
-(defun render-molecule (molecule sphere-radius cylinder-radius)
+(defun render-molecule (molecule sphere-radius cylinder-radius file)
   (let ((atoms (atoms molecule))
         (bonds (bonds molecule)))
-    (with-open-file (stream "molecule.wrl" 
+    (with-open-file (stream file
                             :direction :output 
-                            :if-exists :supersede)
+                            :if-exists :supersede
+                            :if-does-not-exist :create)
       (format stream "#VRML V2.0 utf8~%")
       (format stream "Group { children [~%")
       (dolist (atom (coerce atoms 'list))
@@ -220,5 +221,10 @@
     (make-instance 'molecule :atoms atoms
                              :bonds bonds)))
 
+(defun vrml-render (aggregate file &key (sphere 0.2) (cylinder 0.2))
+  (let ((mmol (translate-aggregate aggregate)))
+    (render-molecule mmol sphere cylinder file)))
+
 (initialize-atom-colors)
 ;; (render-molecule your-molecule-data sphere-radius cylinder-radius)
+ 
