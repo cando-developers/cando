@@ -1428,9 +1428,6 @@ Vector3 pointFromStubAndInternalCoordinates(const Matrix &coordinateSystem, doub
                                               Vector3 &d2) {
   double cosTheta = std::cos(angle);
   double sinTheta = std::sin(angle);
-  // I'm very certain this should NOT be the negative of the dihedral angle Nov 2023 to be consistent
-  //  with the sign of the dihedral calculated by geom::calculateDihedral
-  //  There is a regression test for this sign-inv-dihedral
   double cosPhi = std::cos(dihedral);
   double sinPhi = std::sin(dihedral);
   d2.set(distance * cosTheta,

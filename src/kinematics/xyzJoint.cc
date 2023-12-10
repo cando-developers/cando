@@ -50,9 +50,7 @@ void XyzJoint_O::fields(core::Record_sp record) {
   record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
   record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
   record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
-  record->field(INTERN_(kw,x),this->_X);
-  record->field(INTERN_(kw,y),this->_Y);
-  record->field(INTERN_(kw,z),this->_Z);
+  record->field(INTERN_(kw,pos),this->_Pos);
   this->Base::fields(record);
 }
 
@@ -138,16 +136,12 @@ void XyzJoint_O::_updateInternalCoord(chem::NVector_sp coords)
     auto x = (*coords)[this->_PositionIndexX3];
     auto y = (*coords)[this->_PositionIndexX3+1];
     auto z = (*coords)[this->_PositionIndexX3+2];
-    this->_X = x;
-    this->_Y = y;
-    this->_Z = z;
+    this->_Pos.set(x,y,z);
   } else {
     auto x = (*coords)[this->_PositionIndexX3];
     auto y = (*coords)[this->_PositionIndexX3+1];
     auto z = (*coords)[this->_PositionIndexX3+2];
-    this->_X = x;
-    this->_Y = y;
-    this->_Z = z;
+    this->_Pos.set(x,y,z);
   }
 }
 
@@ -162,7 +156,7 @@ string XyzJoint_O::asString() const
   stringstream ss;
   ss << this->Joint_O::asString();
   ss << fmt::format("  _X[{}]  _Y[{}]  _Z[{}]"
-                    , this->_X, this->_Y, this->_Z );
+                    , this->_Pos.getX(), this->_Pos.getY(), this->_Pos.getZ() );
   return ss.str();
 }
 
@@ -207,7 +201,7 @@ void XyzJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   Vector3 d2;
-  d2.set(this->_X,this->_Y,this->_Z);
+  d2 = this->_Pos;
   if (this->_Orientation.nilp()) {
     this->setPosition(coords,d2);
   } else {

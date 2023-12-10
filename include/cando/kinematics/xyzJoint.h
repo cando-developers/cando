@@ -55,9 +55,7 @@ public:
   int		_NumberOfChildren;
         // _Children start with the value unbound
   Joint_sp	_Children[MaxChildren];
-  Real		_X;
-  Real		_Y;
-  Real		_Z;
+  Vector3       _Pos;
 public:
   static XyzJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation);
 public:
@@ -120,14 +118,63 @@ public:
   double dof(DofType const& dof) const;
 
   CL_NAME(KIN:XYZ-JOINT/GET-X);
-  CL_DEFMETHOD double getX() const { return this->_X; }
+  CL_DEFMETHOD double getX() const { return this->_Pos.getX(); }
   CL_NAME(KIN:XYZ-JOINT/GET-Y);
-  CL_DEFMETHOD double getY() const { return this->_Y; };
+  CL_DEFMETHOD double getY() const { return this->_Pos.getY(); };
   CL_NAME(KIN:XYZ-JOINT/GET-Z);
-  CL_DEFMETHOD double getZ() const { return this->_Z; };
+  CL_DEFMETHOD double getZ() const { return this->_Pos.getZ(); };
 
-  CL_DEFMETHOD void setXyz(double x, double y, double z) { this->_X = x; this->_Y = y; this->_Z = z; };
+  CL_DEFMETHOD void setXyz(double x, double y, double z) { this->_Pos.set(x,y,z); };
+};
 
+
+
+};
+
+
+namespace kinematics
+{
+
+FORWARD(StubJoint);
+class StubJoint_O : public XyzJoint_O
+{
+  LISP_CLASS(kinematics,KinPkg,StubJoint_O,"StubJoint",XyzJoint_O);
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node); 
+  void initialize();
+public:
+  static const NodeType nodeType = xyzJoint;
+  static const int MaxChildren = 5;
+public:
+  Vector3       _ParentPos;
+  Vector3       _GrandParentPos;
+public:
+  static StubJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation);
+public:
+	/*! Stub atoms can have different numbers of children wrt JumpJoints */
+  virtual int _maxNumberOfChildren() const { return MaxChildren;};
+	/*! Return the current number of children */
+  virtual int _numberOfChildren() const {return this->_NumberOfChildren;};
+	/*! Return a reference to the indexed child */
+  virtual Joint_sp _child(int idx) {return this->_Children[idx];};
+  virtual Joint_sp _child(int idx) const {return this->_Children[idx];};
+	/*! Set a child */
+  virtual void _setChild(int idx, Joint_sp h) { this->_Children[idx] = h; };
+	/*! Delete the child at the given index */
+  virtual void _releaseChild(int idx);
+	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
+  virtual void _insertChild(int idx, Joint_sp c );
+	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
+  virtual void _appendChild(Joint_sp c);
+	/*! Delete all of the children for the destructor */
+  virtual void _releaseAllChildren();
+
+  CL_DEFMETHOD core::T_sp getOrientation() const { return this->_Orientation; };
+  CL_DEFMETHOD void setOrientation(core::T_sp orientation) { this->_Orientation = orientation; };
+public:
+  StubJoint_O() : XyzJoint_O() {};
+  StubJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation) : XyzJoint_O(atomId,name,atomTable,orientation) {}
 
 };
 
