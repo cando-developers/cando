@@ -177,7 +177,7 @@ string Unit_O::__repr__() const {
 void Unit_O::__write__(core::T_sp stream) const {
   core::clasp_write_string("#<UNIT ", stream);
   core::clasp_write_string(this->__repr__(), stream);
-  core::clasp_write_char('>', stream);
+  core::stream_write_char(stream, '>');
 }
 
 CL_LISPIFY_NAME("test_set_amount");

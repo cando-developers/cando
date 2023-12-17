@@ -139,7 +139,7 @@ core::T_mv ReadAmberParameters_O::determineParmSetFrcModType(core::T_sp fin)
       bNonBond = true;
     }
   }
-  clasp_file_position_set(fin,core::clasp_make_fixnum(0));
+  stream_set_position(fin, core::clasp_make_fixnum(0));
   return Values( _lisp->_boolean(bNew),_lisp->_boolean(bMass),_lisp->_boolean(bNonBond));
 }
 

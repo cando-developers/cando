@@ -84,7 +84,7 @@ void	Mol2File::advanceLine() {
   this->mLine.str("");
   ignoreNextCr = false;
   while (1) {
-    c = core::clasp_read_char(this->fIn);
+    c = core::stream_read_char(this->fIn);
     if ( c == EOF ) {
       this->_eof = true;
       break;

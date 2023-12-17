@@ -234,18 +234,18 @@ namespace adapt {
 	int sz;
 	sz = 0;
 	int limBytes = numBytes;
-	while ( (core::clasp_peek_char(fIn)!=EOF) && sz < limBytes )
+	while ( (core::stream_peek_char(fIn)!=EOF) && sz < limBytes )
 	{
-	    c = core::clasp_read_char(fIn);
+	    c = core::stream_read_char(fIn);
 	    if ( c == '&' )
 	    {
-                c = core::clasp_read_char(fIn);
+                c = core::stream_read_char(fIn);
                 if ( c == EOF ) break;
 		if ( c == '&' )
 		{
 		    *cp = '&';
 		} else {
-		    c2 = core::clasp_read_char(fIn);
+		    c2 = core::stream_read_char(fIn);
                     if ( c2 == EOF ) break;
 		    if ( c == 'g' && c2 == 't' )
 		    {
@@ -287,10 +287,10 @@ namespace adapt {
 //    this->_Progress.setMax(fileSize);
 //    this->_Progress.setSteps(fileSize/10000);
 	filePos = 0;
-	while ( core::clasp_peek_char(fIn) != EOF )
+	while ( core::stream_peek_char(fIn) != EOF )
 	{
 	    LOG("MySaxParser::expat:: reading/parsing block of data asking for buffer with up to {} bytes" , sizeof(buffer) );
-            sz = core::clasp_read_byte8(fIn,buffer,sizeof(buffer));
+            sz = core::stream_read_byte8(fIn,buffer,sizeof(buffer));
 	    filePos = filePos + sz;
 	    done = sz < sizeof(buffer);
 	    LOG("Read line from buffer - hit eof={} read[{} bytes]" , done , sz );
