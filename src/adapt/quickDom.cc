@@ -205,8 +205,8 @@ bool    QDomNode_O::dataIsAllWhiteSpace()
   bool                        sawChar;
   string                      val;
   sawChar = false;
-  for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {
-    claspCharacter c = cl__char(this->characters->_Contents,idx).unsafe_character();
+  for (size_t idx = 0; idx<this->characters->_contents->length(); idx++ ) {
+    claspCharacter c = cl__char(this->characters->_contents,idx).unsafe_character();
     if (!isspace(c))
     {
       LOG( "isspace was false char=|{}|\n"% *it );
@@ -223,8 +223,8 @@ int	QDomNode_O::dataCountNewLines()
   string			val;
   int			newLines;
   newLines = 0;
-  for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {
-    claspCharacter c = cl__char(this->characters->_Contents,idx).unsafe_character();
+  for (size_t idx = 0; idx<this->characters->_contents->length(); idx++ ) {
+    claspCharacter c = cl__char(this->characters->_contents,idx).unsafe_character();
     if ( c == '\n' ) {
       newLines++;
     }
