@@ -114,7 +114,7 @@ CL_DEFMETHOD     void	setLocalName(const string& nm)		{this->localName = nm;};
 CL_LISPIFY_NAME("getLineNumber");
 CL_DEFMETHOD     int		getLineNumber()			{return this->lineNumber;};
 CL_LISPIFY_NAME("getCharacters");
-  CL_DEFMETHOD     string	getCharacters()			{return gc::As<core::String_sp>(core::cl__get_output_stream_string(this->characters))->get_std_string();};
+  CL_DEFMETHOD     string	getCharacters()			{return gc::As<core::String_sp>(core::StringOutputStream_O::get_string(this->characters))->get_std_string();};
 		//
 		// getData same as getCharacters
 		//
@@ -128,7 +128,7 @@ CL_LISPIFY_NAME("getCharacters");
 
 CL_LISPIFY_NAME("setCharacters");
 CL_DEFMETHOD     void	setCharacters(const string& chrs)	{
-  this->characters->getAndReset();
+  this->characters->get_string();
   this->characters->fill(chrs);
 };
   void	appendCharacters(const string& chrs)	{this->characters->fill(chrs); };
