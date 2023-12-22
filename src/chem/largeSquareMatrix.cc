@@ -920,7 +920,7 @@ void	SparseLargeSquareMatrix_O::debug()
     {
       core::clasp_write_string(fmt::format(" x{}@{:<3}\n" , this->_ColumnForValue[i] , i ));
     }
-    core::clasp_terpri();
+    core::cl__terpri();
   }
   core::clasp_write_string("Columns: \n");
   for ( uint i=0; i<this->_ActiveElements; i++ ) {

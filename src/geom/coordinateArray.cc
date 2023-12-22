@@ -220,7 +220,7 @@ CL_DEFMETHOD     void SimpleVectorCoordinate_O::writeToStream(string const& info
   for (int i=0; i<(int)this->_Points.size(); i++ )
   {
     this->_Points[i].write(sout);
-    core::clasp_terpri(sout);
+    core::cl__terpri();
   }
 }
 #endif

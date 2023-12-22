@@ -668,12 +668,12 @@ vector<Matrix>::iterator		mp;
           for ( ap=pos->atoms.begin(); ap!=pos->atoms.end(); ap++ ) {
             core::clasp_write_string(fmt::format(" {}\n", ap->getAtom()->getName() ));
           }
-          core::clasp_terpri();
+          core::cl__terpri();
           core::clasp_write_string("      Children:\n");
           for ( ip=pos->children.begin(); ip!=pos->children.end(); ip++ ) {
             core::clasp_write_string(fmt::format(" {:3}\n", *ip ));
           }
-          core::clasp_terpri();
+          core::cl__terpri();
           core::clasp_write_string("      coordinate system:\n");
           pos->coord->dump();
           core::clasp_write_string("      relative matrix:\n");
@@ -684,7 +684,7 @@ vector<Matrix>::iterator		mp;
 	}
         core::clasp_write_string("      accumulated matrix:\n");
 	pos->accumulated.dump();
-        core::clasp_terpri();
+        core::cl__terpri();
     }
 }
 
