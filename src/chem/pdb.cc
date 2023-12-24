@@ -340,7 +340,7 @@ Aggregate_sp PdbReader_O::loadPdb(core::T_sp fileName)
 {
   PdbReader_sp pdb = PdbReader_O::create();
   core::T_sp stream = cl__open(fileName,
-                               kw::_sym_input,
+                               core::stream_direction_input,
                                cl::_sym_character,
                                nil<T_O>(), false,
                                nil<T_O>(), false,
@@ -362,7 +362,7 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 {
   PdbReader_sp pdb = PdbReader_O::create();
   core::T_sp stream = cl__open(fileName,
-                               kw::_sym_input,
+                               core::stream_direction_input,
                                cl::_sym_character,
                                nil<T_O>(), false,
                                nil<T_O>(), false,
@@ -564,7 +564,13 @@ void _writeAtomAndConnectRecords( core::T_sp fout, gctools::Vec0<AtomPdbRec>& pd
 CL_LISPIFY_NAME("pdb-open");
 CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 {
-  this->_Out = core::clasp_openWrite(pathDesignator);
+  this->_Out = cl__open(pathDesignator,
+                        core::stream_direction_output,
+                        cl::_sym_character,
+                        kw::_sym_supersede, true,
+                        nil<T_O>(), false,
+                        kw::_sym_default,
+                        nil<T_O>());
   if ( this->_Out.nilp() ) {
     SIMPLE_ERROR("Could not open file: {}" , _rep_(pathDesignator));
   }
