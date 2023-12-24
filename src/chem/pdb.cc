@@ -340,10 +340,10 @@ Aggregate_sp PdbReader_O::loadPdb(core::T_sp fileName)
 {
   PdbReader_sp pdb = PdbReader_O::create();
   core::T_sp stream = cl__open(fileName,
-                               core::stream_direction_input,
+                               core::StreamDirection::input,
                                cl::_sym_character,
-                               nil<T_O>(), false,
-                               nil<T_O>(), false,
+                               core::StreamIfExists::nil, false,
+                               core::StreamIfDoesNotExist::nil, false,
                                kw::_sym_default,
                                nil<T_O>());
   Aggregate_sp agg = pdb->parse(stream);
@@ -362,10 +362,10 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 {
   PdbReader_sp pdb = PdbReader_O::create();
   core::T_sp stream = cl__open(fileName,
-                               core::stream_direction_input,
+                               core::StreamDirection::input,
                                cl::_sym_character,
-                               nil<T_O>(), false,
-                               nil<T_O>(), false,
+                               core::StreamIfExists::nil, false,
+                               core::StreamIfDoesNotExist::nil, false,
                                kw::_sym_default,
                                nil<T_O>());
   Aggregate_sp agg = pdb->parse(stream);
@@ -565,10 +565,10 @@ CL_LISPIFY_NAME("pdb-open");
 CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 {
   this->_Out = cl__open(pathDesignator,
-                        core::stream_direction_output,
+                        core::StreamDirection::output,
                         cl::_sym_character,
-                        kw::_sym_supersede, true,
-                        nil<T_O>(), false,
+                        core::StreamIfExists::supersede, true,
+                        core::StreamIfDoesNotExist::nil, false,
                         kw::_sym_default,
                         nil<T_O>());
   if ( this->_Out.nilp() ) {
