@@ -151,7 +151,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
   if (chem__verbose(0)) {
     if (number_to_load.nilp()) {
       progress_bar = core::eval::funcall(make_progress,
-                                         INTERN_(kw,total), core::cl__file_length(fin.fIn));
+                                         INTERN_(kw,total), core::stream_length(fin.fIn));
     } else if (gc::IsA<core::Real_sp>(number_to_load)){
         progress_bar = core::eval::funcall(make_progress,
                                            INTERN_(kw,total), number_to_load);
@@ -174,7 +174,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
         result << core::Cons_O::createList(tagg,atom_types);
         if (chem__verbose(0)) {
           if (number_to_load.nilp()) {
-            core::eval::funcall(progress_advance, progress_bar, core::cl__file_position(fin.fIn,nil<core::T_O>()));
+            core::eval::funcall(progress_advance, progress_bar, core::stream_position(fin.fIn));
           } else {
             core::eval::funcall(progress_advance, progress_bar, core::make_fixnum((size_t)num));
           }
