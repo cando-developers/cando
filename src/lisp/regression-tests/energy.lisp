@@ -111,7 +111,8 @@
         (chem:minimize min)))
 
 
-(defparameter spiro (cando:load-mol2 "data/struct-0000.mol2"))
+(defparameter spiro (cando:load-mol2 (merge-pathnames "data/struct-0000.mol2"
+                                                      *load-truename*)))
 
 (chem:setf-force-field-name (cando:mol spiro 0) :smirnoff)
 
