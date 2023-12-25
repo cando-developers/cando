@@ -230,7 +230,8 @@ public:
 
   virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments) = 0;
 
-  CL_DEFMETHOD core::HashTable_sp atomTypes() const;
+  core::HashTable_sp atomTypes() const;
+  void setAtomTypes(core::HashTable_sp atomTypes);
 
   ScoringFunction_O();
 };

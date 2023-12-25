@@ -2,7 +2,7 @@
 
 (defvar *type-index* 0)
 
-(defun next-smirnoff-type-symbol ()
+(defun next-smirnoff-type-symbol (smirks)
   (let* ((index (1- (mp:atomic-incf *type-index*)))
          (index-string (format nil "$~36r" index)))
     (unless (<= (length index-string) 4)
@@ -283,7 +283,7 @@
                (epsilon (canonical-kj/mol (parse-quantity (safe-gethash "epsilon" attrs))))
                (rmin-half (parse-rmin_half attrs))
                (type (or (gethash smirks *smirnoff-types*)
-                         (let ((type (next-smirnoff-type-symbol)))
+                         (let ((type (next-smirnoff-type-symbol smirks)))
                            (setf (gethash smirks *smirnoff-types*) type)
                            type)))
                (term (make-instance 'nonbond-term

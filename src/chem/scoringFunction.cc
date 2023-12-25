@@ -87,9 +87,14 @@ void ScoringFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,AtomTypes),this->_AtomTypes);
 }
 
+CL_DEFMETHOD 
 core::HashTable_sp ScoringFunction_O::atomTypes() const {
   if (this->_AtomTypes.boundp()) return this->_AtomTypes;
   SIMPLE_ERROR("The atom-types are unbound");
+}
+
+CL_DEFMETHOD void ScoringFunction_O::setAtomTypes(core::HashTable_sp atomTypes) {
+  this->_AtomTypes = atomTypes;
 }
 
 CL_LISPIFY_NAME("evaluateEnergy");

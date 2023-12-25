@@ -27,6 +27,7 @@
            (result (if (and phi-deg psi-deg)
                        (progn
                          (setf shape-key (make-binned-key-deg phi-deg psi-deg))
+                         (format t "monomer-shape: ~s shape-key ~s~%" sidechain-monomer-shape shape-key)
                          (gethash shape-key shape-key-to-allowed-rotamers))
                        nil)))
       (unless result

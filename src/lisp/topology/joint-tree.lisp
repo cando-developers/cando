@@ -19,7 +19,9 @@
 (defun make-joint-tree ()
   (make-instance 'joint-tree))
 
-(defun recursively-write-into-atresidue (joint-template
+(defun recursively-write-into-atresidue (monomer
+                                         monomer-subset
+                                         joint-template
                                          parent-joint
                                          atresidue
                                          atmolecule-index
@@ -34,9 +36,12 @@
                                       atresidue-index
                                       atom-table
                                       adjustments
-                                      orientation)))
+                                      orientation
+                                      monomer monomer-subset)))
     (loop for child-joint-template in (children joint-template)
-          do (recursively-write-into-atresidue child-joint-template
+          do (recursively-write-into-atresidue monomer
+                                               monomer-subset
+                                               child-joint-template
                                                joint
                                                atresidue
                                                atmolecule-index
@@ -46,51 +51,63 @@
                                                orientation))
     joint))
 
-(defun fill-atresidue (joint-tree
-                       oligomer
-                       atresidue
-                       parent-joint
-                       atmolecule-index
-                       atresidue-index
-                       atom-table
-                       adjustments
-                       orientation)
+(defun maybe-fill-atresidue (joint-tree
+                             oligomer
+                             monomer
+                             monomer-subset
+                             atresidue
+                             parent-joint
+                             atmolecule-index
+                             atresidue-index
+                             atom-table
+                             adjustments
+                             orientation)
   "Recursively build an atom-tree into the atresidues of an ataggregate.
 This duplicates https://github.com/cando-developers/cando/blob/main/src/kinematics/pointTree.cc#L172
 JointTree_O::recursivelyBuildMolecule
-If (null parent-joint) then this is the root atresidue
-"
-  (let* ((topology (topology atresidue))
+If (null parent-joint) then this is the root atresidue. "
+  (let* ((topology (monomer-topology monomer oligomer))
          (constitution (constitution topology))
          (constitution-atoms (constitution-atoms constitution)))
-    (resize-atatoms atresidue (length constitution-atoms))
-    (let* ((joint-template (joint-template topology))
-           ;; bondid is represented by a (cons parent child)
-           (root-joint (recursively-write-into-atresidue joint-template
-                                                         parent-joint
-                                                         atresidue
-                                                         atmolecule-index
-                                                         atresidue-index
-                                                         atom-table
-                                                         adjustments
-                                                         orientation)))
-      (when (null (gethash oligomer (root-map joint-tree)))
-        (setf (gethash oligomer (root-map joint-tree)) root-joint))
-      (let ((outgoing-plug-names-to-joint-map (make-hash-table)))
-        (maphash (lambda (plug-name plug)
-                   (declare (ignore plug-name))
-                   (when (typep plug 'out-plug)
-                     (let* ((out-plug plug)
-                            (out-plug-name (name out-plug))
-                            (plug-bond (elt (plug-bonds out-plug) 0))
-                            (atomb0-name (atom-name plug-bond))
-                            (constitution-bond0-atomid (position atomb0-name constitution-atoms :key #'atom-name))
-                            (joint-bond0-parent (if constitution-bond0-atomid
-                                                    (aref (joints atresidue) constitution-bond0-atomid)
-                                                    (error "Could not find atom ~a in ~a" atomb0-name constitution-atoms))))
-                       (setf (gethash out-plug-name outgoing-plug-names-to-joint-map) joint-bond0-parent))))
-                 (plugs topology))
-        outgoing-plug-names-to-joint-map))))
+    (if (null atresidue)
+        (progn
+          (when parent-joint
+            (error "parent-joint ~s is defined but atresidue is NIL" parent-joint))
+          ;; return NIL - there is no outgoing-plug-names-to-joint-map
+          nil)
+        (progn
+          (resize-atatoms atresidue (length constitution-atoms))
+          (let* ((joint-template (joint-template topology))
+                 ;; bondid is represented by a (cons parent child)
+                 (root-joint (recursively-write-into-atresidue monomer
+                                                               monomer-subset
+                                                               joint-template
+                                                               parent-joint
+                                                               atresidue
+                                                               atmolecule-index
+                                                               atresidue-index
+                                                               atom-table
+                                                               adjustments
+                                                               orientation)))
+            (when (null parent-joint)
+              (if (null (gethash oligomer (root-map joint-tree)))
+                  (setf (gethash oligomer (root-map joint-tree)) (list root-joint))
+                  (push root-joint (gethash oligomer (root-map joint-tree)))))
+            (let ((outgoing-plug-names-to-joint-map (make-hash-table)))
+              (maphash (lambda (plug-name plug)
+                         (declare (ignore plug-name))
+                         (when (typep plug 'out-plug)
+                           (let* ((out-plug plug)
+                                  (out-plug-name (name out-plug))
+                                  (plug-bond (elt (plug-bonds out-plug) 0))
+                                  (atomb0-name (atom-name plug-bond))
+                                  (constitution-bond0-atomid (position atomb0-name constitution-atoms :key #'atom-name))
+                                  (joint-bond0-parent (if constitution-bond0-atomid
+                                                          (aref (joints atresidue) constitution-bond0-atomid)
+                                                          (error "Could not find atom ~a in ~a" atomb0-name constitution-atoms))))
+                             (setf (gethash out-plug-name outgoing-plug-names-to-joint-map) joint-bond0-parent))))
+                       (plugs topology))
+              outgoing-plug-names-to-joint-map))))))
 
 #|
 

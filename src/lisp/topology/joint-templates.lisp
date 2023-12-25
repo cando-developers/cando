@@ -308,11 +308,18 @@
                           res)))
           index*3)))))
 
-(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation))
+(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation monomer monomer-subset))
 
-(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
+(defmethod write-into-joint-tree ((joint-template t)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation
+                                  monomer monomer-subset)
   (error "write-into-joint-tree - handle joint-template ~a" joint-template))
-
 
 (defmethod write-into-joint-tree ((joint-template jump-joint-template)
                                   parent-joint
@@ -321,7 +328,8 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation)
+                                  one-orientation
+                                  monomer monomer-subset)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -332,7 +340,16 @@
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
+(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation
+                                  monomer monomer-subset
+                                  )
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -363,7 +380,18 @@
       (when parent-joint (kin:joint/add-child parent-joint joint))
       joint)))
 
-(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
+(defmethod write-into-joint-tree ((joint-template bonded-joint-template)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation
+                                  monomer monomer-subset
+                                  )
+  (when (and monomer-subset (null parent-joint))
+    (error "Handle ~s joint if we have a monomer-subset" joint-template))
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -372,16 +400,40 @@
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template xyz-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
-  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
-         (atom-name (atom-name joint-template))
-         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (kin:make-xyz-joint atomid atom-name atom-table one-orientation)))
-    (put-joint atresidue joint constitution-atoms-index)
-    (when parent-joint (kin:joint/add-child parent-joint joint))
-    joint))
+(defmethod write-into-joint-tree ((joint-template xyz-joint-template)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation
+                                  monomer monomer-subset
+                                  )
+  (if (and monomer-subset (null parent-joint))
+      (progn
+        (put-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
+        )
+      (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+             (atom-name (atom-name joint-template))
+             (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+             (joint (kin:make-xyz-joint atomid atom-name atom-table one-orientation)))
+        (put-joint atresidue joint constitution-atoms-index)
+        (when parent-joint (kin:joint/add-child parent-joint joint))
+        joint)))
 
-(defmethod write-into-joint-tree ((joint-template adjustable-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
+(defmethod write-into-joint-tree ((joint-template adjustable-bonded-joint-template)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation
+                                  monomer monomer-subset
+                                  )
+  (when (and monomer-subset (null parent-joint))
+    (error "Handle ~s joint if we have a monomer-subset" joint-template))
   (let ((joint (call-next-method)))
     (when adjustments
       (add-to-adjustments adjustments
@@ -389,25 +441,66 @@
                           atresidue))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
-  (let* ((joint (call-next-method))
-         (in-plug (in-plug joint-template))
-         (in-plug-name (name in-plug))
-         (coupling-name (coupling-name in-plug-name))
-         (out-plug-name (out-plug-name coupling-name)))
-    (if (= (length (plug-bonds in-plug)) 1)
-        (kin:joint/set-property joint :out-plug-name out-plug-name)
-        (let ((indexed-out-plug-name (intern (format nil "~a.0" out-plug-name) :keyword)))
-          (kin:joint/set-property joint :out-plug-name indexed-out-plug-name)))
-    joint))
+(defun put-stub-joint (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
+  (let* ((base-assembler (assembler monomer-subset))
+         (base-coordinates (coordinates monomer-subset))
+         (base-ataggregate (ataggregate base-assembler))
+         (base-monomer-pos (gethash monomer (monomer-positions base-assembler)))
+         (base-atresidue (at-position base-ataggregate base-monomer-pos))
+         (base-joint0 (aref (joints base-atresidue) 0))
+         (base-parent-joint (kin:parent base-joint0))
+         (base-grand-parent-joint (kin:parent base-parent-joint))
+         (base-great-grand-parent-joint (kin:parent base-grand-parent-joint))
+         (base-j-pos (kin:joint/position base-joint0 base-coordinates))
+         (base-pj-pos (kin:joint/position base-parent-joint base-coordinates))
+         (base-gpj-pos (kin:joint/position base-grand-parent-joint base-coordinates))
+         (constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-stub-joint atomid atom-name atom-table one-orientation base-j-pos base-pj-pos base-gpj-pos)))
+    (put-joint atresidue joint constitution-atoms-index)))
 
-(defmethod write-into-joint-tree ((joint-template adjustable-in-plug-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation)
-  (let ((joint (call-next-method)))
-    (when adjustments
-      (add-to-adjustments adjustments
-                        (make-instance (adjustment joint-template) :joint joint)
-                        atresidue))
-    joint))
+(defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation
+                                  monomer monomer-subset
+                                  )
+  (if (and monomer-subset (null parent-joint))
+      (put-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
+      (let* ((joint (call-next-method))
+             (in-plug (in-plug joint-template))
+             (in-plug-name (name in-plug))
+             (coupling-name (coupling-name in-plug-name))
+             (out-plug-name (out-plug-name coupling-name)))
+        (if (= (length (plug-bonds in-plug)) 1)
+            (kin:joint/set-property joint :out-plug-name out-plug-name)
+            (let ((indexed-out-plug-name (intern (format nil "~a.0" out-plug-name) :keyword)))
+              (kin:joint/set-property joint :out-plug-name indexed-out-plug-name)))
+        joint)))
+
+(defmethod write-into-joint-tree ((joint-template adjustable-in-plug-bonded-joint-template)
+                                  parent-joint
+                                  atresidue
+                                  atmolecule-index
+                                  atresidue-index
+                                  atom-table
+                                  adjustments
+                                  one-orientation
+                                  monomer monomer-subset
+                                  )
+  (if (and monomer-subset (null parent-joint))
+      (put-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
+      (let ((joint (call-next-method)))
+        (when adjustments
+          (add-to-adjustments adjustments
+                              (make-instance (adjustment joint-template) :joint joint)
+                              atresidue))
+        joint)))
 
 (defclass topology-graph ()
   ((topology :initarg :topology :reader topology)

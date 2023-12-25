@@ -365,11 +365,17 @@
    #:assembler
    #:assembler-base
    #:oligomer-shapes
-   #:build-oligomer-shape-in-coordinates
    #:walk-atmolecule-joints
    #:build-all-oligomer-shapes-in-coordinates
    #:build-external-coordinates
-   #:aggregate*))
+   #:aggregate*
+   #:make-monomer-subset
+
+   #:update-internals
+   #:build-oligomer-shape-externals
+   #:the-root-monomer
+   #:monomer-shape-loci
+   #:build-all-externals))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

@@ -213,8 +213,8 @@
   ())
 
 (defclass rotamers-database (cando.serialize:serializable)
-  ((context-to-rotamers :initarg :context-to-rotamers :initform (make-hash-table) :accessor context-to-rotamers)
-   (foldamer-name :initarg :foldamer-name :accessor foldamer-name)))
+  ((context-to-rotamers :initarg :context-to-rotamers :initform (make-hash-table) :reader context-to-rotamers)
+   (foldamer-name :initarg :foldamer-name :reader foldamer-name)))
 
 (defmethod print-object ((obj rotamers-database) stream)
   (if *print-readably*

@@ -325,6 +325,7 @@ CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global
 
 void	FFNonbondDb_O::fields(core::Record_sp node)
 {
+  node->field(INTERN_(kw,terms),this->_Terms);
   node->field_if_not_nil(INTERN_(kw,eleChargeFcn), this->EleChargeFcn);
   node->field_if_defined(INTERN_(kw,eleDielectricValue), this->EleDielectricValueDefined, this->EleDielectricValue);
   node->field_if_defined(INTERN_(kw,eleBuffer), this->EleBufferDefined, this->EleBuffer);
@@ -335,7 +336,6 @@ void	FFNonbondDb_O::fields(core::Record_sp node)
   node->field_if_defined(INTERN_(kw,eleDielectricCode), this->EleDielectricCodeDefined, this->EleDielectricCode);
   node->field_if_defined(INTERN_(kw,vdwMixRadius), this->VdwMixRadiusDefined, this->VdwMixRadius);
   node->field_if_defined(INTERN_(kw,vdwMixWell), this->VdwMixWellDefined, this->VdwMixWell);
-  node->field(INTERN_(kw,terms),this->_Terms);
   this->Base::fields(node);
 }
 

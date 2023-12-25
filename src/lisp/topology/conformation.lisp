@@ -62,8 +62,12 @@
 
 (defclass assembler (assembler-base)
   ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
+   (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset)
    (adjustments :initarg :adjustments :accessor adjustments)))
 
+(defclass subset-assembler (assembler)
+  ()
+  (:documentation "This class is an assembler that builds a subset of another assembler"))
 
 (defun aggregate* (assembler &optional coordinates)
   "Return a copy of the aggregate with coordinates if provided"
@@ -131,9 +135,34 @@
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))
 
-(defun make-assembler (oligomer-shapes &key monomer-order tune-energy-function)
+(defclass monomer-subset ()
+  ((assembler :initarg :assembler :reader assembler)
+   (coordinates :initarg :coordinates :reader coordinates)
+   (monomers :initarg :monomers :reader monomers)))
+
+(defun make-monomer-subset (assembler coordinates list-of-monomers)
+  "Make a monomer-subset, currently a hash-table with keys of monomers and values of T"
+  (let ((ht (make-hash-table)))
+    (loop for mon in list-of-monomers
+          do (setf (gethash mon ht) t))
+    (make-instance 'monomer-subset
+                   :assembler assembler
+                   :coordinates coordinates
+                   :monomers ht)))
+
+(defun in-monomer-subset (monomer-subset &rest monomers)
+  (cond
+    ((null monomer-subset)
+     ;; If monomer-subset is NULL then everything is in the subset
+     t)
+    ((typep monomer-subset 'monomer-subset)
+     (every (lambda (mon) (gethash mon (monomers monomer-subset))) monomers))
+    (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
+
+(defun make-assembler (oligomer-shapes &key monomer-subset tune-energy-function (keep-interaction t))
   "Build a assembler for the oligomers.
-energy-function-factory - provide a function that takes an aggregate and returns an energy-function."
+energy-function-factory - provide a function that takes an aggregate and returns an energy-function.
+tune-energy-function - A function that takes the energy-function and an assembler and modifies the energy-function."
   (unless (every (lambda (os) (typep os 'oligomer-shape)) oligomer-shapes)
     (error "You must provide a list of oligomer-shapes"))
   (let* ((full-orientations oligomer-shapes)
@@ -147,70 +176,77 @@ energy-function-factory - provide a function that takes an aggregate and returns
                                      (foldamer (foldamer oligomer-space)))
                                 foldamer))
                             oligomers))
+         (monomers-to-residues (make-hash-table))
          (oligomer-molecules (loop for oligomer in oligomers
                                    for oligomer-space = (oligomer-space oligomer)
                                    for foldamer = (foldamer oligomer-space)
                                    for molecule-index from 0
                                    for molecule = (topology:build-molecule oligomer
+                                                                           :monomer-subset monomer-subset
                                                                            :aggregate aggregate
                                                                            :molecule-index molecule-index
+                                                                           :monomers-to-residues monomers-to-residues
                                                                            :monomer-positions-accumulator monomer-positions)
                                    do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
-                                   collect (cons oligomer molecule)))
-         (monomer-contexts (make-hash-table))
-         (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
-                        (resize-atmolecules atagg (length oligomers))
-                        atagg))
-         (joint-tree (make-joint-tree))
-         (energy-function (let ((ef (chem:make-energy-function :keep-interaction keep-interaction :matter aggregate)))
-                            (when tune-energy-function (funcall tune-energy-function ef))
-                            ef))
-         (adjustments (make-instance 'adjustments))
-         (assembler (loop for oligomer-molecule in oligomer-molecules
-                          for oligomer = (car oligomer-molecule)
-                          for one-orientation in full-orientations
-                          for molecule = (cdr oligomer-molecule)
-                          for oligomer-space = (oligomer-space oligomer)
-                          for foldamer = (foldamer oligomer-space)
-                          for molecule-index from 0
-                          do (loop for monomer across (monomers oligomer-space)
-                                   for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
-                                   do (setf (gethash monomer monomer-contexts) monomer-context))
-                             ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
-                             ;; Use the monomers-to-topologys
-                          do (let* ((atmolecule (build-atmolecule-using-oligomer
-                                                oligomer
-                                                molecule
-                                                molecule-index
-                                                monomer-positions
-                                                joint-tree
-                                                (chem:atom-table energy-function)
-                                                adjustments
-                                                one-orientation)))
-                               (put-atmolecule ataggregate atmolecule molecule-index))
-                          finally (return (make-instance 'assembler
-                                                         :monomer-positions monomer-positions
-                                                         :monomer-contexts monomer-contexts
-                                                         :oligomer-shapes oligomer-shapes
-                                                         :aggregate aggregate
-                                                         :energy-function energy-function
-                                                         :ataggregate ataggregate
-                                                         :joint-tree joint-tree
-                                                         :adjustments adjustments)))))
-    ;; The assembler is built - initialize the adjustments
-    (loop for atmol across (atmolecules ataggregate)
-          for atmol-index from 0
-          do (loop for atres across (atresidues atmol)
-                   for atres-index from 0
-                   for internal-adjusts = (gethash atres (internal-adjustments adjustments))
-                   for external-adjusts = (gethash atres (external-adjustments adjustments))
-                   when internal-adjusts
-                     do (loop for adjust in internal-adjusts
-                              do (initialize-adjustment adjust assembler))
-                   when external-adjusts
-                     do (loop for adjust in external-adjusts
-                              do (initialize-adjustment adjust assembler))))
-    assembler))
+                                   collect (cons oligomer molecule))))
+    (let* ((monomer-contexts (make-hash-table))
+           (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
+                          (resize-atmolecules atagg (length oligomers))
+                          atagg))
+           (joint-tree (make-joint-tree))
+           (adjustments (make-instance 'adjustments))
+           (energy-function (chem:make-energy-function :keep-interaction keep-interaction :matter aggregate))
+           (assembler (loop for oligomer-molecule in oligomer-molecules
+                            for oligomer = (car oligomer-molecule)
+                            for one-orientation in full-orientations
+                            for molecule = (cdr oligomer-molecule)
+                            for oligomer-space = (oligomer-space oligomer)
+                            for foldamer = (foldamer oligomer-space)
+                            for molecule-index from 0
+                            do (loop for monomer across (monomers oligomer-space)
+                                     for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
+                                     do (setf (gethash monomer monomer-contexts) monomer-context))
+                               ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
+                               ;; Use the monomers-to-topologys
+                            do (let* ((atmolecule (build-atmolecule-using-oligomer oligomer
+                                                                                   monomer-subset
+                                                                                   molecule
+                                                                                   molecule-index
+                                                                                   monomer-positions
+                                                                                   joint-tree
+                                                                                   (chem:atom-table energy-function)
+                                                                                   adjustments
+                                                                                   one-orientation)))
+                                 (put-atmolecule ataggregate atmolecule molecule-index))
+                            finally (return (make-instance (if monomer-subset
+                                                               'subset-assembler
+                                                               'assembler)
+                                                           :monomer-positions monomer-positions
+                                                           :monomer-contexts monomer-contexts
+                                                           :oligomer-shapes oligomer-shapes
+                                                           :aggregate aggregate
+                                                           :ataggregate ataggregate
+                                                           :monomer-subset monomer-subset
+                                                           :joint-tree joint-tree
+                                                           :adjustments adjustments)))))
+      ;; The energy-function may be adjusted for the assembler
+      (when tune-energy-function
+        (funcall tune-energy-function energy-function assembler))
+      (setf (energy-function assembler) energy-function)
+      ;; The assembler is built - initialize the adjustments
+      (loop for atmol across (atmolecules ataggregate)
+            for atmol-index from 0
+            do (loop for atres across (atresidues atmol)
+                     for atres-index from 0
+                     for internal-adjusts = (gethash atres (internal-adjustments adjustments))
+                     for external-adjusts = (gethash atres (external-adjustments adjustments))
+                     when internal-adjusts
+                       do (loop for adjust in internal-adjusts
+                                do (initialize-adjustment adjust assembler))
+                     when external-adjusts
+                       do (loop for adjust in external-adjusts
+                                do (initialize-adjustment adjust assembler))))
+      assembler)))
 
 
 (defun make-training-assembler (oligomers &key focus-monomer)
@@ -353,6 +389,7 @@ energy-function-factory - provide a function that takes an aggregate and returns
                                (kin:update-internal-coord joint coordinates)))))
 
 (defun build-external-coordinates (assembler &key oligomer-shape (coords (topology:make-coordinates-for-assembler assembler)))
+  (error "Fix me - I need this to build all oligomer-shapes")
   (if oligomer-shape
       (progn
         (build-atom-tree-external-coordinates assembler coords oligomer-shape)
@@ -362,10 +399,11 @@ energy-function-factory - provide a function that takes an aggregate and returns
 
 (defun build-atom-tree-external-coordinates (assembler coords oligomer-shape)
   (let* ((one-oligomer (oligomer oligomer-shape))
-         (joint (gethash one-oligomer (root-map (joint-tree assembler)))))
-    (unless joint
+         (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
+    (when (null joints)
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
-    (kin:update-xyz-coords joint coords)))
+    (loop for joint in joints
+          do (kin:update-xyz-coords joint coords))))
 
 (defun build-all-external-coordinates (assembler &key (coords (topology:make-coordinates-for-assembler assembler)))
   (loop for oligomer-shape in (oligomer-shapes assembler)
@@ -419,7 +457,7 @@ energy-function-factory - provide a function that takes an aggregate and returns
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (adjust-internals assembler oligomer-shape)))
 
-(defun fill-internals-from-oligomer-shape (assembler oligomer-shape &optional monomers)
+(defun fill-internals-from-oligomer-shape (assembler oligomer-shape)
   "Fill internal coordinates from the fragments"
   (let ((fragments (rotamers-map oligomer-shape)))
     (loop for ass-oligomer-shape in (oligomer-shapes assembler)
@@ -427,8 +465,7 @@ energy-function-factory - provide a function that takes an aggregate and returns
           when (eq ass-oligomer-shape oligomer-shape)
             do (loop with atagg = (ataggregate assembler)
                      for monomer in (ordered-monomers oligomer)
-                     when (or (null monomers)
-                              (member monomer monomers))
+                     when (in-monomer-subset (monomer-subset assembler) monomer)
                        do (let* ((monomer-context (gethash monomer (monomer-contexts assembler)))
                                  (context-rotamers (let ((frag (gethash monomer-context (monomer-context-to-context-rotamers fragments))))
                                                            (unless frag
@@ -467,8 +504,8 @@ energy-function-factory - provide a function that takes an aggregate and returns
 |#
 
 
-(defun fill-internals-from-oligomer-shape-and-adjust (assembler oligomer-shape &optional monomers)
-  (fill-internals-from-oligomer-shape assembler oligomer-shape monomers)
+(defun fill-internals-from-oligomer-shape-and-adjust (assembler oligomer-shape)
+  (fill-internals-from-oligomer-shape assembler oligomer-shape)
   (adjust-internals assembler oligomer-shape))
 
 (defun search-conformations (oligomer-space context-rotamers monomer-names sdf-filename &optional (number-struct 50) (number-conf 100))

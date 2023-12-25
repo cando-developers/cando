@@ -152,8 +152,41 @@
       (ordered-sequence-monomers oligomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
 
 
+(defun build-residue (oligomer
+                      monomers-to-residues
+                      monomers-to-topologys
+                      monomer-positions-accumulator
+                      molecule-index
+                      molecule
+                      prev-topology
+                      prev-residue
+                      next-monomer
+                      &optional out-coupling)
+  (let* ((topology (let ((next-top (monomer-topology next-monomer oligomer)))
+                     (unless (typep next-top 'topology:topology)
+                       (error "Unexpected object - expected a topology - got ~s" next-top))
+                     next-top))
+         (stereoisomer-name (current-stereoisomer-name next-monomer oligomer))
+         (residue (build-residue-for-monomer-name topology stereoisomer-name)))
+    (setf (gethash next-monomer monomers-to-residues) residue
+          (gethash next-monomer monomers-to-topologys) topology)
+    (let ((residue-index (chem:content-size molecule)))
+      (setf (gethash next-monomer monomer-positions-accumulator)
+            (make-instance 'monomer-position
+                           :molecule-index molecule-index
+                           :residue-index residue-index)))
+    (chem:add-matter molecule residue)
+    (when prev-residue
+      (connect-residues prev-topology
+                        prev-residue
+                        (source-plug-name out-coupling)
+                        topology
+                        residue
+                        (target-plug-name out-coupling)))
+    (values residue topology)))
 
 (defun recursively-build-molecule (oligomer
+                                   monomer-subset
                                    prev-monomer
                                    prev-topology
                                    prev-residue
@@ -162,49 +195,84 @@
                                    monomers-to-residues
                                    monomers-to-topologys
                                    molecule-index
-                                   monomer-positions)
-  (loop for out-coupling in (gethash prev-monomer monomer-out-couplings)
-        for next-monomer = (target-monomer out-coupling)
-        for next-topology = (let ((next-top (monomer-topology next-monomer oligomer)))
-                              (unless (typep next-top 'topology:topology)
-                                (error "Unexpected object - expected a topology - got ~s" next-top))
-                              next-top)
-        for next-stereoisomer-name = (current-stereoisomer-name next-monomer oligomer)
-        for next-residue = (progn
-                             (build-residue-for-monomer-name next-topology next-stereoisomer-name))
-        do (setf (gethash next-monomer monomers-to-residues) next-residue
-                 (gethash next-monomer monomers-to-topologys) next-topology)
-           (let* ((monomer-position (gethash next-monomer monomer-positions))
-                  (next-residue-index (chem:content-size molecule)))
-             (declare (ignore next-residue-index))
-             (chem:put-matter molecule (residue-index monomer-position) next-residue))
-           (connect-residues prev-topology 
-                                  prev-residue
-                                  (source-plug-name out-coupling)
-                                  next-topology
-                                  next-residue
-                                  (target-plug-name out-coupling))
-           (recursively-build-molecule oligomer
-                                       next-monomer
-                                       next-topology
-                                       next-residue
-                                       monomer-out-couplings
-                                       molecule
-                                       monomers-to-residues
-                                       monomers-to-topologys
-                                       molecule-index
-                                       monomer-positions)))
+                                   monomer-positions-accumulator)
+  (if prev-monomer
+      (let ((next-topology nil)
+            (next-residue nil))
+        (loop for out-coupling in (gethash prev-monomer monomer-out-couplings)
+              for next-monomer = (target-monomer out-coupling)
+              do (when (in-monomer-subset monomer-subset next-monomer)
+                   (multiple-value-setq (next-residue next-topology)
+                     (build-residue oligomer
+                                    monomers-to-residues
+                                    monomers-to-topologys
+                                    monomer-positions-accumulator
+                                    molecule-index
+                                    molecule
+                                    prev-topology
+                                    prev-residue
+                                    next-monomer
+                                    out-coupling)))
+              do (recursively-build-molecule oligomer
+                                             monomer-subset
+                                             next-monomer
+                                             next-topology
+                                             next-residue
+                                             monomer-out-couplings
+                                             molecule
+                                             monomers-to-residues
+                                             monomers-to-topologys
+                                             molecule-index
+                                             monomer-positions-accumulator)))
+      (let* ((root-monomer (root-monomer oligomer))
+             (monomer-out-couplings (make-hash-table))
+             (monomers-to-topologys (make-hash-table))
+             (ring-couplings nil)
+             (root-topology nil)
+             (root-residue nil))
+        (loop for index below (length (couplings oligomer))
+              for coupling = (elt (couplings oligomer) index)
+              if (typep coupling 'directional-coupling)
+                do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
+              else
+                do (pushnew coupling ring-couplings)) ; Only add ring coupling when unique
+        (when (in-monomer-subset monomer-subset root-monomer)
+          (multiple-value-setq (root-residue root-topology)
+            (build-residue oligomer
+                           monomers-to-residues
+                           monomers-to-topologys
+                           monomer-positions-accumulator
+                           molecule-index
+                           molecule
+                           prev-topology
+                           prev-residue
+                           root-monomer)))
+        (recursively-build-molecule oligomer
+                                    monomer-subset
+                                    root-monomer
+                                    root-topology
+                                    root-residue
+                                    monomer-out-couplings
+                                    molecule
+                                    monomers-to-residues
+                                    monomers-to-topologys
+                                    molecule-index
+                                    monomer-positions-accumulator))))
 
 (defgeneric oligomer-force-field-name (foldamer)
   (:documentation "Return the name of the force field used by the foldamer"))
 
 (defun build-molecule (oligomer
                        &key (aggregate (chem:make-aggregate :dummy))
+                         monomer-subset
                          (molecule-index 0)
+                         (monomers-to-residues (make-hash-table))
                          (monomer-positions-accumulator (make-hash-table)))
-  (let ((root-monomer (root-monomer oligomer))
+  "Build the molecule for the oligomer using the monomer-subset if provided.
+If the caller passes a hash-table for monomers-to-residues, then fill that hash-table with a map
+of monomers-to-residues."
+  (let ((root-monomer (when (in-monomer-subset monomer-subset (root-monomer oligomer))))
         (monomer-out-couplings (make-hash-table))
-        (monomers-to-residues (make-hash-table))
         (monomers-to-topologys (make-hash-table))
         (ring-couplings nil))
     (loop for index below (length (couplings oligomer))
@@ -215,38 +283,18 @@
             do (pushnew coupling ring-couplings)) ; Only add ring coupling when unique
     (let* ((molecule (let ((mol (chem:make-molecule :mol)))
                        (chem:setf-force-field-name mol (oligomer-force-field-name (foldamer (oligomer-space oligomer))))
-                       mol))
-           (root-topology (let ((top (monomer-topology root-monomer oligomer)))
-                            (unless (typep top 'topology:topology)
-                              (error "Unexpected object - expected a topology - got ~s" top))
-                            top))
-           (stereoisomer-name (current-stereoisomer-name root-monomer oligomer))
-           (root-residue (progn
-                           (build-residue-for-monomer-name root-topology stereoisomer-name))))
-      (setf (gethash root-monomer monomers-to-residues) root-residue
-            (gethash root-monomer monomers-to-topologys) root-topology)
-      (let ((number-of-residues (length (monomers oligomer))))
-        (loop for count from 0 below (length (monomers oligomer))
-              for monomer = (elt (monomers oligomer) count)
-              do (setf (gethash monomer monomer-positions-accumulator)
-                       (make-instance 'monomer-position
-                                      :molecule-index molecule-index
-                                      :residue-index count)))
-        (let* ((monomer-position (gethash root-monomer monomer-positions-accumulator))
-               (next-residue-index (chem:content-size molecule)))
-          (declare (ignore next-residue-index))
-          (chem:resize-contents molecule number-of-residues)
-          (chem:put-matter molecule (residue-index monomer-position) root-residue))
-        (recursively-build-molecule oligomer
-                                    root-monomer
-                                    root-topology
-                                    root-residue
-                                    monomer-out-couplings
-                                    molecule
-                                    monomers-to-residues
-                                    monomers-to-topologys
-                                    molecule-index
-                                    monomer-positions-accumulator))
+                       mol)))
+      (recursively-build-molecule oligomer
+                                  monomer-subset
+                                  nil
+                                  nil
+                                  nil
+                                  monomer-out-couplings
+                                  molecule
+                                  monomers-to-residues
+                                  monomers-to-topologys
+                                  molecule-index
+                                  monomer-positions-accumulator)
       ;; Now close the rings
       (loop for ring-coupling in ring-couplings
             for monomer1 = (monomer1 ring-coupling)
@@ -276,19 +324,22 @@
       (maphash (lambda (name monomer)
                  (unless (atom monomer)
                    (error "The monomer ~s cannot be a list" monomer))
-                 (let* ((monpos (let ((mp (gethash monomer monomer-positions-accumulator)))
-                                  (unless mp (error "Check mp ~s monomer ~s and monomer-positions-accumulator ~s"
-                                                    mp
-                                                    monomer
-                                                    monomer-positions-accumulator))
-                                  mp))
-                        (res (chem:content-at molecule (topology:residue-index monpos))))
-                   (chem:set-property res :label name)))
+                 (when (in-monomer-subset monomer-subset monomer)
+                   (let* ((monpos (let ((mp (gethash monomer monomer-positions-accumulator)))
+                                    (unless mp (error "Could not find the monomer ~s in the monomer-positions-accumulator ~s"
+                                                      monomer
+                                                      monomer-positions-accumulator))
+                                    mp))
+                          (res (chem:content-at molecule (topology:residue-index monpos))))
+                     (chem:set-property res :label name))))
                (labeled-monomers (oligomer-space oligomer)))
       (values molecule monomer-positions-accumulator))))
 
 
-(defun build-all-molecules (oligomer-space &optional (number-of-sequences (number-of-sequences oligomer-space)))
+(defun build-all-molecules (oligomer-space
+                            &key
+                              (monomers-to-residues (make-hash-table) monomers-to-residues-p)
+                              (number-of-sequences (number-of-sequences oligomer-space)))
   "Build all of the molecules in the oligomer-space into a single aggregate and return it.
 Also return the position of each monomer in the aggregate -
 A hash-table that maps monomers to molecule/residue indices.
@@ -303,6 +354,7 @@ than the (chem:oligomer/number-of-sequences oligomer)."
                                             (build-molecule oligomer
                                                             :aggregate aggregate
                                                             :molecule-index index
+                                                            :monomers-to-residues monomers-to-residues
                                                             :monomer-positions-accumulator monomer-positions-accumulator))
                            collect aggregate)))
     (values aggregates monomer-positions-accumulator)))

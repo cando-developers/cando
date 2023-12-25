@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/jumpJoint.h>
 #include <cando/kinematics/bondedJoint.h>
+#include <cando/kinematics/xyzJoint.h>
 
 namespace kinematics
 {
@@ -229,10 +230,37 @@ CL_DEFMETHOD void BondedJoint_O::setPhi(double dihedral) {
 Stub BondedJoint_O::getInputStub(chem::NVector_sp coords) const
 {
   Stub stub;
+  auto parent = this->parent();
+  if (gc::IsA<StubJoint_sp>(parent)) {
+    auto stubParent = gc::As_unsafe<StubJoint_sp>(parent);
+    geom::stubFromThreePoints( stub._Transform,
+                               stubParent->position(coords),
+                               stubParent->transformedParentPos(),
+                               stubParent->transformedGrandParentPos() );
+    return stub;
+  }
+  auto grandParent = parent->parent();
+  if (gc::IsA<StubJoint_sp>(grandParent)) {
+    auto stubGrandParent = gc::As_unsafe<StubJoint_sp>(grandParent);
+    geom::stubFromThreePoints( stub._Transform,
+                               parent->position(coords),
+                               stubGrandParent->position(coords),
+                               stubGrandParent->transformedParentPos() );
+    return stub;
+  }
+  auto greatGrandParent = grandParent->parent();
+  if (gc::IsA<StubJoint_sp>(greatGrandParent)) {
+    auto stubGreatGrandParent = gc::As_unsafe<StubJoint_sp>(greatGrandParent);
+    geom::stubFromThreePoints( stub._Transform,
+                               parent->position(coords),
+                               grandParent->position(coords),
+                               stubGreatGrandParent->position(coords) );
+    return stub;
+  }
   geom::stubFromThreePoints(stub._Transform,
-                      this->inputStubJoint0()->position(coords),
-                      this->inputStubJoint1()->position(coords),
-                      this->inputStubJoint2()->position(coords));
+                      parent->position(coords),
+                      grandParent->position(coords),
+                      greatGrandParent->position(coords));
   KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
   return stub;
 }

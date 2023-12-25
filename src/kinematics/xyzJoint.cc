@@ -31,6 +31,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
 #include <clasp/core/evaluator.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/ovector3.h>
 #include <cando/geom/matrix.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
@@ -44,13 +46,14 @@ namespace kinematics
 {
 void XyzJoint_O::fields(core::Record_sp record) {
   static_assert(XyzJoint_O::MaxChildren==5,"XyzJoint_O::MaxChildren has changed from 5 - update the code below");
+  record->field_if_not_default(INTERN_(kw,pos),this->_Pos,Vector3());
   record->field_if_not_unbound(INTERN_(kw,child4),this->_Children[4]);
   record->field_if_not_unbound(INTERN_(kw,child3),this->_Children[3]);
   record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);
   record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
   record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
   record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
-  record->field(INTERN_(kw,pos),this->_Pos);
+  record->field(INTERN_(kw,orientation),this->_Orientation);
   this->Base::fields(record);
 }
 
@@ -71,11 +74,11 @@ CL_DEFMETHOD Joint_sp XyzJoint_O::inputStubJoint1() const { return this->parent(
 CL_DEFMETHOD Joint_sp XyzJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
 
-CL_LAMBDA(atom-id name atom-table);
+CL_LAMBDA(atom-id name atom-table orientation &optional (pos (geom:vec 0.0 0.0 0.0)));
 CL_LISPIFY_NAME("make_XyzJoint");
 CL_DEF_CLASS_METHOD
-XyzJoint_sp XyzJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation) {
-  auto obj = gctools::GC<XyzJoint_O>::allocate(atomId,name,atomTable,orientation);
+XyzJoint_sp XyzJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation, const Vector3& pos) {
+  auto obj = gctools::GC<XyzJoint_O>::allocate(atomId,name,atomTable,orientation,pos);
   return obj;
 }
 
@@ -151,6 +154,9 @@ bool XyzJoint_O::keepDofFixed(DofType dof) const
 }
 
 
+core::Symbol_sp XyzJoint_O::typeSymbol() const { return _sym_xyz;};
+
+
 string XyzJoint_O::asString() const
 {
   stringstream ss;
@@ -224,9 +230,53 @@ double XyzJoint_O::dof(DofType const& dof) const
 
 SYMBOL_EXPORT_SC_(KinPkg,xyz);
 
-core::Symbol_sp XyzJoint_O::typeSymbol() const { return _sym_xyz;};
+CL_LAMBDA(atom-id name atom-table parent-pos grand-parent-pos great-grand-parent-pos);
+CL_LISPIFY_NAME("make_StubJoint");
+CL_DEF_CLASS_METHOD
+StubJoint_sp StubJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation, const Vector3& pos, const Vector3& parentPos, const Vector3& grandParentPos ) {
+  auto obj = gctools::GC<StubJoint_O>::allocate( atomId, name, atomTable, orientation, pos, parentPos, grandParentPos);
+  return obj;
+}
+
+void StubJoint_O::initialize() {
+
+}
 
 
+void StubJoint_O::fields(core::Record_sp node) {
+  node->field_if_not_default(INTERN_(kw,gppos),this->_GrandParentPos,Vector3());
+  node->field_if_not_default(INTERN_(kw,ppos),this->_ParentPos,Vector3());
+  this->Base::fields(node);
+}
+
+void StubJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
+{
+      // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
+#if 0
+  Vector3 d2;
+  d2 = this->_Pos;
+  if (this->_Orientation.nilp()) {
+    this->_TransformedGrandParentPos = this->_GrandParentPos;
+  } else {
+   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->_Orientation))->ref();
+    this->_TransformedParentPos = m*this->_ParentPos;
+    this->_TransformedGrandParentPos = m*this->_GrandParentPos;
+  }
+#endif
+  this->Base::_updateXyzCoord(coords,stub);
+}
 
 
+Vector3 StubJoint_O::transformedParentPos() const {
+   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->_Orientation))->ref();
+   Vector3 pos = m*this->_ParentPos;
+   return pos;
+}
+
+Vector3 StubJoint_O::transformedGrandParentPos() const {
+   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->_Orientation))->ref();
+   Vector3 pos = m*this->_GrandParentPos;
+   return pos;
+}
+  
 };

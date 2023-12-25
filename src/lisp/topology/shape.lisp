@@ -20,18 +20,19 @@
    (monomer-context-key :initarg :monomer-context-key :accessor monomer-context-key)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
    (monomer-shape-kind :initarg :monomer-shape-kind :accessor monomer-shape-kind)
-   (shape-key :initarg :shape-key :accessor shape-key)
+;;;   (shape-key :initarg :shape-key :accessor shape-key)
    (context-rotamers :initarg :context-rotamers :accessor context-rotamers)
-   (keys :initarg :keys :accessor keys)
+;;;   (keys :initarg :keys :accessor keys)
    ))
 
 (defmethod print-object ((obj monomer-shape) stream)
   (print-unreadable-object (obj stream :type t)
     (format stream "~a ~a"
-            (monomer obj)
             (if (slot-boundp obj 'fragment-conformation-index)
                 (fragment-conformation-index obj)
-                "#<unbound>"))))
+                "#<unbound>")
+            (monomer obj)
+            )))
 
 (defclass oligomer-shape ()
   ((orientation :initarg :orientation :accessor orientation)
@@ -355,17 +356,41 @@
     (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
     (copy-joint-positions-into-atoms assembler coords oligomer-shape)))
 
-(defun build-oligomer-shape-in-coordinates (assembler oligomer-shape coords)
-    (fill-internals-from-oligomer-shape-and-adjust assembler oligomer-shape)
-    (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))
+(defgeneric update-internals (assembler rotamer-database oligomer-shape &optional data)
+  (:documentation
+   "Update the internal coordinates of the assembler for the oligomer-shape or whatever type the second argument is.
+: assembler - the assembler to update
+: rotamer-database - the rotamer-database to use for internals
+: oligomer-shape - An oligomer-shape or permissible-rotamers in the assembler
+: data - for permissible-rotamers a vector of rotamer indices in the permissible-rotamers "))
+
+(defmethod update-internals (assembler rotamer-database (oligomer-shape oligomer-shape) &optional data)
+  (when data
+    (error "data should be NIL for oligomer-shape argument"))
+  (fill-internals-from-oligomer-shape-and-adjust assembler oligomer-shape))
+
+
+(defgeneric build-oligomer-shape-externals (assembler oligomer-shape &key coords)
+  (:documentation "Build the oligomer-shape in the coordinates by generating externals"))
+
+(defmethod build-oligomer-shape-externals (assembler oligomer-shape &key (coords (make-coordinates-for-assembler assembler)))
+  (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
+  coords)
+
+(defun build-all-externals (assembler &key (coords (make-coordinates-for-assembler assembler)))
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        do (build-oligomer-shape-externals assembler oligomer-shape :coords coords))
+  coords)
+
 
 (defun build-oligomer-shape-keep-internals-in-coordinates (assembler oligomer-shape coords)
   (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))
 
-(defun build-all-oligomer-shapes-in-coordinates (assembler coords)
+(defun build-all-oligomer-shapes-in-coordinates (assembler &optional (coords (make-coordinates-for-assembler assembler)))
   (loop for oligomer-shape in (topology:oligomer-shapes assembler)
         do (fill-internals-from-oligomer-shape-and-adjust assembler oligomer-shape)
-        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)))
+        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))
+  coords)
 
 (defun build-all-oligomer-shapes-from-internals-in-coordinates (assembler coords)
   (loop for oligomer-shape in (topology:oligomer-shapes assembler)

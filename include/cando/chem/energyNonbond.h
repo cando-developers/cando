@@ -304,7 +304,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   EnergyNonbond_O() :
       _UsesExcludedAtoms(true),
-      _FFNonbondDb(unbound<core::T_O>())
+      _FFNonbondDb(nil<core::T_O>())
   {};
 };
 

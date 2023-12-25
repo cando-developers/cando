@@ -1001,8 +1001,7 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
 
 /* Construct nonbond terms between two molecules or two residues or a residue and a molecule that are not
 bonded to each other */
-CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
-                                                                       EnergyFunction_sp energyFunction )
+CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2, EnergyFunction_sp energyFunction )
 {
   auto atomTable = energyFunction->atomTable();
   auto nbForceField = atomTable->nonbondForceFieldForAggregate();

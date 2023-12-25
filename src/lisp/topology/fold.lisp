@@ -52,7 +52,7 @@
   ((molecule :initarg :molecule :accessor molecule)
    (root-atresidue :initarg :root-atresidue :accessor root-atresidue)
    (atresidues :initarg :atresidues
-               :initform (make-array 0 :adjustable t)
+               :initform (make-array 16 :adjustable t :fill-pointer 0)
                :accessor atresidues)))
 
 (defmethod resize-atresidues ((atmolecule atmolecule) num-atresidues)
@@ -63,7 +63,25 @@
   (check-type atresidue atresidue)
   (setf (aref (atresidues atmolecule) index) atresidue))
 
-(defun atresidue-factory (residue ring-closing-monomer-map monomer topology)
+(defun atresidue-factory (residue ring-closing-monomer-map monomer monomer-subset topology)
+  (cond
+    ((null (in-monomer-subset monomer-subset monomer))
+     ;; It's not in the monomer-subset - so forget about it
+     nil)
+    ((let ((ring-closing-coupling (has-ring-closing-coupling monomer)))
+       (when ring-closing-coupling
+         (let ((atresidue (make-instance 'ring-closing-atresidue
+                                         :name (chem:get-name residue)
+                                         :residue residue
+                                         :topology topology
+                                         :ring-closing-coupling ring-closing-coupling)))
+           (setf (gethash monomer ring-closing-monomer-map) atresidue)
+           atresidue))))
+    (t (make-instance 'atresidue :name (chem:get-name residue)
+                                 :residue residue
+                                 :topology topology))))
+
+(defun new-atresidue-factory (residue ring-closing-monomer-map monomer monomer-subset topology)
   (cond
     ((let ((ring-closing-coupling (has-ring-closing-coupling monomer)))
        (when ring-closing-coupling
@@ -103,6 +121,7 @@
             ))))
 
 (defun build-atmolecule-using-oligomer (oligomer
+                                        monomer-subset
                                         molecule
                                         molecule-index
                                         monomer-positions
@@ -110,35 +129,34 @@
                                         atom-table
                                         adjustments
                                         orientation)
-  (let* ((root-monomer (root-monomer oligomer))
-         (ring-closing-monomer-map (make-hash-table))
-         (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule))
-         (monomer-position (gethash root-monomer monomer-positions))
-         (residue-index (residue-index monomer-position))
-         (residue (chem:content-at molecule residue-index))
-         (topology (monomer-topology root-monomer oligomer))
-         (root-atresidue (atresidue-factory residue ring-closing-monomer-map root-monomer topology)))
-    (adjust-array (atresidues atmolecule) (number-of-monomers oligomer))
-    (put-atresidue atmolecule root-atresidue residue-index)
-    (recursively-build-children joint-tree
-                                root-atresidue
-                                atmolecule
-                                molecule
-                                ring-closing-monomer-map
-                                nil
-                                nil
-                                root-monomer
-                                oligomer
-                                monomer-positions
-                                molecule-index
-                                residue-index
-                                nil
-                                atom-table
-                                adjustments
-                                orientation
-                                )
+  (let* ((ring-closing-monomer-map (make-hash-table))
+         (monomer-out-couplings (make-hash-table))
+         (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule)))
+    (loop for index below (length (couplings oligomer))
+          for coupling = (elt (couplings oligomer) index)
+          if (typep coupling 'directional-coupling)
+            do (push coupling (gethash (source-monomer coupling) monomer-out-couplings)))
+    (recursively-build-atmolecule nil   ; root-monomer
+                                  monomer-out-couplings
+                                  nil   ; nil-or-outgoing-plug-names-to-joint-map
+                                  monomer-subset
+                                  oligomer
+                                  joint-tree
+                                  atmolecule
+                                  molecule-index
+                                  nil   ; atresidue
+                                  nil   ; atresidue-index
+                                  molecule
+                                  ring-closing-monomer-map
+                                  nil   ; parent-atresidue
+                                  nil   ; coupling
+                                  monomer-positions
+                                  nil   ; parent-joint
+                                  atom-table
+                                  adjustments
+                                  orientation
+                                  )
     #+(or)(make-ring-closing-connections oligomer monomer-positions molecule ring-closing-monomer-map)
-    (setf (root-atresidue atmolecule) root-atresidue)
     atmolecule))
 
 (defclass atresidue (atmatter)
@@ -175,75 +193,298 @@
 (defclass ring-closing-atresidue (atresidue)
   ((ring-closing-coupling :initarg :ring-closing-coupling :accessor ring-closing-coupling)))
 
-(defun recursively-build-children (joint-tree
-                                   atresidue
-                                   atmolecule
-                                   molecule
-                                   ring-closing-monomer-map
-                                   parent-atresidue
-                                   coupling
-                                   monomer
-                                   oligomer
-                                   monomer-positions
+#+(or)
+(defun recursively-build-atmolecule (monomer ; nil or current monomer
+                                   monomer-subset ; monomer-subset
+                                   oligomer       ; oligomer
+                                   joint-tree ; joint-tree to set root
+                                   atmolecule ; current atmolecule we are filling
                                    atmolecule-index
+                                   atresidue ; nil or atresidue for current monomer
                                    atresidue-index
+                                   molecule ; current molecule cooresponding to atmolecule
+                                   ring-closing-monomer-map
+                                   parent-atresidue ; nil or parent-atresidue
+                                   coupling         ; nil or coupling
+                                   monomer-positions ; map of monomers to monomer-positions
                                    parent-joint
                                    atom-table
                                    adjustments
                                    orientation)
   "Recursively build a atmolecule from an oligomer by linking together kin:atresidues"
-  (when parent-atresidue
-    (setf (parent atresidue) parent-atresidue))
-  (when coupling
-    (setf (parent-plug-name atresidue) (target-plug-name coupling)))
-  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree
-                                                          oligomer
-                                                          atresidue
-                                                          parent-joint
-                                                          atmolecule-index
-                                                          atresidue-index
-                                                          atom-table
-                                                          adjustments
-                                                          orientation))
-        (current-topology (monomer-topology monomer oligomer)))
-    (setf (stereoisomer-name atresidue) (current-stereoisomer-name monomer oligomer)
-          (topology atresidue) current-topology
-          (conformation-index atresidue) 0)
-    (maphash (lambda (plug-name coupling)
-               (declare (ignore plug-name))
-               (unless (typep coupling 'ring-coupling)
-                 (let ((directional-coupling coupling))
-                   (when (eq (source-monomer directional-coupling) monomer)
-                     (let* ((other-monomer (target-monomer directional-coupling))
-                            (other-topology (monomer-topology other-monomer oligomer))
-                            (other-monomer-position (gethash other-monomer monomer-positions))
-                            (other-residue-index (residue-index other-monomer-position))
-                            (other-residue (chem:content-at molecule other-residue-index))
-                            (other-atresidue (atresidue-factory other-residue
+  (when (and atresidue (not (slot-boundp atmolecule 'root-atresidue)))
+    (setf (root-atresidue atmolecule) atresidue))
+  (if monomer
+      (progn
+        (when parent-atresidue
+          (unless atresidue
+            (error "We have a parent-atresidue ~s but no child for monomer" parent-atresidue monomer))
+          (setf (parent atresidue) parent-atresidue))
+        (when coupling
+          (unless atresidue
+            (error "We have a coupling ~s but no atresidue" coupling))
+          (setf (parent-plug-name atresidue) (target-plug-name coupling)))
+        (let* ((nil-or-outgoing-plug-names-to-joint-map (maybe-fill-atresidue joint-tree
+                                                                              oligomer
+                                                                              monomer
+                                                                              monomer-subset
+                                                                              atresidue
+                                                                              parent-joint
+                                                                              atmolecule-index
+                                                                              atresidue-index
+                                                                              atom-table
+                                                                              adjustments
+                                                                              orientation))
+                                (current-topology (monomer-topology monomer oligomer)))
+               (setf (stereoisomer-name atresidue) (current-stereoisomer-name monomer oligomer)
+                     (topology atresidue) current-topology
+                     (conformation-index atresidue) 0)
+               (maphash (lambda (plug-name coupling)
+                          (declare (ignore plug-name))
+                          (unless (typep coupling 'ring-coupling)
+                            (let ((directional-coupling coupling))
+                              (when (eq (source-monomer directional-coupling) monomer)
+                                (let* ((next-monomer (target-monomer directional-coupling))
+                                       (next-topology (monomer-topology next-monomer oligomer))
+                                       (next-monomer-position (gethash next-monomer monomer-positions))
+                                       (next-residue-index (residue-index next-monomer-position))
+                                       (next-residue (chem:content-at molecule next-residue-index))
+                                       (next-atresidue (atresidue-factory next-residue
+                                                                          ring-closing-monomer-map
+                                                                          next-monomer
+                                                                          monomer-subset
+                                                                          next-topology))
+                                       (next-atresidue-index (and next-atresidue
+                                                                  (length (atresidues atmolecule))))
+                                       (out-plug-name (source-plug-name coupling)))
+                                  (when (/= next-atresidue-index next-residue-index)
+                                    (error "There is a mismatch between the index of the atresidue ~s at ~s and the residue ~s at ~s"
+                                           next-atresidue next-atresidue-index
+                                           next-residue next-residue-index))
+                                  (vector-push-extend next-atresidue (atresidues atmolecule))
+                                  (setf (gethash out-plug-name (children atresidue)) next-atresidue)
+                                  (let ((new-parent-joint (and nil-or-outgoing-plug-names-to-joint-map
+                                                               (gethash out-plug-name nil-or-outgoing-plug-names-to-joint-map))))
+                                    (recursively-build-atmolecule next-monomer
+                                                                monomer-subset
+                                                                oligomer
+                                                                joint-tree
+                                                                atmolecule
+                                                                atmolecule-index
+                                                                next-atresidue
+                                                                next-atresidue-index
+                                                                molecule
                                                                 ring-closing-monomer-map
-                                                                other-monomer
-                                                                other-topology))
-                            (out-plug-name (source-plug-name coupling)))
-                       (put-atresidue atmolecule other-atresidue other-residue-index)
-                       (setf (gethash out-plug-name (children atresidue)) other-atresidue)
-                       (let ((new-parent-joint (gethash out-plug-name outgoing-plug-names-to-joint-map)))
-                         (recursively-build-children joint-tree
-                                                     other-atresidue
-                                                     atmolecule
-                                                     molecule
-                                                     ring-closing-monomer-map
-                                                     atresidue
-                                                     directional-coupling
-                                                     other-monomer
-                                                     oligomer
-                                                     monomer-positions
-                                                     atmolecule-index
-                                                     other-residue-index
-                                                     new-parent-joint
-                                                     atom-table
-                                                     adjustments
-                                                     orientation)))))))
-             (couplings monomer))))
+                                                                atresidue
+                                                                directional-coupling
+                                                                monomer-positions
+                                                                new-parent-joint
+                                                                atom-table
+                                                                adjustments
+                                                                orientation)))))))
+                        (couplings monomer))))
+        (let* ((monomer (root-monomer oligomer))
+               (atresidue nil)
+               (atresidue-index nil)
+               )
+          (when (in-monomer-subset monomer-subset monomer)
+            (multiple-value-setq (atresidue atresidue-index)
+              (let* ((monomer-position (gethash monomer monomer-positions))
+                     (residue-index (residue-index monomer-position))
+                     (residue (chem:content-at molecule residue-index))
+                     (topology (monomer-topology monomer oligomer))
+                     (atresidue (atresidue-factory residue
+                                                   ring-closing-monomer-map
+                                                   monomer
+                                                   monomer-subset
+                                                   topology))
+                     (atresidue-index (length (atresidues atmolecule))))
+                (when (/= atresidue-index residue-index)
+                  (error "There is an inconsistency between the index of the atresidue ~s at ~s and the residue ~s at ~s"
+                         atresidue atresidue-index
+                         residue residue-index))
+                (vector-push-extend atresidue (atresidues atmolecule))
+                (values atresidue atresidue-index)
+                #|(if monomer-position
+                (residue-index (residue-index monomer-position)) ; ; ;
+                (residue (chem:content-at molecule residue-index)) ; ; ;
+                (topology (monomer-topology root-monomer oligomer)) ; ; ;
+                (root-atresidue (atresidue-factory residue ring-closing-monomer-map root-monomer topology))) ; ; ;
+                (error "Build an atresidue and add it to the aggregate"))|#
+                )))
+          (recursively-build-atmolecule monomer
+                                      monomer-subset
+                                      oligomer
+                                      joint-tree
+                                      atmolecule atmolecule-index
+                                      atresidue atresidue-index
+                                      molecule
+                                      ring-closing-monomer-map
+                                      nil ; parent-atresidue
+                                      nil ; coupling
+                                      monomer-positions
+                                      nil ; new-parent-joint
+                                      atom-table
+                                      adjustments
+                                      orientation))))
+
+(defun verify-atresidue (atresidue parent-atresidue parent-joint)
+  (when parent-atresidue
+    (unless (eq parent-atresidue (parent atresidue))
+      (error "The parent-atresidue ~s has not been set into the (parent atresidue) of ~s"
+             parent-atresidue atresidue)))
+  (when parent-joint
+    (unless (eq parent-joint (kin:parent (elt (joints atresidue) 0)))
+      (error "The parent joint of the first joint ~s atresidue ~s has not been set to ~s"
+             (elt (joints atresidue) 0) atresidue parent-joint))))
+
+(defun recursively-build-atmolecule (prev-monomer ; nil or current monomer
+                                     monomer-out-couplings
+                                     nil-or-outgoing-plug-names-to-joint-map
+                                     monomer-subset ; monomer-subset
+                                     oligomer       ; oligomer
+                                     joint-tree ; joint-tree to set root
+                                     atmolecule ; current atmolecule we are filling
+                                     atmolecule-index
+                                     atresidue ; nil or atresidue for current monomer
+                                     atresidue-index
+                                     molecule ; current molecule cooresponding to atmolecule
+                                     ring-closing-monomer-map
+                                     parent-atresidue ; nil or parent-atresidue
+                                     coupling ; nil or coupling
+                                     monomer-positions ; map of monomers to monomer-positions
+                                     parent-joint
+                                     atom-table
+                                     adjustments
+                                     orientation)
+  "Recursively build a atmolecule from an oligomer by linking together kin:atresidues"
+  (if prev-monomer
+      (let ((next-atresidue nil)
+            (next-atresidue-index nil)
+            (next-outgoing-plug-names-to-joint-map)
+            (out-couplings (gethash prev-monomer monomer-out-couplings)))
+        (loop for out-coupling in out-couplings
+              for next-monomer = (target-monomer out-coupling)
+              for next-out-couplings = (gethash next-monomer monomer-out-couplings)
+              do (when (in-monomer-subset monomer-subset next-monomer)
+                   (multiple-value-setq (next-atresidue next-atresidue-index next-outgoing-plug-names-to-joint-map)
+                     (let* ((next-topology (monomer-topology next-monomer oligomer))
+                            (next-monomer-position (gethash next-monomer monomer-positions))
+                            (next-residue-index (residue-index next-monomer-position))
+                            (next-residue (chem:content-at molecule next-residue-index))
+                            (next-atresidue (new-atresidue-factory next-residue
+                                                                   ring-closing-monomer-map
+                                                                   next-monomer
+                                                                   monomer-subset
+                                                                   next-topology))
+                            (next-atresidue-index (and next-atresidue (length (atresidues atmolecule))))
+                            (out-plug-name (source-plug-name out-coupling))
+                            (parent-joint (and nil-or-outgoing-plug-names-to-joint-map
+                                               (gethash out-plug-name nil-or-outgoing-plug-names-to-joint-map)))
+                            (next-outgoing-plug-names-to-joint-map (maybe-fill-atresidue joint-tree
+                                                                                         oligomer
+                                                                                         next-monomer
+                                                                                         monomer-subset
+                                                                                         next-atresidue
+                                                                                         parent-joint
+                                                                                         atmolecule-index
+                                                                                         next-atresidue-index
+                                                                                         atom-table
+                                                                                         adjustments
+                                                                                         orientation)))
+                       (setf (stereoisomer-name next-atresidue) (current-stereoisomer-name prev-monomer oligomer)
+                             (topology next-atresidue) next-topology
+                             (conformation-index next-atresidue) 0) ; what is this?
+                       (when atresidue
+                         (setf (parent next-atresidue) atresidue))
+                       (verify-atresidue next-atresidue atresidue parent-joint)
+                       (when (/= next-atresidue-index next-residue-index)
+                         (error "There is a mismatch between the index of the atresidue ~s at ~s and the residue ~s at ~s"
+                                next-atresidue next-atresidue-index
+                                next-residue next-residue-index))
+                       (vector-push-extend next-atresidue (atresidues atmolecule))
+                       (when atresidue
+                         (setf (gethash out-plug-name (children atresidue)) next-atresidue
+                               (parent-plug-name atresidue) (target-plug-name out-coupling)))
+                       (values next-atresidue next-atresidue-index next-outgoing-plug-names-to-joint-map))))
+              do (recursively-build-atmolecule next-monomer
+                                               monomer-out-couplings
+                                               next-outgoing-plug-names-to-joint-map
+                                               monomer-subset
+                                               oligomer
+                                               joint-tree
+                                               atmolecule
+                                               atmolecule-index
+                                               next-atresidue
+                                               next-atresidue-index
+                                               molecule
+                                               ring-closing-monomer-map
+                                               atresidue
+                                               out-coupling
+                                               monomer-positions
+                                               parent-joint
+                                               atom-table
+                                               adjustments
+                                               orientation)))
+      (let* ((prev-monomer (root-monomer oligomer))
+             (next-atresidue nil)
+             (next-atresidue-index nil)
+             (next-outgoing-plug-names-to-joint-map))
+        (when (in-monomer-subset monomer-subset prev-monomer)
+          (multiple-value-setq (next-atresidue next-atresidue-index next-outgoing-plug-names-to-joint-map)
+            (let* ((next-monomer prev-monomer)
+                   (next-topology (monomer-topology next-monomer oligomer))
+                   (next-monomer-position (gethash next-monomer monomer-positions))
+                   (next-residue-index (residue-index next-monomer-position))
+                   (next-residue (chem:content-at molecule next-residue-index))
+                   (next-atresidue (new-atresidue-factory next-residue
+                                                          ring-closing-monomer-map
+                                                          next-monomer
+                                                          monomer-subset
+                                                          next-topology))
+                   (next-atresidue-index (and next-atresidue (length (atresidues atmolecule))))
+                   (next-outgoing-plug-names-to-joint-map (maybe-fill-atresidue joint-tree
+                                                                                oligomer
+                                                                                prev-monomer
+                                                                                monomer-subset
+                                                                                next-atresidue
+                                                                                parent-joint
+                                                                                atmolecule-index
+                                                                                next-atresidue-index
+                                                                                atom-table
+                                                                                adjustments
+                                                                                orientation)))
+              (setf (stereoisomer-name next-atresidue) (current-stereoisomer-name prev-monomer oligomer)
+                    (topology next-atresidue) next-topology
+                    (conformation-index next-atresidue) 0) ; what is this?
+              (when parent-atresidue
+                (setf (parent next-atresidue) parent-atresidue))
+              (verify-atresidue next-atresidue atresidue parent-joint)
+              (when (/= next-atresidue-index next-residue-index)
+                (error "There is a mismatch between the index of the atresidue ~s at ~s and the residue ~s at ~s"
+                       next-atresidue next-atresidue-index
+                       next-residue next-residue-index))
+              (vector-push-extend next-atresidue (atresidues atmolecule))
+              (values next-atresidue next-atresidue-index next-outgoing-plug-names-to-joint-map))))
+        (recursively-build-atmolecule prev-monomer
+                                      monomer-out-couplings
+                                      next-outgoing-plug-names-to-joint-map
+                                      monomer-subset
+                                      oligomer
+                                      joint-tree
+                                      atmolecule
+                                      atmolecule-index
+                                      next-atresidue
+                                      next-atresidue-index
+                                      molecule
+                                      ring-closing-monomer-map
+                                      atresidue
+                                      nil ; coupling
+                                      monomer-positions
+                                      nil ; parent-joint
+                                      atom-table
+                                      adjustments
+                                      orientation))))
 
 (defun describe-recursively (atresidue prefix stream)
   (princ prefix stream)
@@ -257,7 +498,7 @@
 
 (defmethod print-object ((object atresidue) stream)
   (print-unreadable-object (object stream :type t)
-    (format stream "~a[~a]" (class-name (class-of object)) (stereoisomer-name object))))
+    (format stream "[~s/~s]"  (name object) (stereoisomer-name object))))
 
 (defun add-joint (atresidue index joint)
   (check-type joint kin:joint)
