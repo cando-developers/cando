@@ -128,10 +128,10 @@ CL_LISPIFY_NAME("getCharacters");
 
 CL_LISPIFY_NAME("setCharacters");
 CL_DEFMETHOD     void	setCharacters(const string& chrs)	{
-  this->characters->get_string();
-  this->characters->fill(chrs);
+  this->characters->clear();
+  clasp_write_string(chrs, this->characters);
 };
-  void	appendCharacters(const string& chrs)	{this->characters->fill(chrs); };
+  void	appendCharacters(const string& chrs)	{clasp_write_string(chrs, this->characters); };
 
     void	writeXml( string prefix, std::ostream& out );
     void	writeToFileName( string fileName );
