@@ -80,6 +80,7 @@ namespace kinematics
     virtual core::Symbol_sp typeSymbol() const;
 
     Stub getInputStub(chem::NVector_sp coords) const;
+    virtual bool internalp() const;
 
     virtual void _updateInternalCoord(chem::NVector_sp coords);
     

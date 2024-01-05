@@ -178,6 +178,9 @@ Stub XyzJoint_O::getInputStub(chem::NVector_sp coords) const
   return stub;
 }
 
+bool XyzJoint_O::internalp() const {
+  return (this->_Pos.isDefined());
+}
 
 void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
   if (this->_numberOfChildren()>0) {
@@ -208,6 +211,7 @@ void XyzJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   Vector3 d2;
   d2 = this->_Pos;
+  ASSERT(this->_Pos.isDefined());
   if (this->_Orientation.nilp()) {
     this->setPosition(coords,d2);
   } else {

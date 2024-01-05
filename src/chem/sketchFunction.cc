@@ -315,7 +315,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec,
-                                       core::T_sp activeAtomMask )
+                                       core::T_sp activeAtomMask,
+                                       core::T_sp debugInteractions )
 {
   double totalEnergy = 0.0;
 #ifdef DEBUG_ENERGY_FUNCTION
@@ -407,7 +408,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                          calcDiagonalHessian,
                                                          calcOffDiagonalHessian,
                                                          hessian, hdvec, dvec,
-                                                         activeAtomMask );
+                                                         activeAtomMask,
+                                                         debugInteractions );
 ////	_lisp->profiler().timer(core::timerBond).stop();
 ////	_lisp->profiler().timer(core::timerNonbond).start();
 #ifdef DUMP_FORCE
@@ -423,7 +425,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                          hessian,
                                                          hdvec,
                                                          dvec,
-                                                         activeAtomMask );
+                                                         activeAtomMask,
+                                                         debugInteractions );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
@@ -440,7 +443,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                                       hessian,
                                                                       hdvec,
                                                                       dvec,
-                                                                      activeAtomMask );
+                                                                      activeAtomMask,
+                                                                      debugInteractions );
 #ifdef DUMP_FORCE
   maybe_dump_force("pointToLineRestraint",force);
 #endif
@@ -454,7 +458,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                                              hessian,
                                                              hdvec,
                                                              dvec,
-                                                             activeAtomMask );
+                                                             activeAtomMask,
+                                                             debugInteractions );
 #ifdef DUMP_FORCE
   maybe_dump_force("oozp",force);
 #endif

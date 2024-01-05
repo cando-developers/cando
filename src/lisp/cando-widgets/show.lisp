@@ -399,12 +399,12 @@
     (j:display (ngl-pane-grid pane-instance)))
   pane-instance)
 
-(defun ngl-show-on-pane (pane-instance object &rest rest
-                         &key append (representation :ball-and-stick)
-                              box sele axes
-                         &allow-other-keys
-                         &aux (display (not pane-instance))
-                              (representations (make-representations representation sele axes)))
+(defun ngl-show-on-pane-representations (pane-instance object &rest rest
+                                         &key append representations
+                                           box sele axes
+                                         &allow-other-keys
+                                         &aux (display (not pane-instance))
+                                           )
   (multiple-value-bind (component agg)
       (make-ngl-structure object :auto-view-duration 0 :representations representations)
     (let* ((traj-controls (ngl-show-trajectory (first (ngl:trajectories component))))
@@ -475,6 +475,16 @@
             (when (ngl-selectable-repr-p representation)
               (setf (ngl:visible representation) (equalp new-value (ngl:name representation)))))))
       (apply #'show-component pane-instance component controls rest))))
+
+
+(defun ngl-show-on-pane (pane-instance object &rest rest
+                         &key append (representation :ball-and-stick)
+                              box sele axes
+                         &allow-other-keys
+                         &aux (display (not pane-instance))
+                           (representations (make-representations representation sele axes)))
+  (remf rest :representation)
+  (apply 'ngl-show-on-pane-representations pane-instance object :representations representations rest))
 
 (defun isolate-residue (residue)
   (let* ((agg (chem:make-aggregate nil))

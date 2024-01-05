@@ -98,8 +98,8 @@ CL_DEFMETHOD void ScoringFunction_O::setAtomTypes(core::HashTable_sp atomTypes) 
 }
 
 CL_LISPIFY_NAME("evaluateEnergy");
-CL_LAMBDA((scoring-function chem:scoring-function) positions &optional active-atom-mask);
-CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos, core::T_sp activeAtomMask )
+CL_LAMBDA((scoring-function chem:scoring-function) positions &optional active-atom-mask debug-interactions);
+CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos, core::T_sp activeAtomMask, core::T_sp debugInteractions )
 {
   double		energy;
   energy = this->evaluateAll(pos,
@@ -110,15 +110,16 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos, core::T_s
                              nil<core::T_O>(),
                              nil<core::T_O>(),
                              nil<core::T_O>(),
-                             activeAtomMask );
+                             activeAtomMask,
+                             debugInteractions );
   return energy;
 }
 
 
 
 CL_LISPIFY_NAME("evaluateEnergyForce");
-CL_LAMBDA((scoring-function chem:scoring-function) positions calc-force force &optional active-atom-mask);
-CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force, core::T_sp activeAtomMask )
+CL_LAMBDA((scoring-function chem:scoring-function) positions calc-force force &optional active-atom-mask debug-interactions);
+CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force, core::T_sp activeAtomMask, core::T_sp debugInteractions )
 {
   double	energy;
   gc::Nilable<NVector_sp>	rawGrad;
@@ -136,7 +137,8 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool
                              nil<core::T_O>(),
                              nil<core::T_O>(),
                              nil<core::T_O>(),
-                             activeAtomMask );
+                             activeAtomMask,
+                             debugInteractions );
   return energy;
 }
 
@@ -148,14 +150,15 @@ CL_DEFMETHOD NVector_sp ScoringFunction_O::makeCoordinates() const
 
 
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessian");
-CL_LAMBDA((scoring-function chem:scoring-function) positions calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian &optional active-atom-mask );
+CL_LAMBDA((scoring-function chem:scoring-function) positions calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian &optional active-atom-mask debug-interactions);
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
                                                                           NVector_sp pos,
                                                                           bool calcForce, NVector_sp force,
                                                                           bool calcDiagonalHessian,
                                                                           bool calcOffDiagonalHessian,
                                                                           AbstractLargeSquareMatrix_sp hessian,
-                                                                          core::T_sp activeAtomMask )
+                                                                          core::T_sp activeAtomMask,
+                                                                          core::T_sp debugInteractions )
 {
   double	energy;
   gc::Nilable<NVector_sp> rawGrad;
@@ -169,13 +172,14 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
                               hessian,
                               nil<core::T_O>(),
                               nil<core::T_O>(),
-                              activeAtomMask );
+                              activeAtomMask,
+                              debugInteractions );
   return energy;
 }
 
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessianForDebugging");
-CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask);
-CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebugging(core::T_sp activeAtomMask)
+CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask debug-interactions);
+CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebugging(core::T_sp activeAtomMask, core::T_sp debugInteractions )
 {
   NVector_sp	pos, force;
   AbstractLargeSquareMatrix_sp	hessian;
@@ -193,24 +197,25 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebuggin
                              hessian,
                              nil<core::T_O>(),
                              nil<core::T_O>(),
-                             activeAtomMask );
+                             activeAtomMask,
+                             debugInteractions );
   return energy;
 }
 
 CL_LISPIFY_NAME("calculateEnergy");
-CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask);
-CL_DEFMETHOD double	ScoringFunction_O::calculateEnergy(core::T_sp activeAtomMask)
+CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask debug-interactions);
+CL_DEFMETHOD double	ScoringFunction_O::calculateEnergy(core::T_sp activeAtomMask, core::T_sp debugInteractions)
 {
   NVector_sp	pos;
   pos = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
-  return this->evaluateEnergy(pos,activeAtomMask);
+  return this->evaluateEnergy(pos,activeAtomMask,debugInteractions);
 }
 
 
 CL_LISPIFY_NAME("calculateEnergyAndForce");
-CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask );
-CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp activeAtomMask )
+CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask debug-interactions);
+CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp activeAtomMask, core::T_sp debugInteractions )
 {
   NVector_sp	pos;
   NVector_sp	force;
@@ -218,7 +223,7 @@ CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp a
   pos = NVector_O::create(this->getNVectorSize());
   force = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
-  energy = this->evaluateEnergyForce(pos,true,force,activeAtomMask);
+  energy = this->evaluateEnergyForce(pos,true,force,activeAtomMask,debugInteractions);
     	// To calculate the force magnitude use force->magnitude();
     	// To calculate the force rmsMagnitude use force->rmsMagnitude();
 //  this->writeForceToAtoms(force);

@@ -546,6 +546,19 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution))))
       tops)))
 
+(defun valid-property (property value)
+  (member property '(:plugs :ring :stereochemistry-type :adjust))
+  )
+
+(defun validate-properties (properties name)
+  (loop for cur = properties then (cddr cur)
+        for property = (car cur)
+        for value = (cadr cur)
+        until (null cur)
+        unless (and property (valid-property property value))
+          do (error "Invalid property ~s ~s defining ~s  properties: ~s" property value name properties)
+        ))
+
 (defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals properties plug-names)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
@@ -560,7 +573,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                            :types types
                            :dihedrals dihedrals
                            :cluster-dihedrals cluster-dihedrals
-                           :properties properties
+                           :properties (validate-properties properties name)
                            :plug-names plug-names
                            :xyz-joints xyz-joints
                            )))
@@ -577,7 +590,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
 
 (defun do-define-abstract-topology (name &key properties plug-names)
   (make-abstract-topology (list name)
-                          :properties properties
+                          :properties (validate-properties properties)
                           :plug-names plug-names
                           ))
 

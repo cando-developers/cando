@@ -249,8 +249,8 @@ class EnergyNonbond_O : public EnergyComponent_O
                                          gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                          gc::Nilable<NVector_sp>	hdvec,
                                          gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask
-                                         );
+                                         core::T_sp activeAtomMask,
+                                         core::T_sp debugInteractions );
   virtual num_real evaluateTerms( ScoringFunction_sp score,
                                   NVector_sp 	pos,
                                   core::T_sp componentEnergy,

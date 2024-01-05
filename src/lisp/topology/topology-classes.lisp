@@ -490,6 +490,13 @@ Examples:
     oligomer-space))
 
 
+(defun monomers-of-shape-kind (oligomer-space desired-shape-kind)
+  "Return a list of monomers with the desired-shape-kind"
+  (loop for monomer across (monomers oligomer-space)
+        when (eq desired-shape-kind (shape-kind (foldamer oligomer-space) monomer oligomer-space))
+          collect monomer))
+
+
 (defvar *debug-oligomer-space*)
 (defun is-oligomer-space-supported (foldamer tree &key (parts *parts*))
   (let* ((oligomer-space (make-instance 'oligomer-space :foldamer foldamer))
@@ -514,6 +521,59 @@ Examples:
   (make-instance 'oligomer
                  :monomer-indices (copy-seq (monomer-indices oligomer))
                  :oligomer-space (oligomer-space oligomer)))
+
+(defclass permissible-monomer-indices ()
+  ((oligomer-space :initarg :oligomer-space :reader oligomer-space)
+   (monomer-index-loci :initarg :monomer-index-loci :reader monomer-index-loci)
+   (allowed-index-ends :initarg :allowed-index-ends :reader allowed-index-ends)))
+
+
+(defclass permissible-backbone-monomer-indices (permissible-monomer-indices)
+  ())
+
+(defclass permissible-sidechain-monomer-indices (permissible-monomer-indices)
+  ())
+
+(defun make-permissible-monomer-indices (oligomer-space wanted-shape-kind permissible-monomer-indices-subclass-name)
+  "Make a permissible-backbone-monomer-indices-subclass-name object for the oligomer-space"
+  (with-slots (foldamer) oligomer-space
+    (let ((monomer-index-loci (make-array 16 :adjustable t :element-type 'ext:byte32 :fill-pointer 0))
+          (allowed-index-ends (make-array 16 :adjustable t :element-type 'ext:byte32 :fill-pointer 0)))
+      (loop for monomer across (monomers oligomer-space)
+            for index from 0
+            for shape-kind = (shape-kind foldamer monomer oligomer-space)
+            when (eq shape-kind wanted-shape-kind)
+              do (progn
+                   (vector-push-extend index monomer-index-loci)
+                   (vector-push-extend (length (monomers monomer)) allowed-index-ends)))
+      (make-instance permissible-monomer-indices-subclass-name
+                     :oligomer-space oligomer-space
+                     :monomer-index-loci (copy-seq monomer-index-loci)
+                     :allowed-index-ends (copy-seq allowed-index-ends)))))
+
+(defun make-permissible-backbone-monomer-indices (oligomer-space)
+  "Make a permissible-backbone-monomer-indices object for the oligomer-space"
+  (make-permissible-monomer-indices oligomer-space :backbone 'permissible-backbone-monomer-indices))
+
+(defun make-permissible-sidechain-monomer-indices (oligomer-space)
+  "Make a permissible-sidechain-monomer-indices object for the oligomer-space"
+  (make-permissible-monomer-indices oligomer-space :sidechain 'permissible-sidechain-monomer-indices))
+
+
+(defun number-of-permissible-monomer-sequences (permissible-monomer-indices)
+  "Return the total number of sequences allowed by the permissible-monomer-sequences"
+  (loop with num = 1
+        for end across (allowed-index-ends permissible-monomer-indices)
+        do (setf num (* num end))
+           finally (return num)))
+
+(defun goto-permissible-monomer-sequence (permissible-monomer-indices sequence-index oligomer)
+  "Set the oligomer monomer indices to the sequence-index sequence"
+  (let* ((bases (coerce (allowed-index-ends permissible-monomer-indices) 'list))
+         (digits (sys:positive-integer-to-mixed-base-digits sequence-index bases)))
+    (loop for locus across (monomer-index-loci permissible-monomer-indices)
+          for digit in digits
+          do (setf (aref (monomer-indices oligomer) locus) digit))))
 
 (defun goto-sequence (oligomer index)
   (let* ((bases (loop for monomer across (monomers (oligomer-space oligomer))
@@ -560,6 +620,21 @@ Examples:
                              :oligomer-space oligomer-space)))
     (goto-sequence olig index)
     olig))
+
+(defgeneric write-oligomer-monomer-indices (oligomer permissible-monomer-indices monomer-indices))
+
+(defmethod write-oligomer-monomer-indices (oligomer (permissible-monomer-indices permissible-monomer-indices)
+                                           (monomer-indices array))
+  "Write the monomer indices into the oligomer"
+  (loop for monomer-index-locus across (monomer-index-loci permissible-monomer-indices)
+        for monomer-index across monomer-indices
+        do (setf (aref (monomer-indices oligomer) monomer-index-locus) monomer-index)))
+
+(defmethod write-oligomer-monomer-indices (oligomer (permissible-monomer-indices permissible-monomer-indices)
+                                           (monomer-index integer))
+  "Write the same monomer-index into the oligomer"
+  (loop for monomer-index-locus across (monomer-index-loci permissible-monomer-indices)
+        do (setf (aref (monomer-indices oligomer) monomer-index-locus) monomer-index)))
 
 (defmethod monomers ((obj oligomer))
   (monomers (oligomer-space obj)))

@@ -7,11 +7,16 @@
    (from-origin :initarg :from-origin :accessor from-origin
                               :documentation "This is the second transform that takes the object after to-origin is applied")))
 
-(defun make-orientation (&key (from-origin  (geom:make-matrix-identity))
+(defun make-orientation (&key (from-origin (geom:make-matrix-identity))
                            (to-origin (geom:make-matrix-identity)))
   (make-instance 'orientation
                  :from-origin from-origin
                  :to-origin to-origin))
+
+(defun copy-orientation (orientation)
+  (make-instance 'orientation
+                 :from-origin (geom:copy-matrix (from-origin orientation))
+                 :to-origin (geom:copy-matrix (to-origin orientation))))
 
 (defmethod print-object ((obj orientation) stream)
   (if *print-readably*
@@ -109,10 +114,14 @@
   (if errorp
       (error "Could not find ~s in ~s" monomer assembler)
       nil))
+
+(defun make-coordinates-for-number-of-atoms (number-of-atoms)
+    (make-array (* 3 number-of-atoms) :element-type (geom:vecreal-type)
+                                      :initial-element (geom:vecreal 0.0)))
+
 (defun make-coordinates-for-assembler (assembler)
   (let ((number-of-atoms (chem:number-of-atoms (topology:aggregate assembler))))
-    (make-array (* 3 number-of-atoms) :element-type (geom:vecreal-type)
-                :initial-element (geom:vecreal 0.0))))
+    (make-coordinates-for-number-of-atoms number-of-atoms)))
 
 (defun assembler-atresidue (assembler monomer)
   "Return the atresidue corresponding to the monomer"
@@ -136,16 +145,18 @@
 Specialize the foldamer argument to provide methods"))
 
 (defclass monomer-subset ()
-  ((assembler :initarg :assembler :reader assembler)
-   (coordinates :initarg :coordinates :reader coordinates)
-   (monomers :initarg :monomers :reader monomers)))
+  ((monomers :initarg :monomers :reader monomers)))
 
-(defun make-monomer-subset (assembler coordinates list-of-monomers)
+(defclass monomer-subset-with-assembler (monomer-subset)
+  ((assembler :initarg :assembler :reader assembler)
+   (coordinates :initarg :coordinates :reader coordinates)))
+
+(defun make-monomer-subset-with-assembler (assembler coordinates list-of-monomers)
   "Make a monomer-subset, currently a hash-table with keys of monomers and values of T"
   (let ((ht (make-hash-table)))
     (loop for mon in list-of-monomers
           do (setf (gethash mon ht) t))
-    (make-instance 'monomer-subset
+    (make-instance 'monomer-subset-with-assembler
                    :assembler assembler
                    :coordinates coordinates
                    :monomers ht)))
@@ -286,6 +297,7 @@ tune-energy-function - A function that takes the energy-function and an assemble
                              ;; Use the monomers-to-topologys
                           do (let* ((atmolecule (build-atmolecule-using-oligomer
                                                  oligomer
+                                                 nil
                                                  molecule
                                                  molecule-index
                                                  monomer-positions
@@ -479,16 +491,16 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                  (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
                                                   (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
                                                   ms))
-                                 (fragment-conformation-index (let ((fi (fragment-conformation-index monomer-shape)))
-                                                                (unless fi (break "The fragment-conformation-index is nil - you must call random-fragment-conformation-index on the oligomer-shape before you do anything else: ~a" monomer-shape))
+                                 (rotamer-index (let ((fi (rotamer-index monomer-shape)))
+                                                                (unless fi (break "The rotamer-index is nil - you must call random-rotamer-index on the oligomer-shape before you do anything else: ~a" monomer-shape))
                                                                 fi))
                                  (fragment-internals (let ((fragments (rotamers context-rotamers)))
                                                        (unless (> (length fragments) 0)
                                                          (error "fragments is empty for context ~a" monomer-context))
-                                                       (unless (< fragment-conformation-index (length fragments))
-                                                         (break "Check fragments ~a because fragment-conformation-index ~a is out of bounds"
-                                                                fragments fragment-conformation-index))
-                                                       (elt fragments fragment-conformation-index)))
+                                                       (unless (< rotamer-index (length fragments))
+                                                         (break "Check fragments ~a because rotamer-index ~a is out of bounds"
+                                                                fragments rotamer-index))
+                                                       (elt fragments rotamer-index)))
                                  )
                             (apply-fragment-internals-to-atresidue fragment-internals atres)
                             )))))
@@ -498,8 +510,8 @@ tune-energy-function - A function that takes the energy-function and an assemble
 
 (defmethod apply-monomer-shape-to-atresidue ((monomer-shape monomer-shape) atresidue context-rotamers)
   (let* ((fragments (rotamers context-rotamers))
-         (fragment-conformation-index (fragment-conformation-index monomer-shape))
-         (fragment-internals (elt fragments fragment-conformation-index)))
+         (rotamer-index (rotamer-index monomer-shape))
+         (fragment-internals (elt fragments rotamer-index)))
     (apply-fragment-internals-to-atresidue fragment-internals atresidue)))
 |#
 
@@ -564,3 +576,41 @@ tune-energy-function - A function that takes the energy-function and an assemble
                         (source-pos (chem:get-position source-atm)))
                    (chem:set-position atm source-pos)))))
            monomers-to-residues))
+
+(defmethod analyze-assembler ((assembler assembler) &optional name)
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        for oligomer-shape-index from 0
+        do (analyze-oligomer-shape oligomer-shape))
+  (let (
+        (backbone-internals-count (make-array (length (oligomer-shapes assembler)) :initial-element 0))
+        (backbone-internals-defined (make-array (length (oligomer-shapes assembler)) :initial-element 0))
+        (sidechain-internals-count (make-array (length (oligomer-shapes assembler)) :initial-element 0))
+        (sidechain-internals-defined (make-array (length (oligomer-shapes assembler)) :initial-element 0))
+        )
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        for oligomer-shape-index from 0
+        for backbone-internals-count = 0
+        for sidechain-internals-count = 0
+        for backbone-internals-defined = 0
+        for sidechain-internals-defined = 0
+        do (loop for monomer-shape across (monomer-shape-vector oligomer-shape)
+                 for monomer = (monomer monomer-shape)
+                 for monomer-pos = (gethash monomer (monomer-positions assembler))
+                 for monomer-shape-kind = (monomer-shape-kind monomer-shape)
+                 for atresidue = (topology:at-position (topology:ataggregate assembler) monomer-pos)
+                 if (eq :backbone monomer-shape-kind)
+                   do (loop for joint across (joints atresidue)
+                            do (incf backbone-internals-count)
+                                when (kin:joint/internalp joint)
+                                  do (incf backbone-internals-defined))
+                 else
+                   do (loop for joint across (joints atresidue)
+                            do (incf sidechain-internals-count)
+                            when (kin:joint/internalp joint)
+                                 do (incf sidechain-internals-defined)))
+        do (analyze-oligomer-shape oligomer-shape)
+        do (format t "  backbone-internals-count ~d~%" backbone-internals-count)
+        do (format t "  backbone-internals-defined ~d~%" backbone-internals-defined)
+        do (format t "  sidechain-internals-count ~d~%" sidechain-internals-count)
+        do (format t "  sidechain-internals-defined ~d~%" sidechain-internals-defined)
+           )))

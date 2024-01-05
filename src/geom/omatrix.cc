@@ -287,9 +287,9 @@ CL_DEFUN OMatrix_sp make_m4_rotate_axis(double radians,Vector3 axis)
   return res;
 }
 
-CL_LISPIFY_NAME("clone");
+CL_LISPIFY_NAME("copy-matrix");
 DOCGROUP(cando);
-OMatrix_sp OMatrix_O::clone() const
+CL_DEFMETHOD OMatrix_sp OMatrix_O::copyMatrix() const
 {
   auto clone = gctools::GC<OMatrix_O>::copy(*this);
   return clone;

@@ -221,7 +221,8 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
                                                 gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                 gc::Nilable<NVector_sp> hdvec,
                                                 gc::Nilable<NVector_sp> dvec,
-                                                core::T_sp activeAtomMask )
+                                                core::T_sp activeAtomMask,
+                                                core::T_sp debugInteractions )
 {
   bool	hasForce = force.notnilp();
   bool  hasHessian = hessian.notnilp();
@@ -270,7 +271,8 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
                                                 hessian,
                                                 hdvec,
                                                 dvec,
-                                                activeAtomMask );
+                                                activeAtomMask,
+                                                nil<core::T_O>());
     }
   }
   return totalEnergy;

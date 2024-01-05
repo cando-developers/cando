@@ -137,8 +137,8 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                                          gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                          gc::Nilable<NVector_sp>	hdvec,
                                          gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask
-                                         );
+                                         core::T_sp activeAtomMask,
+                                         core::T_sp debugInteractions );
 
  num_real  evaluateTerms( NVector_sp 	pos,
                           core::T_sp componentEnergy,

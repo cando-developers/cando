@@ -206,7 +206,8 @@
   ((rotamers :initarg :rotamers :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor rotamers)))
 
 (defclass sidechain-rotamers (rotamers)
-  ((shape-key-to-index :initarg :shape-key-to-index :initform (make-hash-table :test 'equal) :accessor shape-key-to-index)))
+  ((shape-key-to-index :initarg :shape-key-to-index :initform (make-hash-table :test 'equal) :accessor shape-key-to-index
+                       :documentation "This is a cons of (phi.psi)")))
 
 
 (defclass backbone-rotamers (rotamers)
@@ -596,3 +597,13 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
                (extract-bond-angle-rad-dihedral-rad fragment-internals index)
              (fill-joint-internals joint bond angle-rad dihedral-rad))))
 
+(defun analyze-atresidue (atresidue)
+  (let ((internals-count 0)
+        (internals-defined 0))
+    (loop for joint across (joints atresidue)
+          do (incf internals-count)
+          when (kin:joint/internalp joint)
+            do (incf internals-defined))
+    (format t "  atresidue internals-count ~d~%" internals-count)
+    (format t "  atresidue internals-defined ~d~%" internals-defined)
+    ))

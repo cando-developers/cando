@@ -495,7 +495,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec,
-                                       core::T_sp activeAtomMask )
+                                       core::T_sp activeAtomMask,
+                                       core::T_sp debugInteractions )
 {
   bool	hasForce = force.notnilp();
   bool   hasHessian = hessian.notnilp();
@@ -525,7 +526,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                          calcForce, force,
                                                          calcDiagonalHessian,
                                                          calcOffDiagonalHessian,
-                                                         hessian, hdvec, dvec, activeAtomMask );
+                                                         hessian, hdvec, dvec, activeAtomMask,
+                                                         debugInteractions );
   }
   if (this->_Angle->isEnabled()) {
     totalEnergy += this->_Angle->evaluateAllComponent( this->asSmartPtr(),
@@ -534,7 +536,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                        calcForce, force,
                                                        calcDiagonalHessian,
                                                        calcOffDiagonalHessian,
-                                                       hessian, hdvec, dvec, activeAtomMask );
+                                                       hessian, hdvec, dvec, activeAtomMask,
+                                                       debugInteractions);
   }
   if(this->_Dihedral->isEnabled()) {
     totalEnergy += this->_Dihedral->evaluateAllComponent( this->asSmartPtr(),
@@ -542,14 +545,16 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                           calcForce, force,
                                                           calcDiagonalHessian,
                                                           calcOffDiagonalHessian,
-                                                          hessian, hdvec, dvec, activeAtomMask );
+                                                          hessian, hdvec, dvec, activeAtomMask,
+                                                          debugInteractions );
   }
   if(this->_Nonbond->isEnabled()) {
     totalEnergy += this->_Nonbond->evaluateAllComponent( this->asSmartPtr(),
                                                          pos,
                                                          componentEnergy,
                                                          calcForce, force,
-                                                         calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec, activeAtomMask );
+                                                         calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec, activeAtomMask,
+                                                         debugInteractions );
   }
   if(this->_DihedralRestraint.boundp() && this->_DihedralRestraint->isEnabled()) {
     totalEnergy += this->_DihedralRestraint->evaluateAllComponent( this->asSmartPtr(),
@@ -561,7 +566,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                    hessian,
                                                                    hdvec,
                                                                    dvec,
-                                                                   activeAtomMask );
+                                                                   activeAtomMask,
+                                                                   debugInteractions );
   }
   if(this->_ChiralRestraint->isEnabled()) {
     totalEnergy += this->_ChiralRestraint->evaluateAllComponent( this->asSmartPtr(),
@@ -574,7 +580,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                  hessian,
                                                                  hdvec,
                                                                  dvec,
-                                                                 activeAtomMask );
+                                                                 activeAtomMask,
+                                                                 debugInteractions );
   }
   if(this->_AnchorRestraint->isEnabled()) {
     totalEnergy += this->_AnchorRestraint->evaluateAllComponent( this->asSmartPtr(),
@@ -587,7 +594,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                  hessian,
                                                                  hdvec,
                                                                  dvec,
-                                                                 activeAtomMask );
+                                                                 activeAtomMask,
+                                                                 debugInteractions );
   }
   if(this->_FixedNonbondRestraint->isEnabled()) {
     totalEnergy += this->_FixedNonbondRestraint->evaluateAllComponent( this->asSmartPtr(),
@@ -599,7 +607,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                        hessian,
                                                                        hdvec,
                                                                        dvec,
-                                                                       activeAtomMask );
+                                                                       activeAtomMask,
+                                                                       debugInteractions );
   }
   for ( auto cur : this->_OtherEnergyComponents ) {
     core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
@@ -615,7 +624,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                     hessian,
                                                     hdvec,
                                                     dvec,
-                                                    activeAtomMask );
+                                                    activeAtomMask,
+                                                    debugInteractions );
     }
   }
   return totalEnergy;
@@ -1726,9 +1736,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             } else if ( a1->getConfiguration() == S_Configuration ) {
               side = -1.0;
             } else if ( a1->getConfiguration() == RightHanded_Configuration ) {
-              side = 1.0;
-            } else if ( a1->getConfiguration() == LeftHanded_Configuration ) {
               side = -1.0;
+            } else if ( a1->getConfiguration() == LeftHanded_Configuration ) {
+              side = 1.0;
             }
           } else {
             if ( a1->getStereochemistryType() == prochiralCenter ) {

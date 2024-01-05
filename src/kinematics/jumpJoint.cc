@@ -47,6 +47,10 @@ JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::Ato
   };
 };
 
+bool JumpJoint_O::internalp() const
+{
+  return true;
+}
 CL_LAMBDA(atom-id name atom-table);
 CL_LISPIFY_NAME("make_JumpJoint");
 CL_DEF_CLASS_METHOD

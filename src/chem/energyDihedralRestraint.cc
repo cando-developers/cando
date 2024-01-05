@@ -249,7 +249,8 @@ num_real EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp sco
                                                           gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
                                                           gc::Nilable<chem::NVector_sp>	hdvec,
                                                           gc::Nilable<chem::NVector_sp> dvec,
-                                                          core::T_sp activeAtomMask )
+                                                          core::T_sp activeAtomMask,
+                                                          core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   num_real totalEnergy = 0.0;

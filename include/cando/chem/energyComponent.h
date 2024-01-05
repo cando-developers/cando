@@ -337,8 +337,8 @@ public:
                                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                        gc::Nilable<NVector_sp>	hdvec,
                                                        gc::Nilable<NVector_sp> dvec,
-                                                       core::T_sp activeAtomMask
-                                                       ) = 0;
+                                                       core::T_sp activeAtomMask,
+                                                       core::T_sp debugInteractions ) = 0;
 
   virtual core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 

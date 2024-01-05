@@ -174,8 +174,8 @@ public:
                                          gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                          gc::Nilable<NVector_sp>	hdvec,
                                          gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask
-                                         );
+                                         core::T_sp activeAtomMask,
+                                         core::T_sp debugInteractions );
 
   void addSketchStretchTerm(size_t i1, size_t i2, double kb, double r0);
   

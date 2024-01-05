@@ -184,7 +184,7 @@
    #:monomer-shapes
    #:monomer-shape-vector
    #:root-monomer
-   #:random-fragment-conformation-index
+   #:random-rotamer-index
    #:make-oligomer-shape
    #:build-one-molecule-for-topology
    #:sketch-svg
@@ -228,11 +228,10 @@
    #:monomer-shape-map
    #:in-monomers
    #:out-monomers
-   #:fragment-conformation-index
+   #:rotamer-index
    #:rotor3
    #:translation
    #:monomer-shape
-   #:set-to-closest-matching-fragment-conformation-index
    #:coordinates
    #:joint-with-name
    #:residue-properties
@@ -311,7 +310,6 @@
    #:from-origin
    #:oligomer-monomer-name
    #:lookup-dihedral-cache
-   #:lookup-dihedral-cache-monomer-shape
    #:shape-key-values
    #:rotamer
    #:sidechain-rotamer
@@ -333,6 +331,8 @@
    #:internal-planar-adjustment
    #:read-rotamers
    #:write-rotamers
+   #:read-oligomer-shape-rotamers
+   #:write-oligomer-shape-rotamers
    #:labeled-monomers
    #:at-position
    #:no-rotamers
@@ -347,7 +347,7 @@
    #:zero-rotamers
    #:random-rotamers
    #:build-all-sidechains
-   #:make-binned-key-deg
+   #:make-phi-psi
    #:random-oligomer-shape-aggregate
    #:first-rotamers
    #:number-of-rotamers
@@ -375,7 +375,26 @@
    #:build-oligomer-shape-externals
    #:the-root-monomer
    #:monomer-shape-loci
-   #:build-all-externals))
+   #:build-all-externals
+   #:lookup-phi-psi-monomer-shape
+   #:make-permissible-backbone-monomer-indices
+   #:goto-permissible-monomer-sequence
+   #:number-of-permissible-monomer-sequences
+   #:make-permissible-sidechain-monomer-indices
+   #:write-oligomer-monomer-indices
+   #:build-initial-oligomer-shape-externals
+   #:allowed-index-ends
+   #:monomer-index-loci
+   #:copy-orientation
+   #:make-coordinates-for-number-of-atoms
+   #:analyze-oligomer-shape
+   #:analyze-assembler
+   #:monomer-subset-with-assembler
+   #:monomer-set-from-permissible-rotamers
+   #:analyze-atresidue
+   #:monomers-of-shape-kind
+   #:make-monomer-subset-with-assembler
+   #:copy-oligomer-shape))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

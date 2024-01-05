@@ -159,6 +159,7 @@ public:
 	*/
   void addChild(Joint_sp child);
 
+  virtual bool internalp() const;
 
   void setToInternal(core::Symbol_sp cc);
   core::Symbol_sp getToInternal();
@@ -275,7 +276,6 @@ public:
 
 	/*! Return the input stub */
   virtual CL_DEFMETHOD Stub getInputStub(chem::NVector_sp coords) const { THROW_HARD_ERROR("Subclass must implement"); };
-
 
 	/*! Return the value of the DOF */
   virtual double dof(DofType const& dof) const { THROW_HARD_ERROR("SubClass must implement");};

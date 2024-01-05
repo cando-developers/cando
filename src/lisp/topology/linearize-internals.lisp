@@ -214,10 +214,10 @@ monomer-context-index indexes into ...
                                 (vector-push-extend fc-start fragment-match-context-rotamers-start-vector)
                                 (debug-linearize dl "fragment-match-context-rotamers-start-vector ~a~%" fc-start)
                                 (when fragment-conformation-indices
-                                  (loop for fragment-conformation-index across fragment-conformation-indices
+                                  (loop for rotamer-index across fragment-conformation-indices
                                         do (progn
-                                             (vector-push-extend fragment-conformation-index fragment-match-context-rotamers-index-vector)
-                                             (debug-linearize dl "fragment-match-context-rotamers-index-vector ~a~%" fragment-conformation-index)
+                                             (vector-push-extend rotamer-index fragment-match-context-rotamers-index-vector)
+                                             (debug-linearize dl "fragment-match-context-rotamers-index-vector ~a~%" rotamer-index)
                                         )))
                                 (let ((count (- (length fragment-match-context-rotamers-index-vector) fc-start)))
                                   (vector-push-extend count fragment-match-context-rotamers-count-vector)

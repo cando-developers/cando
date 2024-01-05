@@ -438,7 +438,7 @@ public:
   CL_DEFMETHOD 	StereochemistryType getStereochemistryType() { return this->_StereochemistryType; };
   CL_LISPIFY_NAME("getConfiguration");
   CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration;};
-  string	getConfigurationAsString();
+  string	getConfigurationAsString() const;
 
   void setAbsoluteConfiguration(ConfigurationEnum config, Atom_sp n1, Atom_sp n2, Atom_sp n3);
 

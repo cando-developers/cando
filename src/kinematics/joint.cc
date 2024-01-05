@@ -162,6 +162,9 @@ CL_DEFMETHOD core::T_sp Joint_O::name() const {
   return this->_Name;
 }
 
+CL_DEFMETHOD bool Joint_O::internalp() const {
+  SUBCLASS_MUST_IMPLEMENT();
+}
 
 string Joint_O::asString() const
 {

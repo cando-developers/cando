@@ -598,7 +598,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
        (optimize-structure agg)
        (error (e) (warn "error: ~a" e))
        )
-      (setf bad-geom (bad-geometry-p agg))
+      (setf bad-geom (topology:bad-geometry-p agg))
       (when (not bad-geom)
         (return-from build-good-geometry-from-random)))
     (error "Exceeded max number of tries to build good geometry~%Bad geometry:~%~a" bad-geom)))

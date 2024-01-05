@@ -1560,7 +1560,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
                                          nil<core::T_O>(),
                                          true, nvDummy,
                                          true, true, nmDummy,
-                                         qj, dj, activeAtomMask );
+                                         qj, dj, activeAtomMask);
     // MOVE rjDotzj calculation above this loop because
     // 	its calculated in step 6
     // rjDotzj = rj->dotProduct(zj);

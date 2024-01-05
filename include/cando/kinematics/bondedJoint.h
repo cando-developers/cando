@@ -108,6 +108,8 @@ FORWARD(BondedJoint);
       
       virtual Stub getInputStub(chem::NVector_sp coords) const;
 
+      virtual bool internalp() const;
+
 	/*! Geta the value of the DOF */
 	double dof(DofType const& dof) const;
 

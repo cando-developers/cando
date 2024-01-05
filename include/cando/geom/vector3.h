@@ -121,7 +121,7 @@ public:
   //! If the Vector3 is not defined then set all coordinates to 0.0
   void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(0.0,0.0,0.0); }; };
   //! A Vector3 is defined if any of its coordinates are not zero
-  bool	isDefined() { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
+  bool	isDefined() const { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
 
   Vector3 normalized() const;
   void normalizedSet(Vector3& result);

@@ -199,7 +199,8 @@ public:
                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                             gc::Nilable<NVector_sp> hdvec,
                             gc::Nilable<NVector_sp> dvec,
-                            core::T_sp activeAtomMask );
+                            core::T_sp activeAtomMask,
+                            core::T_sp debugInteractions );
 
   string	summarizeBeyondThresholdInteractionsAsString();
   string	summarizeEnergyAsString();

@@ -327,11 +327,23 @@ double	rmsDistanceFromWithActiveAtomMask(NVector_sp u, NVector_sp v, core::T_sp 
 }
 
 
-NVector_sp copy_nvector(NVector_sp orig )
+NVector_sp copy_nvector(NVector_sp source, size_t start, core::T_sp end )
 {
-  NVector_sp vv = NVector_O::make(orig->length(),0.0,false,orig->length(),(Vector_real*)&(*orig)[0]);
-  return vv;
+  size_t send;
+  if (start >= source->length()) {
+    SIMPLE_ERROR("start {} is beyond the length of source {}", start, source->length());
+  }
+  if (end.fixnump()) send = end.unsafe_fixnum();
+  else if (end.nilp()) send = source->length();
+  else TYPE_ERROR(end,core::Cons_O::createList(cl::_sym_Integer_O,nil<core::T_O>()));
+  if (start<send && send<=source->length()) {
+    NVector_sp vv = NVector_O::make((send-start),0.0,false,(send-start),(Vector_real*)&(*source)[start]);
+    return vv;
+  } 
+  if (start>=send) SIMPLE_ERROR("start {} must be less than end {}", start, send);
+  SIMPLE_ERROR("end {} must be <= length of source {}", send, source->length());
 }
+
 
 
 DOCGROUP(cando);
@@ -342,10 +354,11 @@ NVector_sp chem__make_nvector(size_t size)
 }
 
 DOCGROUP(cando);
+CL_LAMBDA(source &key (start 0) end)
 CL_DEFUN
-NVector_sp chem__copy_nvector(NVector_sp source)
+NVector_sp chem__copy_nvector(NVector_sp source, size_t start, core::T_sp end)
 {
-  return copy_nvector(source);
+  return copy_nvector(source,start,end);
 }
 
 CL_LISPIFY_NAME(NVector/set_element);
@@ -589,6 +602,27 @@ CL_DEFUN void chem__nvector_add(NVector_sp result, NVector_sp veca, NVector_sp v
     vala = (vecva)[idx];
     valb = (vecvb)[idx];
     val = vala+valb;
+    (vecvr)[idx] = val;
+  }
+}
+
+CL_DEFUN void chem__nvector_sub(NVector_sp result, NVector_sp veca, NVector_sp vecb) {
+  if (veca->length()!=vecb->length()) {
+    SIMPLE_ERROR("Mismatch in NVector lengths {} vs {}", veca->length(), vecb->length());
+  }
+  if (result->length()!=vecb->length()) {
+    SIMPLE_ERROR("Mismatch in NVector lengths result {} vs {}", result->length(), veca->length());
+  }
+  num_real vala;
+  num_real valb;
+  num_real val;
+  vecreal* vecvr = &(*result)[0];
+  vecreal* vecva = &(*veca)[0];
+  vecreal* vecvb = &(*vecb)[0];
+  for ( size_t idx = 0; idx < veca->length(); idx++ ) {
+    vala = (vecva)[idx];
+    valb = (vecvb)[idx];
+    val = vala-valb;
     (vecvr)[idx] = val;
   }
 }

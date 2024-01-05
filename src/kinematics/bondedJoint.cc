@@ -102,6 +102,9 @@ BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name, 
   return gctools::GC<BondedJoint_O>::allocate(atomId,name,atomTable);
 }
 
+bool BondedJoint_O::internalp() const {
+  return (this->_Distance>0.1);
+}
 
 void BondedJoint_O::_appendChild(Joint_sp c)
 {
@@ -293,6 +296,7 @@ void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
 void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
+  ASSERT(this->internalp());
   KIN_LOG("name = {} stub = \n{}\n", _rep_(this->_Name), stub._Transform.asString());
   KIN_LOG("_Distance = {}  _Theta = {} deg   _Phi = {} deg\n", this->_Distance , (this->_Theta/0.0174533) , (this->_Phi/0.0174533) );
   double bcTheta = this->_Theta;

@@ -966,7 +966,7 @@ CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
 
 
 CL_LISPIFY_NAME("getConfigurationAsString");
-CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
+CL_DEFMETHOD     string	Atom_O::getConfigurationAsString() const
 {
   string config, stereo;
   if ( this->_Configuration == undefinedConfiguration ) {
@@ -1002,7 +1002,11 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->_Name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << gctools::lisp_general_badge(this->asSmartPtr()) << ">";
+  ss << "#<" << this->className() << " " << this->_Name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << gctools::lisp_general_badge(this->asSmartPtr());
+  if (this->_StereochemistryType!=undefinedCenter) {
+    ss << this->getConfigurationAsString();
+  }
+  ss << ">";
   return ss.str();
 }
 

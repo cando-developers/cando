@@ -1,8 +1,5 @@
 (in-package :topology)
 
-(defgeneric set-to-closest-matching-fragment-conformation-index (monomer-shape oligomer info)
-  (:documentation "Set the fragment-conformation-index to the closest matching context-rotamers index"))
-
 (defconstant +phi+   :phi)
 (defconstant +phi-1+ :phi-1)
 (defconstant +psi+   :psi)
@@ -15,9 +12,8 @@
   (floor (degrees-limit (floor (* 10 (round dih-deg 10.0))))))
 
 (defclass monomer-shape ()
-  ((fragment-conformation-index :initform 0 :initarg :fragment-conformation-index :accessor fragment-conformation-index)
+  ((rotamer-index :initarg :rotamer-index :accessor rotamer-index)
    (monomer :initarg :monomer :accessor monomer)
-   (monomer-context-key :initarg :monomer-context-key :accessor monomer-context-key)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
    (monomer-shape-kind :initarg :monomer-shape-kind :accessor monomer-shape-kind)
 ;;;   (shape-key :initarg :shape-key :accessor shape-key)
@@ -28,14 +24,15 @@
 (defmethod print-object ((obj monomer-shape) stream)
   (print-unreadable-object (obj stream :type t)
     (format stream "~a ~a"
-            (if (slot-boundp obj 'fragment-conformation-index)
-                (fragment-conformation-index obj)
+            (if (slot-boundp obj 'rotamer-index)
+                (rotamer-index obj)
                 "#<unbound>")
             (monomer obj)
             )))
 
 (defclass oligomer-shape ()
-  ((orientation :initarg :orientation :accessor orientation)
+  ((name :initarg :name :accessor name)
+   (orientation :initarg :orientation :accessor orientation)
    (oligomer :initarg :oligomer :accessor oligomer)
    (rotamers-map :initarg :rotamers-map :accessor rotamers-map)
    (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector)
@@ -46,10 +43,14 @@
    ))
 
 (defmethod print-object ((obj oligomer-shape) stream)
-  (let ((indices (mapcar (lambda (ms) (fragment-conformation-index ms)) (coerce (monomer-shape-vector obj) 'list))))
-    (print-unreadable-object (obj stream :type t)
-      (let ((*print-length* 5)
-            (*print-pretty* nil))
+  (print-unreadable-object (obj stream :type t)
+    (let ((*print-length* nil)
+          (*print-pretty* nil))
+      (let ((indices (mapcar (lambda (ms)
+                               (if (slot-boundp ms 'rotamer-index)
+                                   (rotamer-index ms)
+                                   :UNBOUND))
+                             (coerce (monomer-shape-vector obj) 'list))))
         (format stream "~s" indices)))))
 
 (defmethod kin:orientation-transform ((oligomer-shape oligomer-shape))
@@ -134,7 +135,13 @@
 
 (defgeneric make-oligomer-shape (oligomer-or-space rotamers-db &key))
 
-(defmethod make-oligomer-shape ((oligomer oligomer) rotamers-db &key monomer-shape-factory (orientation (make-orientation)))
+(defmethod make-oligomer-shape ((oligomer oligomer) rotamers-db
+                                &key (oligomer-shape-class-name 'oligomer-shape)
+                                  monomer-shape-factory (orientation (make-orientation))
+                                  initial-rotamer-index
+                                  extra-arguments
+                                  name)
+  "Make an oligomer-shape."
   (let* ((foldamer (topology:foldamer (topology:oligomer-space oligomer)))
          (shape-info (shape-info foldamer))
          (kind-order (loop for kind-keys in (kind-keys shape-info)
@@ -147,7 +154,7 @@
               with foldamer = (foldamer (oligomer-space oligomer))
               with monomer-shape-map = (make-hash-table)
               for index from 0
-              for monomer in (ordered-monomers oligomer)
+              for monomer across (monomers (oligomer-space oligomer)) ; (ordered-monomers oligomer)
               for monomer-context = (topology:foldamer-monomer-context monomer oligomer foldamer)
               ;; The following is not good - to not define a slot when rotamers-db is NIL
               for context-rotamers = (when rotamers-db 
@@ -176,59 +183,75 @@
               for in-monomer-context = (if in-monomer
                                            (topology:foldamer-monomer-context in-monomer oligomer foldamer)
                                            nil)
-              for monomer-context-key = (cons in-monomer-context monomer-context)
               for monomer-shape = (if monomer-shape-factory
                                       (funcall monomer-shape-factory
                                                monomer
                                                :monomer-context monomer-context
-                                               :monomer-context-key monomer-context-key
                                                :monomer-shape-kind shape-kind
                                                :context-rotamers context-rotamers)
                                       (make-instance 'monomer-shape
                                                      :monomer monomer
                                                      :monomer-context monomer-context
-                                                     :monomer-context-key monomer-context-key
                                                      :monomer-shape-kind shape-kind
                                                      :context-rotamers context-rotamers))
               ;;            do (format t "monomer = ~a~%" monomer)
+              do (when initial-rotamer-index
+                   (setf (rotamer-index monomer-shape) initial-rotamer-index))
               do (setf (gethash monomer monomer-shape-map) monomer-shape)
               do (unless in-monomer (setf the-root-monomer monomer))
               do (setf (gethash monomer out-monomers) out-mons)
               do (setf (aref monomer-shape-vector index) monomer-shape)
                  ;;            do (format t "monomer-context ~a~%" monomer-context)
               finally (return (values monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)))
-      (let* ((os (make-instance 'oligomer-shape
-                                :orientation orientation
-                                :oligomer oligomer
-                                :rotamers-map rotamers-db
-                                :monomer-shape-vector monomer-shape-vector
-                                :monomer-shape-map monomer-shape-map
-                                :the-root-monomer the-root-monomer
-                                :in-monomers in-monomers
-                                :out-monomers out-monomers))
-             (ss (make-permissible-sidechain-rotamers os)))
-        (write-rotamers ss (first-rotamers ss))
+      (let* ((os (apply 'make-instance
+                        oligomer-shape-class-name
+                        :orientation orientation
+                        :oligomer oligomer
+                        :rotamers-map rotamers-db
+                        :monomer-shape-vector monomer-shape-vector
+                        :monomer-shape-map monomer-shape-map
+                        :the-root-monomer the-root-monomer
+                        :in-monomers in-monomers
+                        :out-monomers out-monomers
+                        :name name
+                        extra-arguments)))
+        #+(or)(ss (make-permissible-sidechain-rotamers os))
+        #+(or)(write-rotamers ss (first-rotamers ss))
         os))))
 
-(defmethod make-oligomer-shape ((oligomer-space oligomer-space) rotamers-db &key (oligomer-index 0) (orientation (make-orientation)))
+(defmethod make-oligomer-shape ((oligomer-space oligomer-space) rotamers-db &key (oligomer-index 0) (orientation (make-orientation)) name)
   (let ((oligomer (make-oligomer oligomer-space oligomer-index)))
-    (make-oligomer-shape oligomer rotamers-db :orientation orientation)))
+    (make-oligomer-shape oligomer rotamers-db :orientation orientation :name name)))
 
-(defgeneric read-rotamers (obj)
+(defun copy-oligomer-shape (oligomer-shape)
+  (let ((oligomer-shape-copy (make-oligomer-shape (oligomer oligomer-shape)
+                                                  (rotamers-map oligomer-shape)
+                                                  :orientation (orientation oligomer-shape)
+                                                  :name (name oligomer-shape))))
+    (loop for index below (length (monomer-shape-vector oligomer-shape))
+          for monomer-shape = (aref (monomer-shape-vector oligomer-shape) index)
+          for new-monomer-shape = (aref (monomer-shape-vector oligomer-shape-copy) index)
+          do (when (slot-boundp monomer-shape 'rotamer-index)
+               (let ((rotamer-index (rotamer-index monomer-shape)))
+                 (setf (rotamer-index new-monomer-shape) rotamer-index))))
+    oligomer-shape-copy))
+
+
+(defgeneric read-oligomer-shape-rotamers (oligomer-shape)
   (:documentation "Read the rotamers from the object"))
 
-(defgeneric write-rotamers (obj vec)
+(defgeneric write-oligomer-shape-rotamers (oligomer-shape vec)
   (:documentation "Write the rotamers into the object"))
 
-(defmethod read-rotamers ((obj oligomer-shape))
+(defmethod read-oligomer-shape-rotamers ((obj oligomer-shape))
   (let ((vec (make-array (length (monomer-shape-vector obj)) :element-type 'ext:byte32)))
-    (map-into vec #'fragment-conformation-index (monomer-shape-vector obj))
+    (map-into vec #'rotamer-index (monomer-shape-vector obj))
     vec))
 
-(defmethod write-rotamers ((obj oligomer-shape) vec)
+(defmethod write-oligomer-shape-rotamers ((obj oligomer-shape) vec)
   (loop for rotamer-index across vec
         for monomer-shape across (monomer-shape-vector obj)
-        do (setf (fragment-conformation-index monomer-shape) rotamer-index)))
+        do (setf (rotamer-index monomer-shape) rotamer-index)))
 
 (defun all-monomers-impl (root shape)
   #+(or)(format t "monomer ~a in: ~a~%" root (gethash root (in-monomers shape)))
@@ -241,7 +264,7 @@
     (all-monomers-impl root shape)))
 
 #|
-(defun random-fragment-conformation-index-impl (root-monomer-shape oligomer-shape)
+(defun random-rotamer-index-impl (root-monomer-shape oligomer-shape)
   (let ((out-monomers (gethash (monomer root-monomer-shape) (out-monomers oligomer-shape))))
     (loop for out-monomer in out-monomers
           for out-monomer-shape = (gethash out-monomer (monomer-shape-map oligomer-shape))
@@ -252,35 +275,35 @@
                                        (unless val (break "Could not find value for key ~a in ht: ~a" fragment-match-key ht))
                                        val)
           for allowed-fragment-indices = (progn
-                                           #+(or)(format t "alowed-fragment-vec ~s (fragment-conformation-index root-monomer-shape) -> ~s~%" allowed-fragment-vec (fragment-conformation-index root-monomer-shape))
-                                           (elt allowed-fragment-vec (fragment-conformation-index root-monomer-shape)))
-          for fragment-conformation-index = (if allowed-fragment-indices
+                                           #+(or)(format t "alowed-fragment-vec ~s (rotamer-index root-monomer-shape) -> ~s~%" allowed-fragment-vec (rotamer-index root-monomer-shape))
+                                           (elt allowed-fragment-vec (rotamer-index root-monomer-shape)))
+          for rotamer-index = (if allowed-fragment-indices
                                                 (elt allowed-fragment-indices (random (length allowed-fragment-indices)))
                                                 :BADBADBAD)
-          do (setf (fragment-conformation-index out-monomer-shape) fragment-conformation-index)
-          do (format t "fragment-conformation-index ~a for monomer-shape ~a~%"
-                     fragment-conformation-index out-monomer-shape)
-          do (unless (< (fragment-conformation-index out-monomer-shape)
+          do (setf (rotamer-index out-monomer-shape) rotamer-index)
+          do (format t "rotamer-index ~a for monomer-shape ~a~%"
+                     rotamer-index out-monomer-shape)
+          do (unless (< (rotamer-index out-monomer-shape)
                         (length (topology:fragments (context-rotamers out-monomer-shape))))
-               (error "fragment-conformation-index ~a is out of bounds ~a"
-                      (fragment-conformation-index root-monomer-shape)
+               (error "rotamer-index ~a is out of bounds ~a"
+                      (rotamer-index root-monomer-shape)
                       (length (topology:fragments (context-rotamers out-monomer-shape)))))
-          do (random-fragment-conformation-index-impl out-monomer-shape oligomer-shape))))
+          do (random-rotamer-index-impl out-monomer-shape oligomer-shape))))
 
-(defun random-fragment-conformation-index (oligomer-shape)
+(defun random-rotamer-index (oligomer-shape)
   (let* ((root (the-root-monomer oligomer-shape))
          (root-monomer-shape (gethash root (monomer-shape-map oligomer-shape))))
     (format t "root-monomer-shape ~a~%" root-monomer-shape)
     (let* ((context-rotamers (context-rotamers root-monomer-shape)))
       (format t "context-rotamers: ~a~%" context-rotamers)
-      (setf (fragment-conformation-index root-monomer-shape)
+      (setf (rotamer-index root-monomer-shape)
             (random (length (topology:rotamers context-rotamers))))
-      (unless (< (fragment-conformation-index root-monomer-shape)
+      (unless (< (rotamer-index root-monomer-shape)
                  (length (topology:rotamers context-rotamers)))
-        (error "fragment-conformation-index ~a is out of bounds ~a"
-               (fragment-conformation-index root-monomer-shape)
+        (error "rotamer-index ~a is out of bounds ~a"
+               (rotamer-index root-monomer-shape)
                (length (topology:rotamers context-rotamers))))
-      (random-fragment-conformation-index-impl root-monomer-shape oligomer-shape))))
+      (random-rotamer-index-impl root-monomer-shape oligomer-shape))))
 |#
 
 
@@ -309,9 +332,9 @@
       ((null shape-key)
        nil)
       ((eq shape-key :phi/psi)
-       (cons (fragment-conformation-index (car shape-key))
-             (fragment-conformation-index (cdr shape-key))))
-      (t (fragment-conformation-index shape-key)))))
+       (cons (rotamer-index (car shape-key))
+             (rotamer-index (cdr shape-key))))
+      (t (rotamer-index shape-key)))))
 
 
 (defun lookup-dihedral-cache-impl (oligomer-shape monomer-shape dihedral-name)
@@ -334,7 +357,7 @@
            (dihedral-info-atom
             (let* ((monomer-context (monomer-context monomer-shape))
                    (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-map oligomer-shape)))))
-                   (rotamer-index (fragment-conformation-index monomer-shape))
+                   (rotamer-index (rotamer-index monomer-shape))
                    (rotamer (aref rotamers rotamer-index))
                    (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
                    (deg (getf dihedral-cache-deg dihedral-name)))
@@ -356,19 +379,19 @@
     (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
     (copy-joint-positions-into-atoms assembler coords oligomer-shape)))
 
-(defgeneric update-internals (assembler rotamer-database oligomer-shape &optional data)
+(defgeneric update-internals (assembler rotamer-database oligomer-shape)
   (:documentation
    "Update the internal coordinates of the assembler for the oligomer-shape or whatever type the second argument is.
 : assembler - the assembler to update
 : rotamer-database - the rotamer-database to use for internals
-: oligomer-shape - An oligomer-shape or permissible-rotamers in the assembler
-: data - for permissible-rotamers a vector of rotamer indices in the permissible-rotamers "))
+: oligomer-shape - An oligomer-shape or permissible-rotamers in the assembler"))
 
-(defmethod update-internals (assembler rotamer-database (oligomer-shape oligomer-shape) &optional data)
-  (when data
-    (error "data should be NIL for oligomer-shape argument"))
+(defmethod update-internals (assembler rotamer-database (oligomer-shape oligomer-shape) )
   (fill-internals-from-oligomer-shape-and-adjust assembler oligomer-shape))
 
+
+(defgeneric build-initial-oligomer-shape-externals (assembler oligomer-shape &key coords)
+  (:documentation "Build the oligomer-shape in the coordinates by generating the initial externals"))
 
 (defgeneric build-oligomer-shape-externals (assembler oligomer-shape &key coords)
   (:documentation "Build the oligomer-shape in the coordinates by generating externals"))
@@ -376,6 +399,9 @@
 (defmethod build-oligomer-shape-externals (assembler oligomer-shape &key (coords (make-coordinates-for-assembler assembler)))
   (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
   coords)
+
+(defmethod build-initial-oligomer-shape-externals (assembler oligomer-shape &key (coords (make-coordinates-for-assembler assembler)))
+  (build-oligomer-shape-externals assembler oligomer-shape :coords coords))
 
 (defun build-all-externals (assembler &key (coords (make-coordinates-for-assembler assembler)))
   (loop for oligomer-shape in (oligomer-shapes assembler)
@@ -429,3 +455,30 @@
     (build-all-atom-tree-external-coordinates-and-adjust ass coords)
     (copy-all-joint-positions-into-atoms ass coords)
     (aggregate ass)))
+
+(defun analyze-oligomer-shape (oligomer-shape)
+  "Print an analysis of the oligomer-shape. Print the number of backbone and sidechain monomer-shapes that have defined rotamer-index's "
+  (let ((backbone-count 0)
+        (backbone-defined 0)
+        (backbone-zero 0)
+        (sidechain-count 0)
+        (sidechain-defined 0)
+        (sidechain-zero 0))
+    (loop for monomer-shape across (monomer-shape-vector oligomer-shape)
+          if (eq (monomer-shape-kind monomer-shape) :backbone)
+            do (progn
+                 (incf backbone-count)
+                 (when (slot-boundp monomer-shape 'rotamer-index)
+                   (incf backbone-defined)
+                   (when (/= 0 (rotamer-index monomer-shape))
+                     (incf backbone-zero))))
+          else
+            do (progn
+                 (incf sidechain-count)
+                 (when (slot-boundp monomer-shape 'rotamer-index)
+                   (incf sidechain-defined)
+                   (when (/= 0 (rotamer-index monomer-shape))
+                     (incf sidechain-zero)))))
+    (format t "ANALYZE oligomer-shape ~s monomer-shapes ~d~%" (name oligomer-shape) (length (monomer-shape-vector oligomer-shape)))
+    (format t "  backbones ~d  rotamer-index defined ~d  = zero ~d~%" backbone-count backbone-defined backbone-zero)
+    (format t "  sidechains ~d  rotamer-index defined ~d  = zero ~d~%" sidechain-count sidechain-defined sidechain-zero)))

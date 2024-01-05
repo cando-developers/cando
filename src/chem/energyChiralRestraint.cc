@@ -243,7 +243,8 @@ num_real EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
                                                         gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
                                                         gc::Nilable<chem::NVector_sp>	hdvec,
                                                         gc::Nilable<chem::NVector_sp> dvec,
-                                                        core::T_sp activeAtomMask )
+                                                        core::T_sp activeAtomMask,
+                                                        core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   this->_Evaluations++;
@@ -308,6 +309,13 @@ num_real EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 			/* Obtain all the parameters necessary to calculate */
 			/* the amber and forces */
 #include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
+      if (Energy>1.0) {
+	auto as1 = atomLabel(cri->_Atom1);
+        auto as2 = atomLabel(cri->_Atom2);
+	auto as3 = atomLabel(cri->_Atom3);
+	auto as4 = atomLabel(cri->_Atom4);
+        core::clasp_write_string(fmt::format("TERM 7CHIRAL {} {} {:<9} {:<9} {:<9} {:<9} {:8.2f} {:8.2f} ; I1={} I2={} I3={} I4={}\n" , Energy, _rep_(cri->_Atom3), as1 , as2 , as3 , as4 , cri->term.K , cri->term.CO , cri->term.I1 , cri->term.I2 , cri->term.I3 , cri->term.I4 ));
+      }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       cri->_calcForce = calcForce;
       cri->_calcDiagonalHessian = calcDiagonalHessian;

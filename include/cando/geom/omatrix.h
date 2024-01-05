@@ -49,7 +49,7 @@ namespace geom {
     string __repr__() const;
 
 	//! Create a clone of this matrix
-    OMatrix_sp clone() const;
+    OMatrix_sp copyMatrix() const;
 
     void setFromVector(core::Array_sp vector);
     core::Array_sp asVector() const;

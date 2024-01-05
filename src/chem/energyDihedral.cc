@@ -537,7 +537,8 @@ num_real	EnergyDihedral_O::evaluateAllComponentSingle(
     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
     gc::Nilable<NVector_sp>	hdvec,
     gc::Nilable<NVector_sp> dvec,
-    core::T_sp activeAtomMask )
+    core::T_sp activeAtomMask,
+    core::T_sp debugInteractions )
 {
 #undef DIHEDRAL_APPLY_ATOM_MASK
 #define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
@@ -1009,7 +1010,8 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd8(
     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
     gc::Nilable<NVector_sp>	hdvec,
     gc::Nilable<NVector_sp>     dvec,
-    core::T_sp activeAtomMask )
+    core::T_sp activeAtomMask,
+    core::T_sp debugInteractions )
 {
   
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
@@ -1300,7 +1302,8 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd4(
     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
     gc::Nilable<NVector_sp>	hdvec,
     gc::Nilable<NVector_sp>     dvec,
-    core::T_sp activeAtomMask )
+    core::T_sp activeAtomMask,
+    core::T_sp debugInteractions )
 {
   IMPLEMENT_ME();
 #if 0
@@ -1498,7 +1501,8 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd2(
     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
     gc::Nilable<NVector_sp>	hdvec,
     gc::Nilable<NVector_sp>     dvec,
-    core::T_sp activeAtomMask )
+    core::T_sp activeAtomMask,
+    core::T_sp debugInteractions )
 {
   IMPLEMENT_ME();
 #if 0
@@ -1668,7 +1672,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                                 gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                 gc::Nilable<NVector_sp>	hdvec,
                                                 gc::Nilable<NVector_sp>     dvec,
-                                                core::T_sp activeAtomMask )
+                                                core::T_sp activeAtomMask,
+                                                core::T_sp debugInteractions )
 {
   num_real  energy = 0.0;
   this->_Evaluations++;
@@ -1685,7 +1690,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                               hessian,
                                               hdvec,
                                               dvec,
-                                              activeAtomMask);
+                                              activeAtomMask,
+                                              debugInteractions);
     energy += this->evaluateAllComponentSingle(di_vector_end8,
                                                this->_Terms.end(),
                                                score,
@@ -1697,7 +1703,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                                hessian,
                                                hdvec,
                                                dvec,
-                                               activeAtomMask );
+                                               activeAtomMask,
+                                               debugInteractions);
   } else if (cando::global_simd_width == 4 ) {
     gctools::Vec0<EnergyDihedral>::iterator di_vector_end4 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL4_WIDTH))*VREAL4_WIDTH;
     energy += this->evaluateAllComponentSimd4(this->_Terms.begin(),
@@ -1711,7 +1718,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                               hessian,
                                               hdvec,
                                               dvec,
-                                              activeAtomMask );
+                                              activeAtomMask,
+                                              debugInteractions);
     energy += this->evaluateAllComponentSingle(di_vector_end4,
                                                this->_Terms.end(),
                                                score,
@@ -1723,7 +1731,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                                hessian,
                                                hdvec,
                                                dvec,
-                                               activeAtomMask );
+                                               activeAtomMask,
+                                               debugInteractions );
   } else if (cando::global_simd_width == 2 ) {
     gctools::Vec0<EnergyDihedral>::iterator di_vector_end2 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL2_WIDTH))*VREAL2_WIDTH;
     energy += this->evaluateAllComponentSimd2(this->_Terms.begin(),
@@ -1737,7 +1746,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                               hessian,
                                               hdvec,
                                               dvec,
-                                              activeAtomMask );
+                                              activeAtomMask,
+                                              debugInteractions );
     energy += this->evaluateAllComponentSingle(di_vector_end2,
                                                this->_Terms.end(),
                                                score,
@@ -1749,7 +1759,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                                hessian,
                                                hdvec,
                                                dvec,
-                                               activeAtomMask );
+                                               activeAtomMask,
+                                               debugInteractions );
   } else
   {
     energy += this->evaluateAllComponentSingle(this->_Terms.begin(),
@@ -1763,7 +1774,8 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                                hessian,
                                                hdvec,
                                                dvec,
-                                               activeAtomMask );
+                                               activeAtomMask,
+                                               debugInteractions );
   }
   maybeSetEnergy( componentEnergy, EnergyDihedral_O::static_classSymbol(), energy );
   return energy;

@@ -279,7 +279,8 @@ num_real EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                 gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                 gc::Nilable<NVector_sp>	hdvec, 
                                                 gc::Nilable<NVector_sp> 	dvec,
-                                                core::T_sp activeAtomMask )
+                                                core::T_sp activeAtomMask,
+                                                core::T_sp debugInteractions )
 {
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );

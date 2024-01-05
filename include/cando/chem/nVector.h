@@ -57,7 +57,7 @@ double	angleWithVectorWithActiveAtomMask(NVector_sp me, NVector_sp other, core::
   void	        copyVector(NVector_sp dest, NVector_sp orig);
   void	inPlaceAddTimesScalarWithActiveAtomMask( NVector_sp nvResult, NVector_sp nvY, double x, core::T_sp activeAtomMask );	// NVectorAdd(a,x,y)
   double	rmsDistanceFromWithActiveAtomMask(NVector_sp u, NVector_sp v, core::T_sp activeAtomMask);
-  NVector_sp  copy_nvector(NVector_sp original);
+  NVector_sp  copy_nvector(NVector_sp original,size_t start = 0, core::T_sp end = nil<core::T_O>());
   
   void chem__nvector_ensure_identical(NVector_sp veca, NVector_sp vecb, double tol);
 };

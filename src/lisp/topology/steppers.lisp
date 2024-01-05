@@ -5,9 +5,15 @@
   (pushnew :debug-mover *features*))
 
 
-(defun make-binned-key-deg (phi-deg psi-deg)
+(defun make-phi-psi (phi-deg psi-deg)
   (cons (topology:bin-dihedral-deg phi-deg)
         (topology:bin-dihedral-deg psi-deg)))
+
+(defun lookup-phi-psi-monomer-shape (oligomer-shape monomer-shape)
+  "Lookup the phi,psi values in the dihedral cache and return them as a (phi . psi) pair"
+  (let ((phi (lookup-dihedral-cache oligomer-shape monomer-shape :phi))
+        (psi (lookup-dihedral-cache oligomer-shape monomer-shape :psi)))
+    (cons phi psi)))
 
 (define-condition no-rotamers (error)
   ((message :initarg :message :reader message))
@@ -26,8 +32,7 @@
            (shape-key nil)
            (result (if (and phi-deg psi-deg)
                        (progn
-                         (setf shape-key (make-binned-key-deg phi-deg psi-deg))
-                         (format t "monomer-shape: ~s shape-key ~s~%" sidechain-monomer-shape shape-key)
+                         (setf shape-key (make-phi-psi phi-deg psi-deg))
                          (gethash shape-key shape-key-to-allowed-rotamers))
                        nil)))
       (unless result
@@ -39,8 +44,7 @@
       )))
 
 (defclass permissible-rotamers ()
-  ((oligomer-shape :initarg :oligomer-shape :reader oligomer-shape)
-   (monomer-shape-loci :initarg :monomer-shape-loci :reader monomer-shape-loci)
+  ((monomer-shape-loci :initarg :monomer-shape-loci :reader monomer-shape-loci)
    (allowed-rotamer-indexes-vector :initarg :allowed-rotamer-indexes-vector :reader allowed-rotamer-indexes-vector)
    ))
 
@@ -68,28 +72,28 @@
                  topology:rotamers-map
                  topology:monomer-shape-map) oligomer-shape
       (let ((special-sidechain-monomer-shapes (make-hash-table)))
-        (loop :for index below (length topology:monomer-shape-vector)
-              :for monomer-shape = (aref topology:monomer-shape-vector index)
-              :for monomer = (topology:monomer monomer-shape)
-              :for monomer-shape-kind = (topology:monomer-shape-kind monomer-shape)
-              :for monomer-context = (topology:monomer-context monomer-shape)
-              :do (progn
-                    #+debug-mover
-                    (let* ((out-monomers (gethash monomer (topology:out-monomers oligomer-shape))))
-                      (format t "monomer-shape-index ~a monomer-shape-kind: ~s ~s~%" index monomer-shape-kind monomer-context)
-                      (loop :for out-monomer in out-monomers
-                            :for out-monomer-shape = (gethash out-monomer topology:monomer-shape-map )
-                            :for out-monomer-shape-index = (position out-monomer-shape topology:monomer-shape-vector)
-                            :do (format t "   out: ~s ~s~%" out-monomer-shape-index out-monomer))
-                      )
-                    )
-              :when (eq monomer-shape-kind :sidechain)
-                :do (multiple-value-bind (deg backbone1-monomer-shape)
-                        (topology:lookup-dihedral-cache oligomer-shape monomer-shape :psi)
-                      #+debug-mover
-                      (let ((backbone1-monomer-shape-index (position backbone1-monomer-shape topology:monomer-shape-vector)))
-                        (format t "     sidechain-monomer-shape-index ~a   backbone1-monomer-shape-index ~a~%" index backbone1-monomer-shape-index))
-                      (setf (gethash backbone1-monomer-shape special-sidechain-monomer-shapes) (cons monomer-shape monomer-context))))
+        #+(or)(loop :for index below (length topology:monomer-shape-vector)
+                    :for monomer-shape = (aref topology:monomer-shape-vector index)
+                    :for monomer = (topology:monomer monomer-shape)
+                    :for monomer-shape-kind = (topology:monomer-shape-kind monomer-shape)
+                    :for monomer-context = (topology:monomer-context monomer-shape)
+                    :do (progn
+                          #+debug-mover
+                          (let* ((out-monomers (gethash monomer (topology:out-monomers oligomer-shape))))
+                            (format t "monomer-shape-index ~a monomer-shape-kind: ~s ~s~%" index monomer-shape-kind monomer-context)
+                            (loop :for out-monomer in out-monomers
+                                  :for out-monomer-shape = (gethash out-monomer topology:monomer-shape-map )
+                                  :for out-monomer-shape-index = (position out-monomer-shape topology:monomer-shape-vector)
+                                  :do (format t "   out: ~s ~s~%" out-monomer-shape-index out-monomer))
+                            )
+                          )
+                    :when (eq monomer-shape-kind :sidechain)
+                      :do (multiple-value-bind (deg backbone1-monomer-shape)
+                              (topology:lookup-dihedral-cache oligomer-shape monomer-shape :psi)
+                            #+debug-mover
+                            (let ((backbone1-monomer-shape-index (position backbone1-monomer-shape topology:monomer-shape-vector)))
+                              (format t "     sidechain-monomer-shape-index ~a   backbone1-monomer-shape-index ~a~%" index backbone1-monomer-shape-index))
+                            (setf (gethash backbone1-monomer-shape special-sidechain-monomer-shapes) (cons monomer-shape monomer-context))))
         #+debug-mover(format t "-------- Next stage~%")
         (loop :for index below (length topology:monomer-shape-vector)
               :for monomer-shape = (aref topology:monomer-shape-vector index)
@@ -107,36 +111,36 @@
                                                      maybe-sidechain-monomer-context
                                                      )
               :do (cond
-                    ((and (eq :backbone monomer-shape-kind)
-                          maybe-sidechain)
-                     ;; We have a backbone that influences a sidechain
-                     ;; identify what backbone rotamers are allowed given the sidechain that it effects
-                     (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
-                       (loop :with backbone-rotamers = rotamers
-                             :for ii :below (length backbone-rotamers)
-                             :for backbone-rotamer = (aref backbone-rotamers ii)
-                             :for backbone-dihedral-cache-deg = (topology:backbone-dihedral-cache-deg backbone-rotamer)
-                             :for phi-1 = (getf backbone-dihedral-cache-deg :phi-1)
-                             :for psi-1 = (getf backbone-dihedral-cache-deg :psi-1)
-                             :for binned-phi-1 = (topology:bin-dihedral-deg phi-1)
-                             :for binned-psi-1 = (topology:bin-dihedral-deg psi-1)
-                             :for sidechain-rotamers = (gethash maybe-sidechain-monomer-context (topology:context-to-rotamers rotamers-db))
-                             :for shape-key-to-index = (topology:shape-key-to-index sidechain-rotamers)
-                             ;; Get the shape-key for the backbone
-                             :for shape-key = (make-binned-key-deg binned-phi-1 binned-psi-1)
-                             :for has-allowed-sidechain-rotamer-indices = (gethash shape-key shape-key-to-index)
-                             ;; If the sidechain has a shape-key that matches this backbone then
-                             ;;    add the backbone rotamer index to monomer-allowed-rotamer-indexes
-                             :do (progn
-                                   #+debug-mover
-                                   (let ((*print-pretty* nil))
-                                     (format t "For backbone-index ~a rotamer-index-index ~a   shape-key ~a matches-sidechain -> ~a~%" index ii shape-key has-allowed-sidechain-rotamer-indices)))
-                             :when has-allowed-sidechain-rotamer-indices
-                               :do (let ((seen (position ii allowed-rotamer-indexes)))
-                                     (unless seen (vector-push-extend ii allowed-rotamer-indexes))
-                                     ))
-                       (vector-push-extend allowed-rotamer-indexes allowed-rotamer-indexes-vector)
-                       (vector-push-extend index monomer-shape-loci)))
+                    #+(or)((and (eq :backbone monomer-shape-kind)
+                                maybe-sidechain)
+                           ;; We have a backbone that influences a sidechain
+                           ;; identify what backbone rotamers are allowed given the sidechain that it effects
+                           (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
+                             (loop :with backbone-rotamers = rotamers
+                                   :for ii :below (length backbone-rotamers)
+                                   :for backbone-rotamer = (aref backbone-rotamers ii)
+                                   :for backbone-dihedral-cache-deg = (topology:backbone-dihedral-cache-deg backbone-rotamer)
+                                   :for phi-1 = (getf backbone-dihedral-cache-deg :phi-1)
+                                   :for psi-1 = (getf backbone-dihedral-cache-deg :psi-1)
+                                   :for binned-phi-1 = (topology:bin-dihedral-deg phi-1)
+                                   :for binned-psi-1 = (topology:bin-dihedral-deg psi-1)
+                                   :for sidechain-rotamers = (gethash maybe-sidechain-monomer-context (topology:context-to-rotamers rotamers-db))
+                                   :for shape-key-to-index = (topology:shape-key-to-index sidechain-rotamers)
+                                   ;; Get the shape-key for the backbone
+                                   :for shape-key = (make-phi-psi binned-phi-1 binned-psi-1)
+                                   :for has-allowed-sidechain-rotamer-indices = (gethash shape-key shape-key-to-index)
+                                   ;; If the sidechain has a shape-key that matches this backbone then
+                                   ;;    add the backbone rotamer index to monomer-allowed-rotamer-indexes
+                                   :do (progn
+                                         #+debug-mover
+                                         (let ((*print-pretty* nil))
+                                           (format t "For backbone-index ~a rotamer-index-index ~a   shape-key ~a matches-sidechain -> ~a~%" index ii shape-key has-allowed-sidechain-rotamer-indices)))
+                                   :when has-allowed-sidechain-rotamer-indices
+                                     :do (let ((seen (position ii allowed-rotamer-indexes)))
+                                           (unless seen (vector-push-extend ii allowed-rotamer-indexes))
+                                           ))
+                             (vector-push-extend allowed-rotamer-indexes allowed-rotamer-indexes-vector)
+                             (vector-push-extend index monomer-shape-loci)))
                     ((eq :backbone monomer-shape-kind)
                      ;; We have a backbone that doesn't influence any sidechain
                      ;; - so all backbone rotamers are accessible
@@ -151,7 +155,6 @@
                      )
                     (t (error "How did we get here?")))))
       (make-instance 'permissible-backbone-rotamers
-                     :oligomer-shape oligomer-shape
                      :monomer-shape-loci (copy-seq monomer-shape-loci)
                      :allowed-rotamer-indexes-vector (copy-seq allowed-rotamer-indexes-vector)))))
 
@@ -182,41 +185,53 @@ Returns an instance of permissible-sidechain-rotamers."
                   (vector-push-extend allowed-rotamers allowed-rotamer-indexes-vector)
                   (vector-push-extend index monomer-shape-loci)))
     (make-instance 'permissible-sidechain-rotamers
-                   :oligomer-shape oligomer-shape
                    :monomer-shape-loci monomer-shape-loci
                    :allowed-rotamer-indexes-vector allowed-rotamer-indexes-vector)))
 
 
+(defun monomer-set-from-permissible-rotamers (&rest args)
+  (loop for cur = args then (cddr cur)
+        for oligomer-shape = (car cur)
+        for permissible = (cadr cur)
+        until (null cur)
+        do (break "Check stuff")))
+
 (defun max-rotamers (permissible-rotamers)
   "Read the maximum rotamer indexes from the stepper and return them in a vector"
   (let* ((len (length (monomer-shape-loci permissible-rotamers)))
-         (vec (make-array len :element-type 'ext:byte32))
-         (oligomer-shape (oligomer-shape permissible-rotamers)))
+         (vec (make-array len :element-type 'ext:byte32)))
     (loop for index below len
           for max = (length (aref (allowed-rotamer-indexes-vector permissible-rotamers) index))
           do (setf (aref vec index) max))
     vec))
 
-(defmethod read-rotamers ((permissible-rotamers permissible-rotamers))
+(defmethod read-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers))
   "Read the rotamer shapes from the stepper and return them in a vector"
   (let* ((len (length (monomer-shape-loci permissible-rotamers)))
-         (vec (make-array len :element-type 'ext:byte32))
-         (oligomer-shape (oligomer-shape permissible-rotamers)))
+         (vec (make-array len :element-type 'ext:byte32)))
     (loop for index below len
           for monomer-shape = (aref (topology:monomer-shape-vector oligomer-shape)
                                     (aref (monomer-shape-loci permissible-rotamers) index))
-          do (setf (aref vec index) (topology:fragment-conformation-index monomer-shape)))
+          do (setf (aref vec index) (topology:rotamer-index monomer-shape)))
     vec))
 
-(defmethod write-rotamers ((permissible-rotamers permissible-rotamers) vec)
+(defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (vec array))
   "Write a vector of rotamer shapes into the stepper"
-  (let* ((len (length (monomer-shape-loci permissible-rotamers)))
-         (oligomer-shape (oligomer-shape permissible-rotamers)))
+  (let ((len (length (monomer-shape-loci permissible-rotamers))))
     (loop for index below len
           for monomer-shape = (aref (topology:monomer-shape-vector oligomer-shape)
                                     (aref (monomer-shape-loci permissible-rotamers) index))
-          do (setf (topology:fragment-conformation-index monomer-shape) (aref vec index)))
-    vec))
+          do (setf (topology:rotamer-index monomer-shape) (aref vec index)))
+    oligomer-shape))
+
+(defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (val integer))
+  "Write a vector of rotamer shapes into the stepper. Return the oligomer-shape."
+  (let ((len (length (monomer-shape-loci permissible-rotamers))))
+    (loop for index below len
+          for monomer-shape = (aref (topology:monomer-shape-vector oligomer-shape)
+                                    (aref (monomer-shape-loci permissible-rotamers) index))
+          do (setf (topology:rotamer-index monomer-shape) val))
+    oligomer-shape))
 
 (defun number-of-rotamers (permissible-rotamers)
   "Return the total number of rotamer combinations"
@@ -258,8 +273,7 @@ Returns an instance of permissible-sidechain-rotamers."
 
 
 
-
-
+#+(or)
 (defun build-all-sidechains (assembler coords sidechain-stepper)
   "Increment through the sidechain-stepper and build the molecules and accumulate them into an aggregate.
 Return that aggregate."
