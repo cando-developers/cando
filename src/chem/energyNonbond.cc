@@ -290,16 +290,16 @@ num_real EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     // Evaluate the nonbonds using the excluded atom list
     energy = this->evaluateUsingExcludedAtoms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                                               calcOffDiagonalHessian,hessian,hdvec,dvec,
-                                              activeAtomMask);
+                                              activeAtomMask, debugInteractions );
     // Evaluate the 1-4 terms
     energy += this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                                   calcOffDiagonalHessian,hessian,hdvec,dvec,
-                                  activeAtomMask);
+                                  activeAtomMask, debugInteractions );
   } else {
     // Evaluate everything using terms
     energy = this->evaluateTerms(score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
                                  calcOffDiagonalHessian,hessian,hdvec,dvec,
-                                 activeAtomMask);
+                                 activeAtomMask, debugInteractions );
   }
   return energy;
 }

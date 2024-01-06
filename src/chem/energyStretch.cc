@@ -314,7 +314,6 @@ num_real EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(("%s {\n") , this->className());
   }
-  bool doDebugInteractions = debugInteractions.notnilp();
   ANN(force);
   ANN(hessian);
   ANN(hdvec);

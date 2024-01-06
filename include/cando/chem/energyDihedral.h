@@ -270,8 +270,7 @@ public:
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec,
-      core::T_sp activeAtomMask,
-      core::T_sp debugInteractions );
+      core::T_sp activeAtomMask );
 
   virtual num_real evaluateAllComponentSimd4(
       gctools::Vec0<EnergyDihedral>::iterator di_start4,
@@ -285,8 +284,7 @@ public:
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec,
-      core::T_sp activeAtomMask,
-      core::T_sp debugInteractions );
+      core::T_sp activeAtomMask );
 
   virtual num_real evaluateAllComponentSimd2(
       gctools::Vec0<EnergyDihedral>::iterator di_start2,
@@ -300,8 +298,7 @@ public:
       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec,
-      core::T_sp activeAtomMask,
-      core::T_sp debugInteractions );
+      core::T_sp activeAtomMask );
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
       NVector_sp pos );
