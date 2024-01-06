@@ -60,12 +60,14 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) goto SKIP_term;
-#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
+#define USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,EnergyDihedral_O::staticClass(), \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4)); \
     }
+
+#define IGNORE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) {}
 
 core::List_sp EnergyDihedral::encode() const {
   ql::list result;
@@ -528,7 +530,9 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
     num_real sinPhase, cosPhase, SinNPhi, CosNPhi;
     for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
           di!=this->_Terms.end(); di++ ) {
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
 #include	<cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_DEBUG_INTERACTIONS
 #undef DIHEDRAL_APPLY_ATOM_MASK
     }
   }
@@ -625,7 +629,9 @@ if (hasActiveAtomMask \
 #endif
 #undef DO_sinNPhiCosNPhi
 #define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_DEBUG_INTERACTIONS
 #undef DIHEDRAL_APPLY_ATOM_MASK
     if ( EraseLinearDihedral == 0.0 ) {
       ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4),
@@ -1241,7 +1247,9 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd8(
   gctools::Vec0<EnergyDihedral>::iterator di;
   int i=0;
   for ( di=di_start8; di<di_end8; di += VREAL8_WIDTH ) {
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) IGNORE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_DEBUG_INTERACTIONS
 #undef DIHEDRAL_APPLY_ATOM_MASK
 #undef SIMD
 #undef MAYBE_ERROR_LINEAR_DIHEDRAL
@@ -1446,7 +1454,9 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd4(
   gctools::Vec0<EnergyDihedral>::iterator di;
   int i = 0;
   for ( di=di_start4; di<di_end4; di += VREAL4_WIDTH ) {
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) IGNORE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_DEBUG_INTERACTIONS
 #undef DIHEDRAL_APPLY_ATOM_MASK
 #undef SIMD
 #undef MAYBE_ERROR_LINEAR_DIHEDRAL
@@ -1632,7 +1642,9 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd2(
   gctools::Vec0<EnergyDihedral>::iterator di;
   int i = 0;
   for ( di=di_start2; di<di_end2; di += VREAL2_WIDTH ) {
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) IGNORE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_DEBUG_INTERACTIONS
 #undef DIHEDRAL_APPLY_ATOM_MASK
 #undef SIMD
 #undef MAYBE_ERROR_LINEAR_DIHEDRAL
