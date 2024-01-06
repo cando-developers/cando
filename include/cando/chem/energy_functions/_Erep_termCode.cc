@@ -106,4 +106,5 @@
 	#endif /* EREP_CALC_DIAGONAL_HESSIAN ]*/
 	} /*calcForce */
 	#endif /* EREP_CALC_FORCE ]*/
-	SKIP_term:  (void)0;
+	EREP_DEBUG_INTERACTIONS(I1,I2);
+	SKIP_term: (void)0;

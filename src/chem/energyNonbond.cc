@@ -67,6 +67,12 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I2/3) \
          ) \
     ) goto SKIP_term;
+#define NONBOND_DEBUG_INTERACTIONS(I1,I2) \
+    if (doDebugInteractions) { \
+      core::eval::funcall(debugInteractions,EnergyNonbond_O::staticClass(), \
+                          mk_double_float(Energy), \
+                          core::make_fixnum(I1), core::make_fixnum(I2)); \
+    }
 
 /* No periodic boundary conditons/bounding-box is used in this code.
    So make these macros do nothing.

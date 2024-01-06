@@ -258,6 +258,7 @@ public:
       core::T_sp activeAtomMask,
       core::T_sp debugInteractions );
 
+#ifndef _TARGET_OS_DARWIN
   virtual num_real evaluateAllComponentSimd8(
       gctools::Vec0<EnergyDihedral>::iterator di_start8,
       gctools::Vec0<EnergyDihedral>::iterator di_end8,
@@ -299,7 +300,9 @@ public:
       gc::Nilable<NVector_sp>	hdvec,
       gc::Nilable<NVector_sp> dvec,
       core::T_sp activeAtomMask );
+#endif
 
+  
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
       NVector_sp pos );
 

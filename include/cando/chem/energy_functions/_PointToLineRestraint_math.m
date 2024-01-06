@@ -84,7 +84,8 @@ AGONAL_HESSIAN_ACCUMULATE(I1, 1, I1, 2, ohy1z1);"],
    CCode["#endif /* POINT_TO_LINE_RESTRAINT_CALC_DIAGONAL_HESSIAN ]*/"], 
    CCode["} /*calcForce */"], 
    CCode["#endif /* POINT_TO_LINE_RESTRAINT_CALC_FORCE ]*/"], 
-   CCode["SKIP_term:  (void)0;"]}, HessianStructure -> 
+   CCode["POINT_TO_LINE_RESTRAINT_DEBUG_INTERACTIONS(I1);"], 
+   CCode["SKIP_term: (void)0;"]}, HessianStructure -> 
   {{5, 8, 9, 0, 0, 0}, {8, 6, 10, 0, 0, 0}, {9, 10, 7, 0, 0, 0}, 
    {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}}, 
  CCode -> "NOT USED", MathCode -> "Block[{dhx1x1,dhy1y1,dhz1z1,Energy,fx1,fy1\
@@ -181,6 +182,7 @@ tx58 tx63 tx68 tx69; (*Rule 143*)\n\tohy1z1=tx97 + tx98 + tx99; (*Rule \
 POINT_TO_LINE_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN ]*/*)\n\t(*} \
 /*calcDiagonalHessian */*)\n\t(*#endif /* \
 POINT_TO_LINE_RESTRAINT_CALC_DIAGONAL_HESSIAN ]*/*)\n\t(*} /*calcForce \
-*/*)\n\t(*#endif /* POINT_TO_LINE_RESTRAINT_CALC_FORCE ]*/*)\n\t(*SKIP_term:  \
+*/*)\n\t(*#endif /* POINT_TO_LINE_RESTRAINT_CALC_FORCE \
+]*/*)\n\t(*POINT_TO_LINE_RESTRAINT_DEBUG_INTERACTIONS(I1);*)\n\t(*SKIP_term: \
 (void)0;*)\n{Energy, fx1, fy1, fz1, dhx1x1, dhy1y1, dhz1z1, ohx1y1, ohx1z1, \
 ohy1z1, PointToLineDeviation}]\n"}

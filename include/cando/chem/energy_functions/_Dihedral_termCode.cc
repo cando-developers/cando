@@ -72,7 +72,7 @@
 	ZERO_SMALL_LEN(LenA,ReciprocalLenA);
 	ZERO_SMALL_LEN(LenB,ReciprocalLenB);
 	 RecLenARecLenB = ReciprocalLenA*ReciprocalLenB; 		/* rule 73 */
-EraseLinearDihedral = VEC_CONST(1.0);
+	EraseLinearDihedral = 1.0;
 	EraseLinearDihedral = (RecLenARecLenB==0.0) ? 0.0 : EraseLinearDihedral;
 	 tx45 = tx20*tx38; 		/* rule 76 */
 	 tx46 = tx21*tx39; 		/* rule 77 */
@@ -1153,4 +1153,5 @@ EraseLinearDihedral = VEC_CONST(1.0);
 	#endif // DIHEDRAL_CALC_DIAGONAL_HESSIAN ]
 	} /*calcForce*/
 	#endif // DIHEDRAL_CALC_FORCE ]
+	DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4);
 	SKIP_term: (void)0;

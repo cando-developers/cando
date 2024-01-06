@@ -199,6 +199,7 @@ public:
 public:
   uint	getMask() { return this->_Mask; };
   void	setMask(uint m) { this->_Mask = m; };
+  
 
 //	void	duplicateFrom(Atom_O* a);
   Atom_sp	getCopyAtom()			{return this->_CopyAtom;};

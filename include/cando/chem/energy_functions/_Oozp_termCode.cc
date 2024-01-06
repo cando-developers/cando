@@ -46,4 +46,5 @@
 	#endif /* OOZP_CALC_DIAGONAL_HESSIAN ]*/
 	} /*calcForce */
 	#endif /* OOZP_CALC_FORCE ]*/
-	SKIP_term:  (void)0;
+	OOZP_DEBUG_INTERACTIONS(I1,I2);
+	SKIP_term: (void)0;

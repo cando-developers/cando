@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/ffBaseDb.h>
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/largeSquareMatrix.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -57,6 +58,12 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I4/3) \
          ) \
     ) goto SKIP_term;
+#define CHIRAL_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
+    if (doDebugInteractions) { \
+      core::eval::funcall(debugInteractions,EnergyChiralRestraint_O::staticClass(), \
+                          mk_double_float(Energy), \
+                          core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4)); \
+    }
 
 string	EnergyChiralRestraint::description()
 {

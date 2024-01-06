@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/numerics.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/ql.h>
 #include <cando/chem/energyAngle.h>
 #include <cando/chem/energyAtomTable.h>
@@ -55,6 +56,12 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          ) \
     ) goto SKIP_term;
+#define ANGLE_DEBUG_INTERACTIONS(I1,I2,I3) \
+    if (doDebugInteractions) { \
+      core::eval::funcall(debugInteractions,EnergyAngle_O::staticClass(), \
+                          mk_double_float(Energy), \
+                          core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3)); \
+    }
 
 core::List_sp EnergyAngle::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kt),core::clasp_make_double_float(this->term.kt)),

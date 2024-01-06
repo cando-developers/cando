@@ -1175,7 +1175,6 @@ AppendGradientForceAndHessian[macroPrefix_,be_,outputs_,hessianStructure_,rawEne
 	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_DIAGONAL_HESSIAN ]*/"]];
 	AppendTo[be,CCode["} /*calcForce */"]];
 	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_FORCE ]*/"]];
-	AppendTo[be,CCode["SKIP_term:  (void)0;"]]
 ];
 SetAttributes[AppendGradientForceAndHessian,HoldAll];
 

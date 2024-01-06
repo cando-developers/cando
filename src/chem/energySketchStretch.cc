@@ -52,6 +52,12 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I2/3) \
          ) \
     ) goto SKIP_term;
+#define STRETCH_DEBUG_INTERACTIONS(I1,I2) \
+    if (doDebugInteractions) { \
+      core::eval::funcall(debugInteractions,EnergySketchStretch_O::staticClass(), \
+                          mk_double_float(Energy), \
+                          core::make_fixnum(I1), core::make_fixnum(I2)); \
+    }
 
 core::List_sp EnergySketchStretch::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kb),core::clasp_make_double_float(this->term.kb)),

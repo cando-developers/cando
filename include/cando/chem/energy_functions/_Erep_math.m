@@ -79,8 +79,8 @@
    CCode["} /*calcDiagonalHessian */"], 
    CCode["#endif /* EREP_CALC_DIAGONAL_HESSIAN ]*/"], 
    CCode["} /*calcForce */"], CCode["#endif /* EREP_CALC_FORCE ]*/"], 
-   CCode["SKIP_term:  (void)0;"]}, HessianStructure -> 
-  {{8, 14, 15, 16, 17, 18}, {14, 9, 19, 20, 21, 22}, 
+   CCode["EREP_DEBUG_INTERACTIONS(I1,I2);"], CCode["SKIP_term: (void)0;"]}, 
+ HessianStructure -> {{8, 14, 15, 16, 17, 18}, {14, 9, 19, 20, 21, 22}, 
    {15, 19, 10, 23, 24, 25}, {16, 20, 23, 11, 26, 27}, 
    {17, 21, 24, 26, 12, 28}, {18, 22, 25, 27, 28, 13}}, CCode -> "NOT USED", 
  MathCode -> "Block[{dhx1x1,dhx2x2,dhy1y1,dhy2y2,dhz1z1,dhz2z2,Erep,ErepDista\
@@ -159,7 +159,9 @@ ohx2z2);*)\n\tohy2z2=ohy1z1; (*Rule \
 ohy2z2);*)\n\t(*} /*if calcOffDiagonalHessian */ *)\n\t(*#endif /* \
 EREP_CALC_OFF_DIAGONAL_HESSIAN ]*/*)\n\t(*} /*calcDiagonalHessian \
 */*)\n\t(*#endif /* EREP_CALC_DIAGONAL_HESSIAN ]*/*)\n\t(*} /*calcForce \
-*/*)\n\t(*#endif /* EREP_CALC_FORCE ]*/*)\n\t(*SKIP_term:  (void)0;*)\n{Erep, \
-fx1, fy1, fz1, fx2, fy2, fz2, dhx1x1, dhy1y1, dhz1z1, dhx2x2, dhy2y2, dhz2z2, \
-ohx1y1, ohx1z1, ohx1x2, ohx1y2, ohx1z2, ohy1z1, ohy1x2, ohy1y2, ohy1z2, \
-ohz1x2, ohz1y2, ohz1z2, ohx2y2, ohx2z2, ohy2z2, ErepDistance}]\n"}
+*/*)\n\t(*#endif /* EREP_CALC_FORCE \
+]*/*)\n\t(*EREP_DEBUG_INTERACTIONS(I1,I2);*)\n\t(*SKIP_term: \
+(void)0;*)\n{Erep, fx1, fy1, fz1, fx2, fy2, fz2, dhx1x1, dhy1y1, dhz1z1, \
+dhx2x2, dhy2y2, dhz2z2, ohx1y1, ohx1z1, ohx1x2, ohx1y2, ohx1z2, ohy1z1, \
+ohy1x2, ohy1y2, ohy1z2, ohz1x2, ohz1y2, ohz1z2, ohx2y2, ohx2z2, ohy2z2, \
+ErepDistance}]\n"}

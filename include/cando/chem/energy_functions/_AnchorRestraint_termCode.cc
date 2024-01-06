@@ -53,4 +53,5 @@
 	#endif /* ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN ]*/
 	} /*calcForce */
 	#endif /* ANCHOR_RESTRAINT_CALC_FORCE ]*/
-	SKIP_term:  (void)0;
+	ANCHOR_RESTRAINT_APPLY_ATOM_MASK(I1);
+	SKIP_term: (void)0;

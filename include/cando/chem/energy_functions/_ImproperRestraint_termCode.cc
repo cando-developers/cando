@@ -1295,5 +1295,6 @@ if ( U<=L && ((Phi<=U)||(Phi>=L))) {
 	#endif //IMPROPER_RESTRAINT_CALC_FORCE ]
 	} /*RestraintActive*/
 	IMPROPER_RESTRAINT_PHI_SET(Phi);
+	IMPROPER_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4);
 	SKIP_term: (void)0;
 /*]; (*RestraintActive*)*/

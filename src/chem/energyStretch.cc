@@ -52,7 +52,8 @@ namespace chem {
 #define STRETCH_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3))) goto SKIP_term; \
+         && bitvectorActiveAtomMask->testBit(I2/3))) goto SKIP_term;
+#define STRETCH_DEBUG_INTERACTIONS(I1,I2) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,EnergyStretch_O::staticClass(), \
                           mk_double_float(Energy), \

@@ -71,6 +71,13 @@ if (hasActiveAtomMask \
          ) \
     ) goto SKIP_term;
 
+#define NONBOND_DEBUG_INTERACTIONS(I1,I2) \
+    if (doDebugInteractions) { \
+      core::eval::funcall(debugInteractions,EnergyNonbond_O::staticClass(), \
+                          mk_double_float(Energy), \
+                          core::make_fixnum(I1), core::make_fixnum(I2)); \
+    }
+
 
 inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& rsize, const num_real& size)
 {

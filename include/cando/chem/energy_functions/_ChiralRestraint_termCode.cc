@@ -1035,5 +1035,6 @@
 	#endif /* CHIRAL_RESTRAINT_CALC_DIAGONAL_HESSIAN ]*/
 	} /*calcForce */
 	#endif /* CHIRAL_RESTRAINT_CALC_FORCE ]*/
-	SKIP_term:  (void)0;
+	CHIRAL_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4);
+	SKIP_term: (void)0;
 	} /*ChiralTest>0.0*/

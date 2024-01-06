@@ -43,6 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/ffItorDb.h>
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/largeSquareMatrix.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/wrappers.h>
 
 #define VEC8(v) {v,v,v,v,v,v,v,v}
@@ -59,6 +60,12 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) goto SKIP_term;
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
+    if (doDebugInteractions) { \
+      core::eval::funcall(debugInteractions,EnergyDihedral_O::staticClass(), \
+                          mk_double_float(Energy), \
+                          core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4)); \
+    }
 
 core::List_sp EnergyDihedral::encode() const {
   ql::list result;
@@ -995,7 +1002,7 @@ EnergyDihedral_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteraction) {
 }
 
 
-
+#ifndef _TARGET_OS_DARWIN
 #define VREAL8_WIDTH 8
 typedef double real;
 typedef real real8 __attribute__((vector_size(8*VREAL8_WIDTH))) __attribute__((aligned(4)));
@@ -1660,7 +1667,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd2(
   return totalEnergy;
 #endif
 }
-
+#endif // !_TARGET_OS_DARWIN
 
 num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
                                                 NVector_sp 	                pos,
@@ -1677,6 +1684,21 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
 {
   num_real  energy = 0.0;
   this->_Evaluations++;
+#ifdef _TARGET_OS_DARWIN
+    energy += this->evaluateAllComponentSingle(this->_Terms.begin(),
+                                               this->_Terms.end(),
+                                               score,
+                                               pos,
+                                               calcForce,
+                                               force,
+                                               calcDiagonalHessian,
+                                               calcOffDiagonalHessian,
+                                               hessian,
+                                               hdvec,
+                                               dvec,
+                                               activeAtomMask,
+                                               debugInteractions );
+#else
   if (cando::global_simd_width ==1 || debugInteractions.notnilp()) {
     energy += this->evaluateAllComponentSingle(this->_Terms.begin(),
                                                this->_Terms.end(),
@@ -1773,6 +1795,7 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                                activeAtomMask,
                                                nil<core::T_O>() );
   }
+#endif
   maybeSetEnergy( componentEnergy, EnergyDihedral_O::static_classSymbol(), energy );
   return energy;
 };

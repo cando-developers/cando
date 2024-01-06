@@ -112,4 +112,3 @@
 	#endif /* FNONBOND_CALC_DIAGONAL_HESSIAN ]*/
 	} /*calcForce */
 	#endif /* FNONBOND_CALC_FORCE ]*/
-	SKIP_term:  (void)0;

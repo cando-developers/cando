@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/lispStream.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/geom/vector3.fwd.h>
 #include <cando/chem/energyDihedralRestraint.h>
@@ -57,6 +58,12 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) goto SKIP_term;
+#define IMPROPER_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
+    if (doDebugInteractions) { \
+      core::eval::funcall(debugInteractions,EnergyDihedralRestraint_O::staticClass(), \
+                          mk_double_float(Energy), \
+                          core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4)); \
+    }
 
 
 core::List_sp EnergyDihedralRestraint::encode() const {
