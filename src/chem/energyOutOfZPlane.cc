@@ -147,6 +147,7 @@ void	EnergyOutOfZPlane_O::setupHessianPreconditioner(
                                         core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
   SIMPLE_ERROR("Fix this function");
 #if 0 //commented out
 bool		calcForce = true;
@@ -218,6 +219,7 @@ num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
                                                     core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
   [[maybe_unused]]bool	hasHessian = hessian.notnilp();

@@ -79,6 +79,7 @@ namespace       chem {
 #define MAYBE_SETUP_ACTIVE_ATOM_MASK() \
   bool hasActiveAtomMask = (activeAtomMask.notnilp()); \
   auto bitvectorActiveAtomMask = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
+#define MAYBE_SETUP_DEBUG_INTERACTIONS(dbgint) bool doDebugInteractions = dbgint;
 
 SMART(QDomNode);
 SMART(AbstractLargeSquareMatrix);

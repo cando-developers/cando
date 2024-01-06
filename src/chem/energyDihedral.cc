@@ -471,6 +471,8 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
                                                      core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  core::T_sp debugInteractions = nil<core::T_O>();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
   bool		calcForce = true;
   bool		calcDiagonalHessian = true;
   bool		calcOffDiagonalHessian = true;
@@ -549,6 +551,7 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) goto SKIP_term_and_angle_test;
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
@@ -1010,8 +1013,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd8(
     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
     gc::Nilable<NVector_sp>	hdvec,
     gc::Nilable<NVector_sp>     dvec,
-    core::T_sp activeAtomMask,
-    core::T_sp debugInteractions )
+    core::T_sp activeAtomMask )
 {
   
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
@@ -1302,8 +1304,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd4(
     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
     gc::Nilable<NVector_sp>	hdvec,
     gc::Nilable<NVector_sp>     dvec,
-    core::T_sp activeAtomMask,
-    core::T_sp debugInteractions )
+    core::T_sp activeAtomMask )
 {
   IMPLEMENT_ME();
 #if 0
@@ -1501,8 +1502,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd2(
     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
     gc::Nilable<NVector_sp>	hdvec,
     gc::Nilable<NVector_sp>     dvec,
-    core::T_sp activeAtomMask,
-    core::T_sp debugInteractions )
+    core::T_sp activeAtomMask )
 {
   IMPLEMENT_ME();
 #if 0
@@ -1677,92 +1677,7 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
 {
   num_real  energy = 0.0;
   this->_Evaluations++;
-  if (cando::global_simd_width == 8 ) {
-    gctools::Vec0<EnergyDihedral>::iterator di_vector_end8 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL8_WIDTH))*VREAL8_WIDTH;
-    energy += this->evaluateAllComponentSimd8(this->_Terms.begin(),
-                                              di_vector_end8,
-                                              score,
-                                              pos,
-                                              calcForce,
-                                              force,
-                                              calcDiagonalHessian,
-                                              calcOffDiagonalHessian,
-                                              hessian,
-                                              hdvec,
-                                              dvec,
-                                              activeAtomMask,
-                                              debugInteractions);
-    energy += this->evaluateAllComponentSingle(di_vector_end8,
-                                               this->_Terms.end(),
-                                               score,
-                                               pos,
-                                               calcForce,
-                                               force,
-                                               calcDiagonalHessian,
-                                               calcOffDiagonalHessian,
-                                               hessian,
-                                               hdvec,
-                                               dvec,
-                                               activeAtomMask,
-                                               debugInteractions);
-  } else if (cando::global_simd_width == 4 ) {
-    gctools::Vec0<EnergyDihedral>::iterator di_vector_end4 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL4_WIDTH))*VREAL4_WIDTH;
-    energy += this->evaluateAllComponentSimd4(this->_Terms.begin(),
-                                              di_vector_end4,
-                                              score,
-                                              pos,
-                                              calcForce,
-                                              force,
-                                              calcDiagonalHessian,
-                                              calcOffDiagonalHessian,
-                                              hessian,
-                                              hdvec,
-                                              dvec,
-                                              activeAtomMask,
-                                              debugInteractions);
-    energy += this->evaluateAllComponentSingle(di_vector_end4,
-                                               this->_Terms.end(),
-                                               score,
-                                               pos,
-                                               calcForce,
-                                               force,
-                                               calcDiagonalHessian,
-                                               calcOffDiagonalHessian,
-                                               hessian,
-                                               hdvec,
-                                               dvec,
-                                               activeAtomMask,
-                                               debugInteractions );
-  } else if (cando::global_simd_width == 2 ) {
-    gctools::Vec0<EnergyDihedral>::iterator di_vector_end2 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL2_WIDTH))*VREAL2_WIDTH;
-    energy += this->evaluateAllComponentSimd2(this->_Terms.begin(),
-                                              di_vector_end2,
-                                              score,
-                                              pos,
-                                              calcForce,
-                                              force,
-                                              calcDiagonalHessian,
-                                              calcOffDiagonalHessian,
-                                              hessian,
-                                              hdvec,
-                                              dvec,
-                                              activeAtomMask,
-                                              debugInteractions );
-    energy += this->evaluateAllComponentSingle(di_vector_end2,
-                                               this->_Terms.end(),
-                                               score,
-                                               pos,
-                                               calcForce,
-                                               force,
-                                               calcDiagonalHessian,
-                                               calcOffDiagonalHessian,
-                                               hessian,
-                                               hdvec,
-                                               dvec,
-                                               activeAtomMask,
-                                               debugInteractions );
-  } else
-  {
+  if (cando::global_simd_width ==1 || debugInteractions.notnilp()) {
     energy += this->evaluateAllComponentSingle(this->_Terms.begin(),
                                                this->_Terms.end(),
                                                score,
@@ -1776,6 +1691,87 @@ num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          scor
                                                dvec,
                                                activeAtomMask,
                                                debugInteractions );
+  } else if (cando::global_simd_width == 8 ) {
+    gctools::Vec0<EnergyDihedral>::iterator di_vector_end8 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL8_WIDTH))*VREAL8_WIDTH;
+    energy += this->evaluateAllComponentSimd8(this->_Terms.begin(),
+                                              di_vector_end8,
+                                              score,
+                                              pos,
+                                              calcForce,
+                                              force,
+                                              calcDiagonalHessian,
+                                              calcOffDiagonalHessian,
+                                              hessian,
+                                              hdvec,
+                                              dvec,
+                                              activeAtomMask );
+    energy += this->evaluateAllComponentSingle(di_vector_end8,
+                                               this->_Terms.end(),
+                                               score,
+                                               pos,
+                                               calcForce,
+                                               force,
+                                               calcDiagonalHessian,
+                                               calcOffDiagonalHessian,
+                                               hessian,
+                                               hdvec,
+                                               dvec,
+                                               activeAtomMask,
+                                               nil<core::T_O>());
+  } else if (cando::global_simd_width == 4 ) {
+    gctools::Vec0<EnergyDihedral>::iterator di_vector_end4 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL4_WIDTH))*VREAL4_WIDTH;
+    energy += this->evaluateAllComponentSimd4(this->_Terms.begin(),
+                                              di_vector_end4,
+                                              score,
+                                              pos,
+                                              calcForce,
+                                              force,
+                                              calcDiagonalHessian,
+                                              calcOffDiagonalHessian,
+                                              hessian,
+                                              hdvec,
+                                              dvec,
+                                              activeAtomMask );
+    energy += this->evaluateAllComponentSingle(di_vector_end4,
+                                               this->_Terms.end(),
+                                               score,
+                                               pos,
+                                               calcForce,
+                                               force,
+                                               calcDiagonalHessian,
+                                               calcOffDiagonalHessian,
+                                               hessian,
+                                               hdvec,
+                                               dvec,
+                                               activeAtomMask,
+                                               nil<core::T_O>());
+  } else if (cando::global_simd_width == 2 ) {
+    gctools::Vec0<EnergyDihedral>::iterator di_vector_end2 = this->_Terms.begin()+((int)(std::distance(this->_Terms.begin(),this->_Terms.end())/VREAL2_WIDTH))*VREAL2_WIDTH;
+    energy += this->evaluateAllComponentSimd2(this->_Terms.begin(),
+                                              di_vector_end2,
+                                              score,
+                                              pos,
+                                              calcForce,
+                                              force,
+                                              calcDiagonalHessian,
+                                              calcOffDiagonalHessian,
+                                              hessian,
+                                              hdvec,
+                                              dvec,
+                                              activeAtomMask );
+    energy += this->evaluateAllComponentSingle(di_vector_end2,
+                                               this->_Terms.end(),
+                                               score,
+                                               pos,
+                                               calcForce,
+                                               force,
+                                               calcDiagonalHessian,
+                                               calcOffDiagonalHessian,
+                                               hessian,
+                                               hdvec,
+                                               dvec,
+                                               activeAtomMask,
+                                               nil<core::T_O>() );
   }
   maybeSetEnergy( componentEnergy, EnergyDihedral_O::static_classSymbol(), energy );
   return energy;

@@ -132,6 +132,8 @@ num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
                                                      core::T_sp activeAtomMask)
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  core::T_sp debugInteractions = nil<core::T_O>();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   num_real totalEnergy = 0.0;

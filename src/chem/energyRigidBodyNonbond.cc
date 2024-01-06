@@ -444,6 +444,7 @@ num_real EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp scor
                                                          core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
 //  SIMPLE_WARN("FIXactiveAtomMask How do I deal with activeAtomMask");
   this->_Evaluations++;
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);

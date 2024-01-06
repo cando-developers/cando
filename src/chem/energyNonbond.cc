@@ -316,9 +316,11 @@ num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                        gc::Nilable<NVector_sp>	hdvec, 
                                         gc::Nilable<NVector_sp> 	dvec,
-                                        core::T_sp activeAtomMask )
+                                        core::T_sp activeAtomMask,
+                                        core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -450,9 +452,11 @@ num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                                      gc::Nilable<NVector_sp>	hdvec, 
                                                      gc::Nilable<NVector_sp> 	dvec,
-                                                     core::T_sp activeAtomMask )
+                                                     core::T_sp activeAtomMask,
+                                                     core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
     SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");

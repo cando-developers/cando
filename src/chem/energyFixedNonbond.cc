@@ -232,6 +232,7 @@ num_real EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp
                                                               core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {

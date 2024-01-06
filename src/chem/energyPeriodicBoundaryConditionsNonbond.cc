@@ -159,6 +159,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
                                                                  core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  core::T_sp debugInteractions = nil<core::T_O>();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
   
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   this->_Evaluations++;
@@ -305,6 +307,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
                                                                               core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  core::T_sp debugInteractions = nil<core::T_O>();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
   this->_Evaluations++;
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {

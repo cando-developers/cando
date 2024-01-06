@@ -290,6 +290,8 @@ void	EnergyAngle_O::setupHessianPreconditioner(
                                         core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  core::T_sp debugInteractions = nil<core::T_O>();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
 bool		calcForce = true;
 bool		calcDiagonalHessian = true;
 bool		calcOffDiagonalHessian = true;
@@ -358,6 +360,7 @@ num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                               core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   num_real termEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 

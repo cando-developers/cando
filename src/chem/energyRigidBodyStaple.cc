@@ -134,6 +134,8 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
                                                             core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  core::T_sp debugInteractions = nil<core::T_O>();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
   bool		calcForce = true;
   num_real        pxk, pyk, pzk;
   num_real        pxl, pyl, pzl;
@@ -193,6 +195,7 @@ num_real EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score
                                                         core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
 //  SIMPLE_WARN("FIXactiveAtomMask How do I deal with activeAtomMask");
   this->_Evaluations++;
   if ( this->_DebugEnergy ) 
