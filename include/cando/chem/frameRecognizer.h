@@ -112,5 +112,4 @@ CL_DEFMETHOD     string	getSmarts()	{ return this->_Smarts;};
 };
 
 
-TRANSLATE(chem::FrameRecognizer_O);
 #endif

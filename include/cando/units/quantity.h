@@ -161,6 +161,5 @@ CL_DEFMETHOD 	Unit_sp rawUnit() const { return this->_Unit;};
 
 }; /* units */
 
-TRANSLATE(units::Quantity_O);
 
 #endif /* _units_Quantity_H */

@@ -116,6 +116,5 @@ public: // Functions here
 
 }; // namespace units
 
-TRANSLATE(units::Unit_O);
 
 #endif /* _units_Unit_H */

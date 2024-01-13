@@ -201,8 +201,4 @@ public:
 
 
 
-TRANSLATE(chem::PathMessage_O);
-TRANSLATE(chem::AGVertex_O);
-TRANSLATE(chem::AGEdge_O);
-TRANSLATE(chem::RingFinder_O);
 #endif

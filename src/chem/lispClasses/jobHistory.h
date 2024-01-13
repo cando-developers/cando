@@ -128,6 +128,4 @@ public:
 };
 
 
-TRANSLATE(chem::TrainerHistoryEntry_O);
-TRANSLATE(chem::TrainerHistory_O);
 #endif

@@ -81,6 +81,5 @@ namespace kinematics
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::ChainNode_O);
 
 #endif /* _kinematicsChainNode_H */

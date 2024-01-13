@@ -231,5 +231,4 @@ public:
 
 };
 
-TRANSLATE(chem::EnergyFixedNonbondRestraint_O);
 #endif //]

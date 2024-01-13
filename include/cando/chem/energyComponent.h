@@ -366,5 +366,4 @@ SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
 };
 
 
-TRANSLATE(chem::EnergyComponent_O);
 #endif

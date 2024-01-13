@@ -113,6 +113,5 @@ public: // Functions here
 
 }; /* units */
 
-TRANSLATE(units::CoordinateArray_O);
 
 #endif /* _units_CoordinateArray_H */

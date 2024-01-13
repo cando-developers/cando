@@ -181,7 +181,4 @@ CL_DEFMETHOD     void	setPiAtomY(MatterName n) { this->_PiAtomY = n; };
 
 
 };
-TRANSLATE(chem::ComplexRestraint_O);
-TRANSLATE(chem::RestrainedExoCyclicAtom_O);
-TRANSLATE(chem::RestrainedPiBond_O);
 #endif //]

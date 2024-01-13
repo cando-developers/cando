@@ -164,8 +164,4 @@ public:
 
 
 };
-TRANSLATE(chem::CalculatePosition_O);
-TRANSLATE(chem::CalculatePositionUsingInternals_O);
-TRANSLATE(chem::CalculatePositionAlongBond_O);
-TRANSLATE(chem::CalculatePositionRelativeToOrigin_O);
 #endif //]

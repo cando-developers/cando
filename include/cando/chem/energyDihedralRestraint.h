@@ -203,5 +203,4 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
 
 };
 
-TRANSLATE(chem::EnergyDihedralRestraint_O);
 #endif //]

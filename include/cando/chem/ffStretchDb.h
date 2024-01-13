@@ -143,6 +143,4 @@ namespace       chem {
 
 
 
-TRANSLATE(chem::FFStretch_O);
-TRANSLATE(chem::FFStretchDb_O);
 #endif

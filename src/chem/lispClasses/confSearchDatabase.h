@@ -107,5 +107,4 @@ public:
 };
 
 
-TRANSLATE(chem::ConformationalSearchDatabase_O);
 #endif

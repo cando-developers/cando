@@ -190,6 +190,5 @@ inline MonomerContext_sp create_MonomerContext()
 
 
 };
-TRANSLATE(chem::MonomerContext_O);
 #endif //]
 #endif

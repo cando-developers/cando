@@ -97,5 +97,4 @@ public:
 };
 };
 
-TRANSLATE(adapt::ObjectSet_O);
 #endif //]

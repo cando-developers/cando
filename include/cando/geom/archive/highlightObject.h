@@ -138,10 +138,5 @@ public:
 };
 
 
-TRANSLATE(geom::PickableObject_O);
-TRANSLATE(geom::ControlObject_O);
-TRANSLATE(geom::DragObject_O);
-TRANSLATE(geom::HighlightedObject_O);
-TRANSLATE(geom::HighlightedHolder_O);
 
 #endif //]

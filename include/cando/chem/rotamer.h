@@ -62,6 +62,5 @@ private:
 
 }; /* chem */
 
-TRANSLATE(chem::Rotamer_O);
 
 #endif /* _chem_ROTAMER_H */

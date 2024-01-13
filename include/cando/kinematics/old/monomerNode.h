@@ -116,6 +116,5 @@ public: // Functions here
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::MonomerNode_O);
 
 #endif /* _kinematicsMonomerNode_H */

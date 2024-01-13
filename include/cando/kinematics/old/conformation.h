@@ -91,6 +91,5 @@ namespace kinematics
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::Conformation_O);
 
 #endif /* _kinematicsConformation_H */

@@ -139,5 +139,4 @@ CL_DEFMETHOD   SymbolSet_sp removeAll(SymbolSet_sp b) { return this->relativeCom
 };
 };
 
-TRANSLATE(adapt::SymbolSet_O);
 #endif

@@ -71,5 +71,4 @@ public:
 
 
 };
-TRANSLATE(chem::Command_O);
 #endif //]

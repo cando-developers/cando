@@ -152,7 +152,4 @@ public:
 
 
 };
-TRANSLATE(chem::ArrayedAtom_O);
-TRANSLATE(chem::ArrayedResidue_O);
-TRANSLATE(chem::ArrayedMolecule_O);
 #endif //]

@@ -115,5 +115,4 @@ namespace chem
 
 
 };
-TRANSLATE(chem::Alias_O);
 #endif //]

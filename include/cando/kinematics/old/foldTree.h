@@ -83,6 +83,5 @@ private:
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::FoldTree_O);
 
 #endif /* _kinematicsFoldTree_H */

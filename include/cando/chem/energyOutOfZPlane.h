@@ -188,5 +188,4 @@ public:
 
 };
 
-TRANSLATE(chem::EnergyOutOfZPlane_O);
 #endif //]

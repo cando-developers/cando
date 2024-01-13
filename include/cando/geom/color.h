@@ -98,5 +98,4 @@ namespace geom
     void initialize_colors();
 
 };
-TRANSLATE(geom::Color_O);
 #endif //]

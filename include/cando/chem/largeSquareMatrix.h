@@ -354,7 +354,4 @@ inline	SparseLargeSquareMatrix_sp new_SparseLargeSquareMatrix_sp(const SparseLar
 };
 
 
-TRANSLATE(chem::AbstractLargeSquareMatrix_O);
-TRANSLATE(chem::FullLargeSquareMatrix_O);
-TRANSLATE(chem::SparseLargeSquareMatrix_O);
 #endif          /* ifndef LARGE_MATRIX_H */

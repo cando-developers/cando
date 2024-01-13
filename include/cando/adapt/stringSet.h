@@ -136,6 +136,5 @@ CL_DEFMETHOD   StringSet_sp cartesianProduct(StringSet_sp b) {
 };
 };
 
-TRANSLATE(adapt::StringSet_O);
 #endif
 #endif

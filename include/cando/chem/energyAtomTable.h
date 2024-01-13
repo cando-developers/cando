@@ -274,5 +274,4 @@ public:
 };
 
 
-TRANSLATE(chem::AtomTable_O);
 #endif //]

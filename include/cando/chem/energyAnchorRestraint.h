@@ -192,5 +192,4 @@ public:
 
 };
 
-TRANSLATE(chem::EnergyAnchorRestraint_O);
 #endif //]

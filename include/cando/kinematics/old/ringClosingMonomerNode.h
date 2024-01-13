@@ -60,6 +60,5 @@ public:
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::RingClosingMonomerNode_O);
 
 #endif /* _kinematicsRingClosingMonomerNode_H */

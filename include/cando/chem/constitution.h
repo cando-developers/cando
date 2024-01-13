@@ -247,6 +247,5 @@ FORWARD(Monomer);
 };
 
 
-TRANSLATE(chem::Constitution_O);
 #endif
 #endif

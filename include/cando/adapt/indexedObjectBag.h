@@ -55,5 +55,4 @@ public:
 };
 };
 
-TRANSLATE(adapt::IndexedObjectBag_O);
 #endif //]

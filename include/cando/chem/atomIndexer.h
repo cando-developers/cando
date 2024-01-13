@@ -135,6 +135,4 @@ public:
 
 
 };
-TRANSLATE(chem::AtomIndexer_O);
-TRANSLATE(chem::MapOfMonomerNamesToAtomIndexers_O);
 #endif //]

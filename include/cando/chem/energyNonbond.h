@@ -312,5 +312,4 @@ class EnergyNonbond_O : public EnergyComponent_O
 
 };
 
-TRANSLATE(chem::EnergyNonbond_O);
 #endif //]

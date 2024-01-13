@@ -77,6 +77,5 @@ public:
 
 };
 
-TRANSLATE(chem::VirtualAtom_O);
 
 #endif //]

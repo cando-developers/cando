@@ -78,7 +78,6 @@ void class_o(_M4_currentClass)::exposeCando(core::Lisp_sp lisp)
 {
 	core::externalClass_<class_o(_M4_currentClass)>(lisp->lisp())
 divert(fTranslate)
-TRANSLATE(omm::class_o(_M4_currentClass));
 divert
 define(`_registerOmmClassMapping',`')
 ')

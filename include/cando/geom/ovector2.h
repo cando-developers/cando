@@ -86,7 +86,6 @@ CL_DEFMETHOD 	double getY() { return this->_Value.getY(); };
 
 
 }; // namespace geom
-TRANSLATE(geom::OVector2_O);
 
 
 namespace translate

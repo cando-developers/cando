@@ -435,8 +435,4 @@ CL_DEFMETHOD 	uint getClosestMatchIndex() { return this->_ClosestMatchIndex;};
 };
 
 
-TRANSLATE(chem::ConformationExplorerEntryStage_O);
-TRANSLATE(chem::ConformationExplorerEntry_O);
-TRANSLATE(chem::ConformationExplorer_O);
-TRANSLATE(chem::ConformationExplorerMatch_O);
 #endif

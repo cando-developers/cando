@@ -88,5 +88,4 @@ public:
 };
 
 
-TRANSLATE(chem::TrainerArchive_O);
 #endif

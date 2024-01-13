@@ -168,5 +168,4 @@ public:
 
 
 };
-TRANSLATE(chem::ExternalInterface_O);
 #endif //]

@@ -181,6 +181,5 @@ namespace kinematics
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::Point_O);
 
 #endif /* _kinematics_Point_H */

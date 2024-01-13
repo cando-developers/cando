@@ -326,5 +326,4 @@ public:
 
 };
 
-TRANSLATE(chem::EnergyDihedral_O);
 #endif //]

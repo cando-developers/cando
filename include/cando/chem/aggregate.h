@@ -240,5 +240,4 @@ public:
 
 
 };
-TRANSLATE(chem:: Aggregate_O);
 #endif

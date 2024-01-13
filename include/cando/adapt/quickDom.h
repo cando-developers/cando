@@ -472,5 +472,4 @@ CL_DEFMETHOD     void addAttributeInt(const string& at, int val) {
 
 };
 
-TRANSLATE(adapt::QDomNode_O);
 #endif

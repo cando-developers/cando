@@ -152,5 +152,4 @@ private:
 
 };
 
-TRANSLATE(chem::CoordinateSystem_O);
 #endif

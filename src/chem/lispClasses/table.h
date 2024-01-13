@@ -227,6 +227,4 @@ public:
 
 
 };
-TRANSLATE(chem:: TableEntry_O);
-TRANSLATE(chem::Table_O);
 #endif //]

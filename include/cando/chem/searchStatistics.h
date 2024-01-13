@@ -87,5 +87,4 @@ public:
 
 
 };
-TRANSLATE(chem::SearchStatistics_O);
 #endif //]

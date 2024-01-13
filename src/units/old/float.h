@@ -129,6 +129,5 @@ public: // Functions here
 
 }; /* units */
 
-TRANSLATE(units::Float_O);
 
 #endif /* _units_Float_H */

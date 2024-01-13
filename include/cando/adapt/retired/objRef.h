@@ -67,5 +67,4 @@ public:
   DEFAULT_CTOR_DTOR(ObjRef_O);
 };
 };
-TRANSLATE(core::ObjRef_O);
 #endif //]

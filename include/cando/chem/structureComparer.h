@@ -126,5 +126,4 @@ public:
 };
 
 
-TRANSLATE(chem::StructureComparer_O);
 #endif

@@ -66,7 +66,6 @@ public: // Functions here
 
 }; /* units */
 
-TRANSLATE(units::NamedUnit_O);
 
 
 #endif /* _NAMEDUNIT_H */

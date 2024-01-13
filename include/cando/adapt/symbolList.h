@@ -93,5 +93,4 @@ public:
 };
 };
 
-TRANSLATE(adapt::SymbolList_O);
 #endif

@@ -113,6 +113,4 @@ public:
 };
 
 
-TRANSLATE(chem::FFVdw_O);
-TRANSLATE(chem::FFVdwDb_O);
 #endif

@@ -75,5 +75,4 @@ public:
 // Constructor function
 
 };
-TRANSLATE(chem::CandoDatabaseReference_O);
 #endif //]

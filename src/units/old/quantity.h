@@ -148,6 +148,5 @@ Quantity_sp two_arg_div(T_sp first, T_sp second);
 
 }; /* units */
 
-TRANSLATE(units::Quantity_O);
 
 #endif /* _units_Quantity_H */

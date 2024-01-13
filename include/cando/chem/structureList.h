@@ -219,6 +219,4 @@ public:
 };
 
 
-TRANSLATE(chem::Structure_Old_ListEntry_O);
-TRANSLATE(chem::Structure_Old_List_O);
 #endif

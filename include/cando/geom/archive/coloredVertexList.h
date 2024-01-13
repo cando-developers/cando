@@ -117,6 +117,4 @@ namespace geom
 
 
 };
-TRANSLATE(geom::ColoredVertex_O);
-TRANSLATE(geom::ColoredVertexList_O);
 #endif          /* ifndef ColoredVertexList_H */

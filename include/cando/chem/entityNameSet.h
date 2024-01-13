@@ -258,8 +258,5 @@ public:
 
 
 
-TRANSLATE(chem::EntityNameSetBase_O);
-TRANSLATE(chem::EntityNameSet_O);
-TRANSLATE(chem::EntityNameSetWithCap_O);
 #endif
 #endif

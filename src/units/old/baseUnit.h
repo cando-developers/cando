@@ -73,6 +73,5 @@ public: // Functions here
 
 }; /* units */
 
-TRANSLATE(units::BaseUnit_O);
 
 #endif /* _units_BaseUnit_H */

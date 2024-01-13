@@ -161,5 +161,4 @@ inline	NumericalFunction_sp NumericalFunction_O::create(core::T_sp xaxis,
 }
 
 };
-TRANSLATE(chem::NumericalFunction_O);
 #endif

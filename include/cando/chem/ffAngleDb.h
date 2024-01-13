@@ -152,6 +152,4 @@ public:
 
 };
 
-TRANSLATE(chem::FFAngle_O);
-TRANSLATE(chem::FFAngleDb_O);
 #endif

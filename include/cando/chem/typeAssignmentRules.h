@@ -95,7 +95,5 @@ namespace chem {
 
 
 };
-TRANSLATE(chem::OneTypeRule_O);
-TRANSLATE(chem::TypeAssignmentRules_O);
 #endif //]
 #endif

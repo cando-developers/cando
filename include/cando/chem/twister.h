@@ -146,6 +146,4 @@ CL_DEFMETHOD   void perturbConformation();
 
 };
 
-TRANSLATE(chem::Twister_O);
-TRANSLATE(chem::TwisterDriver_O);
 #endif

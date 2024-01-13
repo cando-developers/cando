@@ -74,6 +74,5 @@ public: // Functions here
 
 }; /* units */
 
-TRANSLATE(units::System_O);
 
 #endif /* _units_System_H */

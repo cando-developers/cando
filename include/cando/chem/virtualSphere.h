@@ -110,5 +110,4 @@ public:
 
 
 
-TRANSLATE(chem::VirtualSphere_O);
 #endif
