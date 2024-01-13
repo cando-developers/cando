@@ -227,8 +227,6 @@ public:
 
 };
 
-TRANSLATE(chem::InfoDb_O);
-TRANSLATE(chem::ForceField_O);
 #endif
 
 

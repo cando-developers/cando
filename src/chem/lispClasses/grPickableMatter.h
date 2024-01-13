@@ -201,8 +201,4 @@ namespace chem
 
 };
 
-TRANSLATE(chem::RenderMatterAtom_O);
-TRANSLATE(chem::RenderMatterBond_O);
-TRANSLATE(chem::RenderMatterResidue_O);
-TRANSLATE(chem::GrPickableMatter_O);
 #endif

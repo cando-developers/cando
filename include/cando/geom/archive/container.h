@@ -60,5 +60,4 @@ public:
 
 
 };
-TRANSLATE(geom::Container_O);
 #endif //]

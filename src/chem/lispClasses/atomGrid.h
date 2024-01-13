@@ -158,5 +158,4 @@ public:
 
 
 };
-TRANSLATE(chem::AtomGrid_O);
 #endif

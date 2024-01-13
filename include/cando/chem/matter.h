@@ -391,5 +391,4 @@ protected:
 };
 
 };
-TRANSLATE(chem::Matter_O);
 #endif

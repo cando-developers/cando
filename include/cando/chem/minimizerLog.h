@@ -199,9 +199,4 @@ public:
 };
 
 
-TRANSLATE(chem::ReportBase_O);
-TRANSLATE(chem::MessageReport_O);
-TRANSLATE(chem::ForceMatchReport_O);
-TRANSLATE(chem::StepReport_O);
-TRANSLATE(chem::MinimizerLog_O);
 #endif

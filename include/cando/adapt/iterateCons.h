@@ -78,6 +78,5 @@ CL_DEFMETHOD     void init(core::List_sp c) { this->_Begin = c; };
 };
 
 
-TRANSLATE(adapt::IterateCons_O);
 
 #endif //]

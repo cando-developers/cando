@@ -100,6 +100,5 @@ public: // Functions here
 
 }; /* units */
 
-TRANSLATE(units::Xyz_O);
 
 #endif /* _units_Xyz_H */

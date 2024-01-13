@@ -133,6 +133,4 @@ namespace chem
     };
 
 };
-TRANSLATE(chem::PdbReader_O);
-TRANSLATE(chem::PdbWriter_O);
 #endif //]

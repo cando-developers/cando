@@ -70,5 +70,4 @@ namespace geom {
 
 
 };
-TRANSLATE(geom::Range_O);
 #endif //]

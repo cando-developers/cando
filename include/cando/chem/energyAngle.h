@@ -239,5 +239,4 @@ public:
 
 };
 
-TRANSLATE(chem::EnergyAngle_O);
 #endif //]

@@ -57,6 +57,5 @@ public: // Functions here
 
 }; /* units */
 
-TRANSLATE(units::Dimension_O);
 
 #endif /* _units_Dimension_H */

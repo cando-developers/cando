@@ -75,5 +75,4 @@ namespace chem {
 
 
 };
-TRANSLATE(chem::IterateRestraints_O);
 #endif //]

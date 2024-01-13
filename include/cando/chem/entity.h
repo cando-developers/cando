@@ -105,6 +105,5 @@ class Entity_O : public core::CxxObject_O
 
 
 };
-TRANSLATE(chem::Entity_O);
 #endif //]
 #endif

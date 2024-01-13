@@ -92,6 +92,5 @@ public:
 };
 };
 
-TRANSLATE(adapt::StringList_O);
 #endif
 #endif

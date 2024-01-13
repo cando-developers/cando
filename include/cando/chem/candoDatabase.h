@@ -211,5 +211,4 @@ public:
 core::T_mv chem__findTopology(core::T_sp name, bool errorp = true);
 }; // _Namespace chem
 
-TRANSLATE(chem::CandoDatabase_O);
 #endif

@@ -82,6 +82,4 @@ namespace chem
 
 
 };
-TRANSLATE(chem::AtomReferenceBase_O);
-TRANSLATE(chem::AtomReference_O);
 #endif //]

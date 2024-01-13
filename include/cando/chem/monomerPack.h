@@ -103,6 +103,5 @@ public:
 };
 
 
-TRANSLATE(chem::MonomerPack_O);
 #endif
 #endif

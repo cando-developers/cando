@@ -69,6 +69,5 @@ public: // Functions here
 
 }; /* chem */
 
-TRANSLATE(chem::ProperTorsion_O);
 
 #endif /* _chem_ProperTorsion_H */

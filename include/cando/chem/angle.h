@@ -65,6 +65,5 @@ public: // Functions here
 
 }; /* chem */
 
-TRANSLATE(chem::Angle_O);
 
 #endif /* _chem_Angle_H */

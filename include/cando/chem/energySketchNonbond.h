@@ -167,5 +167,4 @@ class EnergySketchNonbond_O : public EnergyComponent_O
 
 };
 
-TRANSLATE(chem::EnergySketchNonbond_O);
 #endif //]

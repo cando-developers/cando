@@ -174,10 +174,5 @@ namespace kinematics
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::Rotamer_O);
-TRANSLATE(kinematics::RotamerSetBase_O);
-TRANSLATE(kinematics::RotamerSet_O);
-TRANSLATE(kinematics::BackboneDependentRotamerSet_O);
-TRANSLATE(kinematics::BackboneDependentRotamerLibrary_O);
 
 #endif /* _kinematics_Rotamer_H */

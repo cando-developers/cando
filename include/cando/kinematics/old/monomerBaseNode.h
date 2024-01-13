@@ -52,6 +52,5 @@ namespace kinematics
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::MonomerBaseNode_O);
 
 #endif /* _kinematicsMonomerBaseNode_H */

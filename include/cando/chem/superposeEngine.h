@@ -177,6 +177,4 @@ public:
 
 };
 
-TRANSLATE(chem::SuperposeEngine_O);
-TRANSLATE(chem::SuperposeSelectedAtoms_O);
 #endif //]

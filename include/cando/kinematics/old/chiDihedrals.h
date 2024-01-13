@@ -106,7 +106,5 @@ public: // Functions here
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::ChiDihedral_O);
-TRANSLATE(kinematics::ChiList_O);
 
 #endif /* _kin_ChiDihedral_H */

@@ -309,7 +309,4 @@ namespace       chem
 };
 
 
-TRANSLATE(chem::TrainerHeader_O);
-TRANSLATE(chem::Trainer_O);
-TRANSLATE(chem::TrainerOrganizer_O);
 #endif

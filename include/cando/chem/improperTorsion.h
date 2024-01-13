@@ -72,6 +72,5 @@ public: // Functions here
 
 }; /* chem */
 
-TRANSLATE(chem::ImproperTorsion_O);
 
 #endif /* _chem_ImproperTorsion_H */

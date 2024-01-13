@@ -71,5 +71,4 @@ public:
 
 
 };
-TRANSLATE(geom::IterateRange_O);
 #endif //]

@@ -145,5 +145,4 @@ public:
 
 
 };
-TRANSLATE(chem::SuperposableConformationCollection_O);
 #endif //]

@@ -222,8 +222,6 @@ class BondList_O : public core::CxxObject_O
 
 };
 
-TRANSLATE(chem::Bond_O);
-TRANSLATE(chem::BondList_O);
 
 
 namespace kw {

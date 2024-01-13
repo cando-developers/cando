@@ -162,8 +162,4 @@ public:
 
 
 };
-TRANSLATE(chem::IterateMatter_O);
-TRANSLATE(chem::IterateAtoms_O);
-TRANSLATE(chem::IterateResidues_O);
-TRANSLATE(chem::IterateBonds_O);
 #endif //]

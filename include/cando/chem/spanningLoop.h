@@ -150,5 +150,4 @@ CL_DEFMETHOD 	bool		advance() { return this->advanceLoopAndProcess(); };
 
 };
 
-TRANSLATE(chem::SpanningLoop_O);
 #endif

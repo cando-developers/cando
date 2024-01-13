@@ -114,6 +114,5 @@ public:
 
 };
 
-TRANSLATE(geom::IntegerKeyObjectDictionary_O);
 
 #endif //]

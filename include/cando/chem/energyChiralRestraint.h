@@ -202,5 +202,4 @@ public:
 
 };
 
-TRANSLATE(chem::EnergyChiralRestraint_O);
 #endif //]

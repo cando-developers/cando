@@ -337,12 +337,6 @@ CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(thi
 
 };
 
-    TRANSLATE(chem::ZMatrixInternal_O);
-    TRANSLATE(chem::ZMatrixBondInternal_O);
-    TRANSLATE(chem::ZMatrixAngleInternal_O);
-    TRANSLATE(chem::ZMatrixDihedralInternal_O);
-    TRANSLATE(chem::ZMatrixEntry_O);
-    TRANSLATE(chem::ZMatrix_O);
 
 
 

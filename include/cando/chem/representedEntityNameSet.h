@@ -91,6 +91,5 @@ CL_DEFMETHOD 	string	testRepresentedEntityNameSet() { return "testRepresentedEnt
 };
 
 
-TRANSLATE(chem::RepresentedEntityNameSet_O);
 #endif
 #endif

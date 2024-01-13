@@ -77,6 +77,5 @@ namespace omm
 
 };
 
-TRANSLATE(omm::State_O);
 
 #endif //]

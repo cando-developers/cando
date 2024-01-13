@@ -97,6 +97,4 @@ DEFAULT_CTOR_DTOR(PdbMonomerDatabase_O);
 
     };
 
-TRANSLATE(chem::PdbMonomerConnectivity_O);
-TRANSLATE(chem::PdbMonomerDatabase_O);
 #endif

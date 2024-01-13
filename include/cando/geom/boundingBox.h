@@ -92,5 +92,4 @@ public:
 };
 
 }; // namespace geom
-TRANSLATE(geom::BoundingCuboid_O);
 #endif //]
