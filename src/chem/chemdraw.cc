@@ -647,7 +647,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
     }
     core::HashTable_sp stereochemistryType = gc::As<core::HashTable_sp>(ret2);
     stereochemistryType->mapHash([](core::T_sp key, core::T_sp val) {
-      StereochemistryType st = translate::from_object<StereochemistryType,std::true_type>(val)._v;
+      StereochemistryType st = translate::from_object<StereochemistryType>(val)._v;
         gc::As<Atom_sp>(key)->_StereochemistryType = st;
       }
       );
