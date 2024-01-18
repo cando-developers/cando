@@ -49,6 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+SYMBOL_EXPORT_SC_(KeywordPkg,ChiralRestraint)
 
 #define CHIRAL_RESTRAINT_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
@@ -60,7 +61,7 @@ if (hasActiveAtomMask \
     ) goto SKIP_term;
 #define CHIRAL_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyChiralRestraint_O::staticClass(), \
+      core::eval::funcall(debugInteractions,kw::_sym_ChiralRestraint, \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4)); \
     }
@@ -325,7 +326,7 @@ num_real EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         auto as2 = atomLabel(cri->_Atom2);
 	auto as3 = atomLabel(cri->_Atom3);
 	auto as4 = atomLabel(cri->_Atom4);
-        core::clasp_write_string(fmt::format("TERM 7CHIRAL {} {} {:<9} {:<9} {:<9} {:<9} {:8.2f} {:8.2f} ; I1={} I2={} I3={} I4={}\n" , Energy, _rep_(cri->_Atom3), as1 , as2 , as3 , as4 , cri->term.K , cri->term.CO , cri->term.I1 , cri->term.I2 , cri->term.I3 , cri->term.I4 ));
+//        core::clasp_write_string(fmt::format("TERM 7CHIRAL {} {} {:<9} {:<9} {:<9} {:<9} {:8.2f} {:8.2f} ; I1={} I2={} I3={} I4={}\n" , Energy, _rep_(cri->_Atom3), as1 , as2 , as3 , as4 , cri->term.K , cri->term.CO , cri->term.I1 , cri->term.I2 , cri->term.I3 , cri->term.I4 ));
       }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       cri->_calcForce = calcForce;

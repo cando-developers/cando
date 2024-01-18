@@ -61,6 +61,34 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+core::T_sp debug_nonbond(double Energy, double x1, double y1, double z1, double x2, double y2, double z2,
+                         double charge11, double charge22, double dQ1Q2, double dA, double dC, double Eeel, double Evdw ) {
+  ql::list ll;
+  ll << mk_double_float(Energy)
+     << mk_double_float(x1)
+     << mk_double_float(y1)
+     << mk_double_float(z1)
+     << mk_double_float(x2)
+     << mk_double_float(y2)
+     << mk_double_float(z2)
+     << mk_double_float(charge11)
+     << mk_double_float(charge22)
+     << mk_double_float(dQ1Q2)
+     << mk_double_float(dA)
+     << mk_double_float(dC)
+     << mk_double_float(Eeel)
+     << mk_double_float(Evdw)
+      ;
+  return ll.cons();
+}
+
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyNonbond);
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyNonbond14);
+
+core::T_sp nonbond_type(bool is14) {
+  if (is14) return chem::_sym_EnergyNonbond14;
+  return chem::_sym_EnergyNonbond;
+}
 #define NONBOND_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
@@ -69,8 +97,8 @@ if (hasActiveAtomMask \
     ) goto SKIP_term;
 #define NONBOND_DEBUG_INTERACTIONS(I1,I2) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyNonbond_O::staticClass(), \
-                          mk_double_float(Energy), \
+      core::eval::funcall(debugInteractions,nonbond_type(InteractionIs14), \
+                          debug_nonbond(Energy,x1,y1,z1,x2,y2,z2,charge11,charge22,dQ1Q2,dA,dC,Eeel,Evdw), \
                           core::make_fixnum(I1), core::make_fixnum(I2)); \
     }
 
@@ -100,6 +128,11 @@ core::List_sp EnergyNonbond::encode() const {
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg,find_type);
+
+inline double calculate_dQ1Q2(double electrostaticScale,double electrostaticModifier, double charge1, double charge2 )
+{
+  return electrostaticScale*electrostaticModifier*charge1*charge2;
+}
 
 bool	EnergyNonbond::defineForAtomPair(core::T_sp	forceField,
                                          bool		is14,
@@ -157,10 +190,9 @@ bool	EnergyNonbond::defineForAtomPair(core::T_sp	forceField,
     this->term.dC = this->_C*vdwScale;
   }
   {
-    electrostaticScale *= ELECTROSTATIC_MODIFIER;
     this->_Charge1 = a1->getCharge();
     this->_Charge2 = a2->getCharge();
-    this->term.dQ1Q2 = electrostaticScale*(this->_Charge1*this->_Charge2)/energyNonbond->getDielectricConstant();
+    this->term.dQ1Q2 = calculate_dQ1Q2(electrostaticScale,ELECTROSTATIC_MODIFIER,this->_Charge1,this->_Charge2); // ,energyNonbond->getDielectricConstant()); (this->_Charge1*this->_Charge2)/energyNonbond->getDielectricConstant();
     LOG( "Calc dQ1Q2 electrostaticScale= {}" , (double)(electrostaticScale));
     LOG( "Calc dQ1Q2 Dielectric constant = {}" , (double)(energyNonbond->getDielectricConstant()));
     LOG( "Calc dQ1Q2 Charge1 = {}" , (double)(this->_Charge1));
@@ -313,14 +345,14 @@ num_real EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 
 
 num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
-                                       NVector_sp 	pos,
-                                       core::T_sp componentEnergy,
-                                       bool 		calcForce,
-                                       gc::Nilable<NVector_sp> 	force,
-                                       bool		calcDiagonalHessian,
-                                       bool		calcOffDiagonalHessian,
-                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                       gc::Nilable<NVector_sp>	hdvec, 
+                                        NVector_sp 	pos,
+                                        core::T_sp componentEnergy,
+                                        bool 		calcForce,
+                                        gc::Nilable<NVector_sp> 	force,
+                                        bool		calcDiagonalHessian,
+                                        bool		calcOffDiagonalHessian,
+                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                        gc::Nilable<NVector_sp>	hdvec, 
                                         gc::Nilable<NVector_sp> 	dvec,
                                         core::T_sp activeAtomMask,
                                         core::T_sp debugInteractions )
@@ -376,7 +408,9 @@ num_real EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
       for ( i=0;i<nonBondTerms; i++ )
       {
         nbi = firstElement+i;
-
+        bool InteractionIs14 = nbi->_Is14;
+        num_real charge11 = nbi->_Charge1;
+        num_real charge22 = nbi->_Charge2;
 #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
         if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
           if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
@@ -544,12 +578,13 @@ num_real EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
       int localindex2 = (*this->_iac_vec)[index2];
       dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
       dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      bool InteractionIs14 = false; // always false for excluded atoms calculations
 //      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
 //      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
       num_real charge22 = (*this->_charge_vector)[index2];
 
 //      dQ1Q2 = electrostatic_scaled_charge11*charge22;
-      dQ1Q2 = charge11*charge22;
+      dQ1Q2 = calculate_dQ1Q2(this->getElectrostaticScale(),ELECTROSTATIC_MODIFIER,charge11,charge22);
 //      printf("%s:%d charge1     {} and charge2     {}\n", __FILE__, __LINE__, charge11, charge22);
 //      printf("%s:%d electrostaticScale     {} and dQ1Q2     {}\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
 #ifdef DEBUG_NONBOND_TERM
@@ -924,17 +959,30 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
     Loop loop;
     loop.loopTopGoal(matter,PROPERS);
     size_t terms(0);
+    // Don't add duplicate terms
+    std::set<pair<size_t,size_t>> duplicates;
     while ( loop.advanceLoopAndProcess() ) {
       Atom_sp a1 = loop.getAtom1();
       Atom_sp a4 = loop.getAtom4();
       if ( skipInteraction(keepInteraction,EnergyNonbond_O::staticClass(), a1, a4 ) ) continue;
       auto ea1 = atomTable->getEnergyAtomPointer(a1);
       auto ea4 = atomTable->getEnergyAtomPointer(a4);
-      energyNonbond.defineFrom(forceField,true,&*ea1,&*ea4,this->asSmartPtr(),atomTypes);
-      LOG("About to addTerm");
-      this->addTerm(energyNonbond);
-      LOG("Returned from addTerm");
-      ++terms;
+      size_t ia1 = ea1->_IndexTimes3;
+      size_t ia4 = ea4->_IndexTimes3;
+      if (ia1>ia4) {
+        size_t ttt = ia1;
+        ia1 = ia4;
+        ia4 = ttt;
+      }
+      auto ia1ia4 = std::make_pair(ia1,ia4);
+      if (!duplicates.contains(ia1ia4)) {
+        duplicates.insert(ia1ia4);
+        energyNonbond.defineFrom(forceField,true,&*ea1,&*ea4,this->asSmartPtr(),atomTypes);
+        LOG("About to addTerm");
+        this->addTerm(energyNonbond);
+        LOG("Returned from addTerm");
+        ++terms;
+      }
     }
     if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built 14 interaction table with {} terms\n" , terms));
   }
@@ -1035,7 +1083,7 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp
         Atom_sp a2 = lMat2.getAtom();
         size_t a2CoordinateIndexTimes3 = atomTable->getCoordinateIndexTimes3(a2);
         EnergyNonbond energyNonbond;
-        bool in14 = false; // Should this be conditional
+        bool in14 = false; // Between residues there are never 1-4
         if ( energyNonbond.defineForAtomPair(nbForceField, in14, a1, a2, a1CoordinateIndexTimes3, a2CoordinateIndexTimes3,
                                              this->sharedThis<EnergyNonbond_O>(), atomTypes) )  {
           this->addTerm(energyNonbond);

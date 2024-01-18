@@ -55,7 +55,7 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I2/3))) goto SKIP_term;
 #define STRETCH_DEBUG_INTERACTIONS(I1,I2) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyStretch_O::staticClass(), \
+      core::eval::funcall(debugInteractions,EnergyStretch_O::static_classSymbol(), \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1), core::make_fixnum(I2)); \
     }

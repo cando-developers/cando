@@ -51,13 +51,12 @@ public:
   static const NodeType nodeType = xyzJoint;
   static const int MaxChildren = 5;
 public:
-  core::T_sp    _Orientation;
   int		_NumberOfChildren;
         // _Children start with the value unbound
   Joint_sp	_Children[MaxChildren];
   Vector3       _Pos;
 public:
-  static XyzJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation, const Vector3& pos);
+  static XyzJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, const Vector3& pos);
 public:
 	/*! Xyz atoms can have different numbers of children wrt JumpJoints */
   virtual int _maxNumberOfChildren() const { return MaxChildren;};
@@ -77,15 +76,11 @@ public:
 	/*! Delete all of the children for the destructor */
   virtual void _releaseAllChildren();
 
-  CL_DEFMETHOD core::T_sp getOrientation() const { return this->_Orientation; };
-  CL_DEFMETHOD void setOrientation(core::T_sp orientation) { this->_Orientation = orientation; };
 public:
   XyzJoint_O() : Joint_O(),
-                 _Orientation(nil<core::T_O>()),
                  _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()} {};
-  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation,
-             const Vector3& pos )
-      : Joint_O(atomId,name,atomTable), _Orientation(orientation),
+  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, const Vector3& pos )
+      : Joint_O(atomId,name,atomTable),
         _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
         _Pos(pos) {};
 
@@ -123,6 +118,7 @@ public:
 
   CL_NAME(KIN:XYZ-JOINT/GET-POS);
   CL_DEFMETHOD Vector3 getPos() const { return this->_Pos; };
+  CL_DEFMETHOD Vector3 transformedPos() const { return this->_Pos; };
 
 };
 
@@ -147,23 +143,28 @@ public:
 public:
   Vector3       _ParentPos;
   Vector3       _GrandParentPos;
+  Vector3       _GreatGrandParentPos;
 public:
-  static StubJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation,
+  static StubJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable,
                            const Vector3& pos,
                            const Vector3& parentPos,
-                           const Vector3& grandParentPos
+                           const Vector3& grandParentPos,
+                           const Vector3& greatGrandParentPos
                            );
 public:
   StubJoint_O() : XyzJoint_O() {};
-  StubJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation,
+  StubJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, 
               const Vector3& pos,
               const Vector3& parentPos,
-              const Vector3& grandParentPos
+              const Vector3& grandParentPos,
+              const Vector3& greatGrandParentPos
               )
-    : XyzJoint_O(atomId,name,atomTable,orientation,pos), _ParentPos(parentPos), _GrandParentPos(grandParentPos) {}
+      : XyzJoint_O(atomId,name,atomTable,pos), _ParentPos(parentPos), _GrandParentPos(grandParentPos),
+        _GreatGrandParentPos(greatGrandParentPos) {}
 
   Vector3 transformedParentPos() const;
   Vector3 transformedGrandParentPos() const;
+  Vector3 transformedGreatGrandParentPos() const;
 
   Joint_sp parent() const { SIMPLE_ERROR("Never ask for the parent of {}", _rep_(this->asSmartPtr()) ); };
   void _updateXyzCoord(chem::NVector_sp coords, Stub& stub);

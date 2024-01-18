@@ -52,6 +52,32 @@ This is an open source license for the CANDO software from Temple University, bu
   
 namespace chem {
 
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn1);
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn2);
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn3);
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn4);
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn5);
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn6);
+SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralUnknown);
+
+core::T_sp dihedral_type(int in) {
+  switch (in) {
+  case 1:
+      return chem::_sym_EnergyDihedralIn1;
+  case 2:
+      return chem::_sym_EnergyDihedralIn2;
+  case 3:
+      return chem::_sym_EnergyDihedralIn3;
+  case 4:
+      return chem::_sym_EnergyDihedralIn4;
+  case 5:
+      return chem::_sym_EnergyDihedralIn5;
+  case 6:
+      return chem::_sym_EnergyDihedralIn6;
+  }
+  return chem::_sym_EnergyDihedralUnknown;
+}
+
 #undef DIHEDRAL_APPLY_ATOM_MASK
 #define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
@@ -62,7 +88,7 @@ if (hasActiveAtomMask \
     ) goto SKIP_term;
 #define USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyDihedral_O::staticClass(), \
+      core::eval::funcall(debugInteractions,dihedral_type(IN), \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4)); \
     }

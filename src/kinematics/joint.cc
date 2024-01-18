@@ -186,6 +186,7 @@ string Joint_O::asString() const
   return ss.str();
 }
 
+CL_DEFMETHOD
 void Joint_O::setParent(Joint_sp parent)
 {
   this->_Parent = parent;

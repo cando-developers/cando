@@ -72,9 +72,15 @@
   (when (slot-boundp adjustment 'other)
     (let* ((joint (joint adjustment))
            (other (other adjustment))
+           (phi-original (kin:bonded-joint/get-phi joint))
            (phi-other (kin:bonded-joint/get-phi other))
-           (adjust-phi (radians-add phi-other PI)))
-      (kin:bonded-joint/set-phi joint adjust-phi))))
+           (phi-adjust (radians-add phi-other PI)))
+      #+(or)(format t "internal-adjust ~s phi-original ~8,3f  phi-adjust ~8,3f~%"
+              joint
+              (topology:rad-to-deg phi-original) (topology:rad-to-deg phi-adjust))
+      #+(or)(kin:bonded-joint/set-distance joint 1.47)
+      #+(or)(kin:bonded-joint/set-theta joint (topology:deg-to-rad 120.0))
+      (kin:bonded-joint/set-phi joint phi-adjust))))
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
   (make-instance 'bonded-joint-template
@@ -400,6 +406,45 @@
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
+(defun create-stub-joint (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  (let* ((base-assembler (backbone-assembler monomer-subset))
+         (base-coordinates (coordinates monomer-subset))
+         (base-ataggregate (ataggregate base-assembler))
+         (base-monomer-pos (gethash monomer (monomer-positions base-assembler)))
+         (base-atresidue (at-position base-ataggregate base-monomer-pos))
+         (base-joint0 (aref (joints base-atresidue) 0))
+         (base-parent-joint (kin:parent base-joint0))
+         (base-grand-parent-joint (kin:parent base-parent-joint))
+         (base-great-grand-parent-joint (kin:parent base-grand-parent-joint))
+         (base-j-pos (kin:joint/position base-joint0 base-coordinates))
+         (base-pj-pos (kin:joint/position base-parent-joint base-coordinates))
+         (base-gpj-pos (kin:joint/position base-grand-parent-joint base-coordinates))
+         (base-ggpj-pos (kin:joint/position base-great-grand-parent-joint base-coordinates))
+         (constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-stub-joint atomid atom-name atom-table base-j-pos base-pj-pos base-gpj-pos base-ggpj-pos))
+         (backbone-atom-tree-spliced-parent (gethash monomer (monomers monomer-subset))))
+    (put-joint atresidue joint constitution-atoms-index)
+    (kin:joint/set-parent joint backbone-atom-tree-spliced-parent)
+    joint))
+
+(defun create-xyz-joint-connect-to-backbone (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-xyz-joint atomid atom-name atom-table))
+         (backbone-atom-tree-spliced-parent (gethash monomer (monomers monomer-subset))))
+    (put-joint atresidue joint constitution-atoms-index)
+    (kin:joint/set-parent joint backbone-atom-tree-spliced-parent)
+    joint))
+
+
+(defun deal-with-pair-scan-sidechain (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  #+(or) (create-xyz-joint-connect-to-backbone monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  (create-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  )
+
 (defmethod write-into-joint-tree ((joint-template xyz-joint-template)
                                   parent-joint
                                   atresidue
@@ -411,16 +456,14 @@
                                   monomer monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
-      (progn
-        (put-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
-        )
+      (deal-with-pair-scan-sidechain monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
       (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
              (atom-name (atom-name joint-template))
              (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-             (joint (kin:make-xyz-joint atomid atom-name atom-table one-orientation)))
-        (put-joint atresidue joint constitution-atoms-index)
-        (when parent-joint (kin:joint/add-child parent-joint joint))
-        joint)))
+             (new-joint (kin:make-xyz-joint atomid atom-name atom-table)))
+        (put-joint atresidue new-joint constitution-atoms-index)
+        (when parent-joint (kin:joint/add-child parent-joint new-joint))
+        new-joint)))
 
 (defmethod write-into-joint-tree ((joint-template adjustable-bonded-joint-template)
                                   parent-joint
@@ -441,25 +484,6 @@
                           atresidue))
     joint))
 
-(defun put-stub-joint (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
-  (let* ((base-assembler (assembler monomer-subset))
-         (base-coordinates (coordinates monomer-subset))
-         (base-ataggregate (ataggregate base-assembler))
-         (base-monomer-pos (gethash monomer (monomer-positions base-assembler)))
-         (base-atresidue (at-position base-ataggregate base-monomer-pos))
-         (base-joint0 (aref (joints base-atresidue) 0))
-         (base-parent-joint (kin:parent base-joint0))
-         (base-grand-parent-joint (kin:parent base-parent-joint))
-         (base-great-grand-parent-joint (kin:parent base-grand-parent-joint))
-         (base-j-pos (kin:joint/position base-joint0 base-coordinates))
-         (base-pj-pos (kin:joint/position base-parent-joint base-coordinates))
-         (base-gpj-pos (kin:joint/position base-grand-parent-joint base-coordinates))
-         (constitution-atoms-index (constitution-atoms-index joint-template))
-         (atom-name (atom-name joint-template))
-         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (kin:make-stub-joint atomid atom-name atom-table one-orientation base-j-pos base-pj-pos base-gpj-pos)))
-    (put-joint atresidue joint constitution-atoms-index)))
-
 (defmethod write-into-joint-tree ((joint-template in-plug-bonded-joint-template)
                                   parent-joint
                                   atresidue
@@ -471,7 +495,7 @@
                                   monomer monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
-      (put-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
+      (deal-with-pair-scan-sidechain monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
       (let* ((joint (call-next-method))
              (in-plug (in-plug joint-template))
              (in-plug-name (name in-plug))
@@ -494,7 +518,7 @@
                                   monomer monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
-      (put-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table one-orientation atresidue)
+      (deal-with-pair-scan-sidechain monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
       (let ((joint (call-next-method)))
         (when adjustments
           (add-to-adjustments adjustments

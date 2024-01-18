@@ -53,7 +53,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/translators.h>
 #include <clasp/core/wrappers.h>
 
-
+SYMBOL_EXPORT_SC_(ChemPkg,missing_atom_type_error);
 
 
 namespace chem
@@ -70,7 +70,8 @@ void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinat
 {
   this->setupBase(a1,coordinateIndex);
   if (a1->getType(atomTypes).nilp()) {
-    SIMPLE_ERROR("In EnergyAtom::defineForAtom - the atom type of {} is NIL!" , _rep_(a1));
+    ERROR(_sym_missing_atom_type_error, core::lisp_createList(INTERN_(kw,atm), a1, INTERN_(kw,atom_types_hash_table), atomTypes ));
+//    SIMPLE_ERROR("In EnergyAtom::defineForAtom - the atom type of {} is NIL!" , _rep_(a1));
   }
   core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType(atomTypes));
   if (!typeIndex.fixnump()) {

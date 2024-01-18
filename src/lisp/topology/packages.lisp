@@ -232,6 +232,7 @@
    #:rotor3
    #:translation
    #:monomer-shape
+   #:rotamer-shape
    #:coordinates
    #:joint-with-name
    #:residue-properties
@@ -302,9 +303,8 @@
    #:radians-limit
    #:degrees-limit
    #:degrees-sub
-   #:fill-internals-from-oligomer-shape-and-adjust
    #:build-all-atom-tree-external-coordinates-and-adjust
-   #:rotamers-map
+   #:rotamers-database
    #:orientation
    #:to-origin
    #:from-origin
@@ -371,6 +371,7 @@
    #:aggregate*
    #:make-monomer-subset
 
+   #:update-internals-for-atresidue
    #:update-internals
    #:build-oligomer-shape-externals
    #:the-root-monomer
@@ -394,7 +395,14 @@
    #:analyze-atresidue
    #:monomers-of-shape-kind
    #:make-monomer-subset-with-assembler
-   #:copy-oligomer-shape))
+   #:copy-oligomer-shape
+   #:monomer-index
+   #:copy-monomer-shape
+   #:monomer-shape-info-vector
+   #:apply-monomer-shape-to-atresidue-internals
+   #:internal-adjustments
+   #:adjustments
+   #:enumerated-rotamer-state))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

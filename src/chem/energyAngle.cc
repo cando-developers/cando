@@ -58,7 +58,7 @@ if (hasActiveAtomMask \
     ) goto SKIP_term;
 #define ANGLE_DEBUG_INTERACTIONS(I1,I2,I3) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyAngle_O::staticClass(), \
+      core::eval::funcall(debugInteractions,EnergyAngle_O::static_classSymbol(), \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3)); \
     }

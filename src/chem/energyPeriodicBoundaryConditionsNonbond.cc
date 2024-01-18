@@ -63,6 +63,10 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+core::T_sp pbnonbond_type(bool is14) {
+  if (is14) return chem::_sym_EnergyNonbond14;
+  return chem::_sym_EnergyNonbond;
+}
 
 #define NONBOND_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
@@ -73,7 +77,7 @@ if (hasActiveAtomMask \
 
 #define NONBOND_DEBUG_INTERACTIONS(I1,I2) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyNonbond_O::staticClass(), \
+      core::eval::funcall(debugInteractions,pbnonbond_type(InteractionIs14), \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1), core::make_fixnum(I2)); \
     }
@@ -240,6 +244,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
         }
 #endif
         num_real vljrc = nbi->term.dA*this->_NonbondCutoffReciprocal12-nbi->term.dC*this->_NonbondCutoffReciprocal6;
+        bool InteractionIs14 = nbi->_Is14;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
       DONE:
 
@@ -443,6 +448,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
         }
       }
 #endif
+      bool InteractionIs14 = false; // Always false for excluded atoms
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
     DONE:
 #if 0

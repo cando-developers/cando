@@ -110,5 +110,6 @@
                #~"monomer.cc"
                #~"conformationExplorer.cc"
                #~"conformationCollection.cc"
+               #~"monteCarlo.cc"
                #~"octree.cc")
 

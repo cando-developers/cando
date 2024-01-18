@@ -60,7 +60,7 @@ if (hasActiveAtomMask \
     ) goto SKIP_term;
 #define IMPROPER_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyDihedralRestraint_O::staticClass(), \
+      core::eval::funcall(debugInteractions,EnergyDihedralRestraint_O::static_classSymbol(), \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4)); \
     }

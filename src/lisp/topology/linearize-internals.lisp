@@ -611,7 +611,8 @@ monomer-context-index indexes into ...
   (let ((linearized (create-linearized-matched-context-rotamers-holder map)))
     (save-linearized-matched-context-rotamers-holder linearized filename)))
 
-(defmethod apply-fragment-internals-to-atresidue ((fragment-internals linearized-fragment-internals) atresidue)
+(defmethod apply-fragment-internals-to-atresidue ((fragment-internals linearized-fragment-internals) rotamer-index atresidue)
+  (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (joints atresidue)
         for index from 0 by 3
         for bond = (elt (internals-values fragment-internals) index)

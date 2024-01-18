@@ -223,12 +223,14 @@
       (print-unreadable-object (obj stream :type t )
         (format stream "~a contexts" (hash-table-count (context-to-rotamers obj))))))
 
-(defmethod apply-fragment-internals-to-atresidue ((obj rotamer) atresidue)
+(defmethod apply-fragment-internals-to-atresidue ((obj rotamer) rotamer-index atresidue)
+  (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (topology:joints atresidue)
         for index from 0
         do (multiple-value-bind (bond angle-rad dihedral-rad)
                (topology:extract-bond-angle-rad-dihedral-rad obj index)
-             (topology:fill-joint-internals joint bond angle-rad dihedral-rad))))
+             (when (typep joint 'kin:bonded-joint)
+               (topology:fill-joint-internals joint bond angle-rad dihedral-rad)))))
 
 
 (defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
@@ -588,9 +590,10 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
             (aref (internals-values rotamer) (+ 1 index3))
             (aref (internals-values rotamer) (+ 2 index3)))))
 
-(defgeneric apply-fragment-internals-to-atresidue (fragment-internals atresidue))
+(defgeneric apply-fragment-internals-to-atresidue (fragment-internals rotamer-index atresidue))
 
-(defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) atresidue)
+(defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) rotamer-index atresidue)
+  (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (joints atresidue)
         for index from 0
         do (multiple-value-bind (bond angle-rad dihedral-rad)

@@ -174,3 +174,10 @@
     (let ((unique (remove-duplicates *parameter-warnings* :test #'estimated-terms-eq)))
       (loop for warning in unique
             do (format t "~a~%" warning)))))
+
+(define-condition chem:missing-atom-type-error (error)
+  ((message :initform "There was a missing atom type" :initarg :message :reader message)
+   (atm :initarg :atm :reader atm)
+   (atom-types-hash-table :initarg :atom-types-hash-table :reader atom-types-hash-table))
+  (:report (lambda (condition stream)
+             (format stream "~a ~a" (atm condition) (atom-types-hash-table condition)))))

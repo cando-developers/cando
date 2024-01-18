@@ -41,4 +41,3 @@ namespace chem {
 
 }; // namespace chem
 
-#endif

@@ -49,7 +49,7 @@ if (hasActiveAtomMask \
     ) goto SKIP_term;
 #define ANCHOR_RESTRAINT_APPLY_DEBUG_INTERACTIONS(I1) \
     if (doDebugInteractions) { \
-      core::eval::funcall(debugInteractions,EnergyAnchorRestraint_O::staticClass(), \
+      core::eval::funcall(debugInteractions,EnergyAnchorRestraint_O::static_classSymbol(), \
                           mk_double_float(Energy), \
                           core::make_fixnum(I1); \
     }

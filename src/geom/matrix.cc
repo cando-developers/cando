@@ -1574,5 +1574,4 @@ CL_DEFUN double calculateAngle( const Vector3& va,
   return ang;
 }
 
-
 };

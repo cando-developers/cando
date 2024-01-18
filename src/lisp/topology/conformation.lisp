@@ -74,10 +74,11 @@
   ()
   (:documentation "This class is an assembler that builds a subset of another assembler"))
 
-(defun aggregate* (assembler &optional coordinates)
+(defun aggregate* (assembler coordinates &key (name :all))
   "Return a copy of the aggregate with coordinates if provided"
   (let ((agg (chem:matter-copy (topology:aggregate assembler))))
     (when coordinates (chem:matter-apply-coordinates agg coordinates))
+    (chem:set-name agg name)
     agg))
 
 (defclass training-assembler (assembler-base)
@@ -148,16 +149,20 @@ Specialize the foldamer argument to provide methods"))
   ((monomers :initarg :monomers :reader monomers)))
 
 (defclass monomer-subset-with-assembler (monomer-subset)
-  ((assembler :initarg :assembler :reader assembler)
+  ((backbone-assembler :initarg :backbone-assembler :reader backbone-assembler)
    (coordinates :initarg :coordinates :reader coordinates)))
 
-(defun make-monomer-subset-with-assembler (assembler coordinates list-of-monomers)
+(defun make-monomer-subset-with-assembler (backbone-assembler coordinates list-of-monomers)
   "Make a monomer-subset, currently a hash-table with keys of monomers and values of T"
   (let ((ht (make-hash-table)))
-    (loop for mon in list-of-monomers
-          do (setf (gethash mon ht) t))
+    (loop for monomer in list-of-monomers
+          for backbone-pos = (gethash monomer (monomer-positions backbone-assembler))
+          for backbone-atresidue = (topology:at-position (topology:ataggregate backbone-assembler) backbone-pos)
+          for first-joint = (aref (topology:joints backbone-atresidue) 0)
+          for backbone-parent = (kin:parent first-joint)
+          do (setf (gethash monomer ht) backbone-parent))
     (make-instance 'monomer-subset-with-assembler
-                   :assembler assembler
+                   :backbone-assembler backbone-assembler
                    :coordinates coordinates
                    :monomers ht)))
 
@@ -464,46 +469,41 @@ tune-energy-function - A function that takes the energy-function and an assemble
           do (loop for adjustment in adjustments
                    do (internal-adjust adjustment assembler)))))
 
+
 (defun adjust-all-internals (assembler)
   "Do the adjustment of internal coordinates"
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (adjust-internals assembler oligomer-shape)))
 
+(defgeneric apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape monomer-shape monomer-context atresidue coordinates)
+  (:documentation "Specialize this on different monomer-shape classes.
+Fill in internal coordinates into the atresidue for the monomer-shape.
+Some specialized methods will need coordinates for the assembler"))
+
+
+
 (defun fill-internals-from-oligomer-shape (assembler oligomer-shape)
   "Fill internal coordinates from the fragments"
-  (let ((fragments (rotamers-map oligomer-shape)))
+  (let ((coordinates (topology:make-coordinates-for-assembler assembler)))
     (loop for ass-oligomer-shape in (oligomer-shapes assembler)
           for oligomer = (oligomer ass-oligomer-shape)
           when (eq ass-oligomer-shape oligomer-shape)
             do (loop with atagg = (ataggregate assembler)
+                     ;; It's really important that we use the ordered-monomers so that the monomer-shapes
+                     ;;  will install internal coordinates in the order from the root outwards.
+                     ;;  so that any preceeding monomer-shapes are built before any following ones.
                      for monomer in (ordered-monomers oligomer)
                      when (in-monomer-subset (monomer-subset assembler) monomer)
                        do (let* ((monomer-context (gethash monomer (monomer-contexts assembler)))
-                                 (context-rotamers (let ((frag (gethash monomer-context (monomer-context-to-context-rotamers fragments))))
-                                                           (unless frag
-                                                             (error "Could not find monomer-context ~a" monomer-context))
-                                                           frag))
                                  (monomer-position (gethash monomer (monomer-positions assembler)))
                                  (molecule-index (molecule-index monomer-position))
-                                 (monomer-index (residue-index monomer-position))
+                                 (residue-index (residue-index monomer-position))
                                  (atmol (elt (atmolecules atagg) molecule-index))
-                                 (atres (elt (atresidues atmol) monomer-index))
+                                 (atres (elt (atresidues atmol) residue-index))
                                  (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
                                                   (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
-                                                  ms))
-                                 (rotamer-index (let ((fi (rotamer-index monomer-shape)))
-                                                                (unless fi (break "The rotamer-index is nil - you must call random-rotamer-index on the oligomer-shape before you do anything else: ~a" monomer-shape))
-                                                                fi))
-                                 (fragment-internals (let ((fragments (rotamers context-rotamers)))
-                                                       (unless (> (length fragments) 0)
-                                                         (error "fragments is empty for context ~a" monomer-context))
-                                                       (unless (< rotamer-index (length fragments))
-                                                         (break "Check fragments ~a because rotamer-index ~a is out of bounds"
-                                                                fragments rotamer-index))
-                                                       (elt fragments rotamer-index)))
-                                 )
-                            (apply-fragment-internals-to-atresidue fragment-internals atres)
-                            )))))
+                                                  ms)))
+                            (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres coordinates))))))
 
 #|
 ;;;Idea to make monomer-shape subclasses control how internal coordinates get generated.
@@ -515,10 +515,6 @@ tune-energy-function - A function that takes the energy-function and an assemble
     (apply-fragment-internals-to-atresidue fragment-internals atresidue)))
 |#
 
-
-(defun fill-internals-from-oligomer-shape-and-adjust (assembler oligomer-shape)
-  (fill-internals-from-oligomer-shape assembler oligomer-shape)
-  (adjust-internals assembler oligomer-shape))
 
 (defun search-conformations (oligomer-space context-rotamers monomer-names sdf-filename &optional (number-struct 50) (number-conf 100))
   (error "Implement search-conformations")
@@ -594,9 +590,10 @@ tune-energy-function - A function that takes the energy-function and an assemble
         for backbone-internals-defined = 0
         for sidechain-internals-defined = 0
         do (loop for monomer-shape across (monomer-shape-vector oligomer-shape)
-                 for monomer = (monomer monomer-shape)
+                 for monomer-shape-info across (monomer-shape-info-vector oligomer-shape)
+                 for monomer = (monomer monomer-shape-info)
+                 for monomer-shape-kind = (monomer-shape-kind monomer-shape-info)
                  for monomer-pos = (gethash monomer (monomer-positions assembler))
-                 for monomer-shape-kind = (monomer-shape-kind monomer-shape)
                  for atresidue = (topology:at-position (topology:ataggregate assembler) monomer-pos)
                  if (eq :backbone monomer-shape-kind)
                    do (loop for joint across (joints atresidue)

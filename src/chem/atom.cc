@@ -1791,16 +1791,27 @@ CL_DEFUN double chem__calculate_dihedral_for_atoms(Atom_sp a, Atom_sp b, Atom_sp
 
 CL_DOCSTRING(R"doc(Fill the x,y,z position of the atom into the nvector starting at index3.
 Return the index3 for the next atom)doc");
-CL_DEFUN size_t chem__write_position(Atom_sp atom, NVector_sp pos, size_t index3)
+CL_LAMBDA(atom pos index3 &optional transform);
+CL_DEFUN size_t chem__write_position(Atom_sp atom, NVector_sp pos, size_t index3, core::T_sp transform )
 {
-  if (index3+2<pos->length()) {
+  if (index3+2>=pos->length()) {
+    SIMPLE_ERROR("The index {} will write the Vector3 out of bounds in nvector of length {}", index3, pos->length());
+  }
+  if (transform.nilp()) {
     const Vector3& vec = atom->getPosition();
     (*pos)[index3] = vec.getX();
     (*pos)[index3+1] = vec.getY();
     (*pos)[index3+2] = vec.getZ();
     return index3+3;
+  } else {
+    auto mtransform = gc::As<geom::OMatrix_sp>(transform);
+    const Vector3& vec = atom->getPosition();
+    Vector3 tpos = mtransform->ref()*vec;
+    (*pos)[index3] = tpos.getX();
+    (*pos)[index3+1] = tpos.getY();
+    (*pos)[index3+2] = tpos.getZ();
+    return index3+3;
   }
-  SIMPLE_ERROR("The index {} will write the Vector3 out of bounds in nvector of length {}", index3, pos->length());
 }
 
 
