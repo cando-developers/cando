@@ -238,7 +238,9 @@ bool		calcOffDiagonalHessian = true;
 	for ( gctools::Vec0<EnergyDihedralRestraint>::iterator iri=this->_Terms.begin();
 		    iri!=this->_Terms.end(); iri++ ) {
 #define DEBUG_IMPROPER_RESTRAINT 1
+#define VEC_CONST(x) (x)
 #include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
 	}
     }
@@ -325,7 +327,9 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
   }
     
 #define DEBUG_IMPROPER_RESTRAINT 1
+#define VEC_CONST(x) (x) 
 #include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
       if ( EraseLinearDihedral == 0.0 ) {
         ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4),

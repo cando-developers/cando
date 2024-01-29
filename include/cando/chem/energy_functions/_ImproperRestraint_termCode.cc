@@ -162,7 +162,7 @@ ohy4z4= 0.0;
 	ZERO_SMALL_LEN(LenA,ReciprocalLenA);
 	ZERO_SMALL_LEN(LenB,ReciprocalLenB);
 	 RecLenARecLenB = ReciprocalLenA*ReciprocalLenB; 		/* rule 72 */
-	EraseLinearDihedral = 1.0;
+	EraseLinearDihedral = VEC_CONST(1.0);
 	EraseLinearDihedral = (RecLenARecLenB==0.0) ? 0.0 : EraseLinearDihedral;
 	 tx45 = tx20*tx38; 		/* rule 75 */
 	 tx46 = tx21*tx39; 		/* rule 76 */

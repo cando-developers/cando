@@ -207,6 +207,9 @@ double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 #define NONBOND_DEBUG_INTERACTIONS(i1,i2)
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef NONBOND_DEBUG_INTERACTIONS
 #undef CUTOFF_SQUARED
@@ -408,6 +411,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
         }
       }
 #endif
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
@@ -576,6 +582,9 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
           }
         }
 #endif
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC

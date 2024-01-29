@@ -142,6 +142,9 @@ double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_sp 
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
@@ -256,6 +259,9 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
 #endif
         num_real vljrc = nbi->term.dA*nonbondCutoffReciprocal12-nbi->term.dC*nonbondCutoffReciprocal6;
         bool InteractionIs14 = nbi->_Is14;
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
@@ -471,6 +477,9 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
       }
 #endif
       bool InteractionIs14 = false; // Always false for excluded atoms
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
@@ -597,6 +606,9 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalFor
     gctools::Vec0<EnergyNonbond>::iterator nbi;
     for ( i=0,nbi=this->_Terms.begin();
           nbi!=this->_Terms.end(); nbi++,i++ ) {
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
@@ -744,6 +756,9 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
         }
       }
 #endif
+  double vdwScale = 1.0;
+  double eelScale = 1.0;
+  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
