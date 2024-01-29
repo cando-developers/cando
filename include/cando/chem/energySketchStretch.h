@@ -113,7 +113,7 @@ struct	from_object<chem::EnergySketchStretch>
 
 namespace chem {
 
-num_real	_evaluateEnergyOnly_SketchStretch (
+double	_evaluateEnergyOnly_SketchStretch (
 		num_real x1,
 		num_real y1,
 		num_real z1,
@@ -164,7 +164,7 @@ public:
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m,
                                             core::T_sp activeAtomMask );
-  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,

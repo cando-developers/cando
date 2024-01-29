@@ -78,6 +78,7 @@
                          append +default-color+))))
 
 (defun text-buffer (position text &key size radius color)
+  (declare (ignore radius))
   (list :type "text"
         :text text
         :position (apply #'append position)
@@ -87,17 +88,45 @@
                    (loop for p on position
                          append +default-color+))))
 
-(defun add-bounding-box (component aggregate boxp axesp)
-  (unless (chem:bounding-box-bound-p aggregate)
-    (leap.set-box::calculate-bounding-box aggregate t))
-  (let* ((bounding-box (chem:bounding-box aggregate))
-         (center-of-mass (chem:center-of-mass aggregate))
-         (min (chem:min-corner bounding-box))
-         (max (chem:max-corner bounding-box))
-         (midx (geom:get-x center-of-mass))
-         (midy (geom:get-y center-of-mass))
-         (midz (geom:get-z center-of-mass))
-         (amidx 0.0)
+(defun maybe-add-bounding-box (component aggregate boxp)
+  ;; Don't just add a bounding box if there isn't one
+  (if (chem:bounding-box-bound-p aggregate)
+    (let* ((bounding-box (chem:bounding-box aggregate))
+           (min (chem:min-corner bounding-box))
+           (max (chem:max-corner bounding-box))
+           (minx (geom:get-x min))
+           (miny (geom:get-y min))
+           (minz (geom:get-z min))
+           (maxx (geom:get-x max))
+           (maxy (geom:get-y max))
+           (maxz (geom:get-z max))
+           (p000 (list minx miny minz))
+           (p001 (list minx miny maxz))
+           (p010 (list minx maxy minz))
+           (p011 (list minx maxy maxz))
+           (p100 (list maxx miny minz))
+           (p101 (list maxx miny maxz))
+           (p110 (list maxx maxy minz))
+           (p111 (list maxx maxy maxz))
+           (cyl (cylinder-buffer (list p000 p000 p000 p001 p001 p010
+                                       p010 p100 p100 p111 p111 p111)
+                                 (list p001 p010 p100 p011 p101 p011
+                                       p110 p101 p110 p110 p101 p011)))
+           (sph (sphere-buffer (list p000 p001 p010 p011 p100 p101 p110 p111)))
+           )
+      (setf (ngl:representations component)
+            (append (ngl:representations component)
+                    (list
+                     (ngl:make-buffer-representation :name "_box" :lazy t
+                                                          :visible boxp :buffer cyl)
+                          (ngl:make-buffer-representation :name "_box" :lazy t
+                                                          :visible boxp :buffer sph)
+                          )))
+      t)
+    nil))
+
+(defun add-axes (component axesp)
+  (let* ((amidx 0.0)
          (amidy 0.0)
          (amidz 0.0)
          (amaxx 10.0)
@@ -106,25 +135,6 @@
          (aminx -10.0)
          (aminy -10.0)
          (aminz -10.0)
-         (minx (geom:get-x min))
-         (miny (geom:get-y min))
-         (minz (geom:get-z min))
-         (maxx (geom:get-x max))
-         (maxy (geom:get-y max))
-         (maxz (geom:get-z max))
-         (p000 (list minx miny minz))
-         (p001 (list minx miny maxz))
-         (p010 (list minx maxy minz))
-         (p011 (list minx maxy maxz))
-         (p100 (list maxx miny minz))
-         (p101 (list maxx miny maxz))
-         (p110 (list maxx maxy minz))
-         (p111 (list maxx maxy maxz))
-         (cyl (cylinder-buffer (list p000 p000 p000 p001 p001 p010
-                                     p010 p100 p100 p111 p111 p111)
-                               (list p001 p010 p100 p011 p101 p011
-                                     p110 p101 p110 p110 p101 p011)))
-         (sph (sphere-buffer (list p000 p001 p010 p011 p100 p101 p110 p111)))
          (axes-cyl (cylinder-buffer (list (list aminx amidy amidz)
                                           (list amidx aminy amidz)
                                           (list amidx amidy aminz))
@@ -146,11 +156,7 @@
                                  :color '((.8 0 0) (0 .8 0) (0 0 .8)))))
     (setf (ngl:representations component)
           (append (ngl:representations component)
-                  (list (ngl:make-buffer-representation :name "_box" :lazy t
-                                                        :visible boxp :buffer cyl)
-                        (ngl:make-buffer-representation :name "_box" :lazy t
-                                                        :visible boxp :buffer sph)
-                        (ngl:make-buffer-representation :name "_axes" :lazy t
+                  (list (ngl:make-buffer-representation :name "_axes" :lazy t
                                                         :visible axesp :buffer axes-cyl)
                         (ngl:make-buffer-representation :name "_axes" :lazy t
                                                         :visible axesp :buffer axes-sph)
@@ -287,6 +293,7 @@
               (ngl-pane-stage instance)))
   (ngl:on-stage-pick (ngl-pane-stage instance)
                      (lambda (instance data &aux (tail (nthcdr (- *pick-limit* 2) *pick-list*)))
+                       (declare (ignore instance))
                        (when tail
                          (setf (cdr tail) nil))
                        (push data *pick-list*)))
@@ -340,6 +347,7 @@
         do (cando:anchor-atom from-atom to-position)))
 
 (defun make-representations (representation sele axes)
+  (declare (ignore axes))
   (list (ngl:make-backbone :name "Backbone" :sele sele :lazy t
                            :visible (eq representation :backbone))
         (ngl:make-ball-and-stick :name "Ball and Stick" :lazy t :sele sele
@@ -368,6 +376,7 @@
                        &key pane append (background "white")
                        &allow-other-keys
                        &aux (display (not pane-instance)))
+  (declare (ignore rest))
   (unless pane-instance
     (setf pane-instance (make-instance 'ngl-pane :pane pane)))
   (setf (ngl:background-color (ngl-pane-stage pane-instance)) background)
@@ -405,15 +414,17 @@
                                          &allow-other-keys
                                          &aux (display (not pane-instance))
                                            )
+  (declare (ignore display append))
   (multiple-value-bind (component agg)
       (make-ngl-structure object :auto-view-duration 0 :representations representations)
     (let* ((traj-controls (ngl-show-trajectory (first (ngl:trajectories component))))
-           (box-button (jw:make-toggle-button :icon "cube"
-                                              :tooltip "Toggle Bounding Box"
-                                              :value box
-                                              :layout (jw:make-layout :align-self "center"
-                                                                      :grid-area "box"
-                                                                      :width "min-content")))
+           (box-button (when (chem:bounding-box-bound-p agg)
+                         (jw:make-toggle-button :icon "cube"
+                                                :tooltip "Toggle Bounding Box"
+                                                :value box
+                                                :layout (jw:make-layout :align-self "center"
+                                                                        :grid-area "box"
+                                                                        :width "min-content"))))
            (axes-button (jw:make-toggle-button :icon "arrows"
                                                :tooltip "Toggle Axes"
                                                :value axes
@@ -433,47 +444,51 @@
                                     :layout (jw:make-layout :align-self "center"
                                                             :grid-area "sele"
                                                             :width "8em")))
-           (controls (list* (jw:make-label :value (or (chem:get-name agg) "")
+           (controls (append
+                      (list (jw:make-label :value (or (chem:get-name agg) "")
                                            :style (jw:make-description-style :description-width "min-content")
                                            :layout (jw:make-layout :align-self "center"
                                                                    :grid-area "label"
+                                                                   :width "min-content")))
+                      (when box-button (list box-button))
+                      (list* axes-button
+                             representation-dropdown
+                             (jw:make-html :value "<span title='Selection Filter' class='fa fa-filter'/>"
+                                           :style (jw:make-description-style :description-width "min-content")
+                                           :layout (jw:make-layout :align-self "center"
+                                                                   :margin "0 0 0 .5em"
+                                                                   :grid-area "selelabel"
                                                                    :width "min-content"))
-                            box-button
-                            axes-button
-                            representation-dropdown
-                            (jw:make-html :value "<span title='Selection Filter' class='fa fa-filter'/>"
-                                          :style (jw:make-description-style :description-width "min-content")
-                                          :layout (jw:make-layout :align-self "center"
-                                                                  :margin "0 0 0 .5em"
-                                                                  :grid-area "selelabel"
-                                                                  :width "min-content"))
-                            sele-text
-                            traj-controls)))
-      (add-bounding-box component agg box axes)
+                             sele-text
+                             traj-controls))))
+      (add-axes component axes)
+      (let ((added-bounding-box (maybe-add-bounding-box component agg box)))
+        (when added-bounding-box
+          (jw:observe box-button :value
+                      (lambda (inst type name old-value new-value source)
+                        (declare (ignore inst type name old-value source))
+                        (loop for representation in (ngl:representations component)
+                              when (equal "_box" (ngl:name representation))
+                                do (setf (ngl:visible representation) new-value))))))
       (jw:observe sele-text :value
-        (lambda (inst type name old-value new-value source)
-          (declare (ignore type name old-value source))
-          (loop for representation in (ngl:representations component)
-                when (ngl-selectable-repr-p representation)
-                  do (setf (ngl:sele representation) new-value))))
-      (jw:observe box-button :value
-        (lambda (inst type name old-value new-value source)
-          (declare (ignore inst type name old-value source))
-          (loop for representation in (ngl:representations component)
-                when (equal "_box" (ngl:name representation))
-                  do (setf (ngl:visible representation) new-value))))
+                  (lambda (inst type name old-value new-value source)
+                    (declare (ignore inst))
+                    (declare (ignore type name old-value source))
+                    (loop for representation in (ngl:representations component)
+                          when (ngl-selectable-repr-p representation)
+                            do (setf (ngl:sele representation) new-value))))
       (jw:observe axes-button :value
-        (lambda (inst type name old-value new-value source)
-          (declare (ignore inst type name old-value source))
-          (loop for representation in (ngl:representations component)
-                when (equal "_axes" (ngl:name representation))
-                  do (setf (ngl:visible representation) new-value))))
+                  (lambda (inst type name old-value new-value source)
+                    (declare (ignore inst type name old-value source))
+                    (loop for representation in (ngl:representations component)
+                          when (equal "_axes" (ngl:name representation))
+                            do (setf (ngl:visible representation) new-value))))
       (jw:observe representation-dropdown :value
-        (lambda (inst type name old-value new-value source)
-          (declare (ignore inst type name old-value source))
-          (dolist (representation (ngl:representations component))
-            (when (ngl-selectable-repr-p representation)
-              (setf (ngl:visible representation) (equalp new-value (ngl:name representation)))))))
+                  (lambda (inst type name old-value new-value source)
+                    (declare (ignore inst type name old-value source))
+                    (dolist (representation (ngl:representations component))
+                      (when (ngl-selectable-repr-p representation)
+                        (setf (ngl:visible representation) (equalp new-value (ngl:name representation)))))))
       (apply #'show-component pane-instance component controls rest))))
 
 
@@ -483,6 +498,7 @@
                          &allow-other-keys
                          &aux (display (not pane-instance))
                            (representations (make-representations representation sele axes)))
+  (declare (ignore display append box))
   (remf rest :representation)
   (apply 'ngl-show-on-pane-representations pane-instance object :representations representations rest))
 
@@ -495,7 +511,7 @@
       (chem:map-bonds
        'nil
        (lambda (a1 a2 order bbond)
-         (declare (ignore bbond))
+         (declare (ignore order bbond))
          (unless (and (chem:contains-atom res a1) (chem:contains-atom res a2))
            (push (list a1 a2) break-bonds)))
        res)

@@ -232,6 +232,8 @@
    #:rotor3
    #:translation
    #:monomer-shape
+   #:residue-monomer-shape
+   #:backbone-monomer-shape
    #:rotamer-shape
    #:coordinates
    #:joint-with-name

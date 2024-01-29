@@ -137,7 +137,7 @@ void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 //
 // Copy this from implementAmberFunction.cc
 //
-num_real	_evaluateEnergyOnly_AnchorRestraint(
+double	_evaluateEnergyOnly_AnchorRestraint(
                                                     num_real x1, num_real y1, num_real z1,
                                                     num_real xa, num_real ya, num_real za,
                                                     num_real ka, core::T_sp activeAtomMask )
@@ -251,7 +251,7 @@ void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
 
 
 
-num_real EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         NVector_sp 	pos,
                                                         core::T_sp componentEnergy,
                                                         bool 		calcForce,
@@ -266,7 +266,7 @@ num_real EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();

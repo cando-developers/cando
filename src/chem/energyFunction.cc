@@ -157,26 +157,97 @@ core::List_sp EnergyFunction_O::allComponents() const {
   return result;
 }
 
-  
-CL_LAMBDA(&key matter (use-excluded-atoms t) (keep-interaction t) (assign-types t) bounding-box);
+CL_DOCSTRING(R"doc(Create an energy function for the matter.
+: disable-components - NIL (default), T or a list of component class names.  NIL means don't disable any components; T means disable all components;
+and a list means disable those components. Use enable-components to in a second step enable components.
+: enable-components - NIL (default) or a list of component class names. NIL means enable no components and a list of component class names enables
+those components.
+: use-excluded-atoms - T (default) uses excluded atoms for nonbond terms and NIL uses pairwise terms. Only small molecules can use pairwise terms.
+: keep-interaction - T (default) means keep all interactions; NIL means no interactions (an empty energy function that
+evaluates nothing and (lambda (component-name &rest args) ...) will be called for each interaction and the function returns T or NIL if
+each interaction should be added to the energy function.
+: assign-types - T (default) assign atom types as part of generating the energy function.  [I don't know what will happen if assing-types is NIL.)doc");
+CL_LAMBDA(&key matter disable-components enable-components (use-excluded-atoms t) (keep-interaction t) (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
-CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, bool useExcludedAtoms, core::T_sp keepInteraction, bool assign_types, core::T_sp bounding_box)
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
+                                                             bool useExcludedAtoms, core::T_sp keepInteraction, bool assign_types )
 {
-  if (bounding_box.nilp()) {
-    auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
-    if ( matter.notnilp() ) {
-      me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteraction,assign_types);
+  auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
+  if ( matter.notnilp() ) me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteraction,assign_types);
+  //
+  // Disable and then enable components
+  //
+  core::List_sp components = me->allComponents();
+  if (disableComponents == _lisp->_true()) {
+    for ( auto curcomp : components ) {
+      auto onecomp = gc::As<EnergyComponent_sp>(CONS_CAR(curcomp));
+      onecomp->disable();
     }
-    return me;
-  } else {
-    auto  me = gctools::GC<EnergyFunction_O>::allocate( gc::As<BoundingBox_sp>(bounding_box));
-    if ( matter.notnilp() ) {
-      me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteraction,assign_types);
+  } else if (disableComponents.consp()) {
+    for ( auto cur : gc::As_unsafe<core::List_sp>(disableComponents)) {
+      auto disname = gc::As<core::Symbol_sp>(CONS_CAR(cur));
+      bool found = false;
+      for ( auto curcomp : components ) {
+        auto onecomp = gc::As<EnergyComponent_sp>(CONS_CAR(curcomp));
+        core::Symbol_sp compname = onecomp->_instanceClass()->_className();
+        if (compname == disname) {
+          found = true;
+          onecomp->disable();
+        }
+      }
+      if (!found) {
+        ql::list ll;
+        for ( auto curcomp : components ) {
+          auto onecomp = gc::As<EnergyComponent_sp>(CONS_CAR(curcomp));
+          core::Symbol_sp compname = onecomp->_instanceClass()->_className();
+          ll << compname;
+        }
+        SIMPLE_ERROR("The name {} is not a valid energy component class name - valid names: {}", _rep_(disname), _rep_(ll.cons()));
+      }
     }
-    return me;
   }
+  if (enableComponents.consp()) {
+    for ( auto cur : enableComponents) {
+      auto enname = gc::As<core::Symbol_sp>(CONS_CAR(cur));
+      bool found = false;
+      for ( auto curcomp : components ) {
+        auto onecomp = gc::As<EnergyComponent_sp>(CONS_CAR(curcomp));
+        core::Symbol_sp compname = onecomp->_instanceClass()->_className();
+        if (compname == enname) {
+          found = true;
+          onecomp->enable();
+        }
+      }
+      if (!found) {
+        ql::list ll;
+        for ( auto curcomp : components ) {
+          auto onecomp = gc::As<EnergyComponent_sp>(CONS_CAR(curcomp));
+          core::Symbol_sp compname = onecomp->_instanceClass()->_className();
+          ll << compname;
+        }
+        SIMPLE_ERROR("The name {} is not a valid energy component class name - valid names: {}", _rep_(enname), _rep_(ll.cons()));
+      }
+    }
+  }
+  return me;
 };
-
+CL_DOCSTRING("Return (values enabled-component-class-names disabled-component-class-names)");
+CL_DEFMETHOD core::T_mv EnergyFunction_O::enabledDisabled() const
+{
+  auto components = this->allComponents();
+  ql::list lenabled;
+  ql::list ldisabled;
+  for ( auto curcomp : components ) {
+    auto onecomp = gc::As<EnergyComponent_sp>(CONS_CAR(curcomp));
+    core::Symbol_sp compname = onecomp->_instanceClass()->_className();
+    if (onecomp->isEnabled()) {
+    lenabled << compname;
+    } else {
+      ldisabled << compname;
+    }
+  }
+  return Values(lenabled.cons(),ldisabled.cons());
+}
 
 bool inAtomSet(core::T_sp activeSet, Atom_sp a)
 {
@@ -219,6 +290,7 @@ void	EnergyFunction_O::initialize()
 #endif
   this->setScoringFunctionName(nil<core::T_O>());
   this->_Message = nil<core::T_O>();
+  this->setDielectricConstant(1.0);
   this->useDefaultSettings();
 }
 
@@ -485,7 +557,6 @@ uint	EnergyFunction_O::countTermsBeyondThreshold()
 
 
 //
-__attribute__((optnone))
 double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                        core::T_sp       componentEnergy,
                                        bool 		calcForce,
@@ -1292,7 +1363,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   // This should be user configurable from a dynamic variable that contains a bunch of
   // system parameters
   //
-  this->_DielectricConstant = 80.0;
+  this->_DielectricConstant = 1.0;
 
   // Separate the molecules for solute from the solvent and handle them solute first then solvent
   size_t final_solute_residue_iptres = 0;

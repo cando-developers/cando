@@ -214,7 +214,8 @@
            #:next-rapid-starting-geometry
            #:stereochemistry-from-structure
            #:superpose-all
-           #:skip-slot-names))
+           #:skip-slot-names
+           #:optimize-structure-debug))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

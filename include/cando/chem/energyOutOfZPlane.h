@@ -118,7 +118,7 @@ struct	from_object<chem::EnergyOutOfZPlane>
 
 namespace chem {
 
-num_real	_evaluateEnergyOnly_Oozp(
+double	_evaluateEnergyOnly_Oozp(
                                  num_real x1, num_real y1, num_real z1,
                                  num_real za,
                                  num_real kb );
@@ -155,7 +155,7 @@ public:
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m,
                                           core::T_sp activeAtomMask );
-  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,

@@ -145,11 +145,12 @@ struct	from_object<chem::EnergyAngle>
 
 namespace chem {
 
-num_real	_evaluateEnergyOnly_Angle(
-		num_real x1, num_real y1, num_real z1,
-		num_real x2, num_real y2, num_real z2,
-		num_real x3, num_real y3, num_real z3,
-		num_real kt, num_real t0 );
+double	_evaluateEnergyOnly_Angle(
+    int I1, int I2, int I3, core::T_sp activeAtomMask,
+    num_real x1, num_real y1, num_real z1,
+    num_real x2, num_real y2, num_real z2,
+    num_real x3, num_real y3, num_real z3,
+    num_real kt, num_real t0 );
 
 
 FORWARD(EnergyAngle);
@@ -201,7 +202,7 @@ public:
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m,
                                             core::T_sp activeAtomMask );
-  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,
@@ -215,7 +216,8 @@ public:
                                          core::T_sp debugInteractions );
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-	NVector_sp pos );
+	NVector_sp pos,
+        core::T_sp activeAtomMask );
 
   virtual	core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
 

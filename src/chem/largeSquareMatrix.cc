@@ -939,7 +939,7 @@ CL_DEFMETHOD void	SparseLargeSquareMatrix_O::walkMatrix(core::T_sp callback)
 #if VECREAL==VECREAL_FLOAT
       core::T_sp val = core::make_single_float(this->_Values[i]);
 #else
-      core::T_sp val = core::make_double_float(this->_Values[i]);
+      core::T_sp val = mk_double_float(this->_Values[i]);
 #endif
       core::eval::funcall( callback, core::make_fixnum(this->_ColumnForValue[i]), core::make_fixnum(r), val );
     }

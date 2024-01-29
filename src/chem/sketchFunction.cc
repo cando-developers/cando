@@ -469,18 +469,6 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
 }
 
 
-string SketchFunctionEnergy_O::energyComponentsAsString()
-{
-  IMPLEMENT_ME();
-  #if 0
-  stringstream ss;
-  ss << fmt::format("Stretch({})" , this->_Stretch->getEnergy()) << std::endl;
-  ss << fmt::format("PointToLineRestraint({})" , this->_PointToLineRestraint->getEnergy()) << std::endl;
-  ss << fmt::format("OutOfZPlane({})" , this->_OutOfZPlane->getEnergy()) << std::endl;
-  return ss.str();
-  #endif
-}
-
 SYMBOL_EXPORT_SC_(KeywordPkg,stretch_deviations);
 SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviations);
 

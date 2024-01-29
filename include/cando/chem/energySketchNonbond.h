@@ -94,7 +94,7 @@ struct	from_object<chem::EnergySketchNonbond>
 
 namespace chem {
 
-num_real	_evaluateEnergyOnly_Nonbond(
+double	_evaluateEnergyOnly_Nonbond(
 		num_real x1, num_real y1, num_real z1,
 		num_real x2, num_real y2, num_real z2,
 		num_real dC );
@@ -127,7 +127,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                                           AbstractLargeSquareMatrix_sp m,
                                           core::T_sp activeAtomMask );
     
-  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,
@@ -140,7 +140,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                                          core::T_sp activeAtomMask,
                                          core::T_sp debugInteractions );
 
- num_real  evaluateTerms( NVector_sp 	pos,
+ double  evaluateTerms( NVector_sp 	pos,
                           core::T_sp componentEnergy,
                           bool 		calcForce,
                           gc::Nilable<NVector_sp> 	force,

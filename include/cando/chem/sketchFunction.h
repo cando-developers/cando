@@ -221,15 +221,6 @@ public:
 
 };
 
-SMART(SketchFunctionEnergy);
-class SketchFunctionEnergy_O : public ScoringFunctionEnergy_O
-{
-  LISP_CLASS(chem,ChemPkg,SketchFunctionEnergy_O,"SketchFunctionEnergy",ScoringFunctionEnergy_O);
-public:
-
-  string energyComponentsAsString();
-};
-
 bool inAtomSet(core::T_sp atomSet, Atom_sp atom);
 
 void energyFunction_initializeSmarts();

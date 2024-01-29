@@ -67,10 +67,10 @@ EnergyOutOfZPlane::~EnergyOutOfZPlane()
 //
 // Copy this from implementAmberFunction.cc
 //
-num_real	_evaluateEnergyOnly_Oozp(
-		num_real x1, num_real y1, num_real z1,
-		num_real za,
-		num_real kb)
+double	_evaluateEnergyOnly_Oozp(
+    num_real x1, num_real y1, num_real z1,
+    num_real za,
+    num_real kb)
 {
   SIMPLE_ERROR("Fix this function");
 #if 0 // commented out
@@ -205,7 +205,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
                                                     NVector_sp 	pos,
                                                     core::T_sp componentEnergy,
                                                     bool 		calcForce,
@@ -229,7 +229,7 @@ num_real EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 //
 // -----------------------
 
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
 #define OOZP_CALC_FORCE
 #define OOZP_CALC_DIAGONAL_HESSIAN
 #define OOZP_CALC_OFF_DIAGONAL_HESSIAN

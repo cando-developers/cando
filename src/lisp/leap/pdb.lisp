@@ -1306,7 +1306,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
       (apply-filter-to-scanner (line-filter pdb-scanner) dup))
     dup))
 
-(defun load-pdb-stream (fin &key filename pdb-scanner progress system ignore-missing-topology)
+(defun load-pdb-stream (fin &key filename pdb-scanner progress system ignore-missing-topology (build-missing t))
   (let* ((pdb-scanner (if pdb-scanner
                           (make-filter-scanner pdb-scanner)
                           (let* ((new-scanner (build-sequence (let ((pdb-scanner (make-instance 'pdb-scanner
@@ -1357,35 +1357,37 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            (format t "CONECT ~a to ~a~%" from-atom to-atom)
                            (chem:bond-to from-atom to-atom :single-bond)))
                        to-atoms)))
-      (let ((unbuilt-heavy-atoms 0)
-            (aggregate (aggregate pdb-atom-reader)))
-        (loop for molecule in (molecules pdb-atom-reader)
-              do (chem:add-matter aggregate molecule))
-        (chem:map-atoms
-         nil
-         (lambda (a)
-           (when (and (not (eq (chem:get-element a) :H))
-                      (chem:needs-build a))
-             (incf unbuilt-heavy-atoms)))
-         aggregate)
-        (when (> unbuilt-heavy-atoms 0)
-          (cando:simple-build-unbuilt-atoms aggregate)
-          (when progress
-            (format t "Built ~d heavy atom~:P~%" unbuilt-heavy-atoms)))
-        (let ((built (cando:build-unbuilt-hydrogens aggregate)))
-          (when progress
-            (format t "Built ~d missing hydrogen~:P~%" built)))
+        (let ((unbuilt-heavy-atoms 0)
+              (aggregate (aggregate pdb-atom-reader)))
+          (loop for molecule in (molecules pdb-atom-reader)
+                do (chem:add-matter aggregate molecule))
+          (chem:map-atoms
+           nil
+           (lambda (a)
+             (when (and (not (eq (chem:get-element a) :H))
+                        (chem:needs-build a))
+               (incf unbuilt-heavy-atoms)))
+           aggregate)
+          (when build-missing
+            (when (> unbuilt-heavy-atoms 0)
+              (cando:simple-build-unbuilt-atoms aggregate)
+              (when progress
+                (format t "Built ~d heavy atom~:P~%" unbuilt-heavy-atoms)))
+            (let ((built (cando:build-unbuilt-hydrogens aggregate)))
+              (when progress
+                (format t "Built ~d missing hydrogen~:P~%" built)))
 ;;;            (cando:maybe-join-molecules-in-aggregate aggregate)
 ;;;            (cando:maybe-split-molecules-in-aggregate aggregate)
-        (setf aggregate (classify-molecules aggregate system))
-        (let ((name-only (if filename
-                             (pathname-name (pathname filename))
-                             "unknown")))
-          (chem:set-name aggregate (intern name-only leap.core:*variable-package*)))
-        (values aggregate pdb-scanner pdb-atom-reader)))))
+            )
+          (setf aggregate (classify-molecules aggregate system))
+          (let ((name-only (if filename
+                               (pathname-name (pathname filename))
+                               "unknown")))
+            (chem:set-name aggregate (intern name-only leap.core:*variable-package*)))
+          (values aggregate pdb-scanner pdb-atom-reader)))))
 
 
-(defun loadPdb (filename-or-scanner &key (progress t) system ignore-missing-topology)
+(defun loadPdb (filename-or-scanner &key (progress t) system ignore-missing-topology (build-missing t))
   "    variable = loadPdb filename
       STRING|SCANNER                       _filename_
 
@@ -1425,6 +1427,7 @@ specified in PDB files.
                                 :pdb-scanner pdb-scanner
                                 :progress progress
                                 :system system
+                                :build-missing build-missing
                                 :ignore-missing-topology ignore-missing-topology))))
       (t (format t "You must provide a filename or a scanner~%")))))
 

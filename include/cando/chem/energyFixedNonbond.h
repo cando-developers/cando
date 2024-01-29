@@ -133,7 +133,7 @@ namespace translate {
 namespace chem {
 
 
-num_real	_evaluateEnergyOnly_FixedNonbond(
+double	_evaluateEnergyOnly_FixedNonbond(
 		num_real x1, num_real y1, num_real z1,
 		num_real x2, num_real y2, num_real z2,
 		num_real dA, num_real dC, num_real dQ1Q2 );
@@ -197,7 +197,7 @@ public:
 
 //virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 //				AbstractLargeSquareMatrix_sp m );
-  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,

@@ -88,7 +88,7 @@ string	EnergyChiralRestraint::description()
 //
 // Copy this from implementAmberFunction.cc
 //
-num_real	_evaluateEnergyOnly_ChiralRestraint(
+double	_evaluateEnergyOnly_ChiralRestraint(
 		num_real x1, num_real y1, num_real z1,
 		num_real x2, num_real y2, num_real z2,
 		num_real x3, num_real y3, num_real z3,
@@ -244,7 +244,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-num_real EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         chem::NVector_sp 	pos,
                                                         core::T_sp componentEnergy,
                                                         bool 		calcForce,
@@ -265,7 +265,7 @@ num_real EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(("%s {\n") , this->className());
   }
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
   ANN(hdvec);

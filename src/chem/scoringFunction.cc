@@ -231,6 +231,29 @@ CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp a
 }
 
 
+CL_LAMBDA((scoring-function chem:scoring-function) coords force &optional (delta 0.00001) active-atom-mask);
+CL_DEFMETHOD void ScoringFunction_O::evaluateFiniteDifferenceForce(NVector_sp coords, NVector_sp force, double delta, core::T_sp activeAtomMask ) {
+{
+  double x, ylow, yhigh, grad;
+  double	deltaDiv2 = delta/2.0;
+//  NVector_sp tpos = NVector_O::make(coords->size(),0.0,false,coords->size(),(Vector_real*)&(*coords)[0]);
+  for ( size_t ii=0; ii<force->size(); ii++ ) {
+    NVector_sp tpos = NVector_O::make(coords->size(),0.0,false,coords->size(),(Vector_real*)&(*coords)[0]);
+    x = tpos->element(ii);
+    tpos->setElement(ii,x-deltaDiv2);
+    ylow = this->evaluateEnergy(tpos,activeAtomMask);
+    tpos->setElement(ii,x+deltaDiv2);
+    yhigh = this->evaluateEnergy(tpos,activeAtomMask);
+    //tpos->setElement(ii,x); // restore
+    grad = (yhigh-ylow)/delta;
+    force->setElement(ii, -grad);
+  }
+}
+
+
+  
+}
+
 CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
 CL_DEFMETHOD core::List_sp	ScoringFunction_O::checkForBeyondThresholdInteractions(double threshold)
 {
@@ -389,15 +412,21 @@ CL_DEFUN core::List_sp chem__all_components(ScoringFunction_sp scoring_function)
   return scoring_function->allComponents();
 }
 
-void ScoringFunctionEnergy_O::setEnergy( core::T_sp name, double energy ) {
+CL_DEFUN EnergyComponents_sp chem__make_energy_components() {
+  auto obj = gctools::GC<EnergyComponents_O>::allocate_with_default_constructor();
+  return obj;
+}
+
+
+void EnergyComponents_O::setEnergy( core::T_sp name, double energy ) {
   core::Cons_sp pair = core::Cons_O::create(name, mk_double_float(energy));
-  this->_Terms = core::Cons_O::create(pair,this->_Terms);
+  this->_Components = core::Cons_O::create(pair,this->_Components);
 }
 
 
 void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp name, double energy ) {
   if (componentEnergy.notnilp()) {
-    gc::As<ScoringFunctionEnergy_sp>(componentEnergy)->setEnergy( name, energy );
+    gc::As<EnergyComponents_sp>(componentEnergy)->setEnergy( name, energy );
   }
 }
 

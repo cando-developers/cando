@@ -95,7 +95,7 @@ double EnergyDihedralRestraint::getAngle()
 //
 // Copy this from implementAmberFunction.cc
 //
-num_real	_evaluateEnergyOnly_ImproperRestraint(
+double	_evaluateEnergyOnly_ImproperRestraint(
 		num_real x1, num_real y1, num_real z1,
 		num_real x2, num_real y2, num_real z2,
 		num_real x3, num_real y3, num_real z3,
@@ -248,7 +248,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-num_real EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                           chem::NVector_sp 	pos,
                                                           core::T_sp componentEnergy,
                                                           bool 		calcForce,
@@ -263,7 +263,7 @@ num_real EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp sco
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
   this->_Evaluations++;
   if ( this->_DebugEnergy ) {
     core::clasp_write_string(fmt::format("{}\n" , __FUNCTION__ ));

@@ -144,27 +144,30 @@ SYMBOL_EXPORT_SC_(ChemPkg, candoDatabase);
 SYMBOL_EXPORT_SC_(ChemPkg, AM1_BCC_ar5);
 SYMBOL_EXPORT_SC_(ChemPkg, AM1_BCC_ar6);
 SYMBOL_EXPORT_SC_(ChemPkg, AM1_BCC_ar7);
+SYMBOL_EXPORT_SC_(ChemPkg, STARamber_charge_conversion_18_DOT_2223STAR);
 
 extern void Initialize_Mol2_TypeRules(core::LispPtr lisp);
 
 void ChemExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const {
   switch (what) {
   case candoClasses:
-    _sym_STARverboseSTAR->defparameter(nil<core::T_O>());
-    _sym_STARdebug_octreeSTAR->defparameter(nil<core::T_O>());
-    _sym_STARcurrent_matchSTAR->defparameter(nil<core::T_O>());
-    _sym_STARcurrent_aromaticity_informationSTAR->defparameter(unbound<core::T_O>());
-    _sym_STARcurrent_ringsSTAR->defparameter(unbound<core::T_O>());
-    break;
+      _sym_STARamber_charge_conversion_18_DOT_2223STAR->defparameter(mk_double_float(18.2223));
+      _sym_STARverboseSTAR->defparameter(nil<core::T_O>());
+      _sym_STARdebug_octreeSTAR->defparameter(nil<core::T_O>());
+      _sym_STARdebug_octreeSTAR->defparameter(nil<core::T_O>());
+      _sym_STARcurrent_matchSTAR->defparameter(nil<core::T_O>());
+      _sym_STARcurrent_aromaticity_informationSTAR->defparameter(unbound<core::T_O>());
+      _sym_STARcurrent_ringsSTAR->defparameter(unbound<core::T_O>());
+      break;
   case candoFunctions:
       //setupCandoPrimitives(_lisp);
-    break;
+      break;
   case candoGlobals:
-    initialize_chimera();
-    initializeElementsAndHybridization();
-    break;
+      initialize_chimera();
+      initializeElementsAndHybridization();
+      break;
   default:
-    break;
+      break;
   }
 }
 

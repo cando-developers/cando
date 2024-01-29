@@ -1,7 +1,7 @@
 (in-package :leap.topology)
 
 
-(defconstant +amber-charge-conversion-18.2223+ 18.2223)
+(defparameter chem:*amber-charge-conversion-18.2223* 18.2223d0)
 
 (defclass amber-topology ()
   ((aggregate :initarg :aggregate :accessor aggregate)
@@ -931,7 +931,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:debug "-4-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for ch across charge
-               do (fortran:fwrite (* ch +amber-charge-conversion-18.2223+)))
+               do (fortran:fwrite (* ch chem:*amber-charge-conversion-18.2223*)))
          (fortran:end-line))
         ;; write the atom charges
 
@@ -1746,7 +1746,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                      (fortran:fread-line-or-error fif)
                      (setf charge (fortran:fread-vector fif per-line format-char width))
                      (loop for chargei from 0 below (length charge)
-                           do (setf (aref charge chargei) (/ (aref charge chargei) +amber-charge-conversion-18.2223+)))))
+                           do (setf (aref charge chargei) (/ (aref charge chargei) chem:*amber-charge-conversion-18.2223*)))))
                   ((string-equal %flag-atomic-number line :end2 (length %flag-atomic-number))
                    (fortran:fread-line-or-error fif)
                    (multiple-value-bind (per-line format-char width decimal)

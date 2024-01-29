@@ -51,7 +51,7 @@ EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchS
 }
 
 
-num_real EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                              NVector_sp 	pos,
                                                              core::T_sp componentEnergy,
                                                              bool 		calcForce,
@@ -67,7 +67,7 @@ num_real EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp 
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
 //  SIMPLE_WARN("FIXactiveAtomMask What do we do with activeAtomMask in this function");
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
   [[maybe_unused]]bool	hasHessian = hessian.notnilp();

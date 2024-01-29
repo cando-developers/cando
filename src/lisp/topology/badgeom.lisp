@@ -24,7 +24,7 @@
         ((calculate-angle-degrees (va vx vb)
            (/ (geom:calculate-angle va vx vb) 0.0174533))
          (bad-sp3-angle-p (angle n1 n2 n3)
-           (when (or (< angle 90.0) (> angle 130.0))
+           (when (or (< angle 90.0) (> angle 150.0))
              (return-from bad-carbon-geometry-p (format nil "bad sp3 angle(90.0.lt.angle.lt.130.0) ~7,2f between ~a-~a-~a"
                                                         angle (chem:get-name n1) (chem:get-name n2) (chem:get-name n3)))))
          (bad-sp3-angle-in-member-3-ring-p (angle in-member-3-ring n1 n2 n3)

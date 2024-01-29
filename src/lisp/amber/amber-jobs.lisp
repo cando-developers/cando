@@ -478,6 +478,22 @@ added to inputs and outputs but not option-inputs or option-outputs"
                   :outputs (arguments :|-p| (make-node-file topology-file)
                                       :|-r| (make-node-file coordinate-file)))))
 
+(defparameter *single-point-energy-in*
+"Minimize
+ &cntrl
+  imin=1,
+  ntx=1,
+  ntb=:%BOX%,
+  irest=0,
+  maxcyc=0,
+  ncyc=0,
+  ntpr=0,
+  ntwx=0,
+  cut=:%VDW-CUTOFF%,
+ /
+ "
+)
+
 (defparameter *min-in*
 "Minimize
  &cntrl
@@ -519,11 +535,64 @@ added to inputs and outputs but not option-inputs or option-outputs"
           (cons :%VDW-CUTOFF% cutoff))))
 
 
+(defparameter *single-point-energy-rule*
+  (make-instance 'rule
+                 :name :single-point-energy
+                 :description "Single-Point-Energy energy"
+                 :command "sander"))
+
 (defparameter *minimize-rule*
   (make-instance 'rule
                  :name :minimize
                  :description "Minimize energy"
                  :command "sander"))
+
+(defun single-point-energy
+    (simulation
+     &key
+       (name "single-point-energy")
+       )
+  (let ((jobs (loop for prev-job in (latest-jobs simulation)
+                    for aggregate = (aggregate prev-job)
+                    collect (setup-job simulation prev-job
+                                       :input-topology-file (job-file prev-job :|-p|)
+                                       :input-coordinate-file (job-file prev-job :|-r|)
+                                       :script *single-point-energy-in*
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
+                                       :micro-name #\m
+                                       :job-kind :single-point-energy ; single-point-energy jobs have different info files - we need to keep track of this for later
+                                       :parameters (bounding-box-parameters aggregate)
+                                       :output-args '(:|-o| :|-inf| :|-r|)
+                                       :rule-clause *single-point-energy-rule*))))
+    (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
+  simulation)
+#+(or)
+(defun single-point-energy-debug
+    (simulation
+     &key
+       (name "single-point-energy")
+       )
+  (let ((jobs (loop for prev-job in (latest-jobs simulation)
+                    for aggregate = (aggregate prev-job)
+                    collect (setup-job simulation prev-job
+                                       :input-topology-file (job-file prev-job :|-p|)
+                                       :input-coordinate-file (job-file prev-job :|-r|)
+                                       :script *single-point-energy-debug-in*
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
+                                       :micro-name #\m
+                                       :job-kind :single-point-energy ; single-point-energy jobs have different info files - we need to keep track of this for later
+                                       :parameters (bounding-box-parameters aggregate)
+                                       :output-args '(:|-o| :|-inf| :|-r|)
+                                       :rule-clause *single-point-energy-debug-rule*))))
+    (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
+  simulation)
+
 
 (defun minimize
     (simulation

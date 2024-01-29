@@ -49,6 +49,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+#define ENERGY_FUNCTION I1, I2, I3, activeAtomMask
+
 #define ANGLE_APPLY_ATOM_MASK(I1,I2,I3) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
@@ -56,6 +58,142 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          ) \
     ) goto SKIP_term;
+
+
+//
+// Copy this from implementAmberFunction.cc
+//
+double	_evaluateEnergyOnly_Angle(
+    int I1, int I2, int I3, core::T_sp activeAtomMask,
+		num_real x1, num_real y1, num_real z1,
+		num_real x2, num_real y2, num_real z2,
+		num_real x3, num_real y3, num_real z3,
+		num_real t0, num_real kt )
+{
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+
+#undef	ANGLE_SET_PARAMETER
+#define	ANGLE_SET_PARAMETER(x)	{}
+#undef	ANGLE_SET_POSITION
+#define	ANGLE_SET_POSITION(x,ii,of)	{}
+#undef	ANGLE_ENERGY_ACCUMULATE
+#define	ANGLE_ENERGY_ACCUMULATE(e) {}
+#undef	ANGLE_FORCE_ACCUMULATE
+#define	ANGLE_FORCE_ACCUMULATE(i,o,v) {}
+#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
+#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	ANGLE_CALC_FORCE	// Don't calculate FORCE or HESSIAN
+
+
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
+#pragma clang diagnostic pop
+#if !USE_EXPLICIT_DECLARES
+	num_real fx1;
+	num_real fy1;
+	num_real fz1;
+	num_real fx2;
+	num_real fy2;
+	num_real fz2;
+	num_real fx3;
+	num_real fy3;
+	num_real fz3;
+#endif
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    bool IllegalAngle = false;
+#define ANGLE_DEBUG_INTERACTIONS(I1,I2,I3)
+#include <cando/chem/energy_functions/_Angle_termCode.cc>
+#undef ANGLE_DEBUG_INTERACTIONS
+
+    return Energy;
+}
+
+
+CL_LAMBDA((energy-angle chem:energy-angle) pos &optional activeAtomMask);
+CL_DEFMETHOD void	EnergyAngle_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos, core::T_sp activeAtomMask )
+{
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  int	fails = 0;
+  bool	calcForce = true;
+  bool	calcDiagonalHessian = true;
+  bool	calcOffDiagonalHessian = true;
+
+
+//
+// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
+//
+//
+#define ANGLE_CALC_FORCE
+#define ANGLE_CALC_DIAGONAL_HESSIAN
+#define ANGLE_CALC_OFF_DIAGONAL_HESSIAN
+#undef ANGLE_SET_PARAMETER
+#define ANGLE_SET_PARAMETER(x)	{x=ai->term.x;}
+#undef ANGLE_SET_POSITION
+#define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#undef ANGLE_ENERGY_ACCUMULATE
+#define ANGLE_ENERGY_ACCUMULATE(e) {}
+#undef ANGLE_FORCE_ACCUMULATE
+#define ANGLE_FORCE_ACCUMULATE(i,o,v) {}
+#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
+#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+
+  {
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
+#pragma clang diagnostic pop
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
+    int I1, I2, I3,i;
+    gctools::Vec0<EnergyAngle>::iterator ai;
+    for ( i=0,ai=this->_Terms.begin();
+          ai!=this->_Terms.end(); ai++,i++ ) {
+      LOG("ai->term.kt = {}" , ai->term.kt  );
+      LOG("ai->term.t0 = {}" , ai->term.t0  );
+      LOG("angleScale = {}" , angleScale  );
+      LOG("ai->x1 = {}" , pos->element(ai->term.I1 ) );
+      LOG("ai->y1 = {}" , pos->element(ai->term.I1+1 ) );
+      LOG("ai->z1 = {}" , pos->element(ai->term.I1+2 ) );
+      LOG("ai->x2 = {}" , pos->element(ai->term.I2 ) );
+      LOG("ai->y2 = {}" , pos->element(ai->term.I2+1 ) );
+      LOG("ai->z2 = {}" , pos->element(ai->term.I2+2 ) );
+      LOG("ai->x3 = {}" , pos->element(ai->term.I3 ) );
+      LOG("ai->y3 = {}" , pos->element(ai->term.I3+1 ) );
+      LOG("ai->z3 = {}" , pos->element(ai->term.I3+2 ) );
+      bool IllegalAngle = false;
+#define ANGLE_DEBUG_INTERACTIONS(I1,I2,I3)
+#include	<cando/chem/energy_functions/_Angle_termCode.cc>
+#undef ANGLE_DEBUG_INTERACTIONS
+      LOG("Energy = {}" , Energy  );
+      LOG("x1 = {}" , x1  );
+      LOG("y1 = {}" , y1  );
+      LOG("z1 = {}" , z1  );
+      LOG("x2 = {}" , x2  );
+      LOG("y2 = {}" , y2  );
+      LOG("z2 = {}" , z2  );
+      LOG("x3 = {}" , x3  );
+      LOG("y3 = {}" , y3  );
+      LOG("z3 = {}" , z3  );
+      int index = i;
+#include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
+    }
+    core::lisp_write(fmt::format("There are {} fails out of {} terms\n", fails, i ));
+  }
+}
+
+
+
+
+
 #define ANGLE_DEBUG_INTERACTIONS(I1,I2,I3) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,EnergyAngle_O::static_classSymbol(), \
@@ -198,58 +336,6 @@ num_real	angle;
 }
 #endif
 
-//
-// Copy this from implementAmberFunction.cc
-//
-num_real	_evaluateEnergyOnly_Angle(
-		num_real x1, num_real y1, num_real z1,
-		num_real x2, num_real y2, num_real z2,
-		num_real x3, num_real y3, num_real z3,
-		num_real t0, num_real kt )
-{
-  IMPLEMENT_ME();
-  #if 0
-#undef	ANGLE_SET_PARAMETER
-#define	ANGLE_SET_PARAMETER(x)	{}
-#undef	ANGLE_SET_POSITION
-#define	ANGLE_SET_POSITION(x,ii,of)	{}
-#undef	ANGLE_ENERGY_ACCUMULATE
-#define	ANGLE_ENERGY_ACCUMULATE(e) {}
-#undef	ANGLE_FORCE_ACCUMULATE
-#define	ANGLE_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANGLE_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-#if !USE_EXPLICIT_DECLARES
-	num_real fx1;
-	num_real fy1;
-	num_real fz1;
-	num_real fx2;
-	num_real fy2;
-	num_real fz2;
-	num_real fx3;
-	num_real fy3;
-	num_real fz3;
-#endif
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    bool IllegalAngle = false;
-#include <cando/chem/energy_functions/_Angle_termCode.cc>
-
-    return Energy;
-    #endif
-}
-
-
 
 void EnergyAngle_O::addTerm(const EnergyAngle& term)
 {
@@ -353,7 +439,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             chem::NVector_sp 	pos,
                                             core::T_sp componentEnergy,
                                             bool 		calcForce,
@@ -501,82 +587,6 @@ num_real EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 
 
 
-
-void	EnergyAngle_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-		chem::NVector_sp 	pos)
-{
-  IMPLEMENT_ME();
-#if 0
-  int	fails = 0;
-  bool	calcForce = true;
-  bool	calcDiagonalHessian = true;
-  bool	calcOffDiagonalHessian = true;
-
-
-//
-// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-//
-//
-#define ANGLE_CALC_FORCE
-#define ANGLE_CALC_DIAGONAL_HESSIAN
-#define ANGLE_CALC_OFF_DIAGONAL_HESSIAN
-#undef ANGLE_SET_PARAMETER
-#define ANGLE_SET_PARAMETER(x)	{x=ai->term.x;}
-#undef ANGLE_SET_POSITION
-#define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(e) {}
-#undef ANGLE_FORCE_ACCUMULATE
-#define ANGLE_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-  {
-		
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
-    int I1, I2, I3,i;
-    gctools::Vec0<EnergyAngle>::iterator ai;
-    for ( i=0,ai=this->_Terms.begin();
-          ai!=this->_Terms.end(); ai++,i++ ) {
-      LOG("ai->term.kt = {}" , ai->term.kt  );
-      LOG("ai->term.t0 = {}" , ai->term.t0  );
-      LOG("angleScale = {}" , angleScale  );
-      LOG("ai->x1 = {}" , pos->element(ai->term.I1 ) );
-      LOG("ai->y1 = {}" , pos->element(ai->term.I1+1 ) );
-      LOG("ai->z1 = {}" , pos->element(ai->term.I1+2 ) );
-      LOG("ai->x2 = {}" , pos->element(ai->term.I2 ) );
-      LOG("ai->y2 = {}" , pos->element(ai->term.I2+1 ) );
-      LOG("ai->z2 = {}" , pos->element(ai->term.I2+2 ) );
-      LOG("ai->x3 = {}" , pos->element(ai->term.I3 ) );
-      LOG("ai->y3 = {}" , pos->element(ai->term.I3+1 ) );
-      LOG("ai->z3 = {}" , pos->element(ai->term.I3+2 ) );
-      bool IllegalAngle = false;
-#include	<cando/chem/energy_functions/_Angle_termCode.cc>
-      LOG("Energy = {}" , Energy  );
-      LOG("x1 = {}" , x1  );
-      LOG("y1 = {}" , y1  );
-      LOG("z1 = {}" , z1  );
-      LOG("x2 = {}" , x2  );
-      LOG("y2 = {}" , y2  );
-      LOG("z2 = {}" , z2  );
-      LOG("x3 = {}" , x3  );
-      LOG("y3 = {}" , y3  );
-      LOG("z3 = {}" , z3  );
-      int index = i;
-#include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
-    }
-  }
-#endif
-}
 
 SYMBOL_EXPORT_SC_(KeywordPkg,angle);
 SYMBOL_EXPORT_SC_(KeywordPkg,atoms);

@@ -132,10 +132,11 @@ namespace chem {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
   public:
     static EnergyFunction_sp make(core::T_sp matter,
+                                  core::T_sp disableComponents,
+                                  core::List_sp enableComponents,
                                   bool useExcludedAtoms=false,
                                   core::T_sp keepInteraction=nil<core::T_O>(),
-                                  bool assign_types=false,
-                                  core::T_sp bounding_box=nil<core::T_sp>());
+                                  bool assign_types=false );
   public:
     void initialize();
   public:
@@ -157,6 +158,8 @@ namespace chem {
     EnergyFixedNonbondRestraint_sp	_FixedNonbondRestraint;
     core::List_sp                       _OtherEnergyComponents; // alist of additional (name . energy-function) pairs
     BoundingBox_sp                      _BoundingBox;
+    double		                _DielectricConstant;
+    double		                _NonbondCutoff;
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
@@ -165,7 +168,6 @@ namespace chem {
     double					_ChiralRestraintOffset;
     double					_AnchorRestraintWeight;
     double					_FixedNonbondRestraintWeight;
-    double					_DielectricConstant;
     core::T_sp                   _Message;
     core::List_sp			_MissingParameters;
   public:
@@ -175,7 +177,7 @@ namespace chem {
     void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp keepInteraction );
 
     void	flagDihedralRestraintsAboveThreshold(NVector_sp nvPosition);
-
+    core::T_mv enabledDisabled() const;
   private:
     int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
     void _addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp keepInteraction );
@@ -277,6 +279,10 @@ namespace chem {
     void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteraction, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
 
+    CL_DEFMETHOD void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
+    CL_DEFMETHOD double	getDielectricConstant() { return this->_DielectricConstant; };
+    CL_DEFMETHOD void	setNonbondCutoff(double d) { this->_NonbondCutoff = d; };
+    CL_DEFMETHOD double	getNonbondCutoff() { return this->_NonbondCutoff; };
 
     /*! Add the restraints to the energy function.
      * This allows restraints to be applied to the system
@@ -332,6 +338,8 @@ namespace chem {
         , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
         ,_OtherEnergyComponents(nil<core::T_O>())
         ,_BoundingBox(bounding_box)
+        ,_DielectricConstant(1.0)
+        ,_NonbondCutoff(16.0)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
 
@@ -349,6 +357,8 @@ namespace chem {
         , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
         ,_OtherEnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
+        ,_DielectricConstant(1.0)
+        ,_NonbondCutoff(16.0)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
     EnergyFunction_O( const EnergyFunction_O& ef ) :
@@ -367,13 +377,6 @@ namespace chem {
         ,_BoundingBox(unbound<BoundingBox_O>())
 //      , _MissingParameters(unbound<core::List_O>())
     {};
-  };
-
-  FORWARD(EnergyFunctionEnergy);
-  class EnergyFunctionEnergy_O : public ScoringFunctionEnergy_O
-  {
-    LISP_CLASS(chem,ChemPkg,EnergyFunctionEnergy_O,"EnergyFunctionEnergy",ScoringFunctionEnergy_O);
-    
   };
 
     bool inAtomSet(core::T_sp atomSet, Atom_sp atom);

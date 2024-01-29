@@ -151,7 +151,8 @@ struct	to_object<chem::EnergyNonbond>
 
 namespace chem {
 
-num_real	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
+double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
+                                    int I1, int I2, core::T_sp activeAtomMask, 
                                     num_real x1, num_real y1, num_real z1,
                                     num_real x2, num_real y2, num_real z2,
                                     num_real dA, num_real dC, num_real dQ1Q2 );
@@ -171,15 +172,10 @@ class EnergyNonbond_O : public EnergyComponent_O
  public:
   typedef EnergyNonbond TermType;
  public: // instance variables
-  double		_DielectricConstant;
   double		_ScaleVdw;
   double		_ScaleElectrostatic;
   double		_EnergyVdw;
   double		_EnergyElectrostatic;
-  double                _NonbondCutoff;
-  double                _NonbondCutoffSquared;
-  double                _NonbondCutoffReciprocal12;
-  double                _NonbondCutoffReciprocal6;
   bool                _UsesExcludedAtoms;
     // Original way of defining nonbonds with list of nonbond terms
   gctools::Vec0<TermType>	_Terms;
@@ -214,8 +210,6 @@ class EnergyNonbond_O : public EnergyComponent_O
   //core::List_sp termAtIndex(size_t index) const;
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
-  void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
-  double	getDielectricConstant() { return this->_DielectricConstant; };
   CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
   CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
   CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
@@ -230,7 +224,6 @@ class EnergyNonbond_O : public EnergyComponent_O
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
-  void setNonbondCutoff(double cutoff);
   virtual core::List_sp extract_vectors_as_alist() const;
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
@@ -239,7 +232,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void verifyExcludedAtoms(Matter_sp matter, ScoringFunction_sp score);
   
-  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,
@@ -251,35 +244,12 @@ class EnergyNonbond_O : public EnergyComponent_O
                                          gc::Nilable<NVector_sp> dvec,
                                          core::T_sp activeAtomMask,
                                          core::T_sp debugInteractions );
-  virtual num_real evaluateTerms( ScoringFunction_sp score,
-                                  NVector_sp 	pos,
-                                  core::T_sp componentEnergy,
-                                  bool 		calcForce,
-                                  gc::Nilable<NVector_sp> 	force,
-                                  bool		calcDiagonalHessian,
-                                  bool		calcOffDiagonalHessian,
-                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                  gc::Nilable<NVector_sp>	hdvec,
-                                  gc::Nilable<NVector_sp> dvec,
-                                  core::T_sp activeAtomMask,
-                                  core::T_sp debugInteractions );
-  
-  virtual num_real evaluateUsingExcludedAtoms( ScoringFunction_sp score,
-                                               NVector_sp 	pos,
-                                               core::T_sp componentEnergy,
-                                               bool 		calcFrce,
-                                               gc::Nilable<NVector_sp> 	force,
-                                               bool		calcDiagonalHessian,
-                                               bool		calcOffDiagonalHessian,
-                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                               gc::Nilable<NVector_sp>	hdvec,
-                                               gc::Nilable<NVector_sp> dvec,
-                                               core::T_sp activeAtomMask,
-                                               core::T_sp debugInteractions);
-  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm( ScoringFunction_sp score,
-                                                                                NVector_sp pos );
 
-  void expandExcludedAtomsToTerms();
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm( ScoringFunction_sp score,
+                                                                                NVector_sp pos,
+                                                                                core::T_sp activeAtomMask );
+
+  void expandExcludedAtomsToTerms(ScoringFunction_sp score);
 
   virtual string	beyondThresholdInteractionsAsString();
 
@@ -309,6 +279,8 @@ class EnergyNonbond_O : public EnergyComponent_O
       _FFNonbondDb(nil<core::T_O>())
   {};
 };
+
+EnergyFunction_sp energyFunctionNonbondParameters(ScoringFunction_sp score, double& dielectricConstant, double& dQ1Q2Scale, double& cutoff );
 
 };
 

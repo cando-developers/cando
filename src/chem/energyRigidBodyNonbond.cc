@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/loop.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/forceField.h>
+#include <cando/chem/energyNonbond.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
@@ -430,7 +431,7 @@ inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& 
   return result;
 }
 
-num_real EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                          NVector_sp 	pos,
                                                          core::T_sp componentEnergy,
                                                          bool 		calcForce,
@@ -443,13 +444,17 @@ num_real EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp scor
                                                          core::T_sp activeAtomMask,
                                                          core::T_sp debugInteractions )
 {
+  double dielectricConstant;
+  double dQ1Q2Scale;
+  double cutoff;
+  energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
 //  SIMPLE_WARN("FIXactiveAtomMask How do I deal with activeAtomMask");
   this->_Evaluations++;
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
-  num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
-  num_real totalEnergy = 0.0;
+  num_real electrostaticScale = this->getElectrostaticScale()*dQ1Q2Scale/dielectricConstant;
+  double totalEnergy = 0.0;
   bool	hasForce = force.notnilp();
   RigidBodyEnergyFunction_sp rigidBodyEnergyFunction = gc::As<RigidBodyEnergyFunction_sp>(score);
   BoundingBox_sp boundingBox = rigidBodyEnergyFunction->boundingBox();

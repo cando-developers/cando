@@ -52,6 +52,59 @@ This is an open source license for the CANDO software from Temple University, bu
   
 namespace chem {
 
+template <int N,typename Real>
+struct SinCos {
+  static void sinNPhiCosNPhi(Real& sinNPhi, Real& cosNPhi,
+                      Real sinPhi, Real cosPhi ) {
+    Real sinNm1Phi;
+    Real cosNm1Phi;
+    SinCos<N-1,Real>::sinNPhiCosNPhi(sinNm1Phi,cosNm1Phi,sinPhi,cosPhi);
+    sinNPhi = cosPhi*sinNm1Phi+sinPhi*cosNm1Phi;
+    cosNPhi = cosPhi*cosNm1Phi-sinPhi*sinNm1Phi;
+  }
+};
+
+template <typename Real>
+struct SinCos<1,Real> {
+  static void sinNPhiCosNPhi(Real& sinNPhi, Real& cosNPhi,
+                      Real sinPhi, Real cosPhi ) {
+    sinNPhi = sinPhi;
+    cosNPhi = cosPhi;
+  }
+};
+
+
+template <typename Real>
+void	sinNPhiCosNPhi(int n, Real& sinNPhi, Real& cosNPhi,
+                       Real sinPhi, Real cosPhi )
+{
+  switch (n) {
+  case 1:
+      SinCos<1,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 2:
+      SinCos<2,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 3:
+      SinCos<3,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 4:
+      SinCos<4,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 5:
+      SinCos<5,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  case 6:
+      SinCos<6,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
+      break;
+  default:
+      SIMPLE_ERROR("N {} should always be 1-6", n);
+      break;
+  }
+}
+
+#define ENERGY_FUNCTION I1, I2, I3, I4, activeAtomMask
+
 SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn1);
 SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn2);
 SYMBOL_EXPORT_SC_(ChemPkg,EnergyDihedralIn3);
@@ -86,6 +139,211 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) goto SKIP_term;
+
+
+
+//
+// Copy this from implementAmberFunction.cc
+//
+double	_evaluateEnergyOnly_Dihedral( int I1, int I2, int I3, int I4,
+                                      core::T_sp activeAtomMask, 
+                                     num_real x1, num_real y1, num_real z1,
+                                     num_real x2, num_real y2, num_real z2,
+                                     num_real x3, num_real y3, num_real z3,
+                                     num_real x4, num_real y4, num_real z4,
+                                     num_real V, num_real DN, int IN,
+                                     num_real cosPhase, num_real sinPhase )
+{
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  num_real	EraseLinearDihedral;
+  num_real	SinNPhi, CosNPhi;
+
+#undef	DIHEDRAL_SET_PARAMETER
+#define	DIHEDRAL_SET_PARAMETER(x)	{}
+#undef	DIHEDRAL_SET_POSITION
+#define	DIHEDRAL_SET_POSITION(x,ii,of)	{}
+#undef	DIHEDRAL_ENERGY_ACCUMULATE
+#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {}
+#undef	DIHEDRAL_FORCE_ACCUMULATE
+#define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
+#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	DIHEDRAL_CALC_FORCE	// Don't calculate FORCE or HESSIAN
+
+
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
+#pragma clang diagnostic pop
+  fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+  fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+  fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+  fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+#undef VEC_CONST
+#define VEC_CONST(x) (x)
+#undef ZERO_SMALL_LEN
+#define ZERO_SMALL_LEN(RL,L) {double fabs_ = fabs(L); int cmp = (fabs_ < TENM3); RL = cmp ? 0.0 : RL; }
+#undef DO_sinNPhiCosNPhi
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
+#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_DEBUG_INTERACTIONS
+#undef DIHEDRAL_APPLY_ATOM_MASK
+
+  return Energy;
+}
+
+CL_LAMBDA((energy-dihedral chem:energy-dihedral) pos &optional active-atom-mask);
+CL_DEFMETHOD void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp 	pos,
+                                                                                                 core::T_sp activeAtomMask )
+{
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  int	fails = 0;
+  bool	calcForce = true;
+  bool	calcDiagonalHessian = true;
+  bool	calcOffDiagonalHessian = true;
+
+//
+// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm
+//
+//------------------
+#define DIHEDRAL_CALC_FORCE
+#define DIHEDRAL_CALC_DIAGONAL_HESSIAN
+#define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
+#undef	DIHEDRAL_SET_PARAMETER
+#define	DIHEDRAL_SET_PARAMETER(x)	{x=di->term.x;}
+#undef	DIHEDRAL_SET_POSITION
+#define	DIHEDRAL_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#undef	DIHEDRAL_ENERGY_ACCUMULATE
+#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {}
+#undef	DIHEDRAL_FORCE_ACCUMULATE
+#define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
+#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+
+  {
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
+#pragma clang diagnostic pop
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+#if !USE_EXPLICIT_DECLARES
+    num_real dhx1x1 = 0.0;
+    num_real ohx1y1 = 0.0;
+    num_real ohx1z1 = 0.0;
+    num_real ohx1x2 = 0.0;
+    num_real ohx1y2 = 0.0;
+    num_real ohx1z2 = 0.0;
+    num_real ohx1x3 = 0.0;
+    num_real ohx1y3 = 0.0;
+    num_real ohx1z3 = 0.0;
+    num_real ohx1x4 = 0.0;
+    num_real ohx1y4 = 0.0;
+    num_real ohx1z4 = 0.0;
+    num_real dhy1y1 = 0.0;
+    num_real ohy1z1 = 0.0;
+    num_real ohy1x2 = 0.0;
+    num_real ohy1y2 = 0.0;
+    num_real ohy1z2 = 0.0;
+    num_real ohy1x3 = 0.0;
+    num_real ohy1y3 = 0.0;
+    num_real ohy1z3 = 0.0;
+    num_real ohy1x4 = 0.0;
+    num_real ohy1y4 = 0.0;
+    num_real ohy1z4 = 0.0;
+    num_real dhz1z1 = 0.0;
+    num_real ohz1x2 = 0.0;
+    num_real ohz1y2 = 0.0;
+    num_real ohz1z2 = 0.0;
+    num_real ohz1x3 = 0.0;
+    num_real ohz1y3 = 0.0;
+    num_real ohz1z3 = 0.0;
+    num_real ohz1x4 = 0.0;
+    num_real ohz1y4 = 0.0;
+    num_real ohz1z4 = 0.0;
+    num_real dhx2x2 = 0.0;
+    num_real ohx2y2 = 0.0;
+    num_real ohx2z2 = 0.0;
+    num_real ohx2x3 = 0.0;
+    num_real ohx2y3 = 0.0;
+    num_real ohx2z3 = 0.0;
+    num_real ohx2x4 = 0.0;
+    num_real ohx2y4 = 0.0;
+    num_real ohx2z4 = 0.0;
+    num_real dhy2y2 = 0.0;
+    num_real ohy2z2 = 0.0;
+    num_real ohy2x3 = 0.0;
+    num_real ohy2y3 = 0.0;
+    num_real ohy2z3 = 0.0;
+    num_real ohy2x4 = 0.0;
+    num_real ohy2y4 = 0.0;
+    num_real ohy2z4 = 0.0;
+    num_real dhz2z2 = 0.0;
+    num_real ohz2x3 = 0.0;
+    num_real ohz2y3 = 0.0;
+    num_real ohz2z3 = 0.0;
+    num_real ohz2x4 = 0.0;
+    num_real ohz2y4 = 0.0;
+    num_real ohz2z4 = 0.0;
+    num_real dhx3x3 = 0.0;
+    num_real ohx3y3 = 0.0;
+    num_real ohx3z3 = 0.0;
+    num_real ohx3x4 = 0.0;
+    num_real ohx3y4 = 0.0;
+    num_real ohx3z4 = 0.0;
+    num_real dhy3y3 = 0.0;
+    num_real ohy3z3 = 0.0;
+    num_real ohy3x4 = 0.0;
+    num_real ohy3y4 = 0.0;
+    num_real ohy3z4 = 0.0;
+    num_real dhz3z3 = 0.0;
+    num_real ohz3x4 = 0.0;
+    num_real ohz3y4 = 0.0;
+    num_real ohz3z4 = 0.0;
+    num_real dhx4x4 = 0.0;
+    num_real ohx4y4 = 0.0;
+    num_real ohx4z4 = 0.0;
+    num_real dhy4y4 = 0.0;
+    num_real ohy4z4 = 0.0;
+    num_real dhz4z4 = 0.0;
+#endif
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
+    num_real EraseLinearDihedral;
+    int	I1, I2, I3, I4, IN, i;
+#undef DO_sinNPhiCosNPhi
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
+    num_real sinPhase, cosPhase, SinNPhi, CosNPhi;
+    gctools::Vec0<EnergyDihedral>::iterator di;
+    for ( i=0,di=this->_Terms.begin(); di!=this->_Terms.end(); di++,i++ ) {
+#undef DO_sinNPhiCosNPhi
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
+#define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         && bitvectorActiveAtomMask->testBit(I4/3)) \
+    ) goto SKIP_term;
+#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
+#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
+#undef DIHEDRAL_DEBUG_INTERACTIONS
+#undef DIHEDRAL_APPLY_ATOM_MASK
+      int index = i;
+#include <cando/chem/energy_functions/_Dihedral_debugFiniteDifference.cc>
+    }
+    core::lisp_write(fmt::format("There are {} fails out of {} terms\n", fails, i ));
+  }
+}
+
+
+
 #define USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,dihedral_type(IN), \
@@ -147,57 +405,6 @@ void	EnergyDihedral::archive(core::ArchiveP node)
 #endif //]
 }
 #endif
-
-template <int N,typename Real>
-struct SinCos {
-  static void sinNPhiCosNPhi(Real& sinNPhi, Real& cosNPhi,
-                      Real sinPhi, Real cosPhi ) {
-    Real sinNm1Phi;
-    Real cosNm1Phi;
-    SinCos<N-1,Real>::sinNPhiCosNPhi(sinNm1Phi,cosNm1Phi,sinPhi,cosPhi);
-    sinNPhi = cosPhi*sinNm1Phi+sinPhi*cosNm1Phi;
-    cosNPhi = cosPhi*cosNm1Phi-sinPhi*sinNm1Phi;
-  }
-};
-
-template <typename Real>
-struct SinCos<1,Real> {
-  static void sinNPhiCosNPhi(Real& sinNPhi, Real& cosNPhi,
-                      Real sinPhi, Real cosPhi ) {
-    sinNPhi = sinPhi;
-    cosNPhi = cosPhi;
-  }
-};
-
-
-template <typename Real>
-void	sinNPhiCosNPhi(int n, Real& sinNPhi, Real& cosNPhi,
-                       Real sinPhi, Real cosPhi )
-{
-  switch (n) {
-  case 1:
-      SinCos<1,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
-      break;
-  case 2:
-      SinCos<2,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
-      break;
-  case 3:
-      SinCos<3,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
-      break;
-  case 4:
-      SinCos<4,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
-      break;
-  case 5:
-      SinCos<5,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
-      break;
-  case 6:
-      SinCos<6,Real>::sinNPhiCosNPhi(sinNPhi,cosNPhi,sinPhi,cosPhi);
-      break;
-  default:
-      SIMPLE_ERROR("N {} should always be 1-6", n);
-      break;
-  }
-}
 
 
 void EnergyDihedral::defineFrom( int n, FFPtor_sp ffterm , EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale)
@@ -339,59 +546,6 @@ void	EnergyDihedral::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
   this->_Proper = xml->getAttributeBool("proper");
 }
 #endif
-
-
-//
-// Copy this from implementAmberFunction.cc
-//
-num_real	_evaluateEnergyOnly_Dihedral(
-                                     num_real x1, num_real y1, num_real z1,
-                                     num_real x2, num_real y2, num_real z2,
-                                     num_real x3, num_real y3, num_real z3,
-                                     num_real x4, num_real y4, num_real z4,
-                                     num_real V, num_real DN, int IN,
-                                     num_real cosPhase, num_real sinPhase )
-{
-  IMPLEMENT_ME();
-#if 0
-  num_real	EraseLinearDihedral;
-  num_real	SinNPhi, CosNPhi;
-
-#undef	DIHEDRAL_SET_PARAMETER
-#define	DIHEDRAL_SET_PARAMETER(x)	{}
-#undef	DIHEDRAL_SET_POSITION
-#define	DIHEDRAL_SET_POSITION(x,ii,of)	{}
-#undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {}
-#undef	DIHEDRAL_FORCE_ACCUMULATE
-#define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
-#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	DIHEDRAL_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
-#pragma clang diagnostic pop
-  fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-  fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-  fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-  fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-#undef VEC_CONST
-#define VEC_CONST(x) (x)
-#undef ZERO_SMALL_LEN
-#define ZERO_SMALL_LEN(RL,L) {double fabs_ = fabs(L); int cmp = (fabs_ < TENM3); RL = cmp ? 0.0 : RL; }
-#undef DO_sinNPhiCosNPhi
-#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
-#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-#undef DIHEDRAL_APPLY_ATOM_MASK
-
-  return Energy;
-#endif
-}
 
 
 void EnergyDihedral_O::addTerm(const EnergyDihedral& term)
@@ -557,6 +711,13 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
     for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
           di!=this->_Terms.end(); di++ ) {
 #define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
+#define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         && bitvectorActiveAtomMask->testBit(I4/3)) \
+    ) goto SKIP_term;
 #include	<cando/chem/energy_functions/_Dihedral_termCode.cc>
 #undef DIHEDRAL_DEBUG_INTERACTIONS
 #undef DIHEDRAL_APPLY_ATOM_MASK
@@ -564,7 +725,7 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
   }
 }
 
-num_real	EnergyDihedral_O::evaluateAllComponentSingle(
+double	EnergyDihedral_O::evaluateAllComponentSingle(
     gctools::Vec0<EnergyDihedral>::iterator di_start,
     gctools::Vec0<EnergyDihedral>::iterator di_end,
     ScoringFunction_sp score,
@@ -594,7 +755,7 @@ if (hasActiveAtomMask \
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(("%s {\n") , this->className());
   }
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -746,146 +907,6 @@ if (hasActiveAtomMask \
 
 
 
-
-
-void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-                                                                                 NVector_sp 	pos)
-{
-  IMPLEMENT_ME();
-  #if 0
-  int	fails = 0;
-  bool	calcForce = true;
-  bool	calcDiagonalHessian = true;
-  bool	calcOffDiagonalHessian = true;
-
-
-//
-// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm
-//
-//------------------
-#define DIHEDRAL_CALC_FORCE
-#define DIHEDRAL_CALC_DIAGONAL_HESSIAN
-#define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
-#undef	DIHEDRAL_SET_PARAMETER
-#define	DIHEDRAL_SET_PARAMETER(x)	{x=di->term.x;}
-#undef	DIHEDRAL_SET_POSITION
-#define	DIHEDRAL_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {}
-#undef	DIHEDRAL_FORCE_ACCUMULATE
-#define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
-#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-#if !USE_EXPLICIT_DECLARES
-    num_real dhx1x1 = 0.0;
-    num_real ohx1y1 = 0.0;
-    num_real ohx1z1 = 0.0;
-    num_real ohx1x2 = 0.0;
-    num_real ohx1y2 = 0.0;
-    num_real ohx1z2 = 0.0;
-    num_real ohx1x3 = 0.0;
-    num_real ohx1y3 = 0.0;
-    num_real ohx1z3 = 0.0;
-    num_real ohx1x4 = 0.0;
-    num_real ohx1y4 = 0.0;
-    num_real ohx1z4 = 0.0;
-    num_real dhy1y1 = 0.0;
-    num_real ohy1z1 = 0.0;
-    num_real ohy1x2 = 0.0;
-    num_real ohy1y2 = 0.0;
-    num_real ohy1z2 = 0.0;
-    num_real ohy1x3 = 0.0;
-    num_real ohy1y3 = 0.0;
-    num_real ohy1z3 = 0.0;
-    num_real ohy1x4 = 0.0;
-    num_real ohy1y4 = 0.0;
-    num_real ohy1z4 = 0.0;
-    num_real dhz1z1 = 0.0;
-    num_real ohz1x2 = 0.0;
-    num_real ohz1y2 = 0.0;
-    num_real ohz1z2 = 0.0;
-    num_real ohz1x3 = 0.0;
-    num_real ohz1y3 = 0.0;
-    num_real ohz1z3 = 0.0;
-    num_real ohz1x4 = 0.0;
-    num_real ohz1y4 = 0.0;
-    num_real ohz1z4 = 0.0;
-    num_real dhx2x2 = 0.0;
-    num_real ohx2y2 = 0.0;
-    num_real ohx2z2 = 0.0;
-    num_real ohx2x3 = 0.0;
-    num_real ohx2y3 = 0.0;
-    num_real ohx2z3 = 0.0;
-    num_real ohx2x4 = 0.0;
-    num_real ohx2y4 = 0.0;
-    num_real ohx2z4 = 0.0;
-    num_real dhy2y2 = 0.0;
-    num_real ohy2z2 = 0.0;
-    num_real ohy2x3 = 0.0;
-    num_real ohy2y3 = 0.0;
-    num_real ohy2z3 = 0.0;
-    num_real ohy2x4 = 0.0;
-    num_real ohy2y4 = 0.0;
-    num_real ohy2z4 = 0.0;
-    num_real dhz2z2 = 0.0;
-    num_real ohz2x3 = 0.0;
-    num_real ohz2y3 = 0.0;
-    num_real ohz2z3 = 0.0;
-    num_real ohz2x4 = 0.0;
-    num_real ohz2y4 = 0.0;
-    num_real ohz2z4 = 0.0;
-    num_real dhx3x3 = 0.0;
-    num_real ohx3y3 = 0.0;
-    num_real ohx3z3 = 0.0;
-    num_real ohx3x4 = 0.0;
-    num_real ohx3y4 = 0.0;
-    num_real ohx3z4 = 0.0;
-    num_real dhy3y3 = 0.0;
-    num_real ohy3z3 = 0.0;
-    num_real ohy3x4 = 0.0;
-    num_real ohy3y4 = 0.0;
-    num_real ohy3z4 = 0.0;
-    num_real dhz3z3 = 0.0;
-    num_real ohz3x4 = 0.0;
-    num_real ohz3y4 = 0.0;
-    num_real ohz3z4 = 0.0;
-    num_real dhx4x4 = 0.0;
-    num_real ohx4y4 = 0.0;
-    num_real ohx4z4 = 0.0;
-    num_real dhy4y4 = 0.0;
-    num_real ohy4z4 = 0.0;
-    num_real dhz4z4 = 0.0;
-#endif
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-    num_real EraseLinearDihedral;
-    int	I1, I2, I3, I4, IN, i;
-#undef ENERGY_FUNCTION
-#define ENERGY_FUNCTION _evaluateEnergyOnly_Dihedral
-#undef DO_sinNPhiCosNPhi
-#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
-    num_real sinPhase, cosPhase, SinNPhi, CosNPhi;
-    gctools::Vec0<EnergyDihedral>::iterator di;
-    for ( i=0,di=this->_Terms.begin(); di!=this->_Terms.end(); di++,i++ ) {
-#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-#undef DIHEDRAL_APPLY_ATOM_MASK
-      int index = i;
-#include <cando/chem/energy_functions/_Dihedral_debugFiniteDifference.cc>
-    }
-  }
-#endif
-}
 
 
 
@@ -1040,7 +1061,7 @@ typedef double real;
 typedef real real8 __attribute__((vector_size(8*VREAL8_WIDTH))) __attribute__((aligned(4)));
 typedef int64_t int8 __attribute__((vector_size(8*VREAL8_WIDTH))) __attribute__((aligned(4)));
 
-num_real EnergyDihedral_O::evaluateAllComponentSimd8(
+double EnergyDihedral_O::evaluateAllComponentSimd8(
     gctools::Vec0<EnergyDihedral>::iterator di_start8,
     gctools::Vec0<EnergyDihedral>::iterator di_end8,
     ScoringFunction_sp          score,
@@ -1054,7 +1075,8 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd8(
     gc::Nilable<NVector_sp>     dvec,
     core::T_sp activeAtomMask )
 {
-  
+  IMPLEMENT_ME();
+#if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   if ( this->_DebugEnergy ) {
     LOG_ENERGY_CLEAR();
@@ -1068,7 +1090,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd8(
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
 //
 // Copy from implementAmberFunction::evaluateAll
 //
@@ -1318,6 +1340,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd8(
     LOG_ENERGY(("%s }\n") , this->className());
   }
   return totalEnergy;
+#endif
 }
 
 //
@@ -1333,7 +1356,7 @@ typedef double real;
 typedef real real4 __attribute__((vector_size(8*VREAL4_WIDTH)));
 typedef int64_t int4 __attribute__((vector_size(8*VREAL4_WIDTH)));
 
-num_real EnergyDihedral_O::evaluateAllComponentSimd4(
+double EnergyDihedral_O::evaluateAllComponentSimd4(
     gctools::Vec0<EnergyDihedral>::iterator di_start4,
     gctools::Vec0<EnergyDihedral>::iterator di_end4,
     ScoringFunction_sp          score,
@@ -1533,7 +1556,7 @@ typedef double real;
 typedef real real2 __attribute__((vector_size(8*VREAL2_WIDTH)));
 typedef int64_t int2 __attribute__((vector_size(8*VREAL2_WIDTH)));
 
-num_real EnergyDihedral_O::evaluateAllComponentSimd2(
+double EnergyDihedral_O::evaluateAllComponentSimd2(
     gctools::Vec0<EnergyDihedral>::iterator di_start2,
     gctools::Vec0<EnergyDihedral>::iterator di_end2,
     ScoringFunction_sp          score,
@@ -1707,7 +1730,7 @@ num_real EnergyDihedral_O::evaluateAllComponentSimd2(
 }
 #endif // !_TARGET_OS_DARWIN
 
-num_real EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
+double EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
                                                 NVector_sp 	                pos,
                                                 core::T_sp               componentEnergy,
                                                 bool 		        calcForce,

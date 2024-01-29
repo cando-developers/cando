@@ -70,7 +70,7 @@ void EnergySketchStretch::decode(core::List_sp alist) {
   SIMPLE_ERROR("Implement decode of EnergySketchStretch");
 }
 
-num_real	_evaluateEnergyOnly_SketchStretch (
+double	_evaluateEnergyOnly_SketchStretch (
                                      num_real x1,
                                      num_real y1,
                                      num_real z1,
@@ -177,7 +177,7 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 }
 
 
-num_real EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                                     NVector_sp 	pos,
                                                     core::T_sp componentEnergy,
                                                     bool 		calcForce,
@@ -204,7 +204,7 @@ num_real EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
 #define STRETCH_CALC_FORCE
 #define STRETCH_CALC_DIAGONAL_HESSIAN
 #define STRETCH_CALC_OFF_DIAGONAL_HESSIAN

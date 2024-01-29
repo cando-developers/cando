@@ -53,8 +53,6 @@ This is an open source license for the CANDO software from Temple University, bu
 		//
 		// SCALE FACTOR FOR ELECTROSTIC INTERACTIONS???
 		//
-const double ELECTROSTATIC_MODIFIER = (93865.10/3.53*93865.10/93958.78);
-
 #define	DECLARE_FLOAT(x) num_real x = 0.0
 
 	// If we declare mathematica generated term variables
@@ -328,7 +326,7 @@ public:
 
   virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteraction);
   
-  CL_DEFMETHOD virtual	num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                                        NVector_sp 	pos,
                                                        core::T_sp componentEnergy,
                                                        bool 		calcForce,

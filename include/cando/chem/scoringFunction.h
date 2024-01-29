@@ -182,7 +182,7 @@ public:
 
  
   CL_LISPIFY_NAME("evaluateAll");
-  CL_LAMBDA(pos &optional calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec);
+  CL_LAMBDA((scoring-function chem:scoring-function) pos &optional component-energy calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions);
   CL_DEFMETHOD virtual double	evaluateAll( 	NVector_sp pos,
                                                 core::T_sp componentEnergy,
                                                 bool calcForce,
@@ -208,6 +208,8 @@ public:
                                                        core::T_sp activeAtomMask,
                                                        core::T_sp debugInteractions=nil<core::T_O>());
   virtual double	evaluateEnergyForceFullHessianForDebugging(core::T_sp activeAtomMask, core::T_sp debugInteractions );
+
+  void evaluateFiniteDifferenceForce(NVector_sp pos, NVector_sp force, double delta=0.00001, core::T_sp activeAtomMask=nil<core::T_O>() );
 #if 0
 
   string	summarizeBeyondThresholdInteractionsAsString();
@@ -241,18 +243,17 @@ public:
   ScoringFunction_O();
 };
 
-SMART(ScoringFunctionEnergy);
-class ScoringFunctionEnergy_O : public core::CxxObject_O
+SMART(EnergyComponents);
+class EnergyComponents_O : public core::CxxObject_O
 {
-  LISP_CLASS(chem,ChemPkg,ScoringFunctionEnergy_O,"ScoringFunctionEnergy",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,EnergyComponents_O,"EnergyComponents",core::CxxObject_O);
 public:
-  core::T_sp  _Terms;
+  core::T_sp  _Components;
 public:
-  ScoringFunctionEnergy_O() : _Terms(nil<core::T_O>()) {};
+  EnergyComponents_O() : _Components(nil<core::T_O>()) {};
 
-  virtual string energyComponentsAsString() {SUBIMP();};
   virtual void setEnergy(core::T_sp component, double energy );
-  core::T_sp   getTerms() const { return this->_Terms; };
+  CL_DEFMETHOD core::T_sp   componentEnergies() const { return this->_Components; };
 };
 
 void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp energyComponentName, double energy );

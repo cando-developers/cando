@@ -35,8 +35,8 @@ This is an open source license for the CANDO software from Temple University, bu
 //
 // This is where you define the VECREAL and NUM_REAL types
 //
-#define VECREAL VECREAL_FLOAT
-#define NUM_REAL VECREAL_FLOAT
+#define VECREAL VECREAL_DOUBLE
+#define NUM_REAL VECREAL_DOUBLE
 
 #if VECREAL == VECREAL_DOUBLE
 typedef double  vecreal;

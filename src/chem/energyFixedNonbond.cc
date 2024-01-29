@@ -59,7 +59,7 @@ void EnergyFixedNonbondRestraint_O::fields(core::Record_sp node)
 //
 // Copy this from implementAmberFunction.cc
 //
-num_real	_evaluateEnergyOnly_FixedNonbond(
+double	_evaluateEnergyOnly_FixedNonbond(
 		num_real x1, num_real y1, num_real z1,
 		num_real xf, num_real yf, num_real zf,
 		num_real dA, num_real dC, num_real dQ1Q2)
@@ -215,10 +215,14 @@ Vector3				v1,v2;
 }
 #endif
 
+SYMBOL_EXPORT_SC_(ChemPkg,energyVdwExcludedAtoms);
+SYMBOL_EXPORT_SC_(ChemPkg,energyElectrostaticExcludedAtoms);
 SYMBOL_EXPORT_SC_(ChemPkg,energyVdw);
 SYMBOL_EXPORT_SC_(ChemPkg,energyElectrostatic);
+SYMBOL_EXPORT_SC_(ChemPkg,energyVdw14);
+SYMBOL_EXPORT_SC_(ChemPkg,energyElectrostatic14);
 
-num_real EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                               NVector_sp 	pos,
                                                               core::T_sp componentEnergy,
                                                               bool 		calcForce,
@@ -231,6 +235,10 @@ num_real EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp
                                                               core::T_sp activeAtomMask,
                                                               core::T_sp debugInteractions )
 {
+  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
+  double dielectricConstant = energyFunction->getDielectricConstant();
+  double amber_charge_conversion_18dot2223 = gc::As<core::Number_sp>(_sym_STARamber_charge_conversion_18_DOT_2223STAR->symbolValue())->as_double_();
+  double dQ1Q2Scale = amber_charge_conversion_18dot2223 * amber_charge_conversion_18dot2223;
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
@@ -307,7 +315,7 @@ num_real EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp
           xf = fixedAtomEntry._FixedPosition.getX();
           yf = fixedAtomEntry._FixedPosition.getY();
           zf = fixedAtomEntry._FixedPosition.getZ();
-          num_real fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
+          num_real fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / dielectricConstant * dQ1Q2Scale;
           uint fixedTypeMajorIndex = this->_NonbondCrossTermTable->typeMajorIndex(fixedAtomEntry._FixedType);
           for ( imobile=0; imobile< mobileNonbondAtoms; imobile++ )
           {

@@ -168,7 +168,8 @@ struct	from_object<chem::EnergyDihedral>
 
 namespace chem {
 
-num_real  _evaluateEnergyOnly_Dihedral(
+double  _evaluateEnergyOnly_Dihedral(
+    int I1, int I2, int I3, int I4, core::T_sp activeAtomMask,
                 num_real x1, num_real y1, num_real z1,
                 num_real x2, num_real y2, num_real z2,
                 num_real x3, num_real y3, num_real z3,
@@ -230,7 +231,7 @@ public:
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m,
                                           core::T_sp activeAtomMask );
-  virtual num_real evaluateAllComponent( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,
@@ -243,7 +244,7 @@ public:
                                          core::T_sp activeAtomMask,
                                          core::T_sp debugInteractions );
 
-  virtual num_real evaluateAllComponentSingle(
+  virtual double evaluateAllComponentSingle(
       gctools::Vec0<EnergyDihedral>::iterator di_start,
       gctools::Vec0<EnergyDihedral>::iterator di_end,
       ScoringFunction_sp scorer,
@@ -259,7 +260,7 @@ public:
       core::T_sp debugInteractions );
 
 #ifndef _TARGET_OS_DARWIN
-  virtual num_real evaluateAllComponentSimd8(
+  virtual double evaluateAllComponentSimd8(
       gctools::Vec0<EnergyDihedral>::iterator di_start8,
       gctools::Vec0<EnergyDihedral>::iterator di_end8,
       ScoringFunction_sp scorer,
@@ -273,7 +274,7 @@ public:
       gc::Nilable<NVector_sp> dvec,
       core::T_sp activeAtomMask );
 
-  virtual num_real evaluateAllComponentSimd4(
+  virtual double evaluateAllComponentSimd4(
       gctools::Vec0<EnergyDihedral>::iterator di_start4,
       gctools::Vec0<EnergyDihedral>::iterator di_end4,
       ScoringFunction_sp scorer,
@@ -287,7 +288,7 @@ public:
       gc::Nilable<NVector_sp> dvec,
       core::T_sp activeAtomMask );
 
-  virtual num_real evaluateAllComponentSimd2(
+  virtual double evaluateAllComponentSimd2(
       gctools::Vec0<EnergyDihedral>::iterator di_start2,
       gctools::Vec0<EnergyDihedral>::iterator di_end2,
       ScoringFunction_sp scorer,
@@ -303,8 +304,7 @@ public:
 #endif
 
   
-  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-      NVector_sp pos );
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos, core::T_sp activeAtomMask );
 
     // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 

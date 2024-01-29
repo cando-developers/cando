@@ -234,17 +234,122 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
 
-(defun optimize-structure (matter &key (keep-interaction t)
-                                    (turn-off-nonbond t)
-                                    verbose)
+(defun validate-energy-components (components valid-components)
+  (when (consp components)
+    (loop for comp in components
+          unless (member comp valid-components)
+            do (error "~s is not a valid component name - must be one of ~s" comp valid-components))))
+
+(defun optimize-structure-debug (matter &key (keep-interaction t)
+                                          (disable-components nil)
+                                          (enable-components nil)
+                                          (use-excluded-atoms t)
+                                          (electrostatic-scale 1.0 electrostatic-scale-p)
+                                          (sd-tolerance 500.0)
+                                          (cg-tolerance 0.5)
+                                          (tn-tolerance 1.0e-5)
+                                          (max-sd-steps 500)
+                                          (max-cg-steps 500)
+                                          (max-tn-steps 500)
+                                          verbose)
+  "Minimize energy of a structure with lots of control.
+: matter - The matter to optimize.
+: disable-components - Either T to disable all or a list of energy component class names to disable
+Disabling happens before enabling - so you can disable all with T and then selectively enable.
+: enable-componennts - A list of energy component class names to enable.
+"
   (let* ((energy-function (chem:make-energy-function :matter matter
+                                                     :use-excluded-atoms use-excluded-atoms
                                                      :assign-types t
                                                      :keep-interaction keep-interaction))
-         (min (chem:make-minimizer energy-function)))
+         (min (chem:make-minimizer energy-function))
+         (valid-components nil))
+    (when disable-components
+      (loop for comp in (chem:all-components energy-function)
+            for class = (class-of comp)
+            for name = (class-name class)
+            do (push name valid-components)
+            when (or (eq disable-components t)
+                     (and (listp disable-components) (member name disable-components)))
+              do (progn
+                   (when verbose (format t "Disabling ~a~%" name))
+                   (chem:disable comp))))
+    (when enable-components
+      (loop for comp in (chem:all-components energy-function)
+            for class = (class-of comp)
+            for name = (class-name class)
+            when (and (listp enable-components) (member name enable-components))
+              do (progn
+                   (when verbose (format t "Enabling ~a~%" name))
+                   (chem:enable comp))))
+    (validate-energy-components disable-components valid-components)
+    (validate-energy-components enable-components valid-components)
+    (chem:set-electrostatic-scale (chem:get-nonbond-component energy-function) electrostatic-scale)
     (configure-minimizer min
-                         :max-sd-steps 5000
-                         :max-cg-steps 50000
-                         :max-tn-steps 500)
+                         :sd-tolerance sd-tolerance
+                         :cg-tolerance cg-tolerance
+                         :tn-tolerance tn-tolerance
+                         :max-sd-steps max-sd-steps
+                         :max-cg-steps max-cg-steps
+                         :max-tn-steps max-tn-steps)
+    (when verbose (chem:enable-print-intermediate-results min))
+    (minimize-no-fail min :verbose verbose)
+    (finish-output t)
+    (values matter energy-function)))
+
+(defun optimize-structure (matter &key (keep-interaction t)
+                                    (disable-components nil)
+                                    (enable-components nil)
+                                    (use-excluded-atoms t)
+                                    (turn-off-nonbond t)
+                                    (electrostatic-scale 1.0 electrostatic-scale-p)
+                                    (sd-tolerance 500.0)
+                                    (cg-tolerance 0.5)
+                                    (tn-tolerance 1.0e-5)
+                                    (max-sd-steps 500)
+                                    (max-cg-steps 500)
+                                    (max-tn-steps 500)
+                                    verbose)
+  "Minimize energy of a structure with lots of control.
+: matter - The matter to optimize.
+: disable-components - Either T to disable all or a list of energy component class names to disable
+Disabling happens before enabling - so you can disable all with T and then selectively enable.
+: enable-componennts - A list of energy component class names to enable.
+"
+  (let* ((energy-function (chem:make-energy-function :matter matter
+                                                     :use-excluded-atoms use-excluded-atoms
+                                                     :assign-types t
+                                                     :keep-interaction keep-interaction))
+         (min (chem:make-minimizer energy-function))
+         (valid-components nil))
+    (when disable-components
+      (loop for comp in (chem:all-components energy-function)
+            for class = (class-of comp)
+            for name = (class-name class)
+            do (push name valid-components)
+            when (or (eq disable-components t)
+                     (and (listp disable-components) (member name disable-components)))
+              do (progn
+                   (when verbose (format t "Disabling ~a~%" name))
+                   (chem:disable comp))))
+    (when enable-components
+      (loop for comp in (chem:all-components energy-function)
+            for class = (class-of comp)
+            for name = (class-name class)
+            when (and (listp enable-components) (member name enable-components))
+              do (progn
+                   (when verbose (format t "Enabling ~a~%" name))
+                   (chem:enable comp))))
+    (validate-energy-components disable-components valid-components)
+    (validate-energy-components enable-components valid-components)
+    (chem:set-electrostatic-scale (chem:get-nonbond-component energy-function) electrostatic-scale)
+    (configure-minimizer min
+                         :sd-tolerance sd-tolerance
+                         :cg-tolerance cg-tolerance
+                         :tn-tolerance tn-tolerance
+                         :max-sd-steps max-sd-steps
+                         :max-cg-steps max-cg-steps
+                         :max-tn-steps max-tn-steps)
     (when verbose (chem:enable-print-intermediate-results min))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
@@ -253,9 +358,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (chem:set-option energy-function 'chem:nonbond-term t)
     (finish-output t)
     (minimize-no-fail min :verbose verbose)
-    (finish-output t))
-  matter)
-
+    (finish-output t)
+    (values matter energy-function)))
 (defun optimize-structure-with-restarts (matter &key (keep-interaction t)
                                                   (turn-off-nonbond t)
                                                   verbose
@@ -588,14 +692,14 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
         ))))
 
 (defparameter *build-agg* nil)
-(defun build-good-geometry-from-random (agg)
+(defun build-good-geometry-from-random (agg &key max-cg-steps verbose)
   (let (bad-geom)
     (dotimes (i 10)
       (format t "Attempt ~a to build good geometry from a random starting point~%" i)
       (scramble-positions agg)
       (setf *build-agg* agg)
       (handler-case
-       (optimize-structure agg)
+       (optimize-structure agg :max-cg-steps max-cg-steps :verbose verbose)
        (error (e) (warn "error: ~a" e))
        )
       (setf bad-geom (topology:bad-geometry-p agg))

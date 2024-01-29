@@ -25,7 +25,8 @@ clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-d
 #fi
 
 echo "Installing CANDO user features..."
-cando --eval "(ql:quickload :cando-jupyter)" \
+cando --eval "(ext:start-autocompilation)" \
+      --eval "(ql:quickload :cando-jupyter)" \
       --eval "(ql:quickload :spiros)" \
       --eval "(leap:source \"leaprc.protein.ff14SB\")" \
       --eval "(foldamer:load-force-field t)" \

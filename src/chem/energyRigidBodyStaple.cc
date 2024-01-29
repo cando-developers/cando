@@ -181,7 +181,7 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 
 
   
-num_real EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         NVector_sp 	pos,
                                                         core::T_sp componentEnergy,
                                                         bool 		calcForce,
@@ -214,7 +214,7 @@ num_real EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score
   num_real        pxl, pyl, pzl;
   num_real        ak, bk, ck, dk, xk, yk, zk;
   num_real        al, bl, cl, dl, xl, yl, zl;
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
 #define STAPLE_CALC_FORCE
 #define STAPLE_CALC_DIAGONAL_HESSIAN
 #define STAPLE_CALC_OFF_DIAGONAL_HESSIAN

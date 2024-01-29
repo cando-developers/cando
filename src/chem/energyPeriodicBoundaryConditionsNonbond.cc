@@ -1,5 +1,5 @@
 /*
-    File: energyNonbond.cc
+    File: energyPeriodicBoundaryConditionsNonbond.cc
 */
 /*
 Open Source License
@@ -50,11 +50,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
+#include <cando/chem/energyNonbond.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
-#define BAIL_OUT_IF_CUTOFF(deltasquared) \
-  if ((deltasquared)>this->_NonbondCutoffSquared) goto DONE;
+#define BAIL_OUT_IF_CUTOFF(deltaSquared) if (deltaSquared>CUTOFF_SQUARED) goto SKIP_term;
 
 //#define DEBUG_NONBOND_TERM 1
 #define LOG_ENERGY(x)
@@ -83,9 +83,9 @@ if (hasActiveAtomMask \
     }
 
 
-inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& rsize, const num_real& size)
+inline double periodic_boundary_adjust(const num_real& delta, const num_real& rsize, const num_real& size)
 {
-  num_real result = delta;
+  double result = delta;
   result -= size*std::nearbyint(delta*rsize);
   return result;
 }
@@ -102,7 +102,7 @@ inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& 
 
 
 
-num_real	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_sp score,
+double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_sp score,
                                                               num_real x1, num_real y1, num_real z1,
                                                               num_real x2, num_real y2, num_real z2,
                                                               num_real dA, num_real dC, num_real dQ1Q2)
@@ -143,6 +143,8 @@ num_real	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_s
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#undef CUTOFF_SQUARED
+#undef DIELECTRIC
  DONE:
   return Energy;
 #endif
@@ -169,6 +171,15 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
                                                                  gc::Nilable<NVector_sp> 	dvec,
                                                                  core::T_sp activeAtomMask )
 {
+  double dielectricConstant;
+  double dQ1Q2Scale;
+  double cutoff;
+  energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
+#define CUTOFF_SQUARED (cutoff*cutoff)
+  double nonbondCutoffSquared = cutoff*cutoff;
+  double nonbondCutoffReciprocal6 = 1.0/(cutoff*cutoff*cutoff*cutoff*cutoff*cutoff);
+  double nonbondCutoffReciprocal12 = nonbondCutoffReciprocal6*nonbondCutoffReciprocal6;
+
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   core::T_sp debugInteractions = nil<core::T_O>();
   MAYBE_SETUP_DEBUG_INTERACTIONS(false);
@@ -243,9 +254,11 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
           }
         }
 #endif
-        num_real vljrc = nbi->term.dA*this->_NonbondCutoffReciprocal12-nbi->term.dC*this->_NonbondCutoffReciprocal6;
+        num_real vljrc = nbi->term.dA*nonbondCutoffReciprocal12-nbi->term.dC*nonbondCutoffReciprocal6;
         bool InteractionIs14 = nbi->_Is14;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#undef CUTOFF_SQUARED
+#undef DIELECTRIC
       DONE:
 
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
@@ -318,6 +331,14 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
                                                                               gc::Nilable<NVector_sp> 	dvec,
                                                                               core::T_sp activeAtomMask )
 {
+  double dielectricConstant;
+  double dQ1Q2Scale;
+  double cutoff;
+  EnergyFunction_sp energyFunction = energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
+  double nonbondCutoffSquared = cutoff*cutoff;
+#define CUTOFF_SQUARED nonbondCutoffSquared
+  double nonbondCutoffReciprocal6 = 1.0/(cutoff*cutoff*cutoff*cutoff*cutoff*cutoff);
+  double nonbondCutoffReciprocal12 = nonbondCutoffReciprocal6*nonbondCutoffReciprocal6;
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   core::T_sp debugInteractions = nil<core::T_O>();
   MAYBE_SETUP_DEBUG_INTERACTIONS(false);
@@ -329,12 +350,13 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
   [[maybe_unused]]num_real vdwScale = this->getVdwScale();
-  num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
+
+  num_real electrostaticScale = this->getElectrostaticScale()*dQ1Q2Scale;
+#define DIELECTRIC dielectricConstant
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
   num_real x_rwidth = energyFunction->boundingBox()->get_x_rwidth();
   num_real y_rwidth = energyFunction->boundingBox()->get_y_rwidth();
   num_real z_rwidth = energyFunction->boundingBox()->get_z_rwidth();
@@ -408,7 +430,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
       int localindex2 = (*this->_iac_vec)[index2];
       dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
       dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
-      num_real vljrc = dA*this->_NonbondCutoffReciprocal12-dC*this->_NonbondCutoffReciprocal6;
+      num_real vljrc = dA*nonbondCutoffReciprocal12-dC*nonbondCutoffReciprocal6;
 //        printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
 //        printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
       num_real charge22 = (*this->_charge_vector)[index2];
@@ -450,6 +472,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
 #endif
       bool InteractionIs14 = false; // Always false for excluded atoms
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#undef CUTOFF_SQUARED
+#undef DIELECTRIC
     DONE:
 #if 0
       core::clasp_write_string(fmt::format("{}:{}  DistanceSquared -> {}   Evdw -> {}  Evdw_rc -> {}   Eeel -> {}\n" , __FILE__ , __LINE__ , DistanceSquared , Evdw , vljrc , Eeel));
@@ -574,6 +598,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalFor
     for ( i=0,nbi=this->_Terms.begin();
           nbi!=this->_Terms.end(); nbi++,i++ ) {
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#undef CUTOFF_SQUARED
+#undef DIELECTRIC
     DONE:
       int index = i;
 #define ENERGY_FUNCTION score
@@ -719,6 +745,8 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
       }
 #endif
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#undef CUTOFF_SQUARED
+#undef DIELECTRIC
     DONE:
       EnergyAtom& ea1 = this->_AtomTable->energyAtomEntry(index1);
       EnergyAtom& ea2 = this->_AtomTable->energyAtomEntry(index2);

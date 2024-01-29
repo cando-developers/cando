@@ -98,7 +98,7 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!");
 }
 
-num_real EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                       NVector_sp 	pos,
                                                       core::T_sp componentEnergy,
                                                       bool 		calcForce,
@@ -112,7 +112,7 @@ num_real EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                       core::T_sp debugInteractions )
 {
 // Evaluate everything using terms
-  num_real totalEnergy = this->evaluateTerms(pos,componentEnergy,
+  double totalEnergy = this->evaluateTerms(pos,componentEnergy,
                                            calcForce,force,
                                              calcDiagonalHessian, calcOffDiagonalHessian, hessian,hdvec,dvec,activeAtomMask);
   return totalEnergy;
@@ -120,7 +120,7 @@ num_real EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     
     
 
-num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
+double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
                                                      core::T_sp         componentEnergy,
                                                      bool 		calcForce,
                                                      gc::Nilable<NVector_sp> 	force,
@@ -136,7 +136,7 @@ num_real	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  num_real totalEnergy = 0.0;
+  double totalEnergy = 0.0;
 #define Log(x) log(x)
 #define EREP_CALC_FORCE
 #define EREP_CALC_DIAGONAL_HESSIAN

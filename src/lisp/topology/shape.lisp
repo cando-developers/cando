@@ -56,6 +56,24 @@
     (setf (rotamer-index atresidue) rotamer-index)
     (apply-fragment-internals-to-atresidue rotamers rotamer-index atresidue)))
 
+(defclass residue-monomer-shape (rotamer-shape)
+  ((residue :initarg :residue :accessor residue)))
+
+(defmethod copy-monomer-shape ((residue-monomer-shape residue-monomer-shape))
+      (make-instance 'residue-monomer-shape
+                     :residue (residue residue-monomer-shape)))
+
+(defclass backbone-monomer-shape (residue-monomer-shape)
+  ()
+  (:documentation "monomer-shape for protein backbone monomers"))
+
+(defmethod copy-monomer-shape ((backbone-monomer-shape backbone-monomer-shape))
+  (if (slot-boundp backbone-monomer-shape 'topology:rotamer-index)
+      (make-instance 'backbone-monomer-shape
+                     :rotamer-index (rotamer-index backbone-monomer-shape)
+                     :residue (residue backbone-monomer-shape))
+      (make-instance 'backbone-monomer-shape
+                     :residue (residue backbone-monomer-shape))))
 
 
 (defclass oligomer-shape ()

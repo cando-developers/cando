@@ -253,6 +253,14 @@ void XPlusYTimesScalarWithActiveAtomMask( NVector_sp output, NVector_sp x, NVect
   }
 }
 
+CL_DEFUN NVector_sp chem__x_plus_y_times_scalar_with_active_atom_mask( NVector_sp x, NVector_sp y, double s, core::T_sp activeAtomMask )
+{
+  NVector_sp output = NVector_O::make(x->size(),0.0,true);
+  XPlusYTimesScalarWithActiveAtomMask( output, x, y, s, activeAtomMask );
+  return output;
+}
+
+
 /*
  *      copyVector
  *
@@ -359,6 +367,72 @@ CL_DEFUN
 NVector_sp chem__copy_nvector(NVector_sp source, size_t start, core::T_sp end)
 {
   return copy_nvector(source,start,end);
+}
+
+CL_DOCSTRING("Add two nvectors together and return the result in a newly allocated nvector")
+CL_DEFUN NVector_sp chem__nv_PLUS_(NVector_sp x, NVector_sp y)
+{
+  if (x->size()!=y->size()) SIMPLE_ERROR("nvectors are different sizes {} and {}", x->size(), y->size() );
+  NVector_sp res = NVector_O::make(x->size(),0.0,false);
+  vecreal* vres = &(*res)[0];
+  vecreal* vx = &(*x)[0];
+  vecreal* vy = &(*y)[0];
+  for ( size_t ii=0; ii<x->size(); ii++ ) vres[ii] = vx[ii]+vy[ii];
+  return res;
+}
+
+CL_DOCSTRING("Subtract two nvectors and return the result in a newly allocated nvector")
+CL_DEFUN NVector_sp chem__nv_MINUS_(NVector_sp x, NVector_sp y)
+{
+  if (x->size()!=y->size()) SIMPLE_ERROR("nvectors are different sizes {} and {}", x->size(), y->size() );
+  NVector_sp res = NVector_O::make(x->size(),0.0,false);
+  vecreal* vres = &(*res)[0];
+  vecreal* vx = &(*x)[0];
+  vecreal* vy = &(*y)[0];
+  for ( size_t ii=0; ii<x->size(); ii++ ) vres[ii] = vx[ii]-vy[ii];
+  return res;
+}
+
+CL_DOCSTRING("Multiply a vector by a scalar and return the result in a newly allocated nvector")
+CL_DEFUN NVector_sp chem__nv_TIMES_scalar(NVector_sp x, double s)
+{
+  NVector_sp res = NVector_O::make(x->size(),0.0,false);
+  vecreal* vres = &(*res)[0];
+  vecreal* vx = &(*x)[0];
+  for ( size_t ii=0; ii<x->size(); ii++ ) vres[ii] = vx[ii]*s;
+  return res;
+}
+
+CL_LAMBDA(x &optional (initial-value 0.0));
+CL_DOCSTRING("Return a newly allocated nvector the same length as x full of the constant value")
+CL_DEFUN NVector_sp chem__nv_constant(NVector_sp x, double initial_value)
+{
+  NVector_sp res = NVector_O::make(x->size(),initial_value,true);
+  return res;
+}
+
+CL_DEFUN vecreal chem__nv_magnitude(NVector_sp vec) {
+  num_real val;
+  num_real sum2 = 0.0;
+  vecreal* vecv = &(*vec)[0];
+  for ( size_t idx = 0; idx < vec->length(); idx++ ) {
+    val = (vecv)[idx];
+    val = val*val;
+    sum2 += val;
+  }
+  ASSERT_NOT_NAN(sum2);
+  vecreal res = sqrt(sum2);
+  ASSERT_NOT_NAN(res);
+  return res;
+}
+
+CL_LAMBDA(x);
+CL_DOCSTRING("Calculate the normalized vector from x and return a newly allocated nvector");
+CL_DEFUN NVector_sp chem__nv_normalized(NVector_sp x)
+{
+  double mag = chem__nv_magnitude(x);
+  if (fabs(mag)<0.00001) SIMPLE_ERROR("The magnitude is too small to normalize the vector - possible divide by zero");
+  return chem__nv_TIMES_scalar(x,1.0/mag);
 }
 
 CL_LISPIFY_NAME(NVector/set_element);
@@ -548,21 +622,6 @@ CL_DEFUN void chem__nvector_ensure_identical(NVector_sp veca, NVector_sp vecb, d
                                    (*veca)[idx],
                                    (*vecb)[idx]);
   }
-}
-
-CL_DEFUN vecreal chem__nvector_magnitude(NVector_sp vec) {
-  num_real val;
-  num_real sum2 = 0.0;
-  vecreal* vecv = &(*vec)[0];
-  for ( size_t idx = 0; idx < vec->length(); idx++ ) {
-    val = (vecv)[idx];
-    val = val*val;
-    sum2 += val;
-  }
-  ASSERT_NOT_NAN(sum2);
-  vecreal res = sqrt(sum2);
-  ASSERT_NOT_NAN(res);
-  return res;
 }
 
 CL_DEFUN vecreal chem__nvector_dot(NVector_sp veca, NVector_sp vecb) {

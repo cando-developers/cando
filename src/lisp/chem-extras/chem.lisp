@@ -335,3 +335,51 @@ evaluates the body in that dynamic environment."
 
 (export 'chem::with-aromaticity-information :chem)
 
+
+(defgeneric chem:summarize-energy-function (energy-function pos active-atom-mask))
+
+(defparameter *save-pos* nil)
+(defmethod chem:summarize-energy-function ((energy-function chem:energy-function) pos active-atom-mask)
+  (setf *save-pos* pos)
+  (with-output-to-string (sout)
+    (let* ((energy-components (chem:make-energy-components))
+           (total-energy (chem:evaluate-all energy-function pos energy-components)))
+      (format sout "Total E. ~10,5f  mask ~a~%" total-energy (not (null active-atom-mask)))
+      (format sout "~s~%" (chem:energy-components/component-energies energy-components)))))
+#||
+      (loop for component in components
+            for comp-energy = (chem:energy-component-evaluate-energy energy-function component pos active-atom-mask)
+            do (format sout "  ~30a ~a ~10,5f~%" (class-name (class-of component))
+                       (chem:energy-component/is-enabled component)
+                       comp-energy)
+            when (typep component 'chem:energy-nonbond)
+              do (format sout "      ee ~10,5f    vdw ~10,5f~%"
+                         (chem:energy-nonbond/get-vdw-energy component)
+                         (chem:energy-nonbond/get-electrostatic-energy component)
+                         )
+            )
+      )))
+||#
+
+
+(defun amber-energy-components (energy-components)
+  (let* ((comps (chem:energy-components/component-energies energy-components))
+         (bond (cdr (assoc 'chem:energy-stretch comps)))
+         (angle (cdr (assoc 'chem:energy-angle comps)))
+         (dihed (cdr (assoc 'chem:energy-dihedral comps)))
+         (vdwaals (+ (or (cdr (assoc 'chem:energy-vdw-excluded-atoms comps)) 0.0)
+                     (or (cdr (assoc 'chem:energy-vdw comps)) 0.0)))
+         (eel (+ (or (cdr (assoc 'chem:energy-electrostatic-excluded-atoms comps)) 0.0)
+                 (or (cdr (assoc 'chem:energy-electrostatic comps)) 0.0)))
+         (vdw1-4 (cdr (assoc 'chem:energy-vdw14 comps)))
+         (eel1-4 (cdr (assoc 'chem:energy-electrostatic14 comps)))
+         (restraint (+ (or (cdr (assoc 'chem:energy-anchor-restraint comps)) 0.0)
+                       (or (cdr (assoc 'chem:energy-chiral-restraint comps)) 0.0)
+                       (or (cdr (assoc 'chem:energy-dihedral-restraint comps)) 0.0)
+                       ))
+         )
+    (with-output-to-string (sout)
+      (format sout "BOND     = ~12,4f  ANGLE   = ~12,4f   DIHED     = ~12,4f~%" bond angle dihed)
+      (format sout "VDWAALS  = ~12,4f  EEL     = ~12,4f   HBOND     = ~12,4f~%" vdwaals eel 0.0)
+      (format sout "1-4 VDW  = ~12,4f  1-4 EEL = ~12,4f   RESTRAINT = ~12,4f~%" vdw1-4 eel1-4 restraint)
+    )))

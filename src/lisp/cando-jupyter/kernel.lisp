@@ -228,7 +228,7 @@
   (run-kernel-from-slime))
 
 (defmethod jupyter:start :after ((kernel kernel))
-  (setf cando:*ui-client* (make-instance 'jupyter-ui-client))
+  #+(or)(setf cando:*ui-client* (make-instance 'jupyter-ui-client))
   (bordeaux-threads:make-thread (lambda ()
                                   (sleep 600)
                                   (with-output-to-string (*standard-output*)

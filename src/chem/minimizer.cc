@@ -829,21 +829,25 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
 
 
 
-bool	Minimizer_O::_displayIntermediateMessage(
+bool	Minimizer_O::_displayIntermediateMessage(NVector_sp       pos,
                                                  double			step,
                                                  double			fenergy,
                                                  double			forceRMSMag,
                                                  double			cosAngle,
                                                  bool			steepestDescent,
-                                                 bool                   forcePrint)
+                                                 bool                   forcePrint,
+                                                 core::T_sp             activeAtomMask )
 {
 #define	MAX_DISPLAY	1024
   double		angle;
   char		buffer[MAX_DISPLAY];
   stringstream	sout;
   if ( forcePrint || this->_Iteration % this->_ReportEveryNSteps == 0 ) {
-    if ( forcePrint || (this->_Iteration%(10*this->_ReportEveryNSteps) == 1 || this->_DebugOn ))
+    if ( this->_Iteration%(10*this->_ReportEveryNSteps) == 1 || this->_DebugOn )
     {
+      if (this->_DebugOn) {
+        sout << "DBG";
+      }
       sout << "---Stage-";
       if ( this->_ShowElapsedTime )
       {
@@ -855,6 +859,9 @@ bool	Minimizer_O::_displayIntermediateMessage(
         sout << "-------Name";
       }
       sout << std::endl;
+    }
+    if (this->_DebugOn) {
+      sout << "   ";
     }
     sout << fmt::format(" min{:4}" , this->statusAsShortString());
     if ( this->_ShowElapsedTime )
@@ -886,8 +893,11 @@ bool	Minimizer_O::_displayIntermediateMessage(
       sout << fmt::format(" {}" , this->_ScoringFunction->scoringFunctionName());
     }
     core::clasp_writeln_string(sout.str());
-    if ( this->_DebugOn ) 
-    {
+    if (this->_Iteration%10==0) {
+      std::string sstr = gc::As<core::String_sp>(core::eval::funcall(INTERN_(chem,summarize_energy_function),this->_ScoringFunction,pos,activeAtomMask))->get_std_string();
+      core::clasp_writeln_string(sstr);
+    }
+    if ( this->_DebugOn ) {
       this->_Log->addMessage(buffer);
     }
     return true;
@@ -904,7 +914,8 @@ bool	Minimizer_O::_displayIntermediateMessage(
 void	Minimizer_O::_steepestDescent( int numSteps,
                                        NVector_sp pos,
                                        double forceTolerance,
-                                       core::T_sp activeAtomMask )
+                                       core::T_sp activeAtomMask,
+                                       core::T_sp callback )
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int		iRestartSteps;
@@ -1009,7 +1020,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
           if (!printedLatestMessage) {
-            printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent,true);
+            printedLatestMessage = this->_displayIntermediateMessage(pos,step,fp,forceRmsMag,cosAngle,steepestDescent,true,activeAtomMask);
           }
           core::clasp_writeln_string(fmt::format(" ! DONE absolute force test:\n ! forceRmsMag({}) < forceTolerance({})" , forceRmsMag , forceTolerance) );
         }
@@ -1086,7 +1097,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         printedLatestMessage = false;
         if ( this->_PrintIntermediateResults ) {
           double tforceRmsMag = rmsMagnitudeWithActiveAtomMask(force,activeAtomMask);
-          printedLatestMessage = this->_displayIntermediateMessage(step,fp,tforceRmsMag,cosAngle,steepestDescent);
+          printedLatestMessage = this->_displayIntermediateMessage(pos,step,fp,tforceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
         }
      
         if (this->_StepCallback.notnilp()) {
@@ -1108,6 +1119,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 
 		    // r = -f'(x)   r == force!!!!
         fp = dTotalEnergyForce( pos, force, activeAtomMask );
+        if (callback.notnilp()) core::eval::funcall( callback, _sym_steepest_descent, this->_ScoringFunction, pos, activeAtomMask );
         if ( this->_DebugOn ) {
           this->stepReport(stepReport,fp,force,activeAtomMask);
         }
@@ -1160,7 +1172,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   }
 
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
-    this->_displayIntermediateMessage(step,fnew,forceRmsMag,cosAngle,steepestDescent);
+    this->_displayIntermediateMessage(pos,step,fnew,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
   }
   fp = dTotalEnergyForce( pos, force, activeAtomMask );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,force);
@@ -1187,7 +1199,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 void	Minimizer_O::_conjugateGradient(int numSteps,
                                         NVector_sp x,
                                         double forceTolerance,
-                                        core::T_sp activeAtomMask )
+                                        core::T_sp activeAtomMask,
+                                        core::T_sp callback )
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int		iRestartSteps;
@@ -1280,12 +1293,12 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       prevStep = step;
       printedLatestMessage = false;
       if ( this->_PrintIntermediateResults ) {
-        printedLatestMessage = this->_displayIntermediateMessage(prevStep,fp,forceRmsMag,cosAngle,steepestDescent);
+        printedLatestMessage = this->_displayIntermediateMessage(x,prevStep,fp,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
       }
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
           if (!printedLatestMessage) {
-            printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent,true);
+            printedLatestMessage = this->_displayIntermediateMessage(x,step,fp,forceRmsMag,cosAngle,steepestDescent,true,activeAtomMask);
           }
           core::clasp_writeln_string(fmt::format(" ! DONE absolute force test:\n ! forceRmsMag({})<forceTolerance({})" , forceRmsMag , forceTolerance ));
         }
@@ -1399,7 +1412,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 		// r = -f'(x)   r == force!!!!
         inPlaceAddTimesScalarWithActiveAtomMask(x, d, step, activeAtomMask );
         fp = dTotalEnergyForce( x, force, activeAtomMask );
-
+        if (callback.notnilp()) core::eval::funcall( callback, _sym_conjugate_gradient, this->_ScoringFunction, x, activeAtomMask );
 
         if ( this->_DebugOn )
         {
@@ -1465,7 +1478,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
     }
   }
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
-    this->_displayIntermediateMessage(step,fnew,forceRmsMag,cosAngle,steepestDescent);
+    this->_displayIntermediateMessage(x,step,fnew,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
   }
   fp = dTotalEnergyForce( x, force, activeAtomMask );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
@@ -1666,7 +1679,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
 void	Minimizer_O::_truncatedNewton(int numSteps,
                                       NVector_sp xK,
                                       double forceTolerance,
-                                      core::T_sp activeAtomMask )
+                                      core::T_sp activeAtomMask,
+                                      core::T_sp callback )
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int	iDimensions;
@@ -1720,7 +1734,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   rmsForceMag = rmsMagnitudeWithActiveAtomMask(forceK,activeAtomMask);
   if ( this->_PrintIntermediateResults )
   {
-    this->_displayIntermediateMessage(prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false);
+    this->_displayIntermediateMessage(xK,prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false,activeAtomMask);
   }
 
     //
@@ -1746,6 +1760,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   if (this->_StepCallback.notnilp()) {
     core::eval::funcall(this->_StepCallback,_sym_truncated_newton_debug,opt_mprecon,ldlt,opt_ldlt);
   }
+  if (callback.notnilp()) core::eval::funcall( callback, _sym_truncated_newton_debug, this->_ScoringFunction, x, activeAtomMask )
 #endif
 
   if ( this->_PrintIntermediateResults ) {
@@ -1793,6 +1808,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
         core::DoubleFloat_sp dstep = core::DoubleFloat_O::create(alphaK);
         core::eval::funcall(this->_StepCallback, _sym_truncated_newton, xK, forceK, dstep, pK, opt_mprecon, opt_ldlt  );
       }
+      if (callback.notnilp()) core::eval::funcall( callback, _sym_truncated_newton, this->_ScoringFunction, xK, activeAtomMask );
       XPlusYTimesScalarWithActiveAtomMask(xKNext, xK,pK,alphaK,activeAtomMask);
 	    //
 	    // Evaluate the force at the new position
@@ -1889,7 +1905,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
                                                << kw::_sym_coordinates << xK).result());
       }
       if ( this->_PrintIntermediateResults ) {
-        this->_displayIntermediateMessage(prevAlphaK,fp,rmsForceMag,cosAngle,false);
+        this->_displayIntermediateMessage(xK,prevAlphaK,fp,rmsForceMag,cosAngle,false,activeAtomMask);
       }
 
 // Handle queued interrupts
@@ -2079,17 +2095,17 @@ CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps,
 
 
 CL_LISPIFY_NAME("resetAndMinimize");
-CL_LAMBDA((minimizer chem:minimizer) &optional active-atom-mask);
-CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize(core::T_sp activeAtomMask)
+CL_LAMBDA((minimizer chem:minimizer) &optional active-atom-mask callback );
+CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize(core::T_sp activeAtomMask, core::T_sp callback )
 {
   this->_Status = minimizerIdle;
-  this->minimize(activeAtomMask);
+  this->minimize(activeAtomMask, callback );
 }
 
 
 CL_LISPIFY_NAME("minimize");
-CL_LAMBDA((minimizer chem:minimizer) &optional active-atom-mask);
-CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask)
+CL_LAMBDA((minimizer chem:minimizer) &optional active-atom-mask callback);
+CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask, core::T_sp callback)
 {
   NVector_sp	pos;
   int		retries;
@@ -2109,7 +2125,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask)
       }
       if ( this->_NumberOfSteepestDescentSteps > 0 ) {
         this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
-                                pos, this->_SteepestDescentTolerance, activeAtomMask );
+                                pos, this->_SteepestDescentTolerance, activeAtomMask, callback );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Steepest Descent #steps = 0");
@@ -2117,7 +2133,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask)
       }
       if ( this->_NumberOfConjugateGradientSteps > 0 ) {
         this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
-                                  pos, this->_ConjugateGradientTolerance, activeAtomMask );
+                                  pos, this->_ConjugateGradientTolerance, activeAtomMask, callback );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Conjugate Gradients #steps = 0");
@@ -2125,7 +2141,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask)
       }
       if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
         this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
-                                pos, this->_TruncatedNewtonTolerance, activeAtomMask );
+                                pos, this->_TruncatedNewtonTolerance, activeAtomMask, callback );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Truncated Newton #steps = 0");

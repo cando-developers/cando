@@ -78,7 +78,9 @@
    #:action
    #:panel-summary-estimated-time-remaining
    #:replica-exchange-equilibrate
-   #:replica-exchange))
+   #:replica-exchange
+   #:single-point-energy
+   #:single-point-energy-debug))
 
 (defpackage #:graphviz-amber
   (:use #:common-lisp)
