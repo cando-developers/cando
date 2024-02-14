@@ -47,7 +47,7 @@ JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::Ato
   };
 };
 
-bool JumpJoint_O::internalp() const
+bool JumpJoint_O::definedp() const
 {
   return true;
 }

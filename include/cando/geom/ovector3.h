@@ -97,6 +97,8 @@ public:
   double magnitude();
   Vector3 normalized();
 
+  CL_DEFMETHOD bool isDefined() const { return this->_Value.isDefined(); };
+
   core::List_sp vlist() const;
 
 	/*! add two vectors

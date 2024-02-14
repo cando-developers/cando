@@ -439,8 +439,9 @@ tune-energy-function - A function that takes the energy-function and an assemble
         do (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))
 
 (defun build-all-atom-tree-external-coordinates-and-adjust (assembler coords)
-  (build-all-atom-tree-external-coordinates assembler coords)
-  (adjust-all-atom-tree-external-coordinates assembler coords))
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        do (build-atom-tree-external-coordinates assembler coords oligomer-shape)
+        do (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))
 
 (defun build-atom-tree-external-coordinates-and-adjust (assembler coords oligomer-shape)
   (build-atom-tree-external-coordinates assembler coords oligomer-shape)
@@ -557,6 +558,51 @@ Some specialized methods will need coordinates for the assembler"))
                         ))))
 
 
+(defmacro do-atresidue-residue ((atresidue residue assembler) &body body)
+  "Iterate over each atresidue and residue pair in the assembler"
+  (let ((oligomer-shape (gensym "oligomer-shape"))
+        (monomer-shape-info (gensym "monomer-shape-info"))
+        (monomer (gensym "monomer"))
+        (monomer-pos (gensym "monomer-pos"))
+        )
+    `(loop for ,oligomer-shape in (topology:oligomer-shapes ,assembler)
+           do (loop for ,monomer-shape-info across (topology:monomer-shape-info-vector ,oligomer-shape)
+                    for ,monomer = (topology:monomer ,monomer-shape-info)
+                    for ,monomer-pos = (gethash ,monomer (topology:monomer-positions ,assembler))
+                    for ,atresidue = (topology:at-position (topology:ataggregate ,assembler) ,monomer-pos)
+                    for ,residue = (topology:at-position (topology:aggregate ,assembler) ,monomer-pos)
+                    do (progn
+                         ,@body)))))
+
+(defmacro do-joint-atom ((joint atm assembler) &body body)
+  "Iterate over each atresidue and residue pair in the assembler"
+  (let ((atresidue (gensym "atresidue"))
+        (residue (gensym "residue"))
+        (name (gensym "name")))
+    (declare (ignorable joint atm))
+    `(do-atresidue-residue (,atresidue ,residue ,assembler)
+       (loop for ,joint across (topology:joints ,atresidue)
+             for ,name = (kin:joint/name ,joint)
+             for ,atm = (chem:atom-with-name ,residue ,name)
+             do (progn
+                  ,@body)))))
+
+(defun copy-atom-positions-to-xyz-joint-pos (assembler)
+  (do-joint-atom (joint atm assembler)
+    (when (typep joint 'kin:xyz-joint)
+      (let ((pos (chem:get-position atm)))
+        (when (geom:is-defined pos)
+          (kin:xyz-joint/set-pos joint pos))))))
+
+(defun copy-xyz-joint-pos-to-atom-positions (assembler)
+  (do-joint-atom (joint atm assembler)
+    (when (typep joint 'kin:xyz-joint)
+      (let ((pos (kin:xyz-joint/get-pos joint)))
+        (when (geom:is-defined pos)
+          (chem:set-position atm pos))))))
+
+
+
 (defun copy-externals (assembler monomers-to-residues)
   (maphash (lambda (monomer residue)
              (let* ((monomer-position (let ((mp (gethash monomer (topology:monomer-positions assembler))))
@@ -598,12 +644,12 @@ Some specialized methods will need coordinates for the assembler"))
                  if (eq :backbone monomer-shape-kind)
                    do (loop for joint across (joints atresidue)
                             do (incf backbone-internals-count)
-                                when (kin:joint/internalp joint)
+                                when (kin:joint/definedp joint)
                                   do (incf backbone-internals-defined))
                  else
                    do (loop for joint across (joints atresidue)
                             do (incf sidechain-internals-count)
-                            when (kin:joint/internalp joint)
+                            when (kin:joint/definedp joint)
                                  do (incf sidechain-internals-defined)))
         do (analyze-oligomer-shape oligomer-shape)
         do (format t "  backbone-internals-count ~d~%" backbone-internals-count)

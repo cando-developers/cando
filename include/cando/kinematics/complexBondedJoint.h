@@ -56,6 +56,10 @@ public:
 public:
   virtual Stub getInputStub(chem::NVector_sp coords) const;
 
+  CL_DEFMETHOD bool distanceDefinedP() const { return !std::isnan(this->_Distance); }
+  CL_DEFMETHOD bool thetaDefinedP() const { return !std::isnan(this->_Theta); }
+  CL_DEFMETHOD bool phiDefinedP() const { return !std::isnan(this->_Phi); }
+
   	/*! Return the stubJoint1 */
   virtual Joint_sp inputStubJoint0() const { return this->parent();}
   

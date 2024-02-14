@@ -134,6 +134,8 @@ namespace chem {
     static EnergyFunction_sp make(core::T_sp matter,
                                   core::T_sp disableComponents,
                                   core::List_sp enableComponents,
+                                  double vdwScale = 1.0,
+                                  double eelScale = 1.0,
                                   bool useExcludedAtoms=false,
                                   core::T_sp keepInteraction=nil<core::T_O>(),
                                   bool assign_types=false );
@@ -160,6 +162,8 @@ namespace chem {
     BoundingBox_sp                      _BoundingBox;
     double		                _DielectricConstant;
     double		                _NonbondCutoff;
+    double		                _ScaleVdw;
+    double		                _ScaleElectrostatic;
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
@@ -171,6 +175,10 @@ namespace chem {
     core::T_sp                   _Message;
     core::List_sp			_MissingParameters;
   public:
+  CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
+  CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
+  CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
+  CL_DEFMETHOD double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
   public:
     void	_eraseMissingParameters() { this->_MissingParameters = nil<core::T_O>();};
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
@@ -340,6 +348,8 @@ namespace chem {
         ,_BoundingBox(bounding_box)
         ,_DielectricConstant(1.0)
         ,_NonbondCutoff(16.0)
+        ,_ScaleVdw(1.0)
+        ,_ScaleElectrostatic(1.0)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
 
@@ -359,6 +369,8 @@ namespace chem {
         ,_BoundingBox(unbound<BoundingBox_O>())
         ,_DielectricConstant(1.0)
         ,_NonbondCutoff(16.0)
+        ,_ScaleVdw(1.0)
+        ,_ScaleElectrostatic(1.0)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
     EnergyFunction_O( const EnergyFunction_O& ef ) :

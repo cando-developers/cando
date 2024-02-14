@@ -72,7 +72,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace cando {
 
-size_t global_simd_width = 8; // Support AVX2 by default
+size_t global_simd_width = 1; // Support AVX2 by default
 
 CL_DOCSTRING("Return the simd width - the number of doubles that fit in a simd register (1,2,4,8)")
 CL_DEFUN size_t core__simd_width() {

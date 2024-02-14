@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef	Vector3_H
 #define Vector3_H
 
+#include <limits>
 #include <iostream>
 #include <vector>
 #include <clasp/core/foundation.h>
@@ -52,7 +53,11 @@ protected:
 public:
 
   //! Construct zerod vector
-  Vector3() : coords{0.0,0.0,0.0} {};
+  Vector3() : coords{
+        std::numeric_limits<vecreal>::quiet_NaN(),
+        std::numeric_limits<vecreal>::quiet_NaN(),
+        std::numeric_limits<vecreal>::quiet_NaN() 
+    } {};
   ~Vector3() {};
   Vector3( vecreal x, vecreal y, vecreal z ) : coords{x,y,z} {};
 
@@ -71,9 +76,14 @@ public:
   vecreal getX() const { return this->coords[0]; }
   vecreal getY() const { return this->coords[1]; }
   vecreal getZ() const { return this->coords[2]; }
-  bool operator==( const Vector3& v ) const { return this->coords[0] == v.coords[0]
+  bool operator==( const Vector3& v ) const {
+    if (std::isnan(this->coords[0])) {
+      return std::isnan(v.coords[0]);
+    } else {}
+    return this->coords[0] == v.coords[0]
         && this->coords[1] == v.coords[1]
-        && this->coords[2] == v.coords[2]; }
+        && this->coords[2] == v.coords[2];
+  }
   Vector3 operator+( const Vector3& v ) const { return Vector3( this->coords[0]+v.getX(),
                                                                 this->coords[1]+v.getY(),
                                                                 this->coords[2]+v.getZ() ); };
@@ -119,9 +129,13 @@ public:
   }
 
   //! If the Vector3 is not defined then set all coordinates to 0.0
-  void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(0.0,0.0,0.0); }; };
+  void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(
+          std::numeric_limits<vecreal>::quiet_NaN(),
+          std::numeric_limits<vecreal>::quiet_NaN(),
+          std::numeric_limits<vecreal>::quiet_NaN()
+                                                             ); }; };
   //! A Vector3 is defined if any of its coordinates are not zero
-  bool	isDefined() const { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
+  bool isDefined() const { return ( !std::isnan(this->coords[0]) ); }
 
   Vector3 normalized() const;
   void normalizedSet(Vector3& result);

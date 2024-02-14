@@ -165,7 +165,7 @@ Stub XyzJoint_O::getInputStub(chem::NVector_sp coords) const
   return stub;
 }
 
-bool XyzJoint_O::internalp() const {
+bool XyzJoint_O::definedp() const {
   return (this->_Pos.isDefined());
 }
 
@@ -196,8 +196,10 @@ void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
 void XyzJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  Vector3 d2;
-  d2 = this->_Pos;
+  Vector3 d2 = this->_Pos;
+  if (!this->_Pos.isDefined()) {
+    SIMPLE_ERROR("Internal coordinates for {} is NaN", _rep_(this->asSmartPtr()));
+  }
   ASSERT(this->_Pos.isDefined());
   this->setPosition(coords,d2);
 }

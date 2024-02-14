@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef	kinematics_bondedJoint_H
 #define kinematics_bondedJoint_H
 
+#include <limits>
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/kinFoundation.h>
 #include <cando/chem/atomId.h>
@@ -77,8 +78,14 @@ FORWARD(BondedJoint);
 	virtual void _releaseAllChildren();
 
     public:
-    BondedJoint_O() : Joint_O(), _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()} {};
-      BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) : Joint_O(atomId,name,atomTable), _NumberOfChildren(0) {};
+      BondedJoint_O() : Joint_O(), _NumberOfChildren(0),
+                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
+                        _Phi(std::numeric_limits<Real>::quiet_NaN()), _Theta(std::numeric_limits<Real>::quiet_NaN()), _Distance(std::numeric_limits<Real>::quiet_NaN())
+      {};
+      BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) : Joint_O(atomId,name,atomTable), _NumberOfChildren(0),
+                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
+                        _Phi(std::numeric_limits<Real>::quiet_NaN()), _Theta(std::numeric_limits<Real>::quiet_NaN()), _Distance(std::numeric_limits<Real>::quiet_NaN())
+      {};
 
 	virtual core::Symbol_sp typeSymbol() const;
 
@@ -108,7 +115,7 @@ FORWARD(BondedJoint);
       
       virtual Stub getInputStub(chem::NVector_sp coords) const;
 
-      virtual bool internalp() const;
+      virtual bool definedp() const;
 
 	/*! Geta the value of the DOF */
 	double dof(DofType const& dof) const;

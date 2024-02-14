@@ -1370,7 +1370,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
            aggregate)
           (when build-missing
             (when (> unbuilt-heavy-atoms 0)
-              (cando:simple-build-unbuilt-atoms aggregate)
+              (cando:simple-build-unbuilt-heavy-atoms aggregate)
               (when progress
                 (format t "Built ~d heavy atom~:P~%" unbuilt-heavy-atoms)))
             (let ((built (cando:build-unbuilt-hydrogens aggregate)))

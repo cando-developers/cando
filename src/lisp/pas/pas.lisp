@@ -263,7 +263,7 @@ that is unique given all the other atom names with the same element"
           (walk-build-instructions root context nil)
           (finish-build context)
           (let ((mol (molecule context)))
-            (cando:simple-build-unbuilt-atoms mol)
+            (cando:simple-build-unbuilt-heavy-atoms mol)
             mol))))))
 
 (defun pas (pattern molecule)

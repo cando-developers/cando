@@ -167,12 +167,15 @@ those components.
 evaluates nothing and (lambda (component-name &rest args) ...) will be called for each interaction and the function returns T or NIL if
 each interaction should be added to the energy function.
 : assign-types - T (default) assign atom types as part of generating the energy function.  [I don't know what will happen if assing-types is NIL.)doc");
-CL_LAMBDA(&key matter disable-components enable-components (use-excluded-atoms t) (keep-interaction t) (assign-types t));
+CL_LAMBDA(&key matter disable-components enable-components (vdw-scale 1.0) (electrostatic-scale 1.0) (use-excluded-atoms t) (keep-interaction t) (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
+                                                             double vdwScale, double electrostaticScale,
                                                              bool useExcludedAtoms, core::T_sp keepInteraction, bool assign_types )
 {
   auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
+  me->setVdwScale(vdwScale);
+  me->setElectrostaticScale(electrostaticScale);
   if ( matter.notnilp() ) me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteraction,assign_types);
   //
   // Disable and then enable components

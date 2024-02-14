@@ -35,6 +35,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //
 // This is where you define the VECREAL and NUM_REAL types
 //
+// FIXME: Switch back to VECREAL VECREAL_FLOAT
 #define VECREAL VECREAL_DOUBLE
 #define NUM_REAL VECREAL_DOUBLE
 

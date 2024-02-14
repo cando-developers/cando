@@ -111,13 +111,14 @@ public:
   void updateXyzCoord(chem::NVector_sp coords);
 
   virtual Stub getInputStub(chem::NVector_sp coords) const;
-  virtual bool internalp() const;
+  virtual bool definedp() const;
 
 	/*! Geta the value of the DOF */
   double dof(DofType const& dof) const;
 
   CL_NAME(KIN:XYZ-JOINT/GET-POS);
   CL_DEFMETHOD Vector3 getPos() const { return this->_Pos; };
+  CL_DEFMETHOD void setPos(const Vector3& pos) { this->_Pos = pos; };
   CL_DEFMETHOD Vector3 transformedPos() const { return this->_Pos; };
 
 };

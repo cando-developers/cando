@@ -1306,9 +1306,9 @@ CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
 
 void internalCoordinatesFromPointAndStub(const Vector3 &D,
                                          const Matrix &coordinateSystem,
-                                                     double &distance,
-                                                     double &theta,
-                                                     double &phi) {
+                                         double &distance,
+                                         double &theta,
+                                         double &phi) {
   VEC_LOG("stub = \n{}\n", coordinateSystem.asString());
   Vector3 x = coordinateSystem.colX();
   Vector3 y = coordinateSystem.colY();

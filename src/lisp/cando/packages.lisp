@@ -202,7 +202,7 @@
            ;;; Stuff for nglview demo
            #:unbuilt-atoms
            #:count-unbuilt-atoms
-           #:simple-build-unbuilt-atoms
+           #:simple-build-unbuilt-heavy-atoms
            ;;; directory utilities
            #:set-current-directory
            #:current-directory
@@ -254,3 +254,4 @@
   (:use #:common-lisp)
   (:export #:load-cif
            #:load-cifs))
+

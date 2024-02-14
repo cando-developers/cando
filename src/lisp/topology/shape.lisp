@@ -319,7 +319,6 @@
   (let ((root (the-root-monomer shape)))
     (all-monomers-impl root shape)))
 
-#|
 (defun random-rotamer-index-impl (root-monomer-shape oligomer-shape)
   (let ((out-monomers (gethash (monomer root-monomer-shape) (out-monomers oligomer-shape))))
     (loop for out-monomer in out-monomers
@@ -360,7 +359,6 @@
                (rotamer-index root-monomer-shape)
                (length (topology:rotamers context-rotamers))))
       (random-rotamer-index-impl root-monomer-shape oligomer-shape))))
-|#
 
 
 (defun build-shapes (oligomer-shapes assembler &key monomer-order)
@@ -393,7 +391,7 @@
       (t (rotamer-index shape-key)))))
 
 
-(defun lookup-dihedral-cache-impl (oligomer-shape monomer-shape dihedral-name)
+(defun lookup-dihedral-cache-impl (oligomer-shape monomer-shape dihedral-name &key ignore-degrees)
   (let* ((monomer-shape-index (position monomer-shape (monomer-shape-vector oligomer-shape)))
          (monomer-shape-info (aref (monomer-shape-info-vector oligomer-shape) monomer-shape-index))
          (monomer (monomer monomer-shape-info))
@@ -411,19 +409,22 @@
             (loop for plug-name in (plug-path dihedral-info)
                   do (setf monomer (monomer-on-other-side monomer plug-name)))
             (let ((other-monomer-shape (gethash monomer (monomer-shape-map oligomer-shape))))
-              (lookup-dihedral-cache-impl oligomer-shape other-monomer-shape (external-dihedral-name dihedral-info))))
+              (lookup-dihedral-cache-impl oligomer-shape other-monomer-shape (external-dihedral-name dihedral-info)
+                                          :ignore-degrees ignore-degrees)))
            (dihedral-info-atom
             (let* ((monomer-context (monomer-context monomer-shape-info))
-                   (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-database oligomer-shape)))))
-                   (rotamer-index (rotamer-index monomer-shape))
-                   (rotamer (aref rotamers rotamer-index))
-                   (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
-                   (deg (getf dihedral-cache-deg dihedral-name)))
-              (values deg monomer-shape))))))
+                   (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-database oligomer-shape))))))
+              (if ignore-degrees
+                  (values :ignore-degrees monomer-shape)
+                  (let* ((rotamer-index (rotamer-index monomer-shape))
+                         (rotamer (aref rotamers rotamer-index))
+                         (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
+                         (deg (getf dihedral-cache-deg dihedral-name)))
+                    (values deg monomer-shape))))))))
       (t (error "there was no :dihedrals property in ~s" topology)))))
 
-(defun lookup-dihedral-cache (oligomer-shape monomer-shape dihedral-name)
-  (lookup-dihedral-cache-impl oligomer-shape monomer-shape dihedral-name))
+(defun lookup-dihedral-cache (oligomer-shape monomer-shape dihedral-name &key ignore-degrees)
+  (lookup-dihedral-cache-impl oligomer-shape monomer-shape dihedral-name :ignore-degrees ignore-degrees))
 
 
 (defun build-externals-from-internals (assembler &key oligomer-shape into-coords)

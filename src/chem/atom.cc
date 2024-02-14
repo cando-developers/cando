@@ -1804,12 +1804,19 @@ CL_DEFUN size_t chem__write_position(Atom_sp atom, NVector_sp pos, size_t index3
     (*pos)[index3+2] = vec.getZ();
     return index3+3;
   } else {
-    auto mtransform = gc::As<geom::OMatrix_sp>(transform);
     const Vector3& vec = atom->getPosition();
-    Vector3 tpos = mtransform->ref()*vec;
-    (*pos)[index3] = tpos.getX();
-    (*pos)[index3+1] = tpos.getY();
-    (*pos)[index3+2] = tpos.getZ();
+    if (!vec.isDefined()) {
+      // If the vec is not defined then write that into the coordinates
+      (*pos)[index3] = vec.getX();
+      (*pos)[index3+1] = vec.getY();
+      (*pos)[index3+2] = vec.getZ();
+    } else {
+      auto mtransform = gc::As<geom::OMatrix_sp>(transform);
+      Vector3 tpos = mtransform->ref()*vec;
+      (*pos)[index3] = tpos.getX();
+      (*pos)[index3+1] = tpos.getY();
+      (*pos)[index3+2] = tpos.getZ();
+    }
     return index3+3;
   }
 }

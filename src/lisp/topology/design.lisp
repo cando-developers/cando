@@ -320,7 +320,7 @@ This is for looking up parts but if the thing returned is not a part then return
                (ring-couple-with-plug-names oligomer
                                             (first previous-monomer)
                                             previous-plug-name
-                                            (first next-monomer)
+                                            next-monomer ; (first next-monomer)
                                             next-plug-name)
                )))
           ((and (consp info) (consp (car info)))

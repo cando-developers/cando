@@ -144,6 +144,10 @@ double	rmsMagnitude(NVector_sp me)
   return sqrt(dDot/me->length());
 }
 
+CL_DEFUN double chem__nv_rms(NVector_sp me) {
+  return rmsMagnitude(me);
+}
+
 double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask)
 {
   ASSERT(me->length()>0);

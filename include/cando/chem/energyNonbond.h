@@ -172,9 +172,7 @@ class EnergyNonbond_O : public EnergyComponent_O
  public:
   typedef EnergyNonbond TermType;
  public: // instance variables
-  double		_ScaleVdw;
   double		_ScaleElectrostatic;
-  double		_EnergyVdw;
   double		_EnergyElectrostatic;
   bool                _UsesExcludedAtoms;
     // Original way of defining nonbonds with list of nonbond terms
@@ -210,13 +208,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   //core::List_sp termAtIndex(size_t index) const;
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
-  CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
-  CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
-  CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
-  CL_DEFMETHOD double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
 
-  double	getVdwEnergy() { return this->_EnergyVdw; };
-  double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
   CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndices;}
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
  public:
@@ -245,6 +237,18 @@ class EnergyNonbond_O : public EnergyComponent_O
                                          core::T_sp activeAtomMask,
                                          core::T_sp debugInteractions );
 
+  double debugAllComponent( ScoringFunction_sp scorer,
+                                         NVector_sp 	pos,
+                                         core::T_sp componentEnergy,
+                                         bool 		calcForce,
+                                         gc::Nilable<NVector_sp> 	force,
+                                         bool		calcDiagonalHessian,
+                                         bool		calcOffDiagonalHessian,
+                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                         gc::Nilable<NVector_sp>	hdvec,
+                                         gc::Nilable<NVector_sp> dvec,
+                                         core::T_sp activeAtomMask,
+                                         core::T_sp debugInteractions );
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm( ScoringFunction_sp score,
                                                                                 NVector_sp pos,
                                                                                 core::T_sp activeAtomMask );

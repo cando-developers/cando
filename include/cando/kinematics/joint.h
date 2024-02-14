@@ -159,7 +159,7 @@ public:
 	*/
   void addChild(Joint_sp child);
 
-  virtual bool internalp() const;
+  virtual bool definedp() const;
 
   void setToInternal(core::Symbol_sp cc);
   core::Symbol_sp getToInternal();

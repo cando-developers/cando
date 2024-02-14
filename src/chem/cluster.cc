@@ -110,12 +110,12 @@ int   Kmeans_O::NearestCenter(core::SimpleVector_sp centers, Point p)
   float minDistance = std::numeric_limits<float>::max();
   int k_id = -1;
   float dis;
-  size_t centersIter(0);
-  for (int k = 0; k < _K; k++, centersIter++ )
+  if (_K==0) SIMPLE_ERROR("There are no centers to compare to point _K == {}", _K );
+  for (int k = 0; k < _K; k++ )
   {
     dis = Distance<floatType>(p, gc::As<Point>((*centers)[k]) );
-    if (dis < minDistance)
-    {
+    ASSERT_NOT_NAN(dis);
+    if (dis < minDistance) {
       minDistance = dis;
       k_id = k;
     }
@@ -128,7 +128,7 @@ CL_DEFMETHOD core::T_sp Kmeans_O::GetPoint(size_t idx) {
   if (idx<this->_Points->length()) {
     return (*(this->_Points))[idx];
   }
-  SIMPLE_ERROR("Index {}d out of range of number of points {}d", idx, this->_Points->length());
+  SIMPLE_ERROR("Index {} out of range of number of points {}d", idx, this->_Points->length());
 }
 
 CL_DOCSTRING("Return all the points");
@@ -146,6 +146,9 @@ void  Kmeans_O::Cluster(core::SimpleVector_sp centers, Clusters clusters)
   for (int p = 0; p < _PointNumber; p++, pointsIter++)
   {
 ///    pointsIter = CONS_CDR(pointsIter);
+    int nearest = NearestCenter(centers, gc::As<Point>((*this->_Points)[pointsIter]));
+    if (nearest<0 || clusters->length()<=nearest) SIMPLE_ERROR("NearestCenter {} returned an index that is out of bounds ({})",
+                                                              nearest, clusters->length());
     (*clusters)[p] = NearestCenter(centers, gc::As<Point>((*this->_Points)[pointsIter]));
   }
 }
@@ -153,7 +156,8 @@ void  Kmeans_O::Cluster(core::SimpleVector_sp centers, Clusters clusters)
 /* Calculate the center of each cluster.
  * Return the number of empty clusters.
 */
-CL_DEFMETHOD int  Kmeans_O::Center(core::SimpleVector_sp centers, Clusters clusters)
+__attribute__((optnone))
+CL_DEFMETHOD int Kmeans_O::Center(core::SimpleVector_sp centers, Clusters clusters)
 {
   int emptyClusters = 0;
   core::T_sp one = (*this->_Points)[0];
@@ -162,14 +166,23 @@ CL_DEFMETHOD int  Kmeans_O::Center(core::SimpleVector_sp centers, Clusters clust
     (*centers)[kk] = core::SimpleVector_float_O::make(point_length,0.0,true);
   }
   std::vector<int> count(this->_K, 0);
-  size_t pointsIter(0);
   size_t centerIter(0);
+  size_t pointsIter(0);
 //  core::List_sp pointsIter = this->_Points;
 //  core::List_sp centerIter = this->_Centers;
   for (int p = 0; p < _PointNumber; p++, pointsIter++ )
   {
 //    pointsIter = CONS_CDR(pointsIter);
-    AddToPoint(gc::As<Point>((*centers)[(*clusters)[p]]),gc::As<Point>((*this->_Points)[pointsIter]));
+    size_t clusterIndex = (*clusters)[p];
+    size_t centersSize = centers->length();
+    if (centersSize<=clusterIndex) SIMPLE_ERROR("clusterIndex@{} is {}, which is out of bounds ({})", (void*)&((*clusters)[p]), clusterIndex, centersSize );
+    core::T_sp tdest = (*centers)[clusterIndex];
+    core::T_sp tsource = (*this->_Points)[pointsIter];
+    if (!gc::IsA<Point>(tdest)) SIMPLE_ERROR("Dest is not a Point object it is {}", (void*)tdest.raw_());
+    if (!gc::IsA<Point>(tsource)) SIMPLE_ERROR("Source is not a Point object it is {}", (void*)tsource.raw_());
+    Point dest = gc::As<Point>(tdest);
+    Point source = gc::As<Point>(tsource);
+    AddToPoint(dest,source);
     count[(*clusters)[p]]++;
   }
   for (int i = 0; i < centers->length();i++)

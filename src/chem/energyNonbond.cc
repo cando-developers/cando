@@ -92,6 +92,7 @@ namespace chem
 #define PBX(_delta_) (_delta_)
 #define PBY(_delta_) (_delta_)
 #define PBZ(_delta_) (_delta_)
+// FIXME: Disabled BAIL_OUT_IF_CUTOFF
 #define BAIL_OUT_IF_CUTOFF(deltaSquared)
 //#define BAIL_OUT_IF_CUTOFF(deltaSquared) if (deltaSquared>CUTOFF_SQUARED) goto SKIP_term;
 
@@ -109,25 +110,47 @@ core::T_sp debug_nonbond(double Energy, double x1, double y1, double z1, double 
                          double charge11, double charge22, double dQ1Q2, double dA, double dC, double Eeel, double Evdw,
                          double fx1, double fy1, double fz1, double fx2, double fy2, double fz2 ) {
   ql::list ll;
-  ll << mk_double_float(Energy)
+  ll
+
+     << INTERN_(kw,Energy)
+      << mk_double_float(Energy)
+     << INTERN_(kw,x1)
      << mk_double_float(x1)
+     << INTERN_(kw,y1)
      << mk_double_float(y1)
+     << INTERN_(kw,z1)
      << mk_double_float(z1)
+     << INTERN_(kw,x2)
      << mk_double_float(x2)
+     << INTERN_(kw,y2)
      << mk_double_float(y2)
+     << INTERN_(kw,z2)
      << mk_double_float(z2)
+     << INTERN_(kw,charge1)
      << mk_double_float(charge11)
+     << INTERN_(kw,charge2)
      << mk_double_float(charge22)
+     << INTERN_(kw,dq1q2)
      << mk_double_float(dQ1Q2)
+     << INTERN_(kw,da)
      << mk_double_float(dA)
+     << INTERN_(kw,dc)
      << mk_double_float(dC)
+     << INTERN_(kw,eel)
      << mk_double_float(Eeel)
+     << INTERN_(kw,evdw)
      << mk_double_float(Evdw)
+     << INTERN_(kw,fx1)
      << mk_double_float(fx1)
+     << INTERN_(kw,fy1)
      << mk_double_float(fy1)
+     << INTERN_(kw,fz1)
      << mk_double_float(fz1)
+     << INTERN_(kw,fx2)
      << mk_double_float(fx2)
+     << INTERN_(kw,fy2)
      << mk_double_float(fy2)
+     << INTERN_(kw,fz2)
      << mk_double_float(fz2)
       ;
   return ll.cons();
@@ -171,51 +194,6 @@ core::List_sp EnergyNonbond::encode() const {
 
 #define ENERGY_FUNCTION score, I1, I2, activeAtomMask
 
-double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
-                                    int I1, int I2, core::T_sp activeAtomMask,
-                                    num_real x1, num_real y1, num_real z1,
-                                    num_real x2, num_real y2, num_real z2,
-                                    num_real dA, num_real dC, num_real dQ1Q2)
-{
-  double dielectricConstant;
-  double dQ1Q2Scale;
-  double cutoff;
-  energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
-#define CUTOFF_SQUARED (cutoff*cutoff)
-  MAYBE_SETUP_ACTIVE_ATOM_MASK();
-#undef	NONBOND_SET_PARAMETER
-#define	NONBOND_SET_PARAMETER(x)	{}
-#undef	NONBOND_SET_POSITION
-#define	NONBOND_SET_POSITION(x,ii,of)	{}
-#undef	NONBOND_ENERGY_ACCUMULATE
-#define	NONBOND_ENERGY_ACCUMULATE(e) {}
-#undef	NONBOND_FORCE_ACCUMULATE
-#define	NONBOND_FORCE_ACCUMULATE(i,o,v) {}
-#undef	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE
-#define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(x) {}
-#undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(x) {}
-
-#undef	NONBOND_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
-#pragma clang diagnostic pop
-#define NONBOND_DEBUG_INTERACTIONS(i1,i2)
-  double vdwScale = 1.0;
-  double eelScale = 1.0;
-  double DIELECTRIC = 1.0;
-#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
-#undef NONBOND_DEBUG_INTERACTIONS
-#undef CUTOFF_SQUARED
-#undef DIELECTRIC
-  return Energy;
-}
 
 #define NONBOND_DEBUG_INTERACTIONS(I1,I2) \
     if (doDebugInteractions) { \
@@ -223,6 +201,44 @@ double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
                           debug_nonbond(Energy,x1,y1,z1,x2,y2,z2,charge11,charge22,dQ1Q2,dA,dC,Eeel,Evdw,fx1,fy1,fz1,fx2,fy2,fz2), \
                           core::make_fixnum(I1), core::make_fixnum(I2)); \
     }
+
+double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
+                                    int I1, int I2, core::T_sp activeAtomMask,
+                                    num_real x1, num_real y1, num_real z1,
+                                    num_real x2, num_real y2, num_real z2,
+                                    num_real dA, num_real dC, num_real dQ1Q2);
+
+void calculateFiniteDifferenceForces(ScoringFunction_sp score, core::T_sp activeAtomMask,
+                                     int I1, int I2,
+                                     double x1, double y1, double z1,
+                                     double x2, double y2, double z2,
+                                     double dA, double dC, double dQ1Q2,
+                                     double& fdfx1, double& fdfy1, double& fdfz1,
+                                     double& fdfx2, double& fdfy2, double& fdfz2 )
+{
+  double delta = 0.00001;
+  double deltaTimes2 = delta*2.0;
+  double ehigh;
+  double elow;
+  ehigh = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1+delta, y1, z1, x2, y2, z2, dA, dC, dQ1Q2 );
+  elow  = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1-delta, y1, z1, x2, y2, z2, dA, dC, dQ1Q2 );
+  fdfx1 = -(ehigh-elow)/deltaTimes2;
+  ehigh = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1+delta, z1, x2, y2, z2, dA, dC, dQ1Q2 );
+  elow  = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1-delta, z1, x2, y2, z2, dA, dC, dQ1Q2 );
+  fdfy1 = -(ehigh-elow)/deltaTimes2;
+  ehigh = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1+delta, x2, y2, z2, dA, dC, dQ1Q2 );
+  elow  = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1-delta, x2, y2, z2, dA, dC, dQ1Q2 );
+  fdfz1 = -(ehigh-elow)/deltaTimes2;
+  ehigh = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1, x2+delta, y2, z2, dA, dC, dQ1Q2 );
+  elow  = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1, x2-delta, y2, z2, dA, dC, dQ1Q2 );
+  fdfx2 = -(ehigh-elow)/deltaTimes2;
+  ehigh = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1, x2, y2+delta, z2, dA, dC, dQ1Q2 );
+  elow  = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1, x2, y2-delta, z2, dA, dC, dQ1Q2 );
+  fdfy2 = -(ehigh-elow)/deltaTimes2;
+  ehigh = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1, x2, y2, z2+delta, dA, dC, dQ1Q2 );
+  elow  = _evaluateEnergyOnly_Nonbond( score, I1, I2, activeAtomMask, x1, y1, z1, x2, y2, z2-delta, dA, dC, dQ1Q2 );
+  fdfz2 = -(ehigh-elow)/deltaTimes2;
+}
 
 struct NoFiniteDifference {
   static void maybeTestFiniteDifference(ScoringFunction_sp score, int I1, int I2, core::T_sp activeAtomMask,
@@ -232,7 +248,8 @@ struct NoFiniteDifference {
                                         double fx1, double fy1, double fz1,
                                         double fx2, double fy2, double fz2,
                                         int index,
-                                        size_t& fails
+                                        size_t& fails,
+                                        bool debugForce
       )
   {}
 };
@@ -245,7 +262,8 @@ struct DebugFiniteDifference {
                                         double fx1, double fy1, double fz1,
                                         double fx2, double fy2, double fz2,
                                         int index,
-                                        size_t& fails
+                                        size_t& fails,
+                                        bool debugForce
                                         )
   {
 #undef TEST_DIAGONAL_HESSIAN
@@ -255,6 +273,23 @@ struct DebugFiniteDifference {
 #define ENERGY_FUNCTION score,I1,I2,activeAtomMask
 #include <cando/chem/energy_functions/_Nonbond_debugFiniteDifference.cc>
 #undef ENERGY_FUNCTION
+    if (debugForce) {
+      double fdfx1;
+      double fdfy1;
+      double fdfz1;
+      double fdfx2;
+      double fdfy2;
+      double fdfz2;
+      calculateFiniteDifferenceForces(score,activeAtomMask,I1,I2,x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,fdfx1,fdfy1,fdfz1,fdfx2,fdfy2,fdfz2);
+      core::lisp_write(fmt::format("({0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22}) ; {23}:{24}:{25} \n",
+                                   I1,I2, // 0-1
+                                   x1,y1,z1,x2,y2,z2, // 2-7
+                                   dA,dC,dQ1Q2, // 8-10
+                                   fx1, fy1, fz1, fx2, fy2, fz2, // 11
+                                   fdfx1, fdfy1, fdfz1, fdfx2, fdfy2, fdfz2, // 17
+                                   __FILE__, __LINE__, __FUNCTION__ // 23
+                                   ));
+    }
   }
 };
 
@@ -264,11 +299,11 @@ inline double calculate_dQ1Q2(double electrostaticScale,double electrostaticModi
   return electrostaticScale*electrostaticModifier*charge1*charge2;
 }
 
-
 /*! The main nonbond code using excluded atoms.
     It is a template function so that template arguments can inline or elide testing code.
  */
 template <class MaybeFiniteDiff>
+//__attribute__((optnone))
 double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
                                            ScoringFunction_sp score,
                                            NVector_sp 	pos,
@@ -283,12 +318,13 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
                                            core::T_sp activeAtomMask,
                                            core::T_sp debugInteractions,
                                            size_t& fails,
-                                           size_t& index )
+                                           size_t& index,
+                                           bool debugForce=false )
 {
   double dielectricConstant;
   double dQ1Q2Scale;
   double cutoff;
-  energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
+  EnergyFunction_sp energyFunction = energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
 #define CUTOFF_SQUARED (cutoff*cutoff)
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
@@ -299,8 +335,6 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = mthis->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = mthis->_ExcludedAtomIndices;
 
-  [[maybe_unused]]num_real vdwScale = mthis->getVdwScale();
-  num_real electrostaticScale = mthis->getElectrostaticScale(); // FIX *ELECTROSTATIC_MODIFIER;
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
 
   bool	hasForce = force.notnilp();
@@ -337,6 +371,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
 #pragma clang diagnostic pop
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   num_real x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
+  double vdwScale = energyFunction->getVdwScale();
+  double eelScale = energyFunction->getElectrostaticScale();
+  double DIELECTRIC = energyFunction->getDielectricConstant();
   int	I1, I2;
   int i = 0;
   int endIndex = pos->length()/3;
@@ -379,7 +416,7 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
       num_real charge22 = (*mthis->_charge_vector)[index2];
 
 //      dQ1Q2 = electrostatic_scaled_charge11*charge22;
-      dQ1Q2 = calculate_dQ1Q2(mthis->getElectrostaticScale(),dQ1Q2Scale,charge11,charge22);
+      dQ1Q2 = calculate_dQ1Q2(1.0,dQ1Q2Scale,charge11,charge22);
 //      printf("%s:%d charge1     {} and charge2     {}\n", __FILE__, __LINE__, charge11, charge22);
 //      printf("%s:%d electrostaticScale     {} and dQ1Q2     {}\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
 #ifdef DEBUG_NONBOND_TERM
@@ -411,16 +448,10 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
         }
       }
 #endif
-  double vdwScale = 1.0;
-  double eelScale = 1.0;
-  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
 
-#if 1
-      core::lisp_write(fmt::format("{}:{}:{} ea I1,I2 = {},{}\nx1 = {}; y1 = {}; z1 = {}; x2 = {}; y2 = {}; z2 = {}; dA = {}; dC = {}; dQ1Q2 = {}; evdw = {}; eeel = {}; Energy = {}; fx1 = {}; fy1 = {}; fz1 = {}; fx2 = {}; fy2 = {}; fz2 = {}; \n", __FILE__, __LINE__, __FUNCTION__, I1,I2, x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2, Evdw, Eeel, Energy, fx1, fy1, fz1, fx2, fy2, fz2 ));;
-#endif
       MaybeFiniteDiff::maybeTestFiniteDifference(score,I1,I2,activeAtomMask,
                                                  x1,y1,z1,
                                                  x2,y2,z2,
@@ -428,7 +459,8 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
                                                  fx1,fy1,fz1,
                                                  fx2,fy2,fz2,
                                                  index,
-                                                 fails
+                                                 fails,
+                                                 debugForce
                                                  );
       index++;
 
@@ -498,6 +530,7 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
     It as a template function so that template arguments can inline or elide testing code.
  */
 template <class MaybeFiniteDiff>
+//__attribute__((optnone))
 double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
                                    ScoringFunction_sp score,
                                    NVector_sp 	pos,
@@ -511,7 +544,8 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
                                    gc::Nilable<NVector_sp> 	dvec,
                                    core::T_sp activeAtomMask,
                                    core::T_sp debugInteractions,
-                                   size_t& fails, size_t& index )
+                                   size_t& fails, size_t& index,
+                                   bool debugForce = false)
 {
   double dielectricConstant;
   double dQ1Q2Scale;
@@ -529,6 +563,9 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
   double energyVdw = 0.0;
   double energyVdw14 = 0.0;
   double energyElectrostatic14 = 0.0;
+  double vdwScale = energyFunction->getVdwScale();
+  double eelScale = energyFunction->getElectrostaticScale();
+  double DIELECTRIC = energyFunction->getDielectricConstant();
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -582,15 +619,9 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
           }
         }
 #endif
-  double vdwScale = 1.0;
-  double eelScale = 1.0;
-  double DIELECTRIC = 1.0;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
-#if 1
-        core::lisp_write(fmt::format("{}:{}:{} tm I1,I2 = {},{}\nx1 = {}; y1 = {}; z1 = {}; x2 = {}; y2 = {}; z2 = {}; dA = {}; dC = {}; dQ1Q2 = {}; evdw = {}; eeel = {}; Energy = {}; fx1 = {}; fy1 = {}; fz1 = {}; fx2 = {}; fy2 = {}; fz2 = {}; \n", __FILE__, __LINE__, __FUNCTION__, I1,I2, x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2, Evdw, Eeel, Energy, fx1, fy1, fz1, fx2, fy2, fz2 ));;
-#endif
         MaybeFiniteDiff::maybeTestFiniteDifference(score,I1,I2,activeAtomMask,
                                                  x1,y1,z1,
                                                  x2,y2,z2,
@@ -598,7 +629,8 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
                                                  fx1,fy1,fz1,
                                                  fx2,fy2,fz2,
                                                  index,
-                                                 fails
+                                                   fails,
+                                                   debugForce
                                                  );
       index++;
 
@@ -661,12 +693,13 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
   maybeSetEnergy( componentEnergy, _sym_energyVdw, energyVdw );
   maybeSetEnergy( componentEnergy, _sym_energyElectrostatic14, energyElectrostatic14 );
   maybeSetEnergy( componentEnergy, _sym_energyVdw14, energyVdw14 );
-  return energyElectrostatic + energyVdw;
+  return energyElectrostatic + energyVdw + energyElectrostatic14 + energyVdw14;
 }
 
 
 SYMBOL_EXPORT_SC_(ChemPkg,find_type);
 
+//__attribute__((optnone))
 double EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp                       score,
                                               NVector_sp                               pos,
                                               core::T_sp                               componentEnergy,
@@ -704,6 +737,91 @@ double EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp                
                                                              fails, index );
   }
   return energy;
+}
+
+CL_DEFMETHOD
+double EnergyNonbond_O::debugAllComponent( ScoringFunction_sp                       score,
+                                              NVector_sp                               pos,
+                                              core::T_sp                               componentEnergy,
+                                              bool 	 	                       calcForce,
+                                              gc::Nilable<NVector_sp> 	               force,
+                                              bool		                       calcDiagonalHessian,
+                                              bool		                       calcOffDiagonalHessian,
+                                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                              gc::Nilable<NVector_sp>	               hdvec, 
+                                              gc::Nilable<NVector_sp> 	               dvec,
+                                              core::T_sp                               activeAtomMask,
+                                              core::T_sp                               debugInteractions )
+{
+//  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  double energy = 0.0;
+  size_t fails = 0;
+  size_t index = 0;
+  if (this->_UsesExcludedAtoms) {
+    // Evaluate the nonbonds using the excluded atom list
+    energy = template_evaluateUsingExcludedAtoms<DebugFiniteDifference>(this,score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
+                                                                     calcOffDiagonalHessian,hessian,hdvec,dvec,
+                                                                     activeAtomMask, debugInteractions,
+                                                                     fails, index, true );
+    // Evaluate the 1-4 terms
+    energy += template_evaluateUsingTerms<DebugFiniteDifference>(this,score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
+                                                              calcOffDiagonalHessian,hessian,hdvec,dvec,
+                                                              activeAtomMask, debugInteractions,
+                                                              fails, index, true );
+  } else {
+    // Evaluate everything using terms
+    energy = template_evaluateUsingTerms<DebugFiniteDifference>(this,score,pos,componentEnergy,calcForce,force,calcDiagonalHessian,
+                                                             calcOffDiagonalHessian,hessian,hdvec,dvec,
+                                                             activeAtomMask, debugInteractions,
+                                                             fails, index, true );
+  }
+  return energy;
+}
+
+double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
+                                    int I1, int I2, core::T_sp activeAtomMask,
+                                    num_real x1, num_real y1, num_real z1,
+                                    num_real x2, num_real y2, num_real z2,
+                                    num_real dA, num_real dC, num_real dQ1Q2)
+{
+  double dielectricConstant;
+  double dQ1Q2Scale;
+  double cutoff;
+  auto energyFunction = energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
+  double vdwScale = energyFunction->getVdwScale();
+  double eelScale = energyFunction->getElectrostaticScale();
+  double DIELECTRIC = energyFunction->getDielectricConstant();
+#define CUTOFF_SQUARED (cutoff*cutoff)
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+#undef	NONBOND_SET_PARAMETER
+#define	NONBOND_SET_PARAMETER(x)	{}
+#undef	NONBOND_SET_POSITION
+#define	NONBOND_SET_POSITION(x,ii,of)	{}
+#undef	NONBOND_ENERGY_ACCUMULATE
+#define	NONBOND_ENERGY_ACCUMULATE(e) {}
+#undef	NONBOND_FORCE_ACCUMULATE
+#define	NONBOND_FORCE_ACCUMULATE(i,o,v) {}
+#undef	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE
+#define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	NONBOND_EVDW_ENERGY_ACCUMULATE
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(x) {}
+#undef	NONBOND_EEEL_ENERGY_ACCUMULATE
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(x) {}
+
+#undef	NONBOND_CALC_FORCE	// Don't calculate FORCE or HESSIAN
+
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
+#pragma clang diagnostic pop
+#define NONBOND_DEBUG_INTERACTIONS(i1,i2)
+#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#undef NONBOND_DEBUG_INTERACTIONS
+#undef CUTOFF_SQUARED
+#undef DIELECTRIC
+  return Energy;
 }
 
 CL_LAMBDA((energy-nonbond chem:energy-nonbond) score pos &optional active-atom-mask);
@@ -797,12 +915,12 @@ bool	EnergyNonbond::defineForAtomPair(core::T_sp	forceField,
     // Section 15.1.6
     // vdwScale is 1/2 of vdw
     // electrostaticScale is 1.0/1.2 of electrostatic
-    vdwScale = 1.0/2.0*energyNonbond->getVdwScale();
-    electrostaticScale = energyNonbond->getElectrostaticScale()*1.0/1.2;
+    vdwScale = 1.0/2.0;
+    electrostaticScale = 1.0/1.2;
   } else
   {
-    vdwScale = energyNonbond->getVdwScale();
-    electrostaticScale = energyNonbond->getElectrostaticScale();
+    vdwScale = 1.0;
+    electrostaticScale = 1.0;
   }
   LOG( "vdwScale = {}" , (double)(vdwScale) );
   LOG( "electrostaticScale = {}" , (double)(electrostaticScale) );
@@ -901,7 +1019,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  num_real electrostaticScale = this->getElectrostaticScale();
+  num_real electrostaticScale = 1.0;
   LOG("Nonbond component is enabled" );
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   num_real dA,dC;
@@ -987,7 +1105,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp
       enb.term.dC = dC;
       enb._Charge1 = charge11;
       enb._Charge2 = charge22;
-      num_real dQ1Q2 = calculate_dQ1Q2(this->getElectrostaticScale(),dQ1Q2Scale,charge11,charge22);
+      num_real dQ1Q2 = calculate_dQ1Q2(1.0,dQ1Q2Scale,charge11,charge22);
       enb.term.dQ1Q2 = dQ1Q2;
       enb.term.I1 = I1;
       enb.term.I2 = I2;
@@ -1065,8 +1183,6 @@ void EnergyNonbond_O::initialize()
 {
   this->Base::initialize();
   this->setErrorThreshold(1.0);
-  this->setVdwScale(1.0);
-  this->setElectrostaticScale(1.0);
 }
 
 

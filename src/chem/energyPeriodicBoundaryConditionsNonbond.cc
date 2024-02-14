@@ -176,6 +176,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
 {
   double dielectricConstant;
   double dQ1Q2Scale;
+  double Evdw = 0.0;
+  double Eeel = 0.0;
   double cutoff;
   energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
 #define CUTOFF_SQUARED (cutoff*cutoff)
@@ -215,9 +217,9 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {Eeel +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e)-vljrc;}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {Evdw +=(e)-vljrc;}
 
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
@@ -355,9 +357,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  [[maybe_unused]]num_real vdwScale = this->getVdwScale();
-
-  num_real electrostaticScale = this->getElectrostaticScale()*dQ1Q2Scale;
+  [[maybe_unused]]num_real vdwScale = 1.0;
+  num_real electrostaticScale = dQ1Q2Scale;
 #define DIELECTRIC dielectricConstant
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
   bool	hasForce = force.notnilp();
@@ -381,9 +382,9 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {Eeel +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e)-vljrc;}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {Evdw +=(e)-vljrc;}
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE

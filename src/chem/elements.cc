@@ -396,6 +396,12 @@ Element elementForSymbol(core::Symbol_sp sym)
   return elementConverter->enumForSymbol<chem::Element>(sym);
 }
 
+CL_DEFUN bool chem__heavy_element(chem::Element element)
+{
+  return !(element==element_H||
+           element==element_D||
+           element==element_T);
+}
 
 
 bool elementIsRealElement(Element element)

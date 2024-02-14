@@ -259,7 +259,7 @@ public:
   void	clearAllRingMembershipFlags();
   CL_LISPIFY_NAME("isInRing");
   CL_DEFMETHOD 	bool    isInRing() const { return (this->_Flags&inRing)!= 0; };
-  CL_DEFMETHOD bool needs_build() const { return (this->_Flags&needsBuild)!=0;};
+  CL_DEFMETHOD bool needs_build() const { return ((!this->_Position.isDefined())||((this->_Flags&needsBuild)!=0));};
   CL_DEFMETHOD void setf_needs_build(bool val) {
     if (val) this->turnOnFlags(needsBuild);
     else this->turnOffFlags(needsBuild);

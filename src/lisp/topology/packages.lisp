@@ -340,7 +340,6 @@
    #:no-rotamers
    #:permissible-rotamers
    #:oligomer-shape
-   #:allowed-rotamer-indexes-vector
    #:permissible-sidechain-rotamers
    #:permissible-backbone-rotamers
    #:make-permissible-backbone-rotamers
@@ -377,7 +376,6 @@
    #:update-internals
    #:build-oligomer-shape-externals
    #:the-root-monomer
-   #:monomer-shape-loci
    #:build-all-externals
    #:lookup-phi-psi-monomer-shape
    #:make-permissible-backbone-monomer-indices
@@ -404,7 +402,15 @@
    #:apply-monomer-shape-to-atresidue-internals
    #:internal-adjustments
    #:adjustments
-   #:enumerated-rotamer-state))
+   #:enumerated-rotamer-state
+   #:do-atresidue-residue
+   #:do-joint-atom
+   #:copy-xyz-joint-pos-to-atom-positions
+   #:copy-atom-positions-to-xyz-joint-pos
+   #:merge-internals
+   #:extract-internals
+   #:write-internals
+   #:ensure-oligomer-shape-is-consistent-with-permissible-rotamers))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

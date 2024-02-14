@@ -226,7 +226,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                               (max-tn-steps 100)
                               (sd-tolerance 2000.0)
                               (cg-tolerance 0.5)
-                              (tn-tolerance 0.00001))
+                              (tn-tolerance 0.0001)
+                              )
   (chem:set-maximum-number-of-steepest-descent-steps minimizer max-sd-steps)
   (chem:set-maximum-number-of-conjugate-gradient-steps minimizer max-cg-steps)
   (chem:set-maximum-number-of-truncated-newton-steps minimizer max-tn-steps)
@@ -247,7 +248,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                           (electrostatic-scale 1.0 electrostatic-scale-p)
                                           (sd-tolerance 500.0)
                                           (cg-tolerance 0.5)
-                                          (tn-tolerance 1.0e-5)
+                                          (tn-tolerance 0.0001)
                                           (max-sd-steps 500)
                                           (max-cg-steps 500)
                                           (max-tn-steps 500)
@@ -284,7 +285,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                    (chem:enable comp))))
     (validate-energy-components disable-components valid-components)
     (validate-energy-components enable-components valid-components)
-    (chem:set-electrostatic-scale (chem:get-nonbond-component energy-function) electrostatic-scale)
+    (chem:set-electrostatic-scale energy-function electrostatic-scale)
     (configure-minimizer min
                          :sd-tolerance sd-tolerance
                          :cg-tolerance cg-tolerance
@@ -305,7 +306,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                     (electrostatic-scale 1.0 electrostatic-scale-p)
                                     (sd-tolerance 500.0)
                                     (cg-tolerance 0.5)
-                                    (tn-tolerance 1.0e-5)
+                                    (tn-tolerance 0.0001)
                                     (max-sd-steps 500)
                                     (max-cg-steps 500)
                                     (max-tn-steps 500)
@@ -342,7 +343,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                    (chem:enable comp))))
     (validate-energy-components disable-components valid-components)
     (validate-energy-components enable-components valid-components)
-    (chem:set-electrostatic-scale (chem:get-nonbond-component energy-function) electrostatic-scale)
+    (chem:set-electrostatic-scale energy-function electrostatic-scale)
     (configure-minimizer min
                          :sd-tolerance sd-tolerance
                          :cg-tolerance cg-tolerance
@@ -360,12 +361,17 @@ Disabling happens before enabling - so you can disable all with T and then selec
     (minimize-no-fail min :verbose verbose)
     (finish-output t)
     (values matter energy-function)))
+
 (defun optimize-structure-with-restarts (matter &key (keep-interaction t)
                                                   (turn-off-nonbond t)
                                                   verbose
                                                   energy-function
-                                                  (max-cg-steps 50000)
+                                                  (max-sd-steps 5000)
+                                                  (max-cg-steps 5000)
                                                   (max-tn-steps 500)
+                                                  (sd-tolerance 100.0)
+                                                  (cg-tolerance 0.5)
+                                                  (tn-tolerance 0.0001)
                                                   )
   (let* ((energy-function (if energy-function
                               energy-function
@@ -374,9 +380,13 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                                          :keep-interaction keep-interaction)))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
-                         :max-sd-steps 5000
+                         :sd-tolerance sd-tolerance
+                         :cg-tolerance cg-tolerance
+                         :tn-tolerance tn-tolerance
+                         :max-sd-steps max-sd-steps
                          :max-cg-steps max-cg-steps
-                         :max-tn-steps max-tn-steps)
+                         :max-tn-steps max-tn-steps
+                         )
     (when verbose (chem:enable-print-intermediate-results min))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
@@ -646,8 +656,13 @@ Disabling happens before enabling - so you can disable all with T and then selec
     rapid-starting-geometry))
 
 (defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose energy-function
-                                              (max-cg-steps 50000)
-                                              (max-tn-steps 500))
+                                              (max-sd-steps 5000)
+                                              (max-cg-steps 5000)
+                                              (max-tn-steps 500)
+                                              (sd-tolerance 10.0)
+                                              (cg-tolerance 1.0)
+                                              (tn-tolerance 0.001)
+                                              )
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
   (let ((atom-types (make-hash-table)))
     (unless (= (chem:content-size agg) 1)
@@ -681,27 +696,39 @@ Disabling happens before enabling - so you can disable all with T and then selec
       (multiple-value-bind (matter energy-function total-energy)
           (if energy-function
               (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function
+                                                    :max-sd-steps max-sd-steps
                                                     :max-cg-steps max-cg-steps
-                                                    :max-tn-steps max-tn-steps)
+                                                    :max-tn-steps max-tn-steps
+                                                    :sd-tolerance sd-tolerance
+                                                    :cg-tolerance cg-tolerance
+                                                    :tn-tolerance tn-tolerance
+                                                    )
               (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose
+                                                    :max-sd-steps max-sd-steps
                                                     :max-cg-steps max-cg-steps
-                                                    :max-tn-steps max-tn-steps))
+                                                    :max-tn-steps max-tn-steps
+                                                    :sd-tolerance sd-tolerance
+                                                    :cg-tolerance cg-tolerance
+                                                    :tn-tolerance tn-tolerance
+                                                    ))
         (unless energy-function
           (error "starting-geometry-with-restarts energy-function is nil"))
         (values dynamics energy-function total-energy)
         ))))
 
 (defparameter *build-agg* nil)
-(defun build-good-geometry-from-random (agg &key max-cg-steps verbose)
+(defun build-good-geometry-from-random (agg &key verbose (no-errors t))
   (let (bad-geom)
     (dotimes (i 10)
       (format t "Attempt ~a to build good geometry from a random starting point~%" i)
       (scramble-positions agg)
       (setf *build-agg* agg)
-      (handler-case
-       (optimize-structure agg :max-cg-steps max-cg-steps :verbose verbose)
-       (error (e) (warn "error: ~a" e))
-       )
+      (if no-errors
+          (handler-case
+              (optimize-structure agg :verbose verbose)
+            (error (e) (warn " ~a" e))
+            )
+          (optimize-structure agg :verbose verbose))
       (setf bad-geom (topology:bad-geometry-p agg))
       (when (not bad-geom)
         (return-from build-good-geometry-from-random)))
@@ -816,7 +843,9 @@ Disabling happens before enabling - so you can disable all with T and then selec
   (flet ((jostle-atom (atom)
            (when from-zero
              (chem:set-position atom (geom:vec 0.0 0.0 0.0)))
-           (let* ((cp (chem:get-position atom))
+           (let* ((cp (if (geom:is-defined (chem:get-position atom))
+                          (chem:get-position atom)
+                          (geom:vec 0.0 0.0 0.0)))
                   (pos (geom:vec
                        (+ (- (random width) half-width) (geom:get-x cp))
                        (+ (- (random width) half-width) (geom:get-y cp))

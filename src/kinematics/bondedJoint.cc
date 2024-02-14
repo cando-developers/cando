@@ -102,8 +102,8 @@ BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name, 
   return gctools::GC<BondedJoint_O>::allocate(atomId,name,atomTable);
 }
 
-bool BondedJoint_O::internalp() const {
-  return (this->_Distance>0.1);
+bool BondedJoint_O::definedp() const {
+  return (!std::isnan(this->_Phi));
 }
 
 void BondedJoint_O::_appendChild(Joint_sp c)
@@ -154,28 +154,41 @@ void BondedJoint_O::_releaseAllChildren()
 
 void BondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
 {
+  if (!this->position(coords).isDefined()) return;
   KIN_LOG(" <<< {}\n" , _rep_(this->asSmartPtr()));
 //	using numeric::x_rotation_matrix_radians;
 //	using numerioc::z_rotation_matrix_radians;
 //	using numeric::constants::d::pi;
   Joint_sp jC = this->parent();
   Vector3 C = jC->position(coords);
-  this->_Distance = geom::calculateDistance(this->position(coords),C);
+  // If C is not defined then we simply return
+  if (!C.isDefined()) return;
   KIN_LOG("Calculated _Distance = {}\n" , this->_Distance );
   if (gc::IsA<BondedJoint_sp>(jC) && gc::IsA<BondedJoint_sp>(jC->parent())) { // don't move past JumpJoint_O nodes
+    auto distance = geom::calculateDistance(this->position(coords),C);
     KIN_LOG("!gc::IsA<JumpJoint_sp>(jC)   jC = {}\n" , _rep_(jC));
     Joint_sp jB = jC->parent();
     Vector3 B = jB->position(coords);
-    this->_Theta = geom::calculateAngle(this->position(coords),C,B); // Must be from incoming direction
+    if (!B.isDefined()) {
+      SIMPLE_ERROR("The B joint {} has undefined position", _rep_(jB));
+    }
+    auto theta = geom::calculateAngle(this->position(coords),C,B); // Must be from incoming direction
     KIN_LOG("_Theta = {}\n" , (this->_Theta/0.0174533));
     Joint_sp jA = jB->parent();
     Vector3 A = jA->position(coords);
+    if (!A.isDefined()) {
+      SIMPLE_ERROR("The A joint {} has undefined position", _rep_(jB));
+    }
     double phi = geom::calculateDihedral(this->position(coords),C,B,A);
+    this->_Distance = distance;
+    this->_Theta = theta;
     this->setPhi(phi);
     KIN_LOG("_Phi = {}\n", (this->_Phi/0.0174533));
     return;
   }
-  geom::internalCoordinatesFromPointAndStub(this->position(coords),
+  Vector3 vec = this->position(coords);
+  if (!vec.isDefined()) return;
+  geom::internalCoordinatesFromPointAndStub(vec,
                                             this->getInputStub(coords)._Transform,
                                             this->_Distance, this->_Theta, this->_Phi );
 }
@@ -296,7 +309,7 @@ void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
 void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  ASSERT(this->internalp());
+  ASSERT(this->definedp());
   KIN_LOG("name = {} stub = \n{}\n", _rep_(this->_Name), stub._Transform.asString());
   KIN_LOG("_Distance = {}  _Theta = {} deg   _Phi = {} deg\n", this->_Distance , (this->_Theta/0.0174533) , (this->_Phi/0.0174533) );
   double bcTheta = this->_Theta;
@@ -304,6 +317,7 @@ void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 //  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
 //  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 );
   Vector3 newpos = geom::pointFromStubAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 );
+  if (!newpos.isDefined()) SIMPLE_ERROR("newpos could not be determined for {}", _rep_(this->asSmartPtr()));
   this->setPosition(coords,newpos);
 #if 0
   // The following code prints everything for the calculation of newpos for a particular joint

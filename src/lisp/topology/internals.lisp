@@ -223,6 +223,8 @@
       (print-unreadable-object (obj stream :type t )
         (format stream "~a contexts" (hash-table-count (context-to-rotamers obj))))))
 
+(defgeneric apply-fragment-internals-to-atresidue (fragment-internals rotamer-index atresidue))
+
 (defmethod apply-fragment-internals-to-atresidue ((obj rotamer) rotamer-index atresidue)
   (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (topology:joints atresidue)
@@ -236,6 +238,8 @@
 (defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
   (context-to-rotamers obj))
 
+(defgeneric lookup-rotamers-for-context (fcc context &optional errorp))
+
 (defmethod lookup-rotamers-for-context ((db rotamers-database) monomer-context &optional (errorp t))
   (let ((rot (gethash monomer-context (context-to-rotamers db))))
     (if rot
@@ -248,6 +252,10 @@
   (let* ((atres (assembler-atresidue assembler monomer))
          (joint (joint-with-name atres atom-name)))
     (cond
+      ((typep joint 'kin:complex-bonded-joint)
+       (if (kin:complex-bonded-joint/phi-defined-p joint)
+           (kin:bonded-joint/get-phi joint)
+           0.0))
       ((typep joint 'kin:bonded-joint)
        (kin:bonded-joint/get-phi joint))
       ;; Otherwise return zero because its
@@ -454,7 +462,6 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (defun rotamer-context-connections-count (fcc)
   (hash-table-count (fmap fcc)))
 
-(defgeneric lookup-rotamers-for-context (fcc context &optional errorp))
 
 (defun lookup-rotamer-context-connections (fcc key)
   (gethash key (fmap fcc)))
@@ -590,7 +597,6 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
             (aref (internals-values rotamer) (+ 1 index3))
             (aref (internals-values rotamer) (+ 2 index3)))))
 
-(defgeneric apply-fragment-internals-to-atresidue (fragment-internals rotamer-index atresidue))
 
 (defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) rotamer-index atresidue)
   (setf (rotamer-index atresidue) rotamer-index)
@@ -605,8 +611,147 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
         (internals-defined 0))
     (loop for joint across (joints atresidue)
           do (incf internals-count)
-          when (kin:joint/internalp joint)
+          when (kin:joint/definedp joint)
             do (incf internals-defined))
     (format t "  atresidue internals-count ~d~%" internals-count)
     (format t "  atresidue internals-defined ~d~%" internals-defined)
     ))
+
+#|
+(defun defined-dihedrals (assembler atresidue)
+  (let ((residue (block find-residue
+                  (do-atresidue-residue (search-atresidue search-residue assembler)
+                    (when (eq atresidue search-atresidue)
+                      (return-from find-residue residue)))
+                  (error "Could not find atresidue ~s in ~s" atresidue assembler))))
+  (let ((internals-count 0)
+        (internals-defined 0))
+    (loop for joint across (joints atresidue)
+          do (incf internals-count)
+          when (kin:joint/definedp joint)
+            do (incf internals-defined))
+    (format t "  atresidue internals-count ~d~%" internals-count)
+    (format t "  atresidue internals-defined ~d~%" internals-defined)
+    ))
+|#
+
+(defun write-internals (atresidue internals)
+  (loop for joint in (joints atresidue)
+        for index3 from 0 by 3
+        when (typep joint 'kin:bonded-joint)
+          do (progn
+               (kin:bonded-joint/set-distance joint (aref internals index3))
+               (kin:bonded-joint/set-theta joint (aref internals (+ 1 index3)))
+               (kin:bonded-joint/set-phi joint (aref internals (+ 2 index3)))
+               )))
+
+(defgeneric write-internals-to-vector (joint index3 internals joint-mask))
+
+(defmethod write-internals-to-vector ((joint kin:bonded-joint) index3 internals joint-mask)
+  "xyz-joint get their distance,theta,phi coordinates"
+  (setf (aref internals index3) (kin:bonded-joint/get-distance joint)
+        (aref internals (+ 1 index3)) (kin:bonded-joint/get-theta joint)
+        (aref internals (+ 2 index3)) (kin:bonded-joint/get-phi joint)
+        (aref joint-mask (/ index3 3)) 1))
+
+(defmethod write-internals-to-vector ((joint kin:xyz-joint) index3 internals joint-mask)
+  "xyz-joint get write their x,y,z coordinates"
+  (let ((pos (kin:xyz-joint/get-pos joint)))
+    (setf (aref internals index3) (geom:vx pos)
+          (aref internals (+ 1 index3)) (geom:vy pos)
+          (aref internals (+ 2 index3)) (geom:vz pos)
+          (aref joint-mask (/ index3 3)) 0)))
+
+(defun extract-internals (atresidue)
+  "Extract the internals into a vector of internals and a mask of what internals were defined"
+  (let* ((num-joints (length (joints atresidue)))
+         (internals (make-array (* 3 num-joints) :element-type (geom:vecreal-type)))
+         (joint-mask (make-array num-joints :element-type 'bit :initial-element 0)))
+    (loop for joint across (joints atresidue)
+          for index from 0
+          for index3 from 0 by 3
+          when (kin:definedp joint)
+            do (write-internals-to-vector joint index3 internals joint-mask))
+    (values internals joint-mask)))
+
+
+(defun indexes-of-internals (atresidue joints)
+  (mapcar (lambda (joint)
+            (position joint (topology:joints atresidue)))
+          joints))
+
+(defun write-merged-internals (target-internals joint-mask children-indexes old-internals new-internals)
+  (multiple-value-bind (set-child-indexes unset-child-indexes)
+      (loop for child-index in children-indexes
+            if (= (aref joint-mask child-index) 1)
+              collect child-index into set-child-indexes
+            else
+              collect child-index into unset-child-indexes
+            finally (return (values set-child-indexes unset-child-indexes)))
+    (if (null set-child-indexes)
+        (loop for child-index in children-indexes
+              for index3 = (* 3 child-index)
+              do (setf
+                  (aref target-internals index3) (aref new-internals index3)
+                  (aref target-internals (+ 1 index3)) (aref new-internals (+ 1 index3))
+                  (aref target-internals (+ 2 index3)) (aref new-internals (+ 2 index3)))
+              )
+        (progn
+          (when (> (length set-child-indexes) 2)
+            (error "set-child-indexes is ~s - it should never be more than 2 elements long" set-child-indexes))
+          (let ((delta-dihedrals (loop for child-index in set-child-indexes
+                                       for ref-index = (first set-child-indexes) ; index into joint-mask
+                                       for ref-index3 = (* 3 ref-index) ; get the index into the internals
+                                       for ref-old-dihedral = (aref old-internals (+ 2 ref-index3)) ; The old dihedral we keep
+                                       for ref-new-dihedral = (aref new-internals (+ 2 ref-index3)) ; The new dihedral we rotate to old
+                                       for delta-dihedral = (topology:radians-sub ref-new-dihedral ref-old-dihedral) ; the delta to add to every other dihedral
+                                       collect delta-dihedral)))
+            (when (= (length delta-dihedrals) 2)
+              (when (> (abs (radians-sub (first delta-dihedrals) (second delta-dihedrals))) 0.1)
+                (error "In write-merged-internals the delta-dihedrals are not closely matched: ~s - this will happen if there is a mismatch in the stereochemistry of terminal methyl groups like in LEU and VAL" delta-dihedrals)))
+            ;; If delta-dihedrals aren't all the same value then the stereochemistry might be different
+            ;; from the rotamer database vs the structure we loaded.
+            ;; For example, ILE, VAL or LEU may have the terminal methyl groups swapped.
+            (let* ((delta-dihedral (first delta-dihedrals)))
+              (loop for child-index in unset-child-indexes
+                    for index3 = (* 3 child-index)
+                    do (setf
+                        (aref target-internals index3) (aref new-internals index3) ; distance
+                        (aref target-internals (+ 1 index3)) (aref new-internals (+ 1 index3)) ; angle
+                        (aref target-internals (+ 2 index3)) (radians-sub (aref new-internals (+ 2 index3)) delta-dihedral) ; dihedral
+                        )))
+            )))))
+
+(defun merge-internals (atresidue old-internals joint-mask new-internals)
+  (let ((joint-index 0)
+        joint
+        children
+        children-indexes
+        (temp-internals (copy-seq old-internals)))
+    (tagbody
+     top
+       (setf joint (aref (topology:joints atresidue) joint-index))
+       (setf children (topology:children joint)
+             children-indexes (indexes-of-internals atresidue children)
+             )
+       (when (null children) (go next-iteration))
+       (write-merged-internals temp-internals joint-mask children-indexes old-internals new-internals)
+       (progn
+         (format t "dihedral3 atom ~s in atresidue: ~s~%" joint (name atresidue))
+         (format t "  children: ~s~%" children)
+         (format t "  updated dihedrals: ~%")
+         (loop for joint across (joints atresidue)
+               for index from 0
+               for index3 from 0 by 3
+               for name = (kin:joint/name joint)
+               for dihdeg = (rad-to-deg (aref temp-internals (+ 2 index3)))
+               for old-dihdeg = (rad-to-deg (aref old-internals (+ 2 index3)))
+               do (format t "  ~5s  ~10,3f  ~10,3f~%" name dihdeg old-dihdeg)
+               ))
+     next-iteration
+       (incf joint-index)
+       (when (< joint-index (length (joints atresidue))) (go top))
+       )
+    temp-internals
+    ))
+

@@ -270,6 +270,7 @@ struct RestartMinimizer {};
                                    NVector_sp			dj,
                                    NVector_sp			zj,
                                    NVector_sp			qj,
+                                   bool& failedInnerLoop,
                                    core::T_sp activeAtomMask );
 
 

@@ -871,7 +871,7 @@ bool	Minimizer_O::_displayIntermediateMessage(NVector_sp       pos,
       sout << fmt::format(" {:7}" , elapsed.count());
     }
     sout << fmt::format(" {:5}" , this->_Iteration);
-    sout << fmt::format(" {:9.2f}" , log(step));
+    sout << fmt::format(" {:9.4f}" , log(step));
     if ( steepestDescent ) 
     {
       sout << "StDesc";
@@ -883,6 +883,9 @@ bool	Minimizer_O::_displayIntermediateMessage(NVector_sp       pos,
       if ( angle < 0.1 ) 
       {
         angle = 0.0;
+      }
+      if (angle < 0.001) {
+        core::clasp_writeln_string(fmt::format("  prev.dir has gone to zero\n"));
       }
       sout << (fmt::format(" {:5.1f}" , angle));
     }
@@ -896,6 +899,7 @@ bool	Minimizer_O::_displayIntermediateMessage(NVector_sp       pos,
     if (this->_Iteration%10==0) {
       std::string sstr = gc::As<core::String_sp>(core::eval::funcall(INTERN_(chem,summarize_energy_function),this->_ScoringFunction,pos,activeAtomMask))->get_std_string();
       core::clasp_writeln_string(sstr);
+      core::cl__finish_output();
     }
     if ( this->_DebugOn ) {
       this->_Log->addMessage(buffer);
@@ -919,8 +923,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int		iRestartSteps;
-  NVector_sp	force, m;
-  NVector_sp	precon_dir,dir,tv1,tv2;
+  NVector_sp	forceVec, m;
+  NVector_sp	precon_dir,dirVec,dirPrev,tv1,tv2;
   double	forceMag, forceRmsMag,prevStep;
   double	delta0, deltaNew;
   double	eSquaredDelta0;
@@ -932,6 +936,9 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   int		localSteps, k;
   bool          printedLatestMessage;
 
+  if ( this->_PrintIntermediateResults ) {
+    core::clasp_write_string(fmt::format("++++ Steepest descent ++++ max_steps = {}     tolerance = {}\n", numSteps, forceTolerance ));
+  }
   dstep = core::DoubleFloat_O::create(0.0);
   LOG("Checking status" );
   if ( this->_Status == minimizerError ) return;
@@ -949,71 +956,38 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 
   iRestartSteps = pos->size();
 	// Define NVectors
-  force = NVector_O::create(iRestartSteps);
-  this->_Force = force;
+  forceVec = NVector_O::create(iRestartSteps);
+  this->_Force = forceVec;
   precon_dir = NVector_O::create(iRestartSteps);
   LOG("step" );
-  dir = NVector_O::create(iRestartSteps);
+  dirVec = NVector_O::create(iRestartSteps);
+  dirPrev = NVector_O::create(iRestartSteps);
   tv1 = NVector_O::create(iRestartSteps);
   tv2 = NVector_O::create(iRestartSteps);
   LOG("step" );
 	// Done
   innerSteps = MIN(iRestartSteps,ITMAX);
   LOG("step" );
-  double fp = this->dTotalEnergyForce( pos, force, activeAtomMask );
+  double fp = this->dTotalEnergyForce( pos, forceVec, activeAtomMask );
   LOG("step" );
 //    r->inPlaceTimesScalar(-1.0);
 	//  no preconditioning
-  copyVector(precon_dir,force);
-  LOG("Done initialization" );
-#if 0 //[
-	// TODO calculate preconditioner here
-	// s = M^(-1)force rather than just copying it from force
-  switch ( preconditioner )
-  {
-  case noPreconditioner:
-      precon_dir->copy(force);
-      break;
-  case identityPreconditioner:
-      m = NVector_O::create(iRestartSteps);
-      m->fill(1.0);
-      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,precon_dir,force);
-      break;
-  case diagonalPreconditioner:
-      m = NVector_O::create(iRestartSteps);
-      this->_EnergyFunction->setupDiagonalPreconditioner(pos,m);
-      LOG("Preconditioner max value: {}" , m->maxValue() );
-      LOG("Preconditioner min value: {}" , m->minValue() );
-      minVal = m->minValue();
-      if ( minVal < 0.0 ) {
-        m->addScalar(m,fabs(minVal)+1.0);
-      }
-      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,precon_dir,force);
-      break;
-  default:
-      SIMPLE_ERROR("Unsupported preconditioner") 
-  }
-#endif // 
-  copyVector(dir,precon_dir);
-  deltaNew = dotProductWithActiveAtomMask(force,dir,activeAtomMask);
+  copyVector(dirVec,forceVec);
+  deltaNew = dotProductWithActiveAtomMask(forceVec,dirVec,activeAtomMask);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
   LOG("eSquaredDelta0 = {}" , (eSquaredDelta0 ) );
   LOG("forceTolerance = {}" , (forceTolerance ) );
   LOG("delta0 = {}" , (delta0 ) );
   localSteps = 0;
-  if ( this->_PrintIntermediateResults ) {
-    core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
-  }
   {
     while (1) { 
 		//
 		// Absolute gradient test
 		//
-      forceMag = magnitudeWithActiveAtomMask(force,activeAtomMask);
-      forceRmsMag = rmsMagnitudeWithActiveAtomMask(force,activeAtomMask);
+      forceMag = magnitudeWithActiveAtomMask(forceVec,activeAtomMask);
+      forceRmsMag = rmsMagnitudeWithActiveAtomMask(forceVec,activeAtomMask);
       this->_RMSForce = forceRmsMag;
-
       		    //
 		    // Print intermediate status
 		    //
@@ -1027,11 +1001,9 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         break;
       }
       if ( localSteps>=numSteps ) {
-        if ( this->_DebugOn )
-        {
+        if ( this->_DebugOn ) {
           ANN(stepReport);
-          if ( stepReport.notnilp() )
-          {
+          if ( stepReport.notnilp() ) {
             stepReport->prematureTermination("ExceededNumSteps");
             this->_Log->addReport(stepReport);
           }
@@ -1040,8 +1012,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 	    // Lets save the current conformation
 	    // before throwing this higher
 	    //
-        fp = dTotalEnergyForce( pos, force, activeAtomMask );
-        this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,force);
+        fp = dTotalEnergyForce( pos, forceVec, activeAtomMask );
+        this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,forceVec);
         ERROR(_sym_MinimizerExceededSD_MaxSteps, (ql::list() 
                                                << kw::_sym_minimizer << this->asSmartPtr()
                                                << kw::_sym_number_of_steps << core::make_fixnum(localSteps)
@@ -1068,98 +1040,62 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 		// Once all the tests are complete then we start the iteration in earnest
 		//
       { // Dont break out of this block unless you THROW a SERIOUS error
-        if ( this->_DebugOn )
-        {
+        if ( this->_DebugOn ) {
           stepReport = StepReport_O::create();
           stepReport->_Iteration = this->_Iteration;
         }
-
-		    //
 		    // Descent test
 		    // If the cos(angle) between the search direction and
 		    // the force (steepest descent dir)
 		    // is less than _xxxDescentTest then copy the force into the search dir
-		    //
-        dirMag = magnitudeWithActiveAtomMask(dir,activeAtomMask);
+        dirMag = magnitudeWithActiveAtomMask(dirVec,activeAtomMask);
         steepestDescent = false;
         LOG("Starting descent test" );
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
-          cosAngle = dotProductWithActiveAtomMask(force,dir,activeAtomMask)/(forceMag*dirMag);
+          // Calculate angle between dirVec and dirPrev
+          //cosAngle = dotProductWithActiveAtomMask(forceVec,dirVec,activeAtomMask)/(forceMag*dirMag);
+          cosAngle = dotProductWithActiveAtomMask(dirPrev,dirVec,activeAtomMask)/(forceMag*dirMag);
         } else {
           LOG("something was zero length Using force" );
-          copyVector(dir,force);
+          copyVector(dirVec,forceVec);
           steepestDescent = true;
           cosAngle = 0.0;
         }
-
-        this->lineSearch( &step, &fnew, pos, dir, force, tv1, tv2, localSteps, stepReport, activeAtomMask );
+        this->lineSearch( &step, &fnew, pos, dirVec, forceVec, tv1, tv2, localSteps, stepReport, activeAtomMask );
         prevStep = step;
         printedLatestMessage = false;
         if ( this->_PrintIntermediateResults ) {
-          double tforceRmsMag = rmsMagnitudeWithActiveAtomMask(force,activeAtomMask);
+          double tforceRmsMag = rmsMagnitudeWithActiveAtomMask(forceVec,activeAtomMask);
           printedLatestMessage = this->_displayIntermediateMessage(pos,step,fp,tforceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
         }
-     
         if (this->_StepCallback.notnilp()) {
           dstep = core::DoubleFloat_O::create(step);
-          core::eval::funcall(this->_StepCallback, _sym_steepest_descent, pos, force, dstep, dir );
+          core::eval::funcall(this->_StepCallback, _sym_steepest_descent, pos, forceVec, dstep, dirVec );
         }
         if (chem__verbose(5)) {
           core::clasp_write_string(fmt::format(" {}  lineSearch step-> {}\n" , __FUNCTION__ , step ));
         }
-
         if ( prevStep == 0.0 && step == 0.0 ) {
           ERROR(_sym_MinimizerStuck, (ql::list()
                                       << kw::_sym_minimizer << this->asSmartPtr()
                                       << kw::_sym_coordinates << pos).result());
-          
         }
-
-        inPlaceAddTimesScalarWithActiveAtomMask( pos, dir, step, activeAtomMask );
+        // Advance to new pos
+        inPlaceAddTimesScalarWithActiveAtomMask( pos, dirVec, step, activeAtomMask );
 
 		    // r = -f'(x)   r == force!!!!
-        fp = dTotalEnergyForce( pos, force, activeAtomMask );
+        fp = dTotalEnergyForce( pos, forceVec, activeAtomMask );
         if (callback.notnilp()) core::eval::funcall( callback, _sym_steepest_descent, this->_ScoringFunction, pos, activeAtomMask );
         if ( this->_DebugOn ) {
-          this->stepReport(stepReport,fp,force,activeAtomMask);
+          this->stepReport(stepReport,fp,forceVec,activeAtomMask);
         }
-
 #ifdef	VALIDATE_FORCE_ON //[
         this->validateForce(x,force);
 #endif //]
 		    // Don't use preconditioning
-        copyVector(precon_dir,force);
-#if 0 //[
-        switch ( preconditioner ) {
-        case noPreconditioner:
-            s->copy(force);
-            break;
-        case identityPreconditioner:
-            m->fill(1.0);
-            this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
-            break;
-        case diagonalPreconditioner:
-            LOG("Calculating diagonal preconditioner" );
-            this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
-            LOG("Preconditioner max value: {}" , m->maxValue()  );
-            LOG("Preconditioner min value: {}" , m->minValue()  );
-            minVal = m->minValue();
-            if ( minVal < 0.0 ) {
-              m->addScalar(m,fabs(minVal)+1.0);
-            }
-            this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
-			//		    if ( s->dotProduct(force) < 0 ) {
-			//			s->copy(force);
-			//		    }
-            break;
-        default:
-            SIMPLE_ERROR("Unsupported preconditioner");
-            break;
-        }
-#endif //]
-        copyVector(dir,precon_dir);
-        if ( this->_DebugOn )
-        {
+        copyVector(dirPrev,dirVec);
+        copyVector(dirVec,forceVec);
+        if ( this->_DebugOn ) {
           ASSERTNOTNULL(this->_Log);
           this->_Log->addReport(stepReport);
         }
@@ -1174,8 +1110,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
     this->_displayIntermediateMessage(pos,step,fnew,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
   }
-  fp = dTotalEnergyForce( pos, force, activeAtomMask );
-  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,force);
+  fp = dTotalEnergyForce( pos, forceVec, activeAtomMask );
+  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,forceVec);
   LOG("Wrote coordinates and force to atoms" );
   if ( this->_DebugOn )
   {
@@ -1220,6 +1156,9 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   int		refactor;
   size_t        printedLatestMessage;
 
+  if ( this->_PrintIntermediateResults ) {
+    core::clasp_write_string(fmt::format("++++ Conjugate gradient ++++ max_steps = {}     tolerance = {}\n", numSteps, forceTolerance ));
+  }
   if ( this->_Status == minimizerError ) return;
   this->_Status = conjugateGradientRunning;
   this->_CurrentPreconditioner = noPreconditioner;
@@ -1279,9 +1218,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   LOG("delta0 = {}" , (delta0 ) );
   localSteps = 0;
   step = 0.0;
-  if ( this->_PrintIntermediateResults ) {
-    core::clasp_writeln_string("======= Starting Conjugate Gradient Minimizer");
-  }
   {
     while (1) {
 	    //
@@ -1492,22 +1428,22 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   }
 }
 
-void	Minimizer_O::_truncatedNewtonInnerLoop(
-                                               int				kk,
+void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
                                                NVector_sp			xk,
                                                SparseLargeSquareMatrix_sp	mprecon,
                                                SparseLargeSquareMatrix_sp	ldlt,
                                                NVector_sp 			force,
                                                double				rmsForceMag,
-                                               NVector_sp			pj,
-                                               NVector_sp			pjNext,
+                                               NVector_sp			dirVec,
+                                               NVector_sp			dirVecNext,
                                                NVector_sp			rj,
                                                NVector_sp			dj,
                                                NVector_sp			zj,
                                                NVector_sp			qj,
+                                               bool&                            innerLoopDeltaJ1,
                                                core::T_sp activeAtomMask )
 {
-  int	j, ITpcg;
+  int	jindex, ITpcg;
   double	cr, delta, forceDotpj, crOverk, nk, alphaj;
   double	nkTimesRmsForceMag, rjDotzj;
   double				djDotqj, forceDotpjNext;
@@ -1525,10 +1461,10 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     this->_Log->addMessage("_truncatedNewtonInnerLoop>>Starting\n");
   }
   LOG("Setting up" );
-  j = 1;
-  pj->zero();	// NVector
+  jindex = 1;
+  dirVec->zero();	// NVector
   cr = 0.5;
-  delta = 10.0e-10;
+  delta = 1.0e-10;
   forceDotpj = 0.0;	// The initial value of force.pj
   ITpcg = 40;
   copyVector(rj,force);
@@ -1560,8 +1496,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
   copyVector(dj,zj);
 
   rjDotzj = dotProductWithActiveAtomMask(rj,zj,activeAtomMask);
-  while ( 1 ) 
-  { 
+  while ( 1 ) { 
     // 3. Singularity test
     // Compute the matrix-vector product qj=(H)(dj)
     // If either |((rj)^T).(zj)|<=delta
@@ -1578,9 +1513,12 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // 	its calculated in step 6
     // rjDotzj = rj->dotProduct(zj);
     djDotqj = dotProductWithActiveAtomMask(dj,qj,activeAtomMask);
+//    core::clasp_writeln_string(fmt::format( "{}:{} j=={} fabs(rjDotzj)={}  fabs(djDotqj)={} delta={}",__FILE__,__LINE__, jindex, fabs(rjDotzj),fabs(djDotqj),delta));
     if ( fabs(rjDotzj) <= delta || fabs(djDotqj) <= delta ) {
-      if ( j==1 ) {
-        copyVector(pj,force);
+      if ( jindex==1 ) {
+        copyVector(dirVec,force);
+        innerLoopDeltaJ1 = true;
+//        core::clasp_writeln_string(fmt::format( "{}:{} dirVec set to force",__FILE__,__LINE__));
       }
       if ( this->_DebugOn ) {
         stringstream ss;
@@ -1605,12 +1543,12 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     //      I'm pretty sure that I need to invert the inequality test.
     //
     alphaj = rjDotzj/djDotqj;
-    XPlusYTimesScalarWithActiveAtomMask(pjNext,pj,dj,alphaj,activeAtomMask);
-    LOG("pjNext angle with force={}(deg)" , pjNext->angleWithVector(force)/0.0174533 );
-    forceDotpjNext = dotProductWithActiveAtomMask(force,pjNext,activeAtomMask);
+    XPlusYTimesScalarWithActiveAtomMask(dirVecNext,dirVec,dj,alphaj,activeAtomMask);
+    LOG("dirVecNext angle with force={}(deg)" , dirVecNext->angleWithVector(force)/0.0174533 );
+    forceDotpjNext = dotProductWithActiveAtomMask(force,dirVecNext,activeAtomMask);
     if ( forceDotpjNext <= (forceDotpj + delta) ) {
-      if ( j == 1 ) {
-        copyVector(pj,force);
+      if ( jindex == 1 ) {
+        copyVector(dirVec,force);
       } else {
 	    // pk->copy(pj);  pk is pj
       }
@@ -1625,23 +1563,23 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // Compute rjNext = rj - (alphaj)(qj)
     // If "Truncation test" ||rjNext||<nk||g||
     // 	or "Step Limit" j+1>ITpcg then {
-    // 	exit inner loop with search direction pk = pjNext
+    // 	exit inner loop with search direction pk = dirVecNext
     // }
     //
     inPlaceAddTimesScalarWithActiveAtomMask(rj,qj,-alphaj,activeAtomMask);
     rmsRjMag = rmsMagnitudeWithActiveAtomMask(rj,activeAtomMask);
-    if ( rmsRjMag < nkTimesRmsForceMag || (j+1)>ITpcg ) {
+    if ( rmsRjMag < nkTimesRmsForceMag || (jindex+1)>ITpcg ) {
       LOG("rmsRjMag({}) < nkTimesRmsForceMag({})" , rmsRjMag , nkTimesRmsForceMag );
-      copyVector(pj,pjNext);
+      copyVector(dirVec,dirVecNext);
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Truncation test was true\n" );
       }
       LOG("Truncation test was true" );
       goto DONE;
     }
-    if ( (j+1)>ITpcg ) {
+    if ( (jindex+1)>ITpcg ) {
       LOG("j+1({})>ITpcg({})" , j+1 , ITpcg );
-      copyVector(pj,pjNext);
+      copyVector(dirVec,dirVecNext);
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Step limit test was true\n" );
       }
@@ -1661,8 +1599,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     betaj = rjDotzjNext/rjDotzj;
     rjDotzj = rjDotzjNext;
     XPlusYTimesScalarWithActiveAtomMask(dj, zj,dj,betaj,activeAtomMask);
-    j = j + 1;
-    copyVector(pj,pjNext);
+    jindex = jindex + 1;
+    copyVector(dirVec,dirVecNext);
   }
  DONE:
   LOG("Exiting inner loop with j = {}" , j );
@@ -1676,6 +1614,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
 #define	SQRT_EPSILONF	1.0e-5
 #define	CUBERT_EPSILONF	4.6416e-4
 
+__attribute__((optnone))
 void	Minimizer_O::_truncatedNewton(int numSteps,
                                       NVector_sp xK,
                                       double forceTolerance,
@@ -1685,7 +1624,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   StepReport_sp	stepReport = StepReport_O::create();
   int	iDimensions;
   double			fp;
-  NVector_sp	forceK, pK, pjNext, rj, dj, zj, qj, xKNext, kSum;
+  NVector_sp	forceK, dirVec, dirVecNext, rj, dj, zj, qj, xKNext, kSum;
   SparseLargeSquareMatrix_sp	mprecon;
   SparseLargeSquareMatrix_sp    opt_mprecon;
   SparseLargeSquareMatrix_sp    ldlt, opt_ldlt;
@@ -1697,8 +1636,12 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   double		prevAlphaK = 0.0;
   double                dirMag, forceMag;
   double                cosAngle = 0.0;
+  bool                  innerLoopDeltaJ1 = false;
 #define	TENEMINUS8	10.0e-8
 
+  if ( this->_PrintIntermediateResults ) {
+    core::clasp_write_string(fmt::format("++++ Truncated Newton ++++ max_steps = {}     tolerance = {}\n", numSteps, forceTolerance ));
+  }
   alphaK = 1.0;
   LOG("Starting TN" );
   if ( this->_Status == minimizerError ) return;
@@ -1713,11 +1656,11 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   LOG("Defining NVectors xKNext" );
   xKNext = NVector_O::create(iDimensions);
   LOG("status" );
-  pK = NVector_O::create(iDimensions);
+  dirVec = NVector_O::create(iDimensions);
   LOG("status" );
-  pK->zero();
+  dirVec->zero();
   LOG("Defining NVectors pjNext" );
-  pjNext = NVector_O::create(iDimensions);
+  dirVecNext = NVector_O::create(iDimensions);
   LOG("Defining NVectors rj,dj,zj,qj" );
   rj = NVector_O::create(iDimensions);
   dj = NVector_O::create(iDimensions);
@@ -1763,15 +1706,11 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   if (callback.notnilp()) core::eval::funcall( callback, _sym_truncated_newton_debug, this->_ScoringFunction, x, activeAtomMask )
 #endif
 
-  if ( this->_PrintIntermediateResults ) {
-    core::clasp_writeln_string(fmt::format( "======= Starting Truncated Newton Minimizer" ));
-  }
 
   {
     LOG("Starting loop" );
     while ( 1 ) {
-      if ( this->_DebugOn )
-      {
+      if ( this->_DebugOn ) {
         stepReport = StepReport_O::create();
         stepReport->_Iteration = this->_Iteration;
       }
@@ -1781,35 +1720,48 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    // Inner loop
 	    //
       _truncatedNewtonInnerLoop( kk, xK, opt_mprecon, opt_ldlt,
-                                 forceK, rmsForceMag, pK,
-                                 pjNext, rj, dj, zj, qj, activeAtomMask );
+                                 forceK, rmsForceMag, dirVec,
+                                 dirVecNext, rj, dj, zj, qj,
+                                 innerLoopDeltaJ1,
+                                 activeAtomMask );
 
+      // Added Feb 5, 2024 - if the inner loop fails to find a direction
+      // and sets it to the gradient then truncated Newton will
+      // stall and run out the max iterations
+      // So lets use this as a convergence test
+      if (innerLoopDeltaJ1) {
+        if ( this->_PrintIntermediateResults ) {
+          core::clasp_writeln_string(fmt::format( "search complete step {} according to innerLoopDeltaJ1" , this->_Iteration ));
+        }
+        break;
+      }
 
 	    //
 	    // Line Search
 
       prevAlphaK = alphaK;
       if ( this->_PrintIntermediateResults ) {
-        dirMag = magnitudeWithActiveAtomMask(pK,activeAtomMask);
+        dirMag = magnitudeWithActiveAtomMask(dirVec,activeAtomMask);
         forceMag = magnitudeWithActiveAtomMask(forceK,activeAtomMask);
+//        core::clasp_writeln_string(fmt::format( "  dirMag = {}   forceMag = {} \n", dirMag, forceMag ));
         LOG("Starting descent test" );
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
           LOG("forceMag = {}" , forceMag  );
           LOG("dirMag = {}" , dirMag  );
-          cosAngle = dotProductWithActiveAtomMask(forceK,pK,activeAtomMask)/(forceMag*dirMag);
+          cosAngle = dotProductWithActiveAtomMask(forceK,dirVec,activeAtomMask)/(forceMag*dirMag);
         } else {
           cosAngle = 0.0;
         }
       }
 
       energyXk = energyXkNext;
-      this->lineSearch( &alphaK, &energyXkNext, xK, pK, forceK, zj, qj, kk, stepReport, activeAtomMask );
+      this->lineSearch( &alphaK, &energyXkNext, xK, dirVec, forceK, zj, qj, kk, stepReport, activeAtomMask );
       if (this->_StepCallback.notnilp()) {
         core::DoubleFloat_sp dstep = core::DoubleFloat_O::create(alphaK);
-        core::eval::funcall(this->_StepCallback, _sym_truncated_newton, xK, forceK, dstep, pK, opt_mprecon, opt_ldlt  );
+        core::eval::funcall(this->_StepCallback, _sym_truncated_newton, xK, forceK, dstep, dirVec, opt_mprecon, opt_ldlt  );
       }
       if (callback.notnilp()) core::eval::funcall( callback, _sym_truncated_newton, this->_ScoringFunction, xK, activeAtomMask );
-      XPlusYTimesScalarWithActiveAtomMask(xKNext, xK,pK,alphaK,activeAtomMask);
+      XPlusYTimesScalarWithActiveAtomMask(xKNext, xK, dirVec, alphaK,activeAtomMask);
 	    //
 	    // Evaluate the force at the new position
 	    //
