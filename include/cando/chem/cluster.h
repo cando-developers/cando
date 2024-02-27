@@ -29,6 +29,9 @@ FORWARD(KmeansPlusPlus);
 typedef core::SimpleVector_float_sp     Point;
 typedef core::SimpleVector_int32_t_sp    Clusters;
 
+#define UNCLASSIFIED_CLUSTER_POINT -1
+#define NOISE_CLUSTER_POINT -2
+
 inline void AddToPoint(Point dest, Point source ) {
   for ( size_t ii=0; ii<dest->length(); ii++ ) {
     (*dest)[ii] += (*source)[ii];
@@ -151,6 +154,31 @@ public:
 private:
 
 };
+
+
+};
+
+
+namespace chem {
+
+struct DBSCAN {
+  core::SimpleVector_sp _Points;
+  core::SimpleVector_int32_t_sp _Clusters;
+  double _epsilon;
+  size_t _minPoints;
+
+  const int NOISE = -1;
+  const int UNCLASSIFIED= -2;
+  const int FAILURE = 0;
+  const int SUCCESS = 1;
+
+  int run();
+
+  int expandCluster(size_t point_index, int clusterId );
+
+  std::vector<int> calculateCluster(size_t point_index);
+};
+
 
 
 };

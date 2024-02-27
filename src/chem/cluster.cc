@@ -428,3 +428,83 @@ CL_DEFUN KmeansPlusPlus_sp chem__make_kmeans_PLUS__PLUS_(size_t k, core::SimpleV
 
 };
 
+
+namespace chem {
+
+// Inspired by https://github.com/james-yoo/DBSCAN/blob/master/dbscan.cpp
+
+
+int DBSCAN::run()
+{
+  int clusterID = 1;
+  for(auto iter = 0; iter<this->_Points->length(); iter++ ) {
+    if ( (*this->_Clusters)[iter] == UNCLASSIFIED ) {
+      if ( this->expandCluster( iter, clusterID) != FAILURE ) {
+        clusterID += 1;
+      }
+    }
+  }
+  return 0;
+}
+
+int DBSCAN::expandCluster(size_t point_index, int clusterId )
+{
+  Point point = gc::As<Point>((*this->_Points)[point_index]);
+  std::vector<int> clusterSeeds = this->calculateCluster(point_index);
+  if (clusterSeeds.size()<this->_minPoints) {
+    (*this->_Clusters)[point_index] = NOISE;
+    return FAILURE;
+  } else {
+    int index = 0;
+    int indexCorePoint = 0;
+    for (size_t iterSeeds = 0; iterSeeds<clusterSeeds.size(); iterSeeds++ ) {
+      (*this->_Clusters)[iterSeeds] = clusterId;
+      if (point_index == iterSeeds) {
+        indexCorePoint = index;
+      }
+      ++index;
+    }
+    clusterSeeds.erase(clusterSeeds.begin()+indexCorePoint) ;
+    for( vector<int>::size_type i = 0, n = clusterSeeds.size() ; i < n; ++i ) {
+      vector<int> clusterNeighors = this->calculateCluster(clusterSeeds[i]);
+      if ( clusterNeighors.size() >= this->_minPoints ) {
+        vector<int>::iterator iterNeighbors ;
+        for ( iterNeighbors = clusterNeighors.begin() ; iterNeighbors != clusterNeighors.end(); ++iterNeighbors ) {
+          if ((*this->_Clusters)[*iterNeighbors] == UNCLASSIFIED || (*this->_Clusters)[*iterNeighbors] == NOISE ) {
+            if ((*this->_Clusters)[*iterNeighbors] == UNCLASSIFIED ) {
+              clusterSeeds.push_back(*iterNeighbors) ;
+              n = clusterSeeds.size();
+            }
+            (*this->_Clusters)[*iterNeighbors] = clusterId;
+          }
+        }
+      }
+    }
+    return SUCCESS;
+  }
+}
+
+
+std::vector<int> DBSCAN::calculateCluster(size_t point_index)
+{
+  Point point = gc::As<Point>((*this->_Points)[point_index]);
+  int index = 0;
+  std::vector<int> clusterIndex;
+  for ( size_t iter = 0; iter< this->_Points->length(); iter++ ) {
+    Point tpoint = gc::As<Point>((*this->_Points)[iter]);
+    if (Distance(point,tpoint)<=this->_epsilon) {
+      clusterIndex.push_back(iter);
+    }
+  }
+  return clusterIndex;
+}
+
+#if 0
+CL_DEFUN DBScan_sp chem__make_DBScan(core::SimpleVector_sp points) {
+  auto kpp = gctools::GC<DBScan_O>::allocate(points);
+  // Initialize DBScan object
+  return kpp;
+};
+#endif
+
+};
