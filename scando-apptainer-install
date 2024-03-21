@@ -14,7 +14,7 @@ elif [ ! -f "$HOME/.clasprc" ]; then
 fi
 
 echo "Updating Quicklisp..."
-clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://thirdlaw.tech/quickclasp/quickclasp.txt\" :prompt nil))" \
+clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://quickclasp.thirdlaw.tech/quickclasp.txt\" :prompt nil))" \
       --eval "(ql:update-all-dists :prompt nil)"
 
 if ! [ -f ~/.config/common-lisp/source-registry.conf.d/apptainer.conf ]; then
