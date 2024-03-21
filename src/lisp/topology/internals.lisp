@@ -248,23 +248,13 @@
             (error "Could not find rotamers for ~s" monomer-context)
             nil))))
 
-(defun extract-dihedral-rad (assembler monomer atom-name)
+(defun extract-dihedral-joint (assembler monomer atom-name)
   (let* ((atres (assembler-atresidue assembler monomer))
          (joint (joint-with-name atres atom-name)))
-    (cond
-      ((typep joint 'kin:complex-bonded-joint)
-       (if (kin:complex-bonded-joint/phi-defined-p joint)
-           (kin:bonded-joint/get-phi joint)
-           0.0))
-      ((typep joint 'kin:bonded-joint)
-       (kin:bonded-joint/get-phi joint))
-      ;; Otherwise return zero because its
-      ;; a jump-joint or a complex-bonded-joint
-      ;; and the user said it was an important dihedral
-      ;; which it shouldn't be
-      (t 0.0))))
+    joint))
 
-(defun find-named-fragment-internals-rad (focused-assembler fragment-internals dihedral-names)
+(defun find-named-fragment-internals-joints (focused-assembler fragment-internals dihedral-names)
+  "Gather up the joints that are named in dihedral-names."
   (let* ((focus-monomer (focus-monomer focused-assembler))
          (oligomer (oligomer-containing-monomer focused-assembler focus-monomer))
          (focus-topology (chem:find-topology (oligomer-monomer-name-for-monomer oligomer focus-monomer)))
@@ -285,11 +275,111 @@
                                 (cur-dihedrals (getf (residue-properties cur-constitution) :dihedrals))
                                 (cur-dihedral-info (find external-dihedral-name cur-dihedrals :key #'name)))
                            (with-slots (name atom-name) cur-dihedral-info
-                             (extract-dihedral-rad focused-assembler cur-monomer atom-name))))))
+                             (extract-dihedral-joint focused-assembler cur-monomer atom-name))))))
                     ((typep info 'dihedral-info-atom)
                      (with-slots (name atom-name) info
-                       (extract-dihedral-rad focused-assembler focus-monomer atom-name)))))))
+                       (extract-dihedral-joint focused-assembler focus-monomer atom-name)))))))
 
+
+(defun extract-dihedral-rad-from-joint (joint)
+  "Return the internal dihedral value and if not available return (values 0.0 nil).
+    If it is available return (values dihedral-rad joint). "
+    (cond
+      ((typep joint 'kin:complex-bonded-joint)
+       (if (kin:complex-bonded-joint/phi-defined-p joint)
+           (values (kin:bonded-joint/get-phi joint) joint)
+           (values 0.0 nil)))
+      ((typep joint 'kin:bonded-joint)
+       (values (kin:bonded-joint/get-phi joint) joint))
+      ;; Otherwise return zero because its
+      ;; a jump-joint or a complex-bonded-joint
+      ;; and the user said it was an important dihedral
+      ;; which it shouldn't be
+      (t (values 0.0 nil))))
+
+(defun extract-dihedral-line-segment-from-joint (joint)
+  (let* ((parent-joint (if (kin:joint/parent-bound-p joint)
+                           (kin:joint/parent joint)
+                           nil))
+         (grand-parent-joint (if (and parent-joint (kin:joint/parent-bound-p parent-joint))
+                                 (kin:joint/parent parent-joint)
+                                 nil))
+         (great-grand-parent-joint (if (and grand-parent-joint (kin:joint/parent-bound-p grand-parent-joint))
+                                       (kin:joint/parent grand-parent-joint)
+                                       nil)))
+      (let* ((joint-index-x3 (and joint (kin:joint/position-index-x3 joint)))
+             (parent-joint-index-x3 (and parent-joint (kin:joint/position-index-x3 parent-joint)))
+             (grand-parent-joint-index-x3 (and grand-parent-joint (kin:joint/position-index-x3 grand-parent-joint)))
+             (great-grand-parent-joint-index-x3 (and great-grand-parent-joint (kin:joint/position-index-x3 great-grand-parent-joint))))
+        (list joint-index-x3 parent-joint-index-x3 grand-parent-joint-index-x3 great-grand-parent-joint-index-x3))))
+
+(defun find-named-fragment-internals-rad (focused-assembler fragment-internals dihedral-names)
+  (let ((joints (find-named-fragment-internals-joints focused-assembler fragment-internals dihedral-names)))
+    (mapcar #'extract-dihedral-rad-from-joint joints)))
+
+(defun joint-to-root-p (joint ht)
+  "Return true if a path to the root can be found without hitting any joint in ht."
+  (let ((cur joint))
+    (loop
+      if (kin:joint/parent-bound-p cur)
+        do (progn
+             (setf cur (kin:joint/parent cur))
+             (when (gethash cur ht)
+               (return nil)))
+      else
+        do (return t))))
+
+
+(defun find-joint-closest-to-root (joints)
+  (let ((jht (loop with ht = (make-hash-table)
+                   for joint in joints
+                   do (setf (gethash joint ht) t)
+                   finally (return ht))))
+    (loop for joint in joints
+          when (joint-to-root-p joint jht)
+            do (return-from find-joint-closest-to-root joint)))
+  (error "Could not find a joint closest to root joints: ~s" joints))
+
+(defun find-named-fragment-canonical-transform (focused-assembler fragment-internals dihedral-names coords)
+  (let* ((joints (find-named-fragment-internals-joints focused-assembler fragment-internals dihedral-names))
+         (joint-closest-to-root (find-joint-closest-to-root joints))
+         (maybe-transform nil))
+    (when (kin:joint/parent-bound-p joint-closest-to-root)
+      (let ((parent (kin:joint/parent joint-closest-to-root)))
+        (when (kin:joint/parent-bound-p parent)
+          (let ((grand-parent (kin:joint/parent parent)))
+            (let* ((jindex3 (kin:joint/position-index-x3 joint-closest-to-root))
+                   (pindex3 (kin:joint/position-index-x3 parent))
+                   (gpindex3 (kin:joint/position-index-x3 grand-parent))
+                   (jx (aref coords jindex3))
+                   (jy (aref coords (+ 1 jindex3)))
+                   (jz (aref coords (+ 2 jindex3)))
+                   (px (aref coords pindex3))
+                   (py (aref coords (+ 1 pindex3)))
+                   (pz (aref coords (+ 2 pindex3)))
+                   (gpx (aref coords gpindex3))
+                   (gpy (aref coords (+ 1 gpindex3)))
+                   (gpz (aref coords (+ 2 gpindex3)))
+                   (origin (geom:vec jx jy jz))
+                   (xpoint (geom:vec px py pz))
+                   (xypoint (geom:vec gpx gpy gpz))
+                   (xvec (geom:vnormalized (geom:v- xpoint origin)))
+                   (xyvec (geom:vnormalized (geom:v- xypoint origin)))
+                   (zvec (geom:vnormalized (geom:vcross xyvec xvec)))
+                   (yvec (geom:vnormalized (geom:vcross xvec zvec)))
+                   (toorigin (geom:make-m4-translate (geom:v* origin -1.0)))
+                   (rotate (geom:make-m4-rotation-rows xvec yvec zvec))
+                   (transform (geom:m*m rotate toorigin))
+                   )
+              (setf maybe-transform transform))))))
+    (if maybe-transform
+        maybe-transform
+        (geom:make-matrix t))))
+
+(defun find-named-fragment-line-segments (focused-assembler fragment-internals dihedral-names)
+  (let* ((joints (find-named-fragment-internals-joints focused-assembler fragment-internals dihedral-names)))
+    (mapcar (lambda (joint) (extract-dihedral-line-segment-from-joint joint))
+            joints)))
 
 #+(or)
 (defun cluster-dihedral-vector (fragment-internals names)
@@ -304,11 +394,15 @@
                                                                 collect (cos dihedral)
                                                                 collect (sin dihedral))))
 
-(defun cluster-dihedral-rad-vector (focused-assembler fragment-internals names)
-(let ((coords (coordinates fragment-internals)))
-  (update-ataggregate-joint-tree-internal-coordinates focused-assembler coords)
-  (let ((dihedrals (find-named-fragment-internals-rad focused-assembler fragment-internals names)))
-    dihedrals)))
+(defun cluster-dihedral-rad-vector (focused-assembler fragment-internals names coords)
+    (update-ataggregate-joint-tree-internal-coordinates focused-assembler coords)
+    (let ((dihedrals (find-named-fragment-internals-rad focused-assembler fragment-internals names)))
+      dihedrals))
+
+(defun cluster-dihedral-line-segments (focused-assembler fragment-internals names)
+  "For debugging purposes, return line-segments for the dihedrals using in clustering"
+  (let ((dihedrals (find-named-fragment-line-segments focused-assembler fragment-internals names)))
+    dihedrals))
 
 (defun calculate-cluster-dihedral-names (focus-monomer oligomer)
   "Calculate the dihedral names for dihedrals that are used to cluster fragment-internals"

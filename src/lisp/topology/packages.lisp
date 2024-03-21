@@ -410,7 +410,10 @@
    #:merge-internals
    #:extract-internals
    #:write-internals
-   #:ensure-oligomer-shape-is-consistent-with-permissible-rotamers))
+   #:ensure-oligomer-shape-is-consistent-with-permissible-rotamers
+   #:find-named-fragment-line-segments
+   #:cluster-dihedral-line-segments
+   #:find-named-fragment-canonical-transform))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
