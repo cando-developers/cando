@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/array.h>
+#include <cando/main/extension.h>
 #include <cando/geom/matrix.h>
 #include <cando/geom/vector3.h>
 #include <cando/geom/boundingBox.h>
@@ -144,7 +145,7 @@ double	rmsMagnitude(NVector_sp me)
   return sqrt(dDot/me->length());
 }
 
-CL_DEFUN double chem__nv_rms(NVector_sp me) {
+CL_DEFUN double chem__nvector_rms(NVector_sp me) {
   return rmsMagnitude(me);
 }
 
@@ -359,10 +360,11 @@ NVector_sp copy_nvector(NVector_sp source, size_t start, core::T_sp end )
 
 
 DOCGROUP(cando);
+CL_LAMBDA(size &key (initial-element 0.0))
 CL_DEFUN
-NVector_sp chem__make_nvector(size_t size)
+NVector_sp chem__make_nvector(size_t size, vecreal initial_element)
 {
-  return NVector_O::make(size,0.0,true);
+  return NVector_O::make(size,initial_element,true);
 }
 
 DOCGROUP(cando);
@@ -374,7 +376,7 @@ NVector_sp chem__copy_nvector(NVector_sp source, size_t start, core::T_sp end)
 }
 
 CL_DOCSTRING("Add two nvectors together and return the result in a newly allocated nvector")
-CL_DEFUN NVector_sp chem__nv_PLUS_(NVector_sp x, NVector_sp y)
+CL_DEFUN NVector_sp chem__nvector_PLUS_(NVector_sp x, NVector_sp y)
 {
   if (x->size()!=y->size()) SIMPLE_ERROR("nvectors are different sizes {} and {}", x->size(), y->size() );
   NVector_sp res = NVector_O::make(x->size(),0.0,false);
@@ -386,7 +388,7 @@ CL_DEFUN NVector_sp chem__nv_PLUS_(NVector_sp x, NVector_sp y)
 }
 
 CL_DOCSTRING("Subtract two nvectors and return the result in a newly allocated nvector")
-CL_DEFUN NVector_sp chem__nv_MINUS_(NVector_sp x, NVector_sp y)
+CL_DEFUN NVector_sp chem__nvector_MINUS_(NVector_sp x, NVector_sp y)
 {
   if (x->size()!=y->size()) SIMPLE_ERROR("nvectors are different sizes {} and {}", x->size(), y->size() );
   NVector_sp res = NVector_O::make(x->size(),0.0,false);
@@ -398,7 +400,7 @@ CL_DEFUN NVector_sp chem__nv_MINUS_(NVector_sp x, NVector_sp y)
 }
 
 CL_DOCSTRING("Multiply a vector by a scalar and return the result in a newly allocated nvector")
-CL_DEFUN NVector_sp chem__nv_TIMES_scalar(NVector_sp x, double s)
+CL_DEFUN NVector_sp chem__nvector_TIMES_scalar(NVector_sp x, double s)
 {
   NVector_sp res = NVector_O::make(x->size(),0.0,false);
   vecreal* vres = &(*res)[0];
@@ -407,15 +409,25 @@ CL_DEFUN NVector_sp chem__nv_TIMES_scalar(NVector_sp x, double s)
   return res;
 }
 
+CL_DOCSTRING("Multiply a vector by a scalar and return the result in a given nvector")
+CL_DEFUN NVector_sp chem__nvector_TIMES_scalar_BANG_(NVector_sp res, NVector_sp x, double s)
+{
+  if (res->size()!=x->size()) SIMPLE_ERROR("Result and argument nvector are not the same size - instead {} and {}", res->size(), x->size());
+  vecreal* vres = &(*res)[0];
+  vecreal* vx = &(*x)[0];
+  for ( size_t ii=0; ii<x->size(); ii++ ) vres[ii] = vx[ii]*s;
+  return res;
+}
+
 CL_LAMBDA(x &optional (initial-value 0.0));
 CL_DOCSTRING("Return a newly allocated nvector the same length as x full of the constant value")
-CL_DEFUN NVector_sp chem__nv_constant(NVector_sp x, double initial_value)
+CL_DEFUN NVector_sp chem__nvector_constant(NVector_sp x, double initial_value)
 {
   NVector_sp res = NVector_O::make(x->size(),initial_value,true);
   return res;
 }
 
-CL_DEFUN vecreal chem__nv_magnitude(NVector_sp vec) {
+CL_DEFUN vecreal chem__nvector_magnitude(NVector_sp vec) {
   num_real val;
   num_real sum2 = 0.0;
   vecreal* vecv = &(*vec)[0];
@@ -432,11 +444,11 @@ CL_DEFUN vecreal chem__nv_magnitude(NVector_sp vec) {
 
 CL_LAMBDA(x);
 CL_DOCSTRING("Calculate the normalized vector from x and return a newly allocated nvector");
-CL_DEFUN NVector_sp chem__nv_normalized(NVector_sp x)
+CL_DEFUN NVector_sp chem__nvector_normalized(NVector_sp x)
 {
-  double mag = chem__nv_magnitude(x);
+  double mag = chem__nvector_magnitude(x);
   if (fabs(mag)<0.00001) SIMPLE_ERROR("The magnitude is too small to normalize the vector - possible divide by zero");
-  return chem__nv_TIMES_scalar(x,1.0/mag);
+  return chem__nvector_TIMES_scalar(x,1.0/mag);
 }
 
 CL_LISPIFY_NAME(NVector/set_element);

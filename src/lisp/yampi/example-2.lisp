@@ -82,9 +82,9 @@
       (when (eql (car result) :done)
         (yampi:send channel nil :request)))))
 
-(defun make-client (connection-path)
+(defun make-client (connection-path &key threaded)
   (let ((channel (make-instance 'client)))
-    (yampi:start channel connection-path :threaded nil)
+    (yampi:start channel connection-path :threaded threaded)
     channel))
 
 (defmethod yampi:initialize ((channel client))

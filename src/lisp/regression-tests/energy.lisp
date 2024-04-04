@@ -92,8 +92,8 @@
                               (list 'vector (geom:vecreal-type))))
 (format t "force = ~s~%" force)
 
-(defparameter expected-force-mag (chem:nv-magnitude expected-force))
-(defparameter force-mag (chem:nv-magnitude force))
+(defparameter expected-force-mag (chem:nvector-magnitude expected-force))
+(defparameter force-mag (chem:nvector-magnitude force))
 
 (format t "         force-mag = ~f~%" force-mag)
 (format t "expected-force-mag = ~f~%" expected-force-mag)
