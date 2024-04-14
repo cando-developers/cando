@@ -103,12 +103,25 @@
         (pzmq:ctx-destroy (context channel))))))
 
 (defmethod start ((channel server) connection-path &rest initargs
-                  &key threaded control-endpoint broadcast-endpoint)
+                  &key threaded control-endpoint broadcast-endpoint
+                       heartbeat-ivl heartbeat-ttl heartbeat-timeout
+                       disconnect-msg hello-msg)
   (declare (ignore initargs))
   (with-accessors ((control control)
                    (broadcast broadcast)
                    (thread thread))
       channel
+    (when disconnect-msg
+      (pzmq:setsockopt control :disconnect-msg disconnect-msg))
+    (when hello-msg
+      (pzmq:setsockopt control :hello-msg hello-msg))
+    (when heartbeat-ivl
+      (pzmq:setsockopt control :heartbeat-ivl heartbeat-ivl))
+    (when heartbeat-ttl
+      (pzmq:setsockopt control :heartbeat-ttl heartbeat-ttl))
+    (when heartbeat-timeout
+      (pzmq:setsockopt control :heartbeat-timeout heartbeat-timeout))
+    (finish-output)
     (pzmq:bind control control-endpoint)
     (pzmq:bind broadcast broadcast-endpoint)
     (with-open-file (stream connection-path :direction :output
@@ -179,12 +192,25 @@
         (pzmq:close broadcast)
         (pzmq:ctx-destroy (context channel))))))
 
-(defmethod start ((channel client) connection-path &rest initargs &key threaded)
+(defmethod start ((channel client) connection-path &rest initargs
+                  &key threaded
+                       heartbeat-ivl heartbeat-ttl heartbeat-timeout
+                       disconnect-msg hello-msg)
   (declare (ignore initargs))
   (with-accessors ((control control)
                    (broadcast broadcast)
                    (thread thread))
       channel
+    (when disconnect-msg
+      (pzmq:setsockopt control :disconnect-msg disconnect-msg))
+    (when hello-msg
+      (pzmq:setsockopt control :hello-msg hello-msg))
+    (when heartbeat-ivl
+      (pzmq:setsockopt control :heartbeat-ivl heartbeat-ivl))
+    (when heartbeat-ttl
+      (pzmq:setsockopt control :heartbeat-ttl heartbeat-ttl))
+    (when heartbeat-timeout
+      (pzmq:setsockopt control :heartbeat-timeout heartbeat-timeout))
     (with-open-file (stream connection-path)
       (let ((data (with-standard-io-syntax (read stream nil nil))))
         (pzmq:connect control (getf data :control))
