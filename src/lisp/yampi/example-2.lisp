@@ -74,19 +74,18 @@
       (push job remaining-jobs))
     (remhash identity clients)))
 
-(defun make-server (connection-path)
-  (let ((channel (make-instance 'server))
-        (endpoint "tcp://0.0.0.0:*" (machine-instance)))
+(defun make-server (connection-path
+                    &key (endpoint (format nil "tcp://~a:*" (machine-instance))))
+  (let ((channel (make-instance 'server)))
     (yampi:start channel connection-path
                  :threaded nil
                  :control-endpoint endpoint
                  :broadcast-endpoint endpoint
                  :hello-msg (symbol-name :connect)
                  :disconnect-msg (symbol-name :disconnect)
-                 ;:heartbeat-ivl 1000
-                 ;:heartbeat-ttl 800
-                                        ;:heartbeat-timeout 5000
-                 )
+                 :heartbeat-ivl 1000
+                 :heartbeat-ttl 5000
+                 :heartbeat-timeout 5000)
     channel))
 
 (defclass client (yampi:client)
