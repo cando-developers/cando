@@ -12,4 +12,5 @@
            #:stop
            #:subscribe
            #:translate
-           #:unsubscribe))
+           #:unsubscribe
+           #:*threaded*))

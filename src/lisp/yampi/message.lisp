@@ -192,6 +192,7 @@
         (pzmq:close broadcast)
         (pzmq:ctx-destroy (context channel))))))
 
+(defparameter *threaded* nil)
 (defmethod start ((channel client) connection-path &rest initargs
                   &key threaded
                        heartbeat-ivl heartbeat-ttl heartbeat-timeout
@@ -216,15 +217,16 @@
         (pzmq:connect control (getf data :control))
         (pzmq:connect broadcast (getf data :broadcast))))
     (initialize channel)
-    (if threaded
-        (setf thread
-              (bordeaux-threads:make-thread
-               (lambda ()
-                 (handler-case
-                     (client-message-loop channel)
-                   (error (condition)
-                     (format t "~a" condition))))))
-        (client-message-loop channel))))
+    (let ((*threaded* threaded))
+      (if threaded
+          (setf thread
+                (bordeaux-threads:make-thread
+                 (lambda ()
+                   (handler-case
+                       (client-message-loop channel)
+                     (error (condition)
+                       (format t "~a" condition))))))
+          (client-message-loop channel)))))
 
 (defmethod send ((channel client) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((control-send-lock channel))
