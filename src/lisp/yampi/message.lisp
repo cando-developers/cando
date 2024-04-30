@@ -212,6 +212,10 @@
       (pzmq:setsockopt control :heartbeat-ttl heartbeat-ttl))
     (when heartbeat-timeout
       (pzmq:setsockopt control :heartbeat-timeout heartbeat-timeout))
+    ;;; Wait for file to be created
+    (loop until (probe-file connection-path)
+          do (format t "Waiting for ~s to appear~%" connection-path)
+          do (sleep 10))
     (with-open-file (stream connection-path)
       (let ((data (with-standard-io-syntax (read stream nil nil))))
         (pzmq:connect control (getf data :control))
