@@ -394,10 +394,10 @@
                                                                 collect (cos dihedral)
                                                                 collect (sin dihedral))))
 
-(defun cluster-dihedral-rad-vector (focused-assembler fragment-internals names coords)
-    (update-ataggregate-joint-tree-internal-coordinates focused-assembler coords)
-    (let ((dihedrals (find-named-fragment-internals-rad focused-assembler fragment-internals names)))
-      dihedrals))
+(defun cluster-dihedral-rad-vector (focused-assembler fragment-internals names &optional coords)
+  (when coords
+    (update-ataggregate-joint-tree-internal-coordinates focused-assembler coords))
+  (find-named-fragment-internals-rad focused-assembler fragment-internals names))
 
 (defun cluster-dihedral-line-segments (focused-assembler fragment-internals names)
   "For debugging purposes, return line-segments for the dihedrals using in clustering"
