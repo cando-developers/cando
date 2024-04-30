@@ -75,7 +75,8 @@
          (throw 'shutdown nil)))
       (throw 'shutdown nil)))
 
-(defclass server (channel) ())
+(defclass server (channel)
+  ((connection-path :initarg :connection-path :accessor connection-path)))
 
 (defmethod initialize-instance :after ((instance server) &rest initargs &key)
   (declare (ignore initargs))
@@ -104,8 +105,8 @@
 
 (defmethod start ((channel server) connection-path &rest initargs
                   &key threaded control-endpoint broadcast-endpoint
-                       heartbeat-ivl heartbeat-ttl heartbeat-timeout
-                       disconnect-msg hello-msg)
+                    heartbeat-ivl heartbeat-ttl heartbeat-timeout
+                    disconnect-msg hello-msg)
   (declare (ignore initargs))
   (with-accessors ((control control)
                    (broadcast broadcast)
@@ -132,15 +133,17 @@
                  :broadcast ,(pzmq:getsockopt broadcast :last-endpoint))
                :stream stream)))
     (initialize channel)
-    (if threaded
-        (setf thread
-              (bordeaux-threads:make-thread
-               (lambda ()
-                 (handler-case
-                     (server-message-loop channel)
-                   (error (condition)
-                     (format t "~a" condition))))))
-        (server-message-loop channel))))
+    (unwind-protect
+         (if threaded
+             (setf thread
+                   (bordeaux-threads:make-thread
+                    (lambda ()
+                      (handler-case
+                          (server-message-loop channel)
+                        (error (condition)
+                          (format t "~a" condition))))))
+             (server-message-loop channel))
+      (delete-file connection-path))))
 
 (defmethod send ((channel server) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((broadcast-send-lock channel))
