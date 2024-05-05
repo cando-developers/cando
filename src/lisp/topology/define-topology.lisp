@@ -498,6 +498,22 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
     tops))
 
 
+(defun validate-cluster-dihedrals (top cluster-dihedrals dihedrals)
+  (when cluster-dihedrals
+    (let ((ht (make-hash-table)))
+      (loop for dih in dihedrals
+            for name = (cond
+                         ((typep dih 'dihedral-info-atom)
+                          (name dih))
+                         ((typep dih 'dihedral-info-external)
+                          (name dih))
+                         (t (car (last dih))))
+            do (setf (gethash name ht) t))
+      (loop for cd in cluster-dihedrals
+            for found = (gethash cd ht)
+            unless found
+              do (error "For topology ~s could not find cluster-dihedrals ~s in ~s " top cd dihedrals)))))
+
 (defun topologies-from-graph (graph group-names restraints
                               &key types xyz-joints dihedrals cluster-dihedrals
                                 properties plug-names)
@@ -510,7 +526,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
       (loop for name in xyz-joints
             unless (gethash name (nodes graph))
               do (error "The name ~s in xyz-joint is not one of the names in the topology ~s"
-                        name (mapcar #'name nodes))))
+                        name (mapcar #'name (nodes graph)))))
     (let* ((tops (loop for stereoisomer in stereoisomers
                        for name = (topology:name stereoisomer)
                        for joint-template = (build-joint-template graph xyz-joints)
@@ -540,10 +556,11 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                (parse-dihedral-info dihedrals)
                                (create-dihedral-info-from-constitution constitution))))
         (setf (residue-properties constitution)
-              (list* :dihedrals dihedral-info (residue-properties constitution))))
-      (when cluster-dihedrals
-        (setf (residue-properties constitution)
-              (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution))))
+              (list* :dihedrals dihedral-info (residue-properties constitution)))
+        (when cluster-dihedrals
+          (validate-cluster-dihedrals :name cluster-dihedrals dihedral-info)
+          (setf (residue-properties constitution)
+                (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution)))))
       tops)))
 
 (defun valid-property (property value)

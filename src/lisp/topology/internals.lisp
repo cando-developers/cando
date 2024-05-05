@@ -261,24 +261,31 @@
          (focus-constitution (constitution focus-topology))
          (focus-dihedrals (getf (residue-properties focus-constitution) :dihedrals))
          (focus-dihedral-info (loop for name in dihedral-names
-                                    collect (find name focus-dihedrals :key #'name)))
-         )
+                                    for info = (find name focus-dihedrals :key #'name)
+                                    if info
+                                      collect info
+                                    else
+                                      do (error "Could not find focus-dihedrals name ~s in ~s" name focus-dihedrals))))
     (loop for info in focus-dihedral-info
-          collect (cond
-                    ((typep info 'dihedral-info-external)
-                     (with-slots (plug-path external-dihedral-name) info
-                       (let ((cur-monomer focus-monomer))
-                         (loop for plug-name in plug-path
-                               do (setf cur-monomer (monomer-on-other-side cur-monomer plug-name)))
-                         (let* ((cur-topology (chem:find-topology (oligomer-monomer-name-for-monomer oligomer cur-monomer)))
-                                (cur-constitution (constitution cur-topology))
-                                (cur-dihedrals (getf (residue-properties cur-constitution) :dihedrals))
-                                (cur-dihedral-info (find external-dihedral-name cur-dihedrals :key #'name)))
-                           (with-slots (name atom-name) cur-dihedral-info
-                             (extract-dihedral-joint focused-assembler cur-monomer atom-name))))))
-                    ((typep info 'dihedral-info-atom)
-                     (with-slots (name atom-name) info
-                       (extract-dihedral-joint focused-assembler focus-monomer atom-name)))))))
+          for joint = (cond
+                        ((typep info 'dihedral-info-external)
+                         (with-slots (plug-path external-dihedral-name) info
+                           (let ((cur-monomer focus-monomer))
+                             (loop for plug-name in plug-path
+                                   do (setf cur-monomer (monomer-on-other-side cur-monomer plug-name)))
+                             (let* ((cur-topology (chem:find-topology (oligomer-monomer-name-for-monomer oligomer cur-monomer)))
+                                    (cur-constitution (constitution cur-topology))
+                                    (cur-dihedrals (getf (residue-properties cur-constitution) :dihedrals))
+                                    (cur-dihedral-info (find external-dihedral-name cur-dihedrals :key #'name)))
+                               (with-slots (name atom-name) cur-dihedral-info
+                                 (extract-dihedral-joint focused-assembler cur-monomer atom-name))))))
+                        ((typep info 'dihedral-info-atom)
+                         (with-slots (name atom-name) info
+                           (extract-dihedral-joint focused-assembler focus-monomer atom-name))))
+          if joint
+            collect joint
+          else
+            do (error "About to return a NIL joint for ~s" info))))
 
 
 (defun extract-dihedral-rad-from-joint (joint)

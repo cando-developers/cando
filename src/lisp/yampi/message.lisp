@@ -133,17 +133,19 @@
                  :broadcast ,(pzmq:getsockopt broadcast :last-endpoint))
                :stream stream)))
     (initialize channel)
-    (unwind-protect
-         (if threaded
-             (setf thread
-                   (bordeaux-threads:make-thread
-                    (lambda ()
+    (if threaded
+        (setf thread
+              (bordeaux-threads:make-thread
+               (lambda ()
+                 (unwind-protect
                       (handler-case
                           (server-message-loop channel)
                         (error (condition)
-                          (format t "~a" condition))))))
-             (server-message-loop channel))
-      (delete-file connection-path))))
+                          (format t "~a" condition)))
+                   (delete-file connection-path)))))
+        (unwind-protect
+             (server-message-loop channel)
+          (delete-file connection-path)))))
 
 (defmethod send ((channel server) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((broadcast-send-lock channel))
@@ -219,6 +221,7 @@
     (loop until (probe-file connection-path)
           do (format t "Waiting for ~s to appear~%" connection-path)
           do (sleep 10))
+    (format t "Found ~s~%" connection-path)
     (with-open-file (stream connection-path)
       (let ((data (with-standard-io-syntax (read stream nil nil))))
         (pzmq:connect control (getf data :control))
