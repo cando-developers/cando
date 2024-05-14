@@ -155,14 +155,6 @@
    (cap-name-map :initarg :cap-name-map :accessor cap-name-map)
    (trainers :initarg :trainers :accessor trainers)))
 
-#|
-(with-design (design ((:+default :smarts "[C](-[N:0])-[C:1]=O" :cap :pro)
-                      (:-default :smarts "[C](-[N:0])-[C:1]=O" :cap :phe)
-                      (:-side :cap :pro4)
-                      (:+side :cap :4py)))
-  (design.load:setup design))
-|#
-
 (cando.serialize:make-class-save-load foldamer)
 
 (defun save-foldamer (foldamer file-name)
@@ -462,34 +454,6 @@ of out-plugs."
           t)
         nil)))
 
-#+(or)
-(defun build-superposable-conformation-collection (conformation monomer-id)
-  "Return (values superposable-conformation-collection aggregate)."
-  (let* ((fold-tree (kin:get-fold-tree conformation))
-         (monomer-node (kin:lookup-monomer-id fold-tree monomer-id))
-         (joint-ht (make-hash-table))
-         joints)
-    (kin:walk-joints monomer-node (lambda (index joint)
-                                    (declare (ignore index))
-                                    (setf (gethash joint joint-ht) t)
-                                    (push joint joints)))
-    (let ((root-joint nil))
-      (kin:walk-joints monomer-node
-                       (lambda (index joint)
-                         (declare (ignore index))
-                         (when (null (gethash (kin:get-parent joint) joint-ht))
-                           (setf root-joint joint))))
-      (when (typep root-joint 'kin:root-bonded-joint)
-        (let* ((ancestor1 (kin:get-parent root-joint))
-               (ancestor2 (kin:get-parent ancestor1))
-               (ancestor3 (kin:get-parent ancestor2)))
-          (push ancestor1 joints)
-          (push ancestor2 joints)
-          (push ancestor3 joints)))
-      ;; joints contains the joints that we are interested in superposing
-      ;;  now convert that to 
-      joints)))
-
 
 (defun build-one-training-oligomer-space (focus-topologys-in-list cap-name-map topology-map &key test)
   "Build a training oligomer-space with a list of topologys in a focus-residue and then repeatedly
@@ -543,63 +507,3 @@ add cap monomers until no more cap monomers are needed."
                   do (setf (gethash canonical-sequence unique-oligomer-spaces) oligomer-space))
             (alexandria:hash-table-values unique-oligomer-spaces)))))))
 
-#+(or)
-(defun monomer-node-context (monomer-node)
-  (let* ((parent-node (kin:parent monomer-node))
-         (parent (if parent-node
-                     (kin:stereoisomer-name parent-node)
-                     nil))
-         (coupling (chem:coupling-name (kin:parent-plug-name monomer-node))))
-    (declare (ignore parent))
-    (list coupling (kin:stereoisomer-name monomer-node))))
-
-#+(or)
-(defun get-conformation (monomer-node conformations)
-  (let* ((context (monomer-node-context monomer-node))
-         (entry (gethash context conformations))
-         (conformation-index (kin:conformation-index monomer-node))
-         (internals (elt entry conformation-index)))
-    (format *debug-io* "monomer-node ~s context: ~s ~s~%" monomer-node context internals)
-    internals))
-
-#+(or)
-(defun set-conformation (monomer-node coordinates)
-  (let ((internals (get-conformation monomer-node coordinates)))
-    (loop for index = 0 then (+ index 5)
-          until (>= index (length internals))
-          do (let* ((atom-index (elt internals index))
-                    (atom-name (elt internals (+ index 1)))
-                    (dist (elt internals (+ index 2)))
-                    (theta (elt internals (+ index 3)))
-                    (phi (elt internals (+ index 4)))
-                    (joint (kin:joint-at monomer-node atom-index)))
-               (format *debug-io* "joint: ~a  ~a  name: ~a index: ~a dist: ~a ~a ~a~%" joint (kin:atom-id joint)
-                       atom-name atom-index dist theta phi)
-               (when (typep joint 'kin:bonded-joint)
-                 (kin:set-distance joint dist)
-                 (kin:set-theta joint theta)
-                 (kin:set-phi joint phi))))))
-
-#|
-
-(defparameter *build-trainer*
-  (format nil "~{~s~%~}"
-          '((defparameter *design* (load ":%DESIGN-INPUT-FILE%"))
-            (def
-|#
-
-
-#||
-(define-foldamer-schema :spiro
-  '(bnz pbe pro4 apro4 cbala bala ace cgly)
-  '((:side :-side pro4 (:-dkp pro4 :-dkp cgly) :+dkp pro4 (:+side (:cap bnz)) :+dkp (:cap pros))
-    (:side :-side apro4 (:-amide cbala) (:+amide ace) :+dkp pro4 (:+side (:cap bnz)) :+dkp (:cap pros))
-    (:side :-side apro4 (:-amide cbala) (:+amide ace) :+dkp pro))
-    (:pro4 (:-dkp pro4 (:-dkp (:cap cgly)) (:+side (:cap bnz))) (:+side (:cap bnz)) :+dkp (:cap pros))
-    (:pro4 (:-dkp apro4 (:-amide (:cap cbala)) (:+side (:cap bnz)) (:+amide (:cap ace))) :+dkp (:cap pros))
-    (:apro4 (:-amide cbala) (:+amide (:cap ace)) (:+side (:cap bnz)) :+dkp pro)
-    (:cbala (:+amide (:cap ace)))
-    (:bala (:-amide (:cap cbala)) :+amide (:cap ace))
-    (:ace :-amide (:cap cbala))
-(:cgly :+dkp pro))
-||#

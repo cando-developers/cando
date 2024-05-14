@@ -13,4 +13,5 @@
            #:subscribe
            #:translate
            #:unsubscribe
-           #:*threaded*))
+           #:*threaded*
+           #:inspector))

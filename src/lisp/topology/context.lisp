@@ -10,6 +10,8 @@
 (defclass monomer-match-node ()
   ((names :initarg :names :reader names)))
 
+(defclass wild-card-monomer-match-node (cando.serialize:serializable) ())
+
 (defclass untrained-monomer-match-node ()
   ())
 
@@ -32,6 +34,9 @@
 (defclass plug-to-monomer-node ()
   ((plug-name :initarg :plug-name :reader plug-name)
    (monomer-match-node :initarg :monomer-match-node :accessor monomer-match-node)))
+
+(defmethod %copy-specialize ((obj (eql :***)))
+  (make-instance 'wild-card-monomer-match-node))
 
 (defmethod %copy-specialize ((obj plug-to-monomer-node))
   (make-instance 'plug-to-monomer-node
@@ -107,8 +112,7 @@
                 do (when (< (elt counters counter-index) (cdr (elt name-indices counter-index)))
                      (return-from advance nil))
                 do (setf (elt counters counter-index) 0)
-                finally (setf done t)
-                ))
+                finally (setf done t)))
         (values result focus-monomer-name counters)))))
 
 (defun match-as-symbol (match)
@@ -129,6 +133,9 @@
   (cond
     ((and (consp name) (eq (car name) :cap))
      nil)
+    ((and (consp name) (eq (car name) :ring-cap))
+     :*** ; This is a wildcard
+     )
     ((symbolp name)
      (let ((names (gethash name topology::*topology-groups*)))
        (if names
@@ -170,11 +177,17 @@
 
 (defgeneric matches-impl (pattern monomer oligomer match))
 
+(defclass wild-card-monomer () ())
+
+(defparameter *wild-card-monomer* (make-instance 'wild-card-monomer))
+
 (defun ensure-monomer-or-nil (monomer)
   (when monomer
-    (if (typep monomer 'topology:monomer)
-        monomer
-        (error "monomer ~a must be a topology:monomer" monomer))))
+    (cond
+      ((typep monomer 'wild-card-monomer) monomer)
+      ((typep monomer 'topology:monomer)
+       monomer)
+      (t (error "monomer ~a must be a topology:monomer" monomer)))))
 
 (defmethod matches-impl ((pattern null) (monomer topology:monomer) oligomer match)
   (declare (ignore oligomer match))
@@ -208,6 +221,10 @@
                   :name monomer-name)
     monomer))
 
+(defmethod matches-impl ((pattern wild-card-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match)
+  (warn "Returning monomer ~s for wild-card-monomer-match-node" monomer)
+  monomer)
+
 (defmethod matches-impl ((pattern plug-to-monomer-node) (monomer topology:monomer) oligomer match)
   (ensure-monomer-or-nil
    (let* ((plug-name (plug-name pattern))
@@ -217,6 +234,10 @@
        (let ((other-monomer (topology:other-monomer coupling monomer)))
          (when (matches-impl (monomer-match-node pattern) other-monomer oligomer match)
            other-monomer))))))
+
+(defmethod matches-impl ((pattern (eql :***)) (monomer topology:monomer) oligomer match)
+  (ensure-monomer-or-nil
+   *wild-card-monomer*))
 
 (defmethod matches-impl ((pattern chain-node) (monomer topology:monomer) oligomer match)
   (ensure-monomer-or-nil

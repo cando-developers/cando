@@ -157,8 +157,22 @@
    (monomer-context :initarg :monomer-context :accessor monomer-context)
    (energy :initform 0.0s0 :initarg :energy :accessor energy)
    (coordinates :initarg :coordinates :accessor coordinates)
-   (shape-key-values :initarg :shape-key-values :accessor shape-key-values :documentation "Not needed")
    ))
+
+(defclass fragment-internals-with-shape-key (fragment-internals)
+  ((shape-key :initarg :shape-key :accessor shape-key)))
+
+(defun make-fragment-internals-with-shape-key-from-fragment-internals (fragment-internals shape-key)
+  "Shallow copy of fragment-internals"
+  (make-instance 'fragment-internals-with-shape-key
+                 :monomer-context (monomer-context fragment-internals)
+                 :trainer-index (trainer-index fragment-internals)
+                 :probability (probability fragment-internals)
+                 :energy (energy fragment-internals)
+                 :delta-energy (delta-energy fragment-internals)
+                 :internals-values (copy-seq (internals-values fragment-internals))
+                 :coordinates (copy-seq (coordinates fragment-internals))
+                 :shape-key shape-key))
 
 (defmethod print-object ((obj fragment-internals) stream)
   (if *print-readably*
@@ -186,8 +200,58 @@
 (defclass sidechain-rotamer (rotamer)
   (()))
 
-(defclass backbone-rotamer (rotamer)
-  ((backbone-dihedral-cache-deg :initarg :backbone-dihedral-cache-deg :accessor backbone-dihedral-cache-deg)))
+
+(defun make-sidechain-rotamer (&key internals-values delta-energy probability)
+  (make-instance 'sidechain-rotamer
+                 :internals-values internals-values
+                 :delta-energy delta-energy
+                 :probability probability))
+
+(defun make-sidechain-rotamer-from-fragment-internals (fragment-internals)
+  (check-type fragment-internals fragment-internals)
+  (make-sidechain-rotamer
+   :internals-values (internals-values fragment-internals)
+   :delta-energy (delta-energy fragment-internals)
+   :probability (probability fragment-internals)))
+
+
+(defclass backbone-rotamer-base (rotamer)
+  ())
+
+(defclass backbone-with-sidechain-rotamer (backbone-rotamer-base)
+  ((shape-key :initarg :shape-key :accessor shape-key)))
+
+(defun make-backbone-with-sidechain-rotamer (&key internals-values delta-energy probability shape-key)
+  (make-instance 'backbone-with-sidechain-rotamer
+                 :internals-values internals-values
+                 :delta-energy delta-energy
+                 :probability probability
+                 :shape-key shape-key))
+
+(defun make-backbone-with-sidechain-rotamer-from-fragment-internals (fragment-internals)
+  (check-type fragment-internals fragment-internals-with-shape-key)
+  (make-backbone-with-sidechain-rotamer
+   :internals-values (internals-values fragment-internals)
+   :delta-energy (delta-energy fragment-internals)
+   :probability (probability fragment-internals)
+   :shape-key (shape-key fragment-internals)))
+
+
+(defclass backbone-without-sidechain-rotamer (backbone-rotamer-base)
+  ())
+
+(defun make-backbone-without-sidechain-rotamer (&key internals-values delta-energy probability)
+  (make-instance 'backbone-without-sidechain-rotamer
+                 :internals-values internals-values
+                 :delta-energy delta-energy
+                 :probability probability))
+
+(defun make-backbone-without-sidechain-rotamer-from-fragment-internals (fragment-internals)
+  (check-type fragment-internals fragment-internals)
+  (make-backbone-without-sidechain-rotamer
+   :internals-values (internals-values fragment-internals)
+   :delta-energy (delta-energy fragment-internals)
+   :probability (probability fragment-internals)))
 
 
 (defun copy-fragment-internals (fragment-internals)
@@ -202,16 +266,33 @@
                  :coordinates (copy-seq (coordinates fragment-internals))
                  ))
 
+
 (defclass rotamers (cando.serialize:serializable)
-  ((rotamers :initarg :rotamers :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor rotamers)))
+  ((monomer-context :initarg :monomer-context :reader monomer-context)
+   (rotamer-vector :initarg :rotamer-vector
+                   :initform (make-array 16 :adjustable t :fill-pointer 0)
+                   :accessor rotamer-vector
+                   :type (vector rotamer *))))
+
+(defmethod print-object ((object rotamers) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (object stream :type t)
+        (format stream "~s" (monomer-context object)))))
+
 
 (defclass sidechain-rotamers (rotamers)
   ((shape-key-to-index :initarg :shape-key-to-index :initform (make-hash-table :test 'equal) :accessor shape-key-to-index
                        :documentation "This is a cons of (phi.psi)")))
 
+(defclass backbone-rotamers-base (rotamers) ())
 
-(defclass backbone-rotamers (rotamers)
+(defclass backbone-without-sidechain-rotamers (backbone-rotamers-base)
   ())
+
+(defclass backbone-with-sidechain-rotamers (backbone-rotamers-base)
+  ())
+
 
 (defclass rotamers-database (cando.serialize:serializable)
   ((context-to-rotamers :initarg :context-to-rotamers :initform (make-hash-table) :reader context-to-rotamers)

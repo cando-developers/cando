@@ -50,10 +50,10 @@
 
 (defun read-part (socket msg channel position)
   (pzmq:msg-recv msg socket)
-  (deserialize channel position
-               (translate channel position
-                          (pzmq:msg-data msg)
-                          (pzmq:msg-size msg))))
+  (let ((str (translate channel position
+                        (pzmq:msg-data msg)
+                        (pzmq:msg-size msg))))
+    (deserialize channel position str)))
 
 (defclass channel ()
   ((context :reader context
@@ -94,10 +94,11 @@
              (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
                    unless (zerop poll)
                      do (pzmq:with-message msg
-                          (apply #'receive channel (read-part control msg channel nil)
-                                 (loop for position from 0
-                                       while (more-parts-p msg)
-                                       collect (read-part control msg channel position))))
+                          (let* ((identity (read-part control msg channel nil))
+                                 (args (loop for position from 0
+                                             while (more-parts-p msg)
+                                             collect (read-part control msg channel position))))
+                            (apply #'receive channel identity args)))
                    do (idle channel)))
         (pzmq:close control)
         (pzmq:close broadcast)
@@ -125,6 +126,8 @@
     (finish-output)
     (pzmq:bind control control-endpoint)
     (pzmq:bind broadcast broadcast-endpoint)
+    (when (probe-file connection-path)
+      (error "The connection file ~s already exists - remove it and restart the server~%" connection-path))
     (with-open-file (stream connection-path :direction :output
                                             :if-does-not-exist :create
                                             :if-exists :supersede)
@@ -197,8 +200,106 @@
         (pzmq:close broadcast)
         (pzmq:ctx-destroy (context channel))))))
 
-(defparameter *threaded* nil)
 (defmethod start ((channel client) connection-path &rest initargs
+                  &key threaded
+                    heartbeat-ivl heartbeat-ttl heartbeat-timeout
+                    disconnect-msg hello-msg)
+  (declare (ignore initargs))
+  (with-accessors ((control control)
+                   (broadcast broadcast)
+                   (thread thread))
+      channel
+    (when disconnect-msg
+      (pzmq:setsockopt control :disconnect-msg disconnect-msg))
+    (when hello-msg
+      (pzmq:setsockopt control :hello-msg hello-msg))
+    (when heartbeat-ivl
+      (pzmq:setsockopt control :heartbeat-ivl heartbeat-ivl))
+    (when heartbeat-ttl
+      (pzmq:setsockopt control :heartbeat-ttl heartbeat-ttl))
+    (when heartbeat-timeout
+      (pzmq:setsockopt control :heartbeat-timeout heartbeat-timeout))
+;;; Wait for file to be created
+    (loop until (probe-file connection-path)
+          do (format t "Waiting for ~s to appear~%" connection-path)
+          do (sleep 10))
+    (format t "Found ~s~%" connection-path)
+    (with-open-file (stream connection-path)
+      (let ((data (with-standard-io-syntax (read stream nil nil))))
+        (pzmq:connect control (getf data :control))
+        (pzmq:connect broadcast (getf data :broadcast))))
+    (initialize channel)
+    (if threaded
+        (setf thread
+              (bordeaux-threads:make-thread
+               (lambda ()
+                 (handler-case
+                     (client-message-loop channel)
+                   (error (condition)
+                     (format t "~a" condition))))))
+        (client-message-loop channel))))
+
+(defmethod send ((channel client) (identity null) code &rest parts)
+  (bordeaux-threads:with-lock-held ((control-send-lock channel))
+    (let ((control (control channel)))
+      (pzmq:send control (serialize channel 0 code) :sndmore (and parts t))
+      (loop for (part . remaining) on parts
+            for position from 1
+            do (pzmq:send control (serialize channel position part)
+                          :sndmore (and remaining t))))))
+
+(defun subscribe (channel code)
+  (pzmq:setsockopt (broadcast channel)
+                   :subscribe
+                   (typecase code
+                     (symbol (symbol-name code))
+                     (string code)
+                     (otherwise (prin1-to-string code)))))
+
+(defun unsubscribe (channel code)
+  (pzmq:setsockopt (broadcast channel)
+                   :unsubscribe
+                   (typecase code
+                     (symbol (symbol-name code))
+                     (string code)
+                     (otherwise (prin1-to-string code)))))
+
+
+
+
+
+(defclass inspector (channel) ())
+
+(defmethod initialize-instance :after ((instance inspector) &rest initargs &key)
+  (declare (ignore initargs))
+  (setf (control instance) (pzmq:socket (context instance) :dealer)
+        (broadcast instance) (pzmq:socket (context instance) :sub))
+  instance)
+
+(defun inspector-message-loop (channel)
+  (catch 'shutdown
+    (with-accessors ((control control)
+                     (broadcast broadcast))
+        channel
+      (unwind-protect
+           (flet ((recv (socket)
+                    (pzmq:with-message msg
+                      (apply #'receive channel nil
+                             (loop for position from 0
+                                   while (or (zerop position) (more-parts-p msg))
+                                   collect (read-part socket msg channel position))))))
+             (pzmq:with-poll-items items ((control :pollin) (broadcast :pollin))
+               (loop for poll = (pzmq:poll items +zmq-poll-timeout+)
+                     when (pzmq:revents items 0)
+                       do (recv control)
+                     when (pzmq:revents items 1)
+                       do (recv broadcast)
+                     do (idle channel))))
+        (pzmq:close control)
+        (pzmq:close broadcast)
+        (pzmq:ctx-destroy (context channel))))))
+
+(defmethod start ((channel inspector) connection-path &rest initargs
                   &key threaded
                        heartbeat-ivl heartbeat-ttl heartbeat-timeout
                        disconnect-msg hello-msg)
@@ -227,18 +328,9 @@
         (pzmq:connect control (getf data :control))
         (pzmq:connect broadcast (getf data :broadcast))))
     (initialize channel)
-    (let ((*threaded* threaded))
-      (if threaded
-          (setf thread
-                (bordeaux-threads:make-thread
-                 (lambda ()
-                   (handler-case
-                       (client-message-loop channel)
-                     (error (condition)
-                       (format t "~a" condition))))))
-          (client-message-loop channel)))))
+    (inspector-message-loop channel)))
 
-(defmethod send ((channel client) (identity null) code &rest parts)
+(defmethod send ((channel inspector) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((control-send-lock channel))
     (let ((control (control channel)))
       (pzmq:send control (serialize channel 0 code) :sndmore (and parts t))

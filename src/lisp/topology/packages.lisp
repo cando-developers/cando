@@ -315,11 +315,12 @@
    #:shape-key-values
    #:rotamer
    #:sidechain-rotamer
-   #:backbone-rotamer
    #:rotamers
    #:sidechain-rotamers
    #:shape-key-to-index
-   #:backbone-rotamers
+   #:backbone-rotamers-base
+   #:backbone-without-sidechain-rotamers
+   #:backbone-with-sidechain-rotamers
    #:rotamers-database
    #:context-to-rotamers
    #:backbone-dihedral-cache-deg
@@ -413,7 +414,16 @@
    #:ensure-oligomer-shape-is-consistent-with-permissible-rotamers
    #:find-named-fragment-line-segments
    #:cluster-dihedral-line-segments
-   #:find-named-fragment-canonical-transform))
+   #:find-named-fragment-canonical-transform
+   #:backbone-without-sidechain-rotamer
+   #:backbone-with-sidechain-rotamer
+   #:make-backbone-without-sidechain-rotamer
+   #:make-backbone-with-sidechain-rotamer
+   #:make-sidechain-rotamer
+   #:make-backbone-with-sidechain-rotamer-from-fragment-internals
+   #:make-sidechain-rotamer-from-fragment-internals
+   #:make-backbone-without-sidechain-rotamer-from-fragment-internals
+   #:make-fragment-internals-with-shape-key-from-fragment-internals))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
@@ -423,7 +433,7 @@
    #:parse-oligomer-space-labeled-dag
    #:parse-oligomer-space-dag
    #:validate-dag
-   ))
+   #:ring-cap-node))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

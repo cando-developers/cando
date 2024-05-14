@@ -45,6 +45,9 @@ Example of oligomer-space-dag
 (defclass cap-node (node)
   ())
 
+(defclass ring-cap-node (node)
+  ())
+
 (cando.serialize:make-class-save-load cap-node
  :print-unreadably
  (lambda (obj stream)
@@ -156,6 +159,10 @@ Example of oligomer-space-dag
      (when (keywordp (cadr maybe-name))
        (error "Parsing ~s ~s - the cap name ~s must be a non-keyword symbol" foldamer-name tree-name (cadr maybe-name)))
      (make-instance 'cap-node :name (cadr maybe-name) :label label))
+    ((and (consp maybe-name) (eq (car maybe-name) :ring-cap))
+     (when (keywordp (cadr maybe-name))
+       (error "Parsing ~s ~s - the ring-cap name ~s must be a non-keyword symbol" foldamer-name tree-name (cadr maybe-name)))
+     (make-instance 'ring-cap-node :name (cadr maybe-name) :label label))
     ((symbolp maybe-name)
      (make-instance 'node :name maybe-name :label label))
     (t (error "Illegal name in node-from-name ~s" maybe-name))))
@@ -227,19 +234,82 @@ Example of oligomer-space-dag
           (oligomer-space-from-dag foldamer dag topology-groups)
         (values oligomer-space focus-monomer dag description shape-kind)))))
 
+
+
+(defclass check-node ()
+  ((node :initarg :node :accessor node)
+   (node-name :initarg :node-name :accessor node-name)
+   (in-plug-names :initarg :in-plug-names :initform nil :accessor in-plug-names)
+   (out-plug-names :initarg :out-plug-names :initform nil :accessor out-plug-names)))
+
+(defmethod print-object ((obj check-node) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream ":node-name ~s :in-plug-names ~s  :out-plug-names ~s~%"
+            (node-name obj)
+            (in-plug-names obj)
+            (out-plug-names obj))))
+
+(defun interpret-node-name (name)
+  (format t "interpret-node-name ~s~%" name)
+  (cond
+    ((symbolp name)
+     (gethash name topology:*topology-groups*))
+    (t
+     (error "interpret-node-name: What do we do with ~s" name))))
+
+
 (defun validate-dag (dag)
-  (let ((label (label dag)))
+  (let ((label (label dag))
+        (node-ht (make-hash-table)))
+    (format t "validate-dag label: ~s~%" label)
     (loop for node in (nodes dag)
           for node-name = (name node)
           for depth = (spanning-depth node)
+          for check-node = (make-instance 'check-node
+                                          :node node
+                                          :node-name node-name)
+          do (format t "node-name = ~s~%" node-name)
+          do (setf (gethash node node-ht) check-node)
           do (cond
                ((= 1 depth)
                 (when (typep node 'cap-node)
                   (warn "dag ~s has a cap-node ~s directly connected to the root" label node-name)))
                ((> depth 1)
                 (when (not (typep node 'cap-node))
-                  (warn "dag ~s has node ~s at level ~a that should be a cap node or eliminated" label node-name depth)))))))
-
-
+                  (warn "dag ~s has node ~s at level ~a that should be a cap node or eliminated" label node-name depth)))))
+    (loop for edge in (edges dag)
+          for from-node = (from-node edge)
+          for from-check-node = (gethash from-node node-ht)
+          for to-node = (to-node edge)
+          for to-check-node = (gethash to-node node-ht)
+          for from-edge-name = (raw-name edge)
+          for to-edge-name = (topology:other-plug-name from-edge-name)
+          if (topology:is-in-plug-name from-edge-name)
+            do (progn
+                 (push from-edge-name (in-plug-names from-check-node))
+                 (push to-edge-name (out-plug-names to-check-node)))
+          else
+            do (progn
+                 (push from-edge-name (out-plug-names from-check-node))
+                 (push to-edge-name (in-plug-names to-check-node)))
+          )
+    ;; Check that all check-nodes have zero or one in-plug
+    (maphash (lambda (node check-node)
+               (when (> (length (in-plug-names check-node)) 1)
+                 (error "The pattern ~s has node ~s that has more than 1 in-edge-names: ~s"
+                        label (node-name check-node) (in-plug-names check-node))))
+             node-ht)
+    ;; Check that all the check-nodes match a topology
+    (maphash (lambda (node check-node)
+               (let* ((node-name (node-name check-node))
+                      (names (interpret-node-name node-name))
+                      (in-plug-names (in-plug-names check-node))
+                      (out-plug-names (out-plug-names check-node)))
+                 (loop for name in names
+                       for topology = (chem:find-topology name t)
+                       do (format t "Compare Topology::: ~s to ~s~%" topology check-node))
+                 ))
+             node-ht)
+    ))
 
 
