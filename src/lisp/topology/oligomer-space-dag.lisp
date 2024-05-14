@@ -257,6 +257,22 @@ Example of oligomer-space-dag
     (t
      (error "interpret-node-name: What do we do with ~s" name))))
 
+(defun compare-check-node-to-topology (check-node topology label)
+  (when (in-plug-names check-node)
+    (let ((in-plug-name (first (in-plug-names check-node))))
+      (unless (gethash in-plug-name (plugs topology))
+        (error "The in-plug name ~s was not found in the topology ~s when validating ~s"
+               in-plug-name topology label))))
+  (loop for out-plug-name in (out-plug-names check-node)
+        for top-plug = (gethash out-plug-name (plugs topology))
+        unless top-plug
+          do (error "The out-plug name ~s was not found in the topology ~s when validating ~s"
+                    out-plug-name topology label))
+  (maphash (lambda (plug-name plug)
+             (unless (in-plug-name plug-name)
+               (unless (member plug-name (out-plug-names check-node))
+                 (error "The topology ~s out-plug ~s was not found in the pattern ~s" topology plug-name label))))
+           (plugs topology)))
 
 (defun validate-dag (dag)
   (let ((label (label dag))
@@ -294,10 +310,17 @@ Example of oligomer-space-dag
                  (push to-edge-name (in-plug-names to-check-node)))
           )
     ;; Check that all check-nodes have zero or one in-plug
+    ;; and that all out-plug-names are unique
     (maphash (lambda (node check-node)
                (when (> (length (in-plug-names check-node)) 1)
                  (error "The pattern ~s has node ~s that has more than 1 in-edge-names: ~s"
-                        label (node-name check-node) (in-plug-names check-node))))
+                        label (node-name check-node) (in-plug-names check-node)))
+               ;; Sort the names and then compare adjacent pairs
+               (let ((sorted-out-plug-names (sort (copy-seq (out-plug-names check-node)) #'string< :key #'string)))
+                 (mapc (lambda (first next)
+                         (when (eq first next)
+                           (error "There are duplicate out-plug names for ~s" first)))
+                       sorted-out-plug-names (rest sorted-out-plug-names))))
              node-ht)
     ;; Check that all the check-nodes match a topology
     (maphash (lambda (node check-node)
@@ -307,9 +330,7 @@ Example of oligomer-space-dag
                       (out-plug-names (out-plug-names check-node)))
                  (loop for name in names
                        for topology = (chem:find-topology name t)
-                       do (format t "Compare Topology::: ~s to ~s~%" topology check-node))
-                 ))
-             node-ht)
-    ))
+                       do (compare-check-node-to-topology check-node topology label))))
+             node-ht)))
 
 
