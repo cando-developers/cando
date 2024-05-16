@@ -30,17 +30,18 @@ Example of oligomer-space-dag
   (:report (lambda (condition stream)
              (format stream "no-matching-context ~a" (context condition)))))
 
-(defclass node ()
+(defclass node (cando.serialize:serializable)
   ((id :initform (gensym) :initarg :id :accessor id)
+   (index :initarg :index :reader index)
    (name :initarg :name :accessor name)
    (spanning-depth :initform nil :initarg :spanning-depth :initform nil :accessor spanning-depth)
    (label :initarg :label :accessor label)))
 
-(cando.serialize:make-class-save-load node
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t :identity t)
-     (format stream "~a :spanning-depth ~a :label ~a" (name obj) (spanning-depth obj) (label obj)))))
+(defmethod print-object ((obj node) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t :identity t)
+        (format stream "#~d/~a :spanning-depth ~a :label ~a" (index obj) (name obj) (spanning-depth obj) (label obj)))))
 
 (defclass cap-node (node)
   ())
@@ -48,23 +49,21 @@ Example of oligomer-space-dag
 (defclass ring-cap-node (node)
   ())
 
-(cando.serialize:make-class-save-load cap-node
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t :identity t)
-     (format stream "~a :spanning-depth ~a :label ~a" (name obj) (spanning-depth obj) (label obj)))))
-
-(defclass edge ()
+(defclass edge (cando.serialize:serializable)
   ((from-node :initarg :from-node :accessor from-node)
    (to-node :initarg :to-node :accessor to-node)
    (name :initarg :name :accessor name)
    (raw-name :initarg :raw-name :accessor raw-name)))
 
-(cando.serialize:make-class-save-load edge
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-     (format stream "~a ~a ~a" (from-node obj) (raw-name obj) (to-node obj)))))
+(defmethod print-object ((obj edge) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "#~d/~a ~a #~d/~a"
+                (index (from-node obj)) (name (from-node obj))
+                (raw-name obj)
+                (index (to-node obj)) (name (to-node obj))
+                ))))
 
 (defun other-node (edge node)
   "If the edge contains node then return the other node, otherwise nil"
@@ -78,7 +77,7 @@ Example of oligomer-space-dag
 (defclass dag ()
   ((label :initarg :label :accessor label)
    (root :initarg :root :accessor root)
-   (nodes :initform nil :accessor nodes)
+   (nodes :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor nodes)
    (edges :initform nil :accessor edges)))
 
 (cando.serialize:make-class-save-load dag
@@ -124,7 +123,7 @@ Example of oligomer-space-dag
         (node-to-monomer (make-hash-table))
         (oligomer-space (make-instance 'topology:oligomer-space
                                        :foldamer foldamer)))
-    (loop for node in (nodes dag)
+    (loop for node across (nodes dag)
           for name = (name node)
           for names = (gethash name topology-groups)
           for monomer = (make-instance 'topology:monomer
@@ -153,18 +152,18 @@ Example of oligomer-space-dag
           do (vector-push-extend directional-coupling (topology:couplings oligomer-space)))
     (values oligomer-space (gethash focus-node node-to-monomer))))
 
-(defun node-from-name (foldamer-name tree-name maybe-name label)
+(defun node-from-name (foldamer-name tree-name maybe-name label index)
   (cond
     ((and (consp maybe-name) (eq (car maybe-name) :cap))
      (when (keywordp (cadr maybe-name))
        (error "Parsing ~s ~s - the cap name ~s must be a non-keyword symbol" foldamer-name tree-name (cadr maybe-name)))
-     (make-instance 'cap-node :name (cadr maybe-name) :label label))
+     (make-instance 'cap-node :name (cadr maybe-name) :label label :index index))
     ((and (consp maybe-name) (eq (car maybe-name) :ring-cap))
      (when (keywordp (cadr maybe-name))
        (error "Parsing ~s ~s - the ring-cap name ~s must be a non-keyword symbol" foldamer-name tree-name (cadr maybe-name)))
-     (make-instance 'ring-cap-node :name (cadr maybe-name) :label label))
+     (make-instance 'ring-cap-node :name (cadr maybe-name) :label label :index index))
     ((symbolp maybe-name)
-     (make-instance 'node :name maybe-name :label label))
+     (make-instance 'node :name maybe-name :label label :index index))
     (t (error "Illegal name in node-from-name ~s" maybe-name))))
 
 (defun parse-recursive (name tree-name sub-tree prev-node dag label)
@@ -181,7 +180,7 @@ Example of oligomer-space-dag
      (parse-recursive name tree-name (cdr sub-tree) prev-node dag :tail-cons))
     ((symbolp (car sub-tree))
      (let* ((plug-name (car sub-tree))
-            (node (node-from-name name tree-name (cadr sub-tree) label)))
+            (node (node-from-name name tree-name (cadr sub-tree) label (length (nodes dag)))))
        (cond
          ((topology:in-plug-name-p plug-name)
           (let ((edge (make-instance 'edge
@@ -189,7 +188,7 @@ Example of oligomer-space-dag
                                      :name (topology:coupling-name plug-name)
                                      :from-node node
                                      :to-node prev-node)))
-            (push node (nodes dag))
+            (vector-push-extend node (nodes dag))
             (push edge (edges dag))))
          ((topology:out-plug-name-p plug-name)
           (let ((edge (make-instance 'edge
@@ -197,7 +196,7 @@ Example of oligomer-space-dag
                                      :name (topology:coupling-name plug-name)
                                      :from-node prev-node
                                      :to-node node)))
-            (push node (nodes dag))
+            (vector-push-extend node (nodes dag))
             (push edge (edges dag))))
          (t (error "Illegal plug-name ~s" plug-name)))
        (parse-recursive name tree-name (cddr sub-tree) node dag :symbol)))
@@ -207,9 +206,9 @@ Example of oligomer-space-dag
   head)
 
 (defun parse-dag-for-oligomer-space (name tree &key label)
-  (let* ((node (node-from-name name label (car tree) :top))
+  (let* ((node (node-from-name name label (car tree) :top 0))
          (dag (make-instance 'dag :root node :label label)))
-    (push node (nodes dag))
+    (vector-push-extend node (nodes dag))
     (parse-recursive name label (cdr tree) node dag :top)
     (walk-spanning-tree dag)
     dag))
@@ -238,6 +237,7 @@ Example of oligomer-space-dag
 
 (defclass check-node ()
   ((node :initarg :node :accessor node)
+   (node-index :initarg :node-index :reader node-index)
    (node-name :initarg :node-name :accessor node-name)
    (in-plug-names :initarg :in-plug-names :initform nil :accessor in-plug-names)
    (out-plug-names :initarg :out-plug-names :initform nil :accessor out-plug-names)))
@@ -250,7 +250,6 @@ Example of oligomer-space-dag
             (out-plug-names obj))))
 
 (defun interpret-node-name (name)
-  (format t "interpret-node-name ~s~%" name)
   (cond
     ((symbolp name)
      (gethash name topology:*topology-groups*))
@@ -260,31 +259,60 @@ Example of oligomer-space-dag
 (defun compare-check-node-to-topology (check-node topology label)
   (when (in-plug-names check-node)
     (let ((in-plug-name (first (in-plug-names check-node))))
-      (unless (gethash in-plug-name (plugs topology))
-        (error "The in-plug name ~s was not found in the topology ~s when validating ~s"
-               in-plug-name topology label))))
+      (unless (gethash in-plug-name (topology:plugs topology))
+        (error "Pattern ~s node ~a the in-plug name ~s was not found in the topology ~s"
+               label
+               (node-id check-node)
+               in-plug-name topology))))
   (loop for out-plug-name in (out-plug-names check-node)
-        for top-plug = (gethash out-plug-name (plugs topology))
+        for top-plug = (gethash out-plug-name (topology:plugs topology))
         unless top-plug
-          do (error "The out-plug name ~s was not found in the topology ~s when validating ~s"
-                    out-plug-name topology label))
+          do (error "Pattern ~s node ~a the out-plug name ~s was not found in the topology ~s"
+                    label
+                    (node-id check-node)
+                    out-plug-name topology))
   (maphash (lambda (plug-name plug)
-             (unless (in-plug-name plug-name)
+             (declare (ignore plug))
+             (unless (topology:in-plug-name-p plug-name)
                (unless (member plug-name (out-plug-names check-node))
-                 (error "The topology ~s out-plug ~s was not found in the pattern ~s" topology plug-name label))))
-           (plugs topology)))
+                 (error "Pattern ~s node ~a the topology ~s out-plug ~s was not found"
+                        label
+                        (node-id check-node)
+                        topology plug-name))))
+           (topology:plugs topology)))
+
+(defun node-id (check-node)
+  (format nil "#~d/~s" (node-index check-node) (node-name check-node)))
+
+(defun add-unique-out-plug-name (plug-name check-node label)
+  (when (member plug-name (out-plug-names check-node))
+    (error "In the context ~s and node named ~s there is already an out-plug named ~s"
+           label (node-id check-node) plug-name))
+  (push plug-name (out-plug-names check-node)))
+
+(defun add-unique-in-plug-name (plug-name check-node label)
+  (when (> (length (in-plug-names check-node)) 0)
+    (error "In the context ~s and node named ~s there is already an in-plug named ~s and you are trying to add ~s"
+           label check-node (first (in-plug-names check-node)) plug-name))
+  (push plug-name (in-plug-names check-node)))
+
+(defun add-unique-plug-name (plug-name check-node label)
+  (if (topology:in-plug-name-p plug-name)
+      (add-unique-in-plug-name plug-name check-node label)
+      (add-unique-out-plug-name plug-name check-node label)))
+
 
 (defun validate-dag (dag)
   (let ((label (label dag))
         (node-ht (make-hash-table)))
-    (format t "validate-dag label: ~s~%" label)
-    (loop for node in (nodes dag)
+    (loop for node across (nodes dag)
+          for node-index from 0
           for node-name = (name node)
           for depth = (spanning-depth node)
           for check-node = (make-instance 'check-node
+                                          :node-index node-index
                                           :node node
                                           :node-name node-name)
-          do (format t "node-name = ~s~%" node-name)
           do (setf (gethash node node-ht) check-node)
           do (cond
                ((= 1 depth)
@@ -302,13 +330,21 @@ Example of oligomer-space-dag
           for to-edge-name = (topology:other-plug-name from-edge-name)
           if (topology:is-in-plug-name from-edge-name)
             do (progn
-                 (push from-edge-name (in-plug-names from-check-node))
-                 (push to-edge-name (out-plug-names to-check-node)))
+                 (add-unique-plug-name to-edge-name from-check-node label)
+                 (add-unique-plug-name from-edge-name to-check-node label))
           else
             do (progn
-                 (push from-edge-name (out-plug-names from-check-node))
-                 (push to-edge-name (in-plug-names to-check-node)))
-          )
+                 (add-unique-plug-name from-edge-name from-check-node label)
+                 (add-unique-plug-name to-edge-name to-check-node label)))
+    ;; Debugging print check-nodes
+    #+(or)
+    (maphash (lambda (node check-node)
+               (declare (ignore node))
+               (format t "DEBUG: ~a :in-plug-names ~s  :out-plug-names ~s~%"
+                       (node-id check-node)
+                       (in-plug-names check-node)
+                       (out-plug-names check-node)))
+             node-ht)
     ;; Check that all check-nodes have zero or one in-plug
     ;; and that all out-plug-names are unique
     (maphash (lambda (node check-node)
@@ -319,7 +355,7 @@ Example of oligomer-space-dag
                (let ((sorted-out-plug-names (sort (copy-seq (out-plug-names check-node)) #'string< :key #'string)))
                  (mapc (lambda (first next)
                          (when (eq first next)
-                           (error "There are duplicate out-plug names for ~s" first)))
+                           (error "There are duplicate out-plug names for context: ~s node: ~s dup out-plug name: ~s" label (node-id check-node) first)))
                        sorted-out-plug-names (rest sorted-out-plug-names))))
              node-ht)
     ;; Check that all the check-nodes match a topology
