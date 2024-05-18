@@ -433,7 +433,8 @@
    #:parse-oligomer-space-labeled-dag
    #:parse-oligomer-space-dag
    #:validate-dag
-   #:ring-cap-node))
+   #:ring-cap-node
+   #:label))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)
