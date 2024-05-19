@@ -231,7 +231,7 @@ string BondedJoint_O::asString() const
 }
 
 CL_DEFMETHOD void BondedJoint_O::setPhi(double dihedral) {
-  if (isnan(dihedral)) {
+  if (std::isnan(dihedral)) {
     SIMPLE_ERROR("Hit NAN dihedral");
   }
   this->_Phi = dihedral;

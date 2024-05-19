@@ -1529,7 +1529,7 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
   LOG("vCross = {},{},{}" , (vCross.getX()) , (vCross.getY()) , (vCross.getZ() ) );
   double dot = vacCross.dotProduct(vdcCross);
   double dih = safe_acos(dot);
-  if (isnan(dih)) {
+  if (std::isnan(dih)) {
     SIMPLE_ERROR("dihedral is NAN");
   }
   LOG("dih = {}" , (dih ) );

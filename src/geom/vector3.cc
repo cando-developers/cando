@@ -287,7 +287,7 @@ void Vector3::fillFromCons(core::Cons_sp vals)
 double safe_acos( double d )
 {
   double ac = std::acos(d);
-  unlikely_if (isnan(ac)) {
+  unlikely_if (std::isnan(ac)) {
     unlikely_if ( d >= 1.0 ) return(0.0);
     unlikely_if ( d <= -1.0 ) return(core::numerics::pi);
     SIMPLE_ERROR("Could not calculate acos of {}", d);
@@ -298,7 +298,7 @@ double safe_acos( double d )
 float safe_acos( float d )
 {
   float ac = std::acos(d);
-  unlikely_if (isnan(ac)) {
+  unlikely_if (std::isnan(ac)) {
     unlikely_if ( d >= 1.0 ) return(0.0);
     unlikely_if ( d <= -1.0 ) return(core::numerics::pi);
     SIMPLE_ERROR("Could not calculate acos of {}", d);
@@ -317,7 +317,7 @@ float safe_acos( float d )
 double safe_asin( double d )
 {
   double as = std::asin(d);
-  unlikely_if(isnan(as)) {
+  unlikely_if(std::isnan(as)) {
     unlikely_if ( d >= 1.0 ) return(core::numerics::pi/2.0);
     unlikely_if ( d <= -1.0 ) return(-core::numerics::pi/2.0);
     SIMPLE_ERROR("Could not calculate asin of {}", d);
@@ -328,7 +328,7 @@ double safe_asin( double d )
 float safe_asin( float d )
 {
   float as = std::asin(d);
-  unlikely_if(isnan(as)) {
+  unlikely_if(std::isnan(as)) {
     unlikely_if ( d >= 1.0 ) return(core::numerics::pi/2.0);
     unlikely_if ( d <= -1.0 ) return(-core::numerics::pi/2.0);
     SIMPLE_ERROR("Could not calculate asin of {}", d);

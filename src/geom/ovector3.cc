@@ -70,7 +70,7 @@ CL_NAME("VEC");
 DOCGROUP(cando);
 CL_DEFUN OVector3_sp OVector3_O::make(vecreal x, vecreal y, vecreal z)
 {
-  ASSERT(!(isnan(x)||isnan(y)||isnan(z)));
+  ASSERT(!(std::isnan(x)||std::isnan(y)||std::isnan(z)));
   auto ov = gctools::GC<OVector3_O>::allocate(x,y,z);
   return ov;
 }
