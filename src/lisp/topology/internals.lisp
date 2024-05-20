@@ -160,10 +160,15 @@
    ))
 
 (defclass fragment-internals-with-shape-key (fragment-internals)
-  ((shape-key :initarg :shape-key :accessor shape-key)))
+  ((backbone-dihedral-cache-deg :initarg :backbone-dihedral-cache-deg
+                                :type list
+                                :accessor backbone-dihedral-cache-deg)
+   (shape-key :initarg :shape-key :accessor shape-key)))
 
-(defun make-fragment-internals-with-shape-key-from-fragment-internals (fragment-internals shape-key)
+(defun make-fragment-internals-with-shape-key-from-fragment-internals (fragment-internals shape-key backbone-dihedral-cache-deg)
   "Shallow copy of fragment-internals"
+  (unless backbone-dihedral-cache-deg
+    (error "You must provide the backbone-dihedral-cache-deg with shape-key ~s" shape-key))
   (make-instance 'fragment-internals-with-shape-key
                  :monomer-context (monomer-context fragment-internals)
                  :trainer-index (trainer-index fragment-internals)
@@ -172,6 +177,7 @@
                  :delta-energy (delta-energy fragment-internals)
                  :internals-values (copy-seq (internals-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
+                 :backbone-dihedral-cache-deg backbone-dihedral-cache-deg
                  :shape-key shape-key))
 
 (defmethod print-object ((obj fragment-internals) stream)
@@ -219,13 +225,20 @@
   ())
 
 (defclass backbone-with-sidechain-rotamer (backbone-rotamer-base)
-  ((shape-key :initarg :shape-key :accessor shape-key)))
+  ((backbone-dihedral-cache-deg :initform nil
+                                :initarg :backbone-dihedral-cache-deg
+                                :type list
+                                :accessor backbone-dihedral-cache-deg)
+   (shape-key :initarg :shape-key :accessor shape-key)))
 
-(defun make-backbone-with-sidechain-rotamer (&key internals-values delta-energy probability shape-key)
+(defun make-backbone-with-sidechain-rotamer (&key internals-values delta-energy probability shape-key backbone-dihedral-cache-deg)
+  (unless backbone-dihedral-cache-deg
+    (error "You must provide the backbone-dihedral-cache-deg with shape-key ~s" shape-key))
   (make-instance 'backbone-with-sidechain-rotamer
                  :internals-values internals-values
                  :delta-energy delta-energy
                  :probability probability
+                 :backbone-dihedral-cache-deg backbone-dihedral-cache-deg
                  :shape-key shape-key))
 
 (defun make-backbone-with-sidechain-rotamer-from-fragment-internals (fragment-internals)
@@ -234,6 +247,7 @@
    :internals-values (internals-values fragment-internals)
    :delta-energy (delta-energy fragment-internals)
    :probability (probability fragment-internals)
+   :backbone-dihedral-cache-deg (backbone-dihedral-cache-deg fragment-internals)
    :shape-key (shape-key fragment-internals)))
 
 

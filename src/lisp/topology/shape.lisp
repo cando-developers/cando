@@ -47,7 +47,7 @@
                              (unless rots (error "Could not find monomer-context ~a in rotamers-database" monomer-context))
                              rots))
          (rotamer-index (rotamer-index rotamer-shape))
-         (rotamers (let ((rots (rotamers context-rotamers)))
+         (rotamers (let ((rots (rotamer-vector context-rotamers)))
                      (unless (> (length rots) 0)
                        (error "rots is empty for context ~a" monomer-context))
                      (unless (< rotamer-index (length rots))
@@ -413,13 +413,17 @@
                                           :ignore-degrees ignore-degrees)))
            (dihedral-info-atom
             (let* ((monomer-context (monomer-context monomer-shape-info))
-                   (rotamers (rotamers (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-database oligomer-shape))))))
+                   (val (gethash monomer-context (monomer-context-to-context-rotamers (rotamers-database oligomer-shape))))
+                   (rotamers (rotamer-vector val)))
               (if ignore-degrees
                   (values :ignore-degrees monomer-shape)
                   (let* ((rotamer-index (rotamer-index monomer-shape))
                          (rotamer (aref rotamers rotamer-index))
                          (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
-                         (deg (getf dihedral-cache-deg dihedral-name)))
+                         (deg-cons (assoc dihedral-name dihedral-cache-deg))
+                         (deg (cdr deg-cons)))
+                    (unless deg
+                      (error "Could not find ~s in ~s" dihedral-name dihedral-cache-deg))
                     (values deg monomer-shape))))))))
       (t (error "there was no :dihedrals property in ~s" topology)))))
 
@@ -488,9 +492,9 @@
 (defun random-oligomer-shape-aggregate (oligomer-shape)
   "Generate a random oligomer-shape and return the aggregate"
   (let* ((bs (make-permissible-backbone-rotamers oligomer-shape)))
-    (write-rotamers bs (random-rotamers bs))
+    (write-rotamers oligomer-shape bs (random-rotamers bs))
     (let ((ss (make-permissible-sidechain-rotamers oligomer-shape)))
-      (write-rotamers ss (random-rotamers ss))
+      (write-rotamers oligomer-shape ss (random-rotamers ss))
       (let* ((ass (make-assembler (list oligomer-shape)))
              (coords (make-coordinates-for-assembler ass))
              )

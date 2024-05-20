@@ -4,6 +4,10 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (pushnew :debug-mover *features*))
 
+(defgeneric lookup-backbone-shape-key (oligomer-shape monomer-shape errorp errorval))
+
+(defmethod lookup-backbone-shape-key (oligomer-shape monomer-shape errorp errorval)
+  (error "Specialize this on the arguments"))
 
 (defun make-phi-psi (phi-deg psi-deg)
   (cons (topology:bin-dihedral-deg phi-deg)
@@ -131,6 +135,43 @@
       permissible-rotamer)))
 
 (defun make-permissible-backbone-rotamers (oligomer-shape)
+  "All backbone rotamers are allowed since we enforced that every backbone rotamer has side-chain rotamers"
+  (let ((rotamers-db (topology:rotamers-database oligomer-shape))
+        (permissible-rotamer-vector (make-array 16 :adjustable t :fill-pointer 0)))
+    (with-slots (topology:monomer-shape-vector
+                 topology:monomer-shape-info-vector
+                 topology:oligomer
+                 topology:rotamers-database
+                 topology:monomer-shape-map) oligomer-shape
+      #+debug-mover(format t "-------- Next stage~%")
+      (loop :for index below (length topology:monomer-shape-vector)
+            :for monomer-shape = (aref topology:monomer-shape-vector index)
+            :for monomer-shape-info = (aref topology:monomer-shape-info-vector index)
+            :for monomer-shape-kind = (topology:monomer-shape-kind monomer-shape-info)
+            :for monomer-context = (topology:monomer-context monomer-shape-info)
+            :for orotamers = (gethash monomer-context (topology:context-to-rotamers rotamers-db))
+            :for rotamers = (rotamer-vector orotamers)
+            :do (cond
+                  ((eq :backbone monomer-shape-kind)
+                   ;; We have a backbone that doesn't influence any sidechain
+                   ;; - so all backbone rotamers are accessible
+                   (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
+                     (loop :with backbone-rotamers = rotamers
+                           :for ii :below (length backbone-rotamers)
+                           :do (vector-push-extend ii allowed-rotamer-indexes))
+                     (let ((permissible-rotamer (make-instance 'permissible-rotamer
+                                                               :allowed-rotamer-indexes allowed-rotamer-indexes
+                                                               :monomer-shape-locus index)))
+                       (vector-push-extend permissible-rotamer permissible-rotamer-vector))))
+                  ((eq :sidechain monomer-shape-kind)
+                   ;; Do nothing
+                   )
+                  (t (error "How did we get here?")))))
+    (make-instance 'permissible-backbone-rotamers
+                   :permissible-rotamer-vector (copy-seq permissible-rotamer-vector))))
+
+
+#+(or) (defun make-permissible-backbone-rotamers (oligomer-shape)
   "Limit the backbone rotamer indices to the ones that have sidechain rotamers with matching shape-keys"
   (let ((rotamers-db (topology:rotamers-database oligomer-shape))
         (permissible-rotamer-vector (make-array 16 :adjustable t :fill-pointer 0)))
@@ -235,7 +276,8 @@ Returns an instance of permissible-sidechain-rotamers."
                       (or (null monomers)
                           (member monomer monomers))) ; if monomers defined then use it as a subset
                  (let* ((rotamers (gethash monomer-context (topology:context-to-rotamers rotamers-db)))
-                        (allowed-rotamers (calculate-allowed-rotamers index monomer-shape monomer-shape-info oligomer-shape (topology:shape-key-to-index rotamers))))
+                        (allowed-rotamers (progn
+                                            (calculate-allowed-rotamers index monomer-shape monomer-shape-info oligomer-shape (topology:shape-key-to-index rotamers)))))
                    (when (= 0 (length allowed-rotamers))
                      (error "There are no allowed-rotamers for monomer-shape at ~a" index))
                    (when (or (and rotamer-index (null (position rotamer-index allowed-rotamers)))
