@@ -483,7 +483,7 @@ Examples:
   (let* ((oligomer-space (make-instance 'oligomer-space
                                         :foldamer foldamer))
          (labels (make-hash-table)))
-    (interpret-subtree oligomer-space tree labels :parts parts)
+    (interpret-rooted-tree oligomer-space tree labels :parts parts)
     (setf (%number-of-sequences oligomer-space)
           (calculate-number-of-sequences oligomer-space))
     (setf (labeled-monomers oligomer-space) labels)
@@ -501,7 +501,7 @@ Examples:
 (defun is-oligomer-space-supported (foldamer tree &key (parts *parts*))
   (let* ((oligomer-space (make-instance 'oligomer-space :foldamer foldamer))
          (labels (make-hash-table)))
-    (interpret-subtree oligomer-space tree labels :parts parts)
+    (interpret-rooted-tree oligomer-space tree labels :parts parts)
     (setf *debug-oligomer-space* oligomer-space)
     (loop for monomer across (monomers oligomer-space)
           for monomer-context = (topology:foldamer-monomer-context monomer oligomer-space foldamer))

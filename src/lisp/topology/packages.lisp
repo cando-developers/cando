@@ -445,7 +445,8 @@
    #:match-as-symbol
    #:match
    #:match-iterator
-   #:copy-specialized))
+   #:copy-specialized
+   #:node-count))
 
 (defpackage #:topology.graphviz
   (:use #:common-lisp)

@@ -49,35 +49,43 @@
    (print-unreadable-object (obj stream :type t)
      (format stream "~a ~a" (plug-name obj) (monomer-match-node obj)))))
 
-(defclass chain-node ()
+(defclass context-node ()
+  ((node-count :initarg :node-count :reader node-count)))
+
+(defclass chain-node (context-node)
   ((head :initarg :head :reader head)
    (tail :initarg :tail :reader tail)))
 
 (defmethod %copy-specialize ((obj chain-node))
   (make-instance 'chain-node
                  :head (%copy-specialize (head obj))
-                 :tail (%copy-specialize (tail obj))))
+                 :tail (%copy-specialize (tail obj))
+                 :node-count (1+ (if (tail obj)
+                                     (node-count (tail obj))
+                                     0))))
 
 (cando.serialize:make-class-save-load chain-node
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a ~a" (head obj) (tail obj)))))
+     (format stream "~a ~a ~a" (head obj) (tail obj) (node-count obj)))))
 
-(defclass branch-node ()
+(defclass branch-node (context-node)
   ((left :initarg :left :reader left)
    (right :initarg :right :reader right)))
 
 (defmethod %copy-specialize ((obj branch-node))
   (make-instance 'branch-node
                  :left (%copy-specialize (left obj))
-                 :right (%copy-specialize (right obj))))
+                 :right (%copy-specialize (right obj))
+                 :node-count (+ (node-count (left obj))
+                                (node-count (right obj)))))
 
 (cando.serialize:make-class-save-load branch-node
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a ~a" (left obj) (right obj)))))
+     (format stream "~a ~a ~a" (left obj) (right obj) (node-count obj)))))
 
 (defclass match ()
   ((parts :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor parts)
@@ -143,37 +151,57 @@
                           :names names)
            (error "Unrecognizable topology group name ~a" name))))))
 
+
 (defun parse-plug-to-something (sexp)
-  (when sexp
-    (let ((maybe-plug-name (car sexp)))
-      (cond
-        ((consp maybe-plug-name)
-         (let ((left (parse-plug-to-something (car sexp)))
-               (right (parse-plug-to-something (cdr sexp))))
-           (when (or left right)
-             (if (and left right)
-                 (make-instance 'branch-node
-                                :left left
-                                :right right)
-                 (or left right)))))
-        ((symbolp maybe-plug-name)
-         (let ((head (let ((monomer (parse-monomer (cadr sexp))))
-                                (when monomer
-                                  (make-instance 'plug-to-monomer-node
-                                                 :plug-name maybe-plug-name
-                                                 :monomer-match-node monomer))))
-               (tail (parse-plug-to-something (cddr sexp))))
-           (when (or head tail)
-             (make-instance 'chain-node
-                            :head head
-                            :tail tail))))))))
+  (if sexp
+      (let ((maybe-plug-name (car sexp)))
+        (cond
+          ((consp maybe-plug-name)
+           (multiple-value-bind (left left-node-count)
+               (parse-plug-to-something (car sexp))
+             (multiple-value-bind (right right-node-count)
+                 (parse-plug-to-something (cdr sexp))
+               (cond
+                 ((and left right)
+                  (values
+                   (make-instance 'branch-node
+                                  :left left
+                                  :right right
+                                  :node-count (+ left-node-count right-node-count))
+                   (+ left-node-count right-node-count)))
+                 (left
+                  (values left left-node-count))
+                 (right
+                  (values right right-node-count))
+                 (t
+                  (values nil 0))))))
+          ((symbolp maybe-plug-name)
+           (let ((head (let ((monomer (parse-monomer (cadr sexp))))
+                         (when monomer
+                           (make-instance 'plug-to-monomer-node
+                                          :plug-name maybe-plug-name
+                                          :monomer-match-node monomer)))))
+             (if head
+                 (multiple-value-bind (tail node-count)
+                     (parse-plug-to-something (cddr sexp))
+                   (values (make-instance 'chain-node
+                                          :head head
+                                          :tail tail
+                                          :node-count (1+ node-count))
+                           (1+ node-count)))
+                 (values nil 0))))))
+      (values nil 0) ;; no plug to anything
+      ))
 
 (defun parse-sexp (sexp)
   (let ((head (car sexp)))
-    (make-instance 'chain-node
-                   :head (parse-monomer head)
-                   :tail (parse-plug-to-something (cdr sexp)))))
-
+    (multiple-value-bind (tail node-count)
+        (parse-plug-to-something (cdr sexp))
+      (values (make-instance 'chain-node
+                             :head (parse-monomer head)
+                             :tail tail
+                             :node-count (1+ node-count))
+              (1+ node-count)))))
 
 (defgeneric matches-impl (pattern monomer oligomer match))
 

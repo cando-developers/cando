@@ -208,7 +208,7 @@ This is for looking up parts but if the thing returned is not a part then return
     (cond
       ((and (symbolp names)
             (setf maybe-part (lookup-maybe-part names parts)))
-       (values (interpret-subtree oligomer (tree maybe-part) labels) nil))
+       (values (interpret-rooted-tree oligomer (tree maybe-part) labels) nil))
       ((symbolp names)
        (when (null names)
          (error "In translate-part illegal name ~s part-info ~s" names part-info))
@@ -269,7 +269,7 @@ This is for looking up parts but if the thing returned is not a part then return
           (next-monomer (parts-with-plugs next-parts in-plug-name)))
       (when (= (length previous-monomer) 0)
         (error "There is no monomer found with the out-plug-name ~a in the parts ~a" out-plug-name previous-parts))
-      (unless (= (length previous-monomer) 1)
+      #+(or)(unless (= (length previous-monomer) 1)
         (error "There is more than one monomer(~a) with the out-plug-name ~a" previous-monomer out-plug-name))
       (unless (= (length next-monomer) 1)
         (format t "(length next-monomer) -> ~a~%" (length next-monomer))
@@ -289,13 +289,12 @@ This is for looking up parts but if the thing returned is not a part then return
                                          (first next-monomer)
                                          plug2name))))))
 
-(defun interpret-subtree (oligomer subtree labels &key (parts *parts*))
-  (let* ((root-monomer-info (pop subtree))
-         (previous-parts (interpret-part oligomer root-monomer-info labels :parts parts))
-         (accumulated-parts previous-parts))
+(defun interpret-subtree (oligomer subtree labels previous-parts &key (parts *parts*))
+  (let ((accumulated-parts previous-parts))
     (loop
       (when (null subtree) (return accumulated-parts))
       (let ((info (pop subtree)))
+        (format t "interpret-subtree info: ~s~%" info)
         (cond
           ((and (consp info) (consp (car info)) (string= (string (car (car info))) "RING"))
            (let ((ring-info (cdr (car info))))
@@ -318,21 +317,28 @@ This is for looking up parts but if the thing returned is not a part then return
           ((and (consp info) (consp (car info)))
            (error "Add support to handle ~s - currently only RING is allowed as a special edge"))
           ((consp info)
-           #+(or)(format *debug-io* "interpret-subtree info: ~s~%" info)
-           (let* ((coupling (first info))  ; interpret a branch
-                  (node-info (cadr info))) ;; CHECK
+           (interpret-subtree oligomer info labels accumulated-parts :parts parts)
+           #+(or)(let* ((coupling (first info)) ; interpret a branch
+                        (node-info (cadr info))) ;; CHECK
+                   (multiple-value-bind (new-parts ringp)
+                       (interpret-part oligomer node-info labels :parts parts)
+                     (setf accumulated-parts (append accumulated-parts new-parts))
+                     (do-coupling oligomer coupling ringp previous-parts new-parts))))
+          (t
+           (let* ((coupling info)       ; Interpret a chain
+                  (node-info (pop subtree)))
              (multiple-value-bind (new-parts ringp)
                  (interpret-part oligomer node-info labels :parts parts)
-               (setf accumulated-parts (append accumulated-parts new-parts))
-               (do-coupling oligomer coupling ringp previous-parts new-parts))))
-         (t
-          (let* ((coupling info)        ; Interpret a chain
-                 (node-info (pop subtree)))
-            (multiple-value-bind (new-parts ringp)
-                (interpret-part oligomer node-info labels :parts parts)
-              (setf accumulated-parts (append accumulated-parts new-parts))
-              (do-coupling oligomer coupling ringp previous-parts new-parts)
-              (setf previous-parts new-parts)))))))))
+               (setf accumulated-parts (append new-parts accumulated-parts))
+               (do-coupling oligomer coupling ringp previous-parts new-parts)
+               (setf previous-parts new-parts)))))))))
+
+(defun interpret-rooted-tree (oligomer subtree labels &key (parts *parts*))
+  (let* ((root-monomer-info (pop subtree))
+         (previous-parts (interpret-part oligomer root-monomer-info labels :parts parts))
+         (accumulated-parts previous-parts))
+    (interpret-subtree oligomer subtree labels accumulated-parts :parts parts)
+    ))
 
 (defun classify-topologys (topology-hash-table)
   (let ((origins (make-hash-table))
