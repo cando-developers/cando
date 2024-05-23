@@ -5,6 +5,8 @@
     (write-sdf-stream aggregate fout)))
 
 (defun write-sdf-stream (aggregate stream &key name data-items)
+  "Write the aggregate to the sdf stream.
+- data-items : an a-list with names and data to write into the sdf file."
   #+(or)(warn "write-sdf-stream doesn't handle charges properly yet")
   (format stream "~a~%~a~%Source - Cando.~%"
           (if name
