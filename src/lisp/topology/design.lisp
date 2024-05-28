@@ -294,7 +294,6 @@ This is for looking up parts but if the thing returned is not a part then return
     (loop
       (when (null subtree) (return accumulated-parts))
       (let ((info (pop subtree)))
-        (format t "interpret-subtree info: ~s~%" info)
         (cond
           ((and (consp info) (consp (car info)) (string= (string (car (car info))) "RING"))
            (let ((ring-info (cdr (car info))))
