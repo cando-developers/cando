@@ -202,7 +202,7 @@
 
 (defgeneric make-oligomer-shape (oligomer-or-space rotamers-db &key))
 
-(defmethod make-oligomer-shape ((oligomer oligomer) rotamers-database
+(defmethod make-oligomer-shape ((oligomer oligomer) (rotamers-database rotamers-database)
                                 &key (oligomer-shape-class-name 'oligomer-shape)
                                   monomer-shape-factory (orientation (make-orientation))
                                   initial-rotamer-index
@@ -287,7 +287,7 @@
         #+(or)(write-rotamers ss (first-rotamers ss))
         os))))
 
-(defmethod make-oligomer-shape ((oligomer-space oligomer-space) rotamers-database &key (oligomer-index 0) (orientation (make-orientation)) name initial-rotamer-index)
+(defmethod make-oligomer-shape ((oligomer-space oligomer-space) (rotamers-database rotamers-database) &key (oligomer-index 0) (orientation (make-orientation)) name initial-rotamer-index)
   (let ((oligomer (make-oligomer oligomer-space oligomer-index)))
     (make-oligomer-shape oligomer rotamers-database :orientation orientation :name name
                          :initial-rotamer-index initial-rotamer-index)))
