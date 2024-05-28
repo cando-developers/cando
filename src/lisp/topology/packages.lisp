@@ -424,7 +424,8 @@
    #:make-sidechain-rotamer-from-fragment-internals
    #:make-backbone-without-sidechain-rotamer-from-fragment-internals
    #:make-fragment-internals-with-shape-key-from-fragment-internals
-   #:lookup-backbone-shape-key))
+   #:lookup-backbone-shape-key
+   #:rotamer-vector))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
