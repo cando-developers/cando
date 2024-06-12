@@ -52,5 +52,6 @@
     #:sketch-molecule
     #:sketch-molecules
     #:trajectory
-    #:ngl-pane-stage))
+    #:ngl-pane-stage
+    #:show-on-pane))
 

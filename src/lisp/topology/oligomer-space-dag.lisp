@@ -118,6 +118,28 @@ Example of oligomer-space-dag
       (error "Could not find monomer for node ~a" node))
     monomer))
 
+(defun topology:verify-oligomer-space (oligomer-space &key print)
+  "Check that every monomer in the oligomer space has a monomer-context within the foldamer"
+  (let ((used-contexts-set (make-hash-table :test 'equal))
+        (foldamer (topology:foldamer oligomer-space)))
+    (loop for monomer across (topology:monomers oligomer-space)
+          for monomer-context = (topology:foldamer-monomer-context monomer oligomer-space foldamer)
+          do (when print (format t "monomer-context = ~s~%" monomer-context))
+          do (setf (gethash monomer-context used-contexts-set) t)
+          if monomer-context
+            do (when print
+                 (format t "monomer-context ~a~%   is matched by ~a~%" (recursive-dump-local-monomer-context monomer nil 1) monomer-context))
+          else
+            do (error "Foldamer does not describe oligomer space"))
+    (let (used-contexts unused-contexts)
+      (maphash (lambda (key value)
+                 (declare (ignore value))
+                 (if (gethash key used-contexts-set)
+                     (push key used-contexts)
+                     (push key unused-contexts)))
+               used-contexts-set)
+      (values t used-contexts unused-contexts))))
+
 (defun oligomer-space-from-dag (foldamer dag topology-groups)
   (let ((focus-node (root dag))
         (node-to-monomer (make-hash-table))

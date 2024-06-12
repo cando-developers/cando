@@ -145,6 +145,9 @@
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))
 
+(defgeneric foldamer-rotamers-database (foldamer)
+  (:documentation "Return the rotamers-database for the foldamer"))
+
 (defclass monomer-subset ()
   ((monomers :initarg :monomers :reader monomers)))
 

@@ -16,7 +16,6 @@
                #:quri
                #:resizable-box-clj
                #:sketch2d
-               #:topology-jupyter
                #:static-vectors)
   :serial t
   :components ((:file "packages")

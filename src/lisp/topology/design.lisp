@@ -8,13 +8,13 @@
                          out-plug-name
                          next-topology
                          next-residue
-                         in-plug-name)
+                         in-or-out-plug-name)
   (let* ((out-plug (topology:plug-named prev-topology out-plug-name))
-         (in-plug (topology:plug-named next-topology in-plug-name)))
+         (in-plug (topology:plug-named next-topology in-or-out-plug-name)))
     (unless out-plug
       (error "Could not find out-plug in ~s named ~s - available plugs: ~s" prev-topology out-plug-name (alexandria:hash-table-keys (topology:plugs prev-topology))))
     (unless in-plug
-      (error "Could not find in-plug in ~s named ~s - available plugs: ~s" next-topology in-plug-name (alexandria:hash-table-keys (topology:plugs next-topology))))
+      (error "Could not find plug in ~s named ~s - available plugs: ~s" next-topology in-or-out-plug-name (alexandria:hash-table-keys (topology:plugs next-topology))))
     (unless (= (length (topology:plug-bonds out-plug)) (length (topology:plug-bonds in-plug)))
       (error "There is a mismatch between the number of plug-bonds in ~s and ~s" out-plug in-plug))
     (loop for bond-index below (length (topology:plug-bonds out-plug))
@@ -274,7 +274,7 @@ This is for looking up parts but if the thing returned is not a part then return
       (unless (= (length next-monomer) 1)
         (format t "(length next-monomer) -> ~a~%" (length next-monomer))
         (if (< (length next-monomer) 1)
-            (error "There is no monomer with the in-plug-name ~a to connect to ~a" in-plug-name previous-parts)
+            (error "There is no monomer with the in-plug-name ~a to connect to ~a~% the candidates ~s don't have this plugname" in-plug-name previous-parts next-parts)
             (error "There is more than one monomer(~a) with the in-plug-name ~a" next-monomer in-plug-name)))
       (if (null ring-info)
           (couple oligomer

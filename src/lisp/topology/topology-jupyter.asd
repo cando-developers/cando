@@ -5,7 +5,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
-  :depends-on (:topology :sketch2d)
+  :depends-on (:topology :sketch2d :cytoscape-clj :cando-widgets)
   :serial t
   :components ((:file "packages-jupyter")
                (:file "jupyter")

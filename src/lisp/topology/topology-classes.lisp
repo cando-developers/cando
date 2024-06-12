@@ -371,7 +371,7 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
                 monomer
                 avoid-out-coupling-plug-name)))))
 
-(defclass coupling ()
+(defclass coupling (cando.serialize:serializable)
   ((name :initarg :name :accessor name)))
 
 (defclass directional-coupling (coupling)
@@ -380,11 +380,11 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
    (source-monomer :initarg :source-monomer :accessor source-monomer)
    (target-monomer :initarg :target-monomer :accessor target-monomer)))
 
-(cando.serialize:make-class-save-load directional-coupling
- :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t)
-    (format stream "~a ~a ~a ~a" (source-monomer obj) (source-plug-name obj) (target-plug-name obj) (target-monomer obj)))))
+(defmethod print-object ((obj directional-coupling) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~a ~a ~a ~a" (source-monomer obj) (source-plug-name obj) (target-plug-name obj) (target-monomer obj)))))
 
 (defmethod other-monomer ((coupling directional-coupling) monomer)
   (cond
@@ -401,6 +401,13 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
    (monomer1 :initarg :monomer1 :accessor monomer1)
    (monomer2 :initarg :monomer2 :accessor monomer2)))
 
+(defmethod print-object ((obj ring-coupling) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~a ~a ~a ~a"
+                (monomer1 obj) (plug1 obj) (plug2 obj) (monomer2 obj)))))
+
 (defmethod other-monomer ((coupling ring-coupling) monomer)
   (cond
     ((eq (monomer1 coupling) monomer)
@@ -409,6 +416,12 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
      (monomer1 coupling))
     (t (error "Could not find monomer ~a in coupling ~a" monomer coupling))))
 
+
+(defmethod source-monomer ((coupling ring-coupling))
+  (monomer1 coupling))
+
+(defmethod target-monomer ((coupling ring-coupling))
+  (monomer2 coupling))
 
 (defun has-ring-closing-coupling (monomer)
   (maphash (lambda (plug-name coupling)
@@ -487,6 +500,7 @@ Examples:
     (setf (%number-of-sequences oligomer-space)
           (calculate-number-of-sequences oligomer-space))
     (setf (labeled-monomers oligomer-space) labels)
+    (topology:verify-oligomer-space oligomer-space)
     oligomer-space))
 
 

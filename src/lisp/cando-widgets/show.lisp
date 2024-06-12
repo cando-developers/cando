@@ -558,12 +558,3 @@
 
 
 
-(defmethod show-on-pane (pane-instance (object topology:topology) &rest rest &key &allow-other-keys)
-  (apply 'show-on-pane pane-instance (topology-jupyter:sketch-svg object) rest))
-  
-
-
-(defmethod show-on-pane (pane-instance (object symbol) &rest rest &key &allow-other-keys)
-(let ((top (chem:find-topology object)))
-  (apply 'show-on-pane pane-instance (topology-jupyter:sketch-svg top) rest)))
-  

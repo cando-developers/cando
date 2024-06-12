@@ -498,7 +498,17 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
     tops))
 
 
-(defun validate-cluster-dihedrals (top cluster-dihedrals dihedrals)
+(defun validate-cluster-dihedrals (top cluster-dihedrals dihedrals constitution)
+  (let ((atom-names (make-hash-table)))
+    (loop for ca across (constitution-atoms constitution)
+          do (setf (gethash (atom-name ca) atom-names) t))
+    (loop for dih in dihedrals
+          when (typep dih 'dihedral-info-atom)
+            do (let ((an (atom-name dih)))
+                 (unless (gethash an atom-names)
+                   (error "When defining topology for ~s could not find dihedral atom name ~s~% in constitution atom names ~s"
+                          (name constitution)
+                          an (alexandria:hash-table-keys atom-names))))))
   (when cluster-dihedrals
     (let ((ht (make-hash-table)))
       (loop for dih in dihedrals
@@ -512,7 +522,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
       (loop for cd in cluster-dihedrals
             for found = (gethash cd ht)
             unless found
-              do (error "For topology ~s could not find cluster-dihedrals ~s in ~s " top cd dihedrals)))))
+              do (error "For topology ~s could not find cluster-dihedrals ~s in ~s " (name constitution) cd dihedrals)))))
 
 (defun topologies-from-graph (graph group-names restraints
                               &key types xyz-joints dihedrals cluster-dihedrals
@@ -558,7 +568,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         (setf (residue-properties constitution)
               (list* :dihedrals dihedral-info (residue-properties constitution)))
         (when cluster-dihedrals
-          (validate-cluster-dihedrals :name cluster-dihedrals dihedral-info)
+          (validate-cluster-dihedrals :name cluster-dihedrals dihedral-info constitution)
           (setf (residue-properties constitution)
                 (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution)))))
       tops)))

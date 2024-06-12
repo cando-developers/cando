@@ -90,6 +90,7 @@
    #:internals
    #:fragments
    #:foldamer-monomer-context
+   #:foldamer-rotamers-database
    #:save-clusterable-context-rotamers
    #:load-clusterable-context-rotamers
    #:context-rotamers
@@ -425,7 +426,13 @@
    #:make-backbone-without-sidechain-rotamer-from-fragment-internals
    #:make-fragment-internals-with-shape-key-from-fragment-internals
    #:lookup-backbone-shape-key
-   #:rotamer-vector))
+   #:rotamer-vector
+   #:verify-oligomer-space
+   #:ring-coupling
+   #:plug1
+   #:plug2
+   #:monomer1
+   #:monomer2))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
@@ -470,5 +477,3 @@
    #:make-graph
    #:node-id
    #:dot-svg-foldamer-joint-trees))
-
-

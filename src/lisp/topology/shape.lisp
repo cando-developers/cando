@@ -523,6 +523,14 @@
     (copy-all-joint-positions-into-atoms ass coords)
     (aggregate ass)))
 
+(defmethod aggregate ((oligomer oligomer))
+  "Generate an aggregate for the oligomer-shape"
+  (let* ((oligomer-space (oligomer-space oligomer))
+         (foldamer (foldamer oligomer-space))
+         (rotamers (foldamer-rotamers-database foldamer))
+         (oligomer-shape (make-oligomer-shape oligomer rotamers)))
+    (random-oligomer-shape-aggregate oligomer-shape)))
+
 (defun analyze-oligomer-shape (oligomer-shape)
   "Print an analysis of the oligomer-shape. Print the number of backbone and sidechain monomer-shapes that have defined rotamer-index's "
   (let ((backbone-count 0)
