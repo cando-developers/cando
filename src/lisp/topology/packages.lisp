@@ -9,6 +9,7 @@
   (:use #:common-lisp)
   (:nicknames #:ts)
   (:export
+   #:monomer-shape-locus
    #:make-topology-from-residue
    #:topologyp
    #:constitution-atom-index

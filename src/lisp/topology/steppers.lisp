@@ -356,7 +356,7 @@ Returns an instance of permissible-sidechain-rotamers."
   (error "This function should never be used - it's unsafe, the val would never satisfy the permissible-rotamers.
 I suggest changing val to NIL and that forces the first allowed rotamer index to be written")
   (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
-  (let ((len (length (monomer-shape-loci permissible-rotamers))))
+  (let ((len (length (monomer-shape-locus permissible-rotamers))))
     (loop for index below len
           for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) index)
           for locus = (monomer-locus permissible-rotamer)

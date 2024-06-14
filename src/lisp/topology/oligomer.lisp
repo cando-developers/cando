@@ -86,44 +86,80 @@
         unless (has-in-coupling-p monomer)
           do (return-from root-monomer monomer)))
 
-
-
-
-(defun canonical-sequence-monomer (oligomer coupling root monomer-out-couplings unique-ring-couplings)
+(defun canonical-sequence-monomer (oligomer coupling root monomer-out-couplings unique-ring-couplings monomer-labels)
+;;;  (break "Check unique-ring-couplings and monomer-labels")
   (let* ((outs (gethash root monomer-out-couplings))
-         (result (list* (current-stereoisomer-name root oligomer)
-                        (when outs
-                          (let ((sorted-outs (sort outs #'string< :key (lambda (coup) (string (name coup))))))
-                            (loop for sorted-out in sorted-outs
-                                  for target-monomer = (target-monomer sorted-out)
-                                  collect (canonical-sequence-monomer
-                                           oligomer
-                                           sorted-out
-                                           target-monomer
-                                           monomer-out-couplings
-                                           unique-ring-couplings)))))))
+         (monomer-name (current-stereoisomer-name root oligomer))
+         (full-monomer-name (let ((monomer-label (gethash root monomer-labels)))
+                              (if monomer-label
+                                  (list monomer-name :label monomer-label)
+                                  monomer-name)))
+         (result (let* ((normal-couplings (list* full-monomer-name
+                                                (when outs
+                                                  #+(or)
+                                                  (let ((sorted-outs (sort outs #'string< :key (lambda (coup) (string (name coup))))))
+                                                    (loop for sorted-out in sorted-outs
+                                                          for target-monomer = (target-monomer sorted-out)
+                                                          collect (canonical-sequence-monomer
+                                                                   oligomer
+                                                                   sorted-out
+                                                                   target-monomer
+                                                                   monomer-out-couplings
+                                                                   unique-ring-couplings
+                                                                   monomer-labels)))
+                                                  (let ((parts (loop for sorted-out in outs
+                                                                     for target-monomer = (target-monomer sorted-out)
+                                                                     collect (canonical-sequence-monomer
+                                                                              oligomer
+                                                                              sorted-out
+                                                                              target-monomer
+                                                                              monomer-out-couplings
+                                                                              unique-ring-couplings
+                                                                              monomer-labels))))
+                                                    (sort parts #'< :key #'length)))))
+                        )
+                   normal-couplings))
+         (lresult (cond
+                    ((let* ((ring-coupling (gethash root unique-ring-couplings)))
+                       (when ring-coupling
+                         (let* ((other-monomer-label (let ((oml (gethash (monomer2 ring-coupling) monomer-labels)))
+                                                       (unless oml
+                                                         (error "Could not find label for ring other side ~s" ring-coupling))
+                                                       oml))
+                                (ring-info (list :ring
+                                                 (plug1 ring-coupling)
+                                                 (plug2 ring-coupling)
+                                                 other-monomer-label)))
+                           (append result (list (list ring-info)))))))
+                    ((and (consp result) (consp (car (last result))))
+                     (append (subseq result 0 (1- (length result))) (car (last result))))
+                    (t (progn
+                        result)))))
     (if coupling
-        (cons (name coupling) result)
-        result)))
-
-
+        (cons (name coupling) lresult)
+        lresult)))
 
 (defun canonical-sequence (oligomer)
   "Return a canonical sequence for the oligomer that can be compared to other oligomers to
    determine if they are equivalent"
   (let ((root-monomer (root-monomer oligomer)))
     (let ((monomer-out-couplings (make-hash-table))
-          (unique-ring-couplings nil))
+          (unique-ring-couplings (make-hash-table))
+          (monomer-labels (make-hash-table)))
+      (maphash (lambda (label monomer)
+                 (setf (gethash monomer monomer-labels) label))
+               (labeled-monomers (oligomer-space oligomer)))
       (loop for index below (length (couplings oligomer))
             for coupling = (elt (couplings oligomer) index)
             if (typep coupling 'directional-coupling)
               do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
             else
-              do (pushnew coupling unique-ring-couplings))
-      (canonical-sequence-monomer oligomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
+              do (setf (gethash (monomer1 coupling) unique-ring-couplings) coupling))
+      (canonical-sequence-monomer oligomer nil root-monomer monomer-out-couplings unique-ring-couplings monomer-labels))))
 
 
 (defun ordered-sequence-monomers (oligomer coupling root monomer-out-couplings unique-ring-couplings)
+  (declare (ignore coupling))
   (let* ((outs (gethash root monomer-out-couplings))
          (result (list* root
                         (when outs
@@ -275,6 +311,7 @@ of monomers-to-residues."
         (monomer-out-couplings (make-hash-table))
         (monomers-to-topologys (make-hash-table))
         (ring-couplings nil))
+    (declare (ignore root-monomer))
     (loop for index below (length (couplings oligomer))
           for coupling = (elt (couplings oligomer) index)
           if (typep coupling 'directional-coupling)
@@ -345,6 +382,7 @@ Also return the position of each monomer in the aggregate -
 A hash-table that maps monomers to molecule/residue indices.
 The number of entries can be limited by passing a lower value for the optional argument **number-of-sequences**
 than the (chem:oligomer/number-of-sequences oligomer)."
+  (declare (ignore monomers-to-residues-p))
   (let* ((monomer-positions-accumulator (make-hash-table))
          (oligomer (topology:make-oligomer oligomer-space 0))
          (aggregates (loop for index from 0 below number-of-sequences
