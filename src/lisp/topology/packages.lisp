@@ -433,7 +433,9 @@
    #:plug1
    #:plug2
    #:monomer1
-   #:monomer2))
+   #:monomer2
+   #:allowed-rotamer-indexes
+   #:copy-joint-positions-into-atoms))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

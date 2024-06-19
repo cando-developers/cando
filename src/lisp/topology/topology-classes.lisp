@@ -437,7 +437,8 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
              :initarg :monomers :accessor monomers)
    (couplings :initform (make-array 16 :adjustable t :fill-pointer 0)
               :initarg :couplings :accessor couplings)
-   (labeled-monomers :initform (make-hash-table) :accessor labeled-monomers)
+   (labeled-monomers :initarg :labeled-monomers
+                     :initform (make-hash-table) :accessor labeled-monomers)
    (%number-of-sequences :initform nil
                         :initarg :number-of-sequences
                         :accessor %number-of-sequences)))

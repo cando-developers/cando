@@ -38,6 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
 #include <clasp/core/numerics.h>
+#include <cando/kinematics/joint.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/jumpJoint.h>
 #include <cando/kinematics/xyzJoint.h>
@@ -193,12 +194,15 @@ void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
   }
 }
 
+SYMBOL_EXPORT_SC_(KinPkg,undefined_internal_coordinates);
+SYMBOL_EXPORT_SC_(KeywordPkg,joint);
+
 void XyzJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   Vector3 d2 = this->_Pos;
   if (!this->_Pos.isDefined()) {
-    SIMPLE_ERROR("Internal coordinates for {} is NaN", _rep_(this->asSmartPtr()));
+    ERROR(kinematics::_sym_undefined_internal_coordinates,core::lisp_createList(kw::_sym_joint,this->asSmartPtr()));
   }
   ASSERT(this->_Pos.isDefined());
   this->setPosition(coords,d2);

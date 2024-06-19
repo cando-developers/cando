@@ -80,7 +80,8 @@
               (topology:rad-to-deg phi-original) (topology:rad-to-deg phi-adjust))
       #+(or)(kin:bonded-joint/set-distance joint 1.47)
       #+(or)(kin:bonded-joint/set-theta joint (topology:deg-to-rad 120.0))
-      (kin:bonded-joint/set-phi joint phi-adjust))))
+      (fill-joint-phi joint phi-adjust)
+      )))
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
   (make-instance 'bonded-joint-template

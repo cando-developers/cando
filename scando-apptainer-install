@@ -15,7 +15,7 @@ fi
 
 echo "Updating Quicklisp..."
 clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://quickclasp.thirdlaw.tech/quickclasp.txt\" :prompt nil))" \
-      --eval "(ql:update-all-dists :prompt nil)"
+  --eval "(ql:update-all-dists :prompt nil)"
 
 if ! [ -f ~/.config/common-lisp/source-registry.conf.d/apptainer.conf ]; then
     echo "The file ~/.config/common-lisp/source-registry.conf.d/apptainer.conf is missing - creating it"
@@ -29,13 +29,14 @@ fi
 echo "Installing CANDO user features..."
 cando --eval "(ql:quickload :cando-jupyter)" \
       --eval "(ql:quickload :spiros)" \
-      --eval "(leap:source \"leaprc.protein.ff14SB\")" \
-      --eval "(foldamer:load-force-field t)" \
-      --eval "(spiros:load-rotamers)" \
+      --eval "(topology:foldamer-rotamers-database spiros:*foldamer*)"\
       --eval "(ql:quickload :amber-protein)" \
+      --eval "(leap:source \"leaprc.protein.ff14SB\")" \
       --eval "(amber-protein:transfer-amber-atom-types-to-foldamer amber-protein:*foldamer*)" \
-      --eval "(amber-protein:load-rotamers)" \
-      --eval "(cando-jupyter:install :implementation \"apptainer\" :image t)"
+      --eval "(topology:foldamer-rotamers-database amber-protein:*foldamer*)" \
+      --eval "(ql:quickload :plan)" \
+      --eval "(ql:quickload :cando-user-install)" \
+      --eval "(cando-user-install:install)"
 
 echo "HOME = " $HOME
 echo "pwd ~ = " `pwd ~`

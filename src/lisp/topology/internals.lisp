@@ -292,7 +292,9 @@
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (object stream :type t)
-        (format stream "~s" (monomer-context object)))))
+        (format stream "~s" (if (slot-boundp object 'monomer-context)
+                                (monomer-context object)
+                                "no monomer-context")))))
 
 
 (defclass sidechain-rotamers (rotamers)
@@ -773,10 +775,13 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   "Do nothing with xyz-joints"
   )
 
+(defun fill-joint-phi (joint phi)
+  (kin:bonded-joint/set-phi joint phi))
+
 (defmethod fill-joint-internals ((joint kin:bonded-joint) bond angle-rad dihedral-rad)
   (kin:set-distance joint bond)
   (kin:set-theta joint angle-rad)
-  (kin:set-phi joint dihedral-rad)
+  (fill-joint-phi joint dihedral-rad)
   )
 
 (defun extract-bond-angle-rad-dihedral-rad (rotamer index)
@@ -824,14 +829,19 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 |#
 
 (defun write-internals (atresidue internals)
-  (loop for joint in (joints atresidue)
+  (loop for joint across (joints atresidue)
         for index3 from 0 by 3
-        when (typep joint 'kin:bonded-joint)
-          do (progn
-               (kin:bonded-joint/set-distance joint (aref internals index3))
-               (kin:bonded-joint/set-theta joint (aref internals (+ 1 index3)))
-               (kin:bonded-joint/set-phi joint (aref internals (+ 2 index3)))
-               )))
+        do (typecase joint
+             (kin:bonded-joint
+              (fill-joint-internals joint (aref internals index3)
+                                    (aref internals (+ 1 index3))
+                                    (aref internals (+ 2 index3))))
+             (kin:xyz-joint
+              (if (kin:xyz-joint/definedp joint)
+                  (warn "Skipping defining xyz-joint")
+                  (break "What do we do with an undefined xyz-joint?")))
+             (t (error "Add support for ~s~%" joint))
+             )))
 
 (defgeneric write-internals-to-vector (joint index3 internals joint-mask))
 
@@ -858,6 +868,11 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
     (loop for joint across (joints atresidue)
           for index from 0
           for index3 from 0 by 3
+          do (format t "extracting-internals for ~s -> defined: ~s phi: ~s~%" joint (kin:definedp joint)
+                     (typecase joint
+                       (kin:bonded-joint
+                        (kin:bonded-joint/get-phi joint))
+                       (t "OTHER-NODE-PHI")))
           when (kin:definedp joint)
             do (write-internals-to-vector joint index3 internals joint-mask))
     (values internals joint-mask)))
@@ -868,7 +883,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
             (position joint (topology:joints atresidue)))
           joints))
 
-(defun write-merged-internals (target-internals joint-mask children-indexes old-internals new-internals)
+(defun write-merged-internals (joint target-internals joint-mask children-indexes old-internals new-internals)
   (multiple-value-bind (set-child-indexes unset-child-indexes)
       (loop for child-index in children-indexes
             if (= (aref joint-mask child-index) 1)
@@ -886,7 +901,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
               )
         (progn
           (when (> (length set-child-indexes) 2)
-            (error "set-child-indexes is ~s - it should never be more than 2 elements long" set-child-indexes))
+            (error "set-child-indexes is ~s - it should never be more than 2 elements long: children -> ~s~% Perhaps you need to rebuild the assembler because you may have already setup all the internals for this one" set-child-indexes (topology:children joint)))
           (let ((delta-dihedrals (loop for child-index in set-child-indexes
                                        for ref-index = (first set-child-indexes) ; index into joint-mask
                                        for ref-index3 = (* 3 ref-index) ; get the index into the internals
@@ -923,7 +938,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
              children-indexes (indexes-of-internals atresidue children)
              )
        (when (null children) (go next-iteration))
-       (write-merged-internals temp-internals joint-mask children-indexes old-internals new-internals)
+       (write-merged-internals joint temp-internals joint-mask children-indexes old-internals new-internals)
        (progn
          (format t "dihedral3 atom ~s in atresidue: ~s~%" joint (name atresidue))
          (format t "  children: ~s~%" children)

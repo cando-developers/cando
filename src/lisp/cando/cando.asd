@@ -3,7 +3,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
-  :depends-on (#:smarts #:chem-extras #:cando-serialize #:topology)
+  :depends-on (#:smarts #:kinematics-extras #:chem-extras #:cando-serialize #:topology)
   :serial t
   :components ((:file "packages")
                (:file "basic")
