@@ -10,6 +10,7 @@
   (:nicknames #:ts)
   (:export
    #:monomer-shape-locus
+   #:assembler-check-joints
    #:make-topology-from-residue
    #:topologyp
    #:constitution-atom-index
