@@ -170,7 +170,7 @@
         (* (float (parse-integer significand-str)
                   (load-time-value (if (eq 'double-float (geom:vecreal-type))
                                        1.0D0
-                                       1.0s0)))
+                                       1.0f0)))
            (expt 10.0d0 exponent))))))
 
 (defun parse-vecreal-line (line result width)
