@@ -1789,10 +1789,10 @@ CL_DEFUN double chem__calculate_dihedral_for_atoms(Atom_sp a, Atom_sp b, Atom_sp
   return geom::calculateDihedral(va,vb,vc,vd);
 }
 
-CL_DOCSTRING(R"doc(Fill the x,y,z position of the atom into the nvector starting at index3.
+CL_DOCSTRING(R"doc(Write the x,y,z position of the atom into the nvector starting at index3.
 Return the index3 for the next atom)doc");
 CL_LAMBDA(atom pos index3 &optional transform);
-CL_DEFUN size_t chem__write_position(Atom_sp atom, NVector_sp pos, size_t index3, core::T_sp transform )
+CL_DEFUN size_t chem__write_position_to_coords(Atom_sp atom, NVector_sp pos, size_t index3, core::T_sp transform )
 {
   if (index3+2>=pos->length()) {
     SIMPLE_ERROR("The index {} will write the Vector3 out of bounds in nvector of length {}", index3, pos->length());
@@ -1820,6 +1820,44 @@ CL_DEFUN size_t chem__write_position(Atom_sp atom, NVector_sp pos, size_t index3
     return index3+3;
   }
 }
+
+
+CL_DOCSTRING(R"doc(Write the x,y,z position into the atom from the nvector starting at index3.
+Return the index3 for the next atom)doc");
+CL_LAMBDA(atom pos index3 &optional transform);
+CL_DEFUN size_t chem__read_position_from_coords(Atom_sp atom, NVector_sp pos, size_t index3, core::T_sp transform )
+{
+  if (index3+2>=pos->length()) {
+    SIMPLE_ERROR("The index {} will write the Vector3 out of bounds in nvector of length {}", index3, pos->length());
+  }
+  if (transform.nilp()) {
+    Vector3 vec;
+    vec.getX() = (*pos)[index3];
+    vec.getY() = (*pos)[index3+1];
+    vec.getZ() = (*pos)[index3+2];
+    atom->setPosition(vec);
+    return index3+3;
+  } else {
+    if (!isnan((*pos)[index3] )) {
+      // If the vec is not defined then write that into the coordinates
+      Vector3 vec;
+      vec.getX() = (*pos)[index3];
+      vec.getY() = (*pos)[index3+1];
+      vec.getZ() = (*pos)[index3+2];
+      atom->setPosition(vec);
+    } else {
+      Vector3 vec;
+      vec.getX() = (*pos)[index3];
+      vec.getY() = (*pos)[index3+1];
+      vec.getZ() = (*pos)[index3+2];
+      auto mtransform = gc::As<geom::OMatrix_sp>(transform);
+      Vector3 tpos = mtransform->ref()*vec;
+      atom->setPosition(tpos);
+    }
+    return index3+3;
+  }
+}
+
 
 
 }; // namespace chem

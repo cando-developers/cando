@@ -828,20 +828,26 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
     ))
 |#
 
-(defun write-internals (atresidue internals)
+(defun write-internals (atresidue internals updated-internals-mask &key verbose)
   (loop for joint across (joints atresidue)
+        for index from 0
         for index3 from 0 by 3
-        do (typecase joint
-             (kin:bonded-joint
-              (fill-joint-internals joint (aref internals index3)
-                                    (aref internals (+ 1 index3))
-                                    (aref internals (+ 2 index3))))
-             (kin:xyz-joint
-              (if (kin:xyz-joint/definedp joint)
-                  (warn "Skipping defining xyz-joint")
-                  (break "What do we do with an undefined xyz-joint?")))
-             (t (error "Add support for ~s~%" joint))
-             )))
+        if (or (null updated-internals-mask)
+                 (= (aref updated-internals-mask index) 1))
+          do (typecase joint
+               (kin:bonded-joint
+                (when verbose (format t "Updating bonded-joint ~s~%" joint))
+                (fill-joint-internals joint (aref internals index3)
+                                      (aref internals (+ 1 index3))
+                                      (aref internals (+ 2 index3))))
+               (kin:xyz-joint
+                (if (kin:xyz-joint/definedp joint)
+                    (warn "Skipping defining xyz-joint")
+                    (break "What do we do with an undefined xyz-joint?")))
+               (t (error "Add support for ~s~%" joint))
+               )
+        else
+          do (when verbose (format t "NOT updating joint ~s~%" joint))))
 
 (defgeneric write-internals-to-vector (joint index3 internals joint-mask))
 
@@ -858,24 +864,34 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
     (setf (aref internals index3) (geom:vx pos)
           (aref internals (+ 1 index3)) (geom:vy pos)
           (aref internals (+ 2 index3)) (geom:vz pos)
-          (aref joint-mask (/ index3 3)) 0)))
+          (aref joint-mask (/ index3 3)) 1)))
+
+(defun heavy-atom-p (joint constitution-atoms)
+  (let* ((name (kin:joint/name joint))
+         (ca (let ((ca (find name constitution-atoms :key #'atom-name)))
+               (unless ca (error "Could not find constitution atom with name ~s in ~s" name constitution-atoms))
+               ca))
+         (ca-element (element ca)))
+    (not (chem:element-is-hydrogen ca-element))))
 
 (defun extract-internals (atresidue)
-  "Extract the internals into a vector of internals and a mask of what internals were defined"
+  "Extract the internals into a vector of internals and a mask of what internals were defined.
+Return the internals, a joint-mask of 1 for each joint that has defined internals and a heavy-atom-mask
+that is 1 for each heavy atom."
   (let* ((num-joints (length (joints atresidue)))
          (internals (make-array (* 3 num-joints) :element-type (geom:vecreal-type)))
-         (joint-mask (make-array num-joints :element-type 'bit :initial-element 0)))
+         (joint-mask (make-array num-joints :element-type 'bit :initial-element 0))
+         (heavy-atom-mask (make-array num-joints :element-type 'bit :initial-element 0))
+         (topology (chem:find-topology (name atresidue)))
+         (constitution-atoms (constitution-atoms (constitution topology))))
     (loop for joint across (joints atresidue)
           for index from 0
           for index3 from 0 by 3
-          do (format t "extracting-internals for ~s -> defined: ~s phi: ~s~%" joint (kin:definedp joint)
-                     (typecase joint
-                       (kin:bonded-joint
-                        (kin:bonded-joint/get-phi joint))
-                       (t "OTHER-NODE-PHI")))
+          when (heavy-atom-p joint constitution-atoms)
+            do (setf (aref heavy-atom-mask index) 1)
           when (kin:definedp joint)
             do (write-internals-to-vector joint index3 internals joint-mask))
-    (values internals joint-mask)))
+    (values internals joint-mask heavy-atom-mask)))
 
 
 (defun indexes-of-internals (atresidue joints)
@@ -883,7 +899,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
             (position joint (topology:joints atresidue)))
           joints))
 
-(defun write-merged-internals (joint target-internals joint-mask children-indexes old-internals new-internals)
+(defun maybe-merge-internals (joint target-internals joint-mask children-indexes joints to-internals new-internals heavy-atom-mask updated-internals-mask verbose)
   (multiple-value-bind (set-child-indexes unset-child-indexes)
       (loop for child-index in children-indexes
             if (= (aref joint-mask child-index) 1)
@@ -891,70 +907,125 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
             else
               collect child-index into unset-child-indexes
             finally (return (values set-child-indexes unset-child-indexes)))
-    (if (null set-child-indexes)
-        (loop for child-index in children-indexes
-              for index3 = (* 3 child-index)
-              do (setf
-                  (aref target-internals index3) (aref new-internals index3)
-                  (aref target-internals (+ 1 index3)) (aref new-internals (+ 1 index3))
-                  (aref target-internals (+ 2 index3)) (aref new-internals (+ 2 index3)))
-              )
-        (progn
-          (when (> (length set-child-indexes) 2)
-            (error "set-child-indexes is ~s - it should never be more than 2 elements long: children -> ~s~% Perhaps you need to rebuild the assembler because you may have already setup all the internals for this one" set-child-indexes (topology:children joint)))
-          (let ((delta-dihedrals (loop for child-index in set-child-indexes
-                                       for ref-index = (first set-child-indexes) ; index into joint-mask
-                                       for ref-index3 = (* 3 ref-index) ; get the index into the internals
-                                       for ref-old-dihedral = (aref old-internals (+ 2 ref-index3)) ; The old dihedral we keep
-                                       for ref-new-dihedral = (aref new-internals (+ 2 ref-index3)) ; The new dihedral we rotate to old
-                                       for delta-dihedral = (topology:radians-sub ref-new-dihedral ref-old-dihedral) ; the delta to add to every other dihedral
-                                       collect delta-dihedral)))
-            (when (= (length delta-dihedrals) 2)
-              (when (> (abs (radians-sub (first delta-dihedrals) (second delta-dihedrals))) 0.1)
-                (error "In write-merged-internals the delta-dihedrals are not closely matched: ~s - this will happen if there is a mismatch in the stereochemistry of terminal methyl groups like in LEU and VAL" delta-dihedrals)))
-            ;; If delta-dihedrals aren't all the same value then the stereochemistry might be different
-            ;; from the rotamer database vs the structure we loaded.
-            ;; For example, ILE, VAL or LEU may have the terminal methyl groups swapped.
-            (let* ((delta-dihedral (first delta-dihedrals)))
-              (loop for child-index in unset-child-indexes
-                    for index3 = (* 3 child-index)
-                    do (setf
-                        (aref target-internals index3) (aref new-internals index3) ; distance
-                        (aref target-internals (+ 1 index3)) (aref new-internals (+ 1 index3)) ; angle
-                        (aref target-internals (+ 2 index3)) (radians-sub (aref new-internals (+ 2 index3)) delta-dihedral) ; dihedral
-                        )))
-            )))))
-
-(defun merge-internals (atresidue old-internals joint-mask new-internals)
-  (let ((joint-index 0)
-        joint
-        children
-        children-indexes
-        (temp-internals (copy-seq old-internals)))
-    (tagbody
-     top
-       (setf joint (aref (topology:joints atresidue) joint-index))
-       (setf children (topology:children joint)
-             children-indexes (indexes-of-internals atresidue children)
-             )
-       (when (null children) (go next-iteration))
-       (write-merged-internals joint temp-internals joint-mask children-indexes old-internals new-internals)
-       (progn
-         (format t "dihedral3 atom ~s in atresidue: ~s~%" joint (name atresidue))
-         (format t "  children: ~s~%" children)
-         (format t "  updated dihedrals: ~%")
-         (loop for joint across (joints atresidue)
-               for index from 0
-               for index3 from 0 by 3
-               for name = (kin:joint/name joint)
-               for dihdeg = (rad-to-deg (aref temp-internals (+ 2 index3)))
-               for old-dihdeg = (rad-to-deg (aref old-internals (+ 2 index3)))
-               do (format t "  ~5s  ~10,3f  ~10,3f~%" name dihdeg old-dihdeg)
-               ))
-     next-iteration
-       (incf joint-index)
-       (when (< joint-index (length (joints atresidue))) (go top))
+    (cond
+      ((and (null set-child-indexes)
+            (loop for index in unset-child-indexes
+                  when (= (aref heavy-atom-mask index) 1) ; a child is a heavy atom and not set
+                    do (return nil)
+                  finally (return t)))
+       ;; all children are unset and hydrogen as in methyl groups - all three hydrogens are undefined
+       (loop for child-index in children-indexes
+             for index3 = (* 3 child-index)
+             do (when verbose (format t "terminal H/methyl case - setting updated-internals-mask to 1~%"))
+             do (setf
+                 (aref target-internals index3) (aref new-internals index3)
+                 (aref target-internals (+ 1 index3)) (aref new-internals (+ 1 index3))
+                 (aref target-internals (+ 2 index3)) (aref new-internals (+ 2 index3))
+                 (aref updated-internals-mask child-index) 1))
+       (when verbose
+         (format t "Will set internals for children of ~s~%  children ~s at ~s~%"
+                 joint
+                 (mapcar (lambda (idx) (elt joints idx)) children-indexes)
+                 children-indexes)))
+      ((null set-child-indexes)
+       ;; do nothing when there are unset heavy atoms
+       (when verbose
+         (format t "Will NOT set internals for children of joint ~s~%  children ~s at ~s~%"
+                 joint
+                 (mapcar (lambda (idx) (elt joints idx)) children-indexes)
+                 children-indexes))
        )
-    temp-internals
-    ))
+      ((null unset-child-indexes)  ; all children are set - do nothing
+       #| Do nothing |#
+       (when verbose
+         (format t "For joint ~s~%  All children ~s at ~s are already set~%"
+                 joint
+                 (mapcar (lambda (idx) (elt joints idx)) children-indexes)
+                 children-indexes)))
+      ((> (length set-child-indexes) 2)
+       (error "set-child-indexes is ~s - it should never be more than 2 elements long: children -> ~s~% Perhaps you need to rebuild the assembler because you may have already setup all the internals for this one" set-child-indexes (topology:children joint)))
+      (t (let ((delta-dihedrals (loop for child-index in set-child-indexes
+                                      for ref-index = (first set-child-indexes) ; index into joint-mask
+                                      for ref-index3 = (* 3 ref-index) ; get the index into the internals
+                                      for ref-old-dihedral = (aref to-internals (+ 2 ref-index3)) ; The old dihedral we keep
+                                      for ref-new-dihedral = (aref new-internals (+ 2 ref-index3)) ; The new dihedral we rotate to old
+                                      for delta-dihedral = (topology:radians-sub ref-new-dihedral ref-old-dihedral) ; the delta to add to every other dihedral
+                                      collect delta-dihedral)))
+           (when (= (length delta-dihedrals) 2)
+             (when (> (abs (radians-sub (first delta-dihedrals) (second delta-dihedrals))) 0.1)
+               (error "In maybe-write-merged-internals the delta-dihedrals are not closely matched: ~s - this will happen if there is a mismatch in the stereochemistry of terminal methyl groups like in LEU and VAL" delta-dihedrals)))
+           ;; If delta-dihedrals aren't all the same value then the stereochemistry might be different
+           ;; from the rotamer database vs the structure we loaded.
+           ;; For example, ILE, VAL or LEU may have the terminal methyl groups swapped.
+           (let* ((delta-dihedral (first delta-dihedrals)))
+             (loop for child-index in unset-child-indexes
+                   for index3 = (* 3 child-index)
+                   do (when verbose (format t "dependent setting updated-internals-mask to 1~%"))
+                   do (setf
+                       (aref target-internals index3) (aref new-internals index3) ; distance
+                       (aref target-internals (+ 1 index3)) (aref new-internals (+ 1 index3)) ; angle
+                       (aref target-internals (+ 2 index3)) (radians-sub (aref new-internals (+ 2 index3)) delta-dihedral) ; dihedral
+                       (aref updated-internals-mask child-index) 1
+                       ))
+             (when verbose
+               (format t "Setting children of ~s~%  children ~s at ~s using as reference ~s~%"
+                       joint
+                       (mapcar (lambda (idx) (elt joints idx)) unset-child-indexes)
+                       unset-child-indexes (elt joints (first set-child-indexes))))))))))
 
+(defun merge-internals-relative-to-heavy-atoms (atresidue to-internals rotamer-internals undefined-internals-mask heavy-atom-mask verbose)
+  (loop named internals
+        with temp-internals = (copy-seq to-internals)
+        with updated-internals-mask = (make-array (length undefined-internals-mask) :element-type 'bit :initial-element 0)
+        for joint-index below (length (joints atresidue))
+        do (when (and (= (aref undefined-internals-mask joint-index) 1)
+                      (= (aref heavy-atom-mask joint-index) 1) ; skips hydrogen
+                      )
+             (let* ((joint (aref (topology:joints atresidue) joint-index))
+                    (children (topology:children joint))
+                    (children-indexes (indexes-of-internals atresidue children)))
+               (unless (null children)
+                 (maybe-merge-internals joint temp-internals undefined-internals-mask children-indexes (topology:joints atresidue) to-internals rotamer-internals heavy-atom-mask updated-internals-mask verbose))
+               #+(or)
+               (progn
+                 (format t "dihedral3 atom ~s in atresidue: ~s~%" joint (name atresidue))
+                 (format t "  children: ~s~%" children)
+                 (format t "  updated dihedrals: ~%")
+                 (loop for joint across (joints atresidue)
+                       for index from 0
+                       for index3 from 0 by 3
+                       for name = (kin:joint/name joint)
+                       for dihdeg = (rad-to-deg (aref temp-internals (+ 2 index3)))
+                       for old-dihdeg = (rad-to-deg (aref to-internals (+ 2 index3)))
+                       do (format t "  ~5s  ~10,3f  ~10,3f~%" name dihdeg old-dihdeg)
+                       ))))
+        finally (return-from internals (values temp-internals updated-internals-mask))))
+
+(defun overwrite-missing-internals (atresidue to-internals rotamer-internals undefined-internals-mask verbose)
+  (break "Check arguments")
+  (loop named internals
+        with temp-internals = (copy-seq to-internals)
+        with updated-internals-mask = (make-array (length undefined-internals-mask) :element-type 'bit :initial-element 0)
+        for joint-index below (length (joints atresidue))
+        do (when (and (= (aref undefined-internals-mask joint-index) 1)
+                      (= (aref heavy-atom-mask joint-index) 1) ; skips hydrogen
+                      )
+             (let* ((joint (aref (topology:joints atresidue) joint-index))
+                    (children (topology:children joint))
+                    (children-indexes (indexes-of-internals atresidue children)))
+               (unless (null children)
+                 (maybe-merge-internals joint temp-internals undefined-internals-mask children-indexes (topology:joints atresidue) to-internals rotamer-internals heavy-atom-mask updated-internals-mask verbose))
+               #+(or)
+               (progn
+                 (format t "dihedral3 atom ~s in atresidue: ~s~%" joint (name atresidue))
+                 (format t "  children: ~s~%" children)
+                 (format t "  updated dihedrals: ~%")
+                 (loop for joint across (joints atresidue)
+                       for index from 0
+                       for index3 from 0 by 3
+                       for name = (kin:joint/name joint)
+                       for dihdeg = (rad-to-deg (aref temp-internals (+ 2 index3)))
+                       for old-dihdeg = (rad-to-deg (aref to-internals (+ 2 index3)))
+                       do (format t "  ~5s  ~10,3f  ~10,3f~%" name dihdeg old-dihdeg)
+                       ))))
+        finally (return-from internals (values temp-internals updated-internals-mask))))

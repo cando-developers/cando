@@ -411,7 +411,7 @@
    #:do-joint-atom
    #:copy-xyz-joint-pos-to-atom-positions
    #:copy-atom-positions-to-xyz-joint-pos
-   #:merge-internals
+   #:merge-internals-relative-to-heavy-atoms
    #:extract-internals
    #:write-internals
    #:ensure-oligomer-shape-is-consistent-with-permissible-rotamers
@@ -436,7 +436,9 @@
    #:monomer1
    #:monomer2
    #:allowed-rotamer-indexes
-   #:copy-joint-positions-into-atoms))
+   #:copy-joint-positions-into-atoms
+   #:permissible-rotamer-vector
+   #:make-permissible-sidechain-rotamer-for-monomer))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

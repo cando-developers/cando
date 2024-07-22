@@ -1,23 +1,27 @@
 (in-package :topology)
 
-(defclass constitution-atom ()
+(defclass constitution-atom (cando.serialize:serializable)
   ((atom-name :initarg :atom-name :accessor atom-name)
    (index :initarg :index :accessor index)
    (element :initarg :element :accessor element)
    (properties :initform nil :initarg :properties :accessor properties)
    (bonds :initform nil :initarg :bonds :accessor bonds)))
 
-(cando.serialize:make-class-save-load constitution-atom
-                            :print-unreadably
-                            (lambda (obj stream)
-                              (print-unreadable-object (obj stream :type t)
-                                (format stream "~a" (atom-name obj)))))
+(defmethod print-object ((obj constitution-atom) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~a ~a" (atom-name obj) (index obj)))))
 
-(defclass constitution-bond ()
+(defclass constitution-bond (cando.serialize:serializable)
   ((to-atom-index :initarg :to-atom-index :accessor to-atom-index)
    (order :initarg :order :accessor order)))
 
-(cando.serialize:make-class-save-load constitution-bond)
+(defmethod print-object ((obj constitution-bond) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~a ~a" (order obj) (to-atom-index obj)))))
 
 #+(or)(cando.serialize:make-class-save-load constitution-atoms)
 

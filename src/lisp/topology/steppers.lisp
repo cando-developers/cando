@@ -7,6 +7,7 @@
 (defgeneric lookup-backbone-shape-key (oligomer-shape monomer-shape errorp errorval))
 
 (defmethod lookup-backbone-shape-key (oligomer-shape monomer-shape errorp errorval)
+  (declare (ignore oligomer-shape monomer-shape errorp errorval))
   (error "Specialize this on the arguments"))
 
 (defun make-phi-psi (phi-deg psi-deg)
@@ -25,7 +26,7 @@
              (format stream (message condition)))))
 
 (defun calculate-allowed-rotamers (monomer-shape-index sidechain-monomer-shape sidechain-monomer-shape-info oligomer-shape shape-key-to-allowed-rotamers)
-  (with-slots (topology:rotamers-database topology:oligomer) oligomer-shape
+  (declare (ignorable monomer-shape-index))
     #+debug-mover
     (let ((*print-pretty* nil))
       (format t "calculate-allowed-rotamers monomer-shape-index ~a~%" monomer-shape-index))
@@ -45,7 +46,7 @@
       (let ((*print-pretty* nil))
         (format t "   calculate-allowed-rotamers  phi-deg ~d  psi-deg ~d    allowed-rotamers -> ~s~%" phi-deg psi-deg result))
       result
-      )))
+      ))
 
 (defclass permissible-rotamer ()
   ((monomer-shape-locus :initarg :monomer-shape-locus :reader monomer-shape-locus)
@@ -98,6 +99,7 @@
 
 
 (defun one-backbone-permissible-rotamer (monomer-context rotamers-db rotamers index sidechain sidechain-monomer-context)
+  (declare (ignore sidechain))
   (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
     (loop :with backbone-rotamers = rotamers
           :with search-key-history = nil
@@ -252,6 +254,57 @@
       (make-instance 'permissible-backbone-rotamers
                      :permissible-rotamer-vector (copy-seq permissible-rotamer-vector)))))
 
+(defun make-permissible-rotamer-for-monomer* (oligomer-shape index monomer monomer-context monomer-shape monomer-shape-info rotamer-index rotamers-db
+                                              )
+  (declare (ignore monomer))
+  (let* ((rotamers (gethash monomer-context (topology:context-to-rotamers rotamers-db)))
+         (allowed-rotamers (progn
+                             (calculate-allowed-rotamers index monomer-shape monomer-shape-info oligomer-shape (topology:shape-key-to-index rotamers)))))
+    (when (= 0 (length allowed-rotamers))
+      (error "There are no allowed-rotamers for monomer-shape at ~a" index))
+    (when (or (and rotamer-index (null (position rotamer-index allowed-rotamers)))
+              (null rotamer-index))
+      ;; The current sidechain rotamer-index is not in the new permissible rotamers
+      ;; make it one of them
+      (let* ((rnd (random (length allowed-rotamers)))
+             (new-rotamer-index (aref allowed-rotamers rnd)))
+        (setf (topology:rotamer-index monomer-shape) new-rotamer-index)))
+    (unless allowed-rotamers
+      (error "Could not find any allowed-rotamers for ~s" monomer-shape))
+    (let ((permissible-rotamer (make-instance 'permissible-rotamer
+                                              :monomer-shape-locus index
+                                              :allowed-rotamer-indexes allowed-rotamers)))
+      permissible-rotamer)))
+
+(defun make-permissible-sidechain-rotamer-for-monomer (oligomer-shape desired-monomer)
+  (let ((rotamers-db (topology:rotamers-database oligomer-shape)))
+    ;; Loop over all monomer-shape in the oligomer-shape and downselect the ones that
+    ;; are sidechains and if monomers is not nil then only the ones in monomers
+    (loop :named main
+          :for index :from 0
+          :for monomer-shape :across (topology:monomer-shape-vector oligomer-shape)
+          :for rotamer-index = (when (slot-boundp monomer-shape 'topology:rotamer-index)
+                                 (topology:rotamer-index monomer-shape))
+          :for monomer-shape-info :across (topology:monomer-shape-info-vector oligomer-shape)
+          :for monomer := (topology:monomer monomer-shape-info)
+          :for monomer-shape-kind := (topology:monomer-shape-kind monomer-shape-info)
+          :for monomer-context := (topology:monomer-context monomer-shape-info)
+          :do (cond
+                ((and (eq monomer-shape-kind :sidechain)
+                      (eq monomer desired-monomer))
+                 (let ((permissible-rotamer
+                         (make-permissible-rotamer-for-monomer*
+                          oligomer-shape
+                          index
+                          monomer
+                          monomer-context
+                          monomer-shape
+                          monomer-shape-info
+                          rotamer-index
+                          rotamers-db)))
+                   (return-from make-permissible-sidechain-rotamer-for-monomer permissible-rotamer)))))
+    (error "Could not find monomer ~s in ~s" desired-monomer oligomer-shape)))
+
 (defun make-permissible-sidechain-rotamers (oligomer-shape &key monomers)
   "Constructs a permissible-sidechain-rotamers object for the given oligomer-shape.
 Optionally filters the process based on a provided list of monomers.
@@ -275,24 +328,17 @@ Returns an instance of permissible-sidechain-rotamers."
                 ((and (eq monomer-shape-kind :sidechain)
                       (or (null monomers)
                           (member monomer monomers))) ; if monomers defined then use it as a subset
-                 (let* ((rotamers (gethash monomer-context (topology:context-to-rotamers rotamers-db)))
-                        (allowed-rotamers (progn
-                                            (calculate-allowed-rotamers index monomer-shape monomer-shape-info oligomer-shape (topology:shape-key-to-index rotamers)))))
-                   (when (= 0 (length allowed-rotamers))
-                     (error "There are no allowed-rotamers for monomer-shape at ~a" index))
-                   (when (or (and rotamer-index (null (position rotamer-index allowed-rotamers)))
-                             (null rotamer-index))
-                     ;; The current sidechain rotamer-index is not in the new permissible rotamers
-                     ;; make it one of them
-                     (let* ((rnd (random (length allowed-rotamers)))
-                            (new-rotamer-index (aref allowed-rotamers rnd)))
-                       (setf (topology:rotamer-index monomer-shape) new-rotamer-index)))
-                   (unless allowed-rotamers
-                     (error "Could not find any allowed-rotamers for ~s" monomer-shape))
-                   (let ((permissible-rotamer (make-instance 'permissible-rotamer
-                                                             :monomer-shape-locus index
-                                                             :allowed-rotamer-indexes allowed-rotamers)))
-                     (vector-push-extend permissible-rotamer permissible-rotamer-vector))))
+                 (let ((permissible-rotamer
+                         (make-permissible-rotamer-for-monomer*
+                          oligomer-shape
+                          index
+                          monomer
+                          monomer-context
+                          monomer-shape
+                          monomer-shape-info
+                          rotamer-index
+                          rotamers-db)))
+                     (vector-push-extend permissible-rotamer permissible-rotamer-vector)))
                 ((eq monomer-shape-kind :backbone)
                  (vector-push-extend (cons index (rotamer-index monomer-shape))
                                      required-backbone-rotamer-indexes))
@@ -338,6 +384,11 @@ Returns an instance of permissible-sidechain-rotamers."
 (defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (vec array))
   "Write a vector of rotamer shapes into the stepper"
   (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
+  (unless (= (length vec)
+             (length (permissible-rotamer-vector permissible-rotamers)))
+    (error "The number of (permissible-rotamer-vector permissible-rotamers) ~s doesn't match the length of the vec ~s"
+           (permissible-rotamer-vector permissible-rotamers)
+           vec))
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
     (loop for index below len
           for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) index)
@@ -351,6 +402,25 @@ Returns an instance of permissible-sidechain-rotamers."
     (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
     oligomer-shape))
 
+(defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (val null))
+  "Write the first allowed rotamer-index into the rotamer-index of each
+monomer-shape in the oligomer-shape. Return the oligomer-shape."
+  (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
+    (loop for index below len
+          for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) index)
+          for locus = (monomer-shape-locus permissible-rotamer)
+          for monomer-shape = (aref (topology:monomer-shape-vector oligomer-shape) locus)
+          for allowed-rotamer-indexes = (allowed-rotamer-indexes permissible-rotamer)
+          for rotamer-index = (progn
+                                (unless (> (length allowed-rotamer-indexes) 0)
+                                  (error "There must be at least one allowed-rotamer-indexes"))
+                                (aref allowed-rotamer-indexes 0))
+          do (setf (topology:rotamer-index monomer-shape) rotamer-index)))
+  (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
+  oligomer-shape)
+
+;;; Switched to null specializer
+#+(or)
 (defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (val integer))
   "Write an integer into the rotamer-index of each monomer-shape in the oligomer-shape. Return the oligomer-shape."
   (error "This function should never be used - it's unsafe, the val would never satisfy the permissible-rotamers.
@@ -368,6 +438,7 @@ I suggest changing val to NIL and that forces the first allowed rotamer index to
           do (setf (topology:rotamer-index monomer-shape) rotamer-index)))
   oligomer-shape)
 
+#+(or)
 (defun number-of-rotamers (permissible-rotamers)
   "Return the total number of rotamer combinations"
   (let ((num 1))
@@ -376,6 +447,7 @@ I suggest changing val to NIL and that forces the first allowed rotamer index to
           do (setf num (* num (length allowed))))
     num))
 
+#+(or)
 (defun enumerated-rotamer-state (permissible-rotamers index)
   "Return the rotamer-state for a particular enumerated (by index) rotamers.
 This is an vector of rotamer-index values enumerated from 0...(number-of-rotamers permissible-rotamers)"
@@ -393,6 +465,7 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
                                 'vector)))
       rotamer-vec)))
 
+#+(or)
 (defun goto-rotamer (permissible-rotamers index)
   "Goto a particular rotamer using an integer index from 0...(number-of-rotamers stepper)"
   (let ((rotamer-state (rotamer-state permissible-rotamers index)))
@@ -402,6 +475,7 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
   "Return a vector of zero for rotamer index - this shouldn't be written into a permissible-rotamers if you want a correct permissible-rotamers"
   (make-array (length (permissible-rotamer-vector permissible-rotamers)) :initial-element 0))
 
+#+(or)
 (defun first-rotamers (permissible-rotamers)
   "Return a vector of the first rotamer index for each position"
   (error "fix me")

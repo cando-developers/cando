@@ -114,6 +114,8 @@ Create topology instances using a graph described using an s-expression.
       ;;   "CM.3HM" generates CM -> (HM1 HM2 HM3)
       ((and dot-position (< dot-position (length name-string)))
        (let ((hydrogen-specifier (subseq name-string (1+ dot-position) (length name-string))))
+         (when (string= hydrogen-specifier "HZ")
+           (break "Check other stuff"))
          (multiple-value-bind (num-hydrogens hprefix-start)
              (cond
                ((member (elt hydrogen-specifier 0) '(#\2 #\3))
@@ -436,7 +438,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                            :constitution-atom constitution-atom
                                            :type :left-handed) rev-stereocenter-info))
                      (stereochemistry-type
-                      (error "Do not specify stereochemistry-type ~s for ~a" stereochemistry-type constitution-atom))
+                      (error "Do not specify stereochemistry-type ~s for ~a - it has only ~s bonds" stereochemistry-type constitution-atom number-of-bonds))
                      )
                 finally (return (values (nreverse rev-stereocenter-info) stereoisomer-atoms)))
         ;; build stereochemistry here

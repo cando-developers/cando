@@ -662,6 +662,7 @@ Some specialized methods will need coordinates for the assembler"))
            )))
 
 (defun assembler-check-joints (assembler)
+  (format t "In assembler-check-joints~%")
   (loop for atmol across (atmolecules (ataggregate assembler))
         do (loop for atres across (atresidues atmol)
                  do (format t "atres: ~s~%" atres)

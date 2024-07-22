@@ -311,12 +311,13 @@ void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   ASSERT(this->definedp());
   KIN_LOG("name = {} stub = \n{}\n", _rep_(this->_Name), stub._Transform.asString());
-  KIN_LOG("_Distance = {}  _Theta = {} deg   _Phi = {} deg\n", this->_Distance , (this->_Theta/0.0174533) , (this->_Phi/0.0174533) );
-  double bcTheta = this->_Theta;
+  double bcTheta = std::isnan(this->_Theta) ? 0.0 : this->_Theta;
+  double phi = std::isnan(this->_Phi) ? 0.0 : this->_Phi;
+  KIN_LOG("_Distance = {}  _Theta = {} deg   _Phi = {} deg\n", this->_Distance , (theta/0.0174533) , (phi/0.0174533) );
   Vector3 d2;
 //  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
-//  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 );
-  Vector3 newpos = geom::pointFromStubAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 );
+//  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, theta/0.0174533, phi/0.0174533 );
+  Vector3 newpos = geom::pointFromStubAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, phi, d2 );
   if (!newpos.isDefined()) SIMPLE_ERROR("newpos could not be determined for {}", _rep_(this->asSmartPtr()));
   this->setPosition(coords,newpos);
 #if 0

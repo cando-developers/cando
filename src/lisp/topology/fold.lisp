@@ -369,7 +369,7 @@
 
 (defmethod print-object ((object atresidue) stream)
   (print-unreadable-object (object stream :type t)
-    (format stream "[~s/~s]"  (name object) (stereoisomer-name object))))
+    (format stream "[~s]" (residue object))))
 
 (defun add-joint (atresidue index joint)
   (check-type joint kin:joint)

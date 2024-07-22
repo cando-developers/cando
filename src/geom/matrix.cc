@@ -1276,6 +1276,25 @@ dz = -dist*sin(theta)*sin(phi) ; the negative sign is VERY important here
 d = stub*d   stub transforms coordinate system at origin along x^,y^,z^ to
              one where the origin is on c, x-axis is b-c and a-b is in the x,y plane.
 
+Addendum July 13, 2024
+
+If phi and or theta are not defined you can assig them 0.0 OR (the following is equivalent)
+
+If phi isn't defined use:
+dx = dist*cos(theta)
+dy = dist*sin(theta)
+dz = 0.0
+d = stub*d   stub transforms coordinate system at origin along x^,y^,z^ to
+             one where the origin is on c, x-axis is b-c and a-b is in the x,y plane.
+
+If theta and phi aren't defined use:
+dx = dist
+dy = 0.0
+dz = 0.0
+d = stub*d   stub transforms coordinate system at origin along x^,y^,z^ to
+             one where the origin is on c, x-axis is b-c and a-b is in the x,y plane.
+
+
 
 */
 namespace geom {
