@@ -13,9 +13,18 @@ elif [ ! -f "$HOME/.clasprc" ]; then
   clasp --non-interactive --load $HOME/quicklisp/setup.lisp --eval "(ql-util:without-prompting (ql:add-to-init-file))"
 fi
 
+if ! [ -f ~/.config/common-lisp/source-registry.conf.d/apptainer.conf ]; then
+    echo "The file ~/.config/common-lisp/source-registry.conf.d/apptainer.conf is missing - creating it"
+    mkdir -p ~/.config/common-lisp/source-registry.conf.d
+    echo "(:tree \"/home/cando/common-lisp/\")" >~/.config/common-lisp/source-registry.conf.d/apptainer.conf
+else
+    echo "The file ~/.config/common-lisp/source-registry.conf.d/apptainer.conf already exists"
+    cat ~/.config/common-lisp/source-registry.conf.d/apptainer.conf
+fi
+
 echo "Updating Quicklisp..."
 clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://quickclasp.thirdlaw.tech/quickclasp.txt\" :prompt nil))" \
   --eval "(ql:update-all-dists :prompt nil)"
 
-echo "Installing CANDO user features..."
-cando --eval "(ql:quickload :cando-jupyter)" --eval "(cando-jupyter:install :implementation \"apptainer\")" --eval "(sys:quit)"
+#echo "Installing CANDO user features..."
+#cando --eval "(ql:quickload :cando-user-install)" --eval "(cando-user-install:install)" --eval "(sys:quit)"
