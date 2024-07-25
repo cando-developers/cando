@@ -414,12 +414,13 @@
 (defun sqm-executable ()
   (probe-file "amber:bin;sqm"))
   
-(defun calculate-am1-bcc-charges (aggregate &key (maxcyc 9999) verbose)
-  "Calculate Am1-Bcc charges and add the results to the aggregate."
+(defun calculate-am1-bcc-charges (aggregate &key (maxcyc 9999) verbose (tmpdir #P"/tmp/"))
+  "Calculate Am1-Bcc charges and add the results to the aggregate. Write sqm files into tmpdir"
   (let* ((bcc (calculate-bcc-corrections aggregate))
-         (input-filename (sys:mkstemp "/tmp/sqm-input-"))
-         (output-filename (sys:mkstemp "/tmp/sqm-output-"))
-         (order (charges:write-sqm-calculation (open input-filename :direction :output) aggregate
+         (input-filename (sys:mkstemp (format nil "~asqm-input-" (namestring tmpdir))))
+         (output-filename (sys:mkstemp (format nil "~asqm-output-" (namestring tmpdir))))
+         (order (charges:write-sqm-calculation (open input-filename :direction :output)
+                                               aggregate
                                                :maxcyc maxcyc))
          (sqm-executable (sqm-executable))
          (args (list "-O"
