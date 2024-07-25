@@ -25,8 +25,11 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #define	DEBUG_LEVEL_NONE
 
+//#define DEBUG_RING_FINDER
+//#define DEBUG_RING_MESSAGE
 
-/* This file implements the Smallest Set of Smallest Ring (SSSR) finding algorith described
+
+/* This file implements the Smallest Set of Smallest Ring (SSSR) finding algorithm described
    by Balducci and Pearlman in  J. Chem. Inf. Comput. Sci. Vol 34, No. 4, 1994
 
    It works well for small molecules <2048 atoms but not for very large systems.
@@ -247,10 +250,15 @@ string AGVertex_O::description() const
 
 void	AGVertex_O::dump()
 {
-    this->_atom->dump();
-    for ( auto cur : this->getConnectedVertices() ) {
-      core::clasp_write_string(fmt::format("{} ", core::_rep_(cur->car<AGVertex_O>()->getAtom()->getName())));
-    }
+  core::clasp_write_string(fmt::format("AGVertex_O {}\n", this->_atom->getName() ));
+  core::clasp_write_string(fmt::format("  edges:  "));
+  for ( uint i=0, iEnd(this->_edges.size()); i<iEnd; ++i ) {
+    core::clasp_write_string(fmt::format("    {} - {} |",
+                                         this->_edges[i]->_vertex1->_atom->getName(),
+                                         this->_edges[i]->_vertex2->_atom->getName()
+                                         ));
+  }
+  core::clasp_write_string("\n");
 }
 
 
@@ -289,30 +297,49 @@ void AGVertex_O::initializeRingSearch()
 }
 
 
-void AGVertex_O::send()
+void AGVertex_O::send(int stage)
 {
-    if ( this->_edges.size() == 0 ) return;
-    for ( uint i=0,iEnd(this->_edges.size()); i<iEnd; ++i ) {
-	AGEdge_sp edge = this->_edges[i];
-	AGVertex_sp neighbor = (edge)->otherVertex(this->asSmartPtr());
-	
-	for ( auto msgCur : this->_sendBuffer ) {
-	    PathMessage_sp msg = msgCur->car<PathMessage_O>();
-	    LOG("Sending message: {}" , _rep_(msg->beep()) );
+  if ( this->_edges.size() == 0 ) return;
+  for ( uint i=0,iEnd(this->_edges.size()); i<iEnd; ++i ) {
+    AGEdge_sp edge = this->_edges[i];
+    AGVertex_sp neighbor = (edge)->otherVertex(this->asSmartPtr());
+#ifdef DEBUG_RING_FINDER
+    if (this->_sendBuffer.nilp()) {
+      core::clasp_write_string(fmt::format("The send buffer is empty for atom({}) to neighbor({})\n", this->_atom->description(), neighbor->_atom->description() ));
+    } else {
+      core::clasp_write_string(fmt::format("The send buffer not empty for atom({}) to neighbor({})\n", this->_atom->description(), neighbor->_atom->description() ));
+    }
+#endif
+    for ( auto msgCur : this->_sendBuffer ) {
+      PathMessage_sp msg = msgCur->car<PathMessage_O>();
+      LOG("Sending message: {}" , _rep_(msg->beep()) );
 	    	// If the message most recently came from the neighbor,
 		// don't send it back to them
-	    if ( msg->getLastVertex() == neighbor ) continue;
+      if ( msg->getLastVertex() == neighbor ) continue;
 	    	//
 		// If the message originally came from the neighbor 
 		// then don't send it back to them
 		//
-	    if ( msg->getFirstVertex() == neighbor ) continue;
-	    PathMessage_sp newMsg = msg->copy();
-	    newMsg->update(edge,this->sharedThis<AGVertex_O>());
-	    neighbor->acceptMessage(newMsg);
-	}
+      if ( msg->getFirstVertex() == neighbor ) continue;
+      PathMessage_sp newMsg = msg->copy();
+      newMsg->update(edge,this->sharedThis<AGVertex_O>());
+#ifdef DEBUG_RING_MESSAGE
+      if (newMsg->_firstVertex->_atom->getName() == INTERN_(kw,na)) {
+        if (
+            this->_atom->getName() == INTERN_(kw,cbc) ||
+            this->_atom->getName() == INTERN_(kw,cb) ||
+            this->_atom->getName() == INTERN_(kw,nb) ||
+            this->_atom->getName() == INTERN_(kw,cac) ||
+            this->_atom->getName() == INTERN_(kw,ca)
+            )  {
+          core::clasp_write_string(fmt::format("First :NA : send from {:4} to {:4} -> {}\n", this->_atom->getName(), neighbor->_atom->getName(), _rep_(newMsg->_beep) ));
+        }
+      }
+#endif
+      neighbor->acceptMessage(newMsg);
     }
-    this->emptySendBuffer();
+  }
+  this->emptySendBuffer();
 }
 
 void AGVertex_O::acceptMessage(PathMessage_sp msg)
@@ -349,26 +376,42 @@ void AGVertex_O::receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, 
   LOG("Stage({}) Vertex({}) distributing receiveBuffer, there are {} messages" , stage , this->_atom->description().c_str() , this->_receiveBuffer->length() );
   uint addedMessages = 0;
     		// isolated atoms will have empty receive buffers
-  ASSERT(this->_receiveBuffer.notnilp()); //,"The receive buffer is empty for atom("+this->_atom->description()+")!");
-  for ( auto msgCur : this->_receiveBuffer ) {
-    PathMessage_sp msg = msgCur->car<PathMessage_O>();
-    
-    AGEdge_sp edge = msg->getFirstEdge();
-    AGVertex_sp vert = msg->getFirstVertex();
-    uint side = edge->getSide(vert);
-    uint edgeId = edge->getId();
-    if ( side == 0 ) {
-      if ( edgeArray0[edgeId].nilp() )
-      {
-        edgeArray0[edgeId] = msg;
-        addedMessages++;
+//  ASSERT(this->_receiveBuffer.notnilp()); //,"The receive buffer is empty for atom("+this->_atom->description()+")!");
+#ifdef DEBUG_RING_FINDER
+  if (this->_receiveBuffer.nilp()) {
+    core::clasp_write_string(fmt::format("The receive buffer is empty for atom({})\n", this->_atom->description() ));
+  }
+#endif
+  if (this->_receiveBuffer.notnilp()) {
+    for ( auto msgCur : this->_receiveBuffer ) {
+      PathMessage_sp msg = msgCur->car<PathMessage_O>();
+      AGEdge_sp edge = msg->getFirstEdge();
+      AGVertex_sp vert = msg->getFirstVertex();
+#ifdef DEBUG_RING_MESSAGE
+      if (msg->_firstVertex->_atom->getName() == INTERN_(kw,na)) {
+        if (
+            msg->_lastVertex->_atom->getName() == INTERN_(kw,cbc) ||
+            msg->_lastVertex->_atom->getName() == INTERN_(kw,cb) ||
+            msg->_lastVertex->_atom->getName() == INTERN_(kw,nb) ||
+            msg->_lastVertex->_atom->getName() == INTERN_(kw,cac) ||
+            msg->_lastVertex->_atom->getName() == INTERN_(kw,ca)
+            )  {
+        core::clasp_write_string(fmt::format("First :NA : recv from {:4} to {:4} -> {}\n", msg->_lastVertex->_atom->getName(), this->_atom->getName(), _rep_(msg->_beep) ));
+        }
       }
-    } else
-    {
-      if ( edgeArray1[edgeId].nilp() )
-      {
-        edgeArray1[edgeId] = msg;
-        addedMessages++;
+#endif
+      uint side = edge->getSide(vert);
+      uint edgeId = edge->getId();
+      if ( side == 0 ) {
+        if ( edgeArray0[edgeId].nilp() ) {
+          edgeArray0[edgeId] = msg;
+          addedMessages++;
+        }
+      } else {
+        if ( edgeArray1[edgeId].nilp() ) {
+          edgeArray1[edgeId] = msg;
+          addedMessages++;
+        }
       }
     }
   }
@@ -382,12 +425,15 @@ void AGVertex_O::receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, 
   uint numEdges;
   { 
     numEdges = graph->getNumberOfEdges();
-    for ( uint i=0; i<numEdges; i++ )
-    {
+    for ( uint i=0; i<numEdges; i++ ) {
       LOG("Detecting odd-membered rings i = {}" , i );
 		    // detect odd-membered rings
-      if ( edgeArray0[i].notnilp() && edgeArray1[i].notnilp() )
-      {
+      if ( edgeArray0[i].notnilp() && edgeArray1[i].notnilp() ) {
+#ifdef DEBUG_RING_MESSAGE
+      if (edgeArray0[i]->_firstVertex->_atom->getName() == INTERN_(kw,na)) {
+        core::clasp_write_string(fmt::format("Odd-ring :NA\n"));
+      }
+#endif
         PathMessage_sp ring = edgeArrayCopy(edgeArray0[i]);
         ring->join(edgeArray1[i]);
         edgeArray0[i] = nil<PathMessage_O>();
@@ -407,8 +453,7 @@ void AGVertex_O::receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, 
   core::HashTableEq_sp vertexDict = core::HashTableEq_O::create_default();
   {
     LOG("Filling vertexDict" );
-    for ( uint i=0; i<numEdges; i++ )
-    { 
+    for ( uint i=0; i<numEdges; i++ ) { 
       LOG("Detecting even-membered rings: i = {}" , i );
       if ( edgeArray0[i].notnilp() ) {
         PathMessage_sp msg = edgeArray0[i];
@@ -447,19 +492,20 @@ void AGVertex_O::receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, 
             ring->join(secondRing);
             ring->updateLastVertex(this->asSmartPtr());
             graph->addRing(ring,stage);
+#ifdef DEBUG_RING_MESSAGE
+            if (gc::As<PathMessage_sp>(oCar(first))->_firstVertex->_atom->getName() == INTERN_(kw,na)) {
+              core::clasp_write_string(fmt::format("Even-ring :NA -> {} {}\n", ring->_firstVertex->_atom->getName(), _rep_(ring->_beep)));
+            }
+#endif
           }
         }
-      } else
-      {
+      } else {
         this->_sendBuffer = core::Cons_O::create(gc::As<PathMessage_sp>(oCar(list)), this->_sendBuffer);
       }
     } );
   }
   this->emptyReceiveBuffer();
 }
-
-
-  
 
 
 AGEdge_sp AGEdge_O::create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 )
@@ -479,6 +525,13 @@ AGEdge_sp AGEdge_O::create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 )
     return edge;
 }
 
+void AGEdge_O::dump() {
+  core::clasp_write_string(fmt::format("AGEdge_O[{}] = {} - {}\n",
+                                       this->_id,
+                                       this->_vertex1->_atom->getName(),
+                                       this->_vertex2->_atom->getName()
+                                       ));
+}
 
 AGVertex_sp AGEdge_O::getVertex1()
 {
@@ -593,22 +646,25 @@ public:
     RingFinderVertexMapper() : _Count(0) {};
     int _Count;
     virtual bool mapKeyValue(core::T_sp key, core::T_sp value) {
-	//value->dump();
-	this->_Count++;
-	return true;
+      gc::As<AGVertex_sp>(value)->dump();
+      this->_Count++;
+      return true;
     }
 };
 
 
-void RingFinder_O::dump()
+CL_DEFMETHOD void RingFinder_O::dump()
 {
     RingFinderVertexMapper mapper;
     this->_vertices->lowLevelMapHash(&mapper);
     core::clasp_write_string(fmt::format("There are {} atoms\n" , mapper._Count ));
+    for ( uint i=0, iEnd(this->_edges.size()); i<iEnd; ++i ) {
+      this->_edges[i]->dump();
+    }
 }
 
 
-core::HashTable_sp& RingFinder_O::getVertices()
+CL_DEFMETHOD core::HashTable_sp RingFinder_O::getVertices()
 {
     return this->_vertices;
 }
@@ -658,9 +714,15 @@ void RingFinder_O::initializeRingSearch()
 
 class RingFinderVertexSend : public core::KeyValueMapper
 {
+  uint _Stage;
+public:
+  RingFinderVertexSend(uint stage ) : _Stage(stage) {};
 public:
     virtual bool mapKeyValue(core::T_sp key, core::T_sp value) {
-	value.as<AGVertex_O>()->send();
+	value.as<AGVertex_O>()->send(this->_Stage);
+#ifdef DEBUG_RING_FINDER
+        core::clasp_write_string(fmt::format("Stage: {} sending message from {}\n", this->_Stage, value.as<AGVertex_O>()->_atom->description()));
+#endif 
 	return true;
     }
 };
@@ -689,14 +751,22 @@ public:
 
 void RingFinder_O::advanceRingSearch(uint stage, size_t numberOfEdges)
 {
-    {
-	RingFinderVertexSend sender;
-	this->_vertices->lowLevelMapHash(&sender);
-    }
-    {
-      RingFinderVertexReceive receiver(stage, numberOfEdges );
-	this->_vertices->lowLevelMapHash(&receiver);
-    }
+#ifdef DEBUG_RING_FINDER
+  core::clasp_write_string(fmt::format("advanceRingSearch stage: {}\n", stage ));
+#endif
+#ifdef DEBUG_RING_MESSAGE
+  core::clasp_write_string(fmt::format("advanceRingSearch stage: {}\n", stage ));
+  core::clasp_write_string("                                                              1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 4\n");
+  core::clasp_write_string("                                          0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0\n");
+#endif
+  {
+    RingFinderVertexSend sender(stage);
+    this->_vertices->lowLevelMapHash(&sender);
+  }
+  {
+    RingFinderVertexReceive receiver(stage, numberOfEdges );
+    this->_vertices->lowLevelMapHash(&receiver);
+  }
 }
 
 
@@ -741,15 +811,25 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
 {
     core::SimpleBitVector_sp beep = ring->beep();
     LOG("Adding ring with beep={}" , _rep_(beep) );
+#ifdef DEBUG_RING_MESSAGE
+    core::clasp_write_string(fmt::format("addRing with beep: {}\n", _rep_(beep)));
+#endif
     core::HashGenerator hg;
     clasp_sxhash(beep,hg);
     core::Fixnum_sp hash = core::clasp_make_fixnum(hg.rawhash());
     core::List_sp ringList = this->_rings->gethash(hash,nil<core::T_O>());
     	// If this new ring is identical to an existing ring then
 	// just return
-    for ( ; ringList.notnilp(); ringList = oCdr(ringList) )
-    {
-      if ( gc::As<PathMessage_sp>(oCar(ringList))->beep()->equal(beep) ) return;
+#ifdef DEBUG_RING_MESSAGE
+    core::clasp_write_string(fmt::format("comparing rings hash = {}\n", _rep_(hash)));
+#endif
+    for ( ; ringList.notnilp(); ringList = oCdr(ringList) ) {
+      if ( gc::As<PathMessage_sp>(oCar(ringList))->beep()->equal(beep) ) {
+#ifdef DEBUG_RING_MESSAGE
+        core::clasp_write_string(fmt::format("Found a matching beep - returning\n"));
+#endif
+        return;
+      }
     }
     		// Append the ring to the list with this hash
 		//
@@ -757,56 +837,89 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
     ringList = core::Cons_O::create(ring,ringList);
     this->_rings->setf_gethash(hash,ringList);
     if ( this->linearlyIndependentRing(ring) ) {
+#ifdef DEBUG_RING_MESSAGE
+      core::clasp_write_string(fmt::format("addRing push_back\n"));
+#endif
 	this->_finalRings.push_back(ring);
+    } else {
+#ifdef DEBUG_RING_MESSAGE
+      core::clasp_write_string(fmt::format("Failed linearlyIndependentRing test\n"));
+#endif
     }
 }
 
 
 bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 {
+#ifdef DEBUG_RING_MESSAGE
+  core::clasp_write_string(fmt::format("In linearlyIndependentRing beep = {}\n", _rep_(ring->beep())));
+#endif
   core::SimpleBitVector_sp orig_sbv = ring->beep();
   core::SimpleBitVector_sp beep = core::SimpleBitVector_copy(orig_sbv);
 	    //
 	    // Swap rows to make the matrix upper triangular
 	    //
-    uint glast = this->_gaussian.size();
-    this->_gaussian.push_back(beep);
+  uint glast = this->_gaussian.size();
+  this->_gaussian.push_back(beep);
 //       for z in self._gaussian:
 //           print "DEBUG:matrix before: ", z.asString()
 //
-    if ( this->_gaussian.size() == 1 ) return true;
+  if ( this->_gaussian.size() == 1 ) {
+#ifdef DEBUG_RING_MESSAGE
+    core::clasp_write_string(fmt::format("linearlyIndependentRing returning with gaussian.size==1\n"));
+#endif
+    return true;
+  }
 
 	    //
 	    // figure where to insert the 
 	    //
-    uint left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
-    for ( uint z = 0; z<glast; z++ )
-    {
-      uint gleft = core::SimpleBitVector_lowestIndex(this->_gaussian[z]);
-	if ( gleft > left )
-	{
+  uint left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
+#ifdef DEBUG_RING_MESSAGE
+  for ( uint zzz = 0; zzz<this->_gaussian.size(); zzz++ ) {
+    core::clasp_write_string(fmt::format("Start linearlyIndependentRing gaussian[{}] = {}\n", zzz, _rep_(this->_gaussian[zzz])));
+  }
+#endif
+  for ( uint z = 0; z<glast; z++ ) {
+    uint gleft = core::SimpleBitVector_lowestIndex(this->_gaussian[z]);
+    if ( gleft > left ) {
 		    // swap rows
 	    //print "Swapping rows"
-	    core::SimpleBitVector_sp temp = this->_gaussian[z];
-	    this->_gaussian[z] = this->_gaussian[glast];
-	    this->_gaussian[glast] = temp;
-	    left = gleft;
-	} else if ( gleft == left )
-	{
-          core::SimpleBitVector_inPlaceXor(this->_gaussian[glast],this->_gaussian[z]);
-          left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
-	}
+      core::SimpleBitVector_sp temp = this->_gaussian[z];
+      this->_gaussian[z] = this->_gaussian[glast];
+      this->_gaussian[glast] = temp;
+      left = gleft;
+#ifdef DEBUG_RING_MESSAGE
+      core::clasp_write_string(fmt::format("linearlyIndependentRing swapped {} and {}\n", z, glast ));
+#endif
+    } else if ( gleft == left ) {
+      core::SimpleBitVector_inPlaceXor(this->_gaussian[glast],this->_gaussian[z]);
+      left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
+#ifdef DEBUG_RING_MESSAGE
+      core::clasp_write_string(fmt::format("linearlyIndependentRing nPlaceXor {} and {}\n", glast, z ));
+#endif
     }
+#ifdef DEBUG_RING_MESSAGE
+    for ( uint zzz = 0; zzz<this->_gaussian.size(); zzz++ ) {
+      core::clasp_write_string(fmt::format("linearlyIndependentRing gaussian[{}] = {}\n", zzz, _rep_(this->_gaussian[zzz])));
+    }
+#endif
+  }
 //  for z in self._gaussian:
 //      print "DEBUG:matrix after : ", z.asString()
-    if ( core::SimpleBitVector_isZero(this->_gaussian[glast]) )
-    {
-	this->_gaussian.pop_back();
+  if ( core::SimpleBitVector_isZero(this->_gaussian[glast]) ) {
 	//print "DEBUG Popped last element"
-	return false;
-    }
+#ifdef DEBUG_RING_MESSAGE
+    core::clasp_write_string(fmt::format("linearlyIndependentRing returning false gaussian[{}] = {}\n", glast, _rep_(this->_gaussian[glast])));
+#endif
+    this->_gaussian.pop_back();
+    return false;
+  }
     //print "DEBUG: Returning TRUE"
-    return true;
+#ifdef DEBUG_RING_MESSAGE
+    core::clasp_write_string(fmt::format("linearlyIndependentRing returning true\n"));
+#endif
+  return true;
 }
 
 

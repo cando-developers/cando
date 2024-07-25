@@ -52,7 +52,7 @@ class PathMessage_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,PathMessage_O,"PathMessage",core::CxxObject_O);
 public:
 	void initialize();
-private:
+public:
     RingFinder_sp	_graph;
     gc::Nilable<core::SimpleBitVector_sp> _beep;
     AGVertex_sp	_firstVertex;
@@ -91,10 +91,10 @@ SMART(AGVertex );
 class AGVertex_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,AGVertex_O,"AGVertex",core::CxxObject_O);
-private:
+public:
     RingFinder_sp		_graph;
     Atom_sp			_atom;
-    gctools::Vec0<AGEdge_sp> 		_edges;
+    gctools::Vec0<AGEdge_sp> 	_edges;
     uint			_seenId;
     uint			_backSpan;
     uint			_backCount;
@@ -113,7 +113,7 @@ public:
     void emptySendBuffer();
     void emptyReceiveBuffer();
     void initializeRingSearch();
-    void send();
+    void send(int stage);
     void acceptMessage(PathMessage_sp msg);
   void receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, gctools::Vec0<PathMessage_sp>& edgeArray1 );
 
@@ -126,22 +126,23 @@ public:
 SMART(AGEdge );
 class AGEdge_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,AGEdge_O,"AGEdge",core::CxxObject_O);
-private:
-    RingFinder_sp		_graph;
-    uint			_id;
-    AGVertex_sp		_vertex1;
-    AGVertex_sp		_vertex2;
+  LISP_CLASS(chem,ChemPkg,AGEdge_O,"AGEdge",core::CxxObject_O);
 public:
-    static AGEdge_sp create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 );
+  RingFinder_sp		_graph;
+  uint			_id;
+  AGVertex_sp		_vertex1;
+  AGVertex_sp		_vertex2;
 public:
-    RingFinder_sp getGraph() {_OF(); ANN(this->_graph);return this->_graph; };
-    uint getId();
-    AGVertex_sp getVertex1();
-    AGVertex_sp getVertex2();
-    AGVertex_sp otherVertex(AGVertex_sp vert);
-    uint getSide(AGVertex_sp vert);
-    DEFAULT_CTOR_DTOR(AGEdge_O);
+  static AGEdge_sp create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 );
+public:
+  RingFinder_sp getGraph() {_OF(); ANN(this->_graph);return this->_graph; };
+  uint getId();
+  void dump();
+  AGVertex_sp getVertex1();
+  AGVertex_sp getVertex2();
+  AGVertex_sp otherVertex(AGVertex_sp vert);
+  uint getSide(AGVertex_sp vert);
+  DEFAULT_CTOR_DTOR(AGEdge_O);
 };
 
 
@@ -181,7 +182,7 @@ public:
 //    Atom_sp firstAtom();
     AGVertex_sp vertexForAtom(Atom_sp anAtom);
     void dump();
-    core::HashTable_sp& getVertices();
+    core::HashTable_sp getVertices();
     gctools::Vec0<AGEdge_sp>& getEdges();
     int getNumberOfRingsExpected();
     void addRing(PathMessage_sp ring, uint stage );
