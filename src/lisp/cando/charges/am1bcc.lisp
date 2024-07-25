@@ -419,8 +419,13 @@
   (let* ((bcc (calculate-bcc-corrections aggregate))
          (input-filename (sys:mkstemp (format nil "~asqm-input-" (namestring tmpdir))))
          (output-filename (sys:mkstemp (format nil "~asqm-output-" (namestring tmpdir))))
+         (qm-charge (let ((chg 0.0))
+                      (chem:do-atoms (atm aggregate)
+                        (incf chg (chem:atom/get-charge atm)))
+                      chg))
          (order (charges:write-sqm-calculation (open input-filename :direction :output)
                                                aggregate
+                                               :qm-charge qm-charge
                                                :maxcyc maxcyc))
          (sqm-executable (sqm-executable))
          (args (list "-O"

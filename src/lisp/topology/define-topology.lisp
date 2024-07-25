@@ -358,6 +358,15 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                     collect stereoisomer)))
         stereoisomers))))
 
+(defun maybe-parse-charge (property-list)
+  (let ((charge (getf property-list :charge)))
+    (cond
+      ((and charge (numberp charge))
+       (round charge))
+      ((null charge)
+       0.0)
+      (t (error "Illegal charge ~s in property list" property-list)))))
+
 (defun parse-graph (graph plug-names)
   (let ((constitution-atoms (make-array (hash-table-count (nodes graph)))))
     #+(or)(format t "graph = ~a~%" (name graph))
@@ -421,7 +430,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                 collect (make-instance 'stereoisomer-atom
                                        :atom-name (atom-name constitution-atom)
                                        :constitution-atom-index index
-                                       ;; Fill in other info (atom-charge atom-type) from prop-list if available
+                                       :atom-charge (maybe-parse-charge prop-list)
                                        ) into stereoisomer-atoms
                 do (cond
                      ((and (eq ca-element :c) (= 4 number-of-bonds) stereochemistry-type)
@@ -576,7 +585,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
       tops)))
 
 (defun valid-property (property value)
-  (member property '(:plugs :ring :stereochemistry-type :adjust))
+  (member property '(:plugs :ring :stereochemistry-type :adjust :charge))
   )
 
 (defun validate-properties (properties name)
