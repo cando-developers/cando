@@ -409,7 +409,6 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                (kin:update-internal-coord joint coordinates)))))
 
 (defun build-external-coordinates (assembler &key oligomer-shape (coords (topology:make-coordinates-for-assembler assembler)))
-  (error "Fix me - I need this to build all oligomer-shapes")
   (if oligomer-shape
       (progn
         (build-atom-tree-external-coordinates assembler coords oligomer-shape)
