@@ -230,8 +230,9 @@ is written to the log file as if the verbosity level were set to 2."
       (setf cl:*standard-output* broadcast))))
 
 (defmethod describe-object ((object chem:residue) stream)
+  (format stream "Residue ~s~%" object)
   (chem:do-atoms (atom object)
-    (format stream "~20s type: ~a~%" atom (chem:get-type atom))))
+    (format stream "~20s~%" atom)))
 
 (defmethod describe-object ((object chem:molecule) stream)
   (format stream "Force-field-name: ~a~%" (chem:force-field-name object))
