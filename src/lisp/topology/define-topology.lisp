@@ -46,9 +46,43 @@ Create topology instances using a graph described using an s-expression.
 (defclass atom-node (node)
   ((element :initarg :element :accessor element)
    (property-list :initform nil :initarg :property-list :accessor property-list)
-   (constitution-atom-index :initarg :constitution-atom-index :accessor constitution-atom-index)
    (children :initform nil :accessor children)
    ))
+
+(defclass ordered-atom-node (atom-node)
+  ((constitution-atom-index :initarg :constitution-atom-index :accessor constitution-atom-index)))
+
+(defmethod print-object ((obj ordered-atom-node) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a ~a" (name obj) (constitution-atom-index obj))))
+
+(defun order-children (children)
+  "Order the children so that hydrogen atoms follow heavy atoms.
+Keep the heavy atoms and hydrogens in the order they were found."
+  (when (= (length children) 1)
+    (return-from order-children children))
+  (let ((build-order-count (count-if (lambda (xxx)
+                                       (getf (property-list xxx) :build-order))
+                                     children)))
+    (when (> build-order-count 1)
+      (if (= build-order-count (length children))
+          (error "Add a sort of the children by build order")
+          (error "One child in ~s has :build-order and so all children must have it" children))))
+  (multiple-value-bind (heavy-atom-nodes hydrogen-atom-nodes)
+      (loop for child in children
+            if (chem:element-is-hydrogen (element child))
+              collect child into hydrogen-nodes
+            else
+              collect child into heavy-nodes
+            finally (return (values heavy-nodes hydrogen-nodes)))
+    (append heavy-atom-nodes hydrogen-atom-nodes)))
+
+(defun add-children (node children)
+  (check-type children list)
+  (when children
+    (let* ((all-children (append (children node) children))
+           (ordered-children (order-children all-children)))
+      (setf (children node) ordered-children))))
 
 (defclass edge ()
   ((from-node :initarg :from-node :accessor from-node)
@@ -66,7 +100,7 @@ Create topology instances using a graph described using an s-expression.
    (edges :initform nil :initarg :edges :accessor edges)
    (nodes :initform (make-hash-table) :initarg :nodes :accessor nodes)
    (plugs :initform (make-hash-table) :accessor plugs)
-   (next-atom-index :initform 0 :accessor next-atom-index)))
+   ))
 
 ;; A plug node
 (defun parse-plug-name (keyword-atm atom-name plugs graph)
@@ -129,8 +163,7 @@ Create topology instances using a graph described using an s-expression.
                                                    :name (intern name-only :keyword)
                                                    :element keyword-element
                                                    :property-list properties
-                                                   :constitution-atom-index (prog1 (next-atom-index graph)
-                                                                              (incf (next-atom-index graph))))))
+                                                   )))
                           (setf (gethash (name node) (nodes graph)) node)
                           node))
                   (hydrogens (loop for hindex from 1 to num-hydrogens
@@ -140,8 +173,7 @@ Create topology instances using a graph described using an s-expression.
                                    for hydrogen = (make-instance 'atom-node
                                                                  :name (intern hname :keyword)
                                                                  :element :H
-                                                                 :constitution-atom-index (prog1 (next-atom-index graph)
-                                                                                            (incf (next-atom-index graph))))
+                                                                 )
                                    do (setf (gethash (name hydrogen) (nodes graph)) hydrogen)
                                    do (push (make-instance 'edge
                                                            :from-node node
@@ -149,7 +181,7 @@ Create topology instances using a graph described using an s-expression.
                                                            :edge-type :-)
                                             (edges graph))
                                    collect hydrogen)))
-             (setf (children node) hydrogens)
+             (add-children node hydrogens)
              node))))
       (dot-position
        (error "Can not interpret ~s" name-string))
@@ -159,8 +191,7 @@ Create topology instances using a graph described using an s-expression.
                                     :name keyword-atm
                                     :element keyword-element
                                     :property-list properties
-                                    :constitution-atom-index (prog1 (next-atom-index graph)
-                                                               (incf (next-atom-index graph))))))
+                                    )))
            (setf (gethash (name node) (nodes graph)) node)
            node)))))
 
@@ -222,7 +253,7 @@ Create topology instances using a graph described using an s-expression.
          (if prev-node
              (progn
                (unless seen
-                 (setf (children prev-node) (append (children prev-node) (list node))))
+                 (add-children prev-node (list node)))
                (push (make-instance 'edge
                                     :from-node prev-node
                                     :to-node node
@@ -239,7 +270,7 @@ Create topology instances using a graph described using an s-expression.
          (if prev-node
              (progn
                (unless seen
-                 (setf (children prev-node) (append (children prev-node) (list node))))
+                 (add-children prev-node (list node)))
                (push (make-instance 'edge
                                     :from-node prev-node
                                     :to-node node
@@ -270,7 +301,6 @@ Create topology instances using a graph described using an s-expression.
     (:= :double-bond)
     (:# :triple-bond)
     (otherwise (error "Handle edge-type ~a" edge-type))))
-
 
 
 (defun build-stereoisomer (name variable-chiral-atoms stereoisomer-index fixed-chiral-info stereoisomer-atoms)
@@ -590,7 +620,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
       tops)))
 
 (defun valid-property (property value)
-  (member property '(:plugs :ring :stereochemistry-type :adjust :charge))
+  (member property '(:plugs :ring :stereochemistry-type :adjust :charge :build-order))
   )
 
 (defun validate-properties (properties name)
@@ -602,6 +632,14 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
           do (error "Invalid property ~s ~s defining ~s  properties: ~s" property value name properties)
         ))
 
+(defun recursively-order-children-atom-nodes (node counter)
+  (loop for child in (children node)
+        do (change-class child 'ordered-atom-node
+                         :constitution-atom-index (incf counter)))
+  (loop for child in (children node)
+        do (setf counter (recursively-order-children-atom-nodes child counter)))
+  counter)
+
 (defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals properties plug-names)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
@@ -612,6 +650,11 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         (group-names (if (consp name)
                          name
                          (list name))))
+    ;;Change class of all atom-nodes to ordered-atom-nodes and set their constitution-atom-index
+    ;; to their order as they appear in a depth first search
+    (change-class (root-node graph) 'ordered-atom-node
+                  :constitution-atom-index 0)
+    (recursively-order-children-atom-nodes (root-node graph) 0)
     (topologies-from-graph graph group-names restraints
                            :types types
                            :dihedrals dihedrals
