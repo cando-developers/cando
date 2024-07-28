@@ -158,3 +158,10 @@
   (let ((top (chem:find-topology object)))
     (apply 'cando-widgets::show-on-pane pane-instance (topology-jupyter:sketch-svg top) rest)))
 
+
+(defmethod cando-widgets::show-on-pane (pane-instance (object topology:oligomer-shape) &rest rest &key &allow-other-keys)
+  (let* ((assembler (topology:make-assembler (list object)))
+         (coords (topology:make-coordinates-for-assembler assembler)))
+    (topology:fill-internals-from-oligomer-shape assembler object)
+    (topology:build-external-coordinates assembler :coords coords)
+    (cando-widgets::show-on-pane pane-instance (topology:aggregate* assembler coords))))
