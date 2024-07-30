@@ -438,7 +438,9 @@
    #:allowed-rotamer-indexes
    #:copy-joint-positions-into-atoms
    #:permissible-rotamer-vector
-   #:make-permissible-sidechain-rotamer-for-monomer))
+   #:make-permissible-sidechain-rotamer-for-monomer
+   #:parse-atom-graph
+   #:molecule-from-sexp))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

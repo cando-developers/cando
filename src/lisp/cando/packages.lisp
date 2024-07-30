@@ -215,7 +215,8 @@
            #:stereochemistry-from-structure
            #:superpose-all
            #:skip-slot-names
-           #:optimize-structure-debug))
+           #:optimize-structure-debug
+           #:chemical-formula))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

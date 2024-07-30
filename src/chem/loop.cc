@@ -810,40 +810,66 @@ DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
-  Loop l(m,BONDS);
-  Atom_sp a1, a2;
-  BondOrder o;
-  if ( result_type.nilp() ) {
-    while (l.advanceLoopAndProcess()) {
-      Bond_sp bond = l.getBond();
-      a1 = bond->getAtom1();
-      a2 = bond->getAtom2();
-      o = bond->getOrderFromAtom(a1);
-      core::eval::funcall( func, a1, a2, translate::to_object<BondOrder>::convert(o), bond);
+  if (gc::IsA<Atom_sp>(m)) {
+    Atom_sp am = gc::As_unsafe<Atom_sp>(m);
+    if ( result_type.nilp() ) {
+      for ( auto b=am->_Bonds.begin();b!=am->_Bonds.end() ; b++ ) {
+        core::eval::funcall( func, (*b)->getAtom1(), (*b)->getAtom2(),
+                             translate::to_object<BondOrder>::convert((*b)->_DirectionalOrder), (*b));
+      }
+      return nil<core::T_O>();
+    } else if ( result_type == cl::_sym_list ) {
+      ql::list l;
+      for ( auto b=am->_Bonds.begin();b!=am->_Bonds.end() ; b++ ) {
+        l << core::eval::funcall( func, (*b)->getAtom1(), (*b)->getAtom2(),
+                                  translate::to_object<BondOrder>::convert((*b)->_DirectionalOrder), (*b));
+      }
+      return l.cons();
+    } else if ( result_type == cl::_sym_array ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
+      for ( auto b=am->_Bonds.begin();b!=am->_Bonds.end() ; b++ ) {
+        core::T_sp obj = core::eval::funcall( func, (*b)->getAtom1(), (*b)->getAtom2(),
+                                              translate::to_object<BondOrder>::convert((*b)->_DirectionalOrder), (*b));
+        vo->vectorPushExtend(obj);
+      }
+      return vo;
     }
-    return nil<core::T_O>(); 
-  }
-  if ( result_type == cl::_sym_list ) {
-    ql::list res;
-    while (l.advanceLoopAndProcess()) {
-      Bond_sp bond = l.getBond();
-      a1 = bond->getAtom1();
-      a2 = bond->getAtom2();
-      o = bond->getOrderFromAtom(a1);
-      res << core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o), bond );
+  } else {
+    Loop l(m,BONDS);
+    Atom_sp a1, a2;
+    BondOrder o;
+    if ( result_type.nilp() ) {
+      while (l.advanceLoopAndProcess()) {
+        Bond_sp bond = l.getBond();
+        a1 = bond->getAtom1();
+        a2 = bond->getAtom2();
+        o = bond->getOrderFromAtom(a1);
+        core::eval::funcall( func, a1, a2, translate::to_object<BondOrder>::convert(o), bond);
+      }
+      return nil<core::T_O>(); 
     }
-    return res.cons();
-  }
-  if ( result_type == cl::_sym_vector ) {
-    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
-    while (l.advanceLoopAndProcess()) {
-      Bond_sp bond = l.getBond();
-      a1 = bond->getAtom1();
-      a2 = bond->getAtom2();
-      o = bond->getOrderFromAtom(a1);
-      vo->vectorPushExtend(core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o), bond));
+    if ( result_type == cl::_sym_list ) {
+      ql::list res;
+      while (l.advanceLoopAndProcess()) {
+        Bond_sp bond = l.getBond();
+        a1 = bond->getAtom1();
+        a2 = bond->getAtom2();
+        o = bond->getOrderFromAtom(a1);
+        res << core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o), bond );
+      }
+      return res.cons();
     }
-    return vo;
+    if ( result_type == cl::_sym_vector ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
+      while (l.advanceLoopAndProcess()) {
+        Bond_sp bond = l.getBond();
+        a1 = bond->getAtom1();
+        a2 = bond->getAtom2();
+        o = bond->getOrderFromAtom(a1);
+        vo->vectorPushExtend(core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o), bond));
+      }
+      return vo;
+    }
   }
   SIMPLE_ERROR("Illegal return type: {}" , _rep_(result_type));
 };

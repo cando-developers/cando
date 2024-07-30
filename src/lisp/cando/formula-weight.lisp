@@ -68,5 +68,15 @@
 (defmethod most-abundant-isotope-weight ((formula-string string))
   (let ((formula (formula-string-to-alist formula-string)))
     (most-abundant-isotope-weight formula)))
-        
-        
+
+(defun chemical-formula (matter)
+  "Return the chemical formula as an alist for the matter"
+  (let ((element-counts (make-hash-table)))
+    (chem:do-atoms (atm matter)
+      (let* ((element (chem:atom/get-element atm))
+             (count (gethash element element-counts)))
+        (if count
+            (setf (gethash element element-counts) (1+ count))
+            (setf (gethash element element-counts) 1))))
+    (let ((formula (alexandria:hash-table-alist element-counts)))
+      formula)))

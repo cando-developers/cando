@@ -259,6 +259,11 @@ Create topology instances using a graph described using an s-expression.
     (parse-atom-or-bond sexp graph nil)
     graph))
 
+(defun parse-atom-graph (sexp)
+  "Parse an atom-graph like those used by define-topology"
+  (interpret nil sexp))
+
+
 (defun bond-order-from-edge-type (edge-type)
   (case edge-type
     (:- :single-bond)
@@ -640,3 +645,26 @@ can build spiroligomers then you want to convert it into a real topology."
      :properties ',properties
      :plug-names ',plugs
      ))
+
+
+(defun molecule-from-sexp (sexp)
+  (let ((graph (parse-atom-graph sexp))
+        (res (chem:make-residue :res))
+        (mol (chem:make-molecule :mol))
+        (agg (chem:make-aggregate :agg))
+        (node-to-atom (make-hash-table)))
+    (chem:add-matter agg mol)
+    (chem:add-matter mol res)
+    (maphash (lambda (name node)
+               (let ((atom (chem:make-atom (name node) (element node))))
+                 (chem:add-matter res atom)
+                 (setf (gethash node node-to-atom) atom)))
+             (nodes graph))
+    (loop for edge in (edges graph)
+          for node1 = (from-node edge)
+          for atom1 = (gethash node1 node-to-atom)
+          for node2 = (to-node edge)
+          for atom2 = (gethash node2 node-to-atom)
+          for bond-order = (bond-order-from-edge-type (edge-type edge))
+          do (chem:bond-to atom1 atom2 bond-order))
+    (values agg graph node-to-atom)))
