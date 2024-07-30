@@ -402,7 +402,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
        0.0)
       (t (error "Illegal charge ~s in property list" property-list)))))
 
-(defun parse-graph (graph plug-names)
+(defun parse-graph (graph plug-names residue-properties)
   (let ((constitution-atoms (make-array (hash-table-count (nodes graph)))))
     #+(or)(format t "graph = ~a~%" (name graph))
     (maphash (lambda (key node)
@@ -490,6 +490,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
           (values (make-instance 'constitution
                                  :name (name graph)
                                  :constitution-atoms constitution-atoms
+                                 :residue-properties residue-properties
                                  )
                   plugs
                   stereo-information))))))
@@ -515,7 +516,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                  :weight weight))))
                  (t (error "Add support for restraint ~a" kind)))))
 
-(defun make-abstract-topology (group-names &key properties plug-names)
+(defun make-abstract-topology (group-names &key residue-properties plug-names)
   (let* ((plugs (let ((ht (make-hash-table)))
                   (mapcar (lambda (plug-name)
                             (let ((plug (cond
@@ -532,13 +533,13 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                      for topology = (make-instance 'topology:abstract-topology
                                                    :name name
                                                    :plugs plugs
-                                                   :property-list properties)
+                                                   :property-list residue-properties)
                      do (loop for group-name in group-names
                               do (pushnew name (gethash group-name *topology-groups* nil)))
-                     do (if properties
+                     do (if residue-properties
                             (setf (topology:property-list topology)
                                   (append (topology:property-list topology)
-                                          properties)))
+                                          residue-properties)))
                      do (chem:register-topology topology name)
                      collect topology)))
     tops))
@@ -570,14 +571,36 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
             unless found
               do (error "For topology ~s could not find cluster-dihedrals ~s in ~s " (name constitution) cd dihedrals)))))
 
+
+(defun validate-constitution-vs-residue-properties (constitution residue-properties)
+  (let ((total-atom-charge (round (loop with total-charge = 0
+                                        for ca across (constitution-atoms constitution)
+                                        for atom-charge = (getf (properties ca) :charge)
+                                        when atom-charge
+                                          do (incf total-charge atom-charge)
+                                        finally (return total-charge)))))
+    (let ((residue-net-charge (let ((net (getf residue-properties :residue-net-charge)))
+                                (if (numberp net)
+                                    (round net)
+                                    net))))
+      (cond
+        ((/= total-atom-charge 0)
+         (unless residue-net-charge
+           (error "The total atom charges for ~s is ~d so there must be a corresponding :residue-net-charge residue-property" constitution total-atom-charge))
+         (unless (= residue-net-charge total-atom-charge)
+           (error "The total-atom-charge for ~s is ~d and it must match the :residue-net-charge ~d" constitution total-atom-charge residue-net-charge)))
+        (t (when (and residue-net-charge (not (= residue-net-charge total-atom-charge)))
+             (error ":residue-net-charge was specified as ~d and it must match total-atom-charge ~d" residue-net-charge total-atom-charge)))))))
+
 (defun topologies-from-graph (graph group-names restraints
                               &key types xyz-joints dihedrals cluster-dihedrals
-                                properties plug-names)
+                                residue-properties plug-names)
   (unless (or (listp xyz-joints)
               (eq :all xyz-joints))
     (error "xyz-joints must be either a list of atom-names or :all"))
   (multiple-value-bind (constitution plugs stereoisomers)
-      (parse-graph graph plug-names)
+      (parse-graph graph plug-names residue-properties)
+    (validate-constitution-vs-residue-properties constitution residue-properties)
     (when (listp xyz-joints)
       (loop for name in xyz-joints
             unless (gethash name (nodes graph))
@@ -596,10 +619,10 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                        do (loop for group-name in (list* name group-names)
                                 do (pushnew name (gethash group-name *topology-groups* nil)))
                        do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
-                       do (if properties
+                       do (if residue-properties
                               (setf (topology:property-list topology)
                                     (append (topology:property-list topology)
-                                            properties)))
+                                            residue-properties)))
                        do (chem:register-topology topology name)
                        collect topology)))
       (when types
@@ -619,18 +642,25 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                 (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution)))))
       tops)))
 
-(defun valid-property (property value)
-  (member property '(:plugs :ring :stereochemistry-type :adjust :charge :build-order))
-  )
-
 (defun validate-properties (properties name)
   (loop for cur = properties then (cddr cur)
         for property = (car cur)
         for value = (cadr cur)
         until (null cur)
-        unless (and property (valid-property property value))
+        unless (and property (member property '(:plugs :ring :stereochemistry-type :adjust :charge :build-order)))
           do (error "Invalid property ~s ~s defining ~s  properties: ~s" property value name properties)
         ))
+
+(defun validate-residue-properties (properties name)
+  (loop for cur = properties then (cddr cur)
+        for property = (car cur)
+        for value = (cadr cur)
+        until (null cur)
+        unless (and property (member property '(:residue-net-charge)))
+          do (error "Invalid residue-property ~s ~s defining ~s  properties: ~s" property value name properties)
+        )
+  properties)
+
 
 (defun recursively-order-children-atom-nodes (node counter)
   (loop for child in (children node)
@@ -640,7 +670,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         do (setf counter (recursively-order-children-atom-nodes child counter)))
   counter)
 
-(defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals properties plug-names)
+(defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals residue-properties plug-names)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -659,33 +689,33 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                            :types types
                            :dihedrals dihedrals
                            :cluster-dihedrals cluster-dihedrals
-                           :properties (validate-properties properties name)
+                           :residue-properties (validate-residue-properties residue-properties name)
                            :plug-names plug-names
                            :xyz-joints xyz-joints
                            )))
 
-(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals properties plugs)
+(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals residue-properties plugs)
   `(do-define-topology ',name ',sexp
      :restraints ',restraints
      :dihedrals ',dihedrals
-     :properties ',properties
+     :residue-properties ',residue-properties
      :cluster-dihedrals ',cluster-dihedrals
      :plug-names ',plugs
      :xyz-joints ',xyz-joints
      ))
 
-(defun do-define-abstract-topology (name &key properties plug-names)
+(defun do-define-abstract-topology (name &key residue-properties plug-names)
   (make-abstract-topology (list name)
-                          :properties (validate-properties properties)
+                          :properties (validate-residue-properties residue-properties)
                           :plug-names plug-names
                           ))
 
-(defmacro define-abstract-topology (name &key properties plugs)
+(defmacro define-abstract-topology (name &key residue-properties plugs)
   "Abstract-topoology is for development of topology and foldamer rules.
 Abstract-topology doesn't have any atoms.  Once you have an abstract-topology that
 can build spiroligomers then you want to convert it into a real topology."
   `(do-define-abstract-topology ',name 
-     :properties ',properties
+     :residue-properties ',residue-properties
      :plug-names ',plugs
      ))
 

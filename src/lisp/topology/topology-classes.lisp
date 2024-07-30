@@ -753,7 +753,8 @@ Examples:
           for ca = (elt constitution-atoms idx)
           for sia = (elt (stereoisomer-atoms stereoisomer) idx)
           for atm = (chem:make-atom (atom-name ca) (element ca))
-          do (chem:set-atom-type atm (atom-type sia))
+          do (when (slot-boundp sia 'atom-type)
+               (chem:set-atom-type atm (atom-type sia)))
           do (chem:set-charge atm (if (slot-boundp sia 'atom-charge)
                                       (atom-charge sia)
                                       0.0))
@@ -761,32 +762,6 @@ Examples:
           do (chem:set-content-at residue idx atm)
           do (chem:setf-needs-build atm t)
           )
-    #|
-    ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms(); ; ; ;
-    size_t numAtoms = constitutionAtoms->numberOfAtoms(); ; ; ;
-    gctools::Vec0<Atom_sp> atoms;       ; ; ;
-    atoms.resize(numAtoms);             ; ; ;
-    res->resizeContents(numAtoms);      ; ; ;
-    size_t idx = 0;                     ; ; ;
-    for ( size_t idx=0, idxEnd(numAtoms); idx<idxEnd; ++idx ) { ; ; ;
-    StereoisomerAtom_sp ai = (*info)[idx]; ; ; ;
-    Atom_sp atom = Atom_O::create();    ; ; ;
-    ConstitutionAtom_sp ca = (*constitutionAtoms)[ai->constitutionAtomIndex()]; ; ; ;
-    atom->setName(ca->_AtomName);       ; ; ;
-    atom->setElement(ca->_Element);     ; ; ;
-    atom->setType(ai->_AtomType);       ; ; ;
-    atom->setCharge(ai->_AtomCharge);   ; ; ;
-    atom->setProperties(cl__copy_seq(ca->_Properties)); ; ; ;
-    atom->turnOnFlags(needsBuild);      ; ; ;
-    //    printf("%s:%d  Creating atom@%d -> %s\n", __FILE__, __LINE__, ai->_ConstitutionAtomIndex, _rep_(atom).c_str()); ; ; ;
-    atoms[ai->_ConstitutionAtomIndex] = atom; ; ; ;
-    if (ai->_ConstitutionAtomIndex != idx) { ; ; ;
-    SIMPLE_ERROR(("The atom %s _ConstitutionAtomIndex %lu does not match the StereoisomerAtoms idx %lu") , _rep_(atom) , ai->_ConstitutionAtomIndex , idx ); ; ; ;
-    }                                   ; ; ;
-    res->putMatter(idx,atom); // order atoms as in Topology ; ; ;
-    }                                   ; ; ;
-    |#
-
     ;; Create the bonds
     (loop for idx below num-atoms
           for from-atm = (chem:content-at residue idx)
@@ -797,55 +772,19 @@ Examples:
                      do (let ((order (order constitution-bond)))
                           (chem:bond-to from-atm to-atm order))))
     ;; Add properties to the residue
-    (let ((residue-properties (residue-properties constitution)))
-      (chem:matter/set-properties residue (append residue-properties (chem:matter/properties residue))))
-    #|
-    for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) { ; ; ;
-    Atom_sp fromAtom = atoms[i];        ; ; ;
-    ConstitutionAtom_sp ca = (*constitutionAtoms)[i]; ; ; ;
-    //    printf("%s:%d @%zu fromAtom -> %s\n", __FILE__, __LINE__, i, _rep_(fromAtom).c_str()); ; ; ;
-    for ( auto bi=ca->_Bonds.begin(); bi!=ca->_Bonds.end(); ++bi ) ; ; ;
-    {                                   ; ; ;
-    if ((*bi)->_ToAtomIndex>=atoms.size()) { ; ; ;
-    SIMPLE_ERROR(("Atom index %d out of bounds (num-atoms %d)") , (*bi)->_ToAtomIndex , atoms.size()); ; ; ;
-    }                                   ; ; ;
-    Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex]; ; ; ;
-    //      printf("%s:%d     @%d toAtom -> %s\n", __FILE__, __LINE__, (*bi)->_ToAtomIndex, _rep_(toAtom).c_str()); ; ; ;
-    if ( !fromAtom->isBondedTo(toAtom) ) { ; ; ;
-    BondOrder order = (*bi)->_BondOrder; ; ; ;
-    Atom_sp tempFromAtom = fromAtom;    ; ; ;
-    Atom_sp tempToAtom = toAtom;        ; ; ;
-    Bond_O::canonicalizeBondOrder(tempFromAtom,tempToAtom,order); ; ; ;
-    tempFromAtom->bondTo(tempToAtom,order); ; ; ;
-    }                                   ; ; ;
-    }                                   ; ; ;
-    }                                   ; ; ;
-    |#
+    (let* ((residue-properties (residue-properties constitution))
+           (residue-net-charge (getf residue-properties :residue-net-charge)))
+      (chem:matter/set-properties residue (append residue-properties (chem:matter/properties residue)))
+      (when (numberp residue-net-charge)
+        (chem:residue/set-net-charge residue residue-net-charge)))
     ;; Now add stereochemical restraints
     (let ((stereoconfigurations (stereoconfigurations stereoisomer)))
       (loop for configuration in stereoconfigurations
             for name = (atom-name configuration)
             for residue-atom = (chem:atom-with-name residue name)
-            do (chem:set-stereochemistry-type residue-atom (stereochemistry-type configuration))
+            do (when (slot-boundp configuration 'stereochemistry-type)
+                 (chem:set-stereochemistry-type residue-atom (stereochemistry-type configuration)))
             do (chem:set-configuration residue-atom (configuration configuration))))
-    #|
-    // Now add stereochemical restraints ; ; ;
-                                        ; ; ;
-    //                                  ; ; ;
-    // Set chiral restraints            ; ; ;
-    //                                  ; ; ;
-    Stereoisomer_sp si = this->_Constitution->getStereoisomerWithName(residueName); ; ; ;
-    gctools::Vec0<StereoConfiguration_sp>::iterator	sci; ; ; ;
-    for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){ ; ; ;
-    core::T_sp name = (*sci)->getAtomName(); ; ; ;
-    core::T_mv aa_mv = res->atomWithName(name); ; ; ;
-    Atom_sp aa = gc::As<Atom_sp>(aa_mv); ; ; ;
-    LOG("Setting the configuration of atom(%s) to(%s)" , aa->description().c_str() , _rep_((*sci)->getConfiguration())  ); // ; ; ;
-    auto trans = translate::from_object<ConfigurationEnum,std::true_type>((*sci)->getConfiguration())._v; ; ; ;
-    aa->setStereochemistryType(chiralCenter); ; ; ;
-    aa->setConfiguration(trans);        ; ; ;
-    }                                   ; ; ;
-    |#
     ;; Now add dihedral restraints for E/Z pi bonds
     (let ((molecule (chem:make-molecule)))
       (chem:add-matter molecule residue)

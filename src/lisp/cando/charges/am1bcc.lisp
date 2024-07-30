@@ -419,9 +419,9 @@
   (let* ((bcc (calculate-bcc-corrections aggregate))
          (input-filename (sys:mkstemp (format nil "~asqm-input-" (namestring tmpdir))))
          (output-filename (sys:mkstemp (format nil "~asqm-output-" (namestring tmpdir))))
-         (qm-charge (let ((chg 0.0))
-                      (chem:do-atoms (atm aggregate)
-                        (incf chg (chem:atom/get-charge atm)))
+         (qm-charge (let ((chg 0))
+                      (chem:do-residues (res aggregate)
+                        (incf chg (chem:residue/get-net-charge res)))
                       chg))
          (order (charges:write-sqm-calculation (open input-filename :direction :output)
                                                aggregate
@@ -433,7 +433,8 @@
                      "-o" output-filename)))
     (unless sqm-executable
       (error "Could not find the executable ~a" sqm-executable))
-    (when verbose (format t "About to invoke ~s~%" args))
+    (when verbose (format t "About to invoke ~s~%" args)
+          (format t "qm-charge: ~d~%" qm-charge))
     (multiple-value-bind (process-stream status external-process)
         (ext:run-program "/bin/bash" (list "-c" (format nil "~a ~{~a~^ ~}" (namestring sqm-executable) args)))
       (unless (probe-file output-filename)

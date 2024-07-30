@@ -1,18 +1,25 @@
 (in-package :charges)
 
 
-(defun constrain-residue-charges (matter)
+(defun constrain-residue-charges (matter &key verbose)
   "Adjust charges so that residues have the correct net charges.
 Do this by calculating the deviation of the total charge for each residue from
 its net-charge and then subtract a fraction of the deviation from each atomic
 charge."
   (chem:do-residues (res matter)
-    (let ((residue-charge 0.0)
+    (let ((target-residue-charge (chem:residue/get-net-charge res))
+          (residue-charge 0.0)
           (atoms 0))
+      (when verbose
+        (format t "Constraining residue charge for ~s to ~d~%" res target-residue-charge))
       (chem:do-atoms (atm res)
         (incf atoms)
         (incf residue-charge (chem:atom/get-charge atm)))
-      (let ((adjust (/ (- residue-charge (float (chem:residue/get-net-charge res))) atoms)))
+      (when verbose
+        (format t "Starting residue charge: ~f for ~d atoms~%" residue-charge atoms))
+      (let ((adjust (/ (- residue-charge (float target-residue-charge)) atoms)))
+        (when verbose
+          (format t "Charge adjustment ~f~%" adjust))
         (chem:do-atoms (atm res)
           (chem:atom/set-charge atm (- (chem:atom/get-charge atm) adjust)))))))
 
