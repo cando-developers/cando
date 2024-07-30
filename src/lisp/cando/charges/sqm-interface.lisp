@@ -61,6 +61,8 @@ qm-charge : The overall charge of the molecule"
                      (vector-push-extend charge charge-vec))) 
               do (when (string= line "  Atom    Element       Mulliken Charge")
                    (setf line-charge 1)))))
+    (when (= (length charge-vec) 0)
+      (error "No charges were read from sqm output file ~s" pathname))
     (values atom-number-vec element-vec charge-vec)))
 
 (defun parse-mulliken-charge (line)
