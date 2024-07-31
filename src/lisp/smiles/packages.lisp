@@ -30,4 +30,5 @@
   (:export
    #:parse-smiles-string
    #:chem-molecule
-   #:cangen))
+   #:cangen
+   #:generate))
