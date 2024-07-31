@@ -251,6 +251,36 @@ CL_DEFUN OMatrix_sp make_m4_rotation_columns(const Vector3& col0, const Vector3&
                      , 1.0 );
   return res;
 }
+
+
+CL_LISPIFY_NAME("make-m4-columns");
+DOCGROUP(cando);
+CL_DEFUN OMatrix_sp make_m4_columns(const Vector3& col0, const Vector3& col1, const Vector3& col2, const Vector3& col3)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.setCol(0
+                     ,col0.getX()
+                     ,col0.getY()
+                     ,col0.getZ()
+                     ,0.0);
+  res->_Value.setCol(1
+                     ,col1.getX()
+                     ,col1.getY()
+                     ,col1.getZ()
+                     ,0.0);
+  res->_Value.setCol(2
+                     ,col2.getX()
+                     ,col2.getY()
+                     ,col2.getZ()
+                     ,0.0);
+  res->_Value.setCol(3
+                     ,col3.getX()
+                     ,col3.getY()
+                     ,col3.getZ()
+                     ,1.0);
+  return res;
+}
+
 CL_LISPIFY_NAME("make-m4-rotate-x");
 DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)
