@@ -6,5 +6,7 @@
   :depends-on ()
   :serial t
   :components ((:file "packages")
-               (:file "smiles")))
+               (:file "smiles")
+               (:file "cangen")
+               (:file "generate")))
 
