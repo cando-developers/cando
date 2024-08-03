@@ -60,6 +60,8 @@ public:
   CL_DEFMETHOD bool thetaDefinedP() const { return !std::isnan(this->_Theta); }
   CL_DEFMETHOD bool phiDefinedP() const { return !std::isnan(this->_Phi); }
 
+  bool definedp() const;
+  
   	/*! Return the stubJoint1 */
   virtual Joint_sp inputStubJoint0() const { return this->parent();}
   

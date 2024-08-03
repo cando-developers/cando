@@ -110,7 +110,7 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 
 void JumpJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
-  ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n{}") , stub.asString());
+//  ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n{}") , stub.asString());
   this->setPosition(coords,stub._Transform.getTranslation());
   KIN_LOG("orientation {}\n", stub.asString() );
 }

@@ -309,7 +309,9 @@ void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
 void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  ASSERT(this->definedp());
+  if (!this->definedp()) {
+    SIMPLE_ERROR("{} failed this->definedp()", core::_rep_(this->asSmartPtr()));
+  }
   KIN_LOG("name = {} stub = \n{}\n", _rep_(this->_Name), stub._Transform.asString());
   double bcTheta = std::isnan(this->_Theta) ? 0.0 : this->_Theta;
   double phi = std::isnan(this->_Phi) ? 0.0 : this->_Phi;

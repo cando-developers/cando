@@ -63,6 +63,16 @@ ComplexBondedJoint_sp ComplexBondedJoint_O::make(const chem::AtomId& atomId, cor
 }
 
 
+bool ComplexBondedJoint_O::definedp() const {
+
+  if (this->inputStubJoint2BoundP()) {
+    return !std::isnan(this->_Phi);
+  } else if (this->inputStubJoint1BoundP()) {
+    return !std::isnan(this->_Theta);
+  }
+  return !std::isnan(this->_Distance);
+}
+
 
 Stub ComplexBondedJoint_O::getInputStub(chem::NVector_sp coords) const
 {
