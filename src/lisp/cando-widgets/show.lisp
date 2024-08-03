@@ -364,7 +364,7 @@
                          :visible (eq representation :ribbon))
         (ngl:make-spacefill :name "Spacefill" :lazy t :sele sele
                             :visible (eq representation :spacefill))
-        (ngl:make-surface :name "Surface" :lazy t :sele sele :use-worker t
+        (ngl:make-surface :name "Surface" :lazy t :sele sele :use-worker nil
                           :color-scheme "residueindex"
                           :visible (eq representation :surface))))
 
