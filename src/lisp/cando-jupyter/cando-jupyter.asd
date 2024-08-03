@@ -8,6 +8,7 @@
                #:cando-user
                #:cando-widgets
                #:smarts-jupyter
+               #:topology-jupyter
                #:tirun-jupyter
                #:amber-jupyter)
   :serial t
