@@ -684,7 +684,9 @@ CL_DEFMETHOD int RingFinder_O::getNumberOfRingsExpected()
     LOG("this->_edges.size() = {}" , this->_edges.size()  );
     LOG("this->_vertices->hashTableCount() = {}" , this->_vertices->hashTableCount()  );
     int num = this->_edges.size()-this->_vertices->hashTableCount()+1;
-    ASSERTF(num>=0, ("There can not be negative number of rings - calculated rings[%d]/edges[%d]/vertices[%d]") , num , this->_edges.size() , this->_vertices->hashTableCount() );
+    if (num<0) {
+      SIMPLE_ERROR("Predicting {} rings in the molecule - there cannot be a negative number of rings edges: {} and vertices: {}", num, this->_edges.size(), this->_vertices->hashTableCount() );
+    }
     LOG("expecting {} rings" , num  );
     return (uint)num;
 }
@@ -783,26 +785,22 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
     SIMPLE_ERROR("You tried to find rings in a molecule with zero atoms");
   }
   this->initializeRingSearch();
-  int numberOfRingsExpected = this->getNumberOfRingsExpected();
-  LOG("Number of rings expected = {}" , numberOfRingsExpected  );
+  //int numberOfRingsExpected = this->getNumberOfRingsExpected();
+  //LOG("Number of rings expected = {}" , numberOfRingsExpected  );
   uint stage = 2;
 // if we try more than this many times
     // and don't find all the rings then something is wrong
   int trigger = numAtoms*2;
-  for (int numSteps = 0; numSteps<std::min(numAtoms,10); ++numSteps ) {
+  // Find rings up to 12 atoms
+  for (int numSteps = 0; numSteps<6; ++numSteps ) {
 //  while ( this->_finalRings.size() < numberOfRingsExpected ) {
     LOG("Looking for rings, stage= {} : trigger[{}] : numAtoms[{}] : numberOfRingsExpected[{}]" , stage , trigger , numAtoms , numberOfRingsExpected  );
     this->advanceRingSearch(stage,this->getNumberOfEdges());
     LOG("After ring search, number of rings found = {}"
         , this->_finalRings.size()  );
     // Stop once we find all the rings we expect to find
-    if (this->_finalRings.size()>=numberOfRingsExpected) break;
+    //if (this->_finalRings.size()>=numberOfRingsExpected) break;
     stage++;
-    trigger--;
-    if ( trigger<=0 )
-    {
-      SIMPLE_WARN("We advanced the ring search way beyond the number of times we should have needed to - there are {} atoms and {} rings expected and we advanced the search {} times", numAtoms , numberOfRingsExpected , stage );
-    }
   }
 }
 
