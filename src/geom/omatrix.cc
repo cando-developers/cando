@@ -55,13 +55,13 @@ CL_DEFUN OMatrix_sp OMatrix_O::make(bool ident)
   return om;
 };
 
-
 string	OMatrix_O::__repr__() const
 {
   stringstream ss;
   ss << this->_Value.asString();
   return ss.str();
 }
+
 
 CL_LISPIFY_NAME("setFromString");
 CL_DEFMETHOD     void	OMatrix_O::setFromString(const string& s)
@@ -178,6 +178,16 @@ CL_DEFUN OMatrix_sp make_matrix_identity()
   return res;
 }
 
+CL_LISPIFY_NAME("make-m4-identity");
+DOCGROUP(cando);
+CL_DEFUN OMatrix_sp make_m4_identity()
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.setToIdentity();
+  return res;
+}
+
+
 CL_LISPIFY_NAME("make-matrix-scale");
 DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_matrix_scale(double scale)
@@ -281,6 +291,24 @@ CL_DEFUN OMatrix_sp make_m4_columns(const Vector3& col0, const Vector3& col1, co
   return res;
 }
 
+CL_LISPIFY_NAME("make-m4");
+DOCGROUP(cando);
+CL_DEFUN OMatrix_sp make_m4(core::T_sp obj) {
+  OMatrix_sp res = OMatrix_O::create();
+  if (gc::IsA<core::SimpleVector_sp>(obj)) {
+    auto svobj = gc::As_unsafe<core::SimpleVector_sp>(obj);
+    if (svobj->length()!=16) goto ERROR;
+    for ( size_t idx = 0; idx<16; idx++ ) {
+      res->_Value.elements[idx] = core::clasp_to_double((*svobj)[idx]);
+    }
+    return res;
+  }
+ ERROR:
+  TYPE_ERROR(obj,core::Cons_O::createList(core::Cons_O::createList(cl::_sym_simple_vector),core::make_fixnum(16)));
+}
+
+
+
 CL_LISPIFY_NAME("make-m4-rotate-x");
 DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)
@@ -354,7 +382,7 @@ CL_DEFMETHOD Vector3 OMatrix_O::m_TIMES_v(const Vector3& vec) const
 
 core::List_sp OMatrix_O::encode() {
   core::Vector_sp v = core::core__make_vector(cl::_sym_DoubleFloat_O,16);
-  for ( size_t i(0); i<16; ++i ) {
+  for ( size_t i(0); i<12; ++i ) {
     v->rowMajorAset(i,core::clasp_make_double_float(this->_Value[i]));
   }
   return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,m),v),nil<core::T_O>());
@@ -362,9 +390,13 @@ core::List_sp OMatrix_O::encode() {
 
 void OMatrix_O::decode(core::List_sp c) {
   core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(oCar(c)));
-  for ( size_t i(0); i<16; ++i ) {
+  for ( size_t i(0); i<12; ++i ) {
     this->_Value[i] = core::clasp_to_double(v->rowMajorAref(i));
   }
+  this->_Value[12] = 0.0;
+  this->_Value[13] = 0.0;
+  this->_Value[14] = 0.0;
+  this->_Value[15] = 1.0;
 }
 
 CL_DOCSTRING(R"dx(Return the (values EIGEN-VALUES EIGEN-VECTOR-MATRIX) of the MATRIX.)dx");

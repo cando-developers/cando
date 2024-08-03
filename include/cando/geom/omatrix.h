@@ -40,6 +40,8 @@ namespace geom {
   public:
     Matrix	_Value;
   public:
+    bool fieldsp() const override { return true; };
+    void fields(core::Record_sp node) override {}; // we implement encode/decode so this isn't needed
     virtual core::List_sp encode();
     virtual void decode(core::List_sp);
   public:
