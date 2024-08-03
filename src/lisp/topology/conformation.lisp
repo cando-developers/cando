@@ -661,10 +661,12 @@ Some specialized methods will need coordinates for the assembler"))
            )))
 
 (defun assembler-check-joints (assembler)
-  (format t "In assembler-check-joints~%")
   (loop for atmol across (atmolecules (ataggregate assembler))
         do (loop for atres across (atresidues atmol)
-                 do (format t "atres: ~s~%" atres)
-                 do (loop for joint across (joints atres)
-                          do (when (not (kin:joint/definedp joint))
-                               (format t "   joint: ~s undefined~%" joint))))))
+                 for undefs = (loop for joint across (joints atres)
+                                    when (not (kin:joint/definedp joint))
+                                      collect joint)
+                 do (when undefs
+                      (format t "atres: ~s~%" atres)
+                      (loop for joint in undefs
+                            do (format t "   joint: ~s undefined~%" joint))))))
