@@ -402,6 +402,26 @@ Returns an instance of permissible-sidechain-rotamers."
     (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
     oligomer-shape))
 
+(defmethod write-rotamers (oligomer-shape (permissible-backbone-rotamers permissible-backbone-rotamers) (vec array))
+  (case (rotamers-state oligomer-shape)
+    (:incomplete-no-rotamers
+     (setf (rotamers-state oligomer-shape) :incomplete-backbone-rotamers-only))
+    (:incomplete-backbone-rotamers-only
+     (call-next-method))
+    (:complete-sidechain-and-backbone-rotamers
+     (setf (rotamers-state oligomer-shape) :incomplete-backbone-rotamers-only)
+     (call-next-method))
+    (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape)))))
+
+(defmethod write-rotamers (oligomer-shape (permissible-sidechain-rotamers permissible-sidechain-rotamers) (vec array))
+  (case (rotamers-state oligomer-shape)
+    ((:incomplete-no-rotamers :incomplete-backbone-rotamers-only)
+     (error "You cannot write-rotamers to sidechain-rotamers when rotamers-state is ~s" (rotamers-state oligomer-shape)))
+    ((:incomplete-backbone-rotamers-only :complete-sidechain-and-backbone-rotamers)
+     (call-next-method)
+     (setf (rotamers-state oligomer-shape) :complete-sidechain-and-backbone-rotamers))
+    (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape)))))
+
 (defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (val null))
   "Write the first allowed rotamer-index into the rotamer-index of each
 monomer-shape in the oligomer-shape. Return the oligomer-shape."
@@ -418,6 +438,19 @@ monomer-shape in the oligomer-shape. Return the oligomer-shape."
           do (setf (topology:rotamer-index monomer-shape) rotamer-index)))
   (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
   oligomer-shape)
+
+(defmethod write-rotamers (oligomer-shape (permissible-backbone-rotamers permissible-backbone-rotamers) (val null))
+  (setf (rotamers-state oligomer-shape) (ensure-valid-rotamers-state :incomplete-no-rotamers))
+  (call-next-method))
+
+(defmethod write-rotamers (oligomer-shape (permissible-sidechain-rotamers permissible-sidechain-rotamers) (val null))
+  (case (rotamers-state oligomer-shape)
+    ((:incomplete-no-rotamers :incomplete-backbone-rotamers-only)
+     (call-next-method))
+    (:complete-sidechain-and-backbone-rotamers
+     (setf (rotamers-state oligomer-shape) :incomplete-backbone-rotamers-only)
+     (call-next-method))
+    (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape)))))
 
 ;;; Switched to null specializer
 #+(or)
