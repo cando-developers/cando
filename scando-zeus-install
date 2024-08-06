@@ -25,9 +25,9 @@ clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-d
 #fi
 
 echo "Installing CANDO user features..."
-cando --eval "(ext:start-autocompilation)" \
-      --eval "(ql:quickload :cando-jupyter)" \
+cando --eval "(ql:quickload :cando-jupyter)" \
       --eval "(ql:quickload :spiros-rotamers)" \
       --eval "(ql:quickload :amber-protein-rotamers)" \
       --eval "(cando-jupyter:install :bin-path \"/home/meister/Development/cando/build/boehmprecise/cando\" :implementation \"zeus\" :image t)"
 
+#--eval "(ext:start-autocompilation)" \
