@@ -182,7 +182,7 @@ protected:
   virtual void redirectRestraintAtoms();
 
  public:
-  NVector_sp extract_coordinates(core::T_sp coords) const;
+  core::T_sp extract_coordinates(core::T_sp coords) const;
   contentIterator begin_contents() { return this->_Contents.begin(); };
   contentIterator end_contents() { return this->_Contents.end(); };
   const_contentIterator begin_contents() const { return this->_Contents.begin(); };

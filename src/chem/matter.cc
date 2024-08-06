@@ -706,33 +706,52 @@ CL_DEFUN void chem__matter_apply_coordinates(Matter_sp matter, core::Array_sp co
 }
 
 CL_LAMBDA((self chem:matter) &optional coordinates)
-CL_DEFMETHOD NVector_sp Matter_O::extract_coordinates(core::T_sp coordinates) const
-{
+CL_DEFMETHOD core::T_sp Matter_O::extract_coordinates(core::T_sp coordinates) const {
   size_t numberOfAtoms = this->numberOfAtoms();
   size_t numberOfValues = numberOfAtoms*3;
-  NVector_sp coords;
-  if ( coordinates.notnilp() ) {
-    if (gc::IsA<NVector_sp>(coordinates)) {
-      coords = gc::As_unsafe<NVector_sp>(coordinates);
-      if (coords->length()!=numberOfValues) {
-        SIMPLE_ERROR("The passed coordinates vector length {} must be {}", coords->length(), numberOfValues);
+  if (coordinates.nilp() || gc::IsA<NVector_sp>(coordinates)) {
+    NVector_sp coords;
+    if ( coordinates.notnilp() ) {
+      if (gc::IsA<NVector_sp>(coordinates)) {
+        coords = gc::As_unsafe<NVector_sp>(coordinates);
+        if (coords->length()!=numberOfValues) {
+          SIMPLE_ERROR("The passed coordinates vector length {} must be {}", coords->length(), numberOfValues);
+        }
       }
+    } else {
+      coords = NVector_O::create(numberOfValues);
     }
-  } else {
-    coords = NVector_O::create(numberOfValues);
+    size_t idx = 0;
+    Loop lAtoms2(this->asSmartPtr(), ATOMS);
+    vecreal* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      Vector3 pos = atm->getPosition();
+      cur[idx+0] = pos.getX();
+      cur[idx+1] = pos.getY();
+      cur[idx+2] = pos.getZ();
+      idx += 3;
+    }
+    return coords;
+  } else if (gc::IsA<core::SimpleVector_float_sp>(coordinates)) {
+    auto coords = gc::As_unsafe<core::SimpleVector_float_sp>(coordinates);
+    if (coords->length()!=numberOfValues) {
+      SIMPLE_ERROR("The passed coordinates vector length {} must be {}", coords->length(), numberOfValues);
+    }
+    size_t idx = 0;
+    Loop lAtoms2(this->asSmartPtr(), ATOMS);
+    float* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      Vector3 pos = atm->getPosition();
+      cur[idx+0] = pos.getX();
+      cur[idx+1] = pos.getY();
+      cur[idx+2] = pos.getZ();
+      idx += 3;
+    }
+    return coords;
   }
-  size_t idx = 0;
-  Loop lAtoms2(this->asSmartPtr(), ATOMS);
-  vecreal* cur = &(*coords)[0];
-  while (lAtoms2.advanceLoopAndProcess()) {
-    Atom_sp atm = lAtoms2.getAtom();
-    Vector3 pos = atm->getPosition();
-    cur[idx+0] = pos.getX();
-    cur[idx+1] = pos.getY();
-    cur[idx+2] = pos.getZ();
-    idx += 3;
-  }
-  return coords;
+  SIMPLE_ERROR("Add support for passed type");
 }
 
 CL_DEFUN NVector_sp chem__atom_list_extract_coordinates(core::List_sp atoms)
