@@ -478,35 +478,41 @@ tune-energy-function - A function that takes the energy-function and an assemble
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (adjust-internals assembler oligomer-shape)))
 
-(defgeneric apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape monomer-shape monomer-context atresidue coordinates)
+(defgeneric apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape monomer-shape monomer-context atresidue coordinates &key verbose)
   (:documentation "Specialize this on different monomer-shape classes.
 Fill in internal coordinates into the atresidue for the monomer-shape.
 Some specialized methods will need coordinates for the assembler"))
 
 
 
-(defun fill-internals-from-oligomer-shape (assembler oligomer-shape)
+(defun fill-internals-from-oligomer-shape (assembler oligomer-shape &optional verbose)
   "Fill internal coordinates from the fragments"
+  (when verbose (let ((*print-pretty* nil)) (format t "fill-internals-from-oligomer-shape ~s~%" oligomer-shape)))
   (let ((coordinates (topology:make-coordinates-for-assembler assembler)))
     (loop for ass-oligomer-shape in (oligomer-shapes assembler)
-          for oligomer = (oligomer ass-oligomer-shape)
           when (eq ass-oligomer-shape oligomer-shape)
-            do (loop with atagg = (ataggregate assembler)
-                     ;; It's really important that we use the ordered-monomers so that the monomer-shapes
-                     ;;  will install internal coordinates in the order from the root outwards.
-                     ;;  so that any preceeding monomer-shapes are built before any following ones.
-                     for monomer in (ordered-monomers oligomer)
-                     when (in-monomer-subset (monomer-subset assembler) monomer)
-                       do (let* ((monomer-context (gethash monomer (monomer-contexts assembler)))
-                                 (monomer-position (gethash monomer (monomer-positions assembler)))
-                                 (molecule-index (molecule-index monomer-position))
-                                 (residue-index (residue-index monomer-position))
-                                 (atmol (elt (atmolecules atagg) molecule-index))
-                                 (atres (elt (atresidues atmol) residue-index))
-                                 (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
-                                                  (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
-                                                  ms)))
-                            (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres coordinates))))))
+            do (let* ((oligomer (oligomer ass-oligomer-shape))
+                      (ordered-monomers (ordered-monomers oligomer)))
+                 (when verbose
+                   (let ((*print-pretty* nil))
+                     (format t "fill-internals-from-oligomer-shape ~s ordered-monomers: ~s~%" ass-oligomer-shape ordered-monomers)))
+                 (loop with atagg = (ataggregate assembler)
+                       ;; It's really important that we use the ordered-monomers so that the monomer-shapes
+                       ;;  will install internal coordinates in the order from the root outwards.
+                       ;;  so that any preceeding monomer-shapes are built before any following ones.
+                       for monomer in ordered-monomers
+                       when (in-monomer-subset (monomer-subset assembler) monomer)
+                         do (let* ((monomer-context (gethash monomer (monomer-contexts assembler)))
+                                   (monomer-position (gethash monomer (monomer-positions assembler)))
+                                   (molecule-index (molecule-index monomer-position))
+                                   (residue-index (residue-index monomer-position))
+                                   (atmol (elt (atmolecules atagg) molecule-index))
+                                   (atres (elt (atresidues atmol) residue-index))
+                                   (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
+                                                    (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
+                                                    ms)))
+                              (when verbose (format t "applying internals for monomer: ~s~%" monomer))
+                              (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres coordinates :verbose verbose)))))))
 
 #|
 ;;;Idea to make monomer-shape subclasses control how internal coordinates get generated.

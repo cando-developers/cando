@@ -46,7 +46,10 @@
             )))
 
 
-(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue coordinates)
+(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue coordinates &key verbose)
+  (when verbose
+    (let ((*print-pretty* nil))
+      (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   rotamer-shape ~s~%  monomer-context ~s~%" oligomer-shape rotamer-shape monomer-context)))
   (let* ((rotamers-database (rotamers-database oligomer-shape))
          (context-rotamers (let ((rots (gethash monomer-context (monomer-context-to-context-rotamers rotamers-database))))
                              (unless rots (error "Could not find monomer-context ~a in rotamers-database" monomer-context))
@@ -81,16 +84,11 @@
                      :residue (residue backbone-monomer-shape))))
 
 
-(defun ensure-valid-rotamers-state (state)
-  (unless (member state '(:incomplete-no-rotamers :incomplete-backbone-rotamers-only :complete-sidechain-and-backbone-rotamers))
-    (error "Illegal rotamers state ~s - must be one of (:incomplete-no-rotamers :incomplete-backbone-rotamers-only :complete-sidechain-and-backbone-rotamers)"))
-  state)
-
 
 (defclass oligomer-shape ()
   ((name :initarg :name :accessor name)
-   (rotamers-state :initform :undefined :initarg :rotamers-state :accessor rotamers-state
-                   :type (member :undefined :incomplete-no-rotamers :incomplete-backbone-rotamers-only :complete-sidechain-and-backbone-rotamers))
+   (rotamers-state :initarg :rotamers-state :accessor rotamers-state
+                   :type (member :undefined :incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers))
    (oligomer :initarg :oligomer :accessor oligomer)
    (rotamers-database :initarg :rotamers-database :accessor rotamers-database)
    (monomer-shape-info-vector :initarg :monomer-shape-info-vector :reader monomer-shape-info-vector)
@@ -103,6 +101,20 @@
                          :documentation "This is mutable")
    (monomer-shape-map :initarg :monomer-shape-map :accessor monomer-shape-map)
    ))
+
+(defun ensure-valid-rotamers-state (state)
+  (unless (member state
+                  '(:incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers))
+    (error "Illegal rotamers state ~s - must be one of ~s"
+           state
+           '(:incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers)
+           ))
+  state)
+
+(defun set-rotamers-state (oligomer-shape state)
+  (ensure-valid-rotamers-state state)
+  (setf (rotamers-state oligomer-shape) state)
+  state)
 
 (defgeneric copy-oligomer-shape (oligomer-shape))
 
@@ -119,6 +131,7 @@
                    (gethash monomer monomer-shape-map) new-monomer-shape))
     (make-instance 'oligomer-shape
                    :name (name oligomer-shape)
+                   :rotamers-state (rotamers-state oligomer-shape)
                    :oligomer (oligomer oligomer-shape)
                    :rotamers-database (rotamers-database oligomer-shape)
                    :monomer-shape-info-vector (monomer-shape-info-vector oligomer-shape)
@@ -131,7 +144,15 @@
 
 (defmethod print-object ((obj oligomer-shape) stream)
   (print-unreadable-object (obj stream :type t)
-        (format stream "size: ~d" (length (monomer-shape-vector obj)))))
+    (let* ((vec (make-array (length (monomer-shape-vector obj))
+                           :initial-contents
+                           (loop for idx below (length (monomer-shape-vector obj))
+                                 for monomer-shape = (aref (monomer-shape-vector obj) idx)
+                                 for rotamer-index = (if (slot-boundp monomer-shape 'rotamer-index)
+                                                         (rotamer-index monomer-shape)
+                                                         :unbound)
+                                 collect rotamer-index))))
+        (format stream "~s ~s :rotamer-indexes ~s" (name obj) (rotamers-state obj) vec))))
 
 (defmethod kin:orientation-transform ((oligomer-shape oligomer-shape))
   (kin:orientation-transform (orientation oligomer-shape)))
@@ -218,16 +239,16 @@
 (defmethod make-oligomer-shape ((oligomer oligomer) (rotamers-database rotamers-database)
                                 &key (oligomer-shape-class-name 'oligomer-shape)
                                   monomer-shape-factory (orientation (make-orientation))
-                                  callback-initial-backbone-rotamer-indexes
-                                  callback-initial-sidechain-rotamer-indexes
+                                  callback-backbone-rotamer-indexes
+                                  callback-sidechain-rotamer-indexes
                                   extra-arguments
                                   name)
   "Make an oligomer-shape.
-callback-initial-backbone-rotamer-indexes - A function that takes the lambda-list (oligomer-shape permissible-backbone-rotamers) and sets the initial-backbone-rotamer-indexes.
-callback-initial-sidechain-rotamer-indexes - A lambda that takes the lambda-list (oligomer-shape permissible-sidechain-rotamers) and sets the initial sidechain rotamer indexes.
+callback-backbone-rotamer-indexes - A function that takes the lambda-list (oligomer-shape permissible-backbone-rotamers) and sets the backbone-rotamer-indexes.
+callback-sidechain-rotamer-indexes - A lambda that takes the lambda-list (oligomer-shape permissible-sidechain-rotamers) and sets the initial sidechain rotamer indexes.
 "
-  (check-type callback-initial-backbone-rotamer-indexes (or null function))
-  (check-type callback-initial-sidechain-rotamer-indexes (or null function))
+  (check-type callback-backbone-rotamer-indexes (or null function))
+  (check-type callback-sidechain-rotamer-indexes (or null function))
   (let* ((foldamer (topology:foldamer (topology:oligomer-space oligomer)))
          (shape-info (shape-info foldamer))
          #+(or)(kind-order (loop for kind-keys in (kind-keys shape-info)
@@ -298,26 +319,45 @@ callback-initial-sidechain-rotamer-indexes - A lambda that takes the lambda-list
                         :in-monomers in-monomers
                         :out-monomers out-monomers
                         :name name
-                        :rotamers-state (ensure-valid-rotamers-state :incomplete-backbone-only)
+                        :rotamers-state (ensure-valid-rotamers-state :incomplete-no-rotamers)
                         extra-arguments)))
-        (let* ((permissible-backbone-rotamers (make-permissible-backbone-rotamers os))
-               (backbone-rotamer-indexes (if callback-backbone-rotamer-indexes
-                                             (funcall callback-initial-backbone-rotamer-indexes
-                                                      os
-                                                      permissible-backbone-rotamers)))
-               (write-rotamers os permissible-backbone-rotamers backbone-rotamer-indexes))
-          (let* ((permissible-sidechain-rotamers (make-permissible-sidechain-rotamers os))
-                 (sidechain-rotamer-indexes (if callback-sidechain-rotamer-indexes
-                                                (funcall callback-initial-sidechain-rotamer-indexes
-                                                         os
-                                                         permissible-sidechain-rotamers))))
-            (write-rotamers os permissible-sidechain-rotamers sidechain-rotamer-indexes))
-          os)))))
+        (set-rotamers os :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
+                         :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes)
+        os))))
 
-(defmethod make-oligomer-shape ((oligomer-space oligomer-space) (rotamers-database rotamers-database) &key (oligomer-index 0) (orientation (make-orientation)) name initial-rotamer-index)
+(defun set-rotamers (oligomer-shape
+                     &key
+                       callback-backbone-rotamer-indexes
+                       callback-sidechain-rotamer-indexes
+                       )
+  (let* ((permissible-backbone-rotamers (make-permissible-backbone-rotamers oligomer-shape))
+         (backbone-rotamer-indexes (if callback-backbone-rotamer-indexes
+                                       (funcall callback-backbone-rotamer-indexes
+                                                oligomer-shape
+                                                permissible-backbone-rotamers))))
+    (write-rotamers oligomer-shape permissible-backbone-rotamers backbone-rotamer-indexes)
+    (when (eq (rotamers-state oligomer-shape) :incomplete-backbone-rotamers)
+      (let* ((permissible-sidechain-rotamers (make-permissible-sidechain-rotamers oligomer-shape))
+             (sidechain-rotamer-indexes (if callback-sidechain-rotamer-indexes
+                                            (funcall callback-sidechain-rotamer-indexes
+                                                     oligomer-shape
+                                                     permissible-sidechain-rotamers))))
+        (write-rotamers oligomer-shape permissible-sidechain-rotamers sidechain-rotamer-indexes)
+        (values backbone-rotamer-indexes sidechain-rotamer-indexes)))))
+
+
+(defmethod make-oligomer-shape ((oligomer-space oligomer-space) (rotamers-database rotamers-database)
+                                &rest args
+                                &key (oligomer-index 0) 
+                                  (oligomer-shape-class-name 'oligomer-shape)
+                                  monomer-shape-factory (orientation (make-orientation))
+                                  callback-backbone-rotamer-indexes
+                                  callback-sidechain-rotamer-indexes
+                                  extra-arguments
+                                  name)
   (let ((oligomer (make-oligomer oligomer-space oligomer-index)))
-    (make-oligomer-shape oligomer rotamers-database :orientation orientation :name name
-                         :initial-rotamer-index initial-rotamer-index)))
+    (remf args :oligomer-index)
+    (apply 'make-oligomer-shape oligomer rotamers-database args)))
 
 
 (defgeneric read-oligomer-shape-rotamers (oligomer-shape)
@@ -476,11 +516,11 @@ callback-initial-sidechain-rotamer-indexes - A lambda that takes the lambda-list
     (loop for adjustment in adjustments
           do (internal-adjust adjustment assembler))))
  
-(defun update-internals (assembler oligomer-shape)
+(defun update-internals (assembler oligomer-shape &key verbose)
    "Update the internal coordinates of the assembler for the oligomer-shape or whatever type the second argument is.
 : assembler - the assembler to update
 : oligomer-shape - An oligomer-shape or permissible-rotamers in the assembler"
-  (fill-internals-from-oligomer-shape assembler oligomer-shape)
+  (fill-internals-from-oligomer-shape assembler oligomer-shape verbose)
   (adjust-internals assembler oligomer-shape))
 
 

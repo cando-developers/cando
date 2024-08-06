@@ -440,7 +440,10 @@
    #:permissible-rotamer-vector
    #:make-permissible-sidechain-rotamer-for-monomer
    #:parse-atom-graph
-   #:molecule-from-sexp))
+   #:molecule-from-sexp
+   #:set-rotamers-state
+   #:set-rotamers
+   #:apply-rotamers))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

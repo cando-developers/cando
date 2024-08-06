@@ -98,6 +98,7 @@
   (call-next-method))
 
 
+
 (defun one-backbone-permissible-rotamer (monomer-context rotamers-db rotamers index sidechain sidechain-monomer-context)
   (declare (ignore sidechain))
   (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
@@ -405,21 +406,23 @@ Returns an instance of permissible-sidechain-rotamers."
 (defmethod write-rotamers (oligomer-shape (permissible-backbone-rotamers permissible-backbone-rotamers) (vec array))
   (case (rotamers-state oligomer-shape)
     (:incomplete-no-rotamers
-     (setf (rotamers-state oligomer-shape) :incomplete-backbone-rotamers-only))
-    (:incomplete-backbone-rotamers-only
+     (set-rotamers-state oligomer-shape :incomplete-backbone-rotamers)
+     (call-next-method))
+    (:incomplete-backbone-rotamers
      (call-next-method))
     (:complete-sidechain-and-backbone-rotamers
-     (setf (rotamers-state oligomer-shape) :incomplete-backbone-rotamers-only)
+     (set-rotamers-state oligomer-shape :incomplete-backbone-rotamers)
      (call-next-method))
-    (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape)))))
+    (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape))))
+  )
 
 (defmethod write-rotamers (oligomer-shape (permissible-sidechain-rotamers permissible-sidechain-rotamers) (vec array))
   (case (rotamers-state oligomer-shape)
-    ((:incomplete-no-rotamers :incomplete-backbone-rotamers-only)
+    (:incomplete-no-rotamers
      (error "You cannot write-rotamers to sidechain-rotamers when rotamers-state is ~s" (rotamers-state oligomer-shape)))
-    ((:incomplete-backbone-rotamers-only :complete-sidechain-and-backbone-rotamers)
+    ((:incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers)
      (call-next-method)
-     (setf (rotamers-state oligomer-shape) :complete-sidechain-and-backbone-rotamers))
+     (set-rotamers-state oligomer-shape :complete-sidechain-and-backbone-rotamers))
     (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape)))))
 
 (defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (val null))
@@ -440,15 +443,15 @@ monomer-shape in the oligomer-shape. Return the oligomer-shape."
   oligomer-shape)
 
 (defmethod write-rotamers (oligomer-shape (permissible-backbone-rotamers permissible-backbone-rotamers) (val null))
-  (setf (rotamers-state oligomer-shape) (ensure-valid-rotamers-state :incomplete-no-rotamers))
+  (set-rotamers-state oligomer-shape :incomplete-no-rotamers)
   (call-next-method))
 
 (defmethod write-rotamers (oligomer-shape (permissible-sidechain-rotamers permissible-sidechain-rotamers) (val null))
   (case (rotamers-state oligomer-shape)
-    ((:incomplete-no-rotamers :incomplete-backbone-rotamers-only)
+    ((:incomplete-no-rotamers :incomplete-backbone-rotamers)
      (call-next-method))
     (:complete-sidechain-and-backbone-rotamers
-     (setf (rotamers-state oligomer-shape) :incomplete-backbone-rotamers-only)
+     (set-rotamers-state oligomer-shape :incomplete-backbone-rotamers)
      (call-next-method))
     (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape)))))
 
@@ -508,15 +511,20 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
   "Return a vector of zero for rotamer index - this shouldn't be written into a permissible-rotamers if you want a correct permissible-rotamers"
   (make-array (length (permissible-rotamer-vector permissible-rotamers)) :initial-element 0))
 
-#+(or)
-(defun first-rotamers (permissible-rotamers)
+(defun first-rotamers (oligomer-shape permissible-rotamers)
   "Return a vector of the first rotamer index for each position"
-  (error "fix me")
-  #+(or)
-  (map 'vector (lambda (ee) (elt ee 0)) (allowed-rotamer-indexes-vector permissible-rotamers)))
+  (declare (ignore oligomer-shape))
+  (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
+    (make-array len :initial-contents
+                (loop :for idx below len
+                      :for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) idx)
+                      :for rnd = 0
+                      :for index = (aref (allowed-rotamer-indexes permissible-rotamer) rnd)
+                      :collect index))))
 
-(defun random-rotamers (permissible-rotamers)
+(defun random-rotamers (oligomer-shape permissible-rotamers)
   "Return a vector of random rotamer indices"
+  (declare (ignore oligomer-shape))
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
     (make-array len :initial-contents
                 (loop :for idx below len
@@ -525,6 +533,16 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
                       :for index = (aref (allowed-rotamer-indexes permissible-rotamer) rnd)
                       :collect index))))
 
+(defun apply-rotamers (oligomer-shape permissible-rotamers vec)
+  "Return a vector of the first rotamer index for each position"
+  (declare (ignore oligomer-shape))
+  (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
+    (make-array len :initial-contents
+                (loop :for idx below len
+                      :for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) idx)
+                      :for val = (aref vec idx)
+                      :for index = (aref (allowed-rotamer-indexes permissible-rotamer) val)
+                      :collect index))))
 
 
 #+(or)
@@ -541,4 +559,5 @@ Return that aggregate."
                     mols)
               (unless (increment-permissible-rotamers sidechain-stepper)
                 (return-from build-all-sidechains (chem:make-aggregate :agg mols)))))))
+
 
