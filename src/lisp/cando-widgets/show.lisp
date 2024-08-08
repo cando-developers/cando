@@ -267,18 +267,18 @@
                                :grid-auto-rows "min-content"
                                :grid-template-rows "min-content 1fr"
                                :grid-template-columns "repeat(12, min-content) 1fr"
-                               :grid-template-areas "'label    autoview pic   .     .     .          .     .     .      .     .         .     .      .'
-                                                     'stage    stage    stage stage stage stage      stage stage stage  stage stage     stage stage  stage'
-                                                     'label0   visible0 box0  axes0 repr0 selelabel0 sele0 stop0 pause0 fore0 fastfore0 loop0 frame0 .'
-                                                     'label1   visible1 box1  axes1 repr1 selelabel1 sele1 stop1 pause1 fore1 fastfore1 loop1 frame1 .'
-                                                     'label2   visible2 box2  axes2 repr2 selelabel2 sele2 stop2 pause2 fore2 fastfore2 loop2 frame2 .'
-                                                     'label3   visible3 box3  axes3 repr3 selelabel3 sele3 stop3 pause3 fore3 fastfore3 loop3 frame3 .'
-                                                     'label4   visible4 box4  axes4 repr4 selelabel4 sele4 stop4 pause4 fore4 fastfore4 loop4 frame4 .'
-                                                     'label5   visible5 box5  axes5 repr5 selelabel5 sele5 stop5 pause5 fore5 fastfore5 loop5 frame5 .'
-                                                     'label6   visible6 box6  axes6 repr6 selelabel6 sele6 stop6 pause6 fore6 fastfore6 loop6 frame6 .'
-                                                     'label7   visible7 box7  axes7 repr7 selelabel7 sele7 stop7 pause7 fore7 fastfore7 loop7 frame7 .'
-                                                     'label8   visible8 box8  axes8 repr8 selelabel8 sele8 stop8 pause8 fore8 fastfore8 loop8 frame8 .'
-                                                     'label9   visible9 box9  axes9 repr9 selelabel9 sele9 stop9 pause9 fore9 fastfore9 loop9 frame9 .'")))))
+                               :grid-template-areas "'label    autoview pic   .     .      .     .     .      .     .         .     .      . . .'
+                                                     'stage    stage    stage stage stage       stage  stage      stage stage stage  stage stage     stage stage  stage'
+                                                     'label0   visible0 box0  axes0 repr0 color0 selelabel0 sele0 stop0 pause0 fore0 fastfore0 loop0 frame0 .'
+                                                     'label1   visible1 box1  axes1 repr1 color1 selelabel1 sele1 stop1 pause1 fore1 fastfore1 loop1 frame1 .'
+                                                     'label2   visible2 box2  axes2 repr2 color2 selelabel2 sele2 stop2 pause2 fore2 fastfore2 loop2 frame2 .'
+                                                     'label3   visible3 box3  axes3 repr3 color3 selelabel3 sele3 stop3 pause3 fore3 fastfore3 loop3 frame3 .'
+                                                     'label4   visible4 box4  axes4 repr4 color4 selelabel4 sele4 stop4 pause4 fore4 fastfore4 loop4 frame4 .'
+                                                     'label5   visible5 box5  axes5 repr5 color5 selelabel5 sele5 stop5 pause5 fore5 fastfore5 loop5 frame5 .'
+                                                     'label6   visible6 box6  axes6 repr6 color6 selelabel6 sele6 stop6 pause6 fore6 fastfore6 loop6 frame6 .'
+                                                     'label7   visible7 box7  axes7 repr7 color7 selelabel7 sele7 stop7 pause7 fore7 fastfore7 loop7 frame7 .'
+                                                     'label8   visible8 box8  axes8 repr8 color8 selelabel8 sele8 stop8 pause8 fore8 fastfore8 loop8 frame8 .'
+                                                     'label9   visible9 box9  axes9 repr9 color9 selelabel9 sele9 stop9 pause9 fore9 fastfore9 loop9 frame9 .'")))))
 
 (defmethod initialize-instance :after ((instance ngl-pane) &rest initargs &key pane &allow-other-keys)
   (declare (ignore initargs))
@@ -410,10 +410,9 @@
 
 (defun ngl-show-on-pane-representations (pane-instance object &rest rest
                                          &key append representations
-                                           box sele axes
+                                              box sele axes color
                                          &allow-other-keys
-                                         &aux (display (not pane-instance))
-                                           )
+                                         &aux (display (not pane-instance)))
   (declare (ignore display append))
   (multiple-value-bind (component agg)
       (make-ngl-structure object :auto-view-duration 0 :representations representations)
@@ -444,6 +443,10 @@
                                     :layout (jw:make-layout :align-self "center"
                                                             :grid-area "sele"
                                                             :width "8em")))
+           (color-picker (jw:make-color-picker :tooltip "Color" :value (or color "#909090")
+                                               :layout (jw:make-layout :align-self "center"
+                                                                       :grid-area "color"
+                                                                       :width "8em")))
            (controls (append
                       (list (jw:make-label :value (or (chem:get-name agg) "")
                                            :style (jw:make-description-style :description-width "min-content")
@@ -460,6 +463,7 @@
                                                                    :grid-area "selelabel"
                                                                    :width "min-content"))
                              sele-text
+                             color-picker
                              traj-controls))))
       (add-axes component axes)
       (let ((added-bounding-box (maybe-add-bounding-box component agg box)))
@@ -477,6 +481,12 @@
                     (loop for representation in (ngl:representations component)
                           when (ngl-selectable-repr-p representation)
                             do (setf (ngl:sele representation) new-value))))
+      (jw:observe color-picker :value
+                  (lambda (inst type name old-value new-value source)
+                    (declare (ignore inst))
+                    (declare (ignore type name old-value source))
+                    (loop for representation in (ngl:representations component)
+                          do (setf (ngl:color-value representation) new-value))))
       (jw:observe axes-button :value
                   (lambda (inst type name old-value new-value source)
                     (declare (ignore inst type name old-value source))
