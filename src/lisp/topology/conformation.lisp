@@ -4,32 +4,45 @@
 (defclass orientation ()
   ((to-origin :initarg :to-origin :accessor to-origin
               :documentation "This is the transform that takes the object to the origin")
+   (adjust :initarg :adjust :accessor adjust
+           :documentation "Apply this to the coordinates after the to-origin transform was applied")
    (from-origin :initarg :from-origin :accessor from-origin
-                              :documentation "This is the second transform that takes the object after to-origin is applied")))
+                :documentation "This is the second transform that takes the object after to-origin is applied"))
+  (:documentation "Represent the orientation of a molecule in a design calculation."))"
 
 (defun make-orientation (&key (from-origin (geom:make-matrix-identity))
+                           (adjust (geom:make-matrix-identity))
                            (to-origin (geom:make-matrix-identity)))
+  (unless from-origin
+    (error "make-orientation from-origin must be non-nil"))
+  (unless adjust
+    (error "make-orientation adjust must be non-nil"))
+  (unless to-origin
+    (error "make-orientation to-origin must be non-nil"))
   (make-instance 'orientation
                  :from-origin from-origin
+                 :adjust adjust
                  :to-origin to-origin))
 
 (defun copy-orientation (orientation)
   (make-instance 'orientation
                  :from-origin (geom:copy-matrix (from-origin orientation))
+                 :adjust (geom:copy-matrix (adjust orientation))
                  :to-origin (geom:copy-matrix (to-origin orientation))))
 
 (defmethod print-object ((obj orientation) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t)
-        (format stream ":from-origin~%~s~%:to-origin~%~s~%" (from-origin obj) (to-origin obj)))))
+        (format stream ":from-origin~%~s~%:adjust~%~s~%:to-origin~%~s~%" (from-origin obj) (adjust obj) (to-origin obj)))))
 
 (defgeneric kin:orientation-transform (orientation))
 
 (defmethod kin:orientation-transform ((orientation orientation))
   (let* ((from-origin (topology:from-origin orientation))
          (to-origin (to-origin orientation))
-         (transform (geom:m*m from-origin to-origin)))
+         (transform0 (geom:m*m adjust to-origin))
+         (transform (geom:m*m from-origin transform0)))
     transform))
 
 (defclass orientations ()
