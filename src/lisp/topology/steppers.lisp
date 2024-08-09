@@ -366,6 +366,60 @@ Returns an instance of permissible-sidechain-rotamers."
           do (setf (aref vec index) max))
     vec))
 
+
+(defclass rotamer-indexes (cl:sequence standard-object)
+  ((rotamer-indexes :initarg :rotamer-indexes :accessor rotamer-indexes))
+  (:documentation "A class to index into a vector of rotamers"))
+
+(defun rotamer-indexes-length (rotamer-indexes)
+  (length (rotamer-indexes rotamer-indexes)))
+
+(defun rotamer-indexes-elt (rotamer-indexes index)
+  (elt (rotamer-indexes rotamer-indexes) index))
+
+(defun (setf rotamer-indexes-elt) (new rotamer-indexes index)
+  (setf (elt (rotamer-indexes rotamer-indexes) index) new))
+
+(sequence:define-random-access-sequence rotamer-indexes rotamer-indexes-length rotamer-indexes-elt)
+
+(defmethod sequence:make-sequence-like ((sequence rotamer-indexes) length &rest args &key initial-element initial-contents)
+     (make-instance 'rotamer-indexes
+                    :rotamer-indexes
+                    (apply #'make-array length
+                           :element-type 'ext:byte32
+                           args)))
+
+(defun make-rotamer-indexes (length &rest args)
+  (make-instance 'rotamer-indexes
+                 :rotamer-indexes
+                 (apply #'make-array length
+                        :element-type 'ext:byte32
+                        args)))
+
+(defclass indexes-into-rotamer-indexes (cl:sequence standard-object)
+  ((indexes-into-rotamer-indexes :initarg :indexes-into-rotamer-indexes :accessor indexes-into-rotamer-indexes))
+  (:documentation "A class to index into a vector of indexes into a vector of rotamers"))
+
+(defun indexes-into-rotamer-indexes-length (indexes-into-rotamer-indexes)
+  (length (indexes-into-rotamer-indexes indexes-into-rotamer-indexes)))
+
+(defun indexes-into-rotamer-indexes-elt (indexes-into-rotamer-indexes index)
+  (elt (indexes-into-rotamer-indexes indexes-into-rotamer-indexes) index))
+
+(defun (setf indexes-into-rotamer-indexes-elt) (new indexes-into-rotamer-indexes index)
+  (setf (elt (indexes-into-rotamer-indexes indexes-into-rotamer-indexes) index) new))
+
+(sequence:define-random-access-sequence indexes-into-rotamer-indexes indexes-into-rotamer-indexes-length indexes-into-rotamer-indexes-elt)
+
+(defun make-indexes-into-rotamer-indexes (length &rest args)
+  (make-instance 'indexes-into-rotamer-indexes
+                 :element-type 'ext:byte32
+                 :indexes-into-rotamer-indexes
+                 (apply #'make-array length
+                        :element-type 'ext:byte32
+                        args)))
+
+
 (defmethod read-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers))
   "Read the rotamer shapes from the stepper and return them in a vector"
   (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
@@ -380,30 +434,33 @@ Returns an instance of permissible-sidechain-rotamers."
                (let ((*print-pretty* nil))
                  (error "In read-rotamers a rotamer-index ~a at index ~a was read that is not one of the expected ones~% ~s - this means that the oligomer-shape got out of sync with the permissible-rotamers" read-rotamer-index index (allowed-rotamer-indexes permissible-rotamer))))
           do (setf (aref vec index) (topology:rotamer-index monomer-shape)))
-    vec))
+    (make-instance 'rotamer-indexes :rotamer-indexes vec)))
 
-(defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (vec array))
+(defgeneric write-rotamers (oligomer-shape permissible-rotamers values))
+
+(defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (rotamer-indexes rotamer-indexes))
   "Write a vector of rotamer shapes into the stepper"
   (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
-  (unless (= (length vec)
-             (length (permissible-rotamer-vector permissible-rotamers)))
-    (error "The number of (permissible-rotamer-vector permissible-rotamers) ~s doesn't match the length of the vec ~s"
-           (permissible-rotamer-vector permissible-rotamers)
-           vec))
-  (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
-    (loop for index below len
-          for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) index)
-          for locus = (monomer-shape-locus permissible-rotamer)
-          for monomer-shape = (aref (topology:monomer-shape-vector oligomer-shape) locus)
-          for allowed-rotamer-indexes = (allowed-rotamer-indexes permissible-rotamer)
-          for rotamer-index = (aref vec index)
-          do (unless (position rotamer-index allowed-rotamer-indexes)
-               (error "You are trying to write a rotamer-index ~a into locus ~a but it is not one of the permissible ones: ~s" rotamer-index locus allowed-rotamer-indexes))
-          do (setf (topology:rotamer-index monomer-shape) rotamer-index))
-    (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
-    oligomer-shape))
+  (let ((vec (rotamer-indexes rotamer-indexes)))
+    (unless (= (length vec)
+               (length (permissible-rotamer-vector permissible-rotamers)))
+      (error "The number of (permissible-rotamer-vector permissible-rotamers) ~s doesn't match the length of the vec ~s"
+             (permissible-rotamer-vector permissible-rotamers)
+             vec))
+    (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
+      (loop for index below len
+            for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) index)
+            for locus = (monomer-shape-locus permissible-rotamer)
+            for monomer-shape = (aref (topology:monomer-shape-vector oligomer-shape) locus)
+            for allowed-rotamer-indexes = (allowed-rotamer-indexes permissible-rotamer)
+            for rotamer-index = (aref vec index)
+            do (unless (position rotamer-index allowed-rotamer-indexes)
+                 (error "You are trying to write a rotamer-index ~a into locus ~a but it is not one of the permissible ones: ~s" rotamer-index locus allowed-rotamer-indexes))
+            do (setf (topology:rotamer-index monomer-shape) rotamer-index))
+      (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
+      oligomer-shape)))
 
-(defmethod write-rotamers (oligomer-shape (permissible-backbone-rotamers permissible-backbone-rotamers) (vec array))
+(defmethod write-rotamers (oligomer-shape (permissible-backbone-rotamers permissible-backbone-rotamers) (rotamer-indexes rotamer-indexes))
   (case (rotamers-state oligomer-shape)
     (:incomplete-no-rotamers
      (set-rotamers-state oligomer-shape :incomplete-backbone-rotamers)
@@ -416,7 +473,7 @@ Returns an instance of permissible-sidechain-rotamers."
     (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape))))
   )
 
-(defmethod write-rotamers (oligomer-shape (permissible-sidechain-rotamers permissible-sidechain-rotamers) (vec array))
+(defmethod write-rotamers (oligomer-shape (permissible-sidechain-rotamers permissible-sidechain-rotamers) (rotamer-indexes rotamer-indexes))
   (case (rotamers-state oligomer-shape)
     (:incomplete-no-rotamers
      (error "You cannot write-rotamers to sidechain-rotamers when rotamers-state is ~s" (rotamers-state oligomer-shape)))
@@ -507,36 +564,35 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
   (let ((rotamer-state (rotamer-state permissible-rotamers index)))
       (write-rotamers permissible-rotamers rotamer-state)))
 
-(defun zero-rotamers (permissible-rotamers)
-  "Return a vector of zero for rotamer index - this shouldn't be written into a permissible-rotamers if you want a correct permissible-rotamers"
-  (make-array (length (permissible-rotamer-vector permissible-rotamers)) :initial-element 0))
-
 (defun first-rotamers (oligomer-shape permissible-rotamers)
   "Return a vector of the first rotamer index for each position"
   (declare (ignore oligomer-shape))
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
-    (make-array len :initial-contents
-                (loop :for idx below len
-                      :for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) idx)
-                      :for rnd = 0
-                      :for index = (aref (allowed-rotamer-indexes permissible-rotamer) rnd)
-                      :collect index))))
+    (make-instance 'rotamer-indexes
+                   :rotamer-indexes (make-array len :initial-contents
+                                                (loop :for idx below len
+                                                      :for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) idx)
+                                                      :for rnd = 0
+                                                      :for index = (aref (allowed-rotamer-indexes permissible-rotamer) rnd)
+                                                      :collect index)))))
 
 (defun random-rotamers (oligomer-shape permissible-rotamers)
   "Return a vector of random rotamer indices"
   (declare (ignore oligomer-shape))
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
-    (make-array len :initial-contents
-                (loop :for idx below len
-                      :for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) idx)
-                      :for rnd = (random (length (allowed-rotamer-indexes permissible-rotamer)))
-                      :for index = (aref (allowed-rotamer-indexes permissible-rotamer) rnd)
-                      :collect index))))
+    (make-instance 'rotamer-indexes
+                   :rotamer-indexes (make-array len :initial-contents
+                                                (loop :for idx below len
+                                                      :for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) idx)
+                                                      :for rnd = (random (length (allowed-rotamer-indexes permissible-rotamer)))
+                                                      :for index = (aref (allowed-rotamer-indexes permissible-rotamer) rnd)
+                                                      :collect index)))))
 
+#+(or)
 (defun apply-rotamers (oligomer-shape permissible-rotamers vec)
   "Return a vector of the first rotamer index for each position"
   (declare (ignore oligomer-shape))
-  (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
+  (let* ((len (length (permissible-rotamer-vector permissible-rotamers))))
     (make-array len :initial-contents
                 (loop :for idx below len
                       :for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) idx)

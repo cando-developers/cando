@@ -443,7 +443,11 @@
    #:molecule-from-sexp
    #:set-rotamers-state
    #:set-rotamers
-   #:apply-rotamers))
+   #:apply-rotamers
+   #:make-rotamer-indexes
+   #:make-indexes-into-rotamer-indexes
+   #:rotamer-indexes
+   #:indexes-into-rotamer-indexes))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
