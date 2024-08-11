@@ -534,7 +534,15 @@
     agg))
 
 (defmethod show-on-pane (pane-instance (object chem:aggregate) &rest rest &key &allow-other-keys)
-  (apply #'ngl-show-on-pane pane-instance object rest))
+  (let ((rev-molecules nil))
+    (chem:do-molecules (mol object)
+      (push mol rev-molecules))
+    (let ((molecules (nreverse rev-molecules)))
+      (loop for mol in molecules
+            for append = nil then t
+            with pane-instance = nil
+            do (setf pane-instance (apply #'show-on-pane pane-instance mol :append append rest))))))
+
 
 (defmethod show-on-pane (pane-instance (object chem:molecule) &rest rest &key &allow-other-keys)
   (apply #'ngl-show-on-pane pane-instance object rest))

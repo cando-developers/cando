@@ -164,4 +164,4 @@
          (coords (topology:make-coordinates-for-assembler assembler)))
     (topology:fill-internals-from-oligomer-shape assembler object)
     (topology:build-external-coordinates assembler :coords coords)
-    (cando-widgets::show-on-pane pane-instance (topology:aggregate* assembler coords))))
+    (cando-widgets::show-on-pane pane-instance (cando:mol (topology:aggregate* assembler coords) 0))))

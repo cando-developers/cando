@@ -8,7 +8,7 @@
            :documentation "Apply this to the coordinates after the to-origin transform was applied")
    (from-origin :initarg :from-origin :accessor from-origin
                 :documentation "This is the second transform that takes the object after to-origin is applied"))
-  (:documentation "Represent the orientation of a molecule in a design calculation."))"
+  (:documentation "Represent the orientation of a molecule in a design calculation."))
 
 (defun make-orientation (&key (from-origin (geom:make-matrix-identity))
                            (adjust (geom:make-matrix-identity))
@@ -40,6 +40,7 @@
 
 (defmethod kin:orientation-transform ((orientation orientation))
   (let* ((from-origin (topology:from-origin orientation))
+         (adjust (adjust orientation))
          (to-origin (to-origin orientation))
          (transform0 (geom:m*m adjust to-origin))
          (transform (geom:m*m from-origin transform0)))

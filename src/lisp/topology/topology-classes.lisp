@@ -437,6 +437,7 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
 
 (defclass oligomer-space ()
   ((foldamer :initarg :foldamer :accessor foldamer)
+   (name :initform :defos :initarg :name :reader name)
    (monomers :initform (make-array 16 :adjustable t :fill-pointer 0)
              :initarg :monomers :accessor monomers)
    (couplings :initform (make-array 16 :adjustable t :fill-pointer 0)
@@ -483,7 +484,7 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
   (%number-of-sequences oligomer-space))
 
 
-(defun make-oligomer-space (foldamer tree &key (parts *parts*))
+(defun make-oligomer-space (foldamer tree &key (name :defos) (parts *parts*))
   "Make an oligomer-space from a description in the **tree**.
 The tree is a nested list of lists that look like 
 (component coupling component coupling component ... ).
@@ -499,7 +500,8 @@ Examples:
                  :default (cycle :first)))
 "
   (let* ((oligomer-space (make-instance 'oligomer-space
-                                        :foldamer foldamer))
+                                        :foldamer foldamer
+                                        :name name))
          (labels (make-hash-table)))
     (interpret-rooted-tree oligomer-space tree labels :parts parts)
     (setf (%number-of-sequences oligomer-space)

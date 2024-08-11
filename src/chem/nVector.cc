@@ -436,9 +436,9 @@ CL_DEFUN vecreal chem__nvector_magnitude(NVector_sp vec) {
     val = val*val;
     sum2 += val;
   }
-  ASSERT_NOT_NAN(sum2);
+  ENSURE_NOT_NAN(sum2);
   vecreal res = sqrt(sum2);
-  ASSERT_NOT_NAN(res);
+  ENSURE_NOT_NAN(res);
   return res;
 }
 
@@ -655,7 +655,7 @@ CL_DEFUN vecreal chem__nvector_dot(NVector_sp veca, NVector_sp vecb) {
     val = vala*valb;
     sum2 += val;
   }
-  ASSERT_NOT_NAN(sum2);
+  ENSURE_NOT_NAN(sum2);
   return sqrt(sum2);
 }
 

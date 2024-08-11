@@ -310,12 +310,12 @@ void	EnergyStretch_O::setupHessianPreconditioner(NVector_sp nvPosition,
 #define	STRETCH_FORCE_ACCUMULATE(i,o,v) {}
 #undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
 #define	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {	\
-    ASSERT_NOT_NAN(v); \
+    ENSURE_NOT_NAN(v); \
     m->addToElement((i1)+(o1),(i2)+(o2),v);		\
   }
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {	\
-    ASSERT_NOT_NAN(v); \
+    ENSURE_NOT_NAN(v); \
     m->addToElement((i1)+(o1),(i2)+(o2),v);			\
   }
 #define STRETCH_CALC_FORCE
@@ -396,7 +396,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	STRETCH_SET_POSITION
 #define	STRETCH_SET_POSITION(x,ii,of)	{x = pos->getElement(ii+of);}
 #undef	STRETCH_ENERGY_ACCUMULATE
-#define	STRETCH_ENERGY_ACCUMULATE(e) {ASSERT_NOT_NAN(e);  totalEnergy += (e); }
+#define	STRETCH_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e);  totalEnergy += (e); }
 #undef	STRETCH_FORCE_ACCUMULATE
 #undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE

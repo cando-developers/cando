@@ -179,7 +179,7 @@ inline string	atomLabel(Atom_sp a)
 
 #define	ForceAcc(i,o,v) {\
       if ( hasForce ) {\
-        ASSERT_NOT_NAN(v); \
+        ENSURE_NOT_NAN(v); \
         force->setElement((i)+(o),(v)+force->getElement((i)+(o)));\
       }\
   }
@@ -189,14 +189,14 @@ inline string	atomLabel(Atom_sp a)
 //
 #define	OffDiagHessAcc(i1,o1,i2,o2,v) {\
     if ( hasHessian ) {\
-      ASSERT_NOT_NAN(v); \
+      ENSURE_NOT_NAN(v); \
       hessian->addToElement((i1)+(o1),(i2)+(o2),v);\
     }\
     if ( hasHdAndD ) {\
       auto v22 = v*dvec->element((i2)+(o2));\
       auto v11 = v*dvec->element((i1)+(o1));\
-      ASSERT_NOT_NAN(v22);\
-      ASSERT_NOT_NAN(v11);\
+      ENSURE_NOT_NAN(v22);\
+      ENSURE_NOT_NAN(v11);\
       hdvec->addToElement((i1)+(o1),v22); \
       hdvec->addToElement((i2)+(o2),v11); \
     }\
@@ -207,12 +207,12 @@ inline string	atomLabel(Atom_sp a)
 //
 #define	DiagHessAcc(i1,o1,i2,o2,v) {\
     if ( hasHessian ) {\
-      ASSERT_NOT_NAN(v); \
+      ENSURE_NOT_NAN(v); \
       hessian->addToElement((i1)+(o1),(i2)+(o2),v);\
     }\
     if ( hasHdAndD ) {\
       auto vd = v*dvec->element((i1)+(o1));\
-      ASSERT_NOT_NAN(vd); \
+      ENSURE_NOT_NAN(vd); \
       hdvec->addToElement((i1)+(o1),vd); \
     }\
   }

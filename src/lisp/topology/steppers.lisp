@@ -67,6 +67,15 @@
                                                                       (allowed-rotamer-indexes permissible-rotamer)))
                                 (coerce (permissible-rotamer-vector obj) 'list)))))
 
+(defun ensure-permissible-rotamers-equal (perm1 perm2)
+  (loop for p1 across (permissible-rotamer-vector perm1)
+        for p2 across (permissible-rotamer-vector perm2)
+        unless (equalp (allowed-rotamer-indexes p1)
+                       (allowed-rotamer-indexes p2))
+          do (error "perm1 ~s and~%perm2 ~s~%are not equalp" perm1 perm2))
+  )
+
+
 (defclass permissible-backbone-rotamers (permissible-rotamers)
   ())
 
@@ -371,6 +380,11 @@ Returns an instance of permissible-sidechain-rotamers."
   ((rotamer-indexes :initarg :rotamer-indexes :accessor rotamer-indexes))
   (:documentation "A class to index into a vector of rotamers"))
 
+(defmethod print-object ((object rotamer-indexes) stream)
+  (let ((*print-pretty* nil))
+    (print-unreadable-object (object stream :type t)
+      (format stream "~s" (rotamer-indexes object)))))
+
 (defun rotamer-indexes-length (rotamer-indexes)
   (length (rotamer-indexes rotamer-indexes)))
 
@@ -455,7 +469,8 @@ Returns an instance of permissible-sidechain-rotamers."
             for allowed-rotamer-indexes = (allowed-rotamer-indexes permissible-rotamer)
             for rotamer-index = (aref vec index)
             do (unless (position rotamer-index allowed-rotamer-indexes)
-                 (error "You are trying to write a rotamer-index ~a into locus ~a but it is not one of the permissible ones: ~s" rotamer-index locus allowed-rotamer-indexes))
+                 (let ((*print-pretty* nil))
+                   (error "You are trying to write a rotamer-index ~a into locus ~a but it is not one of the~%permissible ones: ~s" rotamer-index locus allowed-rotamer-indexes)))
             do (setf (topology:rotamer-index monomer-shape) rotamer-index))
       (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
       oligomer-shape)))

@@ -38,6 +38,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 
 #include <string.h>
 #include <cando/geom/matrix.h>
+#include <cando/geom/ovector3.h>
 #include <iostream>
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
@@ -1348,7 +1349,7 @@ void internalCoordinatesFromPointAndStub(const Vector3 &D,
   double dz = d.dotProduct(z);
   VEC_LOG("dx = {}  dy = {}  dz = {}\n", dx, dy, dz);
   phi = geom::geom__planeVectorAngle(dy, dz);
-  if (std::isnan(phi)) core::lisp_nan_error();
+  ENSURE_NOT_NAN(phi);
   VEC_LOG("  dy = {}   dz = {}\n", dy, dz);
   VEC_LOG("_Phi = {} deg\n", (phi / 0.0174533));
   Vector3 dox(1.0, 0.0, 0.0);
@@ -1374,7 +1375,7 @@ void internalCoordinatesFromPointAndStub(const Vector3 &D,
   VEC_LOG("eox = {}  eoy = {}\n", eox, eoy);
   //  double eoz = dop.dotProduct(doz); // Must be 0.0
   theta = - geom::geom__planeVectorAngle(eox, eoy);
-  if (std::isnan(theta)) core::lisp_nan_error();
+  ENSURE_NOT_NAN(theta);
   if (theta<0.0) {
     SIMPLE_WARN("Theta {} should never be less than zero", theta);
   }
@@ -1403,11 +1404,20 @@ void stubFromThreePoints(
   LOG(("a = %s") , a.asString());
   LOG(("b = %s") , b.asString());
   LOG(("c = %s") , c.asString());
+
   Vector3 e1(b-c);
-  e1 = e1.normalized();
+  if (e1.length()>0.0) {
+    e1 = e1.normalized();
+  } else {
+    CLASP_ERROR("When normalizing b-c it is zero length b=~s c=~s", OVector3_O::create(b), OVector3_O::create(c));
+  }
   LOG(("e1 = (b-c).normalized : %s") , e1.asString() );
   Vector3 e3(e1.crossProduct(a-c));
+  if (e3.length()>0.0) {
   e3 = e3.normalized();
+  } else {
+    CLASP_ERROR("When normalizing e3 it was zero length e1=~s a=~s c=~s", OVector3_O::create(e1), OVector3_O::create(a), OVector3_O::create(c));
+  }
   LOG(("e3 = (e1.crossProduct(a-c)).normalized : %s") , e3.asString() );
   Vector3 e2(e3.crossProduct(e1));
   LOG(("e2 = (e3.crossProduct(e1)): %s") , e2.asString() );

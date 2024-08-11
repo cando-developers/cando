@@ -447,7 +447,8 @@
    #:make-rotamer-indexes
    #:make-indexes-into-rotamer-indexes
    #:rotamer-indexes
-   #:indexes-into-rotamer-indexes))
+   #:indexes-into-rotamer-indexes
+   #:ensure-permissible-rotamers-equal))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

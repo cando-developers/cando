@@ -313,7 +313,8 @@ of monomers-to-residues."
   (let ((root-monomer (when (in-monomer-subset monomer-subset (root-monomer oligomer))))
         (monomer-out-couplings (make-hash-table))
         (monomers-to-topologys (make-hash-table))
-        (ring-couplings nil))
+        (ring-couplings nil)
+        (name (name (oligomer-space oligomer))))
     (declare (ignore root-monomer))
     (loop for index below (length (couplings oligomer))
           for coupling = (elt (couplings oligomer) index)
@@ -321,7 +322,7 @@ of monomers-to-residues."
             do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
           else
             do (pushnew coupling ring-couplings)) ; Only add ring coupling when unique
-    (let* ((molecule (let ((mol (chem:make-molecule :mol)))
+    (let* ((molecule (let ((mol (chem:make-molecule name)))
                        (chem:setf-force-field-name mol (oligomer-force-field-name (foldamer (oligomer-space oligomer))))
                        mol)))
       (recursively-build-molecule oligomer
