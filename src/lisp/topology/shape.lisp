@@ -154,8 +154,18 @@
                                  collect rotamer-index))))
         (format stream "~s ~s :rotamer-indexes ~s" (name obj) (rotamers-state obj) vec))))
 
-(defmethod kin:orientation-transform ((oligomer-shape oligomer-shape))
-  (kin:orientation-transform (orientation oligomer-shape)))
+(defvar *orientation*)
+
+(defmethod kin:orientation-transform ((jump-joint kin:jump-joint))
+  (unless (boundp '*orientation*)
+    (error "~s must be bound for kin:orientation-transform to work" '*orientation*))
+  (kin:orientation-transform *orientation*))
+
+(defmacro with-orientation ((orientation) &body body)
+  "Set the *orientation* dynamic variable so that external coordinate building can function"
+  `(let ((*orientation* ,orientation))
+     (progn
+       ,@body)))
 
 (defclass receptor-shape (oligomer-shape)
   ((aggregate :initarg :aggregate :accessor aggregate)

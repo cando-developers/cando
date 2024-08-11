@@ -315,7 +315,7 @@
                           res)))
           index*3)))))
 
-(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments one-orientation monomer monomer-subset))
+(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments monomer monomer-subset))
 
 (defmethod write-into-joint-tree ((joint-template t)
                                   parent-joint
@@ -324,7 +324,6 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset)
   (error "write-into-joint-tree - handle joint-template ~a" joint-template))
 
@@ -335,14 +334,11 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (if one-orientation
-                    (kin:make-jump-joint atomid atom-name atom-table one-orientation)
-                    (kin:make-jump-joint atomid atom-name atom-table (make-orientation)))))
+         (joint (kin:make-jump-joint atomid atom-name atom-table)))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
@@ -354,7 +350,6 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset
                                   )
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
@@ -394,7 +389,6 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset
                                   )
   (when (and monomer-subset (null parent-joint))
@@ -453,7 +447,6 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
@@ -473,7 +466,6 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset
                                   )
   (when (and monomer-subset (null parent-joint))
@@ -492,7 +484,6 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
@@ -515,7 +506,6 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  one-orientation
                                   monomer monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))

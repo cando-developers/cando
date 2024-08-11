@@ -43,10 +43,9 @@ namespace kinematics
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    core::T_sp _Orientation; // This is the stub for children
 	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
-    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation );
+    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
   protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};
@@ -68,14 +67,10 @@ namespace kinematics
     virtual void _releaseAllChildren();
 
   public:
-    JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation );
+    JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
 
 	/*! Empty ctor */
     JumpJoint_O() {};
-
-    // Return the 'external' coordinate
-    CL_DEFMETHOD core::T_sp getOrientation() const { return this->_Orientation; };
-    CL_DEFMETHOD void setOrientation(core::T_sp orientation) { this->_Orientation = orientation; };
 
     virtual core::Symbol_sp typeSymbol() const;
 

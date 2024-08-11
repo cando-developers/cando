@@ -41,10 +41,7 @@ SYMBOL_EXPORT_SC_(KinPkg,orientation_selfFrame);
 SYMBOL_EXPORT_SC_(KinPkg,orientation_labFrame);
 SYMBOL_EXPORT_SC_(KinPkg,orientation_transform);
 
-JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation ) : Joint_O(atomId,name,atomTable) {
-  if (orientation.notnilp()) {
-    this->_Orientation = orientation;
-  };
+JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable ) : Joint_O(atomId,name,atomTable) {
 };
 
 bool JumpJoint_O::definedp() const
@@ -54,13 +51,12 @@ bool JumpJoint_O::definedp() const
 CL_LAMBDA(atom-id name atom-table);
 CL_LISPIFY_NAME("make_JumpJoint");
 CL_DEF_CLASS_METHOD
-    JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp orientation ) {
-  return gctools::GC<JumpJoint_O>::allocate( atomId, name, atomTable, orientation );
+    JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable ) {
+  return gctools::GC<JumpJoint_O>::allocate( atomId, name, atomTable );
 }
 
 void JumpJoint_O::fields(core::Record_sp node) {
   node->field_if_not_empty(INTERN_(kw,children),this->_Children);
-  node->field(INTERN_(kw,orientation),this->_Orientation);
   this->Base::fields(node);
 }
 
@@ -138,7 +134,9 @@ void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords)
 }
 
  Matrix JumpJoint_O::transform() const {
-   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->_Orientation))->ref();
+   // Invoke kin:orientation-transform to return the transform
+   // for this jump-joint
+   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->asSmartPtr()))->ref();
    return m;
  }
 

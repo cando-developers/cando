@@ -130,8 +130,7 @@
                                         monomer-positions
                                         joint-tree
                                         atom-table
-                                        adjustments
-                                        orientation)
+                                        adjustments)
   (let* ((ring-closing-monomer-map (make-hash-table))
          (monomer-out-couplings (make-hash-table))
          (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule)))
@@ -157,7 +156,6 @@
                                   nil   ; parent-joint
                                   atom-table
                                   adjustments
-                                  orientation
                                   )
     #+(or)(make-ring-closing-connections oligomer monomer-positions molecule ring-closing-monomer-map)
     atmolecule))
@@ -226,8 +224,7 @@
                                      monomer-positions ; map of monomers to monomer-positions
                                      parent-joint
                                      atom-table
-                                     adjustments
-                                     orientation)
+                                     adjustments)
   "Recursively build a atmolecule from an oligomer by linking together kin:atresidues"
   (if prev-monomer
       (let ((next-atresidue nil)
@@ -262,8 +259,7 @@
                                                                                          atmolecule-index
                                                                                          next-atresidue-index
                                                                                          atom-table
-                                                                                         adjustments
-                                                                                         orientation)))
+                                                                                         adjustments)))
                        (setf (stereoisomer-name next-atresidue) (current-stereoisomer-name prev-monomer oligomer)
                              (topology next-atresidue) next-topology)
                        (when atresidue
@@ -295,8 +291,7 @@
                                                monomer-positions
                                                parent-joint
                                                atom-table
-                                               adjustments
-                                               orientation)))
+                                               adjustments)))
       (let* ((prev-monomer (root-monomer oligomer))
              (next-atresidue nil)
              (next-atresidue-index nil)
@@ -324,8 +319,7 @@
                                                                                 atmolecule-index
                                                                                 next-atresidue-index
                                                                                 atom-table
-                                                                                adjustments
-                                                                                orientation)))
+                                                                                adjustments)))
               (setf (stereoisomer-name next-atresidue) (current-stereoisomer-name prev-monomer oligomer)
                     (topology next-atresidue) next-topology)
               (when parent-atresidue
@@ -354,8 +348,7 @@
                                       monomer-positions
                                       nil ; parent-joint
                                       atom-table
-                                      adjustments
-                                      orientation))))
+                                      adjustments))))
 
 (defun describe-recursively (atresidue prefix stream)
   (princ prefix stream)

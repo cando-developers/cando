@@ -198,8 +198,7 @@ energy-function-factory - provide a function that takes an aggregate and returns
 tune-energy-function - A function that takes the energy-function and an assembler and modifies the energy-function."
   (unless (every (lambda (os) (typep os 'oligomer-shape)) oligomer-shapes)
     (error "You must provide a list of oligomer-shapes"))
-  (let* ((full-orientations oligomer-shapes)
-         (aggregate (chem:make-aggregate :all))
+  (let* ((aggregate (chem:make-aggregate :all))
          (monomer-positions (make-hash-table))
          (oligomers (mapcar (lambda (oligomer-shape)
                               (oligomer oligomer-shape))
@@ -231,7 +230,6 @@ tune-energy-function - A function that takes the energy-function and an assemble
            (energy-function (chem:make-energy-function :keep-interaction keep-interaction :matter aggregate))
            (assembler (loop for oligomer-molecule in oligomer-molecules
                             for oligomer = (car oligomer-molecule)
-                            for one-orientation in full-orientations
                             for molecule = (cdr oligomer-molecule)
                             for oligomer-space = (oligomer-space oligomer)
                             for foldamer = (foldamer oligomer-space)
@@ -248,8 +246,7 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                                                                    monomer-positions
                                                                                    joint-tree
                                                                                    (chem:atom-table energy-function)
-                                                                                   adjustments
-                                                                                   one-orientation)))
+                                                                                   adjustments)))
                                  (put-atmolecule ataggregate atmolecule molecule-index))
                             finally (return (make-instance (if monomer-subset
                                                                'subset-assembler
@@ -325,7 +322,6 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                                  monomer-positions
                                                  joint-tree
                                                  (chem:atom-table energy-function)
-                                                 nil
                                                  nil)))
                                (put-atmolecule ataggregate atmolecule molecule-index))
                           finally (return (make-instance 'training-assembler

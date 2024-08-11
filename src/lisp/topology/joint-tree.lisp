@@ -27,8 +27,7 @@
                                          atmolecule-index
                                          atresidue-index
                                          atom-table
-                                         adjustments
-                                         orientation)
+                                         adjustments)
   (let ((joint (write-into-joint-tree joint-template
                                       parent-joint
                                       atresidue
@@ -36,7 +35,6 @@
                                       atresidue-index
                                       atom-table
                                       adjustments
-                                      orientation
                                       monomer monomer-subset)))
     (loop for child-joint-template in (children joint-template)
           do (recursively-write-into-atresidue monomer
@@ -47,8 +45,7 @@
                                                atmolecule-index
                                                atresidue-index
                                                atom-table
-                                               adjustments
-                                               orientation))
+                                               adjustments))
     joint))
 
 (defun maybe-fill-atresidue (joint-tree
@@ -60,8 +57,7 @@
                              atmolecule-index
                              atresidue-index
                              atom-table
-                             adjustments
-                             orientation)
+                             adjustments)
   "Recursively build an atom-tree into the atresidues of an ataggregate.
 This duplicates https://github.com/cando-developers/cando/blob/main/src/kinematics/pointTree.cc#L172
 JointTree_O::recursivelyBuildMolecule
@@ -87,8 +83,7 @@ If (null parent-joint) then this is the root atresidue. "
                                                                atmolecule-index
                                                                atresidue-index
                                                                atom-table
-                                                               adjustments
-                                                               orientation)))
+                                                               adjustments)))
             (when (null parent-joint)
               (if (null (gethash oligomer (root-map joint-tree)))
                   (setf (gethash oligomer (root-map joint-tree)) (list root-joint))
