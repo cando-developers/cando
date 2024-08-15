@@ -350,9 +350,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); energyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {energyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); energyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {energyVdw+=(e);}
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE
@@ -577,9 +577,9 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); if (InteractionIs14) {energyElectrostatic14 +=(e);} else {energyElectrostatic +=(e);}}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {if (InteractionIs14) {energyElectrostatic14 +=(e);} else {energyElectrostatic +=(e);}}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); if (InteractionIs14) {energyVdw14+=(e);} else {energyVdw+=(e);}}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {if (InteractionIs14) {energyVdw14+=(e);} else {energyVdw+=(e);}}
 
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};

@@ -114,7 +114,6 @@ int   Kmeans_O::NearestCenter(core::SimpleVector_sp centers, Point p)
   for (int k = 0; k < _K; k++ )
   {
     dis = Distance<floatType>(p, gc::As<Point>((*centers)[k]) );
-    ENSURE_NOT_NAN(dis);
     if (dis < minDistance) {
       minDistance = dis;
       k_id = k;
