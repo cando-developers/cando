@@ -327,7 +327,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                      (mapcar (lambda (info)
                                                (let* ((constitution-atom (constitution-atom info))
                                                       (name (atom-name constitution-atom))
-                                                      (type (type info)))
+                                                      (type (stype info)))
                                                  #+(or)(format t "fixed-chiral-info: ~s ~s~%" name type)
                                                  (when (eq type :undefined-configuration)
                                                    (error "Don't allow :undefined-configuration for ~a" name))
@@ -362,18 +362,18 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
 
 (defclass stereocenter-info ()
   ((constitution-atom :initarg :constitution-atom :accessor constitution-atom)
-   (type :initarg :type :accessor type)))
+   (%type :initarg :type :accessor stype)))
 
 (defmethod print-object ((obj stereocenter-info) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream "~a ~a" (constitution-atom obj) (type obj))))
+    (format stream "~a ~a" (constitution-atom obj) (stype obj))))
 
 
 (defun build-stereo-information (name stereocenter-info stereoisomer-atoms)
   "Build stereoinformation from the stereocenter-info and return it."
   (multiple-value-bind (variable-chiral-atoms fixed-chiral-info)
       (loop for info in stereocenter-info
-            if (eq (type info) :both)
+            if (eq (stype info) :both)
               collect (atom-name (constitution-atom info)) into variable-chiral-atoms
             else
               collect info into fixed-chiral-info

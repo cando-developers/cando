@@ -977,7 +977,7 @@ exec \"$@\"
 
 (defclass seen ()
   ((name :initarg :name :accessor name)
-   (stream :initarg :stream :accessor stream)))
+   (sstream :initarg :stream :accessor sstream)))
 
 (defun monitor (sim)
   (let ((seen (make-hash-table :test 'equal)))
@@ -1008,7 +1008,7 @@ exec \"$@\"
                                (format t "Saw: ~a~%" name)
                                (finish-output t)))
                             (saw
-                             (format t "Seen file ~a size: ~a~%" (name saw) (file-length (stream saw)))
+                             (format t "Seen file ~a size: ~a~%" (name saw) (file-length (sstream saw)))
                              (finish-output t)))))
                       seen)
           do (sleep 1))
