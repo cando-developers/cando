@@ -73,7 +73,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                       do (loop for index from (1- (length terms)) downto 0
                                for term = (aref terms index)
                                for compiled-smirks = (compiled-smirks term)
-                               for type = (type term)
+                               for type = (ttype term)
                                for match = (chem:matches compiled-smirks atom)
                                when match
                                  do (return-from assign-type type)))))
@@ -86,7 +86,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
   (loop with terms = (terms source)
         for index below (length terms)
         for term = (aref terms index)
-        for type = (type term)
+        for type = (ttype term)
         when (not (chem:has-type dest type))
           do (let* ((atomic-mass (smirks-head-atomic-mass (compiled-smirks term)))
                     (ffnonbond (chem:make-ffnonbond type

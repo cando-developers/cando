@@ -66,7 +66,7 @@
   ((terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
 (defclass nonbond-term (force-term)
-  ((type :initarg :type :accessor type)
+  ((ttype :initarg :type :accessor ttype)
    ;; in kj/mol
    (epsilon :initarg :epsilon :accessor epsilon)
    ;; in angstroms
@@ -83,12 +83,11 @@
    (switch-width :initarg :switch-width :accessor switch-width)
    ;; in radians
    (cutoff :initarg :cutoff :accessor cutoff)
-   (method :initarg :method :accessor method)
    (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
 (defmethod print-object ((object nonbond-term) stream)
   (print-unreadable-object (object stream)
-    (format stream "~a ~s ~s" (class-name (class-of object)) :type (type object))
+    (format stream "~a ~s ~s" (class-name (class-of object)) :type (ttype object))
     (format stream " ~s ~s" :smirks (smirks object))
     (format stream " ~s ~s" :id (id object))))
 
@@ -274,8 +273,7 @@
                            :scale14 scale14
                            :scale15 scale15
                            :switch-width switch-width
-                           :cutoff cutoff
-                           :method method))
+                           :cutoff cutoff))
       (with-force-parser (node root "Atom")
         (let* ((attrs (plump:attributes node))
                (smirks (safe-gethash "smirks" attrs))

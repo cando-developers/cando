@@ -60,13 +60,6 @@
    #:add-one-atom-type
    ))
 
-
-(defpackage #:leap.sequence
-  (:use #:common-lisp)
-  (:export
-   #:sequence
-   ))
-
 (defpackage #:leap.cmap
   (:use #:common-lisp)
   (:shadow #:count)
@@ -139,6 +132,7 @@
 
 (defpackage #:leap.off
   (:use #:common-lisp)
+  (:shadow #:type)
   (:export
    #:bug
    #:read-off-data-block
