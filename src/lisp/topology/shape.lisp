@@ -95,8 +95,6 @@
    (the-root-monomer :initarg :the-root-monomer :accessor the-root-monomer)
    (in-monomers :initarg :in-monomers :accessor in-monomers)
    (out-monomers :initarg :out-monomers :accessor out-monomers)
-   (orientation :initarg :orientation :accessor orientation
-                :documentation "This is mutable")
    (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector
                          :documentation "This is mutable")
    (monomer-shape-map :initarg :monomer-shape-map :accessor monomer-shape-map)
@@ -120,8 +118,7 @@
 
 (defmethod copy-oligomer-shape ((oligomer-shape oligomer-shape))
   (let ((monomer-shape-vector (make-array (length (monomer-shape-vector oligomer-shape))))
-        (monomer-shape-map (make-hash-table))
-        (orientation (copy-orientation (orientation oligomer-shape))))
+        (monomer-shape-map (make-hash-table)))
     (loop for monomer-shape across (monomer-shape-vector oligomer-shape)
           for index from 0
           for monomer-shape-info across (monomer-shape-info-vector oligomer-shape)
@@ -138,7 +135,6 @@
                    :the-root-monomer (the-root-monomer oligomer-shape)
                    :in-monomers  (in-monomers oligomer-shape)
                    :out-monomers (out-monomers oligomer-shape)
-                   :orientation orientation
                    :monomer-shape-vector monomer-shape-vector
                    :monomer-shape-map monomer-shape-map)))
 
@@ -154,6 +150,12 @@
                                  collect rotamer-index))))
         (format stream "~s ~s :rotamer-indexes ~s" (name obj) (rotamers-state obj) vec))))
 
+(defmethod orientation ((oligomer-shape oligomer-shape) (orientations orientations))
+  (gethash oligomer-shape (orientations orientations)))
+
+(defmethod orientation ((oligomer-shape oligomer-shape) (assembler assembler))
+  (gethash oligomer-shape (orientations (orientations assembler))))
+
 (defvar *orientation*)
 
 (defmethod kin:orientation-transform ((jump-joint kin:jump-joint))
@@ -161,11 +163,14 @@
     (error "~s must be bound for kin:orientation-transform to work" '*orientation*))
   (kin:orientation-transform *orientation*))
 
-(defmacro with-orientation ((orientation) &body body)
+(defmacro with-orientation (orientation &body body)
   "Set the *orientation* dynamic variable so that external coordinate building can function"
-  `(let ((*orientation* ,orientation))
-     (progn
-       ,@body)))
+  `(progn
+     (if (boundp '*orientation*)
+         (error "*orientation* is already bound - with-orientation cannot be nested")
+         (let ((*orientation* ,orientation))
+           (progn
+             ,@body)))))
 
 (defclass receptor-shape (oligomer-shape)
   ((aggregate :initarg :aggregate :accessor aggregate)
@@ -248,7 +253,7 @@
 
 (defmethod make-oligomer-shape ((oligomer oligomer) (rotamers-database rotamers-database)
                                 &key (oligomer-shape-class-name 'oligomer-shape)
-                                  monomer-shape-factory (orientation (make-orientation))
+                                  monomer-shape-factory
                                   callback-backbone-rotamer-indexes
                                   callback-sidechain-rotamer-indexes
                                   extra-arguments
@@ -319,7 +324,6 @@ callback-sidechain-rotamer-indexes - A lambda that takes the lambda-list (oligom
               finally (return (values monomer-shape-vector monomer-shape-info-vector the-root-monomer in-monomers out-monomers monomer-shape-map)))
       (let* ((os (apply 'make-instance
                         oligomer-shape-class-name
-                        :orientation orientation
                         :oligomer oligomer
                         :rotamers-database rotamers-database
                         :monomer-shape-info-vector monomer-shape-info-vector
@@ -360,7 +364,7 @@ callback-sidechain-rotamer-indexes - A lambda that takes the lambda-list (oligom
                                 &rest args
                                 &key (oligomer-index 0) 
                                   (oligomer-shape-class-name 'oligomer-shape)
-                                  monomer-shape-factory (orientation (make-orientation))
+                                  monomer-shape-factory
                                   callback-backbone-rotamer-indexes
                                   callback-sidechain-rotamer-indexes
                                   extra-arguments
@@ -534,24 +538,18 @@ callback-sidechain-rotamer-indexes - A lambda that takes the lambda-list (oligom
   (adjust-internals assembler oligomer-shape))
 
 
-(defgeneric build-initial-oligomer-shape-externals (assembler oligomer-shape &key coords)
+(defgeneric build-initial-oligomer-shape-externals (assembler oligomer-shape &key orientation coords)
   (:documentation "Build the oligomer-shape in the coordinates by generating the initial externals"))
 
-(defgeneric build-oligomer-shape-externals (assembler oligomer-shape &key coords)
-  (:documentation "Build the oligomer-shape in the coordinates by generating externals"))
-
-(defmethod build-oligomer-shape-externals (assembler oligomer-shape &key (coords (make-coordinates-for-assembler assembler)))
-  (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
+(defmethod build-initial-oligomer-shape-externals (assembler oligomer-shape &key (coords (make-coordinates-for-assembler assembler)) orientation)
+  (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape orientation)
   coords)
-
-(defmethod build-initial-oligomer-shape-externals (assembler oligomer-shape &key (coords (make-coordinates-for-assembler assembler)))
-  (build-oligomer-shape-externals assembler oligomer-shape :coords coords))
 
 (defun build-all-externals (assembler &key (coords (make-coordinates-for-assembler assembler)))
   (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (build-oligomer-shape-externals assembler oligomer-shape :coords coords))
+        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape
+                                                            :orientation oligomer-shape))
   coords)
-
 
 (defun build-oligomer-shape-keep-internals-in-coordinates (assembler oligomer-shape coords)
   (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))

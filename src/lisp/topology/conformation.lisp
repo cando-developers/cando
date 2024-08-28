@@ -49,6 +49,26 @@
 (defclass orientations ()
   ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations)))
 
+(defun ensure-complete-orientations (orientations oligomer-shapes)
+  (loop for oligomer-shape in oligomer-shapes
+        unless (gethash oligomer-shape (orientations orientations))
+          do (error "The orientation for oligomer-shape ~s is missing" oligomer-shape)))
+
+(defun make-orientations (pairs)
+  (let ((ht (make-hash-table)))
+  (loop for cur = pairs then (cddr cur)
+        for oligomer-shape = (car cur)
+        for maybe-orientation = (cadr cur)
+        for orientation = (or maybe-orientation (make-orientation))
+        unless (typep orientation 'orientation)
+          
+          do (error "~s must be an orientation or nil" orientation)
+        when (null cur)
+          do (return nil)
+        do (setf (gethash oligomer-shape ht) orientation))
+    (make-instance 'orientations :orientations ht)))
+
+
 (defclass monomer-position ()
   ((molecule-index :initarg :molecule-index :reader molecule-index)
    (residue-index :initarg :residue-index :reader residue-index)))
@@ -81,12 +101,22 @@
 
 (defclass assembler (assembler-base)
   ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
+   (orientations :initarg :orientations :reader orientations)
    (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset)
    (adjustments :initarg :adjustments :accessor adjustments)))
 
 (defclass subset-assembler (assembler)
   ()
   (:documentation "This class is an assembler that builds a subset of another assembler"))
+
+(defgeneric orientation (oligomer-shape holder))
+
+(defmethod orientation ((orientation orientation) (orientations t))
+  orientation)
+
+(defmethod orientation ((identity (eql :identity)) (dummy t))
+  (declare (ignore dummy))
+  (make-orientation))
 
 (defun aggregate* (assembler coordinates &key (name :all))
   "Return a copy of the aggregate with coordinates if provided"
@@ -192,10 +222,17 @@ Specialize the foldamer argument to provide methods"))
      (every (lambda (mon) (gethash mon (monomers monomer-subset))) monomers))
     (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
 
-(defun make-assembler (oligomer-shapes &key monomer-subset tune-energy-function (keep-interaction t))
+(defun make-assembler (oligomer-shapes &key orientations monomer-subset tune-energy-function (keep-interaction t))
   "Build a assembler for the oligomers.
 energy-function-factory - provide a function that takes an aggregate and returns an energy-function.
 tune-energy-function - A function that takes the energy-function and an assembler and modifies the energy-function."
+  (cond
+    ((not (or (= (length oligomer-shapes) 1) orientations))
+     (error "You must provide orientations when there is more than one oligomer-shape"))
+    ((and (= (length oligomer-shapes) 1) (null orientations))
+     (setf orientations (make-orientations (list (first oligomer-shapes) (make-orientation)))))
+    )
+  (ensure-complete-orientations orientations oligomer-shapes)
   (unless (every (lambda (os) (typep os 'oligomer-shape)) oligomer-shapes)
     (error "You must provide a list of oligomer-shapes"))
   (let* ((aggregate (chem:make-aggregate :all))
@@ -254,6 +291,7 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                                            :monomer-positions monomer-positions
                                                            :monomer-contexts monomer-contexts
                                                            :oligomer-shapes oligomer-shapes
+                                                           :orientations orientations
                                                            :aggregate aggregate
                                                            :ataggregate ataggregate
                                                            :monomer-subset monomer-subset
@@ -418,25 +456,35 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                (declare (ignore atom-id))
                                (kin:update-internal-coord joint coordinates)))))
 
-(defun build-external-coordinates (assembler &key oligomer-shape (coords (topology:make-coordinates-for-assembler assembler)))
+(defun build-external-coordinates (assembler &key oligomer-shape
+                                               (orientation :identity orientationp)
+                                               (coords (topology:make-coordinates-for-assembler assembler)))
   (if oligomer-shape
       (progn
-        (build-atom-tree-external-coordinates assembler coords oligomer-shape)
+        (unless orientationp
+          (error "You must provide orientation when you provide oligomer-shape"))
+        (build-atom-tree-external-coordinates* assembler coords oligomer-shape orientation)
         (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
       (loop for oligomer-shape in (oligomer-shapes assembler)
             do (build-external-coordinates assembler :oligomer-shape oligomer-shape :coords coords))))
 
-(defun build-atom-tree-external-coordinates (assembler coords oligomer-shape)
-  (let* ((one-oligomer (oligomer oligomer-shape))
+(defun build-atom-tree-external-coordinates* (assembler coords oligomer-shape maybe-orientation)
+  (let* ((orientation (orientation maybe-orientation assembler))
+         (one-oligomer (oligomer oligomer-shape))
          (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
     (when (null joints)
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
-    (loop for joint in joints
-          do (kin:update-xyz-coords joint coords))))
+    (with-orientation orientation
+      (loop for joint in joints
+            do (kin:update-xyz-coords joint coords)))))
 
 (defun build-all-external-coordinates (assembler &key (coords (topology:make-coordinates-for-assembler assembler)))
   (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (build-atom-tree-external-coordinates assembler coords oligomer-shape)))
+        do (build-external-coordinates assembler
+                                       :coords coords
+                                       :oligomer-shape oligomer-shape
+                                       :orientation oligomer-shape)))
+
 
 (defun adjust-atom-tree-external-coordinates (assembler coords oligomer-shape)
   (let* ((pos (position oligomer-shape (oligomer-shapes assembler)))
@@ -452,11 +500,10 @@ tune-energy-function - A function that takes the energy-function and an assemble
 
 (defun build-all-atom-tree-external-coordinates-and-adjust (assembler coords)
   (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (build-atom-tree-external-coordinates assembler coords oligomer-shape)
-        do (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))
+        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape oligomer-shape)))
 
-(defun build-atom-tree-external-coordinates-and-adjust (assembler coords oligomer-shape)
-  (build-atom-tree-external-coordinates assembler coords oligomer-shape)
+(defun build-atom-tree-external-coordinates-and-adjust (assembler coords oligomer-shape maybe-orientation)
+  (build-atom-tree-external-coordinates* assembler coords oligomer-shape maybe-orientation)
   (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
 
 (defun build-atresidue-atom-tree-external-coordinates (atresidue coords)

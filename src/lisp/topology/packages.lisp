@@ -310,7 +310,6 @@
    #:degrees-sub
    #:build-all-atom-tree-external-coordinates-and-adjust
    #:rotamers-database
-   #:orientation
    #:to-origin
    #:from-origin
    #:oligomer-monomer-name
@@ -358,6 +357,8 @@
    #:number-of-rotamers
    #:goto-rotamer
    #:make-orientation
+   #:make-orientations
+   #:orientation
    #:assembler-aggregate
    #:make-training-assembler
    #:make-focused-training-assembler
@@ -449,7 +450,8 @@
    #:rotamer-indexes
    #:indexes-into-rotamer-indexes
    #:ensure-permissible-rotamers-equal
-   #:with-orientation))
+   #:with-orientation
+   #:ensure-complete-orientations))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
