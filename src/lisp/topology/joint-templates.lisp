@@ -309,7 +309,7 @@
         #+(or)(format t "joint-calculate-position-index number-of-atoms: ~a~%" (chem:atom-table/get-number-of-atoms atom-table))
         (unless (eq (chem:get-name atm) (kin:joint/name joint))
           (break "The joint ~a does not match the atom-table ~a" joint atom-table))
-        (let* ((index*3 (let ((res (gethash atm (chem:atom-table/get-atom-table-indices atom-table))))
+        (let* ((index*3 (let ((res (gethash atm (chem:atom-table/get-atom-table-indexes atom-table))))
                           (unless res
                             (error "Could not find atm ~a in atom-table ~a for joint ~a" atm atom-table joint))
                           res)))

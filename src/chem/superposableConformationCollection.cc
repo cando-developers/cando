@@ -43,14 +43,14 @@ namespace chem {
 void	SuperposableConformationCollection_O::initialize()
 {
   this->Base::initialize();
-  this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(16,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
+  this->_SuperposeAtomIndexes = core::ComplexVector_byte32_t_O::make_vector(16,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
   this->_RmsCutOff = 0.1;
 }
 
 void SuperposableConformationCollection_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,rmsCutOff),this->_RmsCutOff);
-  node->field(INTERN_(kw,atomIndices),this->_SuperposeAtomIndices);
+  node->field(INTERN_(kw,atomIndexes),this->_SuperposeAtomIndexes);
   this->Base::fields(node);
 }
 
@@ -63,8 +63,8 @@ void SuperposableConformationCollection_O::fields(core::Record_sp node)
 
 CL_DEFMETHOD void SuperposableConformationCollection_O::clearSuperposeAtoms()
 {
-  ASSERTNOTNULL(this->_SuperposeAtomIndices);
-  this->_SuperposeAtomIndices->fillPointerSet(0);
+  ASSERTNOTNULL(this->_SuperposeAtomIndexes);
+  this->_SuperposeAtomIndexes->fillPointerSet(0);
 }
 
 
@@ -73,12 +73,12 @@ CL_DEFMETHOD void SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp
 {
   ConformationCollection_O::atomIterator	ai;
   int					idx;
-  ASSERTNOTNULL(this->_SuperposeAtomIndices);
+  ASSERTNOTNULL(this->_SuperposeAtomIndexes);
   for ( idx=0,ai=this->begin_AllAtoms(); ai!=this->end_AllAtoms(); idx++,ai++ )
   {
     if ( (*ai) == a )
     {
-      this->_SuperposeAtomIndices->vectorPushExtend(idx);
+      this->_SuperposeAtomIndexes->vectorPushExtend(idx);
       return;
     }
   }
@@ -100,13 +100,13 @@ CL_DEFMETHOD void	SuperposableConformationCollection_O::superposeAllHeavyAtoms()
 {
   ConformationCollection_O::atomIterator	ai;
   int					idx;
-  ASSERTNOTNULL(this->_SuperposeAtomIndices);
+  ASSERTNOTNULL(this->_SuperposeAtomIndexes);
   this->clearSuperposeAtoms();
   for ( idx=0,ai=this->begin_AllAtoms(); ai!=this->end_AllAtoms(); idx++,ai++ )
   {
     if ( (*ai)->getElement() != element_H )
     {
-      this->_SuperposeAtomIndices->vectorPushExtend(idx);
+      this->_SuperposeAtomIndexes->vectorPushExtend(idx);
     }
   }
 }
@@ -116,10 +116,10 @@ CL_DEFMETHOD gctools::SmallOrderedSet<Atom_sp>	SuperposableConformationCollectio
 {
   gctools::SmallOrderedSet<Atom_sp>	result;
   Atom_sp			a;
-  ASSERTNOTNULL(this->_SuperposeAtomIndices);
-  for ( size_t si=0, siEnd(this->_SuperposeAtomIndices->length()); si<siEnd; si++ )
+  ASSERTNOTNULL(this->_SuperposeAtomIndexes);
+  for ( size_t si=0, siEnd(this->_SuperposeAtomIndexes->length()); si<siEnd; si++ )
   {
-    a = this->_AllAtoms[(*this->_SuperposeAtomIndices)[si]];
+    a = this->_AllAtoms[(*this->_SuperposeAtomIndexes)[si]];
     result.insert(a);
   }
   return result;
@@ -128,7 +128,7 @@ CL_DEFMETHOD gctools::SmallOrderedSet<Atom_sp>	SuperposableConformationCollectio
 
 int	SuperposableConformationCollection_O::numberOfSuperposeAtoms()
 {
-  return this->_SuperposeAtomIndices->length();
+  return this->_SuperposeAtomIndexes->length();
 }
 
 
@@ -141,8 +141,8 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
   Matrix					transform;
   ConformationCollectionEntry_sp		entry;
   ASSERT(matter==this->_Matter);
-  LOG("Number of superpose atoms = {}" , this->_SuperposeAtomIndices->size()  );
-  ASSERT(this->_SuperposeAtomIndices->length() >= 4 );
+  LOG("Number of superpose atoms = {}" , this->_SuperposeAtomIndexes->size()  );
+  ASSERT(this->_SuperposeAtomIndexes->length() >= 4 );
 
 
 	//
@@ -161,7 +161,7 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
 		// Now compare this conformation to every one in the database
 		//
       superposer = SuperposeEngine_O::create();
-      superposer->setMoveablePoints(this->_SuperposeAtomIndices,newConf);
+      superposer->setMoveablePoints(this->_SuperposeAtomIndexes,newConf);
       double rms;
       gctools::Vec0<ConformationCollectionEntry_sp>::iterator	ci;
       geom::SimpleVectorCoordinate_sp				entryCoordinates;
@@ -174,7 +174,7 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
       {
         entryCoordinates = (*ci)->getAllCoordinates();
         LOG("Entry coordinates before superpose:{}" , (entryCoordinates->asXmlString()) );
-        superposer->setFixedPoints(this->_SuperposeAtomIndices, entryCoordinates);
+        superposer->setFixedPoints(this->_SuperposeAtomIndexes, entryCoordinates);
         LOG("About to superpose" );
         transform = superposer->superpose();
         rms = superposer->rootMeanSquareDifference();
@@ -235,7 +235,7 @@ geom::Render_sp	SuperposableConformationCollection_O::rendered(core::List_sp opt
     dlSuperpose->add(O_GrColor::systemColor(_kw_yellow));
     RPGrSphereList sphereList = O_GrSphereList::create();
     sphereList->setRadius(0.2);
-    for ( ii=this->_SuperposeAtomIndices->begin(); ii!=this->_SuperposeAtomIndices->end(); ii++ )
+    for ( ii=this->_SuperposeAtomIndexes->begin(); ii!=this->_SuperposeAtomIndexes->end(); ii++ )
     {
       sphereList->addVertex(this->_AllAtoms[*ii]->getPosition());
     }
@@ -255,7 +255,7 @@ void	SuperposableConformationCollection_O::setEntryCoordinatesAsFixedWithinSuper
                                                                                               ConformationCollectionEntry_sp entry,
                                                                                               SuperposeEngine_sp superposer )
 {
-  superposer->setFixedPoints(this->_SuperposeAtomIndices,
+  superposer->setFixedPoints(this->_SuperposeAtomIndexes,
                              entry->getAllCoordinates());
 }
 
@@ -264,7 +264,7 @@ void	SuperposableConformationCollection_O::setEntryCoordinatesAsMoveableWithinSu
                                                                                                  ConformationCollectionEntry_sp entry,
                                                                                                  SuperposeEngine_sp superposer )
 {
-  superposer->setMoveablePoints(this->_SuperposeAtomIndices, entry->getAllCoordinates());
+  superposer->setMoveablePoints(this->_SuperposeAtomIndexes, entry->getAllCoordinates());
 }
 
 

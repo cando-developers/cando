@@ -67,10 +67,10 @@ public: // Functions here
 	chem::ConstitutionIndex0N	atom3Index() const { return this->_Atom3;};
 	chem::ConstitutionIndex0N	atom4Index() const { return this->_Atom4;};
 
-	/*! Return all of the indices as integers
+	/*! Return all of the indexes as integers
 	  that represent the ConstitutionIndex0N for each atom
 	  a negative value refers to an atom in a previous residue */
-    core::T_mv atomIndices() const;
+    core::T_mv atomIndexes() const;
 };
 
 

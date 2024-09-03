@@ -1349,7 +1349,6 @@ void internalCoordinatesFromPointAndStub(const Vector3 &D,
   double dz = d.dotProduct(z);
   VEC_LOG("dx = {}  dy = {}  dz = {}\n", dx, dy, dz);
   phi = geom::geom__planeVectorAngle(dy, dz);
-  ENSURE_NOT_NAN(phi);
   VEC_LOG("  dy = {}   dz = {}\n", dy, dz);
   VEC_LOG("_Phi = {} deg\n", (phi / 0.0174533));
   Vector3 dox(1.0, 0.0, 0.0);
@@ -1375,7 +1374,6 @@ void internalCoordinatesFromPointAndStub(const Vector3 &D,
   VEC_LOG("eox = {}  eoy = {}\n", eox, eoy);
   //  double eoz = dop.dotProduct(doz); // Must be 0.0
   theta = - geom::geom__planeVectorAngle(eox, eoy);
-  ENSURE_NOT_NAN(theta);
   if (theta<0.0) {
     SIMPLE_WARN("Theta {} should never be less than zero", theta);
   }
@@ -1414,7 +1412,7 @@ void stubFromThreePoints(
   LOG(("e1 = (b-c).normalized : %s") , e1.asString() );
   Vector3 e3(e1.crossProduct(a-c));
   if (e3.length()>0.0) {
-  e3 = e3.normalized();
+    e3 = e3.normalized();
   } else {
     CLASP_ERROR("When normalizing e3 it was zero length e1=~s a=~s c=~s", OVector3_O::create(e1), OVector3_O::create(a), OVector3_O::create(c));
   }
@@ -1424,7 +1422,7 @@ void stubFromThreePoints(
   LOG(("Stub before being set: %s") , this->_Transform.asStringFormatted());
   transform.colX(e1).colY(e2).colZ(e3).setTranslate(c);
   LOG(("Stub = \n%s") , this->_Transform.asStringFormatted());
-} 
+}
 
 
 DOCGROUP(cando);

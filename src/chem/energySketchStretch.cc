@@ -293,7 +293,7 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 SYMBOL_EXPORT_SC_(KeywordPkg,stretch);
 SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 SYMBOL_EXPORT_SC_(KeywordPkg,r0);
-SYMBOL_EXPORT_SC_(KeywordPkg,indices);
+SYMBOL_EXPORT_SC_(KeywordPkg,indexes);
 SYMBOL_EXPORT_SC_(KeywordPkg,stretch_deviation);
 SYMBOL_EXPORT_SC_(KeywordPkg,force);
 
@@ -360,7 +360,7 @@ CL_DEFMETHOD void EnergySketchStretch_O::fill_from_vectors_in_alist(core::List_s
   }
 }
 
-CL_DOCSTRING(R"dx(The indices I1 and I2 must be coordinat indices, in other words index*3.)dx");
+CL_DOCSTRING(R"dx(The indexes I1 and I2 must be coordinat indexes, in other words index*3.)dx");
 CL_DEFMETHOD void EnergySketchStretch_O::addSketchStretchTerm(size_t i1, size_t i2, double kb, double r0) {
   EnergySketchStretch energySketchStretch(i1,i2,kb,r0);
   this->addTerm(energySketchStretch);

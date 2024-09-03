@@ -147,15 +147,15 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
           
 EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atoms) {
   if (end_atoms->length()<1) {
-    SIMPLE_ERROR("You must provide a vector of end atom indices with at least one end atom");
+    SIMPLE_ERROR("You must provide a vector of end atom indexes with at least one end atom");
   }
   core::SimpleVector_byte32_t_sp sv = core::SimpleVector_byte32_t_O::make(end_atoms->length());
-  // Copy the atom indices
+  // Copy the atom indexes
   size_t istart = 0;
   for ( size_t i(0), iEnd(end_atoms->length()); i<iEnd; ++i ) {
     Fixnum f = core::clasp_to_fixnum(end_atoms->rowMajorAref(i));
     if (istart>=f) {
-      SIMPLE_ERROR("The list of atom indices must be strictly increasing");
+      SIMPLE_ERROR("The list of atom indexes must be strictly increasing");
     }
     (*sv)[i] = f;
   }
@@ -280,13 +280,13 @@ struct coordinate_lookup {
 CL_DOCSTRING(R"dx(This function is to test the rigid body transformation code.
 Arguments:
 rigid-body-pos : An nvector of N quaternion/origin coordinates (a,b,c,d,x,y,z).
-end-indicesx3 : A vector of integer indices that index into 'coordinates' and indicate where
-each object (defined by a contiguous set of points) in coordinates ends. The 'end-indicesx3'
+end-indexesx3 : A vector of integer indexes that index into 'coordinates' and indicate where
+each object (defined by a contiguous set of points) in coordinates ends. The 'end-indexesx3'
 values are indexes directly into 'coordinates', so they are x3.
 coordinates : An nvector of coordinates.
 output : A complex-vector-float where the transformed points are written.
 )dx")
-CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output)
+CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indexesx3, NVector_sp coordinates, core::ComplexVector_float_sp output)
 {
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
@@ -303,8 +303,8 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
   int	I1;
   size_t I1start = 0;
   coordinate_lookup ea1(coordinates); 
-  for ( size_t iI1 = 0; iI1<end_indicesx3->length(); ++iI1 ) {
-    size_t I1end = core::clasp_to_size(end_indicesx3->rowMajorAref(iI1));
+  for ( size_t iI1 = 0; iI1<end_indexesx3->length(); ++iI1 ) {
+    size_t I1end = core::clasp_to_size(end_indexesx3->rowMajorAref(iI1));
     for ( size_t I1cur = I1start; I1cur<I1end; I1cur+=3 ) {
       ea1.setStartIndex(I1cur);
       I1 = iI1*7;

@@ -310,12 +310,10 @@ void	EnergyStretch_O::setupHessianPreconditioner(NVector_sp nvPosition,
 #define	STRETCH_FORCE_ACCUMULATE(i,o,v) {}
 #undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
 #define	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {	\
-    ENSURE_NOT_NAN(v); \
     m->addToElement((i1)+(o1),(i2)+(o2),v);		\
   }
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {	\
-    ENSURE_NOT_NAN(v); \
     m->addToElement((i1)+(o1),(i2)+(o2),v);			\
   }
 #define STRETCH_CALC_FORCE
@@ -396,7 +394,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef	STRETCH_SET_POSITION
 #define	STRETCH_SET_POSITION(x,ii,of)	{x = pos->getElement(ii+of);}
 #undef	STRETCH_ENERGY_ACCUMULATE
-#define	STRETCH_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e);  totalEnergy += (e); }
+#define	STRETCH_ENERGY_ACCUMULATE(e) { totalEnergy += (e); }
 #undef	STRETCH_FORCE_ACCUMULATE
 #undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -471,7 +469,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 SYMBOL_EXPORT_SC_(KeywordPkg,stretch);
 SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 SYMBOL_EXPORT_SC_(KeywordPkg,r0);
-SYMBOL_EXPORT_SC_(KeywordPkg,indices);
+SYMBOL_EXPORT_SC_(KeywordPkg,indexes);
 SYMBOL_EXPORT_SC_(KeywordPkg,stretch_deviation);
 SYMBOL_EXPORT_SC_(KeywordPkg,force);
 
@@ -527,7 +525,7 @@ core::List_sp	EnergyStretch_O::checkForBeyondThresholdInteractionsWithPosition(N
         ql::list one_deviation;
         one_deviation << kw::_sym_stretch
                       << kw::_sym_atoms << core::Cons_O::createList(a1,a2)
-                      << kw::_sym_indices << core::Cons_O::createList(core::make_fixnum(I1/3),core::make_fixnum(I2/3))
+                      << kw::_sym_indexes << core::Cons_O::createList(core::make_fixnum(I1/3),core::make_fixnum(I2/3))
                       << kw::_sym_r0 << core::clasp_make_double_float(r0)
                       << kw::_sym_stretch_deviation << core::clasp_make_double_float(StretchDeviation)
                       << kw::_sym_force << (ql::list()
@@ -711,8 +709,8 @@ CL_DEFMETHOD
 core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, core::HashTable_sp atomTypes)
 {
   ql::list  result;
-  core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
-  core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
+  core::T_sp tia1 = atomTable->_AtomTableIndexes->gethash(a1);
+  core::T_sp tia2 = atomTable->_AtomTableIndexes->gethash(a2);
   if (!tia1.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a1));
   if (!tia2.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a2));
   for (auto edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {

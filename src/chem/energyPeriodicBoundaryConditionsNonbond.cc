@@ -355,8 +355,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   if (!this->_iac_vec) {
     SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");
   }
-  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
-  core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndexes;
+  core::SimpleVector_int32_t_sp excludedAtomIndexes = this->_ExcludedAtomIndexes;
   [[maybe_unused]]num_real vdwScale = 1.0;
   num_real electrostaticScale = dQ1Q2Scale;
 #define DIELECTRIC dielectricConstant
@@ -419,13 +419,13 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG("{} ====== top of outer loop - index1 = {}\n" , __FUNCTION__ , index1 );
           // Skip 0 in excluded atom list that amber requires
-    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    bool has_excluded_atoms = ((*excludedAtomIndexes)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     num_real charge11 = (*this->_charge_vector)[index1];
     num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> {}    index2 -> {}\n" , numberOfExcludedAtomsRemaining , index2 );
-      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      int maybe_excluded_atom = (*excludedAtomIndexes)[excludedAtomIndex];
       if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
         LOG("    Excluding atom {}\n" , index2);
         ++excludedAtomIndex;
@@ -651,8 +651,8 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
   if (!this->_iac_vec) {
     SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");
   }
-  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
-  core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndexes;
+  core::SimpleVector_int32_t_sp excludedAtomIndexes = this->_ExcludedAtomIndexes;
   [[maybe_unused]]num_real vdwScale = this->getVdwScale();
   num_real electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
@@ -701,13 +701,13 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
   for ( int index1 = 0; index1<index1_end; ++index1 ) {
     LOG("{} ====== top of outer loop - index1 = {}\n" , __FUNCTION__ , index1 );
           // Skip 0 in excluded atom list that amber requires
-    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    bool has_excluded_atoms = ((*excludedAtomIndexes)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     num_real charge11 = (*this->_charge_vector)[index1];
     [[maybe_unused]]num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> {}    index2 -> {}\n" , numberOfExcludedAtomsRemaining , index2 );
-      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      int maybe_excluded_atom = (*excludedAtomIndexes)[excludedAtomIndex];
       if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
         LOG("    Excluding atom {}\n" , index2);
         ++excludedAtomIndex;

@@ -8,6 +8,7 @@
 (defpackage #:topology
   (:use #:common-lisp)
   (:nicknames #:ts)
+  (:shadow #:type #:debug)
   (:export
    #:monomer-shape-locus
    #:assembler-check-joints
@@ -212,7 +213,7 @@
    #:stereoisomer-atom
    #:atom-charge
    #:copy-oligomer
-   #:monomer-indices
+   #:monomer-indexes
    #:internals-values
    #:internals-types
    #:constitution-atom-named
@@ -270,12 +271,12 @@
    #:+phi-1+
    #:+psi+
    #:+psi-1+
-   #:rotamer-indices
+   #:rotamer-indexes
    #:make-backbone-rotamer-shape-connections
    #:make-sidechain-rotamer-shape-connections
    #:assign-backbone-allowed-rotamers
-   #:assign-backbone-random-rotamer-indices
-   #:allowed-rotamer-indices
+   #:assign-backbone-random-rotamer-indexes
+   #:allowed-rotamer-indexes
    #:assign-backbone-shape-keys
    #:focus-monomer
    #:focused-assembler-atresidue
@@ -383,11 +384,11 @@
    #:the-root-monomer
    #:build-all-externals
    #:lookup-phi-psi-monomer-shape
-   #:make-permissible-backbone-monomer-indices
+   #:make-permissible-backbone-monomer-indexes
    #:goto-permissible-monomer-sequence
    #:number-of-permissible-monomer-sequences
-   #:make-permissible-sidechain-monomer-indices
-   #:write-oligomer-monomer-indices
+   #:make-permissible-sidechain-monomer-indexes
+   #:write-oligomer-monomer-indexes
    #:build-initial-oligomer-shape-externals
    #:allowed-index-ends
    #:monomer-index-loci
@@ -451,7 +452,10 @@
    #:indexes-into-rotamer-indexes
    #:ensure-permissible-rotamers-equal
    #:with-orientation
-   #:ensure-complete-orientations))
+   #:ensure-complete-orientations
+   #:make-monomer-indexes
+   #:first-monomers
+   #:adjust))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

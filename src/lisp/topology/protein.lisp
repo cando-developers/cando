@@ -208,8 +208,8 @@
                                                                           name-to-parent)
                                                                  (topology:parent joint-template))))
                            name-to-parent))
-         (max-backbone-indices (* 36 36))
-         (indices (make-array max-backbone-indices))
+         (max-backbone-indexes (* 36 36))
+         (indexes (make-array max-backbone-indexes))
          (backbone-index -1))
     (cond
       ((string= (string to-name) "ALA")
@@ -236,10 +236,10 @@
                                         (maybe-adjust-dihedral to-topology :chi4 name-to-parent dup-fragment-internals (chi4 side-chain-rotamer)))
                                    do (let ((index (vector-push-extend dup-fragment-internals new-to-fragment-vector)))
                                         (vector-push-extend index backbone-index-vector)))
-                          unless (< backbone-index max-backbone-indices)
-                            do (error "backbone-index >= max-backbone-indices ~a" max-backbone-indices)
-                          do (setf (elt indices backbone-index) backbone-index-vector))))))
-    (values new-from-fragment-vector new-to-fragment-vector indices)))
+                          unless (< backbone-index max-backbone-indexes)
+                            do (error "backbone-index >= max-backbone-indexes ~a" max-backbone-indexes)
+                          do (setf (elt indexes backbone-index) backbone-index-vector))))))
+    (values new-from-fragment-vector new-to-fragment-vector indexes)))
 
 (defun apply-backbone-rotamers (foldamer rotamers protein-conformations-map)
   "Loop through every backbone residue and generate context-rotamers for every pair of phi/psi angles at 10 degree increments"
@@ -257,7 +257,7 @@
                    (cond
                      ((and (string= (string from-name) "AA")
                            (string= (string (topology:id to-focus-monomer)) "AASIDE"))
-                      (multiple-value-bind (from-fragments to-fragments indices)
+                      (multiple-value-bind (from-fragments to-fragments indexes)
                           (adjust-backbone-dependent-rotamers from-monomer-context from-oligomer from-focus-monomer
                                                               to-monomer-context to-oligomer to-focus-monomer
                                                               rotamers protein-conformations-map)
@@ -265,11 +265,11 @@
                         ;; from-monomer-context -> from-fragments
                         ;; to-monomer-context -> to-fragments
                         ;; and the rotamer-context-connections object
-                        ;; (cons from-monomer-context to-monomer-context) -> indices
+                        ;; (cons from-monomer-context to-monomer-context) -> indexes
                         (setf (gethash from-monomer-context monomer-context-to-context-rotamers) from-fragments
                               (gethash to-monomer-context monomer-context-to-context-rotamers) to-fragments
                               )
-                        (set-rotamer-context-connections rotamer-context-connections from-monomer-context to-monomer-context indices)
+                        (set-rotamer-context-connections rotamer-context-connections from-monomer-context to-monomer-context indexes)
                         ))
                      ((string= (string from-name) "AA")
                       (let ((to-name (topology:oligomer-monomer-name-for-monomer to-oligomer to-focus-monomer)))

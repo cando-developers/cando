@@ -105,7 +105,7 @@ private:
 	int				iTempInt;
         core::HashTableEq_sp            _BackSpan;
 
-	void	clearAtomIndices();
+	void	clearAtomIndexes();
         core::T_sp next(core::T_sp funcDesig);
 	bool	nextObjectInAtom();
 	bool		bLoopAtomVisible(Atom_sp a);

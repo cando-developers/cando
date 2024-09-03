@@ -85,7 +85,7 @@ Dumb_SparseMatrix::Dumb_SparseMatrix( )
 //    THE NONZERO ENTRIES OF THE SPARSE MATRIX ARE STORED ROW-BY-ROW IN THE
 //    ARRAY A.  TO IDENTIFY THE INDIVIDUAL NONZERO ENTRIES IN EACH ROW,
 //    WE NEED TO KNOW IN WHICH COLUMN EACH ENTRY LIES.  THESE COLUMN
-//    INDICES ARE STORED IN THE ARRAY JA;  I.E., IF  A(K) = M(I,J),  THEN
+//    INDEXES ARE STORED IN THE ARRAY JA;  I.E., IF  A(K) = M(I,J),  THEN
 //    JA(K) = J.  TO IDENTIFY THE INDIVIDUAL ROWS, WE NEED TO KNOW WHERE
 //    EACH ROW STARTS.  THESE ROW POINTERS ARE STORED IN THE ARRAY IA;
 //    I.E., IF M(I,J) IS THE FIRST NONZERO ENTRY (STORED) IN THE I-TH ROW
@@ -96,7 +96,7 @@ Dumb_SparseMatrix::Dumb_SparseMatrix( )
 //
 //            A(IA(I)),  A(IA(I)+1),  ..., A(IA(I+1)-1),
 //
-//    AND THE CORRESPONDING COLUMN INDICES ARE STORED CONSECUTIVELY IN
+//    AND THE CORRESPONDING COLUMN INDEXES ARE STORED CONSECUTIVELY IN
 //
 //            JA(IA(I)), JA(IA(I)+1), ..., JA(IA(I+1)-1).
 //
@@ -131,7 +131,7 @@ Dumb_SparseMatrix::Dumb_SparseMatrix( )
 double*	Dumb_SparseMatrix::elementPointer(int c, int r )
 {
 int	sliceStart, sliceEnd, ss, se, sm;
-    this->_orderIndices(c,r);
+    this->_orderIndexes(c,r);
 
     if ( c >= this->_Columns || r >= this->_Rows ) {
 	SIMPLE_ERROR("Overflow in matrix operation");

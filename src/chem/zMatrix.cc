@@ -78,9 +78,9 @@ namespace chem
     };
 
 
-    void	ZMatrixInternal_O::setAtomNew(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices)
+    void	ZMatrixInternal_O::setAtomNew(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndexes)
     {
-	this->_AtomNew = atomIndices[atom];
+	this->_AtomNew = atomIndexes[atom];
     }
 
 
@@ -165,13 +165,13 @@ CL_DEFMETHOD     core::T_sp	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 
 
     void	ZMatrixBondInternal_O::setup(Atom_sp atomNew, Atom_sp atomBond,
-					     ZMatrixInternal_O::atomMap	atomIndices )
+					     ZMatrixInternal_O::atomMap	atomIndexes )
     {
 	stringstream	name;
-	this->setAtomNew(atomNew,atomIndices);
-	name << "b" << atomIndices.size();
+	this->setAtomNew(atomNew,atomIndexes);
+	name << "b" << atomIndexes.size();
 	this->setInternalName(name.str());
-	this->_AtomBond = atomIndices[atomBond];
+	this->_AtomBond = atomIndexes[atomBond];
 	this->setValue(0.0);
     }
 
@@ -256,14 +256,14 @@ CL_DEFMETHOD     core::T_sp	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
     }
 
     void	ZMatrixAngleInternal_O::setup(Atom_sp atomNew, Atom_sp atomBond, Atom_sp atomAngle,
-					      ZMatrixInternal_O::atomMap	atomIndices )
+					      ZMatrixInternal_O::atomMap	atomIndexes )
     {
 	stringstream	name;
-	this->setAtomNew(atomNew,atomIndices);
-	name << "a" << atomIndices.size();
+	this->setAtomNew(atomNew,atomIndexes);
+	name << "a" << atomIndexes.size();
 	this->setInternalName(name.str());
-	this->_AtomBond = atomIndices[atomBond];
-	this->_AtomAngle = atomIndices[atomAngle];
+	this->_AtomBond = atomIndexes[atomBond];
+	this->_AtomAngle = atomIndexes[atomAngle];
 	this->setValue(0.0);
     }
 
@@ -361,15 +361,15 @@ CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixNam
 
     void	ZMatrixDihedralInternal_O::setup(Atom_sp atomNew, Atom_sp atomBond,
 						 Atom_sp atomAngle, Atom_sp atomDihedral,
-						 ZMatrixInternal_O::atomMap	atomIndices )
+						 ZMatrixInternal_O::atomMap	atomIndexes )
     {
 	stringstream	name;
-	this->setAtomNew(atomNew,atomIndices);
-	name << "d" << atomIndices.size();
+	this->setAtomNew(atomNew,atomIndexes);
+	name << "d" << atomIndexes.size();
 	this->setInternalName(name.str());
-	this->_AtomBond = atomIndices[atomBond];
-	this->_AtomAngle = atomIndices[atomAngle];
-	this->_AtomDihedral = atomIndices[atomDihedral];
+	this->_AtomBond = atomIndexes[atomBond];
+	this->_AtomAngle = atomIndexes[atomAngle];
+	this->_AtomDihedral = atomIndexes[atomDihedral];
 	this->setValue(0.0);
     }
 
@@ -386,11 +386,11 @@ CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixNam
 //
 
 
-    ZMatrixEntry_sp ZMatrixEntry_O::create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices)
+    ZMatrixEntry_sp ZMatrixEntry_O::create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndexes)
     {
       auto 	entry  = gctools::GC<ZMatrixEntry_O>::allocate_with_default_constructor();
 	stringstream name;
-	name << atom->getElementAsString() << atomIndices.size();
+	name << atom->getElementAsString() << atomIndexes.size();
 	entry->_Atom = atom;
 	entry->_ZMatrixAtomName = core::SimpleBaseString_O::make(name.str());
 	return entry;
@@ -510,7 +510,7 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 	ZMatrixAngleInternal_sp		angleInternal;
 	ZMatrixDihedralInternal_sp	dihedralInternal;
 	SpanningLoop_sp			span;
-	ZMatrixInternal_O::atomMap 	atomIndices;
+	ZMatrixInternal_O::atomMap 	atomIndexes;
 	uint				numberOfEntries;
 	LOG("Starting on atom: {}" , atom->description().c_str()  );
 	this->_Matter = matter;
@@ -521,8 +521,8 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 	{
 	    newAtom = span->getAtom();
 	    
-	    atomIndices[newAtom] = this->_ZMatrix.size();
-	    entry = ZMatrixEntry_O::create(newAtom,atomIndices);
+	    atomIndexes[newAtom] = this->_ZMatrix.size();
+	    entry = ZMatrixEntry_O::create(newAtom,atomIndexes);
 	    this->_ZMatrix.push_back(entry);
 	    numberOfEntries = this->_ZMatrix.size();
 	    if ( !span->isBackSpanValid(newAtom) )
@@ -531,7 +531,7 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 	    }
 	    bondToAtom = gc::As_unsafe<Atom_sp>(span->getBackSpan(newAtom));
 	    LOG("bondToAtom = {}" , bondToAtom->description().c_str() );
-	    bondInternal = ZMatrixBondInternal_O::create(newAtom,bondToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
+	    bondInternal = ZMatrixBondInternal_O::create(newAtom,bondToAtom,atomIndexes,this->sharedThis<ZMatrix_O>());
 	    this->_Internals.push_back(bondInternal);
 	    entry->_Bond = bondInternal;
 	    if ( !span->isBackSpanValid(bondToAtom) )
@@ -542,7 +542,7 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 	    angleToAtom = gc::As_unsafe<Atom_sp>(span->getBackSpan(bondToAtom));
 	    LOG("angleToAtom = {}" , angleToAtom->description().c_str() );
 	    angleInternal = ZMatrixAngleInternal_O::create(newAtom,bondToAtom,
-							   angleToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
+							   angleToAtom,atomIndexes,this->sharedThis<ZMatrix_O>());
 	    this->_Internals.push_back(angleInternal);
 	    entry->_Angle = angleInternal;
             core::T_sp backspan = span->getBackSpan(angleToAtom);
@@ -564,7 +564,7 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 	    }
 	    LOG("dihedralToAtom = {}" , dihedralToAtom->description().c_str() );
 	    dihedralInternal = ZMatrixDihedralInternal_O::create(newAtom,bondToAtom,
-								 angleToAtom,dihedralToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
+								 angleToAtom,dihedralToAtom,atomIndexes,this->sharedThis<ZMatrix_O>());
 	    LOG("Appending dihedral" );
 	    this->_Internals.push_back(dihedralInternal);
 	    LOG("Setting entry->_Dihedral" );

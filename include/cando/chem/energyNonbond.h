@@ -178,7 +178,7 @@ class EnergyNonbond_O : public EnergyComponent_O
     // Original way of defining nonbonds with list of nonbond terms
   gctools::Vec0<TermType>	_Terms;
   gctools::Vec0<TermType>	_BeyondThresholdTerms;
-    // Correct way of defining nonbonds using excluded atom indices
+    // Correct way of defining nonbonds using excluded atom indexes
   // FIXME:  Get rid of _FFNonbondDb - and the old code that uses it.
   core::T_sp        _FFNonbondDb;
   AtomTable_sp          _AtomTable;
@@ -197,8 +197,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   NVector_sp     _cn1_vec;
   NVector_sp     _cn2_vec;
   // Excluded atom table
-  core::SimpleVector_int32_t_sp   _NumberOfExcludedAtomIndices;
-  core::SimpleVector_int32_t_sp   _ExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp   _NumberOfExcludedAtomIndexes;
+  core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
  public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
@@ -209,8 +209,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
 
-  CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndices;}
-  CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
+  CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndexes;}
+  CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndexes;}
  public:
   void constructNonbondTermsBetweenResidues(Residue_sp res1, Residue_sp res2, core::T_sp nbForceField, core::HashTable_sp atomTypes );
   void addTerm(const TermType& term);

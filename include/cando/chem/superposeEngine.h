@@ -58,10 +58,10 @@ class	SuperposeEngine_O;
  * You can specify a larger list of moveable points and then index into them
  * using setMoveableIndex.
  * This will superpose the points in the following way.
- * 	- FixedIndices is an array of indeces into FixedCoordinates
- * 	- MoveableIndices is an array of indices into MoveableCoordinates
+ * 	- FixedIndexes is an array of indeces into FixedCoordinates
+ * 	- MoveableIndexes is an array of indexes into MoveableCoordinates
  *	Superpose Fixed points onto Moveable points.
- *	The points that are superposed are only the ones indexed by _FixedIndices and _MoveableIndices.
+ *	The points that are superposed are only the ones indexed by _FixedIndexes and _MoveableIndexes.
  */
 SMART(SuperposeEngine);
 class SuperposeEngine_O : public core::CxxObject_O
@@ -74,16 +74,16 @@ public:
   
 	void	initialize();
 private:
-	core::ComplexVector_byte32_t_sp		_FixedIndices;
+	core::ComplexVector_byte32_t_sp		_FixedIndexes;
 	geom::ComplexVectorCoordinate_sp	_FixedCoordinates;
-	core::ComplexVector_byte32_t_sp		_MoveableIndices;
+	core::ComplexVector_byte32_t_sp		_MoveableIndexes;
 	geom::ComplexVectorCoordinate_sp	_MoveableCoordinates;
 private://do not archive
 	Matrix			_Transform;
 public:
 	string	debugString();
-  void	setFixedPoints(core::ComplexVector_byte32_t_sp indices, geom::SimpleVectorCoordinate_sp fp );
-	void	setMoveablePoints(core::ComplexVector_byte32_t_sp indices, geom::SimpleVectorCoordinate_sp mp);
+  void	setFixedPoints(core::ComplexVector_byte32_t_sp indexes, geom::SimpleVectorCoordinate_sp fp );
+	void	setMoveablePoints(core::ComplexVector_byte32_t_sp indexes, geom::SimpleVectorCoordinate_sp mp);
 
   void	setFixedAllPoints(core::Array_sp fp );
   void	setMoveableAllPoints(core::Array_sp mp);

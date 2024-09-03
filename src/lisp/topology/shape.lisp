@@ -410,11 +410,11 @@ callback-sidechain-rotamer-indexes - A lambda that takes the lambda-list (oligom
                                             (val (gethash fragment-match-key ht)))
                                        (unless val (break "Could not find value for key ~a in ht: ~a" fragment-match-key ht))
                                        val)
-          for allowed-fragment-indices = (progn
+          for allowed-fragment-indexes = (progn
                                            #+(or)(format t "alowed-fragment-vec ~s (rotamer-index root-monomer-shape) -> ~s~%" allowed-fragment-vec (rotamer-index root-monomer-shape))
                                            (elt allowed-fragment-vec (rotamer-index root-monomer-shape)))
-          for rotamer-index = (if allowed-fragment-indices
-                                                (elt allowed-fragment-indices (random (length allowed-fragment-indices)))
+          for rotamer-index = (if allowed-fragment-indexes
+                                                (elt allowed-fragment-indexes (random (length allowed-fragment-indexes)))
                                                 :BADBADBAD)
           do (setf (rotamer-index out-monomer-shape) rotamer-index)
           do (format t "rotamer-index ~a for monomer-shape ~a~%"

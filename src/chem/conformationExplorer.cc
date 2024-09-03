@@ -90,7 +90,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinat
     {
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
-	superposer->setFixedPoints(explorer->_getSuperposeAtomIndices(), this->_FinalCoordinates );
+	superposer->setFixedPoints(explorer->_getSuperposeAtomIndexes(), this->_FinalCoordinates );
     }
 
 
@@ -99,7 +99,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinat
     {
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
-	superposer->setMoveablePoints(explorer->_getSuperposeAtomIndices(), this->_FinalCoordinates );
+	superposer->setMoveablePoints(explorer->_getSuperposeAtomIndexes(), this->_FinalCoordinates );
     }
 
 
@@ -176,7 +176,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 	    geom::DisplayList_sp prims = geom::DisplayList_O::create();
 	    FIX_ME(); prims->setName(_lisp->internKeyword("superposeAtoms"));
 	    geom::GrSpheres_sp sphereList = geom::GrSpheres_O::create();
-	    for ( ii=explorer->superposeAtomIndices_begin(); ii!=explorer->superposeAtomIndices_end(); ii++ )
+	    for ( ii=explorer->superposeAtomIndexes_begin(); ii!=explorer->superposeAtomIndexes_end(); ii++ )
 	    {
 		sphereList->appendSphere(explorer->_getAtomAtIndex(*ii)->getPosition(),0.2,geom::Color_O::yellow(_lisp));
 	    }
@@ -516,7 +516,7 @@ core::HashTable_sp ConformationExplorerEntry_O::getEntryStageNames()
 	this->_AllAtoms.clear();
 	this->_Binder = core::HashTableEq_O::create_default();
 	this->clearEntries();
-	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
+	this->_SuperposeAtomIndexes = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 
@@ -621,7 +621,7 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsList()
 	node->attribute( "Matter", this->_Matter );
 	node->archiveVector0( "Entries", this->_Entries );
 	node->archiveOrderedSet( "AllAtoms", this->_AllAtoms );
-	node->attribute( "SuperposeAtomIndices", this->_SuperposeAtomIndices );
+	node->attribute( "SuperposeAtomIndexes", this->_SuperposeAtomIndexes );
 	node->attributeIfNotNil( "Binder", this->_Binder );
     }
 #endif
@@ -679,8 +679,8 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsList()
 CL_LISPIFY_NAME("clearSuperposeAtoms");
 CL_DEFMETHOD     void	ConformationExplorer_O::clearSuperposeAtoms()
     {
-	ASSERTNOTNULL(this->_SuperposeAtomIndices);
-	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
+	ASSERTNOTNULL(this->_SuperposeAtomIndexes);
+	this->_SuperposeAtomIndexes = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 
@@ -690,12 +690,12 @@ CL_DEFMETHOD     void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
     {
 	atomIterator		ai;
 	int			idx;
-	ASSERTNOTNULL(this->_SuperposeAtomIndices);
+	ASSERTNOTNULL(this->_SuperposeAtomIndexes);
 	for ( idx=0,ai=this->begin_AllAtoms(); ai!=this->end_AllAtoms(); idx++,ai++ )
 	{
 	    if ( (*ai) == a )
 	    {
-              this->_SuperposeAtomIndices->vectorPushExtend(idx);
+              this->_SuperposeAtomIndexes->vectorPushExtend(idx);
 		return;
 	    }
 	}
@@ -718,13 +718,13 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
     {
 	atomIterator		ai;
 	int			idx;
-	ASSERTNOTNULL(this->_SuperposeAtomIndices);
+	ASSERTNOTNULL(this->_SuperposeAtomIndexes);
 	this->clearSuperposeAtoms();
 	for ( idx=0,ai=this->begin_AllAtoms(); ai!=this->end_AllAtoms(); idx++,ai++ )
 	{
 	    if ( (*ai)->getElement() != element_H )
 	    {
-		this->_SuperposeAtomIndices->vectorPushExtend(idx);
+		this->_SuperposeAtomIndexes->vectorPushExtend(idx);
 	    }
 	}
     }
@@ -734,10 +734,10 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
     {
         gctools::SmallOrderedSet<Atom_sp>	result;
 	Atom_sp			a;
-	ASSERTNOTNULL(this->_SuperposeAtomIndices);
-	for ( size_t si=0; si<this->_SuperposeAtomIndices->length(); si++ )
+	ASSERTNOTNULL(this->_SuperposeAtomIndexes);
+	for ( size_t si=0; si<this->_SuperposeAtomIndexes->length(); si++ )
 	{
-          a = this->_AllAtoms[(*this->_SuperposeAtomIndices)[si]];
+          a = this->_AllAtoms[(*this->_SuperposeAtomIndexes)[si]];
           result.insert(a);
 	}
 	return result;
@@ -746,7 +746,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 
     uint	ConformationExplorer_O::numberOfSuperposeAtoms()
     {
-	return this->_SuperposeAtomIndices->length();
+	return this->_SuperposeAtomIndexes->length();
     }
 
 
@@ -904,7 +904,7 @@ bool	ConformationExplorer_O::hasStageNameInAllEntries(core::T_sp stageKey)
 	{
 	    superposer = SuperposeEngine_O::create();
 	    matterConf = this->_SimpleVectorCoordinate(matter);
-	    superposer->setFixedPoints(this->_SuperposeAtomIndices,matterConf);
+	    superposer->setFixedPoints(this->_SuperposeAtomIndexes,matterConf);
 	    uint entryIndex = 0;
 	    entryIterator ei;
 	    for ( ei=this->begin_Entries(); ei!=this->end_Entries(); ei++, entryIndex++ )

@@ -446,25 +446,25 @@ void CDFragment_O::uniqifyResidueAtomNames(Molecule_sp mol, bool verbose)
   while (lResidues.advanceLoopAndProcess()) {
     Residue_sp res = lResidues.getResidue();
     Loop lAtoms(res,ATOMS);
-    core::HashTableEq_sp namesToIndices = core::HashTableEq_O::create_default();
+    core::HashTableEq_sp namesToIndexes = core::HashTableEq_O::create_default();
     while (lAtoms.advanceLoopAndProcess()) {
       Atom_sp atom = lAtoms.getAtom();
-      if (namesToIndices->gethash(atom->getName()).notnilp()) {
+      if (namesToIndexes->gethash(atom->getName()).notnilp()) {
         size_t nameTries = 0;
         core::Symbol_sp sym;
         do {
           stringstream ss;
           ss << atom->getName()->symbolNameAsString() << "_" << idx;
           sym = chemkw_intern(ss.str());
-          if (namesToIndices->gethash(sym).nilp()) break;
+          if (namesToIndexes->gethash(sym).nilp()) break;
         } while (++nameTries<1024);
         if (nameTries>=1024) {
           SIMPLE_ERROR("Tried to uniqify an atom name more than 1024 times");
         }
         atom->setName(sym);
-        namesToIndices->setf_gethash(sym,sym);
+        namesToIndexes->setf_gethash(sym,sym);
       } else {
-        namesToIndices->setf_gethash(atom->getName(),atom->getName());
+        namesToIndexes->setf_gethash(atom->getName(),atom->getName());
       }
     }
   }
@@ -477,27 +477,27 @@ void CDFragment_O::uniqifyResidueAtomNames(Molecule_sp mol, bool verbose)
 void Residue_O::makeAllAtomNamesInEachResidueUnique()
 {
   Loop lAtoms(this->asSmartPtr(),ATOMS);
-  core::HashTableEq_sp namesToIndices = core::HashTableEq_O::create_default();
+  core::HashTableEq_sp namesToIndexes = core::HashTableEq_O::create_default();
   size_t index = 0;
   while (lAtoms.advanceLoopAndProcess()) {
     Atom_sp atom = lAtoms.getAtom();
-    if (namesToIndices->gethash(atom->getName()).notnilp()) {
+    if (namesToIndexes->gethash(atom->getName()).notnilp()) {
       size_t nameTries = 0;
       core::Symbol_sp sym;
       do {
         stringstream ss;
         ss << atom->getName()->symbolNameAsString() << '_' << index;
         sym = chemkw_intern(ss.str());
-        if (namesToIndices->gethash(sym).nilp()) break;
+        if (namesToIndexes->gethash(sym).nilp()) break;
         index++;
       } while (++nameTries<1024);
       if (nameTries>=1024) {
         SIMPLE_ERROR("Tried to uniqify an atom name more than 1024 times");
       }
       atom->setName(sym);
-      namesToIndices->setf_gethash(sym,sym);
+      namesToIndexes->setf_gethash(sym,sym);
     } else {
-      namesToIndices->setf_gethash(atom->getName(),atom->getName());
+      namesToIndexes->setf_gethash(atom->getName(),atom->getName());
     }
   }
 #if 0

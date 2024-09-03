@@ -205,7 +205,7 @@ public:
   size_t partsCoordinates(NVector_sp pos, size_t idx, core::SimpleVector_float_sp coords);
   
   core::ComplexVector_float_sp write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts);
-  core::ComplexVector_float_sp write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output);
+  core::ComplexVector_float_sp write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indexesx3, NVector_sp coordinates, core::ComplexVector_float_sp output);
   core::ComplexVector_sp write_nonbond_atoms_to_complex_vector(core::ComplexVector_sp parts);
   size_t number_of_nonbond_atoms() const;
  public:

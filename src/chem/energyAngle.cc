@@ -402,12 +402,10 @@ bool		calcOffDiagonalHessian = true;
 #define	ANGLE_FORCE_ACCUMULATE(i,o,v) {}
 #undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    ENSURE_NOT_NAN(v); \
     m->addToElement((i1)+(o1),(i2)+(o2),v);\
 }
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    ENSURE_NOT_NAN(v); \
     m->addToElement((i1)+(o1),(i2)+(o2),v);\
 }
 #define ANGLE_CALC_FORCE
@@ -483,7 +481,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 #undef ANGLE_SET_POSITION
 #define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(e) { ENSURE_NOT_NAN(e); termEnergy += (e); }
+#define ANGLE_ENERGY_ACCUMULATE(e) { termEnergy += (e); }
 #undef	ANGLE_FORCE_ACCUMULATE
 #undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -520,7 +518,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
       if ( IllegalAngle ) {
         ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(ai->_Atom1,ai->_Atom2,ai->_Atom3),
                                                                    kw::_sym_coordinates,pos,
-                                                                   kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3))));
+                                                                   kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3))));
       }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       ai->_calcForce = calcForce;
@@ -769,9 +767,9 @@ CL_DEFMETHOD
 core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3, core::HashTable_sp atomTypes )
 {
   ql::list  result;
-  core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
-  core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
-  core::T_sp tia3 = atomTable->_AtomTableIndices->gethash(a3);
+  core::T_sp tia1 = atomTable->_AtomTableIndexes->gethash(a1);
+  core::T_sp tia2 = atomTable->_AtomTableIndexes->gethash(a2);
+  core::T_sp tia3 = atomTable->_AtomTableIndexes->gethash(a3);
   if (!tia1.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a1));
   if (!tia2.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a2));
   if (!tia3.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a3));

@@ -139,6 +139,7 @@
 
 (defpackage #:leap.off
   (:use #:common-lisp)
+  (:shadow #:type)
   (:export
    #:bug
    #:read-off-data-block

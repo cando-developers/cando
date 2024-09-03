@@ -797,7 +797,7 @@ Bignum				numSeq;
     {
         bases.push_back((*mi)->numberOfStereoisomers());
     }
-    numSeq = core::numberOfIndicesForMixedBase(bases);
+    numSeq = core::numberOfIndexesForMixedBase(bases);
     return numSeq;
 }
 

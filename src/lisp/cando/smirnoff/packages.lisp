@@ -30,6 +30,7 @@
 
 (defpackage #:smirnoff
   (:use #:common-lisp #:smirnoff.units)
+  (:shadow #:type #:method)
   (:export
    #:load-smirnoff
    #:build-energy-function

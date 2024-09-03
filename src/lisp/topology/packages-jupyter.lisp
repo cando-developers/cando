@@ -4,5 +4,6 @@
 (defpackage #:topology-jupyter
   (:use #:cl)
   (:nicknames #:tj)
+  (:shadow #:class)
   (:export
    #:sketch-svg))

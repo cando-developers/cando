@@ -97,7 +97,7 @@ public:
   void fields(core::Record_sp node);
 public:
   double		           _RmsCutOff;
-  core::ComplexVector_byte32_t_sp  _SuperposeAtomIndices;
+  core::ComplexVector_byte32_t_sp  _SuperposeAtomIndexes;
 public:
 
   CL_DEFMETHOD void	setRmsCutOff(double co) { this->_RmsCutOff = co; };

@@ -93,12 +93,12 @@
 
 (defun match-iterator (match)
   "Return an iterator that will return successive monomer-contexts and then nil"
-  (let* ((name-indices (coerce (loop for index below (length (parts match))
+  (let* ((name-indexes (coerce (loop for index below (length (parts match))
                                      for maybe-names = (elt (parts match) index)
                                      when (consp maybe-names)
                                        collect (cons index (length maybe-names)))
                                'vector))
-         (counters (make-array (length name-indices) :element-type 'ext:byte32 :initial-element 0))
+         (counters (make-array (length name-indexes) :element-type 'ext:byte32 :initial-element 0))
          (done nil))
     (lambda ()
       (let (result
@@ -117,7 +117,7 @@
           (loop named advance
                 for counter-index below (length counters)
                 do (incf (elt counters counter-index))
-                do (when (< (elt counters counter-index) (cdr (elt name-indices counter-index)))
+                do (when (< (elt counters counter-index) (cdr (elt name-indexes counter-index)))
                      (return-from advance nil))
                 do (setf (elt counters counter-index) 0)
                 finally (setf done t)))

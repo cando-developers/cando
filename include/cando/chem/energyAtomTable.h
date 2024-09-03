@@ -137,7 +137,7 @@ class AtomTable_O : public core::CxxObject_O
   void initialize();
 public:
   gctools::Vec0<EnergyAtom>	      _Atoms;
-  core::HashTableEq_sp                _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
+  core::HashTableEq_sp                _AtomTableIndexes; // m a p<Atom_sp,uint>	_AtomTableIndexes;
   core::ComplexVector_int32_t_sp      _ResiduePointers;
   core::ComplexVector_T_sp            _ResidueNames;
   //! Store count of atoms in each molecule. The length of this vector is the number of molecules
@@ -219,8 +219,8 @@ public:
   void	dumpTerms(core::HashTable_sp atomTypes);
   void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
 
-  size_t push_back_excluded_atom_indices_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex);
-  /*! Calculate the excluded atom list with atom indices starting at 0.
+  size_t push_back_excluded_atom_indexes_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndexes, size_t atomIndex);
+  /*! Calculate the excluded atom list with atom indexes starting at 0.
       Atoms with no excluded atoms get a -1 in the excluded_atom_list.
       This is different from AMBER, where it starts counting at 1.
       To generate an AMBER excluded atom list, add 1 to each entry.
@@ -232,7 +232,7 @@ public:
   //
   // Access fields in AtomTable elements directly
   //
-  core::HashTableEq_sp getAtomTableIndices();
+  core::HashTableEq_sp getAtomTableIndexes();
   CL_DEFMETHOD MatterName elt_atom_name(int index) { return this->_Atoms[index]._AtomName; };
   CL_DEFMETHOD core::Symbol_sp elt_atom_type(int index,core::HashTable_sp atomTypes);
   CL_DEFMETHOD Atom_sp elt_atom(int index) { return this->_Atoms[index].atom(); };

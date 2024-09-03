@@ -42,23 +42,23 @@ namespace kinematics
 #if INIT_TO_FACTORIES
 
 CL_LISPIFY_NAME(make-Rotamer);
-Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count)
+Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indexes, const double probability, const int count)
     {
       auto  me  = gctools::GC<Rotamer_O>::allocate_with_default_constructor();
       me->_Count = count;
       me->_Probability = probability;
       for ( ; dihedrals.notnilp(); dihedrals = oCdr(dihedrals),
 	      sigmas = oCdr(sigmas),
-	      indices = oCdr(indices) )
+	      indexes = oCdr(indexes) )
 	{
 	  me->_Dihedrals.push_back(oCar(dihedrals).as<core::DoubleFloat_O>()->get());
 	  me->_Sigmas.push_back(oCar(sigmas).as<core::DoubleFloat_O>()->get());
-	  if ( oCar(indices).notnilp() )
+	  if ( oCar(indexes).notnilp() )
 	    {
-	      me->_Indices.push_back(oCar(indices).as<core::Fixnum_I>().unsafe_fixnum());
+	      me->_Indexes.push_back(oCar(indexes).as<core::Fixnum_I>().unsafe_fixnum());
 	    } else
 	    {
-	      me->_Indices.push_back(0);
+	      me->_Indexes.push_back(0);
 	    }
 	}
 	return me;
@@ -73,23 +73,23 @@ Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::
 //      this->Base::__init__(exec,args,env,lisp);
 	core::Cons_sp dihedrals = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_dihedrals)));
 	core::Cons_sp sigmas = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_sigmas)));
-	core::Cons_sp indices = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_indices)));
+	core::Cons_sp indexes = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_indexes)));
 	double probability = translate::from_object<double>::convert(env->lookup(lisp->symbol(_sym_probability)));
 	this->_Count = translate::from_object<int>::convert(env->lookup(lisp->symbol(_sym_count)));
 	ASSERTF(dihedrals->length()==sigmas->length(), ("Mismatch between #dihedrals[%d] and #sigmas[%d]") , dihedrals->length() , sigmas->length() );
 	this->_Probability = probability;
 	for ( ; dihedrals.notnilp(); dihedrals = dihedrals->cdr(),
 		  sigmas = sigmas->cdr(),
-		  indices = indices->cdr() )
+		  indexes = indexes->cdr() )
 	{
 	    this->_Dihedrals.push_back(dihedrals->car<core::DoubleFloat_O>());
 	    this->_Sigmas.push_back(sigmas->car<core::DoubleFloat_O>());
-	    if ( indices->ocar().notnilp() )
+	    if ( indexes->ocar().notnilp() )
 	    {
-		this->_Indices.push_back(indices->car<core::Fixnum_O>());
+		this->_Indexes.push_back(indexes->car<core::Fixnum_O>());
 	    } else
 	    {
-		this->_Indices.push_back(0);
+		this->_Indexes.push_back(0);
 	    }
 	}
 	return _Nil<core::T_O>();
@@ -128,7 +128,7 @@ Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::
         this->Base::archiveBase(node);
 	node->archiveVectorDouble("dih",this->_Dihedrals);
 	node->archiveVectorDouble("sig",this->_Sigmas);
-	node->archiveVectorInt("ind",this->_Indices);
+	node->archiveVectorInt("ind",this->_Indexes);
 	node->attribute("c",this->_Count);
 	node->attribute("p",this->_Probability);
     }

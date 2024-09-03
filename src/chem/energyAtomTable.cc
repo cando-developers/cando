@@ -152,7 +152,7 @@ AtomTable_sp AtomTable_O::make()
 
 void AtomTable_O::initialize()
 {
-  this->_AtomTableIndices = core::HashTableEq_O::create_default();
+  this->_AtomTableIndexes = core::HashTableEq_O::create_default();
   core::ComplexVector_int32_t_sp residue_pointers = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
   core::ComplexVector_T_sp residue_names = core::ComplexVector_T_O::make(32,nil<core::T_O>(),core::make_fixnum(0));
   core::ComplexVector_int32_t_sp atoms_per_molecule = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
@@ -176,7 +176,7 @@ core::List_sp EnergyAtom::encode() const {
 
 void AtomTable_O::fields(core::Record_sp node) {
   node->field( INTERN_(kw,atoms), this->_Atoms );
-  node->field( INTERN_(kw,atom_table_indices), this->_AtomTableIndices);
+  node->field( INTERN_(kw,atom_table_indexes), this->_AtomTableIndexes);
   node->field( INTERN_(kw,residue_pointers), this->_ResiduePointers);
   node->field( INTERN_(kw,residue_names), this->_ResidueNames);
   node->field( INTERN_(kw,atoms_per_molecule),this->_AtomsPerMolecule);
@@ -198,7 +198,7 @@ CL_DEFMETHOD void AtomTable_O::readAtomCoordinates(NVector_sp coords) const
     SIMPLE_ERROR("The passed NVector has length {} but the atom-table needs length {}", coords->length(), this->getNVectorSize() );
   }
   int len = coords->length();
-  this->_AtomTableIndices->mapHash( [len,&coords] (core::T_sp key, core::T_sp value) {
+  this->_AtomTableIndexes->mapHash( [len,&coords] (core::T_sp key, core::T_sp value) {
     int indexX3 = value.unsafe_fixnum()*3;
 #ifdef DEBUG_ASSERT
     if ((indexX3%3) || indexX3>=len) SIMPLE_ERROR("indexX3 {} not multiple of 3 or out of range {}", indexX3, len);
@@ -218,7 +218,7 @@ CL_DEFMETHOD void AtomTable_O::writeAtomCoordinates(NVector_sp coords)
     SIMPLE_ERROR("The passed NVector has length {} but the atom-table needs length {}", coords->length(), this->getNVectorSize() );
   }
   int len = coords->length();
-  this->_AtomTableIndices->mapHash( [len,&coords] (core::T_sp key, core::T_sp value) {
+  this->_AtomTableIndexes->mapHash( [len,&coords] (core::T_sp key, core::T_sp value) {
     int indexX3 = value.unsafe_fixnum()*3;
 #ifdef DEBUG_ASSERT
     if ((indexX3%3) || indexX3>=len) SIMPLE_ERROR("indexX3 {} not multiple of 3 or out of range {}", indexX3, len);
@@ -243,20 +243,20 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexTimes3ForAtomAtIndex(size_t i
   SIMPLE_ERROR("Atom index {} is out of range (0...{})" , index, this->_Atoms.size());
 }
 
-CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
-  return this->_AtomTableIndices;
+CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndexes() {
+  return this->_AtomTableIndexes;
 }
 CL_DOCSTRING(R"dx(Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.)dx");
 CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
 {
-  return _AtomTableIndices->gethash(atom);
+  return _AtomTableIndexes->gethash(atom);
 }
 
 EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 {
-  core::T_mv it = this->_AtomTableIndices->gethash(a);
+  core::T_mv it = this->_AtomTableIndexes->gethash(a);
   core::MultipleValues &values = core::lisp_multipleValues();
-  if ( values.second(it.number_of_values()).nilp() ) // it == this->_AtomTableIndices.end() )
+  if ( values.second(it.number_of_values()).nilp() ) // it == this->_AtomTableIndexes.end() )
   {
     SIMPLE_ERROR("Could not find atom[{}] in AtomTable" , _rep_(a) );
   }
@@ -530,7 +530,7 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
           continue; // skip virtuals
         }
         LOG("Setting atom[{}] in AtomTable[{}]" , _rep_(a1) , idx );
-        this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
+        this->_AtomTableIndexes->setf_gethash(a1,core::clasp_make_fixnum(idx));
         EnergyAtom ea(nonbondForceField,a1,coordinateIndex,atomTypes);
         ea._AtomName = a1->getName();
         {
@@ -578,38 +578,38 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
 #endif
 }
 
-/*! Fill excludedAtomIndices with the excluded atom list.
+/*! Fill excludedAtomIndexes with the excluded atom list.
 Amber starts counting atoms at 1 so add 1 to every index.
 The atomIndex passed is index0.*/
-CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex)
+CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indexes_and_sort( core::ComplexVector_int32_t_sp excludedAtomIndexes, size_t atomIndex)
 {
-  size_t start_size = excludedAtomIndices->length();
+  size_t start_size = excludedAtomIndexes->length();
   EnergyAtom* ea = &(this->_Atoms[atomIndex]);
   uint otherIndex;
   for ( int ri = 0; ri<=EnergyAtom::max_remove; ++ri ) {
     for (auto bi = ea->_AtomsAtRemoveBondAngle14[ri].begin(); bi!=ea->_AtomsAtRemoveBondAngle14[ri].end(); ++bi ) {
-      otherIndex = this->_AtomTableIndices->gethash(*bi).unsafe_fixnum();
-      // Amber starts counting atom indices from 1 but Clasp starts with 0
+      otherIndex = this->_AtomTableIndexes->gethash(*bi).unsafe_fixnum();
+      // Amber starts counting atom indexes from 1 but Clasp starts with 0
       if (otherIndex > atomIndex) {
-        excludedAtomIndices->vectorPushExtend(otherIndex);
+        excludedAtomIndexes->vectorPushExtend(otherIndex);
       }
     }
   }
-  size_t end_size = excludedAtomIndices->length();
+  size_t end_size = excludedAtomIndexes->length();
   if (end_size == start_size ) {
     // Amber rules are that if there are no excluded atoms then put -1 in the
     // excluded atom list - this will be incremented to zero (0) when written out.
     // Oct 2019 -
     //     This is in the Swails description http://ambermd.org/prmtop.pdf
-    excludedAtomIndices->vectorPushExtend(-1); // Use -1 here because it will be incremented by one when writing out and will be written as 0
+    excludedAtomIndexes->vectorPushExtend(-1); // Use -1 here because it will be incremented by one when writing out and will be written as 0
     ++end_size;
   }
-  // sort the indices in increasing order
-  sort::quickSortMemory((int32_t*)excludedAtomIndices->rowMajorAddressOfElement_(0),start_size,end_size);
+  // sort the indexes in increasing order
+  sort::quickSortMemory((int32_t*)excludedAtomIndexes->rowMajorAddressOfElement_(0),start_size,end_size);
   if (chem__verbose(1)) {
     core::clasp_write_string(fmt::format("{}: " , atomIndex));
     for ( size_t ii = start_size; ii<end_size; ++ii ) {
-      core::clasp_write_string(fmt::format("{} " , (*excludedAtomIndices)[ii]));
+      core::clasp_write_string(fmt::format("{} " , (*excludedAtomIndexes)[ii]));
     }
     core::cl__terpri();
   }
@@ -628,7 +628,7 @@ CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
   core::ComplexVector_int32_t_sp excluded_atoms_list = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
   size_t num_atoms = this->getNumberOfAtoms();
   for ( size_t i1=0; i1<num_atoms; ++i1) {
-    size_t num = this->push_back_excluded_atom_indices_and_sort(excluded_atoms_list,i1);
+    size_t num = this->push_back_excluded_atom_indexes_and_sort(excluded_atoms_list,i1);
     number_excluded_atoms->vectorPushExtend(num);
   }
   core::T_sp t_number_excluded_atoms = core::eval::funcall(cl::_sym_copy_seq,number_excluded_atoms);
@@ -661,12 +661,12 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
 //  this->_Residues = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_residues));
 //  this->_ResidueNames = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_residue_names));
   this->_Atoms.resize(atom_name_vec->length());
-  this->_AtomTableIndices->clrhash();
+  this->_AtomTableIndexes->clrhash();
   for (size_t i = 0, iEnd(atom_name_vec->length()); i<iEnd ;++i)
   {
 //    printf("%s:%d About to set _AtomName with %s\n", __FILE__, __LINE__, _rep_(atom_name_vec->rowMajorAref(i)).c_str());
     Atom_sp atom = gc::As<Atom_sp>(atoms_vec->rowMajorAref(i));
-    this->_AtomTableIndices->setf_gethash(atom,core::clasp_make_fixnum(i));
+    this->_AtomTableIndexes->setf_gethash(atom,core::clasp_make_fixnum(i));
 //    printf("%s:%d  type -> %s\n", __FILE__, __LINE__, _rep_(type).c_str());
 //    atom->setAtomType(atom_type_vec->rowMajorAref(i));
     double charge  =  translate::from_object<double>(charge_vec->rowMajorAref(i))._v;   // charge-vector

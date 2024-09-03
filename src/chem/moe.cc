@@ -134,23 +134,23 @@ typedef	ParaArray<double>	ParaArrayReal;
 
 class	ParaTable {
 public:
-	map<string,int>		fieldIndices;
+	map<string,int>		fieldIndexes;
 	vector<ParaVector>	vectors;
 
-	void	addFieldVector(string f,ParaVector& v) { this->fieldIndices[f]=this->vectors.size(); this->vectors.push_back(v); };
+	void	addFieldVector(string f,ParaVector& v) { this->fieldIndexes[f]=this->vectors.size(); this->vectors.push_back(v); };
 
 	ParaVector&	getVector(int f) {return this->vectors[f];};
 
-	ParaVector&	getFieldVector(string f) {return this->vectors[this->fieldIndices[f]];};
-	int	getFieldIndex(string f) {return this->fieldIndices[f];};
+	ParaVector&	getFieldVector(string f) {return this->vectors[this->fieldIndexes[f]];};
+	int	getFieldIndex(string f) {return this->fieldIndexes[f];};
 
 
 
 
 	void	erase()	{ this->vectors.erase(this->vectors.begin(),
 					this->vectors.end());
-			  this->fieldIndices.erase(this->fieldIndices.begin(),
-						this->fieldIndices.end() );};
+			  this->fieldIndexes.erase(this->fieldIndexes.begin(),
+						this->fieldIndexes.end() );};
 };
 
 
@@ -1075,7 +1075,7 @@ void	MoeReadFile::readNextLine()
 		for ( i=0; i<ptBonds.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBonds.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBonds.getVector(index_b)[i])->getValue()-1;
-		    LOG("Read bond between atom indices {}-{}" , from+1 , to+1  );
+		    LOG("Read bond between atom indexes {}-{}" , from+1 , to+1  );
 		    if ( atoms[from]->getHybridization()==hybridization_sp2 &&
 			 atoms[to]->getHybridization()==hybridization_sp2 ) 
 		    {
@@ -1107,7 +1107,7 @@ void	MoeReadFile::readNextLine()
 		for ( i=0; i<ptBondsO1.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBondsO1.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBondsO1.getVector(index_b)[i])->getValue()-1;
-		    LOG("Read bond between atom indices {}-{}" , from+1 , to+1  );
+		    LOG("Read bond between atom indexes {}-{}" , from+1 , to+1  );
 		    bo = singleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
 		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
@@ -1122,7 +1122,7 @@ void	MoeReadFile::readNextLine()
 		for ( i=0; i<ptBondsO2.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBondsO2.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBondsO2.getVector(index_b)[i])->getValue()-1;
-		    LOG("Read bond between atom indices {}-{}" , from+1 , to+1  );
+		    LOG("Read bond between atom indexes {}-{}" , from+1 , to+1  );
 		    bo = doubleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
 		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
@@ -1137,7 +1137,7 @@ void	MoeReadFile::readNextLine()
 		for ( i=0; i<ptBondsO3.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBondsO3.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBondsO3.getVector(index_b)[i])->getValue()-1;
-		    LOG("Read bond between atom indices {}-{}" , from+1 , to+1  );
+		    LOG("Read bond between atom indexes {}-{}" , from+1 , to+1  );
 		    bo = tripleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
 		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());

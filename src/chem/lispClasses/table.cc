@@ -216,7 +216,7 @@ namespace chem
     void	Table_O::initialize()
     {
 	this->Base::initialize();
-        this->_FieldIndices = core::HashTableEq_O::create_default();
+        this->_FieldIndexes = core::HashTableEq_O::create_default();
     }
 
 #ifdef XML_ARCHIVE
@@ -246,7 +246,7 @@ namespace chem
 	    core::VectorStrings::iterator	si,ci;
 	    this->_FieldSymbols.clear();
 	    this->_FieldClasses.clear();
-	    this->_FieldIndices.clear();
+	    this->_FieldIndexes.clear();
 	    uint idx = 0;
 	    for ( si=symbolNames.begin(),ci=classNames.begin(); si!=symbolNames.end(); si++, ci++, idx++ )
 	    {
@@ -262,7 +262,7 @@ namespace chem
 #endif
 		}
 		this->_FieldClasses.push_back(mc);
-		this->_FieldIndices[fieldSymbol] = idx;
+		this->_FieldIndexes[fieldSymbol] = idx;
 	    }
 	}
 	node->archiveVector0("entries",this->_Entries);
@@ -282,7 +282,7 @@ namespace chem
 
     uint Table_O::indexOfField(core::Symbol_sp positionSymbol)
     {
-        core::T_mv pi = this->_FieldIndices->gethash(positionSymbol);
+        core::T_mv pi = this->_FieldIndexes->gethash(positionSymbol);
 	if ( pi.second().nilp() ) 
 	{
 	    SIMPLE_ERROR(("This table doesn't contain the field(%s)") , _rep_(positionSymbol));
@@ -293,14 +293,14 @@ namespace chem
 
     bool Table_O::hasField(core::Symbol_sp fieldSymbol)
     {
-	return (this->_FieldIndices->gethash(fieldSymbol).second().notnilp());
+	return (this->_FieldIndexes->gethash(fieldSymbol).second().notnilp());
     }
 
     core::Instance_sp Table_O::fieldClass(core::Symbol_sp fieldSymbol)
     {
 	if ( this->hasField(fieldSymbol) )
 	{
-	    return this->_FieldClasses[this->_FieldIndices[fieldSymbol]];
+	    return this->_FieldClasses[this->_FieldIndexes[fieldSymbol]];
 	}
 	return _Nil<core::Class_O>();
     }
@@ -308,7 +308,7 @@ namespace chem
 
     void Table_O::appendField(core::Symbol_sp fieldSymbol, core::Instance_sp fieldClass )
     {
-	if ( this->_FieldIndices.count(fieldSymbol) != 0 )
+	if ( this->_FieldIndexes.count(fieldSymbol) != 0 )
 	{
 	    SIMPLE_ERROR(("This table already contains a field named(%s)") , fieldSymbol->fullName() );
 	}
@@ -319,7 +319,7 @@ namespace chem
 	{
 	    this->_Entries.get(idx)->appendField(_Nil<core::T_O>());
 	}
-	this->_FieldIndices[fieldSymbol] = idx;
+	this->_FieldIndexes[fieldSymbol] = idx;
     }
 
 
@@ -329,17 +329,17 @@ namespace chem
 	this->_FieldSymbols.insert(this->_FieldSymbols.begin()+pos,fieldSymbol);
 	this->_FieldClasses.insert(this->_FieldClasses.begin()+pos,fieldClass);
     	//
-	// Slide all of the field indices at or above pos up one
+	// Slide all of the field indexes at or above pos up one
 	//
 	map<core::Symbol_sp,uint>::iterator pi;
-	for ( pi=this->_FieldIndices.begin(); pi!=this->_FieldIndices.end(); pi++ )
+	for ( pi=this->_FieldIndexes.begin(); pi!=this->_FieldIndexes.end(); pi++ )
 	{
 	    if ( pos <= pi->second )
 	    {
 		pi->second++;
 	    }
 	}
-	this->_FieldIndices[fieldSymbol] = pos;
+	this->_FieldIndexes[fieldSymbol] = pos;
     	//
 	// Open up a column in the table for this
 	// new field
@@ -484,8 +484,8 @@ namespace chem
 	{
 	    core::Symbol_sp sym = *it;
 	    sout << " " << (*it)->fullName();
-	    map<core::Symbol_sp,uint>::const_iterator fi = this->_FieldIndices.find(sym);
-	    ASSERT(fi!=this->_FieldIndices.end());
+	    map<core::Symbol_sp,uint>::const_iterator fi = this->_FieldIndexes.find(sym);
+	    ASSERT(fi!=this->_FieldIndexes.end());
 	    uint fieldIdx = fi->second;
 	    sout << "("<<fieldIdx<<")";
 	    if ( fieldIdx != currentIdx )

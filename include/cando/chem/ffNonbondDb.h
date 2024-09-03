@@ -288,7 +288,7 @@ namespace chem {
     uint findTypeIndex( core::Symbol_sp type );
     size_t ffnonbond_find_atom_type_position( core::Symbol_sp type );
     /*! Return the type index multiplied by the number
-     * of type indices.  Another type index can be added
+     * of type indexes.  Another type index can be added
      * to this number to get an index into a Nonbond crossterm table
      */
     uint findTypeMajorIndex( core::Symbol_sp type );

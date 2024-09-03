@@ -216,7 +216,7 @@ namespace kinematics
 
     SYMBOL_EXPORT_SC_(KinPkg,dihedrals);
     SYMBOL_EXPORT_SC_(KinPkg,sigmas);
-    SYMBOL_EXPORT_SC_(KinPkg,indices);
+    SYMBOL_EXPORT_SC_(KinPkg,indexes);
     SYMBOL_EXPORT_SC_(KinPkg,count);
     SYMBOL_EXPORT_SC_(KinPkg,probability);
     SYMBOL_EXPORT_SC_(KinPkg,phi);

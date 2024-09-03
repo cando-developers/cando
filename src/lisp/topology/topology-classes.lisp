@@ -294,7 +294,7 @@
   (let ((monomer-index (position monomer (monomers (oligomer-space oligomer)))))
     (unless monomer-index
       (error "Could not find monomer ~a in ~a" monomer oligomer))
-    (elt (monomers monomer) (aref (monomer-indices oligomer) monomer-index))))
+    (elt (monomers monomer) (aref (monomer-indexes oligomer) monomer-index))))
 
 (defun monomer-topologys-all-have-plug-named (monomer plug-name)
   (let ((topologys (loop for mon-name in (monomers monomer)
@@ -311,7 +311,7 @@
     (unless monomer-position
       (error "Could not find ~a in ~a" monomer oligomer))
     (let* ((monomer (aref (monomers (oligomer-space oligomer)) monomer-position))
-           (monomer-index (aref (monomer-indices oligomer) monomer-position))
+           (monomer-index (aref (monomer-indexes oligomer) monomer-position))
            (monomer-name (elt (monomers monomer) monomer-index)))
       (chem:find-topology monomer-name t))))
 
@@ -529,34 +529,40 @@ Examples:
     oligomer-space))
 
 (defclass oligomer (cando.serialize:serializable)
-  ((monomer-indices :initarg :monomer-indices :accessor monomer-indices)
+  ((monomer-indexes :initarg :monomer-indexes :accessor monomer-indexes)
    (oligomer-space :initarg :oligomer-space :accessor oligomer-space)))
 
 (defmethod print-object ((oligomer oligomer) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (oligomer stream :type t)
-        (format stream "~s" (monomer-indices oligomer)))))
+        (format stream "~s" (monomer-indexes oligomer)))))
 
 (defun copy-oligomer (oligomer)
   (make-instance 'oligomer
-                 :monomer-indices (copy-seq (monomer-indices oligomer))
+                 :monomer-indexes (copy-seq (monomer-indexes oligomer))
                  :oligomer-space (oligomer-space oligomer)))
 
-(defclass permissible-monomer-indices ()
+(defclass permissible-monomer-indexes ()
   ((oligomer-space :initarg :oligomer-space :reader oligomer-space)
    (monomer-index-loci :initarg :monomer-index-loci :reader monomer-index-loci)
    (allowed-index-ends :initarg :allowed-index-ends :reader allowed-index-ends)))
 
 
-(defclass permissible-backbone-monomer-indices (permissible-monomer-indices)
+(defclass permissible-backbone-monomer-indexes (permissible-monomer-indexes)
   ())
 
-(defclass permissible-sidechain-monomer-indices (permissible-monomer-indices)
+(defclass permissible-sidechain-monomer-indexes (permissible-monomer-indexes)
   ())
 
-(defun make-permissible-monomer-indices (oligomer-space wanted-shape-kind permissible-monomer-indices-subclass-name)
-  "Make a permissible-backbone-monomer-indices-subclass-name object for the oligomer-space"
+(defun first-monomers (permissible-monomers-indexes)
+  "Return a vector of the first monomer index for each position"
+  (let ((len (length (monomer-index-loci permissible-monomers-indexes))))
+    (make-instance 'monomer-indexes
+                   :monomer-indexes (make-array len :initial-element 0))))
+
+(defun make-permissible-monomer-indexes (oligomer-space wanted-shape-kind permissible-monomer-indexes-subclass-name)
+  "Make a permissible-backbone-monomer-indexes-subclass-name object for the oligomer-space"
   (with-slots (foldamer) oligomer-space
     (let ((monomer-index-loci (make-array 16 :adjustable t :element-type 'ext:byte32 :fill-pointer 0))
           (allowed-index-ends (make-array 16 :adjustable t :element-type 'ext:byte32 :fill-pointer 0)))
@@ -567,34 +573,34 @@ Examples:
               do (progn
                    (vector-push-extend index monomer-index-loci)
                    (vector-push-extend (length (monomers monomer)) allowed-index-ends)))
-      (make-instance permissible-monomer-indices-subclass-name
+      (make-instance permissible-monomer-indexes-subclass-name
                      :oligomer-space oligomer-space
                      :monomer-index-loci (copy-seq monomer-index-loci)
                      :allowed-index-ends (copy-seq allowed-index-ends)))))
 
-(defun make-permissible-backbone-monomer-indices (oligomer-space)
-  "Make a permissible-backbone-monomer-indices object for the oligomer-space"
-  (make-permissible-monomer-indices oligomer-space :backbone 'permissible-backbone-monomer-indices))
+(defun make-permissible-backbone-monomer-indexes (oligomer-space)
+  "Make a permissible-backbone-monomer-indexes object for the oligomer-space"
+  (make-permissible-monomer-indexes oligomer-space :backbone 'permissible-backbone-monomer-indexes))
 
-(defun make-permissible-sidechain-monomer-indices (oligomer-space)
-  "Make a permissible-sidechain-monomer-indices object for the oligomer-space"
-  (make-permissible-monomer-indices oligomer-space :sidechain 'permissible-sidechain-monomer-indices))
+(defun make-permissible-sidechain-monomer-indexes (oligomer-space)
+  "Make a permissible-sidechain-monomer-indexes object for the oligomer-space"
+  (make-permissible-monomer-indexes oligomer-space :sidechain 'permissible-sidechain-monomer-indexes))
 
 
-(defun number-of-permissible-monomer-sequences (permissible-monomer-indices)
+(defun number-of-permissible-monomer-sequences (permissible-monomer-indexes)
   "Return the total number of sequences allowed by the permissible-monomer-sequences"
   (loop with num = 1
-        for end across (allowed-index-ends permissible-monomer-indices)
+        for end across (allowed-index-ends permissible-monomer-indexes)
         do (setf num (* num end))
            finally (return num)))
 
-(defun goto-permissible-monomer-sequence (permissible-monomer-indices sequence-index oligomer)
-  "Set the oligomer monomer indices to the sequence-index sequence"
-  (let* ((bases (coerce (allowed-index-ends permissible-monomer-indices) 'list))
+(defun goto-permissible-monomer-sequence (permissible-monomer-indexes sequence-index oligomer)
+  "Set the oligomer monomer indexes to the sequence-index sequence"
+  (let* ((bases (coerce (allowed-index-ends permissible-monomer-indexes) 'list))
          (digits (sys:positive-integer-to-mixed-base-digits sequence-index bases)))
-    (loop for locus across (monomer-index-loci permissible-monomer-indices)
+    (loop for locus across (monomer-index-loci permissible-monomer-indexes)
           for digit in digits
-          do (setf (aref (monomer-indices oligomer) locus) digit))))
+          do (setf (aref (monomer-indexes oligomer) locus) digit))))
 
 (defun goto-sequence (oligomer index)
   (let* ((bases (loop for monomer across (monomers (oligomer-space oligomer))
@@ -605,19 +611,19 @@ Examples:
          (digits (sys:positive-integer-to-mixed-base-digits index bases)))
     (loop for monomer-index below (length (monomers (oligomer-space oligomer)))
           for digit in digits
-          do (setf (aref (monomer-indices oligomer) monomer-index) digit))))
+          do (setf (aref (monomer-indexes oligomer) monomer-index) digit))))
 
 (defun oligomer-monomer-name-for-monomer (oligomer monomer)
   "Return the monomer name at index in the oligomer"
   (let ((monomer-index (position monomer (monomers oligomer))))
     (unless monomer-index
       (error "The monomer ~s is not in the oligomer ~s" monomer oligomer))
-    (elt (monomers monomer) (elt (monomer-indices oligomer) monomer-index))))
+    (elt (monomers monomer) (elt (monomer-indexes oligomer) monomer-index))))
 
 (defun oligomer-monomer-name-at-index (oligomer index)
   "Return the monomer name at index in the oligomer"
   (let ((monomer (elt (monomers oligomer) index)))
-    (elt (monomers monomer) (elt (monomer-indices oligomer) index))))
+    (elt (monomers monomer) (elt (monomer-indexes oligomer) index))))
 
 (defgeneric oligomer-monomer-name (oligomer thing)
   (:documentation "Return the monomer name of either a monomer or the monomer at the index in the oligomer"))
@@ -632,30 +638,65 @@ Examples:
   "Return a list of monomer names for this oligomer"
   (loop for index below (length (monomers oligomer))
         for monomer across (monomers oligomer)
-        collect (elt (monomers monomer) (elt (monomer-indices oligomer) index))))
+        collect (elt (monomers monomer) (elt (monomer-indexes oligomer) index))))
 
 (defun make-oligomer (oligomer-space &optional (index 0))
   "Build an oligomer in the oligomer space"
   (let ((olig (make-instance 'oligomer
-                             :monomer-indices (make-array (length (monomers oligomer-space)) :element-type 'ext:byte32)
+                             :monomer-indexes (make-array (length (monomers oligomer-space)) :element-type 'ext:byte32)
                              :oligomer-space oligomer-space)))
     (goto-sequence olig index)
     olig))
 
-(defgeneric write-oligomer-monomer-indices (oligomer permissible-monomer-indices monomer-indices))
+(defclass monomer-indexes (cl:sequence standard-object)
+  ((monomer-indexes :initarg :monomer-indexes :accessor monomer-indexes))
+  (:documentation "A class to index into a vector of monomers"))
 
-(defmethod write-oligomer-monomer-indices (oligomer (permissible-monomer-indices permissible-monomer-indices)
-                                           (monomer-indices array))
-  "Write the monomer indices into the oligomer"
-  (loop for monomer-index-locus across (monomer-index-loci permissible-monomer-indices)
-        for monomer-index across monomer-indices
-        do (setf (aref (monomer-indices oligomer) monomer-index-locus) monomer-index)))
+(defmethod print-object ((object monomer-indexes) stream)
+  (let ((*print-pretty* nil))
+    (print-unreadable-object (object stream :type t)
+      (format stream "~s" (monomer-indexes object)))))
 
-(defmethod write-oligomer-monomer-indices (oligomer (permissible-monomer-indices permissible-monomer-indices)
+(defun monomer-indexes-length (monomer-indexes)
+  (length (monomer-indexes monomer-indexes)))
+
+(defun monomer-indexes-elt (monomer-indexes index)
+  (elt (monomer-indexes monomer-indexes) index))
+
+(defun (setf monomer-indexes-elt) (new monomer-indexes index)
+  (setf (elt (monomer-indexes monomer-indexes) index) new))
+
+(sequence:define-random-access-sequence monomer-indexes monomer-indexes-length monomer-indexes-elt)
+
+(defmethod sequence:make-sequence-like ((sequence monomer-indexes) length &rest args &key initial-element initial-contents)
+     (make-instance 'monomer-indexes
+                    :monomer-indexes
+                    (apply #'make-array length
+                           :element-type 'ext:byte32
+                           args)))
+
+(defun make-monomer-indexes (length &rest args)
+  (make-instance 'monomer-indexes
+                 :monomer-indexes
+                 (apply #'make-array length
+                        :element-type 'ext:byte32
+                        args)))
+
+(defgeneric write-oligomer-monomer-indexes (oligomer permissible-monomer-indexes monomer-indexes))
+
+(defmethod write-oligomer-monomer-indexes (oligomer (permissible-monomer-indexes permissible-monomer-indexes)
+                                           (monomer-indexes monomer-indexes))
+  "Write the monomer indexes into the oligomer"
+  (loop with vec = (monomer-indexes monomer-indexes)
+        for monomer-index-locus across (monomer-index-loci permissible-monomer-indexes)
+        for monomer-index across vec
+        do (setf (aref (monomer-indexes oligomer) monomer-index-locus) monomer-index)))
+
+(defmethod write-oligomer-monomer-indexes (oligomer (permissible-monomer-indexes permissible-monomer-indexes)
                                            (monomer-index integer))
   "Write the same monomer-index into the oligomer"
-  (loop for monomer-index-locus across (monomer-index-loci permissible-monomer-indices)
-        do (setf (aref (monomer-indices oligomer) monomer-index-locus) monomer-index)))
+  (loop for monomer-index-locus across (monomer-index-loci permissible-monomer-indexes)
+        do (setf (aref (monomer-indexes oligomer) monomer-index-locus) monomer-index)))
 
 (defmethod monomers ((obj oligomer))
   (monomers (oligomer-space obj)))
@@ -688,11 +729,11 @@ Examples:
                    (source-monomer (source-monomer coupling))
                    (source-monomer-index (gethash source-monomer monomer-to-index))
                    (source-monomer-name (elt (monomers source-monomer)
-                                             (elt (monomer-indices oligomer) source-monomer-index)))
+                                             (elt (monomer-indexes oligomer) source-monomer-index)))
                    (target-monomer (target-monomer coupling))
                    (target-monomer-index (gethash target-monomer monomer-to-index))
                    (target-monomer-name (elt (monomers target-monomer)
-                                             (elt (monomer-indices oligomer) target-monomer-index))))
+                                             (elt (monomer-indexes oligomer) target-monomer-index))))
               (setf remaining-couplings (cdr remaining-couplings))
               (values coupling source-monomer-name target-monomer-name))))))))
 

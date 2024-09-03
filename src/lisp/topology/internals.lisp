@@ -602,27 +602,27 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   (make-instance 'sidechain-rotamer-shape-connections))
 
 (defclass backbone-rotamer-shape-connections (rotamer-shape-connections)
-  ((rotamer-indices :initform (make-array 16 :element-type 'ext:byte32 :fill-pointer 0 :adjustable t)
-         :initarg :rotamer-indices
-         :accessor rotamer-indices)))
+  ((rotamer-indexes :initform (make-array 16 :element-type 'ext:byte32 :fill-pointer 0 :adjustable t)
+         :initarg :rotamer-indexes
+         :accessor rotamer-indexes)))
 
 (cando.serialize:make-class-save-load
  backbone-rotamer-shape-connections
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (length (rotamer-indices obj))))))
+     (format stream "~a" (length (rotamer-indexes obj))))))
 
-(defun make-backbone-rotamer-shape-connections (&optional (rotamer-indices nil rotamer-indices-p))
-  (if rotamer-indices-p
-      (make-instance 'backbone-rotamer-shape-connections :rotamer-indices rotamer-indices)
+(defun make-backbone-rotamer-shape-connections (&optional (rotamer-indexes nil rotamer-indexes-p))
+  (if rotamer-indexes-p
+      (make-instance 'backbone-rotamer-shape-connections :rotamer-indexes rotamer-indexes)
       (make-instance 'backbone-rotamer-shape-connections)))
 
 (defmethod lookup-rotamer-shape-connections ((fsc sidechain-rotamer-shape-connections) key)
   (gethash key (phi-psi-map fsc)))
 
 (defmethod lookup-rotamer-shape-connections ((fsc backbone-rotamer-shape-connections) key)
-  (rotamer-indices fsc))
+  (rotamer-indexes fsc))
 
 (defun append-rotamer-shape-connections (rsc key index)
   (let ((allowed-rotamer-vector (gethash key (phi-psi-map rsc))))
@@ -697,8 +697,8 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
                  (declare (ignore context-rotamers))
                  (block inner-search
                    (map-rotamer-context-connections
-                    (lambda (from-monomer-context to-monomer-context allowed-fragment-indices)
-                      (declare (ignore allowed-fragment-indices))
+                    (lambda (from-monomer-context to-monomer-context allowed-fragment-indexes)
+                      (declare (ignore allowed-fragment-indexes))
                       (when (or (string= from-monomer-context monomer-context)
                                 (string= to-monomer-context monomer-context))
                         (return-from inner-search nil)))

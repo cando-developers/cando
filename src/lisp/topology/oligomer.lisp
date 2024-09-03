@@ -383,7 +383,7 @@ of monomers-to-residues."
                               (number-of-sequences (number-of-sequences oligomer-space)))
   "Build all of the molecules in the oligomer-space into a single aggregate and return it.
 Also return the position of each monomer in the aggregate -
-A hash-table that maps monomers to molecule/residue indices.
+A hash-table that maps monomers to molecule/residue indexes.
 The number of entries can be limited by passing a lower value for the optional argument **number-of-sequences**
 than the (chem:oligomer/number-of-sequences oligomer)."
   (declare (ignore monomers-to-residues-p))

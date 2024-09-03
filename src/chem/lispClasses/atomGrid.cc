@@ -277,7 +277,7 @@ Vector3	diff;
 #define	yIndexBounded(ag,yPos) (MIN(MAX(0,yIndex(ag,yPos)),ag->ySize-1))
 #define	zIndexBounded(ag,zPos) (MIN(MAX(0,zIndex(ag,zPos)),ag->zSize-1))
 
-	// Return the index within the grid for the x,y,z indices
+	// Return the index within the grid for the x,y,z indexes
 #define	gridIndex(gd,xi,yi,zi) (gd->xSize*(gd->ySize*(zi)+(yi))+(xi))
 
 	// Return the coordinate of the index

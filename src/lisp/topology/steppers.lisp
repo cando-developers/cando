@@ -124,15 +124,15 @@
           :for binned-psi-1 = (topology:bin-dihedral-deg psi-1)
           ;; Get the shape-key for the backbone
           :for shape-key = (make-phi-psi binned-phi-1 binned-psi-1)
-          :for has-allowed-sidechain-rotamer-indices = (gethash shape-key shape-key-to-index)
+          :for has-allowed-sidechain-rotamer-indexes = (gethash shape-key shape-key-to-index)
           :do (push shape-key search-key-history)
           ;; If the sidechain has a shape-key that matches this backbone then
           ;;    add the backbone rotamer index to monomer-allowed-rotamer-indexes
           :do (progn
 ;;;                #+debug-mover
                 (let ((*print-pretty* nil))
-                  (format t "For backbone-index ~a rotamer-index-index ~a   shape-key ~a matches-sidechain -> ~a~%" index ii shape-key has-allowed-sidechain-rotamer-indices)))
-          :when has-allowed-sidechain-rotamer-indices
+                  (format t "For backbone-index ~a rotamer-index-index ~a   shape-key ~a matches-sidechain -> ~a~%" index ii shape-key has-allowed-sidechain-rotamer-indexes)))
+          :when has-allowed-sidechain-rotamer-indexes
             :do (let ((seen (position ii allowed-rotamer-indexes)))
                   (unless seen (vector-push-extend ii allowed-rotamer-indexes))
                   )
@@ -184,7 +184,7 @@
 
 
 #+(or) (defun make-permissible-backbone-rotamers (oligomer-shape)
-  "Limit the backbone rotamer indices to the ones that have sidechain rotamers with matching shape-keys"
+  "Limit the backbone rotamer indexes to the ones that have sidechain rotamers with matching shape-keys"
   (let ((rotamers-db (topology:rotamers-database oligomer-shape))
         (permissible-rotamer-vector (make-array 16 :adjustable t :fill-pointer 0)))
     (with-slots (topology:monomer-shape-vector
@@ -452,6 +452,25 @@ Returns an instance of permissible-sidechain-rotamers."
 
 (defgeneric write-rotamers (oligomer-shape permissible-rotamers values))
 
+(defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (sym (eql :random)))
+  "Write a vector of rotamer shapes into the stepper"
+  (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
+  (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
+    (loop for index below len
+          for permissible-rotamer = (aref (permissible-rotamer-vector permissible-rotamers) index)
+          for locus = (monomer-shape-locus permissible-rotamer)
+          for monomer-shape = (aref (topology:monomer-shape-vector oligomer-shape) locus)
+          for allowed-rotamer-indexes = (allowed-rotamer-indexes permissible-rotamer)
+          for rotamer-index = (let ((rnd (random (length allowed-rotamer-indexes))))
+                                (aref allowed-rotamer-indexes rnd))
+          do (unless (position rotamer-index allowed-rotamer-indexes)
+               (let ((*print-pretty* nil))
+                 (error "You are trying to write a rotamer-index ~a into locus ~a but it is not one of the~%permissible ones: ~s" rotamer-index locus allowed-rotamer-indexes)))
+          do (setf (topology:rotamer-index monomer-shape) rotamer-index))
+    (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
+    oligomer-shape))
+
+
 (defmethod write-rotamers (oligomer-shape (permissible-rotamers permissible-rotamers) (rotamer-indexes rotamer-indexes))
   "Write a vector of rotamer shapes into the stepper"
   (ensure-oligomer-shape-is-consistent-with-permissible-rotamers oligomer-shape permissible-rotamers)
@@ -566,10 +585,10 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
       (error "index ~s is out of bounds ~s" index num-rotamers))
     (let* ((num-rotamers (number-of-rotamers permissible-rotamers))
            (max-rotamers (coerce (max-rotamers permissible-rotamers) 'list))
-           (rotamer-indices (core:positive-integer-to-mixed-base-digits index max-rotamers))
+           (rotamer-indexes (core:positive-integer-to-mixed-base-digits index max-rotamers))
            (rotamer-vec (coerce (mapcar (lambda (indexes ee) (aref indexes ee))
                                         (coerce (allowed-rotamer-indexes-vector permissible-rotamers) 'list)
-                                        rotamer-indices)
+                                        rotamer-indexes)
                                 'vector)))
       rotamer-vec)))
 
@@ -592,7 +611,7 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
                                                       :collect index)))))
 
 (defun random-rotamers (oligomer-shape permissible-rotamers)
-  "Return a vector of random rotamer indices"
+  "Return a vector of random rotamer indexes"
   (declare (ignore oligomer-shape))
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
     (make-instance 'rotamer-indexes

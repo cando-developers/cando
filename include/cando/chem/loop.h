@@ -123,7 +123,7 @@ public:
   Matter_sp			subLoopTop[MAXLOOPS];
   Matter_O::contentIterator	subLoopIteratorCur[MAXLOOPS];
   Matter_O::contentIterator	subLoopIteratorEnd[MAXLOOPS];
-			// Maintain indices for bonds/angles/dihedrals/impropers
+			// Maintain indexes for bonds/angles/dihedrals/impropers
   int				iIndex0;
   int				iIndex1;
   int				iIndex2;
@@ -148,7 +148,7 @@ public:
   gctools::Vec0<BondList_sp>		_Impropers;
   uint				_ImproperIndex;
 
-  void	clearAtomIndices();
+  void	clearAtomIndexes();
   bool	nextObjectInAtom();
 
   void	pushSubLoop(Matter_sp c);

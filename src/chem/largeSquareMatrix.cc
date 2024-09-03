@@ -315,7 +315,7 @@ void	FullLargeSquareMatrix_O::coordinatesFromIndex(uint ii, uint& x, uint& y)
   uint		f2;
   uint		i;
   if ( ii < this->indexBegin() || ii >= this->indexEnd() ) {
-    SIMPLE_ERROR("Out of bounds in indicesFromValuePtr");
+    SIMPLE_ERROR("Out of bounds in indexesFromValuePtr");
   }
   if ( this->_Triangle == UpperDiagonalLower ) {
     y = ii/this->_Columns;
@@ -613,12 +613,12 @@ void	SparseLargeSquareMatrix_O::insertElement(uint x, uint y)
   if ( this->_Triangle == SymmetricDiagonalLower && x>y ) {
     SWAP(x,y,t);
 #ifdef	DEBUG_VIA_PRINTF
-    printf("Swapping indices to %d,%d\n",x,y);
+    printf("Swapping indexes to %d,%d\n",x,y);
 #endif
   } else if ( this->_Triangle == SymmetricUpperDiagonal && x<y ) {
     SWAP(x,y,t);
 #ifdef	DEBUG_VIA_PRINTF
-    printf("Swapping indices to %d,%d\n",x,y);
+    printf("Swapping indexes to %d,%d\n",x,y);
 #endif
   }
   ib = this->_RowStarts[y];
@@ -677,12 +677,12 @@ void	SparseLargeSquareMatrix_O::col_insertElement(uint x, uint y)
   if ( this->_Triangle == SymmetricDiagonalLower && x>y ) {
     SWAP(x,y,t);
 #ifdef	DEBUG_VIA_PRINTF
-    printf("Swapping indices to %d,%d\n",x,y);
+    printf("Swapping indexes to %d,%d\n",x,y);
 #endif
   } else if ( this->_Triangle == SymmetricUpperDiagonal && x<y ) {
     SWAP(x,y,t);
 #ifdef	DEBUG_VIA_PRINTF
-    printf("Swapping indices to %d,%d\n",x,y);
+    printf("Swapping indexes to %d,%d\n",x,y);
 #endif
   }
   ib = this->_col_ColumnStarts[y];
@@ -744,7 +744,7 @@ uint	SparseLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint 
   LOG("Looking at row: {}" , y  );
   uint ib = this->_RowStarts[y];
   uint ie = this->_RowStarts[y+1]-1;
-  LOG("This row has columns in the list between indices: {}-{}" , ib , ie );
+  LOG("This row has columns in the list between indexes: {}-{}" , ib , ie );
   if ( ie<ib ) return UndefinedUnsignedInt;
   if ( ib >= this->_ColumnForValue.size() ) return UndefinedUnsignedInt;
   if ( x < this->_ColumnForValue[ib] ) return UndefinedUnsignedInt;
@@ -1063,7 +1063,7 @@ uint	SparseLargeSquareMatrix_O::indexOfFirstElementAtOrAfterX(uint x, uint y )
   LOG("Looking at row: {}" , y  );
   uint ib = this->_RowStarts[y];
   uint ie = this->_RowStarts[y+1]-1;
-  LOG("This row has columns in the list between indices: {}-{}" , ib , ie );
+  LOG("This row has columns in the list between indexes: {}-{}" , ib , ie );
   if ( ie<ib ) return UndefinedUnsignedInt;
   if ( x < this->_ColumnForValue[ib] ) return ib;
   if ( x > this->_ColumnForValue[ie] ) return this->_RowStarts[y+1];

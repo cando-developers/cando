@@ -332,8 +332,8 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
   if (!mthis->_iac_vec) {
     SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");
   }
-  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = mthis->_NumberOfExcludedAtomIndices;
-  core::SimpleVector_int32_t_sp excludedAtomIndices = mthis->_ExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = mthis->_NumberOfExcludedAtomIndexes;
+  core::SimpleVector_int32_t_sp excludedAtomIndexes = mthis->_ExcludedAtomIndexes;
 
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
 
@@ -350,9 +350,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); energyElectrostatic +=(e);}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) { energyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); energyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) { energyVdw+=(e);}
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE
@@ -391,12 +391,12 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O* mthis,
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG("{} ====== top of outer loop - index1 = {}\n" , __FUNCTION__ , index1 );
           // Skip 0 in excluded atom list that amber requires
-    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    bool has_excluded_atoms = ((*excludedAtomIndexes)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     num_real charge11 = (*mthis->_charge_vector)[index1];
 //    [[maybe_unused]]num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
-      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      int maybe_excluded_atom = (*excludedAtomIndexes)[excludedAtomIndex];
       // state TOP-INNER
       if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
         LOG("    Excluding atom {}\n" , index2);
@@ -577,9 +577,9 @@ double template_evaluateUsingTerms(EnergyNonbond_O* mthis,
 #undef	NONBOND_SET_POSITION
 #define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); if (InteractionIs14) {energyElectrostatic14 +=(e);} else {energyElectrostatic +=(e);}}
+#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) { if (InteractionIs14) {energyElectrostatic14 +=(e);} else {energyElectrostatic +=(e);}}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); if (InteractionIs14) {energyVdw14+=(e);} else {energyVdw+=(e);}}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) { if (InteractionIs14) {energyVdw14+=(e);} else {energyVdw+=(e);}}
 
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
@@ -1017,8 +1017,8 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp
   if (!this->_iac_vec) {
     SIMPLE_ERROR("The nonbonded excluded atoms parameters have not been set up");
   }
-  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
-  core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndexes;
+  core::SimpleVector_int32_t_sp excludedAtomIndexes = this->_ExcludedAtomIndexes;
   num_real electrostaticScale = 1.0;
   LOG("Nonbond component is enabled" );
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
@@ -1044,10 +1044,10 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG("{} ====== top of outer loop - index1 = {}\n" , __FUNCTION__ , index1 );
           // Skip 0 in excluded atom list that amber requires
-    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    bool has_excluded_atoms = ((*excludedAtomIndexes)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
-      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      int maybe_excluded_atom = (*excludedAtomIndexes)[excludedAtomIndex];
       if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom==index2) {
         LOG("    Excluding atom {}\n" , index2);
         ++excludedAtomIndex;
@@ -1072,13 +1072,13 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG("{} ====== top of outer loop - index1 = {}\n" , __FUNCTION__ , index1 );
           // Skip 0 in excluded atom list that amber requires
-    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    bool has_excluded_atoms = ((*excludedAtomIndexes)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     num_real charge11 = (*this->_charge_vector)[index1];
 //    [[maybe_unused]]num_real electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> {}    index2 -> {}\n" , numberOfExcludedAtomsRemaining , index2 );
-      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      int maybe_excluded_atom = (*excludedAtomIndexes)[excludedAtomIndex];
       if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
         LOG("    Excluding atom {}\n" , index2);
         ++excludedAtomIndex;
@@ -1209,8 +1209,8 @@ void EnergyNonbond_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,local_typej_vec), this->_local_typej_vec);      // local-typej-vec
   node->field( INTERN_(kw,cn1_vec), this->_cn1_vec);
   node->field( INTERN_(kw,cn2_vec), this->_cn2_vec);
-  node->field( INTERN_(kw,NumberOfExcludedAtomIndices), this->_NumberOfExcludedAtomIndices);
-  node->field( INTERN_(kw,ExcludedAtomIndices), this->_ExcludedAtomIndices);
+  node->field( INTERN_(kw,NumberOfExcludedAtomIndexes), this->_NumberOfExcludedAtomIndexes);
+  node->field( INTERN_(kw,ExcludedAtomIndexes), this->_ExcludedAtomIndexes);
   node->field( INTERN_(kw,UsesExcludedAtoms),this->_UsesExcludedAtoms);
   this->Base::fields(node);
 }
@@ -1322,8 +1322,8 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   core::SimpleVector_int32_t_sp number_of_excluded_atoms = gc::As<core::SimpleVector_int32_t_sp>(values_mv);
   core::MultipleValues &values = core::lisp_multipleValues();
   core::SimpleVector_int32_t_sp excluded_atoms_list = gc::As<core::SimpleVector_int32_t_sp>(values.second(values_mv.number_of_values()));
-  this->_NumberOfExcludedAtomIndices = number_of_excluded_atoms;
-  this->_ExcludedAtomIndices = excluded_atoms_list;
+  this->_NumberOfExcludedAtomIndexes = number_of_excluded_atoms;
+  this->_ExcludedAtomIndexes = excluded_atoms_list;
 }
 
 
@@ -1467,8 +1467,8 @@ CL_DEFMETHOD core::List_sp EnergyNonbond_O::nonbondTermsAsAList()
 
 CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms) {
   this->_AtomTable = atom_table;
-  this->_ExcludedAtomIndices = excluded_atoms_list;
-  this->_NumberOfExcludedAtomIndices = number_excluded_atoms;
+  this->_ExcludedAtomIndexes = excluded_atoms_list;
+  this->_NumberOfExcludedAtomIndexes = number_excluded_atoms;
 
 }
 

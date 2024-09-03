@@ -620,10 +620,10 @@ core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom
   string				as1,as2,as3,as4;
   string				str1, str2, str3, str4, type;
   ql::list  result;
-  core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
-  core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
-  core::T_sp tia3 = atomTable->_AtomTableIndices->gethash(a3);
-  core::T_sp tia4 = atomTable->_AtomTableIndices->gethash(a4);
+  core::T_sp tia1 = atomTable->_AtomTableIndexes->gethash(a1);
+  core::T_sp tia2 = atomTable->_AtomTableIndexes->gethash(a2);
+  core::T_sp tia3 = atomTable->_AtomTableIndexes->gethash(a3);
+  core::T_sp tia4 = atomTable->_AtomTableIndexes->gethash(a4);
   if (!tia1.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a1));
   if (!tia2.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a2));
   if (!tia3.fixnump()) SIMPLE_ERROR("Could not find {} in energy function" , _rep_(a3));
@@ -777,7 +777,7 @@ if (hasActiveAtomMask \
 #undef	DIHEDRAL_SET_POSITION
 #define	DIHEDRAL_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
 #undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {ENSURE_NOT_NAN(e); totalEnergy += (e); }
+#define	DIHEDRAL_ENERGY_ACCUMULATE(e) { totalEnergy += (e); }
 #undef	DIHEDRAL_FORCE_ACCUMULATE
 #undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
@@ -823,7 +823,7 @@ if (hasActiveAtomMask \
     if ( EraseLinearDihedral == 0.0 ) {
       ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4),
                                                                     kw::_sym_coordinates,pos,
-                                                                    kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
+                                                                    kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
     }
   SKIP_term_and_angle_test: (void)0;
 
@@ -936,7 +936,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom3);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom4);
 SYMBOL_EXPORT_SC_(KeywordPkg,coordinates);
-SYMBOL_EXPORT_SC_(KeywordPkg,indices);
+SYMBOL_EXPORT_SC_(KeywordPkg,indexes);
 SYMBOL_EXPORT_SC_(KeywordPkg,simd_index);
 
 CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
@@ -1310,7 +1310,7 @@ double EnergyDihedral_O::evaluateAllComponentSimd8(
                                                                                  di[IDX]._Atom4 ), \
                                          kw::_sym_simd_index, core::make_fixnum(IDX), \
                                          kw::_sym_coordinates,pos, \
-                                         kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1[IDX]), core::make_fixnum(I2[IDX]), core::make_fixnum(I3[IDX]), core::make_fixnum(I4[IDX])))); \
+                                         kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1[IDX]), core::make_fixnum(I2[IDX]), core::make_fixnum(I3[IDX]), core::make_fixnum(I4[IDX])))); \
       }}
 
     MAYBE_ERROR_LINEAR_DIHEDRAL(0,di,I1,I2,I3,I4);
@@ -1517,7 +1517,7 @@ double EnergyDihedral_O::evaluateAllComponentSimd4(
                                                                                  di[IDX]._Atom3,\
                                                                                  di[IDX]._Atom4 ), \
                                          kw::_sym_coordinates,pos, \
-                                         kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1[IDX]), core::make_fixnum(I2[IDX]), core::make_fixnum(I3[IDX]), core::make_fixnum(I4[IDX])))); \
+                                         kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1[IDX]), core::make_fixnum(I2[IDX]), core::make_fixnum(I3[IDX]), core::make_fixnum(I4[IDX])))); \
       }}
 
     MAYBE_ERROR_LINEAR_DIHEDRAL(0,di,I1,I2,I3,I4);
@@ -1705,7 +1705,7 @@ double EnergyDihedral_O::evaluateAllComponentSimd2(
                                                                                  di[IDX]._Atom3,\
                                                                                  di[IDX]._Atom4 ), \
                                          kw::_sym_coordinates,pos, \
-                                         kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1[IDX]), core::make_fixnum(I2[IDX]), core::make_fixnum(I3[IDX]), core::make_fixnum(I4[IDX])))); \
+                                         kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1[IDX]), core::make_fixnum(I2[IDX]), core::make_fixnum(I3[IDX]), core::make_fixnum(I4[IDX])))); \
       }}
 
     MAYBE_ERROR_LINEAR_DIHEDRAL(0,di,I1,I2,I3,I4);

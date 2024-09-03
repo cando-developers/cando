@@ -234,6 +234,38 @@ CL_DEFUN OMatrix_sp make_m4_rotation_rows(const Vector3& row0, const Vector3& ro
   return res;
 }
 
+CL_LISPIFY_NAME("make-m4-rows");
+DOCGROUP(cando);
+CL_DEFUN OMatrix_sp make_m4_rows(const Vector3& row0, const Vector3& row1, const Vector3& row2, const Vector3& toOriginTranslation)
+{
+  Matrix toOrigin;
+  toOrigin.translate(toOriginTranslation);
+  Matrix rotate;
+  rotate.setRow(0
+                ,row0.getX()
+                ,row0.getY()
+                ,row0.getZ()
+                ,0.0);
+  rotate.setRow(1
+                ,row1.getX()
+                ,row1.getY()
+                ,row1.getZ()
+                ,0.0);
+  rotate.setRow(2
+                ,row2.getX()
+                ,row2.getY()
+                ,row2.getZ()
+                ,0.0);
+  rotate.setRow(3
+                , 0.0
+                , 0.0
+                , 0.0
+                , 1.0 );
+  OMatrix_sp res = OMatrix_O::make(false);
+  res->_Value = rotate.multiplyByMatrix(toOrigin);
+  return res;
+}
+
 CL_LISPIFY_NAME("make-m4-rotation-columns");
 DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotation_columns(const Vector3& col0, const Vector3& col1, const Vector3& col2)

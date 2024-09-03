@@ -68,7 +68,7 @@ double	dotProduct( NVector_sp x, NVector_sp y )
  *	Author:	Christian Schafmeister (1991)
  *
  *      Return the DOT product of two vectors.
- *      Use activeAtomMask to select indices.
+ *      Use activeAtomMask to select indexes.
  *      return:  (this) . x
  */
 double	dotProductWithActiveAtomMask( NVector_sp x, NVector_sp y, core::T_sp activeAtomMask )
@@ -436,9 +436,7 @@ CL_DEFUN vecreal chem__nvector_magnitude(NVector_sp vec) {
     val = val*val;
     sum2 += val;
   }
-  ENSURE_NOT_NAN(sum2);
   vecreal res = sqrt(sum2);
-  ENSURE_NOT_NAN(res);
   return res;
 }
 
@@ -655,7 +653,6 @@ CL_DEFUN vecreal chem__nvector_dot(NVector_sp veca, NVector_sp vecb) {
     val = vala*valb;
     sum2 += val;
   }
-  ENSURE_NOT_NAN(sum2);
   return sqrt(sum2);
 }
 

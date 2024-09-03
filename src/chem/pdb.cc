@@ -277,7 +277,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
     LOG("There are {} bonds" , this->_connects.size()  );
     for ( unsigned ci=0; ci<this->_connects.size(); ci++ )
     { 
-      LOG("CONECT indices: {} {} {} {} {}" , this->_connects[ci]._atom1 , this->_connects[ci]._bonded[0] , this->_connects[ci]._bonded[1] , this->_connects[ci]._bonded[2] , this->_connects[ci]._bonded[3]  );
+      LOG("CONECT indexes: {} {} {} {} {}" , this->_connects[ci]._atom1 , this->_connects[ci]._bonded[0] , this->_connects[ci]._bonded[1] , this->_connects[ci]._bonded[2] , this->_connects[ci]._bonded[3]  );
       AtomPdbRec*	atomPtr;
       AtomPdbRec*	bondedPtr;
       int bondedIdx, bondedAtomRecIdx;
@@ -292,7 +292,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       bondedIdx = this->_connects[ci]._bonded[0];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond2 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
+        LOG("Creating bond2 between atoms with indexes {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
@@ -302,7 +302,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       bondedIdx = this->_connects[ci]._bonded[1];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond3 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
+        LOG("Creating bond3 between atoms with indexes {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
@@ -312,7 +312,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       bondedIdx = this->_connects[ci]._bonded[2];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond4 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
+        LOG("Creating bond4 between atoms with indexes {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
@@ -322,7 +322,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       bondedIdx = this->_connects[ci]._bonded[3];
       if ( bondedIdx >= 0 )
       {
-        LOG("Creating bond5 between atoms with indices {}-{}" , atomRecIndex , bondedIdx );
+        LOG("Creating bond5 between atoms with indexes {}-{}" , atomRecIndex , bondedIdx );
         bondedAtomRecIdx = this->_atomRecIndexFromSerial[bondedIdx];
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);

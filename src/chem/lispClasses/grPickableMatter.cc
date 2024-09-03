@@ -393,7 +393,7 @@ void	GrPickableMatter_O::generateRenderObjects()
 
 void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
 {
-    map<Atom_sp,uint>	atomIndices;
+    map<Atom_sp,uint>	atomIndexes;
     Loop		atomLoop,bondLoop;
     Atom_sp		atom, a1, a2;
     uint		ai1, ai2;
@@ -409,7 +409,7 @@ void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
 	    grMatterAtom = RenderMatterAtom_O::create();
 	    atom = atomLoop.getAtom();
 	    grMatterAtom->defineForAtom(atom,this->sharedThis<GrPickableMatter_O>());
-	    atomIndices[atom] = this->_Atoms.size();
+	    atomIndexes[atom] = this->_Atoms.size();
 	    this->_Atoms.push_back(grMatterAtom);
 	}
     }
@@ -419,10 +419,10 @@ void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
 	grMatterBond = RenderMatterBond_O::create();
 	a1 = bondLoop.getBondA1();
 	a2 = bondLoop.getBondA2();
-	if ( atomIndices.count(a1)==1 && atomIndices.count(a2)==1 )
+	if ( atomIndexes.count(a1)==1 && atomIndexes.count(a2)==1 )
 	{
-	    ai1 = atomIndices[a1];
-	    ai2 = atomIndices[a2];
+	    ai1 = atomIndexes[a1];
+	    ai2 = atomIndexes[a2];
 	    grMatterBond->setup(ai1,ai2,a1,a2);
 	    this->_Bonds.push_back(grMatterBond);
 	} else

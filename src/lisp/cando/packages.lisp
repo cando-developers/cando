@@ -66,7 +66,7 @@
 
 (defpackage #:fortran
   (:use #:common-lisp)
-  (:shadow #:format #:write)
+  (:shadow #:format #:write #:debug)
   (:export #:with-fortran-output-file
            #:with-fortran-input-file
            #:fformat

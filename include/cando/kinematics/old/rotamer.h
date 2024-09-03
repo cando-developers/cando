@@ -38,7 +38,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,Rotamer_O,"Rotamer",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
-	static Rotamer_sp make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count);
+	static Rotamer_sp make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indexes, const double probability, const int count);
 #else
 	DECLARE_INIT();
 #endif
@@ -50,7 +50,7 @@ namespace kinematics
     private: // instance variables here
       gctools::Vec0<double>	_Dihedrals;
       gctools::Vec0<double>	_Sigmas;
-      gctools::Vec0<int>	_Indices;
+      gctools::Vec0<int>	_Indexes;
       double		_Probability;
       int		_Count;
     public: // Functions here

@@ -69,14 +69,14 @@ CL_LISPIFY_NAME("debugString");
 CL_DEFMETHOD     string SuperposeEngine_O::debugString()
 {
   stringstream ss;
-  for (uint i=0; i<this->_FixedIndices->length(); i++ )
+  for (uint i=0; i<this->_FixedIndexes->length(); i++ )
   {
-    int idx = (*this->_FixedIndices)[i];
+    int idx = (*this->_FixedIndexes)[i];
     ss << "Fixed#" << i << " " << (*this->_FixedCoordinates)[idx].asString() << std::endl;
   }
-  for (uint j=0; j<this->_MoveableIndices->length(); j++ )
+  for (uint j=0; j<this->_MoveableIndexes->length(); j++ )
   {
-    int idx = (*this->_MoveableIndices)[j];
+    int idx = (*this->_MoveableIndexes)[j];
     ss << "Moveable#" << j << " " << (*this->_MoveableCoordinates)[idx].asString() << std::endl;
   }
   return ss.str();
@@ -85,19 +85,19 @@ CL_DEFMETHOD     string SuperposeEngine_O::debugString()
 void SuperposeEngine_O::initialize()
 {
     this->Base::initialize();
-//    this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(16,0,core::clasp_make_fixnum(0));
-//    this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(16,0,core::clasp_make_fixnum(0));
-    this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(16);
-    this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(16);
+//    this->_FixedIndexes = core::ComplexVector_byte32_t_O::make_vector(16,0,core::clasp_make_fixnum(0));
+//    this->_MoveableIndexes = core::ComplexVector_byte32_t_O::make_vector(16,0,core::clasp_make_fixnum(0));
+    this->_FixedIndexes = core::ComplexVector_byte32_t_O::make_vector(16);
+    this->_MoveableIndexes = core::ComplexVector_byte32_t_O::make_vector(16);
     this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(16,Vector3(),core::clasp_make_fixnum(0));
     this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(16,Vector3(),core::clasp_make_fixnum(0));
 }
 
 void SuperposeEngine_O::fields(core::Record_sp node)
 {
-  node->field(INTERN_(kw,FixedIndices),this->_FixedIndices);
+  node->field(INTERN_(kw,FixedIndexes),this->_FixedIndexes);
   node->field(INTERN_(kw,FixedCoordinates),this->_FixedCoordinates);
-  node->field(INTERN_(kw,MoveableIndices),this->_MoveableIndices);
+  node->field(INTERN_(kw,MoveableIndexes),this->_MoveableIndexes);
   node->field(INTERN_(kw,MoveableCoordinates),this->_MoveableCoordinates);
   node->field(INTERN_(kw,Transform),this->_Transform);
 }
@@ -105,39 +105,39 @@ void SuperposeEngine_O::fields(core::Record_sp node)
 CL_DEFMETHOD
 void        SuperposeEngine_O::eraseMoveablePoints()
 {
-  this->_MoveableIndices->fillPointerSet(0);
+  this->_MoveableIndexes->fillPointerSet(0);
     this->_MoveableCoordinates->fillPointerSet(0);
 }
 
 CL_DEFMETHOD
 void        SuperposeEngine_O::eraseFixedPoints()
 {
-  this->_FixedIndices->fillPointerSet(0);
+  this->_FixedIndexes->fillPointerSet(0);
   this->_FixedCoordinates->fillPointerSet(0);
 }
 
 CL_DEFMETHOD
     void SuperposeEngine_O::appendMoveablePoint(const Vector3& pos)
 {
-    ASSERT(this->_MoveableIndices.notnilp());
+    ASSERT(this->_MoveableIndexes.notnilp());
     ASSERT(this->_MoveableCoordinates.notnilp());
     LOG("appendMoveablePoint vector: {}" , pos.asString() );
     int idx = this->_MoveableCoordinates->length();
-    this->_MoveableIndices->vectorPushExtend(idx);
+    this->_MoveableIndexes->vectorPushExtend(idx);
     this->_MoveableCoordinates->vectorPushExtend_Vector3(pos);
-    LOG("There are now {} MoveableIndices" , this->_MoveableIndices->length());
+    LOG("There are now {} MoveableIndexes" , this->_MoveableIndexes->length());
     LOG("There are now {} MoveableCoordinates" , this->_MoveableCoordinates->length());
 }
 
     void SuperposeEngine_O::appendFixedPoint(const Vector3& pos)
 {
-    ASSERT(this->_FixedIndices.notnilp());
+    ASSERT(this->_FixedIndexes.notnilp());
     ASSERT(this->_FixedCoordinates.notnilp());
     LOG("appendFixedPoint vector: {}" , pos.asString() );
     int idx = this->_FixedCoordinates->length();
-    this->_FixedIndices->vectorPushExtend(idx);
+    this->_FixedIndexes->vectorPushExtend(idx);
     this->_FixedCoordinates->vectorPushExtend_Vector3(pos);
-    LOG("There are now {} FixedIndices" , this->_FixedIndices->length());
+    LOG("There are now {} FixedIndexes" , this->_FixedIndexes->length());
     LOG("There are now {} FixedCoordinates" , this->_FixedCoordinates->length());
 }
 
@@ -146,14 +146,14 @@ CL_DEFMETHOD
 CL_LISPIFY_NAME("getNumberOfFixedPoints");
 CL_DEFMETHOD int        SuperposeEngine_O::getNumberOfFixedPoints()
 {
-    return this->_FixedIndices->length();
+    return this->_FixedIndexes->length();
 }
 
 
 CL_LISPIFY_NAME("getNumberOfMoveablePoints");
 CL_DEFMETHOD int        SuperposeEngine_O::getNumberOfMoveablePoints()
 {
-    return this->_MoveableIndices->length();
+    return this->_MoveableIndexes->length();
 }
 
 
@@ -175,58 +175,58 @@ void        SuperposeEngine_O::doSuperpose()
     int                                iLargestEv;
     double                                X0, X1, X2, x0, x1, x2;
     double                                l,m,n,s,ll,mm,nn,ss;
-    int                                fixedIndicesSize, moveableIndicesSize;
-    fixedIndicesSize = this->_FixedIndices->length();
-    moveableIndicesSize = this->_MoveableIndices->length();
-    LOG("Moveable indices fixed({}) moveable({})" , fixedIndicesSize , moveableIndicesSize );
-    if (fixedIndicesSize != moveableIndicesSize) {
+    int                                fixedIndexesSize, moveableIndexesSize;
+    fixedIndexesSize = this->_FixedIndexes->length();
+    moveableIndexesSize = this->_MoveableIndexes->length();
+    LOG("Moveable indexes fixed({}) moveable({})" , fixedIndexesSize , moveableIndexesSize );
+    if (fixedIndexesSize != moveableIndexesSize) {
       SIMPLE_ERROR("Number of fixed points {} must match the number of moveable points {}",
-                   fixedIndicesSize,
-                   moveableIndicesSize );
+                   fixedIndexesSize,
+                   moveableIndexesSize );
     }
-    ASSERTF(fixedIndicesSize>=3, ("You must have at least 3 points to superpose and you only have: {}") , fixedIndicesSize );
-    Sj.resize(this->_FixedIndices->length());
-    if ( this->_MoveableIndices->length() < 3 )
+    ASSERTF(fixedIndexesSize>=3, ("You must have at least 3 points to superpose and you only have: {}") , fixedIndexesSize );
+    Sj.resize(this->_FixedIndexes->length());
+    if ( this->_MoveableIndexes->length() < 3 )
     {
-        SIMPLE_ERROR("Number of MoveableIndices must be greater than 3");
+        SIMPLE_ERROR("Number of MoveableIndexes must be greater than 3");
     }
-    Si.resize(this->_MoveableIndices->length());
-    LOG("this->_FixedIndices->length()={}" , this->_FixedIndices->length()  );
-    LOG("this->_MoveableIndices->length()={}" , this->_MoveableIndices->length()  );
+    Si.resize(this->_MoveableIndexes->length());
+    LOG("this->_FixedIndexes->length()={}" , this->_FixedIndexes->length()  );
+    LOG("this->_MoveableIndexes->length()={}" , this->_MoveableIndexes->length()  );
     LOG("this->_FixedCoordinates->length() = {}\n" , this->_FixedCoordinates->length());
     {
         fixedCenter.set(0.0,0.0,0.0);
         LOG("Calculating fixedCenter\n");
-        for ( size_t iaV(0); iaV<this->_FixedIndices->length(); ++iaV) {
+        for ( size_t iaV(0); iaV<this->_FixedIndexes->length(); ++iaV) {
           LOG("  iaV = {}\n" , iaV);
-          LOG("  (*this->_FixedIndices)[iaV] = {}\n" , (*this->_FixedIndices)[iaV] );
-          LOG("  (*this->_FixedCoordinates)[(*this->_FixedIndices)[iaV]] -> {}\n"
-              , (*this->_FixedCoordinates)[(*this->_FixedIndices)[iaV]].asString() );
-          fixedCenter = (*this->_FixedCoordinates)[(*this->_FixedIndices)[iaV]] + fixedCenter;
+          LOG("  (*this->_FixedIndexes)[iaV] = {}\n" , (*this->_FixedIndexes)[iaV] );
+          LOG("  (*this->_FixedCoordinates)[(*this->_FixedIndexes)[iaV]] -> {}\n"
+              , (*this->_FixedCoordinates)[(*this->_FixedIndexes)[iaV]].asString() );
+          fixedCenter = (*this->_FixedCoordinates)[(*this->_FixedIndexes)[iaV]] + fixedCenter;
           LOG(" accumulating fixedCenter = {}\n" , fixedCenter.asString());
         }
-        LOG("About to divide by number of indices {}\n" , this->_FixedIndices->length());
-        fixedCenter = fixedCenter.multiplyByScalar(1.0/(double)(this->_FixedIndices->length()));
+        LOG("About to divide by number of indexes {}\n" , this->_FixedIndexes->length());
+        fixedCenter = fixedCenter.multiplyByScalar(1.0/(double)(this->_FixedIndexes->length()));
         LOG( "Translating fixed to fixed geometric center: {} " , fixedCenter.asString() );
         VectorVector3s::iterator itS = Sj.begin();
         for ( size_t iaV(0);
-              iaV<this->_FixedIndices->length();
+              iaV<this->_FixedIndexes->length();
               iaV++,itS++ ) {
-          *itS = (*this->_FixedCoordinates)[(*this->_FixedIndices)[iaV]] - fixedCenter;
-          LOG("Centered _FixedCoordinates index={}   original={}  new={}" , iaV , (*this->_FixedCoordinates)[(*this->_FixedIndices)[iaV]].asString() , (*itS).asString() );
+          *itS = (*this->_FixedCoordinates)[(*this->_FixedIndexes)[iaV]] - fixedCenter;
+          LOG("Centered _FixedCoordinates index={}   original={}  new={}" , iaV , (*this->_FixedCoordinates)[(*this->_FixedIndexes)[iaV]].asString() , (*itS).asString() );
         }
     }
     {
         moveableCenter.set(0.0,0.0,0.0);
-        for ( size_t iaV(0); iaV<this->_MoveableIndices->length(); ++iaV) {
-          moveableCenter =(*this->_MoveableCoordinates)[(*this->_MoveableIndices)[iaV]] + moveableCenter;
+        for ( size_t iaV(0); iaV<this->_MoveableIndexes->length(); ++iaV) {
+          moveableCenter =(*this->_MoveableCoordinates)[(*this->_MoveableIndexes)[iaV]] + moveableCenter;
         }
-        moveableCenter = moveableCenter.multiplyByScalar(1.0/(double)(this->_MoveableIndices->length()));
+        moveableCenter = moveableCenter.multiplyByScalar(1.0/(double)(this->_MoveableIndexes->length()));
         LOG("Translating moveable to moveable geometric center: {}" , moveableCenter.asString().c_str()  );
         auto itS=Si.begin();
         for ( size_t iaV(0); itS!=Si.end(); iaV++,itS++ ) {
-          *itS = (*this->_MoveableCoordinates)[(*this->_MoveableIndices)[iaV]] - moveableCenter;
-          LOG("Centered _MoveableCoordinates index={}   original={}  new={}" , iaV , (*this->_MoveableCoordinates)[(*this->_MoveableIndices)[iaV]].asString() , (*itS).asString() );
+          *itS = (*this->_MoveableCoordinates)[(*this->_MoveableIndexes)[iaV]] - moveableCenter;
+          LOG("Centered _MoveableCoordinates index={}   original={}  new={}" , iaV , (*this->_MoveableCoordinates)[(*this->_MoveableIndexes)[iaV]].asString() , (*itS).asString() );
         }
     }
     LOG( "fixedCenter = {}" , fixedCenter.asString() );
@@ -326,15 +326,15 @@ double        SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorer
     Vector3                                moved, diff;
     double                                sum;
 
-    ASSERTNOTNULL(this->_MoveableIndices);
-    ASSERTNOTNULL(this->_FixedIndices);
+    ASSERTNOTNULL(this->_MoveableIndexes);
+    ASSERTNOTNULL(this->_FixedIndexes);
     LOG_SCORE(scorerState,("SuperposeEngine_O::sumOfSquaresOfDifferences{"));
 #if        DEBUG_SCORE_EVALUATION
-    LOG_SCORE(scorerState,("There are %d moveable indices") , this->_MoveableIndices->length() );
-    LOG_SCORE(scorerState,("There are %d fixed indices") , this->_FixedIndices->length() );
-    for ( ititMoved = this->_MoveableIndices->begin(),
-              itFixed = this->_FixedIndices->begin();
-          itFixed != this->_FixedIndices->end();
+    LOG_SCORE(scorerState,("There are %d moveable indexes") , this->_MoveableIndexes->length() );
+    LOG_SCORE(scorerState,("There are %d fixed indexes") , this->_FixedIndexes->length() );
+    for ( ititMoved = this->_MoveableIndexes->begin(),
+              itFixed = this->_FixedIndexes->begin();
+          itFixed != this->_FixedIndexes->end();
           ititMoved++, itFixed++ )
     {
       LOG_SCORE(scorerState,"Superpose fixed%s with moveable%s" ,
@@ -362,13 +362,13 @@ double        SuperposeEngine_O::sumOfSquaresOfDifferences()
   double                                sum;
 
     LOG("Dump of coordinates being that I will superpose" );
-    ASSERTNOTNULL(this->_MoveableIndices);
-    ASSERTNOTNULL(this->_FixedIndices);
+    ASSERTNOTNULL(this->_MoveableIndexes);
+    ASSERTNOTNULL(this->_FixedIndexes);
 #ifdef        DEBUG_ON
-    LOG("There are {} moveable indices" , this->_MoveableIndices->length()  );
-    LOG("There are {} fixed indices" , this->_FixedIndices->length()  );
+    LOG("There are {} moveable indexes" , this->_MoveableIndexes->length()  );
+    LOG("There are {} fixed indexes" , this->_FixedIndexes->length()  );
     for ( ititMoved=0, itFixed=0;
-          itFixed < this->_FixedIndices->length();
+          itFixed < this->_FixedIndexes->length();
           ititMoved++, itFixed++ )
     {
         LOG("Superpose fixed{} with moveable{}"
@@ -377,10 +377,10 @@ double        SuperposeEngine_O::sumOfSquaresOfDifferences()
     }
 #endif
     LOG("Superpose transform: \n{}\n" , this->_Transform.asString());
-    ASSERT(this->_FixedIndices->length()!=0);
+    ASSERT(this->_FixedIndexes->length()!=0);
     sum = 0.0;
     for ( size_t ititMoved(0), itFixed(0);
-          itFixed < this->_FixedIndices->length();
+          itFixed < this->_FixedIndexes->length();
           ititMoved++, itFixed++ ) {
       moved = this->_Transform.multiplyByVector3((*this->_MoveableCoordinates)[ititMoved]);
       diff = (*this->_FixedCoordinates)[itFixed]-moved;
@@ -400,10 +400,10 @@ CL_LISPIFY_NAME("rootMeanSquareDifference");
 CL_DEFMETHOD double        SuperposeEngine_O::rootMeanSquareDifference()
 {
     double sumOfSquares = this->sumOfSquaresOfDifferences();
-    LOG("Number of moveable indices = {}" , this->_MoveableIndices->length() );
-    ASSERT_gt(this->_MoveableIndices->length(),0);
+    LOG("Number of moveable indexes = {}" , this->_MoveableIndexes->length() );
+    ASSERT_gt(this->_MoveableIndexes->length(),0);
     LOG("sumOfSquares = {}" , sumOfSquares );
-    double meanSumOfSquares = sumOfSquares/this->_MoveableIndices->length();
+    double meanSumOfSquares = sumOfSquares/this->_MoveableIndexes->length();
     LOG("meanSumOfSquares = {}" , meanSumOfSquares );
     double rms = sqrt(meanSumOfSquares);
     LOG("rms = {}" , rms );
@@ -414,11 +414,11 @@ CL_LISPIFY_NAME("setFixedPoints");
 CL_DEFMETHOD void SuperposeEngine_O::setFixedPoints(core::ComplexVector_byte32_t_sp fi, geom::SimpleVectorCoordinate_sp fc) {
     LOG("SuperposeEngine_O::setFixedPoints --> number of points={}", fc->length());
     if (!((fi->length() >= 3) && ((fi->length() <= fc->length())))) {
-      SIMPLE_ERROR("In SuperposeEngine setFixedPoints - number of indices fi->length() = {} must be at least 3\nNumber of "
+      SIMPLE_ERROR("In SuperposeEngine setFixedPoints - number of indexes fi->length() = {} must be at least 3\nNumber of "
                    "coordinates --> fc->length() = {} must be >= to fi->size({})",
                    fi->length(), fc->length(), fi->length());
     }
-    this->_FixedIndices = gc::As<core::ComplexVector_byte32_t_sp>(fi);
+    this->_FixedIndexes = gc::As<core::ComplexVector_byte32_t_sp>(fi);
     geom::SimpleVectorCoordinate_sp data = fc->copy();
     this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(data);
 }
@@ -429,11 +429,11 @@ CL_DEFMETHOD void        SuperposeEngine_O::setFixedAllPoints( core::Array_sp af
   if (gc::IsA<geom::SimpleVectorCoordinate_sp>(afc) ) {
     auto fc = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(afc);
     this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(fc->length(),Vector3(),core::make_fixnum(fc->length()));
-    this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(fc->length());
+    this->_FixedIndexes = core::ComplexVector_byte32_t_O::make_vector(fc->length());
     size_t ii;
     for ( ii=0; ii<fc->length(); ii++ ) {
       (*this->_FixedCoordinates)[ii] = (*fc)[ii];
-      (*this->_FixedIndices)[ii] = ii;
+      (*this->_FixedIndexes)[ii] = ii;
 //    printf("%s:%d Set fixed coordinate[%zu] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*fc)[ii].getX(), (*fc)[ii].getY(), (*fc)[ii].getZ());
       LOG("setFixedAllPoints index@{} " , ii  );
     }
@@ -442,12 +442,12 @@ CL_DEFMETHOD void        SuperposeEngine_O::setFixedAllPoints( core::Array_sp af
     auto fc = gc::As_unsafe<NVector_sp>(afc);
     ASSERTF(fc->length()>=3*3,("You must have at least three moveable points and there are only {}") , fc->length()/3 );
     this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(fc->length()/3,Vector3(),core::make_fixnum(fc->length()/3));
-    this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(fc->length()/3);
+    this->_FixedIndexes = core::ComplexVector_byte32_t_O::make_vector(fc->length()/3);
     uint                ii;
     for ( ii=0; ii<fc->length()/3; ii++ )
     {
       (*this->_FixedCoordinates)[ii].set((*fc)[(ii*3)+0], (*fc)[(ii*3)+1], (*fc)[(ii*3)+2] );
-      (*this->_FixedIndices)[ii] = ii;
+      (*this->_FixedIndexes)[ii] = ii;
       LOG("setMoveableAllPoints index@{} " , ii  );
 //    printf("%s:%d Set moveable coordinate[%d] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*fc)[ii].getX(), (*fc)[ii].getY(), (*fc)[ii].getZ());
     }
@@ -462,9 +462,9 @@ CL_LISPIFY_NAME("setMoveablePoints");
 CL_DEFMETHOD void        SuperposeEngine_O::setMoveablePoints( core::ComplexVector_byte32_t_sp mi, geom::SimpleVectorCoordinate_sp mc )
 {
     LOG("SuperposeEngine_O::setMoveablePoints --> number of points={}" , mc->length()  );
-    ASSERTP( (mi->length()>=3), "There must be at least three indices" );
-    ASSERTP( mi->length()<=mc->length(), "There must be at least as many coordinates as indices");
-    this->_MoveableIndices = gc::As<core::ComplexVector_byte32_t_sp>(mi);
+    ASSERTP( (mi->length()>=3), "There must be at least three indexes" );
+    ASSERTP( mi->length()<=mc->length(), "There must be at least as many coordinates as indexes");
+    this->_MoveableIndexes = gc::As<core::ComplexVector_byte32_t_sp>(mi);
     geom::SimpleVectorCoordinate_sp data = mc->copy();
     this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(data);
 }
@@ -477,11 +477,11 @@ CL_DEFMETHOD void        SuperposeEngine_O::setMoveableAllPoints( core::Array_sp
     uint                ii;
     ASSERTF(mc->length()>=3,("You must have at least three moveable points and there are only {}") , mc->length() );
     this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(mc->length(),Vector3(),core::make_fixnum(mc->length()));
-    this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(mc->length());
+    this->_MoveableIndexes = core::ComplexVector_byte32_t_O::make_vector(mc->length());
     for ( ii=0; ii<mc->length(); ii++ )
     {
       (*this->_MoveableCoordinates)[ii] = (*mc)[ii];
-      (*this->_MoveableIndices)[ii] = ii;
+      (*this->_MoveableIndexes)[ii] = ii;
       LOG("setMoveableAllPoints index@{} " , ii  );
 //    printf("%s:%d Set moveable coordinate[%d] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*mc)[ii].getX(), (*mc)[ii].getY(), (*mc)[ii].getZ());
     }
@@ -490,12 +490,12 @@ CL_DEFMETHOD void        SuperposeEngine_O::setMoveableAllPoints( core::Array_sp
     auto mc = gc::As_unsafe<NVector_sp>(amc);
     ASSERTF(mc->length()>=3*3,("You must have at least three moveable points and there are only {}") , mc->length() );
     this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(mc->length()/3,Vector3(),core::make_fixnum(mc->length()));
-    this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(mc->length()/3);
+    this->_MoveableIndexes = core::ComplexVector_byte32_t_O::make_vector(mc->length()/3);
     uint                ii;
     for ( ii=0; ii<mc->length()/3; ii++ )
     {
       (*this->_MoveableCoordinates)[ii].set((*mc)[(ii*3)+0], (*mc)[(ii*3)+1], (*mc)[(ii*3)+2] );
-      (*this->_MoveableIndices)[ii] = ii;
+      (*this->_MoveableIndexes)[ii] = ii;
       LOG("setMoveableAllPoints index@{} " , ii  );
 //    printf("%s:%d Set moveable coordinate[%d] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*mc)[ii].getX(), (*mc)[ii].getY(), (*mc)[ii].getZ());
     }

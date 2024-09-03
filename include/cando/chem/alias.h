@@ -71,7 +71,7 @@ namespace chem
     private:
 	core::Symbol_sp	_MonomerAlias;
 	core::Symbol_sp	_AtomAlias;
-    private: // Do not archive indices
+    private: // Do not archive indexes
 	uint	_MonomerId;
 	uint	_AtomId;
     public:

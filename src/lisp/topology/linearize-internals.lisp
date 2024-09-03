@@ -24,9 +24,9 @@ Linearize a data structure that looks like the following JSON file ...
         ],
         ...
     },
-    "backbone-dependent-rotamer-indices" : {
+    "backbone-dependent-rotamer-indexes" : {
         "csar_pro4ss" : [
-            [ 180, 150, 1, 2, 9, 20, 34, ... ], ; <- first two numbers are dihedral angle key, remaining are indices into (A)
+            [ 180, 150, 1, 2, 9, 20, 34, ... ], ; <- first two numbers are dihedral angle key, remaining are indexes into (A)
             [ 180, 160, 1, 3, 5, ... ],
             [ 170, 160, 0, 3, 5, ... ],
             ...
@@ -195,7 +195,7 @@ monomer-context-index indexes into ...
           (fragment-match-key-from-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
           (fragment-match-key-to-vector (make-array 1024 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
           (dl debug-limit))
-      (maphash (lambda (key fragment-conformation-indices-vectors)
+      (maphash (lambda (key fragment-conformation-indexes-vectors)
                  (let* ((key-from (car key))
                         (key-from-index (gethash key-from monomer-context-to-index))
                         (key-to (cdr key))
@@ -208,13 +208,13 @@ monomer-context-index indexes into ...
                      (debug-linearize dl "fm-start ~a~%" fm-start)
                      (vector-push-extend fm-start fragment-match-start-vector)
                      (debug-linearize dl "fragment-match-start-vector ~a~%" fm-start)
-                     (loop for fragment-conformation-indices across fragment-conformation-indices-vectors
+                     (loop for fragment-conformation-indexes across fragment-conformation-indexes-vectors
                            do (let ((fc-start (length fragment-match-context-rotamers-index-vector)))
                                 (debug-linearize dl "fc-start = ~a~%" fc-start) 
                                 (vector-push-extend fc-start fragment-match-context-rotamers-start-vector)
                                 (debug-linearize dl "fragment-match-context-rotamers-start-vector ~a~%" fc-start)
-                                (when fragment-conformation-indices
-                                  (loop for rotamer-index across fragment-conformation-indices
+                                (when fragment-conformation-indexes
+                                  (loop for rotamer-index across fragment-conformation-indexes
                                         do (progn
                                              (vector-push-extend rotamer-index fragment-match-context-rotamers-index-vector)
                                              (debug-linearize dl "fragment-match-context-rotamers-index-vector ~a~%" rotamer-index)

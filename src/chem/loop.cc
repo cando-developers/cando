@@ -185,7 +185,7 @@ Loop::Loop(Matter_sp cont, int over)
 }
 
 
-void	Loop::clearAtomIndices()
+void	Loop::clearAtomIndexes()
 {
   this->iIndex0 = 0;
   this->iIndex1 = 0;
@@ -254,7 +254,7 @@ void	Loop::loopTopGoal( Matter_sp c, int goal )
 
   this->iTempInt = 0;
   this->curSubLoop = -1;
-  this->clearAtomIndices();
+  this->clearAtomIndexes();
   this->fVisibilityFlags = 0;
 
 		// Now setup the loop stack
@@ -318,7 +318,7 @@ bool	Loop::nextObjectInAtom()
       break;
 
 	/* When LOOPing over ANGLES, use iIndex0 and    */
-	/* iIndex1 as the bond angle indices.           */
+	/* iIndex1 as the bond angle indexes.           */
 	/* An outer Atom is the current Atom.           */
 	/* iIndex0 ranges through the current atoms     */
 	/* coordination and iIndex1, ranges from 0      */
@@ -331,7 +331,7 @@ bool	Loop::nextObjectInAtom()
   case ANGLES:
       done = false;
       while ( ! done ) {
-	    /* First test if all the indices are valid */
+	    /* First test if all the indexes are valid */
         if ( this->iIndex0>=top->coordination() ) goto ANONE;
         aAtom1 = top->bondedNeighbor( this->iIndex0 );
         if ( this->iIndex1>=aAtom1->coordination() ) goto AINC1;
@@ -372,7 +372,7 @@ bool	Loop::nextObjectInAtom()
 
 
 	/* When LOOPing over TORSIONs, use iIndex0,     */
-	/* iIndex1, and iIndex2 as indices for the      */
+	/* iIndex1, and iIndex2 as indexes for the      */
 	/* next torsion.                                */
 	/* iIndex0 gives the bond index from the current*/
 	/* atom to the second atom in the torsion.      */
@@ -390,7 +390,7 @@ bool	Loop::nextObjectInAtom()
   case PROPERS:
       done = false;
       while ( ! done ) {
-	    /* First test if all the indices are valid */
+	    /* First test if all the indexes are valid */
         if ( this->iIndex0>=top->coordination() ) goto TNONE;
         aAtom1 = top->bondedNeighbor(this->iIndex0);
         if ( this->iIndex1>=aAtom1->coordination() ) goto TINC1;
@@ -429,7 +429,7 @@ bool	Loop::nextObjectInAtom()
   TNONE:      break;
 
 	/* When LOOPing over IMPROPERS, use iIndex0 and */
-	/* iIndex1,iIndex2 as the improper indices.     */
+	/* iIndex1,iIndex2 as the improper indexes.     */
 	/* The central atom of the improper is the current */
 	/* improper being looped over.                  */
 	/* iIndex0 ranges through the current atoms     */
@@ -500,7 +500,7 @@ bool	Loop::nextObjectInAtom()
 
   }
  FAIL:
-  this->clearAtomIndices();
+  this->clearAtomIndexes();
   return(false);
 }
 

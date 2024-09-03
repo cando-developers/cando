@@ -146,7 +146,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
 like residues. This class can be used to create all of the atoms in the residue, with atom names and elements and connect them
 up with bonds with the correct bond orders.  It doesn't connect the atoms to other residues so there will be dangling bonds
 that need to be formed later to other residues. The vector of chem:constitution-atom(s) have a specific order and 
-the chem:constitution-atom(s) can be accessed using integer indices.)");
+the chem:constitution-atom(s) can be accessed using integer indexes.)");
     LISP_CLASS(chem,ChemPkg,ConstitutionAtoms_O,"ConstitutionAtoms",core::CxxObject_O);
   private: // instance variables
 	//! A list of ConstitutionAtoms

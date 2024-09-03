@@ -32,6 +32,7 @@
 
 (defpackage #:amber
   (:use #:common-lisp)
+  (:shadow #:stream)
   (:export
    #:simulation
    #:add-aggregates
