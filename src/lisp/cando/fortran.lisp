@@ -56,7 +56,7 @@
 (defun debug-off (&optional (ff *fortran-file*))
   (setf (fof-debug ff) nil))
 
-(defun debug (msg &optional (ff *fortran-file*))
+(defun debugprint (msg &optional (ff *fortran-file*))
   (when (fof-debug ff)
     (core:fmt (fof-stream ff) "{}{}%N" +fortran-debug-comment-char+ msg)))
 

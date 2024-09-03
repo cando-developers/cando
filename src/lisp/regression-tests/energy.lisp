@@ -105,10 +105,10 @@
 (test-true force-acos (< force-acos 0.01))
 
 
-(defparameter min (chem:make-minimizer ef))
+(defparameter minimizer (chem:make-minimizer ef))
 #+(or)(time (dotimes (i 10)
         (chem:save-coordinates-from-vector ef pos)
-        (chem:minimize min)))
+        (chem:minimize minimizer)))
 
 
 (defparameter spiro (cando:load-mol2 (merge-pathnames "data/struct-0000.mol2"
