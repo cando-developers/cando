@@ -89,12 +89,6 @@ __END_DOC
 #endif
 
 
-#ifdef	darwin
-#include <xmmintrin.h>
-#endif
-
-
-
 namespace chem
 {
 
