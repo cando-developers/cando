@@ -110,7 +110,7 @@ void Unit_O::fields(core::Record_sp node) {
     core::DoubleFloat_sp amt;
     core::Rational_sp meters, kilograms, seconds, amperes, kelvin, candelas, moles, radians;
     UFIELDS();
-    this->_Amount = amt->as_double_();
+    this->_Amount = amt->as_double_float_();
 #define RAT(rat) SimpleRational(core::clasp_to_integral<int>(cl__numerator(rat)), core::clasp_to_integral<int>(cl__denominator(rat)))
     this->_Powers[0] = RAT(meters);
     this->_Powers[1] = RAT(kilograms);

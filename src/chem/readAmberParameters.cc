@@ -545,8 +545,8 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
         SIMPLE_WARN(("Could not find nonbond type: %s") , _rep_(stype));
         continue;
       }
-      double radius = gc::As<core::Number_sp>(tradius)->as_double_();
-      double edep = gc::As<core::Number_sp>(tedep)->as_double_();
+      double radius = core::Number_O::as_double_float(gc::As<core::Number_sp>(tradius));
+      double edep = core::Number_O::as_double_float(gc::As<core::Number_sp>(tedep));
       //	    print "parseNonbondDb::",
       //	    print ffNonbond.asXml().asString()
       ffNonbond->setRadius_Angstroms(radius);

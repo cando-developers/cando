@@ -15,7 +15,7 @@
       (setf obj (cdr pair)))))
 
 
-(defconstant +degrees-to-radians+ (/ pi 180d0))
+(defconstant +degrees-to-radians+ (/ (coerce pi 'double-float) 180d0))
 
 (defun rad2deg (value)
   (/ value +degrees-to-radians+))

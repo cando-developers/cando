@@ -101,6 +101,7 @@ buffer object, which extends either type of box by an arbitrary amount.
   (let ((val (leap.core:lookup-variable arg)))
     (apply (find-symbol "SHOW" :cando-user) val kwargs)))
 
+(defconstant +degrees-to-radians+ (/ (coerce pi 'double-float) 180d0))
 
 (defun leap.z-matrix (val list)
   "   Construct the external coordinates for the atoms.
@@ -144,7 +145,7 @@ buffer object, which extends either type of box by an arbitrary amount.
                          (a2 (get-atom (second entry)))
                          (a3 (get-atom (third entry)))
                          (b12 (fourth entry))
-                         (t123 (* (fifth entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (t123 (* (fifth entry) +degrees-to-radians+))
                          (pa3 (chem:get-position a3))
                          (pa2 (chem:get-position a2))
                          (pa1 (geom:build-using-bond-angle b12 pa2 t123 pa3)))
@@ -155,8 +156,8 @@ buffer object, which extends either type of box by an arbitrary amount.
                          (a3 (get-atom (third entry)))
                          (a4 (get-atom (fourth entry)))
                          (b12 (fifth entry))
-                         (t123 (* (sixth entry)#|degrees|# (/ PI 180.0)))#|rad|#
-                         (p1234 (* (seventh entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (t123 (* (sixth entry) +degrees-to-radians+))
+                         (p1234 (* (seventh entry) +degrees-to-radians+))
                          (pa4 (chem:get-position a4))
                          (pa3 (chem:get-position a3))
                          (pa2 (chem:get-position a2))
@@ -168,8 +169,8 @@ buffer object, which extends either type of box by an arbitrary amount.
                          (a3 (get-atom (third entry)))
                          (a4 (get-atom (fourth entry)))
                          (b12 (fifth entry))
-                         (t123 (* (sixth entry)#|degrees|# (/ PI 180.0)))#|rad|#
-                         (t124 (* (seventh entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (t123 (* (sixth entry) +degrees-to-radians+))
+                         (t124 (* (seventh entry) +degrees-to-radians+))
                          (orientation (eighth entry))
                          (pa4 (chem:get-position a4))
                          (pa3 (chem:get-position a3))

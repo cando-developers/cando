@@ -48,15 +48,8 @@ void Quantity_O::throwOnInvalidValue(core::T_sp obj) {
 }
 
 core::T_sp Quantity_O::copyAndScaleValue(core::T_sp obj, double conversion) {
-  if (obj.fixnump()) {
-    core::DoubleFloat_sp rval = core::DoubleFloat_O::create(obj.unsafe_fixnum() * conversion);
-    return rval;
-  } else if (obj.single_floatp()) {
-    core::DoubleFloat_sp rval = core::DoubleFloat_O::create(obj.unsafe_single_float() * conversion);
-    return rval;
-  } else if (obj.isA<core::DoubleFloat_O>()) {
-    core::DoubleFloat_sp rval = core::DoubleFloat_O::create(obj.as<core::DoubleFloat_O>()->get() * conversion);
-    return rval;
+  if (obj.isA<core::Number_O>()) {
+    return obj.as_unsafe<core::Number_O>() * core::DoubleFloat_O::create(conversion);
   } else if (obj.isA<geom::OVector3_O>()) {
     geom::OVector3_sp oval = obj.as<geom::OVector3_O>();
     geom::OVector3_sp nval = geom::OVector3_O::create(oval->get().multiplyByScalar(conversion));
@@ -87,7 +80,7 @@ core::T_sp Quantity_O::copyAndScaleValueElement(core::T_sp obj, uint index, doub
 
 core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index) {
   if (obj.isA<core::Vector_O>()) {
-//    core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
+    //    core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
     FIX_ME(); // implement copy of object?
 #if 0
           // Why am I copying objects?
@@ -120,19 +113,7 @@ uint Quantity_O::sizeOfValue(core::T_sp obj) {
 }
 
 bool Quantity_O::isnanValue(core::T_sp obj) {
-  if (obj.isA<core::DoubleFloat_O>()) {
-    return clasp_float_nan_p(obj.as<core::DoubleFloat_O>());
-#if 0
-	} else if ( obj.isA<geom::OVector3_O>() )
-	{
-	    return
-	} else if ( obj.isA<core::Vector_O>() )
-	{
-	    core::Vector_sp vector = obj.as<core::Vector_O>();
-	    return vector->length();
-#endif
-  }
-  SIMPLE_ERROR("Illegal value type[{}] for isnanValue", core::cl__class_of(obj)->_classNameAsString());
+  return obj.isA<core::Float_O>() && core::Float_O::isnan(obj.as_unsafe<core::Float_O>());
 }
 
 Quantity_sp Quantity_O::create(core::T_sp obj, Unit_sp unit) {
@@ -312,7 +293,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::operator*(core::T_sp other) const {
     q->_Unit->incorporateUnit(otherUnit, 1.0, 1);
     return q;
   }
-  TYPE_ERROR(other,core::Cons_O::createList(_sym_Quantity_O,cl::_sym_Number_O));
+  TYPE_ERROR(other, core::Cons_O::createList(_sym_Quantity_O, cl::_sym_Number_O));
 }
 
 CL_LISPIFY_NAME("/");
@@ -339,7 +320,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::operator/(core::T_sp other) const {
     q->_Unit->incorporateUnit(otherUnit, 1.0, -1);
     return q;
   }
-  TYPE_ERROR(other,core::Cons_O::createList(_sym_Quantity_O,cl::_sym_Number_O));
+  TYPE_ERROR(other, core::Cons_O::createList(_sym_Quantity_O, cl::_sym_Number_O));
 }
 
 CL_LISPIFY_NAME("+");
@@ -357,7 +338,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::operator+(core::T_sp other) const {
                    core::cl__class_of(qother->_Value)->_classNameAsString());
     }
   }
-  TYPE_ERROR(other,core::Cons_O::createList(_sym_Quantity_O,cl::_sym_Number_O));
+  TYPE_ERROR(other, core::Cons_O::createList(_sym_Quantity_O, cl::_sym_Number_O));
 }
 
 CL_LISPIFY_NAME("-");
@@ -375,7 +356,7 @@ CL_DEFMETHOD core::T_sp Quantity_O::operator-(core::T_sp other) const {
                    core::cl__class_of(qother->_Value)->_classNameAsString());
     }
   }
-  TYPE_ERROR(other,core::Cons_O::createList(_sym_Quantity_O,cl::_sym_Number_O));
+  TYPE_ERROR(other, core::Cons_O::createList(_sym_Quantity_O, cl::_sym_Number_O));
 }
 
 CL_LISPIFY_NAME("power");
@@ -414,8 +395,8 @@ CL_LISPIFY_NAME("<");
 CL_DEFMETHOD bool Quantity_O::operator<(core::T_sp other) const {
   if (other.isA<Quantity_O>()) {
     Quantity_sp qother = other.as<Quantity_O>();
-    return core::clasp_number_compare(this->_Value.as<core::Number_O>(),
-                                      qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) < 0;
+    return core::Number_O::compare(gc::As<core::Real_sp>(this->_Value),
+                                   gc::As<core::Real_sp>(qother->value_in_unit(this->_Unit, 1))) < 0;
     //	    return this->_Value.as<core::General_O>()->operator<(qother->value_in_unit(this->_Unit,1));
   }
   SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
@@ -426,8 +407,8 @@ CL_LISPIFY_NAME("<=");
 CL_DEFMETHOD bool Quantity_O::operator<=(core::T_sp other) const {
   if (other.isA<Quantity_O>()) {
     Quantity_sp qother = other.as<Quantity_O>();
-    return core::clasp_number_compare(this->_Value.as<core::Number_O>(),
-                                      qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) <= 0;
+    return core::Number_O::compare(gc::As<core::Real_sp>(this->_Value),
+                                   gc::As<core::Real_sp>(qother->value_in_unit(this->_Unit, 1))) <= 0;
     //	    return this->_Value.as<core::General_O>()->operator<=(qother->value_in_unit(this->_Unit,1));
   }
   SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
@@ -438,8 +419,8 @@ CL_LISPIFY_NAME(">");
 CL_DEFMETHOD bool Quantity_O::operator>(core::T_sp other) const {
   if (other.isA<Quantity_O>()) {
     Quantity_sp qother = other.as<Quantity_O>();
-    return core::clasp_number_compare(this->_Value.as<core::Number_O>(),
-                                      qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) > 0;
+    return core::Number_O::compare(gc::As<core::Real_sp>(this->_Value),
+                                   gc::As<core::Real_sp>(qother->value_in_unit(this->_Unit, 1))) > 0;
     //	    return this->_Value.as<core::General_O>()->operator>(qother->value_in_unit(this->_Unit,1));
   }
   SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
@@ -450,8 +431,8 @@ CL_LISPIFY_NAME(">=");
 CL_DEFMETHOD bool Quantity_O::operator>=(core::T_sp other) const {
   if (other.isA<Quantity_O>()) {
     Quantity_sp qother = other.as<Quantity_O>();
-    return core::clasp_number_compare(this->_Value.as<core::Number_O>(),
-                                      qother->value_in_unit(this->_Unit, 1).as<core::Number_O>()) >= 0;
+    return core::Number_O::compare(gc::As<core::Real_sp>(this->_Value),
+                                   gc::As<core::Real_sp>(qother->value_in_unit(this->_Unit, 1))) >= 0;
     //	    return this->_Value.as<core::General_O>()->operator>=(qother->value_in_unit(this->_Unit,1));
   }
   SIMPLE_ERROR("You cannot compare a Quantity with value of class[{}] to an object of class[{}]",
