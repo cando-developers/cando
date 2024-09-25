@@ -62,11 +62,6 @@ __END_DOC
 #include <clasp/core/wrappers.h>
 
 
-#ifdef	darwin
-#include <xmmintrin.h>
-#endif
-
-
 namespace chem
 {
 
