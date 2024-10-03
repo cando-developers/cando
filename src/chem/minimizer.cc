@@ -542,8 +542,24 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
     if (fabs(_e)>tol1){
       d1=2.0*(_b-_a);
       d2=d1;
-      if (dw != dx ) d1=(w-x)*dx/(dx-dw); // Secant method, first on one, then on
-      if (dv != dx ) d2=(v-x)*dx/(dx-dv); // the other point
+
+      double numerator;
+      double denomenator;
+      double limit;
+      //if (dw != dx ) d1=(w-x)*dx/(dx-dw); // Original code Secant method, first on one, then on
+#if 0
+# define WARN_BAD_VAL(xx) if (std::isnan(xx) || std::isinf(xx)) printf("%s:%d:%s problem with " #xx " - it is %e\n", __FILE__, __LINE__, __FUNCTION__, xx );
+#else
+# define WARN_BAD_VAL(xx)
+#endif
+      WARN_BAD_VAL(dw);
+      WARN_BAD_VAL(dx);
+      WARN_BAD_VAL(dv);
+      if ((dw-dx) != 0.0) d1=(w-x)*dx/(dx-dw); // Secant method, first on one, then on
+
+      // if (dv!=dx) d2=(v-x)*dx/(dx-dv); // the other point
+      if ((dv-dx) != 0.0) d2=(v-x)*dx/(dx-dv); // the other point
+
 	    // Which of these two estimates of d shall we take? We will insist that
 	    // they are within the bracket, and on the side pointed to by the
 	    // derivative at x

@@ -562,7 +562,7 @@ callback-sidechain-rotamer-indexes - A lambda that takes the lambda-list (oligom
 
 (defun build-all-oligomer-shapes-from-internals-in-coordinates (assembler coords)
   (loop for oligomer-shape in (topology:oligomer-shapes assembler)
-        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)))
+        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape oligomer-shape)))
 
 (defun random-oligomer-shape-aggregate (oligomer-shape)
   "Generate a random oligomer-shape and return the aggregate"

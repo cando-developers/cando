@@ -26,9 +26,9 @@
 (in-package :chem)
 
 (defun linear-atoms-reporter (condition stream)
-  (let ((indices (chem::indices condition))
+  (let ((indexes (chem::indexes condition))
         (coordinates (coordinates condition)))
-    (let ((positions (loop for index in indices
+    (let ((positions (loop for index in indexes
                            for xpos = (elt coordinates index)
                            for ypos = (elt coordinates (+ 1 index))
                            for zpos = (elt coordinates (+ 2 index))
@@ -48,7 +48,7 @@
   ((atoms :initarg :atoms :reader chem:atoms)
    (coordinates :initarg :coordinates :reader coordinates)
    (simd-index :initarg :simd-index :reader simd-index)
-   (indices :initarg :indices :reader chem::indices))
+   (indexes :initarg :indexes :reader chem::indexes))
   (:report linear-atoms-reporter))
 
 (define-condition chem:linear-angle-error (linear-atoms-error) ())

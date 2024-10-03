@@ -1,10 +1,5 @@
 (in-package :topology-jupyter)
 
-(defun sketch-svg (topology &rest args)
-  "Generate an svg sketch of the topology - send args to sketch2d"
-  (let ((mol (topology:build-one-molecule-for-topology topology)))
-    (sketch2d:svg (apply 'sketch2d:sketch2d mol args))))
-
 (defclass node ()
   ((label :initarg :label :reader label)
    (uid :initarg :uid :reader uid)
@@ -152,11 +147,11 @@
     (build-cytoscape elements)))
 
 (defmethod cando-widgets::show-on-pane (pane-instance (object topology:topology) &rest rest &key &allow-other-keys)
-  (apply 'cando-widgets::show-on-pane pane-instance (topology-jupyter:sketch-svg object) rest))
+  (apply 'cando-widgets::show-on-pane pane-instance (sketch2d:svg (sketch2d:sketch2d object)) rest))
 
 (defmethod cando-widgets::show-on-pane (pane-instance (object symbol) &rest rest &key &allow-other-keys)
   (let ((top (chem:find-topology object)))
-    (apply 'cando-widgets::show-on-pane pane-instance (topology-jupyter:sketch-svg top) rest)))
+    (apply 'cando-widgets::show-on-pane pane-instance top rest)))
 
 
 (defmethod cando-widgets::show-on-pane (pane-instance (object topology:oligomer-shape) &rest rest &key &allow-other-keys)

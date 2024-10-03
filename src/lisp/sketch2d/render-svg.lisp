@@ -1,5 +1,9 @@
 (in-package :sketch2d)
 
+
+
+(defparameter *angles* '(0 180 90 270 45 135 215 305))
+(defparameter *multiplier* 1.5)
 (defparameter *number-of-hashes-in-hashed-bond* 5)
 (defparameter *show-all* nil)
 (defparameter *show-names* nil)
@@ -61,6 +65,7 @@
 
 (defclass sketch-svg ()
   ((molecule :initarg :molecule :accessor molecule)
+   (optimized-annotations :initform nil :initarg :optimized-annotations :reader optimized-annotations)
    (sketch2d* :initarg :sketch2d* :accessor sketch2d*)
    (height :initarg :height :accessor height)
    (width :initarg :width :accessor width)
@@ -190,6 +195,57 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                (new-atom-node (make-instance 'atom-node :atom atom :debug-info atom-debug-info)))
           (setf (gethash atom atom-ht) new-atom-node)
           new-atom-node))))
+
+(defclass optimized-annotation (annotation)
+  (
+   (average-pos :initarg :average-pos :reader average-pos)
+   (closest-annotation-pos :initarg :closest-annotation-pos :reader closest-annotation-pos)
+   ))
+
+(defun optimize-annotations (sketch2d atom-nodes atoms-to-nodes)
+  (let* ((annotations (annotations sketch2d))
+         (molecule (molecule sketch2d))
+         (center-pos (let ((sum-pos (geom:vec 0.0 0.0 0.0)))
+                       (loop for atom-node in atom-nodes
+                             do (setf sum-pos (geom:v+ sum-pos (pos atom-node))))
+                       (geom:v* sum-pos (/ 1.0 (length atom-nodes)))))
+         (radius (let ((max-dist most-negative-single-float))
+                   (loop for atom-node in atom-nodes
+                         for dist = (geom:vlength (geom:v- (pos atom-node) center-pos))
+                         do (setf max-dist (max dist max-dist)))
+                   max-dist)))
+    (loop with used-angles = (make-array (length *angles*) :element-type 'bit :initial-element 0)
+          for annotation in annotations
+          for average-pos = (let ((pos-sum (geom:vec 0.0 0.0 0.0)))
+                              (loop for atom-name in (atom-names annotation)
+                                    for atm = (chem:first-atom-with-name molecule atom-name)
+                                    for atom-node = (gethash atm atoms-to-nodes)
+                                    for pos = (pos atom-node)
+                                    do (setf pos-sum (geom:v+ pos pos-sum)))
+                              (let ((pp (geom:v* pos-sum (/ 1.0 (length (atom-names annotation))))))
+                                (cons (geom:vx pp) (geom:vy pp))))
+          for closest-annotation-pos = (let ((min-dist most-positive-single-float)
+                                             best-x best-y best-angle-index)
+                                         (loop for angle-index from 0
+                                               for angle-deg in *angles*
+                                               for angle-rad = (* 0.0174533 angle-deg)
+                                               for y-pos = (+ (geom:vy center-pos) (* *multiplier* radius (sin angle-rad)))
+                                               for x-pos = (+ (geom:vx center-pos) (* *multiplier* radius (cos angle-rad)))
+                                               for dist = (sqrt (+
+                                                                 (expt (- y-pos (cdr average-pos)) 2)
+                                                                 (expt (- x-pos (car average-pos)) 2)))
+                                               when (and (= (aref used-angles angle-index) 0) (< dist min-dist))
+                                                 do (setf min-dist dist
+                                                          best-angle-index angle-index
+                                                          best-x x-pos
+                                                          best-y y-pos))
+                                         (setf (aref used-angles best-angle-index) 1)
+                                         (cons best-x best-y))
+          collect (make-instance 'optimized-annotation
+                                 :text (text annotation)
+                                 :atom-names (atom-names annotation)
+                                 :average-pos average-pos
+                                 :closest-annotation-pos closest-annotation-pos))))
 
 (defun generate-sketch (sketch2d width height)
   "Return the bonds and atoms that we need to render"
@@ -442,7 +498,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
     (loop for bond-node in (bond-nodes sketch)
           for lines = (calculate-bond bond-node sketch)
           do (setf (lines bond-node) lines))))
-                 
+
 (defun optimize-sketch (sketch)
   ;; Set up which atoms we want to render and which ones we want to label
   (loop for atom-node in (atom-nodes sketch)
@@ -506,8 +562,18 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
   (loop for line in (lines node)
         do (draw-bond scene line)))
 
+(defmethod render-node (scene (annotation optimized-annotation))
+  (cl-svg:draw scene (:line
+                      :x1 (car (average-pos annotation)) :y1 (cdr (average-pos annotation))
+                      :x2 (car (closest-annotation-pos annotation)) :y2 (cdr (closest-annotation-pos annotation))
+                      :class "annotate"
+                      ))
+  (cl-svg:text scene (:x (car (closest-annotation-pos annotation))
+                      :y (cdr (closest-annotation-pos annotation))
+                      :class "element")
+               (text annotation)))
 
-(defvar *svg-stylesheet*
+(defparameter *svg-stylesheet*
   ".name {
      font: italic 9px sans-serif;
      fill: red;
@@ -522,6 +588,12 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
      fill: none;
      stroke: black;
      stroke-width: 2;
+     stroke-linecap: round;
+   }
+   .annotate {
+     fill: none;
+     stroke: blue;
+     stroke-width: 1;
      stroke-linecap: round;
    }
    .dash {
@@ -566,7 +638,10 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         do (render-dbg "bond-node #~a~%" count)
         do (render-node scene bond-node))
   (loop for atom-node in (atom-nodes sketch)
-        do (render-node scene atom-node)))
+        do (render-node scene atom-node))
+  (loop for annotation in (optimized-annotations sketch)
+        do (render-node scene annotation)))
+
 
 
 (defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names (scale 5) (margin 40))
@@ -588,12 +663,21 @@ The caller provided functions should use cl-svg to render additional graphics."
                (geom:vec x y 0.0))))
       (let ((sketch (generate-sketch sketch2d 0 0)))
         (layout-sketch sketch #'transform-point)
+        (reinitialize-instance sketch
+                               :optimized-annotations (optimize-annotations sketch2d (atom-nodes sketch) (atoms-to-nodes sketch)))
+        (loop for optimized-annotation in (optimized-annotations sketch)
+              for pos = (closest-annotation-pos optimized-annotation)
+              do (setf
+                  xmin (min xmin (car pos))
+                  ymin (min ymin (cdr pos))
+                  xmax (max xmax (car pos))
+                  ymax (max ymax (cdr pos))))
         (setf xmin (floor (- xmin margin))
               ymin (floor (- ymin margin))
               xmax (ceiling (+ xmax margin))
               ymax (ceiling (+ ymax margin))
-              (width sketch) (- xmax xmin)
-              (height sketch) (- ymax ymin))
+              (width sketch) (* 1.2 (- xmax xmin))
+              (height sketch) (* 1.2 (- ymax ymin)))
         (optimize-sketch sketch)
         (render-dbg "About to render-sketch  bond-nodes ~a~%" (length (bond-nodes sketch)))
         ;; It looks like for jupyter we need to specify width and height

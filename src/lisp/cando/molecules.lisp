@@ -191,7 +191,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (restart-case
       (with-handle-linear-angles-dihedrals (:verbose verbose)
         (multiple-value-bind (pos total-energy)
-            (chem:minimize minimizer)
+            (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+              (chem:minimize minimizer))
           (unless total-energy
             (break "total-energy was NIL"))
           (values pos total-energy)

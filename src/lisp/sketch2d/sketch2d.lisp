@@ -16,6 +16,9 @@ I'll use SMARTS to identify features.
 I'll use an angle term instead of a bond term.
 |#
 
+(defclass annotation ()
+  ((text :initarg :text :reader text)
+   (atom-names :initarg :atom-names :reader atom-names)))
 
 (defclass sketch2d ()
   ((molecule :initarg :molecule :accessor molecule)
@@ -27,7 +30,8 @@ I'll use an angle term instead of a bond term.
    (chiral-infos :initform nil :initarg :chiral-infos :accessor chiral-infos)
    (dynamics :initarg :dynamics :accessor dynamics)
    (sketch-atoms-to-original :initarg :sketch-atoms-to-original :accessor sketch-atoms-to-original)
-   (original-molecule :initarg :original-molecule :accessor original-molecule)))
+   (original-molecule :initarg :original-molecule :accessor original-molecule)
+   (annotations :initform nil :initarg :annotations :reader annotations)))
 
 (defparameter *max-tries* 3)
 (defconstant +oozp-scale+ 1.0)
@@ -1229,8 +1233,7 @@ to check if two line segments (bonds) overlap/intersect
 
 (defun sketch2d-molecule (molecule &key accumulate-coordinates verbose)
   (let* ((sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates :verbose verbose))
-         (dynamics (dynamics sketch))
-         #+(or)(scoring-function (dynamics:scoring-function dynamics)))
+         (dynamics (dynamics sketch)))
     (sketch2d-dynamics sketch dynamics :accumulate-coordinates accumulate-coordinates)
     sketch))
 
@@ -1270,15 +1273,15 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
         (chem:apply-transform-to-atoms molecule transposed-transform)))))
 
 
-(defgeneric do-sketch2d (thing &key accumulate-coordinates max-tries verbose one-shot))
+(defgeneric do-sketch2d (thing &key accumulate-coordinates max-tries verbose fixup))
 
-(defmethod do-sketch2d (molecule &key accumulate-coordinates (max-tries *max-tries*) (one-shot nil) verbose)
+(defmethod do-sketch2d (molecule &key accumulate-coordinates (max-tries *max-tries*) verbose fixup )
   (let ((count 1)
         problems
         unfrozen
         sketch)
     (setf sketch (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates :verbose verbose))
-    (when one-shot (return-from do-sketch2d sketch))
+    (unless fixup (return-from do-sketch2d sketch))
     (loop named problem-loop
           for try-index below max-tries
           do (multiple-value-setq (problems unfrozen)
@@ -1310,10 +1313,10 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
     (insert (car lst) (insertion-sort (cdr lst) compare key) compare key)))
 
 
-(defmethod do-sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates (max-tries *max-tries*) verbose one-shot)
+(defmethod do-sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates (max-tries *max-tries*) verbose fixup)
   (if (= (chem:content-size aggregate) 1)
       (do-sketch2d (chem:content-at aggregate 0) :accumulate-coordinates accumulate-coordinates :max-tries max-tries :verbose verbose
-        :one-shot one-shot)
+        :fixup fixup)
       (error "sketch2d only accepts a molecule or an aggregate with a single molecule")))
 
 #+debug-sketch2d
@@ -1500,12 +1503,35 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                  (t (warn "Handle config ~a for atom ~a" config chiral-atom)))))))
 
 
+(defgeneric sketch2d (molecule &key accumulate-coordinates verbose fixup show-names&allow-other-keys))
 
-(defun sketch2d (molecule &key accumulate-coordinates verbose one-shot use-structure show-names)
+(defmethod sketch2d ((obj topology:topology) &key accumulate-coordinates verbose fixup show-names &allow-other-keys)
+  (let* ((*show-names* (or *show-names* show-names))
+         (molecule (topology:build-one-molecule-for-topology obj))
+         (sketch2d (do-sketch2d molecule :accumulate-coordinates accumulate-coordinates :verbose verbose :fixup fixup))
+         )
+    (multiple-value-bind (stereochemistry-types configurations cips)
+        (chem:calculate-stereochemistry molecule :use-structure t)
+      (augment-sketch-with-stereochemistry nil sketch2d cips stereochemistry-types configurations)
+      (let* ((plugs (topology:plugs obj))
+             (annotations (loop for plug in (alexandria:hash-table-values plugs)
+                                for plug-name = (topology:name plug)
+                                for plug-bonds = (topology:plug-bonds plug)
+                                for plug-atom-names = (loop for plug-bond across plug-bonds
+                                                            collect (topology:atom-name plug-bond))
+                                collect (make-instance 'annotation
+                                                       :text (format nil "~s" plug-name)
+                                                       :atom-names plug-atom-names))))
+        (reinitialize-instance sketch2d :annotations annotations)
+    sketch2d))))
+
+
+(defmethod sketch2d ((molecule chem:molecule) &key accumulate-coordinates verbose fixup use-structure show-names &allow-other-keys)
   "Calculate a sketch2d from the molecule.  If use-structure is set then calculate the stereochemical configuration of atoms
 using the positions of the atoms in the molecule, otherwise get the configuration from the _Configuration slot."
+  (declare (optimize (debug 3)))
   (let ((*show-names* (or *show-names* show-names))
-        (sketch2d (do-sketch2d molecule :accumulate-coordinates accumulate-coordinates :verbose verbose :one-shot one-shot)))
+        (sketch2d (do-sketch2d molecule :accumulate-coordinates accumulate-coordinates :verbose verbose :fixup fixup)))
     (multiple-value-bind (stereochemistry-types configurations cips)
         (chem:calculate-stereochemistry molecule :use-structure use-structure)
       (augment-sketch-with-stereochemistry use-structure sketch2d cips stereochemistry-types configurations)
@@ -1578,7 +1604,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
               (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
               (sketch2d-dynamics new-sketch dynamics :unfrozen unfrozen :unfreeze nil
                                                      :accumulate-coordinates accumulate-coordinates)
-              (augment-sketch-with-stereochemistry use-structure new-sketch cips sterechemistry-types configurations)
+              (augment-sketch-with-stereochemistry use-structure new-sketch cips stereochemistry-types configurations)
               #+debug-sketch2d(setf (debug-info new-sketch) debug-info)
               new-sketch)))))))
 

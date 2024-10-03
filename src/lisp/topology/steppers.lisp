@@ -598,9 +598,8 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
   (let ((rotamer-state (rotamer-state permissible-rotamers index)))
       (write-rotamers permissible-rotamers rotamer-state)))
 
-(defun first-rotamers (oligomer-shape permissible-rotamers)
+(defun first-rotamers (permissible-rotamers)
   "Return a vector of the first rotamer index for each position"
-  (declare (ignore oligomer-shape))
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
     (make-instance 'rotamer-indexes
                    :rotamer-indexes (make-array len :initial-contents
@@ -610,9 +609,8 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
                                                       :for index = (aref (allowed-rotamer-indexes permissible-rotamer) rnd)
                                                       :collect index)))))
 
-(defun random-rotamers (oligomer-shape permissible-rotamers)
+(defun random-rotamers (permissible-rotamers)
   "Return a vector of random rotamer indexes"
-  (declare (ignore oligomer-shape))
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
     (make-instance 'rotamer-indexes
                    :rotamer-indexes (make-array len :initial-contents
