@@ -12,7 +12,7 @@
 (defclass amber-system () ())
 (defparameter *amber-system* (make-instance 'amber-system))
 
-(define-condition bad-multiplicity ()
+(define-condition bad-multiplicity (error)
   ((line :initarg :line :accessor bad-multiplicity-line)
    (multiplicity :initarg :multiplicity :accessor bad-multiplicity-multiplicity)))
 

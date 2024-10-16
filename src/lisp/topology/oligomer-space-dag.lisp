@@ -25,7 +25,7 @@ Example of oligomer-space-dag
 
 |#
 
-(define-condition no-matching-context ()
+(define-condition no-matching-context (error)
   ((context :initarg :context :accessor context))
   (:report (lambda (condition stream)
              (format stream "no-matching-context ~a" (context condition)))))
