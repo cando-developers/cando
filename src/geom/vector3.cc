@@ -234,22 +234,16 @@ void Vector3::fillFromCons(core::Cons_sp vals) {
  *      out on domain errors.
  */
 double safe_acos(double d) {
+  unlikely_if(d >= 1.0) return 0.0;
+  unlikely_if(d <= -1.0) return (core::numerics::pi);
   double ac = std::acos(d);
-  unlikely_if(std::isnan(ac)) {
-    unlikely_if(d >= 1.0) return (0.0);
-    unlikely_if(d <= -1.0) return (core::numerics::pi);
-    SIMPLE_ERROR("Could not calculate acos of {}", d);
-  }
   return ac;
 }
 
 float safe_acos(float d) {
+  unlikely_if(d >= 1.0) return 0.0;
+  unlikely_if(d <= -1.0) return (core::numerics::pi);
   float ac = std::acos(d);
-  unlikely_if(std::isnan(ac)) {
-    unlikely_if(d >= 1.0) return (0.0);
-    unlikely_if(d <= -1.0) return (core::numerics::pi);
-    SIMPLE_ERROR("Could not calculate acos of {}", d);
-  }
   return ac;
 }
 
@@ -262,22 +256,16 @@ float safe_acos(float d) {
  *      out on domain errors.
  */
 double safe_asin(double d) {
+  unlikely_if(d >= 1.0) return (core::numerics::pi / 2.0);
+  unlikely_if(d <= -1.0) return (-core::numerics::pi / 2.0);
   double as = std::asin(d);
-  unlikely_if(std::isnan(as)) {
-    unlikely_if(d >= 1.0) return (core::numerics::pi / 2.0);
-    unlikely_if(d <= -1.0) return (-core::numerics::pi / 2.0);
-    SIMPLE_ERROR("Could not calculate asin of {}", d);
-  }
   return as;
 }
 
 float safe_asin(float d) {
+  unlikely_if(d >= 1.0) return (core::numerics::pi / 2.0);
+  unlikely_if(d <= -1.0) return (-core::numerics::pi / 2.0);
   float as = std::asin(d);
-  unlikely_if(std::isnan(as)) {
-    unlikely_if(d >= 1.0) return (core::numerics::pi / 2.0);
-    unlikely_if(d <= -1.0) return (-core::numerics::pi / 2.0);
-    SIMPLE_ERROR("Could not calculate asin of {}", d);
-  }
   return as;
 }
 
