@@ -80,7 +80,6 @@ The chem:force-field-type-rules-merged generic function was used to organize the
       (if type
           (setf (gethash atom atom-types) type)
           (error "Could not set type of atom ~s in force-field ~s" atom :smirnoff)))))
-      
 
 (defmethod chem:force-field-component-merge ((dest chem:ffnonbond-db) (source vdw-force))
   (loop with terms = (terms source)
@@ -128,7 +127,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
              (let* ((name (chem:get-name (molecule obj)))
                     (properties (chem:matter/properties (molecule obj)))
                     (maybe-description (getf properties :description)))
-               (format stream "Molecule name: ~s missing dihedral ~a(~a) ~a(~a) ~a(~a) ~a(~a) / ~a"
+               (format stream "Molecule name: ~s cannot identify OpenFF dihedral parameter for list of four atom(element)s: (~a(~a) ~a(~a) ~a(~a) ~a(~a)); ~a"
                        (chem:get-name (molecule obj))
                        (a1-name obj)
                        (a1-element obj)
@@ -139,8 +138,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                        (a4-name obj)
                        (a4-element obj)
                        (if maybe-description
-                           maybe-description
-                           "no description ")
+                           (format nil "description: ~a" maybe-description)
+                           "")
                        )))))
 
 (defun missing-dihedral-error (a1 a2 a3 a4 molecule)
