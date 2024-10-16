@@ -54,7 +54,7 @@
   (if (or (not *leap-syntax*)
           (lisp-code-p code))
     (call-next-method)
-    (jupyter:handling-errors
+    (jupyter:with-debugger (:internal t)
       (dolist (expr (cadadr (leap-read code)) (values))
         (unless (eq :comment (caar expr))
           (jupyter:execute-result (leap-eval (list :leap (list :instruction (list expr))))))))))

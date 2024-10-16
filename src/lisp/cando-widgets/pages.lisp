@@ -266,7 +266,7 @@
                                                               ,@bordeaux-threads:*default-special-bindings*)))
           (bordeaux-threads:make-thread
             (lambda ()
-              (j:handling-comm-errors
+              (j:with-debugger ()
                 (do-run-task instance action (or parameter (parameter instance)))))))))
 
 
