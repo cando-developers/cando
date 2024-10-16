@@ -3,7 +3,7 @@
 (defgeneric agg (object)
   (:documentation "Return the aggregate that the object represents"))
 
-(defgeneric mol (object id)
+(defgeneric mol (object &optional id)
   (:documentation "Return the molecule that the object/id represents"))
 
 (defgeneric res (object id)
@@ -15,8 +15,12 @@
 (defmethod agg ((object chem:aggregate))
   object)
 
-(defmethod mol ((object chem:aggregate) (id integer))
-  (chem:content-at object id))
+(defmethod mol ((object chem:aggregate) &optional id)
+  (etypecase id
+    (integer (chem:content-at object id))
+    (null (if (= (chem:content-size object) 1)
+              (chem:content-at object 0)
+              (error "If no index is provided to mol there can only be one molecule and there are ~a molecules" (chem:content-size object))))))
 
 (defmethod res ((object chem:molecule) (id integer))
   (chem:content-at object id))
