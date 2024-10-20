@@ -224,7 +224,6 @@ Specialize the foldamer argument to provide methods"))
 
 (defun make-assembler (oligomer-shapes &key orientations monomer-subset tune-energy-function (keep-interaction t))
   "Build a assembler for the oligomers.
-energy-function-factory - provide a function that takes an aggregate and returns an energy-function.
 tune-energy-function - A function that takes the energy-function and an assembler and modifies the energy-function."
   (cond
     ((not (or (= (length oligomer-shapes) 1) orientations))
