@@ -4,7 +4,8 @@
   ((parent :initform nil :initarg :parent :accessor parent)
    (atom-name :initarg :atom-name :accessor atom-name)
    (constitution-atoms-index :initarg :constitution-atoms-index :accessor constitution-atoms-index)
-   ))
+   (children :initform nil :initarg :children :accessor children)))
+
 
 (defmethod print-object ((obj joint-template) stream)
   (if *print-readably*
@@ -12,9 +13,7 @@
       (print-unreadable-object (obj stream :type t)
         (format stream "~a" (atom-name obj)))))
 
-(defclass bonded-joint-template (joint-template)
-  ((children :initform nil :initarg :children :accessor children)
-   ))
+(defclass bonded-joint-template (joint-template) ())
 
 (defclass adjustable-bonded-joint-mixin ()
   ((adjustment :initarg :adjustment :accessor adjustment)))
@@ -157,11 +156,9 @@
                                                                              (third stub-joints)))))
     (t (error "Illegal number of stub-joints: ~s" stub-joints))))
 
-(defclass jump-joint-template (joint-template)
-  ((children :initform nil :initarg :children :accessor children)))
+(defclass jump-joint-template (joint-template) ())
 
-(defclass xyz-joint-template (joint-template)
-  ((children :initform nil :initarg :children :accessor children)))
+(defclass xyz-joint-template (joint-template) ())
 
 (defun make-jump-joint-template (constitution-atoms-index &key atom-name)
   (make-instance 'jump-joint-template
