@@ -17,7 +17,7 @@
                (:file "oligomer")
                (:file "joint-tree")
                (:file "fold")
-               (:file "conformation")
+               (:file "assembler")
                (:file "internals")
                (:file "design")
                (:file "oligomer-space-dag")
