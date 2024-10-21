@@ -1,4 +1,4 @@
-(k:sources :iclasp
+(k:sources :libclasp
            #~"candoBasePackage.cc"
            #~"ovector3.cc"
            #~"ovector2.cc"

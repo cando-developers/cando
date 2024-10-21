@@ -1,4 +1,4 @@
-(k:sources :iclasp
+(k:sources :libclasp
            #~"dimension.cc"
            #~"unit.cc"
            #~"namedUnit.cc"

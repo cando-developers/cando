@@ -1,1 +1,1 @@
-(k:sources :iclasp #~"extension.cc")
+(k:sources :libclasp #~"extension.cc")
