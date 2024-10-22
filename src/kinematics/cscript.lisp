@@ -1,4 +1,4 @@
-(k:sources :iclasp
+(k:sources :libclasp
            #~"bondedJoint.cc"
            #~"complexBondedJoint.cc"
            #~"coordinateCalculators.cc"
