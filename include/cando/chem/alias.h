@@ -35,6 +35,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/symbol.h>
 #include <cando/geom/vector3.h>
 
 

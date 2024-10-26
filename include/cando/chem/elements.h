@@ -140,7 +140,7 @@ public:
 namespace translate
 {
   template <>
-    struct translate::from_object<chem::Element>
+  struct from_object<chem::Element>
   {
     typedef	chem::Element ExpectedType;
     typedef	chem::Element DeclareType;
@@ -171,7 +171,7 @@ namespace translate
   };
 
   template <>
-    struct translate::from_object<chem::Hybridization>
+    struct from_object<chem::Hybridization>
   {
     typedef	chem::Hybridization ExpectedType;
     typedef	chem::Hybridization DeclareType;
