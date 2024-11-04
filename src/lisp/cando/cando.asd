@@ -33,4 +33,17 @@
                (:file "formula-weight")
                (:file "matter-hierarchy")
                (:file "units")
+               (:file "align")
                (:file "psf-files")))
+
+(asdf:defsystem #:cando/documentation
+  :description "The CANDO compiler front end documentation"
+  :version "0.0.1"
+  :author "Christian Schafmeister <chris.schaf@verizon.net>"
+  :licence "LGPL-3.0"
+  :depends-on (#:cando #:mgl-pax)
+  :serial t
+  :components (
+               (:file "documentation")
+               )
+  )

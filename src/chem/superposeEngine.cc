@@ -621,7 +621,7 @@ CL_DEFMETHOD void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoo
 
 
 DOCGROUP(cando);
-CL_DEFUN void chem__superpose_one(Matter_sp moveable_matter, core::List_sp moveable_atoms, core::List_sp fixed_atoms)
+CL_DEFUN void chem__align_matter(Matter_sp moveable_matter, core::T_sp moveable_atoms, core::T_sp fixed_atoms)
 {
   size_t num_moveable = core::cl__length(moveable_atoms);
   size_t num_fixed = core::cl__length(fixed_atoms);
@@ -634,8 +634,8 @@ CL_DEFUN void chem__superpose_one(Matter_sp moveable_matter, core::List_sp movea
   if (num_moveable != num_fixed) {
     SIMPLE_ERROR("The number of moveable points {} must match the number of fixed points" , num_moveable , num_fixed);
   }
-  geom::SimpleVectorCoordinate_sp coords_fixed = chem__make_simple_vector_coordinate_from_atom_list(fixed_atoms);
-  geom::SimpleVectorCoordinate_sp coords_moveable = chem__make_simple_vector_coordinate_from_atom_list(moveable_atoms);
+  geom::SimpleVectorCoordinate_sp coords_fixed = chem__make_simple_vector_coordinate_from_atom_sequence(fixed_atoms);
+  geom::SimpleVectorCoordinate_sp coords_moveable = chem__make_simple_vector_coordinate_from_atom_sequence(moveable_atoms);
   SuperposeEngine_sp engine = SuperposeEngine_O::create();
   engine->setFixedAllPoints(coords_fixed);
   engine->setMoveableAllPoints(coords_moveable);

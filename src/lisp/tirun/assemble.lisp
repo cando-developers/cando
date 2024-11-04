@@ -805,7 +805,7 @@ Try five times."
           do (format t "molecule ~a~%" molecule)
              (format t " ~a moveable-atoms -> ~a~%" molecule moveable-atoms)
              (format t "    fixed-atoms -> ~a~%" fixed-atoms)
-          do (chem:superpose-one molecule moveable-atoms fixed-atoms)
+          do (chem:align-matter molecule moveable-atoms fixed-atoms)
           do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints))
     (repeatedly-minimize-molecules molecules)))
 
@@ -829,7 +829,7 @@ This is used to force the orientation of groups that could have ambiguous orient
                                                    :atom-match-callback #'match-atoms)
     (let ((moveable-atoms (mapcar #'car equiv))
           (fixed-atoms (mapcar #'cdr equiv)))
-      (chem:superpose-one molecule moveable-atoms fixed-atoms)
+      (chem:align-matter molecule moveable-atoms fixed-atoms)
       (anchor-to-pose moveable-atoms fixed-atoms))))
 
 (defun pose-molecules-using-similarity (molecules docked-molecule)
@@ -844,7 +844,7 @@ This is used to force the orientation of groups that could have ambiguous orient
           for molecule = (molecule tirun)
           for moveable-atoms = (mapcar #'cdr (sorted-map-atoms tirun))
           do (format t "tirun ~a   moveable-atoms -> ~a~%" tirun moveable-atoms)
-          do (chem:superpose-one molecule moveable-atoms fixed-atoms)
+          do (chem:align-matter molecule moveable-atoms fixed-atoms)
           do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints)))
   (minimize-ligands calculation))
 

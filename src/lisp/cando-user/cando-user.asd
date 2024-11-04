@@ -7,6 +7,7 @@
   :licence "LGPL-3.0"
   :depends-on (#:cando-primop
                #:cando
+               #:cando/documentation
                #:charges
                #:smiles
                #:leap

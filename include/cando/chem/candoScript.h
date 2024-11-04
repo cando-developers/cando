@@ -109,7 +109,7 @@ public:
 extern void setCandoDatabase(CandoDatabase_sp bdb);
 
 
-geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_list(core::List_sp atoms);
+geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_sequence(core::T_sp atoms);
 
 
 

@@ -750,11 +750,13 @@ Disabling happens before enabling - so you can disable all with T and then selec
 
 (defun simple-vector-coordinate-for-atomspec (agg atomspec)
   (let ((atoms (chem:atoms-with-chimera-specifications agg atomspec)))
-    (chem:make-simple-vector-coordinate-from-atom-list atoms)))
+    (chem:make-simple-vector-coordinate-from-atom-sequence atoms)))
 
-(defun superpose-one (&key fixed-atoms moveable-matter moveable-atoms)
-  (let ((coords-fixed (chem:make-simple-vector-coordinate-from-atom-list fixed-atoms))
-        (coords-moveable (chem:make-simple-vector-coordinate-from-atom-list moveable-atoms))
+(defun superpose-one (&key fixed-atoms-list moveable-matter moveable-atoms-list)
+  "Calculate the transform to align the atoms in MOVEABLE-ATOMS-LIST to match the positions
+in FIXED-ATOMS-LIST and apply it to MOVEABLE-MATTER"
+  (let ((coords-fixed (chem:make-simple-vector-coordinate-from-atom-sequence fixed-atoms))
+        (coords-moveable (chem:make-simple-vector-coordinate-from-atom-sequence moveable-atoms))
         (superposer (core:make-cxx-object 'chem:superpose-engine)))
     (chem:set-fixed-all-points superposer coords-fixed)
     (chem:set-moveable-all-points superposer coords-moveable)

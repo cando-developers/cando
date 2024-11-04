@@ -216,7 +216,8 @@
            #:superpose-all
            #:skip-slot-names
            #:optimize-structure-debug
-           #:chemical-formula))
+           #:chemical-formula
+           #:align-atoms))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

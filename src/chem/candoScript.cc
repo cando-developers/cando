@@ -99,22 +99,38 @@ __END_DOC
  */
 
  DOCGROUP(cando);
-CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_list(core::List_sp atoms)
+CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_sequence(core::T_sp atoms)
 {
+  geom::SimpleVectorCoordinate_sp coords;
   size_t num = core::cl__length(atoms);
-  geom::SimpleVectorCoordinate_sp coords = geom::SimpleVectorCoordinate_O::make(num);
-  int idx(0);
-  for ( auto cur : atoms ) {
-    Atom_sp a = gc::As<chem::Atom_sp>(oCar(cur));
-    Vector3 v = a->getPosition();
-    (*coords)[idx] = v;
-    ++idx;
+  if (gc::IsA<core::List_sp>(atoms)) {
+    core::List_sp latoms = gc::As_unsafe<core::List_sp>(atoms);
+    coords = geom::SimpleVectorCoordinate_O::make(num);
+    size_t idx(0);
+    for ( auto cur : latoms ) {
+      Atom_sp a = gc::As<chem::Atom_sp>(oCar(cur));
+      Vector3 v = a->getPosition();
+      (*coords)[idx] = v;
+      ++idx;
+    }
+  } else if (gc::IsA<core::Array_sp>(atoms)) {
+    core::Array_sp vatoms = gc::As_unsafe<core::Array_sp>(atoms);
+    coords = geom::SimpleVectorCoordinate_O::make(num);
+    size_t idx(0);
+    for ( size_t ii = 0; ii<num; ii++ ) {
+      Atom_sp a = gc::As<chem::Atom_sp>(vatoms->rowMajorAref(ii));
+      Vector3 v = a->getPosition();
+      (*coords)[idx] = v;
+      ++idx;
+    }
+  } else {
+    TYPE_ERROR(atoms,core::Cons_O::createList(cl::_sym_list,cl::_sym_vector));
   }
   return coords;
 }
 
 CL_DOCSTRING(R"dx(Load the only or the first aggregate from the mol2 file.)dx");
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN core::T_mv chem__read_mol2(core::T_sp stream)
 {
   Mol2File fin(stream);
@@ -122,7 +138,7 @@ CL_DEFUN core::T_mv chem__read_mol2(core::T_sp stream)
 }
 
 CL_DOCSTRING(R"dx(Read the only or the first aggregate from the mol2 file.)dx");
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN core::T_mv chem__load_mol2(core::T_sp fileName)
 {
   Mol2File fin;
@@ -153,8 +169,8 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
       progress_bar = core::eval::funcall(make_progress,
                                          INTERN_(kw,total), core::stream_length(fin.fIn));
     } else if (gc::IsA<core::Real_sp>(number_to_load)){
-        progress_bar = core::eval::funcall(make_progress,
-                                           INTERN_(kw,total), number_to_load);
+      progress_bar = core::eval::funcall(make_progress,
+                                         INTERN_(kw,total), number_to_load);
     }
   }
   ql::list result;
@@ -194,7 +210,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
 
 CL_DOCSTRING(R"dx(Read all or a number of aggregates from the mol2 stream.)dx");
 CL_LAMBDA(stream &optional number-to-load);
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to_load)
 {
   Mol2File fin(stream);
@@ -203,7 +219,7 @@ CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to
 
 CL_DOCSTRING(R"dx(Load all or a number of aggregates from the mol2 file.)dx");
 CL_LAMBDA(file-name &optional number-to-load);
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_to_load)
 {
   Mol2File fin;
@@ -221,7 +237,7 @@ __END_DOC
 
 
 CL_LAMBDA(matter dest-desig &optional use-sybyl-types atom-types);
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes, core::T_sp atom_types)
 {
   core::HashTable_sp ht;
@@ -236,7 +252,7 @@ CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool
 
 
 CL_LAMBDA(matter &optional use-sybyl-types atom-types);
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes, core::T_sp atom_types)
 {
   core::HashTable_sp ht;
@@ -251,7 +267,7 @@ CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool us
 }
 
 CL_LAMBDA(matter &optional use-sybyl-types atom-types);
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybylTypes, core::T_sp atom_types)
 {
   core::HashTable_sp ht;
@@ -282,50 +298,50 @@ CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybyl
 
 Residue_sp findResidue(Matter_sp matter, core::T_sp residueIdentifier )
 {
-Molecule_sp molecule;
-core::Fixnum_sp	residueSequenceNumber;
+  Molecule_sp molecule;
+  core::Fixnum_sp	residueSequenceNumber;
 
 	    // downcast the identifer to a Symbol and an Int object
 	    // one of them will be nil and the other will have a value
-    core::Symbol_sp resIdName = residueIdentifier.asOrNull<core::Symbol_O>();
-    core::Fixnum_sp resIdSeqNum = residueIdentifier.asOrNull<core::Fixnum_O>();
-    Loop l;
-    l.loopTopGoal(matter,RESIDUES);
-    while ( l.advanceLoopAndProcess() )
+  core::Symbol_sp resIdName = residueIdentifier.asOrNull<core::Symbol_O>();
+  core::Fixnum_sp resIdSeqNum = residueIdentifier.asOrNull<core::Fixnum_O>();
+  Loop l;
+  l.loopTopGoal(matter,RESIDUES);
+  while ( l.advanceLoopAndProcess() )
+  {
+    Residue_sp res = l.getResidue();
+    LOG("Looking at residue with sequence number: {}" , res->getFileSequenceNumber()  );
+    bool foundResidue = false;
+    if ( resIdName )
     {
-        Residue_sp res = l.getResidue();
-        LOG("Looking at residue with sequence number: {}" , res->getFileSequenceNumber()  );
-	bool foundResidue = false;
-	if ( resIdName )
-	{
-          LOG("Checking if residue has name({}) that matches({})" , res->getName().c_str() , _rep_(resIdName) );
-	    if ( resIdName==res->getName() )
-	    {
-              LOG("Found residue with sequence name: {}" , _rep_(resIdName) );
-		foundResidue = true;
-	    }
+      LOG("Checking if residue has name({}) that matches({})" , res->getName().c_str() , _rep_(resIdName) );
+      if ( resIdName==res->getName() )
+      {
+        LOG("Found residue with sequence name: {}" , _rep_(resIdName) );
+        foundResidue = true;
+      }
 #ifdef USE_TOPOLOGY
-            else if ( res->recognizesMonomerAlias(resIdName) )
-	    {
-              LOG("Found residue with Monomer alias: {}" , _rep_(resIdName) );
-		foundResidue = true;
-	    }
+      else if ( res->recognizesMonomerAlias(resIdName) )
+      {
+        LOG("Found residue with Monomer alias: {}" , _rep_(resIdName) );
+        foundResidue = true;
+      }
 #endif
-	} else if ( resIdSeqNum )
-	{
-	    LOG("Checking if residue has fileSequenceNumber({}) that matches({})" , res->getFileSequenceNumber() , resIdSeqNum->get()  );
-	    if ( (int)(res->getFileSequenceNumber()) == resIdSeqNum.unsafe_fixnum())
-	    {
-	        LOG("Found residue with sequence number: {}" , resIdSeqNum->get()  );
-		foundResidue = true;
-	    }
-	}
-	if ( foundResidue )
-	{
-	    return res;
-	}
+    } else if ( resIdSeqNum )
+    {
+      LOG("Checking if residue has fileSequenceNumber({}) that matches({})" , res->getFileSequenceNumber() , resIdSeqNum->get()  );
+      if ( (int)(res->getFileSequenceNumber()) == resIdSeqNum.unsafe_fixnum())
+      {
+        LOG("Found residue with sequence number: {}" , resIdSeqNum->get()  );
+        foundResidue = true;
+      }
     }
-    return nil<Residue_O>();
+    if ( foundResidue )
+    {
+      return res;
+    }
+  }
+  return nil<Residue_O>();
 }
 
 /*
@@ -344,32 +360,32 @@ __END_DOC
 #define DECL_chem__find_residue ""
 #define DOCS_chem__find_residue "findResidue"
 CL_LAMBDA(&rest args);
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
 {
-    Molecule_sp molecule;
-    core::Fixnum_sp	residueSequenceNumber;
-    core::T_sp residueIdentifier;
-    if ( core::cl__length(args)==3 ) 
-    {
-      Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
-      core::String_sp chain = args.asCons()->onth(1).as<core::String_O>();
-      residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
-      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get_std_string())));
-    } else if ( core::cl__length(args)==2 ) 
-    {
-      molecule = args.asCons()->onth(0).as<Molecule_O>();
-      residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
-    } else
-    {
-    	SIMPLE_ERROR("You must provide a molecule, residueId");
-    }
-    Residue_sp res = findResidue(molecule,residueIdentifier);
-    if ( res.nilp() )
-    {
-	SIMPLE_ERROR("Molecule does not contain residue with identifier: {}", residueIdentifier);
-    }
-    return res;
+  Molecule_sp molecule;
+  core::Fixnum_sp	residueSequenceNumber;
+  core::T_sp residueIdentifier;
+  if ( core::cl__length(args)==3 ) 
+  {
+    Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
+    core::String_sp chain = args.asCons()->onth(1).as<core::String_O>();
+    residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
+    molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get_std_string())));
+  } else if ( core::cl__length(args)==2 ) 
+  {
+    molecule = args.asCons()->onth(0).as<Molecule_O>();
+    residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
+  } else
+  {
+    SIMPLE_ERROR("You must provide a molecule, residueId");
+  }
+  Residue_sp res = findResidue(molecule,residueIdentifier);
+  if ( res.nilp() )
+  {
+    SIMPLE_ERROR("Molecule does not contain residue with identifier: {}", residueIdentifier);
+  }
+  return res;
 }
 
 
@@ -392,47 +408,47 @@ __END_DOC
 #define DECL_chem__atom_pos ""
 #define DOCS_chem__atom_pos "atomPos"
 CL_LAMBDA(&rest args);
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 {
-    Molecule_sp molecule;
-    core::Fixnum_sp	residueSequenceNumber;
-    core::Symbol_sp	atomName;
-    core::T_sp residueIdentifier;
-    if ( core::cl__length(args)==4 ) 
-    {
-      Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
-      core::String_sp chain = args.asCons()->onth(1).as<core::String_O>();
-      residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
-      atomName = args.asCons()->onth(3).as<core::Symbol_O>();
-      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get_std_string())));
-    } else if ( core::cl__length(args)==3 ) 
-    {
-      molecule = args.asCons()->onth(0).as<Molecule_O>();
-      residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
-      atomName = args.asCons()->onth(2).as<core::Symbol_O>();
-    } else
-    {
-    	SIMPLE_ERROR("You must provide a molecule, residueId and atom name");
+  Molecule_sp molecule;
+  core::Fixnum_sp	residueSequenceNumber;
+  core::Symbol_sp	atomName;
+  core::T_sp residueIdentifier;
+  if ( core::cl__length(args)==4 ) 
+  {
+    Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
+    core::String_sp chain = args.asCons()->onth(1).as<core::String_O>();
+    residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
+    atomName = args.asCons()->onth(3).as<core::Symbol_O>();
+    molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get_std_string())));
+  } else if ( core::cl__length(args)==3 ) 
+  {
+    molecule = args.asCons()->onth(0).as<Molecule_O>();
+    residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
+    atomName = args.asCons()->onth(2).as<core::Symbol_O>();
+  } else
+  {
+    SIMPLE_ERROR("You must provide a molecule, residueId and atom name");
+  }
+  Residue_sp foundResidue = findResidue(molecule,residueIdentifier);
+  if ( foundResidue.notnilp() )
+  {
+    if ( foundResidue->hasAtomWithName(atomName)) {
+      LOG("Found atom with name: {}" , _rep_(atomName)  );
+      Vector3 pos = gc::As_unsafe<Atom_sp>(foundResidue->atomWithName(atomName))->getPosition();
+      geom::OVector3_sp v = geom::OVector3_O::create();
+      v->setAll3(pos.getX(),pos.getY(),pos.getZ());
+      return v;
     }
-    Residue_sp foundResidue = findResidue(molecule,residueIdentifier);
-    if ( foundResidue.notnilp() )
-    {
-      if ( foundResidue->hasAtomWithName(atomName)) {
-          LOG("Found atom with name: {}" , _rep_(atomName)  );
-          Vector3 pos = gc::As_unsafe<Atom_sp>(foundResidue->atomWithName(atomName))->getPosition();
-	    geom::OVector3_sp v = geom::OVector3_O::create();
-	    v->setAll3(pos.getX(),pos.getY(),pos.getZ());
-	    return v;
-	}
-      SIMPLE_ERROR("Residue does not contain atom named: {}" , _rep_(atomName));
-    }
-    SIMPLE_ERROR("Molecule does not contain residue with identifier: {}" , _rep_(residueIdentifier));
+    SIMPLE_ERROR("Residue does not contain atom named: {}" , _rep_(atomName));
+  }
+  SIMPLE_ERROR("Molecule does not contain residue with identifier: {}" , _rep_(residueIdentifier));
 }
 
 
 
- DOCGROUP(cando);
+DOCGROUP(cando);
 CL_DEFUN bool chem__overlap_solvent(NVector_sp solute_xvec,
                                     NVector_sp solute_yvec,
                                     NVector_sp solute_zvec,
