@@ -89,7 +89,7 @@ struct	to_object<kinematics::CoordinateCalculator>
   };
 };
 template <>
-struct translate::from_object<kinematics::CoordinateCalculator>
+struct from_object<kinematics::CoordinateCalculator>
 {
   typedef	kinematics::CoordinateCalculator ExpectedType;
   typedef	ExpectedType DeclareType;
