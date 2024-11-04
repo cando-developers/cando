@@ -521,8 +521,8 @@ I'll use an angle term instead of a bond term.
            (rings (chem:identify-rings mol-copy))
            (chem:*current-rings* rings)
            (aromaticity-info (chem:identify-aromatic-rings mol-copy :mdl)))
-;;; Set names here
-      (when *show-names* (debug-set-unique-atom-names mol-copy t))
+      ;; Set names here
+      #+(or)(when *show-names* (debug-set-unique-atom-names mol-copy t))
       (add-atom-annotations mol-copy)
       (let ((mol-graph (chem:make-molecule-graph-from-molecule mol-copy)))
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *methyl* mol-graph) 3)

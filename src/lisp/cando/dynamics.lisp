@@ -58,7 +58,7 @@ Methods are specialized on this class in cando-nglview.lisp."))
   "Convert coordinates into a vector of single-floats and append it to accumulated-coordinates"
   (let ((single-float-coordinates (make-array (length coordinates) :element-type 'single-float :adjustable nil)))
     (loop for index from 0 below (length coordinates)
-          for sf-val = (float (elt coordinates index) 1.0s0)
+          for sf-val = (float (elt coordinates index) 1.0f0)
           do (setf (elt single-float-coordinates index) sf-val))
     (vector-push-extend single-float-coordinates (accumulated-coordinates simulation))))
 

@@ -5,7 +5,7 @@
    (type :initarg :type :accessor type)
    (fields :initarg :fields :accessor fields)))
 
-(define-condition bad-header ()
+(define-condition bad-header (error)
   ((line :initarg :line :accessor line)))
 
 (define-condition wrong-off-unit-name (error)

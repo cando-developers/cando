@@ -123,7 +123,7 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
 ;;;
 ;;; Maintain a hash-table that maps object names to objects
 ;;; 
-(define-condition object-not-found ()
+(define-condition object-not-found (error)
   ((name :initarg :name :reader name)))
 
 (defun register-variable (name object)
