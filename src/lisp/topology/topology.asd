@@ -5,7 +5,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
-  :depends-on (:kinematics-extras :chem-extras :cando-serialize :cl-conspack :netcdf :named-readtables #:mgl-pax)
+  :depends-on (:kinematics-extras :chem-extras :cando-serialize :cl-conspack :netcdf :named-readtables)
   :serial t
   :components ((:file "packages")
                (:file "readtable")
@@ -26,3 +26,14 @@
                (:file "shape")
                (:file "steppers")
                ))
+
+
+
+(defsystem "topology/documentation"
+  :description "Documentation for topology system"
+  :version "0.0.1"
+  :author "Christian Schafmeister <chris.schaf@verizon.net>"
+  :licence "LGPL-3.0"
+  :depends-on (:topology :mgl-pax)
+  :serial t
+  :components ((:file "documentation")))
