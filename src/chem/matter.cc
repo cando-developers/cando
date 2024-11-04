@@ -1192,6 +1192,7 @@ geom::Render_sp Matter_O::rendered(core::List_sp kopts)
 
 
 CL_LISPIFY_NAME("allAtomsAsList");
+CL_LAMBDA((matter matter) &optional allow-virtual-atoms);
 CL_DEFMETHOD core::List_sp Matter_O::allAtomsAsList(bool allowVirtualAtoms ) const
 {
   core::List_sp result = nil<core::T_O>();

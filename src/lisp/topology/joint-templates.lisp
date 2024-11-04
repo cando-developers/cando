@@ -312,7 +312,22 @@
                           res)))
           index*3)))))
 
-(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-table adjustments monomer monomer-subset))
+(defun residue-shape-atom-pos (nil-or-monomer-shape atom-name)
+  (let* ((residue (residue nil-or-monomer-shape))
+         (atm (chem:matter/first-atom-with-name residue atom-name)))
+    (unless atm (error "Could not find atom with name ~s in ~s" atom-name residue))
+    (chem:get-position atm)))
+
+(defgeneric write-into-joint-tree (joint-template
+                                   parent-joint
+                                   atresidue
+                                   atmolecule-index
+                                   atresidue-index
+                                   atom-table
+                                   adjustments
+                                   monomer
+                                   nil-or-monomer-shape
+                                   monomer-subset))
 
 (defmethod write-into-joint-tree ((joint-template t)
                                   parent-joint
@@ -321,7 +336,9 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset)
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset)
   (error "write-into-joint-tree - handle joint-template ~a" joint-template))
 
 (defmethod write-into-joint-tree ((joint-template jump-joint-template)
@@ -331,11 +348,17 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset)
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (kin:make-jump-joint atomid atom-name atom-table)))
+         (joint (etypecase nil-or-monomer-shape
+                  (null (kin:make-jump-joint atomid atom-name atom-table))
+                  (rotamer-shape (kin:make-jump-joint atomid atom-name atom-table))
+                  (residue-shape (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom-pos nil-or-monomer-shape atom-name)))))
+         )
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
@@ -347,37 +370,48 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset
                                   )
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (kin:make-complex-bonded-joint atomid atom-name atom-table))
          (input-stub-joints (input-stub-joints joint-template)))
-    (put-joint atresidue joint constitution-atoms-index)
-    (let ((input-stub0-template (aref input-stub-joints 0))
-          (input-stub1-template (aref input-stub-joints 1)))
-      (cond
-        ((and (null input-stub0-template) (null input-stub1-template))
-         ;; Do nothing
-         )
-        ((and input-stub0-template (null input-stub1-template))
-         (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
-                (input-stub0 (aref (joints atresidue) input-stub0-index)))
-           (kin:set-input-stub-joint1 joint input-stub0)))
-        ((and (null input-stub0-template) input-stub1-template)
-         (let* ((input-stub1-index (constitution-atoms-index input-stub1-template))
-                (input-stub1 (aref (joints atresidue) input-stub1-index)))
-           (kin:set-input-stub-joint1 joint input-stub1)))
-        (t
-         (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
-                (input-stub0 (aref (joints atresidue) input-stub0-index))
-                (input-stub1-index (constitution-atoms-index input-stub1-template))
-                (input-stub1 (aref (joints atresidue) input-stub1-index)))
-           (kin:set-input-stub-joint1 joint input-stub0)
-           (kin:set-input-stub-joint2 joint input-stub1))))
-      (when parent-joint (kin:joint/add-child parent-joint joint))
-      joint)))
+    (flet ((make-complex-bonded-joint ()
+             (let ((joint (kin:make-complex-bonded-joint atomid atom-name atom-table)))
+               (put-joint atresidue joint constitution-atoms-index)
+               (let ((input-stub0-template (aref input-stub-joints 0))
+                     (input-stub1-template (aref input-stub-joints 1)))
+                 (cond
+                   ((and (null input-stub0-template) (null input-stub1-template))
+                    ;; Do nothing
+                    )
+                   ((and input-stub0-template (null input-stub1-template))
+                    (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
+                           (input-stub0 (aref (joints atresidue) input-stub0-index)))
+                      (kin:set-input-stub-joint1 joint input-stub0)))
+                   ((and (null input-stub0-template) input-stub1-template)
+                    (let* ((input-stub1-index (constitution-atoms-index input-stub1-template))
+                           (input-stub1 (aref (joints atresidue) input-stub1-index)))
+                      (kin:set-input-stub-joint1 joint input-stub1)))
+                   (t
+                    (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
+                           (input-stub0 (aref (joints atresidue) input-stub0-index))
+                           (input-stub1-index (constitution-atoms-index input-stub1-template))
+                           (input-stub1 (aref (joints atresidue) input-stub1-index)))
+                      (kin:set-input-stub-joint1 joint input-stub0)
+                      (kin:set-input-stub-joint2 joint input-stub1))))
+                 (when parent-joint (kin:joint/add-child parent-joint joint))
+                 joint))))
+      (etypecase nil-or-monomer-shape
+        (null (make-complex-bonded-joint))
+        (rotamer-shape (make-complex-bonded-joint))
+        (residue-shape
+         (let ((joint (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom-pos nil-or-monomer-shape atom-name))))
+           (put-joint atresidue joint constitution-atoms-index)
+           (when parent-joint (kin:joint/add-child parent-joint joint))
+           joint))))))
 
 (defmethod write-into-joint-tree ((joint-template bonded-joint-template)
                                   parent-joint
@@ -386,14 +420,20 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset
                                   )
   (when (and monomer-subset (null parent-joint))
     (error "Handle ~s joint if we have a monomer-subset" joint-template))
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (kin:make-bonded-joint atomid atom-name atom-table)))
+         (joint
+           (etypecase nil-or-monomer-shape
+             (null (kin:make-bonded-joint atomid atom-name atom-table))
+             (rotamer-shape (kin:make-bonded-joint atomid atom-name atom-table))
+             (residue-shape (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom-pos nil-or-monomer-shape atom-name))))))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
@@ -444,7 +484,9 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
       (deal-with-pair-scan-sidechain monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
@@ -463,7 +505,9 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset
                                   )
   (when (and monomer-subset (null parent-joint))
     (error "Handle ~s joint if we have a monomer-subset" joint-template))
@@ -481,7 +525,9 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
       (deal-with-pair-scan-sidechain monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
@@ -503,7 +549,9 @@
                                   atresidue-index
                                   atom-table
                                   adjustments
-                                  monomer monomer-subset
+                                  monomer
+                                  nil-or-monomer-shape
+                                  monomer-subset
                                   )
   (if (and monomer-subset (null parent-joint))
       (deal-with-pair-scan-sidechain monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)

@@ -236,7 +236,6 @@
    #:rotor3
    #:translation
    #:monomer-shape
-   #:residue-monomer-shape
    #:backbone-monomer-shape
    #:rotamer-shape
    #:coordinates
@@ -353,7 +352,6 @@
    #:random-rotamers
    #:build-all-sidechains
    #:make-phi-psi
-   #:random-oligomer-shape-aggregate
    #:first-rotamers
    #:number-of-rotamers
    #:goto-rotamer
@@ -380,6 +378,7 @@
 
    #:update-internals-for-atresidue
    #:update-internals
+   #:update-externals
    #:build-oligomer-shape-externals
    #:the-root-monomer
    #:build-all-externals
@@ -455,7 +454,13 @@
    #:ensure-complete-orientations
    #:make-monomer-indexes
    #:first-monomers
-   #:adjust))
+   #:adjust
+   #:make-rotamer-shape-convenience
+   #:make-oligomer-shape-of-rotamer-shapes
+   #:residue-shape
+   #:assembler-dump-internals
+   #:randomly-mutate-sidechain-rotamer-index
+   #:randomly-mutate-backbone-rotamer-index))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
@@ -500,3 +505,9 @@
    #:make-graph
    #:node-id
    #:dot-svg-foldamer-joint-trees))
+
+
+(mgl-pax:defsection @topology (:title "Topology manual")
+  "Topology is a library for defining topology objects, assembling them into oligomer-space, oligomer, oligomer-shape and assemblers"
+  (define-topology macro)
+  )

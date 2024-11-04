@@ -223,8 +223,8 @@ Specialize the foldamer argument to provide methods"))
     (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
 
 (defun make-assembler (oligomer-shapes &key orientations monomer-subset tune-energy-function (keep-interaction t))
-  "Build a assembler for the oligomers.
-tune-energy-function - A function that takes the energy-function and an assembler and modifies the energy-function."
+  "Build a assembler for the OLIGOMER-SHAPES.
+TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assembler and modifies the energy-function."
   (cond
     ((not (or (= (length oligomer-shapes) 1) orientations))
      (error "You must provide orientations when there is more than one oligomer-shape"))
@@ -236,46 +236,48 @@ tune-energy-function - A function that takes the energy-function and an assemble
     (error "You must provide a list of oligomer-shapes"))
   (let* ((aggregate (chem:make-aggregate :all))
          (monomer-positions (make-hash-table))
-         (oligomers (mapcar (lambda (oligomer-shape)
-                              (oligomer oligomer-shape))
-                            oligomer-shapes))
-         (foldamers (mapcar (lambda (oligomer)
-                              (let* ((oligomer-space (oligomer-space oligomer))
+         (foldamers (mapcar (lambda (oligomer-shape)
+                              (let* ((oligomer (oligomer oligomer-shape))
+                                     (oligomer-space (oligomer-space oligomer))
                                      (foldamer (foldamer oligomer-space)))
                                 foldamer))
-                            oligomers))
+                            oligomer-shapes))
          (monomers-to-residues (make-hash-table))
-         (oligomer-molecules (loop for oligomer in oligomers
-                                   for oligomer-space = (oligomer-space oligomer)
-                                   for foldamer = (foldamer oligomer-space)
-                                   for molecule-index from 0
-                                   for molecule = (topology:build-molecule oligomer
-                                                                           :monomer-subset monomer-subset
-                                                                           :aggregate aggregate
-                                                                           :molecule-index molecule-index
-                                                                           :monomers-to-residues monomers-to-residues
-                                                                           :monomer-positions-accumulator monomer-positions)
-                                   do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
-                                   collect (cons oligomer molecule))))
+         (oligomer-shapes-molecules (loop for oligomer-shape in oligomer-shapes
+                                          for oligomer = (oligomer oligomer-shape)
+                                          for oligomer-space = (oligomer-space oligomer)
+                                          for foldamer = (foldamer oligomer-space)
+                                          for molecule-index from 0
+                                          for molecule = (topology:build-molecule oligomer
+                                                                                  :monomer-subset monomer-subset
+                                                                                  :aggregate aggregate
+                                                                                  :molecule-index molecule-index
+                                                                                  :monomers-to-residues monomers-to-residues
+                                                                                  :monomer-positions-accumulator monomer-positions)
+                                          do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
+                                          collect (cons oligomer-shape molecule))))
     (let* ((monomer-contexts (make-hash-table))
            (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
-                          (resize-atmolecules atagg (length oligomers))
+                          (resize-atmolecules atagg (length oligomer-shapes))
                           atagg))
            (joint-tree (make-joint-tree))
            (adjustments (make-instance 'adjustments))
            (energy-function (chem:make-energy-function :keep-interaction keep-interaction :matter aggregate))
-           (assembler (loop for oligomer-molecule in oligomer-molecules
-                            for oligomer = (car oligomer-molecule)
-                            for molecule = (cdr oligomer-molecule)
+           (assembler (loop for oligomer-shape-molecule in oligomer-shapes-molecules
+                            for oligomer-shape = (car oligomer-shape-molecule)
+                            for oligomer = (oligomer oligomer-shape)
+                            for molecule = (cdr oligomer-shape-molecule)
                             for oligomer-space = (oligomer-space oligomer)
                             for foldamer = (foldamer oligomer-space)
                             for molecule-index from 0
+                            for monomer-to-monomer-shape-map = (monomer-shape-map oligomer-shape)
                             do (loop for monomer across (monomers oligomer-space)
                                      for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
                                      do (setf (gethash monomer monomer-contexts) monomer-context))
                                ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
                                ;; Use the monomers-to-topologys
                             do (let* ((atmolecule (build-atmolecule-using-oligomer oligomer
+                                                                                   monomer-to-monomer-shape-map
                                                                                    monomer-subset
                                                                                    molecule
                                                                                    molecule-index
@@ -351,15 +353,15 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                        do (setf (gethash monomer monomer-contexts) monomer-context)))
                              ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
                              ;; Use the monomers-to-topologys
-                          do (let* ((atmolecule (build-atmolecule-using-oligomer
-                                                 oligomer
-                                                 nil
-                                                 molecule
-                                                 molecule-index
-                                                 monomer-positions
-                                                 joint-tree
-                                                 (chem:atom-table energy-function)
-                                                 nil)))
+                          do (let* ((atmolecule (build-atmolecule-using-oligomer oligomer
+                                                                                 nil ; no monomer-to-monomer-shape-map
+                                                                                 nil
+                                                                                 molecule
+                                                                                 molecule-index
+                                                                                 monomer-positions
+                                                                                 joint-tree
+                                                                                 (chem:atom-table energy-function)
+                                                                                 nil)))
                                (put-atmolecule ataggregate atmolecule molecule-index))
                           finally (return (make-instance 'training-assembler
                                                          :monomer-positions monomer-positions
@@ -373,8 +375,8 @@ tune-energy-function - A function that takes the energy-function and an assemble
 
 (defun walk-atoms-joints (assembler molecule-index callback)
   (let* ((aggregate (aggregate assembler))
-        (ataggregate (ataggregate assembler))
-        (molecule (chem:content-at aggregate molecule-index))
+         (ataggregate (ataggregate assembler))
+         (molecule (chem:content-at aggregate molecule-index))
          (atmolecule (aref (atmolecules ataggregate) molecule-index)))
     (loop for residue-index below (chem:content-size molecule)
           for residue = (chem:content-at molecule residue-index)
@@ -460,12 +462,20 @@ tune-energy-function - A function that takes the energy-function and an assemble
                                                (coords (topology:make-coordinates-for-assembler assembler)))
   (if oligomer-shape
       (progn
-        (unless orientationp
+        (when (and oligomer-shape (not orientationp))
           (error "You must provide orientation when you provide oligomer-shape"))
         (build-atom-tree-external-coordinates* assembler coords oligomer-shape orientation)
         (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
       (loop for oligomer-shape in (oligomer-shapes assembler)
-            do (build-external-coordinates assembler :oligomer-shape oligomer-shape :coords coords))))
+            do (build-external-coordinates assembler :oligomer-shape oligomer-shape
+                                                     :orientation oligomer-shape
+                                                     :coords coords))))
+
+(defun update-externals (assembler &key oligomer-shape
+                                     (orientation :identity orientationp)
+                                     (coords (topology:make-coordinates-for-assembler assembler)))
+  (build-external-coordinates assembler :oligomer-shape oligomer-shape :orientation orientation :coords coords))
+
 
 (defun build-atom-tree-external-coordinates* (assembler coords oligomer-shape maybe-orientation)
   (let* ((orientation (orientation maybe-orientation assembler))
@@ -684,11 +694,7 @@ Some specialized methods will need coordinates for the assembler"))
            monomers-to-residues))
 
 (defmethod analyze-assembler ((assembler assembler) &optional name)
-  (loop for oligomer-shape in (oligomer-shapes assembler)
-        for oligomer-shape-index from 0
-        do (analyze-oligomer-shape oligomer-shape))
-  (let (
-        (backbone-internals-count (make-array (length (oligomer-shapes assembler)) :initial-element 0))
+  (let ((backbone-internals-count (make-array (length (oligomer-shapes assembler)) :initial-element 0))
         (backbone-internals-defined (make-array (length (oligomer-shapes assembler)) :initial-element 0))
         (sidechain-internals-count (make-array (length (oligomer-shapes assembler)) :initial-element 0))
         (sidechain-internals-defined (make-array (length (oligomer-shapes assembler)) :initial-element 0))
@@ -732,3 +738,18 @@ Some specialized methods will need coordinates for the assembler"))
                       (format t "atres: ~s~%" atres)
                       (loop for joint in undefs
                             do (format t "   joint: ~s undefined~%" joint))))))
+
+(defun assembler-dump-internals (assembler)
+  (loop for oligomer-shapes in (oligomer-shapes assembler)
+        for index from 0
+        do (walk-atoms-joints assembler index
+                              (lambda (atom joint atomid)
+                                (format t "~s ~s~%" atom joint)))))
+
+
+(defun assembler-dump-monomer-shapes (assembler)
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        for index from 0
+        do (format t "oligomer-shape ~s~%" oligomer-shape)
+        do (loop for monomer-shape across (topology:monomer-shape-vector oligomer-shape)
+                 do (format t "monomer-shape ~s~%" monomer-shape))))

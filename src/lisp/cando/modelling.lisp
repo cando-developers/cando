@@ -42,7 +42,7 @@
   "Use answer from here to get a random vector on a sphere.
 https://math.stackexchange.com/questions/44689/how-to-find-a-random-axis-or-unit-vector-in-3d
 "
-  (let* ((theta (random (* 2.0 (coerce PI 'double-flaot))))
+  (let* ((theta (random (* 2.0 (coerce PI 'double-float))))
          (z (- (random 2.0) 1.0))
          (sqrt-1-z2 (sqrt (- 1.0 (* z z))))
          (x (* sqrt-1-z2 (cos theta)))

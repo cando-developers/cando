@@ -22,6 +22,11 @@
               (chem:content-at object 0)
               (error "If no index is provided to mol there can only be one molecule and there are ~a molecules" (chem:content-size object))))))
 
+(defmethod mol ((object chem:molecule) &optional id)
+  (if id
+      (error "When you pass a molecule to mol id must be nil - instead it is ~s" id)
+      object))
+
 (defmethod res ((object chem:molecule) (id integer))
   (chem:content-at object id))
 
