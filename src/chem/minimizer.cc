@@ -887,7 +887,11 @@ bool	Minimizer_O::_displayIntermediateMessage(NVector_sp       pos,
       sout << fmt::format(" {:7}" , elapsed.count());
     }
     sout << fmt::format(" {:5}" , this->_Iteration);
-    sout << fmt::format(" {:9.4f}" , log(step));
+    if (step==0.0) {
+      sout << fmt::format(" {:9s}" , "nan" );
+    } else {
+      sout << fmt::format(" {:9.4f}" , log(step));
+    }
     if ( steepestDescent ) 
     {
       sout << "StDesc";

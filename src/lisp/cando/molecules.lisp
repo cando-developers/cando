@@ -160,18 +160,19 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
         (chem:enable-print-intermediate-results minimizer)
         (format t "enable-print-intermediate-results ~%"))
       (chem:disable-print-intermediate-results minimizer))
-  (restart-case
-      (handler-bind
-          ((chem:minimizer-error (lambda (err)
-                                   (warn "In minimize-no-fail - the minimizer reported: ~a" err)
-                                   (invoke-restart 'cando:skip-rest-of-minimization err))))
-        (with-handle-linear-angles-dihedrals (:max-times 3 :verbose verbose)
-            (chem:minimize minimizer active-atoms-mask)))
-    ;; skip-rest-of-minimization can also be triggered by the user from the debugger
-    (skip-rest-of-minimization (err)
-      :report "Skip the rest of the current minimization - continue processing"
-      (chem:write-intermediate-results-to-energy-function minimizer)
-      (when resignal-error (error err)))))
+    (restart-case
+        (handler-bind
+            ((chem:minimizer-error (lambda (err)
+                                     (warn "In minimize-no-fail - the minimizer reported: ~a" err)
+                                     (invoke-restart 'cando:skip-rest-of-minimization err))))
+          (with-handle-linear-angles-dihedrals (:max-times 3 :verbose verbose)
+            (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+              (chem:minimize minimizer active-atoms-mask))))
+      ;; skip-rest-of-minimization can also be triggered by the user from the debugger
+      (skip-rest-of-minimization (err)
+        :report "Skip the rest of the current minimization - continue processing"
+        (chem:write-intermediate-results-to-energy-function minimizer)
+        (when resignal-error (error err)))))
 
 (defmacro with-ignore-minimizer-errors (&body body)
   `(handler-bind
@@ -214,7 +215,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
           ((ext:unix-signal-received (lambda (c)
                                        (declare (ignore c))
                                        (print "Done") (invoke-restart 'skip-rest))))
-        (chem:minimize minimizer))
+        (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+          (chem:minimize minimizer)))
     (skip-rest ()
       :report "Skip rest of minimization"
       (chem:write-intermediate-results-to-energy-function minimizer)
@@ -736,7 +738,8 @@ Disabling happens before enabling - so you can disable all with T and then selec
     (error "Exceeded max number of tries to build good geometry~%Bad geometry:~%~a" bad-geom)))
 
 
-(defun save-mol2 (matter pathname &key use-sybyl-types)
+(defun save-mol2 (matter pathname &key (use-sybyl-types t))
+  "Save MATTER as a mol2 to the file PATHNAME.  USE-SYBYL-TYPES of nil requires atom types be set and then they will be used."
   (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))
     (format t "Saving matter to ~a~%" npn)
     (chem:save-mol2 matter npn use-sybyl-types)))
@@ -748,8 +751,11 @@ Disabling happens before enabling - so you can disable all with T and then selec
     (chem:load-mol2 npn)))
 
 
-(defun simple-vector-coordinate-for-atomspec (agg atomspec)
-  (let ((atoms (chem:atoms-with-chimera-specifications agg atomspec)))
+(defun simple-vector-coordinate-for-atomspec (agg &optional atomspec)
+  "Return coordinates of AGG.  If ATOMSPEC is not nil then use it to downselect atoms."
+  (let ((atoms (if atomspec
+                   (chem:atoms-with-chimera-specifications agg atomspec)
+                   (chem:matter/all-atoms-as-list agg))))
     (chem:make-simple-vector-coordinate-from-atom-sequence atoms)))
 
 (defun superpose-one (&key fixed-atoms-list moveable-matter moveable-atoms-list)

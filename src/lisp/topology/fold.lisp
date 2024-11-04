@@ -124,6 +124,7 @@
             ))))
 
 (defun build-atmolecule-using-oligomer (oligomer
+                                        nil-or-monomer-to-monomer-shape-map
                                         monomer-subset
                                         molecule
                                         molecule-index
@@ -131,6 +132,7 @@
                                         joint-tree
                                         atom-table
                                         adjustments)
+  "Build an atmolecule for the OLIGOMER.  The NIL-OR-MONOMER-TO-MONOMER-SHAPE-MAP if it is nil means all joint-templates are set by the topology.  Otherwise, a hash-table of monomers to monomer-shapes will override the topology joint-templates if the monomer-shape is a residue-shape. "
   (let* ((ring-closing-monomer-map (make-hash-table))
          (monomer-out-couplings (make-hash-table))
          (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule)))
@@ -143,6 +145,7 @@
                                   nil   ; nil-or-outgoing-plug-names-to-joint-map
                                   monomer-subset
                                   oligomer
+                                  nil-or-monomer-to-monomer-shape-map
                                   joint-tree
                                   atmolecule
                                   molecule-index
@@ -212,6 +215,7 @@
                                      nil-or-outgoing-plug-names-to-joint-map
                                      monomer-subset ; monomer-subset
                                      oligomer       ; oligomer
+                                     nil-or-monomer-to-monomer-shape-map 
                                      joint-tree ; joint-tree to set root
                                      atmolecule ; current atmolecule we are filling
                                      atmolecule-index
@@ -252,6 +256,7 @@
                                                (gethash out-plug-name nil-or-outgoing-plug-names-to-joint-map)))
                             (next-outgoing-plug-names-to-joint-map (maybe-fill-atresidue joint-tree
                                                                                          oligomer
+                                                                                         nil-or-monomer-to-monomer-shape-map
                                                                                          next-monomer
                                                                                          monomer-subset
                                                                                          next-atresidue
@@ -279,6 +284,7 @@
                                                next-outgoing-plug-names-to-joint-map
                                                monomer-subset
                                                oligomer
+                                               nil-or-monomer-to-monomer-shape-map
                                                joint-tree
                                                atmolecule
                                                atmolecule-index
@@ -312,6 +318,7 @@
                    (next-atresidue-index (and next-atresidue (length (atresidues atmolecule))))
                    (next-outgoing-plug-names-to-joint-map (maybe-fill-atresidue joint-tree
                                                                                 oligomer
+                                                                                nil-or-monomer-to-monomer-shape-map
                                                                                 prev-monomer
                                                                                 monomer-subset
                                                                                 next-atresidue
@@ -336,6 +343,7 @@
                                       next-outgoing-plug-names-to-joint-map
                                       monomer-subset
                                       oligomer
+                                      nil-or-monomer-to-monomer-shape-map
                                       joint-tree
                                       atmolecule
                                       atmolecule-index

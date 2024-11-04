@@ -190,6 +190,8 @@ double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask)
 }
 
 
+
+
 double	angleWithVector(NVector_sp me, NVector_sp other)
 {
 #define	VERY_SMALL 1.0e-6
@@ -336,6 +338,13 @@ double	rmsDistanceFromWithActiveAtomMask(NVector_sp u, NVector_sp v, core::T_sp 
     return sqrt(sum);
   }
   SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
+}
+
+CL_DOCSTRING(R"doc(Calculate the root mean square difference between FIRST and SECOND.
+If ACTIVE-MASK is defined then use it to select coordinates.)doc");
+CL_LAMBDA(first second &optional active-mask);
+CL_DEFUN double chem__nvector_rmsd(NVector_sp first, NVector_sp second, core::T_sp activeMask) {
+  return rmsDistanceFromWithActiveAtomMask(first,second,activeMask);
 }
 
 

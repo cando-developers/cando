@@ -47,6 +47,7 @@ namespace geom {
   public:
         //! Create a 4x4 matrix uninitialized (identity=false) or identity if true
     static OMatrix_sp make(bool identity);
+    CL_DEF_CLASS_METHOD static OMatrix_sp m4(core::List_sp args);
   public:
     string __repr__() const;
 

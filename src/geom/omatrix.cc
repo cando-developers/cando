@@ -55,6 +55,28 @@ CL_DEFUN OMatrix_sp OMatrix_O::make(bool ident)
   return om;
 };
 
+OMatrix_sp OMatrix_O::m4(core::List_sp args)
+{
+  if (core::cl__length(args)>16) {
+    SIMPLE_ERROR("The list of arguments {} is too long to fit in a 16 element homogeneous matrix", _rep_(args));
+  }
+  int index = 0;
+  auto om = gctools::GC<OMatrix_O>::allocate(true);
+  for ( auto cur : args ) {
+    core::T_sp obj = CONS_CAR(cur);
+    if (gc::IsA<core::Number_sp>(obj)) {
+      core::Number_sp num = gc::As_unsafe<core::Number_sp>(obj);
+      double val = core::clasp_to_double(num);
+      om->_Value[index] = val;
+      core::clasp_write_string(fmt::format("{} ", val ) );
+    } else {
+      TYPE_ERROR(obj,cl::_sym_Number_O);
+    }
+    index = index + 1;
+  }
+  return om;
+};
+
 string	OMatrix_O::__repr__() const
 {
   stringstream ss;

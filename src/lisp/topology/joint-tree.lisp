@@ -20,6 +20,7 @@
   (make-instance 'joint-tree))
 
 (defun recursively-write-into-atresidue (monomer
+                                         nil-or-monomer-shape
                                          monomer-subset
                                          joint-template
                                          parent-joint
@@ -35,9 +36,12 @@
                                       atresidue-index
                                       atom-table
                                       adjustments
-                                      monomer monomer-subset)))
+                                      monomer
+                                      nil-or-monomer-shape
+                                      monomer-subset)))
     (loop for child-joint-template in (children joint-template)
           do (recursively-write-into-atresidue monomer
+                                               nil-or-monomer-shape
                                                monomer-subset
                                                child-joint-template
                                                joint
@@ -50,6 +54,7 @@
 
 (defun maybe-fill-atresidue (joint-tree
                              oligomer
+                             nil-or-monomer-to-monomer-shape-map
                              monomer
                              monomer-subset
                              atresidue
@@ -58,12 +63,15 @@
                              atresidue-index
                              atom-table
                              adjustments)
-  "Recursively build an atom-tree into the atresidues of an ataggregate.
+  "Recursively build an atom-tree into the ATRESIDUE of an ataggregate.
 This duplicates https://github.com/cando-developers/cando/blob/main/src/kinematics/pointTree.cc#L172
 JointTree_O::recursivelyBuildMolecule
 If (null parent-joint) then this is the root atresidue. "
   (let* ((topology (monomer-topology monomer oligomer))
          (constitution (constitution topology))
+         (nil-or-monomer-shape (etypecase nil-or-monomer-to-monomer-shape-map
+                                 (null nil)
+                                 (hash-table (gethash monomer nil-or-monomer-to-monomer-shape-map))))
          (constitution-atoms (constitution-atoms constitution)))
     (if (null atresidue)
         (progn
@@ -76,6 +84,7 @@ If (null parent-joint) then this is the root atresidue. "
           (let* ((joint-template (joint-template topology))
                  ;; bondid is represented by a (cons parent child)
                  (root-joint (recursively-write-into-atresidue monomer
+                                                               nil-or-monomer-shape
                                                                monomer-subset
                                                                joint-template
                                                                parent-joint
