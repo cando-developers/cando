@@ -26,13 +26,14 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <cando/chem/scoringFunction.h>
+#include <cando/chem/energyFunction.h>
 #include <cando/chem/energyComponent.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #
 // last include is wrappers.h
 #include <clasp/core/wrappers.h>
-
 
 namespace chem {
 

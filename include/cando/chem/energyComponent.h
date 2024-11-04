@@ -47,7 +47,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/quickDom.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/nVector.h>
-#include <cando/chem/scoringFunction.fwd.h>
+#include <cando/chem/scoringFunction.h>
 #include <cando/chem/residue.h>
 
 		//
