@@ -28,6 +28,7 @@ clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-d
 
 echo "Installing CANDO user features..."
 cando --eval "(ql:quickload :cando-jupyter)" \
+      --eval "(ql:quickload :ngl-clj)" \
       --eval "(ql:quickload :spiros-rotamers)" \
       --eval "(ql:quickload :amber-protein-rotamers)" \
       --eval "(cando-jupyter:install :bin-path \"$HOME/Development/cando/build/boehmprecise/cando\" :implementation \"scando\" :image t)"
