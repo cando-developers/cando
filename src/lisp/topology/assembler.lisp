@@ -8,11 +8,18 @@
            :documentation "Apply this to the coordinates after the to-origin transform was applied")
    (from-origin :initarg :from-origin :accessor from-origin
                 :documentation "This is the second transform that takes the object after to-origin is applied"))
-  (:documentation "Represent the orientation of a molecule in a design calculation."))
+  (:documentation "Represent the orientation of a molecule in a design calculation.
+There are three transforms that define the orientation.
+The `to-origin` transform moves something on the molecule onto the origin.
+The `adjust` transform is for small adjustments of the molecule on the origin.
+The `from-origin` transform moves the molecule to wherever it needs to be in the laboratory
+frame to say, position it within a protein receptor."))
 
 (defun make-orientation (&key (from-origin (geom:make-matrix-identity))
                            (adjust (geom:make-matrix-identity))
                            (to-origin (geom:make-matrix-identity)))
+  "Make an ORIENTATION object, if any of FROM-ORIGIN, ADJUST, or TO-ORIGIN are not specified then they
+default to the identity matrix." 
   (unless from-origin
     (error "make-orientation from-origin must be non-nil"))
   (unless adjust
@@ -25,6 +32,7 @@
                  :to-origin to-origin))
 
 (defun copy-orientation (orientation)
+  "Copy an ORIENTATION."
   (make-instance 'orientation
                  :from-origin (geom:copy-matrix (from-origin orientation))
                  :adjust (geom:copy-matrix (adjust orientation))
@@ -39,6 +47,7 @@
 (defgeneric kin:orientation-transform (orientation))
 
 (defmethod kin:orientation-transform ((orientation orientation))
+  "Combine the components of the ORIENTATION into a 4x4 homogeneous matrix."
   (let* ((from-origin (topology:from-origin orientation))
          (adjust (adjust orientation))
          (to-origin (to-origin orientation))
@@ -47,7 +56,8 @@
     transform))
 
 (defclass orientations ()
-  ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations)))
+  ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations))
+  (:documentation "A hash-table that maps OLIGOMER-SHAPEs to ORIENTATIONs"))
 
 (defun ensure-complete-orientations (orientations oligomer-shapes)
   (loop for oligomer-shape in oligomer-shapes
@@ -56,16 +66,15 @@
 
 (defun make-orientations (pairs)
   (let ((ht (make-hash-table)))
-  (loop for cur = pairs then (cddr cur)
-        for oligomer-shape = (car cur)
-        for maybe-orientation = (cadr cur)
-        for orientation = (or maybe-orientation (make-orientation))
-        unless (typep orientation 'orientation)
-          
+    (loop for cur = pairs then (cddr cur)
+          for oligomer-shape = (car cur)
+          for maybe-orientation = (cadr cur)
+          for orientation = (or maybe-orientation (make-orientation))
+          unless (typep orientation 'orientation)
           do (error "~s must be an orientation or nil" orientation)
-        when (null cur)
+          when (null cur)
           do (return nil)
-        do (setf (gethash oligomer-shape ht) orientation))
+          do (setf (gethash oligomer-shape ht) orientation))
     (make-instance 'orientations :orientations ht)))
 
 
@@ -103,7 +112,12 @@
   ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
    (orientations :initarg :orientations :reader orientations)
    (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset)
-   (adjustments :initarg :adjustments :accessor adjustments)))
+   (adjustments :initarg :adjustments :accessor adjustments))
+  (:documentation "The assembler class maintains a list of OLIGOMER-SHAPEs and a hash-table of
+OLIGOMER-SHAPE to ORIENTATIONs.
+
+The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
+ ))
 
 (defclass subset-assembler (assembler)
   ()
@@ -165,6 +179,7 @@
                                       :initial-element (geom:vecreal 0.0)))
 
 (defun make-coordinates-for-assembler (assembler)
+  "Make a vector of coordinates that can store the external coordinates of the structure in the assembler."
   (let ((number-of-atoms (chem:number-of-atoms (topology:aggregate assembler))))
     (make-coordinates-for-number-of-atoms number-of-atoms)))
 
@@ -224,6 +239,9 @@ Specialize the foldamer argument to provide methods"))
 
 (defun make-assembler (oligomer-shapes &key orientations monomer-subset tune-energy-function (keep-interaction t))
   "Build a assembler for the OLIGOMER-SHAPES.
+
+OLIGOMER-SHAPES - A list of OLIGOMER-SHAPEs that the ASSEMBLER will build.
+ORIENTATIONS - An ORIENTATIONS object that maps OLIGOMER-SHAPES to ORIENTATIONs.
 TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assembler and modifies the energy-function."
   (cond
     ((not (or (= (length oligomer-shapes) 1) orientations))
@@ -319,7 +337,7 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
 
 
 (defun make-training-assembler (oligomers &key focus-monomer)
-  "Build a assembler for the oligomers."
+  "Build a assembler for the oligomers. This is used for building training molecules."
   (unless (every (lambda (os) (typep os 'oligomer)) oligomers)
     (error "You must provide a list of oligomers"))
   (let* ((aggregate (chem:make-aggregate :all))

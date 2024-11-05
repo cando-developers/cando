@@ -460,7 +460,9 @@
    #:residue-shape
    #:assembler-dump-internals
    #:randomly-mutate-sidechain-rotamer-index
-   #:randomly-mutate-backbone-rotamer-index))
+   #:randomly-mutate-backbone-rotamer-index
+   #:random-oligomer-shape-aggregate
+   ))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

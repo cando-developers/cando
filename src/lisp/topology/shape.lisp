@@ -568,13 +568,6 @@ If UNINITIALIZED then leave them unbound."
     (loop for adjustment in adjustments
           do (internal-adjust adjustment assembler))))
  
-(defun update-internals (assembler oligomer-shape &key verbose)
-   "Update the internal coordinates of the assembler for the oligomer-shape or whatever type the second argument is.
-: assembler - the assembler to update
-: oligomer-shape - An oligomer-shape or permissible-rotamers in the assembler"
-  (fill-internals-from-oligomer-shape assembler oligomer-shape verbose)
-  (adjust-internals assembler oligomer-shape))
-
 
 (defgeneric build-initial-oligomer-shape-externals (assembler oligomer-shape &key orientation coords)
   (:documentation "Build the oligomer-shape in the coordinates by generating the initial externals"))
@@ -687,3 +680,29 @@ If UNINITIALIZED then leave them unbound."
     (format t "       residue-shapes ~d      rotamer-shapes ~d~%" sidechain-residue-shapes sidechain-rotamer-shapes)
     ))
 
+(defun random-oligomer-shape-aggregate (oligomer-shape)
+  "Generate a random oligomer-shape and return the aggregate"
+  (let* ((bs (make-permissible-backbone-rotamers oligomer-shape)))
+    (write-rotamers oligomer-shape bs (random-rotamers bs))
+    (let ((ss (make-permissible-sidechain-rotamers oligomer-shape)))
+      (write-rotamers oligomer-shape ss (random-rotamers ss))
+      (let* ((ass (make-assembler (list oligomer-shape)))
+             (coords (make-coordinates-for-assembler ass))
+             )
+        (update-internals ass oligomer-shape)
+        (build-all-oligomer-shapes-from-internals-in-coordinates ass coords)
+        (copy-all-joint-positions-into-atoms ass coords)
+        (aggregate ass)))))
+
+
+
+(defun update-internals (assembler oligomer-shape &key verbose)
+  "Update the internal coordinates of the assembler for the oligomer-shape
+or whatever type the second argument is.
+The MONOMER-SHAPEs of the OLIGOMER-SHAPE are used to update the internal coordinates in
+the atom-tree.
+
+ASSEMBLER - the assembler to update.
+OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wrong) in the assembler."
+  (fill-internals-from-oligomer-shape assembler oligomer-shape verbose)
+  (adjust-internals assembler oligomer-shape))
