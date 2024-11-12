@@ -468,6 +468,7 @@
    #:do-oligomer-shape
    #:rotamer-shape-context-rotamers
    #:mutate-oligomer-shape
+   #:build-rotamer-shape-map
    #:ligand-oligomer-shape
    #:receptor-oligomer-shape
    #:orientations
