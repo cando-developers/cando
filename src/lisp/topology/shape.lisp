@@ -734,6 +734,15 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
   (adjust-internals assembler oligomer-shape))
 
 
+(defun build-rotamer-shape-map (oligomer)
+  "Build a monomer-to-monomer-shape-map of only rotamer-shapes.
+The ROTAMER-INDEX slots of the ROTAMER-SHAPEs will be unbound on return."
+  (let ((new-monomer-shape-map (make-hash-table)))
+    (loop for monomer across (monomers oligomer)
+          for rotamer-shape = (make-rotamer-shape monomer oligomer)
+          do (setf (gethash monomer new-monomer-shape-map) rotamer-shape))
+    new-monomer-shape-map))
+
 (defun build-mutant-monomer-shape-map (original-oligomer-shape oligomer)
   "Build a monomer-to-monomer-shape-map using an ORIGINAL-OLIGOMER-SHAPE as a template and an OLIGOMER for the rotamer-shapes.
 TOPOLOGY:RESIDUE-SHAPEs are used directly from the ORIGINAL-OLIGOMER-SHAPE because they are immutable and fresh TOPOLOGY:ROTAMER-SHAPEs
