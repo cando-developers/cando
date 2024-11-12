@@ -114,6 +114,17 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
   (call-next-method))
 
 
+(defun sidechain-shape-kind-p (shape-kind)
+  "Return T if SHAPE-KIND is :sidechain"
+  (unless (member shape-kind '(:sidechain :backbone))
+    (error "Illegal shape-kind argument ~s - must be one of :sidechain :backbone" shape-kind))
+  (eq :sidechain shape-kind))
+
+(defun backbone-shape-kind-p (shape-kind)
+  "Return T if SHAPE-KIND is :backbone"
+  (unless (member shape-kind '(:sidechain :backbone))
+    (error "Illegal shape-kind argument ~s - must be one of :sidechain :backbone" shape-kind))
+  (eq :backbone shape-kind))
 
 (defun one-backbone-permissible-rotamer (monomer-context rotamers-db rotamers index sidechain sidechain-monomer-context)
   (declare (ignore sidechain))
@@ -125,8 +136,8 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
           :for ii :below (length backbone-rotamers)
           :for backbone-rotamer = (aref backbone-rotamers ii)
           :for backbone-dihedral-cache-deg = (topology:backbone-dihedral-cache-deg backbone-rotamer)
-          :for phi-1 = (getf backbone-dihedral-cache-deg :phi-1)
-          :for psi-1 = (getf backbone-dihedral-cache-deg :psi-1)
+          :for phi-1 = (find-in-cache backbone-dihedral-cache-deg :phi-1)
+          :for psi-1 = (find-in-cache backbone-dihedral-cache-deg :psi-1)
           :for binned-phi-1 = (topology:bin-dihedral-deg phi-1)
           :for binned-psi-1 = (topology:bin-dihedral-deg psi-1)
           ;; Get the shape-key for the backbone
@@ -172,7 +183,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
                         (orotamers (gethash monomer-context (topology:context-to-rotamers rotamers-db)))
                         (rotamers (rotamer-vector orotamers)))
                    (cond
-                     ((eq :backbone monomer-shape-kind)
+                     ((backbone-shape-kind-p monomer-shape-kind)
                       ;; We have a backbone that doesn't influence any sidechain
                       ;; - so all backbone rotamers are accessible
                       (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
@@ -183,7 +194,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
                                                                   :allowed-rotamer-indexes allowed-rotamer-indexes
                                                                   :monomer-shape-locus index)))
                           (vector-push-extend permissible-rotamer permissible-rotamer-vector))))
-                     ((eq :sidechain monomer-shape-kind)
+                     ((sidechain-shape-kind-p monomer-shape-kind)
                       ;; Do nothing
                       )
                      (t (error "How did we get here?"))))))
@@ -217,7 +228,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
                                   :do (format t "   out: ~s ~s~%" out-monomer-shape-index out-monomer))
                             )
                           )
-                    :when (eq monomer-shape-kind :sidechain)
+                    :when (sidechain-shape-kind-p monomer-shape-kind)
                       :do (multiple-value-bind (deg backbone1-monomer-shape)
                               (topology:lookup-dihedral-cache oligomer-shape monomer-shape :psi :ignore-degrees t)
                             #+debug-mover
@@ -243,7 +254,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
                                                      )
               :do (cond
                     ((and maybe-sidechain
-                          (eq :backbone monomer-shape-kind))
+                          (backbone-shape-kind-p monomer-shape-kind))
                      ;; We have a backbone that influences a sidechain
                      ;; identify what backbone rotamers are allowed given the sidechain that it effects
                      (let ((permissible-rotamer (one-backbone-permissible-rotamer
@@ -254,7 +265,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
                                                  maybe-sidechain
                                                  maybe-sidechain-monomer-context)))
                        (vector-push-extend permissible-rotamer permissible-rotamer-vector)))
-                    ((eq :backbone monomer-shape-kind)
+                    ((backbone-monomer-shape-kind-p monomer-shape-kind)
                      ;; We have a backbone that doesn't influence any sidechain
                      ;; - so all backbone rotamers are accessible
                      (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
@@ -265,7 +276,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
                                                                  :allowed-rotamer-indexes allowed-rotamer-indexes
                                                                  :monomer-shape-locus index)))
                          (vector-push-extend permissible-rotamer permissible-rotamer-vector))))
-                    ((eq :sidechain monomer-shape-kind)
+                    ((sidechain-shape-kind-p monomer-shape-kind)
                      ;; Do nothing
                      )
                     (t (error "How did we get here?")))))
@@ -298,30 +309,27 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
   (let ((rotamers-db (topology:rotamers-database oligomer-shape)))
     ;; Loop over all monomer-shape in the oligomer-shape and downselect the ones that
     ;; are sidechains and if monomers is not nil then only the ones in monomers
-    (loop :named main
-          :for index :from 0
-          :for monomer-shape :across (topology:monomer-shape-vector oligomer-shape)
-          :for rotamer-index = (when (slot-boundp monomer-shape 'topology:rotamer-index)
-                                 (topology:rotamer-index monomer-shape))
-          :for monomer-shape-info :across (topology:monomer-shape-info-vector oligomer-shape)
-          :for monomer := (topology:monomer monomer-shape-info)
-          :for monomer-shape-kind := (topology:monomer-shape-kind monomer-shape-info)
-          :for monomer-context := (topology:monomer-context monomer-shape-info)
-          :do (cond
-                ((and (eq monomer-shape-kind :sidechain)
-                      (eq monomer desired-monomer))
-                 (let ((permissible-rotamer
-                         (make-permissible-rotamer-for-monomer*
-                          oligomer-shape
-                          index
-                          monomer
-                          monomer-context
-                          monomer-shape
-                          monomer-shape-info
-                          rotamer-index
-                          rotamers-db)))
-                   (return-from make-permissible-sidechain-rotamer-for-monomer permissible-rotamer)))))
-    (error "Could not find monomer ~s in ~s" desired-monomer oligomer-shape)))
+    (loop named main
+          for index from 0
+          for monomer-shape across (topology:monomer-shape-vector oligomer-shape)
+          for monomer-shape-info across (topology:monomer-shape-info-vector oligomer-shape)
+          for monomer = (topology:monomer monomer-shape-info)
+          when (eq monomer desired-monomer)
+            do (let* ((monomer-context (topology:monomer-context monomer-shape-info))
+                      (rotamer-index (when (and (typep monomer-shape 'rotamer-shape)
+                                                (slot-boundp monomer-shape 'topology:rotamer-index))
+                                       (topology:rotamer-index monomer-shape)))
+                      (permissible-rotamer
+                        (make-permissible-rotamer-for-monomer* oligomer-shape
+                                                               index
+                                                               monomer
+                                                               monomer-context
+                                                               monomer-shape
+                                                               monomer-shape-info
+                                                               rotamer-index
+                                                               rotamers-db)))
+                 (return-from make-permissible-sidechain-rotamer-for-monomer permissible-rotamer))))
+  (error "Could not find monomer ~s in ~s" desired-monomer oligomer-shape))
 
 (defun make-permissible-sidechain-rotamers (oligomer-shape &key monomers)
   "Constructs a permissible-sidechain-rotamers object for the given oligomer-shape.
@@ -344,7 +352,7 @@ Returns an instance of permissible-sidechain-rotamers."
                       (monomer-shape-kind (topology:monomer-shape-kind monomer-shape-info))
                       (monomer-context (topology:monomer-context monomer-shape-info)))
                  (cond
-                   ((and (eq monomer-shape-kind :sidechain)
+                   ((and (sidechain-shape-kind-p monomer-shape-kind)
                          (or (null monomers)
                              (member monomer monomers))) ; if monomers defined then use it as a subset
                     (let ((permissible-rotamer
@@ -358,7 +366,7 @@ Returns an instance of permissible-sidechain-rotamers."
                              rotamer-index
                              rotamers-db)))
                       (vector-push-extend permissible-rotamer permissible-rotamer-vector)))
-                   ((eq monomer-shape-kind :backbone)
+                   ((backbone-shape-kind-p monomer-shape-kind)
                     (vector-push-extend (cons index (rotamer-index monomer-shape))
                                         required-backbone-rotamer-indexes))
                    ))))

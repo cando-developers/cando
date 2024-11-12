@@ -157,7 +157,7 @@
 (defmethod cando-widgets::show-on-pane (pane-instance (object topology:oligomer-shape) &rest rest &key &allow-other-keys)
   (let* ((assembler (topology:make-assembler (list object)))
          (coords (topology:make-coordinates-for-assembler assembler)))
-    (topology:fill-internals-from-oligomer-shape assembler object)
+    (topology:update-internals assembler object)
     (topology:build-external-coordinates assembler :coords coords
                                                    :oligomer-shape object
                                                    :orientation :identity)

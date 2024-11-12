@@ -59,6 +59,10 @@ default to the identity matrix."
   ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations))
   (:documentation "A hash-table that maps OLIGOMER-SHAPEs to ORIENTATIONs"))
 
+(defun orientation-for-oligomer-shape (assembler oligomer-shape)
+  "Return the orientation for the OLIGOMER-SHAPE in the ASSEMBLER"
+  (gethash oligomer-shape (orientations (orientations assembler))))
+
 (defun ensure-complete-orientations (orientations oligomer-shapes)
   (loop for oligomer-shape in oligomer-shapes
         unless (gethash oligomer-shape (orientations orientations))
@@ -118,6 +122,33 @@ OLIGOMER-SHAPE to ORIENTATIONs.
 
 The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
  ))
+
+(defun ligand-oligomer-shape (assembler)
+  "Return the ligand oligomer-shape for the ASSEMBLER."
+  (first (oligomer-shapes assembler)))
+
+(defun ligand-oligomer-shape-orientation (assembler)
+  "Return the ligand oligomer-shape and orientation for the ASSEMBLER."
+  (let ((ligand-oligomer-shape (first (oligomer-shapes assembler))))
+    (values ligand-oligomer-shape (gethash ligand-oligomer-shape (orientations (orientations assembler))))))
+
+(defun receptor-oligomer-shape (assembler)
+  "Return the receptor oligomer-shape for the ASSEMBLER."
+  (second (oligomer-shapes assembler)))
+
+(defun receptor-oligomer-shape-orientation (assembler)
+  "Return the receptor oligomer-shape and orientation for the ASSEMBLER."
+  (let ((receptor-oligomer-shape (second (oligomer-shapes assembler))))
+    (values receptor-oligomer-shape (if receptor-oligomer-shape
+                                        (gethash receptor-oligomer-shape (orientations (orientations assembler)))
+                                        nil))))
+
+(defun complex-oligomer-shapes-orientations (assembler)
+  (multiple-value-bind (ligand-oligomer-shape ligand-orientation)
+      (ligand-oligomer-shape-orientation assembler)
+    (multiple-value-bind (receptor-oligomer-shape receptor-orientation)
+        (receptor-oligomer-shape-orientation assembler)
+      (values ligand-oligomer-shape ligand-orientation receptor-oligomer-shape receptor-orientation))))
 
 (defclass subset-assembler (assembler)
   ()
@@ -237,6 +268,41 @@ Specialize the foldamer argument to provide methods"))
      (every (lambda (mon) (gethash mon (monomers monomer-subset))) monomers))
     (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
 
+(defun maybe-update-backbone-dihedral-cache (assembler)
+  (loop for oligomer-shape in (oligomer-shapes assembler)
+        do (do-oligomer-shape (monomer-shape monomer monomer-context monomer-shape-kind) oligomer-shape
+             (when (typep monomer-shape 'backbone-residue-shape)
+               (let* ((monomer-pos (let ((mp (gethash monomer (monomer-positions assembler))))
+                                     (unless mp
+                                       (error "Could not find monomer ~s in monomer-positions with keys ~s" monomer (alexandria:hash-table-keys (monomer-positions assembler))))
+                                     mp))
+                      (atresidue (at-position (ataggregate assembler) monomer-pos))
+                      (topology (topology atresidue))
+                      (constitution (constitution topology))
+                      (residue-properties (residue-properties constitution))
+                      (dihedrals (getf residue-properties :dihedrals))
+                      (dihedrals-to-cache (loop for dihedral in dihedrals
+                                                when (and (typep dihedral 'dihedral-info-atom)
+                                                          (member (name dihedral) '(:phi :psi :phi-1 :psi-1)))
+                                                  collect dihedral))
+                      (dihedral-cache (make-backbone-dihedral-cache)))
+                 (loop for dihedral in dihedrals-to-cache
+                       for dihedral-name = (name dihedral)
+                       for atom-name = (atom-name dihedral)
+                       for joint = (joint-with-name atresidue atom-name)
+                       for parent = (kin:parent joint)
+                       for grand-parent = (kin:parent parent)
+                       for great-grand-parent = (kin:parent grand-parent)
+                       for jpos = (kin:xyz-joint/get-pos joint)
+                       for ppos = (kin:xyz-joint/get-pos parent)
+                       for gppos = (kin:xyz-joint/get-pos grand-parent)
+                       for ggppos = (kin:xyz-joint/get-pos great-grand-parent)
+                       for dih = (geom:calculate-dihedral jpos ppos gppos ggppos)
+                       for dih-deg = (bin-dihedral-deg (rad-to-deg dih))
+                       do (add-to-cache dihedral-cache dihedral-name dih-deg))
+                 (setf (backbone-dihedral-cache-deg monomer-shape) dihedral-cache)
+               )))))
+
 (defun make-assembler (oligomer-shapes &key orientations monomer-subset tune-energy-function (keep-interaction t))
   "Build a assembler for the OLIGOMER-SHAPES.
 
@@ -247,8 +313,7 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
     ((not (or (= (length oligomer-shapes) 1) orientations))
      (error "You must provide orientations when there is more than one oligomer-shape"))
     ((and (= (length oligomer-shapes) 1) (null orientations))
-     (setf orientations (make-orientations (list (first oligomer-shapes) (make-orientation)))))
-    )
+     (setf orientations (make-orientations (list (first oligomer-shapes) (make-orientation))))))
   (ensure-complete-orientations orientations oligomer-shapes)
   (unless (every (lambda (os) (typep os 'oligomer-shape)) oligomer-shapes)
     (error "You must provide a list of oligomer-shapes"))
@@ -266,12 +331,13 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
                                           for oligomer-space = (oligomer-space oligomer)
                                           for foldamer = (foldamer oligomer-space)
                                           for molecule-index from 0
-                                          for molecule = (topology:build-molecule oligomer
-                                                                                  :monomer-subset monomer-subset
-                                                                                  :aggregate aggregate
-                                                                                  :molecule-index molecule-index
-                                                                                  :monomers-to-residues monomers-to-residues
-                                                                                  :monomer-positions-accumulator monomer-positions)
+                                          for molecule = (topology:build-molecule
+                                                          oligomer
+                                                          :monomer-subset monomer-subset
+                                                          :aggregate aggregate
+                                                          :molecule-index molecule-index
+                                                          :monomers-to-residues monomers-to-residues
+                                                          :monomer-positions-accumulator monomer-positions)
                                           do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
                                           collect (cons oligomer-shape molecule))))
     (let* ((monomer-contexts (make-hash-table))
@@ -333,8 +399,23 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
                      when external-adjusts
                        do (loop for adjust in external-adjusts
                                 do (initialize-adjustment adjust assembler))))
+      (unless monomer-subset
+        ;; update the internals so we can build dihedral caches
+        (loop for oligomer-shape in (oligomer-shapes assembler)
+              do (update-internals assembler oligomer-shape))
+        ;; update the dihedral caches
+        (maybe-update-backbone-dihedral-cache assembler))
       assembler)))
 
+
+(defun make-ligand-receptor-assembler (&key ligand receptor orientations monomer-subset tune-energy-function (keep-interaction t))
+  "Define an assembler for a complex between a LIGAND and a RECEPTOR."
+  ;; The ligand is the first oligomer-shape and the receptor is the second one
+  (make-assembler (list ligand receptor)
+                  :orientations orientations
+                  :monomer-subset monomer-subset
+                  :tune-energy-function tune-energy-function
+                  :keep-interaction keep-interaction))
 
 (defun make-training-assembler (oligomers &key focus-monomer)
   "Build a assembler for the oligomers. This is used for building training molecules."

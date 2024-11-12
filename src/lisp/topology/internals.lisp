@@ -159,9 +159,39 @@
    (coordinates :initarg :coordinates :accessor coordinates)
    ))
 
+(defclass backbone-dihedral-cache (cando.serialize:serializable)
+  ((cache :initform nil :type list :initarg :cache :accessor cache))
+  (:documentation "Maintain cache as a map of dihedral names to dihedral angles"))
+
+(defmethod print-object ((obj backbone-dihedral-cache) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~s" (cache obj)))))
+
+(defun make-backbone-dihedral-cache ()
+  "Create an empty BACKBONE-DIHEDRAL-CACHE"
+  (make-instance 'backbone-dihedral-cache))
+
+(defun add-to-cache (backbone-dihedral-cache name dihedral-angle-deg)
+  "Add a NAME DIHEDRAL-ANGLE-DEG pair to the BACKBONE-DIHEDRAL-CACHE"
+  (unless (integerp dihedral-angle-deg)
+    (error "dihedral-angle-deg ~s must be an integer" dihedral-angle-deg))
+  (push (cons name dihedral-angle-deg) (cache backbone-dihedral-cache)))
+
+(defun find-in-cache (backbone-dihedral-cache name)
+  "Return the dihedral-angle associated with the NAME in BACKBONE-DIHEDRAL-CACHE"
+  (let ((entry (assoc name (cache backbone-dihedral-cache))))
+    (cdr entry)))
+
+(defun cache-alist-copy (backbone-dihedral-cache)
+  "Return an alist version of the BACKBONE-DIHEDRAL-CACHE that can be altered without
+changing the BACKBONE-DIHEDRAL-CACHE."
+  (copy-seq (cache backbone-dihedral-cache)))
+
 (defclass fragment-internals-with-shape-key (fragment-internals)
   ((backbone-dihedral-cache-deg :initarg :backbone-dihedral-cache-deg
-                                :type list
+                                :type backbone-dihedral-cache
                                 :accessor backbone-dihedral-cache-deg)
    (shape-key :initarg :shape-key :accessor shape-key)))
 
@@ -225,9 +255,9 @@
   ())
 
 (defclass backbone-with-sidechain-rotamer (backbone-rotamer-base)
-  ((backbone-dihedral-cache-deg :initform nil
+  ((backbone-dihedral-cache-deg :initform (make-backbone-dihedral-cache)
                                 :initarg :backbone-dihedral-cache-deg
-                                :type list
+                                :type backbone-dihedral-cache
                                 :accessor backbone-dihedral-cache-deg)
    (shape-key :initarg :shape-key :accessor shape-key)))
 

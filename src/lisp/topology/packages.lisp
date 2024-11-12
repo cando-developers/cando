@@ -455,13 +455,30 @@
    #:make-monomer-indexes
    #:first-monomers
    #:adjust
-   #:make-rotamer-shape-convenience
+   #:make-rotamer-shape
    #:make-oligomer-shape-of-rotamer-shapes
    #:residue-shape
+   #:backbone-residue-shape
    #:assembler-dump-internals
    #:randomly-mutate-sidechain-rotamer-index
    #:randomly-mutate-backbone-rotamer-index
    #:random-oligomer-shape-aggregate
+   #:backbone-shape-kind-p
+   #:sidechain-shape-kind-p
+   #:do-oligomer-shape
+   #:rotamer-shape-context-rotamers
+   #:mutate-oligomer-shape
+   #:ligand-oligomer-shape
+   #:receptor-oligomer-shape
+   #:orientations
+   #:complex-oligomer-shapes-orientations
+   #:receptor-oligomer-shape-orientation
+   #:ligand-oligomer-shape-orientation
+   #:cache-alist-copy
+   #:find-in-cache
+   #:add-to-cache
+   #:make-backbone-dihedral-cache
+   #:backbone-dihedral-cache
    ))
 
 (defpackage #:topology.dag
