@@ -76,6 +76,13 @@
   )
 
 
+(defun permissible-rotamer-locus-from-monomer-shape-locus (permissible-rotamers monomer-shape-locus)
+  "Return the locus in the PERMISSIBLE-ROTAMERS that references the MONOMER-SHAPE-LOCUS of a MONOMER-SHAPE in an OLIGOMER-SHAPE"
+  (position-if (lambda (mc)
+                 (= monomer-shape-locus (monomer-shape-locus mc)))
+               (permissible-rotamer-vector permissible-rotamers)))
+
+
 (defclass permissible-backbone-rotamers (permissible-rotamers)
   ())
 

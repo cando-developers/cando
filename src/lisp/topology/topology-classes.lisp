@@ -549,6 +549,10 @@ Examples:
    (allowed-index-ends :initarg :allowed-index-ends :reader allowed-index-ends)))
 
 
+(defun permissible-monomer-locus-from-monomer-locus (permissible-monomer-indexes monomer-locus)
+  "Return the locus in the PERMISSIBLE-MONOMER-INDEXES that references the MONOMER-LOCUS of a MONOMER in an OLIGOMER-SPACE"
+  (position monomer-locus (monomer-index-loci permissible-monomer-indexes)))
+
 (defclass permissible-backbone-monomer-indexes (permissible-monomer-indexes)
   ())
 

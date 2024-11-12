@@ -347,6 +347,8 @@
    #:permissible-backbone-rotamers
    #:make-permissible-backbone-rotamers
    #:make-permissible-sidechain-rotamers
+   #:permissible-monomer-locus-from-monomer-locus
+   #:permissible-rotamer-locus-from-monomer-shape-locus
    #:max-rotamers
    #:zero-rotamers
    #:random-rotamers
