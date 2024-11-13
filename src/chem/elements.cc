@@ -570,6 +570,18 @@ Element elementFromAtomNameStringBasic(const std::string& name, bool caseInsensi
       return element;
     }
   }
+  if (name.size()==2 && isupper(name[0]) && isupper(name[1])) {
+  // Try lowercasing the second letter and searching for it
+    string testElementName = name;
+    testElementName[1] = tolower(testElementName[1]);
+    for ( auto ai=ei->_atomicInfo.begin(); ai!=ei->_atomicInfo.end(); ai++ ) {
+      if ( ai->_Valid ) {
+        if (ai->_AtomicSymbol->symbolNameAsString() == testElementName) {
+          return ai->_ElementEnum;
+        }
+      }
+    }
+  }
   core::eval::funcall(cl::_sym_warn,
                       core::Str_O::create("Could not determine element from name ~a case-insensitive(~a)"),
                       core::Str_O::create(name),
