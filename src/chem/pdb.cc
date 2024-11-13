@@ -297,7 +297,9 @@ Aggregate_sp	EntirePdbRec::createAggregate()
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
         ASSERTP(bondedPtr->_atom.notnilp(), "Atom is nil");
-        atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        if (!atomPtr->_atom->isBondedTo(bondedPtr->_atom)) {
+          atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        }
       }
       bondedIdx = this->_connects[ci]._bonded[1];
       if ( bondedIdx >= 0 )
@@ -307,7 +309,9 @@ Aggregate_sp	EntirePdbRec::createAggregate()
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
         ASSERTP(bondedPtr->_atom.notnilp(), "Atom is nil");
-        atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        if (!atomPtr->_atom->isBondedTo(bondedPtr->_atom)) {
+          atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        }
       }
       bondedIdx = this->_connects[ci]._bonded[2];
       if ( bondedIdx >= 0 )
@@ -317,7 +321,9 @@ Aggregate_sp	EntirePdbRec::createAggregate()
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
         ASSERTP(bondedPtr->_atom.notnilp(), "Atom is nil");
-        atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        if (!atomPtr->_atom->isBondedTo(bondedPtr->_atom)) {
+          atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        }
       }
       bondedIdx = this->_connects[ci]._bonded[3];
       if ( bondedIdx >= 0 )
@@ -327,7 +333,9 @@ Aggregate_sp	EntirePdbRec::createAggregate()
         bondedPtr = &(this->_atoms[bondedAtomRecIdx]);
         ANN(bondedPtr->_atom);
         ASSERTP(bondedPtr->_atom.notnilp(), "Atom is nil");
-        atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        if (!atomPtr->_atom->isBondedTo(bondedPtr->_atom)) {
+          atomPtr->_atom->bondTo(bondedPtr->_atom,singleBond);
+        }
       }
     }
   }
