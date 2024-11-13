@@ -350,6 +350,24 @@ changing the BACKBONE-DIHEDRAL-CACHE."
       (print-unreadable-object (obj stream :type t )
         (format stream "~a contexts" (hash-table-count (context-to-rotamers obj))))))
 
+(defun validate-indexes-for-shape-keys (rotamers-database)
+  "Summarize the ROTAMERS-DATABASE. Print monomer-contexts and shape-keys that have empty rotamer-index vectors."
+  (let ((empty-indexes 0)
+        (filled-indexes 0))
+  (maphash (lambda (monomer-context rotamers)
+             (when (typep rotamers 'sidechain-rotamers)
+               (let ((shape-key-to-index (shape-key-to-index rotamers)))
+                 (maphash (lambda (shape-key indexes)
+                            (if (= (length indexes) 0)
+                                (progn
+                                  (incf empty-indexes)
+                                  (format t "Empty indexes for ~s ~s~%" monomer-context shape-key))
+                                (incf filled-indexes)))
+                          shape-key-to-index))))
+           (context-to-rotamers rotamers-database))
+    (format t "There were ~d empty indexes and ~d filled ones~%" empty-indexes filled-indexes)))
+
+
 (defgeneric apply-fragment-internals-to-atresidue (fragment-internals rotamer-index atresidue))
 
 (defmethod apply-fragment-internals-to-atresidue ((obj rotamer) rotamer-index atresidue)
