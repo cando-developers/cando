@@ -42,6 +42,8 @@
         (let* ((*print-pretty* nil)
                (monomer (monomer sidechain-monomer-shape-info)))
           (error 'no-rotamers :message (format nil "Found no allowed-rotamers for ~s - phi-deg: ~s  psi-deg: ~s - shape-key ~s -  ~s in ~s - this shouldn't be possible if a backbone-stepper was created and applied to the oligomer-shape" monomer phi-deg psi-deg shape-key sidechain-monomer-shape oligomer-shape))))
+      (when (= 0 (length result))
+        (error 'no-rotamers :message (format nil "The resulting rotamers vector is empty for shape-key ~s - available keys ~s" shape-key (alexandria:hash-table-keys shape-key-to-allowed-rotamers))))
       #+debug-mover
       (let ((*print-pretty* nil))
         (format t "   calculate-allowed-rotamers  phi-deg ~d  psi-deg ~d    allowed-rotamers -> ~s~%" phi-deg psi-deg result))
@@ -296,7 +298,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
   (let* ((rotamers (gethash monomer-context (topology:context-to-rotamers rotamers-db)))
          (allowed-rotamers (progn
                              (calculate-allowed-rotamers index monomer-shape monomer-shape-info oligomer-shape (topology:shape-key-to-index rotamers)))))
-    (when (= 0 (length allowed-rotamers))
+    (when (or (null allowed-rotamers) (= 0 (length allowed-rotamers)))
       (error "There are no allowed-rotamers for monomer-shape at ~a" index))
     (when (or (and rotamer-index (null (position rotamer-index allowed-rotamers)))
               (null rotamer-index))
@@ -621,7 +623,6 @@ This is an vector of rotamer-index values enumerated from 0...(number-of-rotamer
   "Goto a particular rotamer using an integer index from 0...(number-of-rotamers stepper)"
   (let ((rotamer-state (rotamer-state permissible-rotamers index)))
       (write-rotamers permissible-rotamers rotamer-state)))
-
 (defun first-rotamers (permissible-rotamers)
   "Return a vector of the first rotamer index for each position"
   (let ((len (length (permissible-rotamer-vector permissible-rotamers))))
