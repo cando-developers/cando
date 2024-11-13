@@ -483,7 +483,7 @@
    #:make-backbone-dihedral-cache
    #:backbone-dihedral-cache
    #:monomer-center
-   ))
+   #:validate-indexes-for-shape-keys))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
