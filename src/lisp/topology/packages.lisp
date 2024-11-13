@@ -482,6 +482,7 @@
    #:add-to-cache
    #:make-backbone-dihedral-cache
    #:backbone-dihedral-cache
+   #:monomer-center
    ))
 
 (defpackage #:topology.dag
