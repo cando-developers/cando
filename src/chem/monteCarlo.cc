@@ -181,9 +181,9 @@ struct Energies {
     return sum.sum;
   }
 
-  State randomStep(const State& state) {
+  State randomStep(size_t slotIndex, const State& state) {
     State tempState(state);
-    int index = rand() % this->_NumberOfSlots;
+    int index = slotIndex;
     int max = (*this->_MonomerLocusMaxMrkindex)[index];
     int prevMax = (index==0) ? -1 : (*this->_MonomerLocusMaxMrkindex)[index-1];
     int range = max - prevMax;
@@ -228,24 +228,26 @@ CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, double startT
   double temperature = startTemperature;
   State testState;
   for (int i = 0; i < max_iterations; ++i) {
-    testState = energies.randomStep(currentState);
-    double testEnergy = energies.energyFunction(testState);
-    if (testEnergy < currentEnergy) {
-      currentState = testState;
-      currentEnergy = testEnergy;
-      if (useAcceptCallback) {
-        memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
-        core::eval::funcall( acceptCallback, saveState, mk_double_float(currentEnergy) );
-      }
-    } else {
-      double acceptance_probability = exp(-(testEnergy - currentEnergy) / temperature);
-      double rand_val = static_cast<double>(rand()) / RAND_MAX;
-      if (rand_val < acceptance_probability) {
+    for ( size_t slotIndex = 0; slotIndex< energies._NumberOfSlots; slotIndex++ ) {
+      testState = energies.randomStep( slotIndex, currentState );
+      double testEnergy = energies.energyFunction(testState);
+      if (testEnergy < currentEnergy) {
         currentState = testState;
         currentEnergy = testEnergy;
         if (useAcceptCallback) {
           memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
           core::eval::funcall( acceptCallback, saveState, mk_double_float(currentEnergy) );
+        }
+      } else {
+        double acceptance_probability = exp(-(testEnergy - currentEnergy) / temperature);
+        double rand_val = static_cast<double>(rand()) / RAND_MAX;
+        if (rand_val < acceptance_probability) {
+          currentState = testState;
+          currentEnergy = testEnergy;
+          if (useAcceptCallback) {
+            memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
+            core::eval::funcall( acceptCallback, saveState, mk_double_float(currentEnergy) );
+          }
         }
       }
     }
@@ -282,24 +284,26 @@ CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, do
   double currentEnergy = energies.energyFunction(currentState);
   State testState;
   for (int i = 0; i < max_iterations; ++i) {
-    testState = energies.randomStep(currentState);
-    double testEnergy = energies.energyFunction(testState);
-    if (testEnergy < currentEnergy) {
-      currentState = testState;
-      currentEnergy = testEnergy;
-      if (useAcceptCallback) {
-        memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
-        core::eval::funcall( acceptCallback, saveState, mk_double_float(currentEnergy) );
-      }
-    } else {
-      double acceptance_probability = exp(-(testEnergy - currentEnergy) / temperature);
-      double rand_val = static_cast<double>(rand()) / RAND_MAX;
-      if (rand_val < acceptance_probability) {
+    for ( size_t slotIndex = 0; slotIndex< energies._NumberOfSlots; slotIndex++ ) {
+      testState = energies.randomStep( slotIndex, currentState );
+      double testEnergy = energies.energyFunction(testState);
+      if (testEnergy < currentEnergy) {
         currentState = testState;
         currentEnergy = testEnergy;
         if (useAcceptCallback) {
           memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
           core::eval::funcall( acceptCallback, saveState, mk_double_float(currentEnergy) );
+        }
+      } else {
+        double acceptance_probability = exp(-(testEnergy - currentEnergy) / temperature);
+        double rand_val = static_cast<double>(rand()) / RAND_MAX;
+        if (rand_val < acceptance_probability) {
+          currentState = testState;
+          currentEnergy = testEnergy;
+          if (useAcceptCallback) {
+            memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
+            core::eval::funcall( acceptCallback, saveState, mk_double_float(currentEnergy) );
+          }
         }
       }
     }
