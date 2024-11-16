@@ -643,4 +643,27 @@ CL_DEFUN void chem__align_matter(Matter_sp moveable_matter, core::T_sp moveable_
   moveable_matter->applyTransformToAtoms(transform);
 }
 
+DOCGROUP(cando);
+CL_DEFUN Matrix chem__align_transform(core::T_sp moveable_atoms, core::T_sp fixed_atoms)
+{
+  size_t num_moveable = core::cl__length(moveable_atoms);
+  size_t num_fixed = core::cl__length(fixed_atoms);
+  if (num_moveable<3) {
+    SIMPLE_ERROR("There must be at least 3 moveable atoms - {} were passed" , num_moveable);
+  }
+  if (num_fixed<3) {
+    SIMPLE_ERROR("There must be at least 3 fixed atoms - {} were passed" , num_fixed);
+  }
+  if (num_moveable != num_fixed) {
+    SIMPLE_ERROR("The number of moveable points {} must match the number of fixed points" , num_moveable , num_fixed);
+  }
+  geom::SimpleVectorCoordinate_sp coords_fixed = chem__make_simple_vector_coordinate_from_atom_sequence(fixed_atoms);
+  geom::SimpleVectorCoordinate_sp coords_moveable = chem__make_simple_vector_coordinate_from_atom_sequence(moveable_atoms);
+  SuperposeEngine_sp engine = SuperposeEngine_O::create();
+  engine->setFixedAllPoints(coords_fixed);
+  engine->setMoveableAllPoints(coords_moveable);
+  Matrix transform = engine->superpose();
+  return transform;
+}
+
 };
