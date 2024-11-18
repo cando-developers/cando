@@ -579,14 +579,15 @@ int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
   #endif
 }
 
-EnergyDihedralRestraint_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keepInteraction) {
+EnergyDihedralRestraint_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedralRestraint_O::staticClass() );
   EnergyDihedralRestraint_sp copy = EnergyDihedralRestraint_O::create();
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
     Atom_sp a3 = edi->_Atom3;
     Atom_sp a4 = edi->_Atom4;
-    if ( skipInteraction( keepInteraction, EnergyDihedralRestraint_O::staticClass(), a1, a2, a3, a4 ) ) continue;
+    if ( skipInteraction( keepInteraction, a1, a2, a3, a4 ) ) continue;
     copy->_Terms.push_back(*edi);
   }
   return copy;

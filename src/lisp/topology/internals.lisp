@@ -908,7 +908,7 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 
 (defmethod write-internals-to-vector ((joint kin:xyz-joint) index3 internals joint-mask)
   "xyz-joint get write their x,y,z coordinates"
-  (let ((pos (kin:xyz-joint/get-pos joint)))
+  (let ((pos (kin:xyz-joint/transformed-pos joint)))
     (setf (aref internals index3) (geom:vx pos)
           (aref internals (+ 1 index3)) (geom:vy pos)
           (aref internals (+ 2 index3)) (geom:vz pos)

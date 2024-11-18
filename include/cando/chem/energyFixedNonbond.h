@@ -224,7 +224,7 @@ public:
 
     EnergyFixedNonbondRestraint_O( const EnergyFixedNonbondRestraint_O& ss ); //!< Copy constructor
 
-  EnergyFixedNonbondRestraint_sp copyFilter(core::T_sp keepInteraction);
+  EnergyFixedNonbondRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
 
     DEFAULT_CTOR_DTOR(EnergyFixedNonbondRestraint_O);
 };

@@ -495,11 +495,12 @@ void EnergyAnchorRestraint_O::initialize()
   this->setErrorThreshold(0.2);
 }
 
-EnergyAnchorRestraint_sp EnergyAnchorRestraint_O::copyFilter(core::T_sp keepInteraction) {
+EnergyAnchorRestraint_sp EnergyAnchorRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
   EnergyAnchorRestraint_sp copy = EnergyAnchorRestraint_O::create();
+  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyAnchorRestraint_O::staticClass());
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
-    if ( skipInteraction( keepInteraction, EnergyAnchorRestraint_O::staticClass(), a1 ) ) continue;
+    if ( skipInteraction( keepInteraction, a1 ) ) continue;
     copy->_Terms.push_back(*edi);
   }
   return copy;

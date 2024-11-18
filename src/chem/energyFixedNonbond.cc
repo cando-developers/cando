@@ -533,12 +533,12 @@ void EnergyFixedNonbondRestraint_O::initialize() {
   this->_NonbondCrossTermTable = nil<FFNonbondCrossTermTable_O>();
 }
 
-EnergyFixedNonbondRestraint_sp EnergyFixedNonbondRestraint_O::copyFilter(core::T_sp keepInteraction) {
+EnergyFixedNonbondRestraint_sp EnergyFixedNonbondRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
   EnergyFixedNonbondRestraint_sp copy = EnergyFixedNonbondRestraint_O::create();
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyFixedNonbondRestraint_O::staticClass() );
   for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
     Atom_sp a1 = edi->_FixedAtom;
-    if (skipInteraction(keepInteraction, EnergyFixedNonbondRestraint_O::staticClass(), a1))
-      continue;
+    if (skipInteraction(keepInteraction, a1)) continue;
     copy->_Terms.push_back(*edi);
   }
   return copy;

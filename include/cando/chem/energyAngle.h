@@ -228,7 +228,7 @@ public:
 
   core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
 
-  EnergyAngle_sp copyFilter(core::T_sp keepInteraction);
+  EnergyAngle_sp copyFilter(core::T_sp keepInteractionFactory);
 
     EnergyAngle_O( const EnergyAngle_O& ss ); //!< Copy constructor
 

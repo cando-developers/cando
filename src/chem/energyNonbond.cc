@@ -1065,8 +1065,11 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString() {
 }
 
 void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField,
-                                                  core::T_sp keepInteraction, core::HashTable_sp atomTypes) {
+                                                  core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes) {
   {
+    if (keepInteractionFactory.nilp()) return;
+    core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyNonbond_O::staticClass());
+    bool keepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
     EnergyNonbond energyNonbond;
     Loop loop;
     loop.loopTopGoal(matter, PROPERS);
@@ -1076,8 +1079,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
     while (loop.advanceLoopAndProcess()) {
       Atom_sp a1 = loop.getAtom1();
       Atom_sp a4 = loop.getAtom4();
-      if (skipInteraction(keepInteraction, EnergyNonbond_O::staticClass(), a1, a4))
-        continue;
+      if (skipInteraction(keepInteraction, a1, a4)) continue;
       auto ea1 = atomTable->getEnergyAtomPointer(a1);
       auto ea4 = atomTable->getEnergyAtomPointer(a4);
       size_t ia1 = ea1->_IndexTimes3;
@@ -1092,7 +1094,12 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
         duplicates.insert(ia1ia4);
         energyNonbond.defineFrom(forceField, true, &*ea1, &*ea4, this->asSmartPtr(), atomTypes);
         LOG("About to addTerm");
-        this->addTerm(energyNonbond);
+        if (keepInteractionFunction) {
+          core::T_sp result = core::eval::funcall(keepInteraction,energyNonbond._Atom1,energyNonbond._Atom2);
+          if (result.notnilp()) this->addTerm(energyNonbond);
+        } else {
+          this->addTerm(energyNonbond);
+        }
         LOG("Returned from addTerm");
         ++terms;
       }
@@ -1103,7 +1110,11 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
 }
 
 void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField,
-                                                         core::HashTable_sp atomTypes) {
+                                                         core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory ) {
+  if (keepInteractionFactory.nilp()) return;
+  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyNonbond_O::staticClass());
+  bool keepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
+  
   printf("%s:%d In :constructNonbondTermsFromAtomTable\n", __FILE__, __LINE__);
 
   // ------------------------------------------------------------
@@ -1133,7 +1144,12 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
               EnergyNonbond energyNonbond;
               if (energyNonbond.defineFrom(nbForceField, in14, &(*iea1), &(*iea2), this->sharedThis<EnergyNonbond_O>(),
                                            atomTypes)) {
-                this->addTerm(energyNonbond);
+                if (keepInteractionFunction) {
+                  core::T_sp result = core::eval::funcall(keepInteraction,energyNonbond._Atom1,energyNonbond._Atom2);
+                  if (result.notnilp()) this->addTerm(energyNonbond);
+                } else {
+                  this->addTerm(energyNonbond);
+                }
                 LOG_ENERGY(("nonbond  interaction between {} - {} in14[{}] dA {}\n"), _rep_(iea1->atom()), _rep_(iea2->atom()),
                            in14, energyNonbond.term.dA);
               }
@@ -1143,7 +1159,12 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
             //            _rep_(iea2->atom()) , in14 );
             EnergyNonbond energyNonbond;
             if (energyNonbond.defineFrom(nbForceField, in14, &(*iea1), &(*iea2), this->sharedThis<EnergyNonbond_O>(), atomTypes)) {
-              this->addTerm(energyNonbond);
+              if (keepInteractionFunction) {
+                core::T_sp result = core::eval::funcall(keepInteraction,energyNonbond._Atom1,energyNonbond._Atom2);
+                if (result.notnilp()) this->addTerm(energyNonbond);
+              } else {
+                this->addTerm(energyNonbond);
+              }
               LOG_ENERGY(("nonbond  interaction between {} - {} in14[{}] dA {}\n"), _rep_(iea1->atom()), _rep_(iea2->atom()), in14,
                          energyNonbond.term.dA);
             }
@@ -1156,7 +1177,7 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
   }
 }
 
-void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbForceField) {
+void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbForceField, core::T_sp keepInteractionFactory ) {
   // ------------------------------------------------------------
   //
   // The new code creates an excluded atom list
@@ -1164,7 +1185,7 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   this->_UsesExcludedAtoms = true;
   this->_AtomTable = atomTable;
   this->_FFNonbondDb = nbForceField;
-  core::T_mv values_mv = this->_AtomTable->calculate_excluded_atom_list();
+  core::T_mv values_mv = this->_AtomTable->calculate_excluded_atom_list(keepInteractionFactory);
   core::SimpleVector_int32_t_sp number_of_excluded_atoms = gc::As<core::SimpleVector_int32_t_sp>(values_mv);
   core::MultipleValues &values = core::lisp_multipleValues();
   core::SimpleVector_int32_t_sp excluded_atoms_list =
@@ -1176,7 +1197,11 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
 /* Construct nonbond terms between two molecules or two residues or a residue and a molecule that are not
 bonded to each other */
 CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
-                                                                       EnergyFunction_sp energyFunction) {
+                                                                       EnergyFunction_sp energyFunction,
+                                                                       core::T_sp keepInteractionFactory) {
+  if (keepInteractionFactory.nilp()) return;
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
+  bool keepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
   auto atomTable = energyFunction->atomTable();
   auto nbForceField = atomTable->nonbondForceFieldForAggregate();
   auto atomTypes = energyFunction->atomTypes();
@@ -1201,7 +1226,12 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp
         bool in14 = false; // Between residues there are never 1-4
         if (energyNonbond.defineForAtomPair(nbForceField, in14, a1, a2, a1CoordinateIndexTimes3, a2CoordinateIndexTimes3,
                                             this->sharedThis<EnergyNonbond_O>(), atomTypes)) {
-          this->addTerm(energyNonbond);
+          if (keepInteractionFunction) {
+            core::T_sp result = core::eval::funcall(keepInteraction,energyNonbond._Atom1,energyNonbond._Atom2);
+            if (result.notnilp()) this->addTerm(energyNonbond);
+          } else {
+            this->addTerm(energyNonbond);
+          }
           LOG_ENERGY(("nonbond  interaction between {} - {} in14[{}] dA {}\n"), _rep_(a1), _rep_(a2), in14, energyNonbond.term.dA);
         }
       }
@@ -1308,13 +1338,13 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
   this->_NumberOfExcludedAtomIndexes = number_excluded_atoms;
 }
 
-EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteraction) {
+EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory) {
   EnergyNonbond_sp copy = EnergyNonbond_O::create();
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
   for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
-    if (skipInteraction(keepInteraction, EnergyNonbond_O::staticClass(), a1, a2))
-      continue;
+    if (skipInteraction(keepInteraction, a1, a2)) continue;
     copy->_Terms.push_back(*edi);
   }
   return copy;

@@ -150,6 +150,10 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
         (receptor-oligomer-shape-orientation assembler)
       (values ligand-oligomer-shape ligand-orientation receptor-oligomer-shape receptor-orientation))))
 
+(defun lookup-orientation (assembler oligomer-shape)
+  "Return the orientation for the OLIGOMER-SHAPE in the ASSEMBLER."
+  (gethash oligomer-shape (orientations (orientations assembler))))
+
 (defclass subset-assembler (assembler)
   ()
   (:documentation "This class is an assembler that builds a subset of another assembler"))
@@ -270,45 +274,49 @@ Specialize the foldamer argument to provide methods"))
 
 (defun maybe-update-backbone-dihedral-cache (assembler)
   (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (do-oligomer-shape (monomer-shape monomer monomer-context monomer-shape-kind) oligomer-shape
-             (when (typep monomer-shape 'backbone-residue-shape)
-               (let* ((monomer-pos (let ((mp (gethash monomer (monomer-positions assembler))))
-                                     (unless mp
-                                       (error "Could not find monomer ~s in monomer-positions with keys ~s" monomer (alexandria:hash-table-keys (monomer-positions assembler))))
-                                     mp))
-                      (atresidue (at-position (ataggregate assembler) monomer-pos))
-                      (topology (topology atresidue))
-                      (constitution (constitution topology))
-                      (residue-properties (residue-properties constitution))
-                      (dihedrals (getf residue-properties :dihedrals))
-                      (dihedrals-to-cache (loop for dihedral in dihedrals
-                                                when (and (typep dihedral 'dihedral-info-atom)
-                                                          (member (name dihedral) '(:phi :psi :phi-1 :psi-1)))
-                                                  collect dihedral))
-                      (dihedral-cache (make-backbone-dihedral-cache)))
-                 (loop for dihedral in dihedrals-to-cache
-                       for dihedral-name = (name dihedral)
-                       for atom-name = (atom-name dihedral)
-                       for joint = (joint-with-name atresidue atom-name)
-                       for parent = (kin:parent joint)
-                       for grand-parent = (kin:parent parent)
-                       for great-grand-parent = (kin:parent grand-parent)
-                       for jpos = (kin:xyz-joint/get-pos joint)
-                       for ppos = (kin:xyz-joint/get-pos parent)
-                       for gppos = (kin:xyz-joint/get-pos grand-parent)
-                       for ggppos = (kin:xyz-joint/get-pos great-grand-parent)
-                       for dih = (geom:calculate-dihedral jpos ppos gppos ggppos)
-                       for dih-deg = (bin-dihedral-deg (rad-to-deg dih))
-                       do (add-to-cache dihedral-cache dihedral-name dih-deg))
-                 (setf (backbone-dihedral-cache-deg monomer-shape) dihedral-cache)
-               )))))
+        do (topology:with-orientation (gethash oligomer-shape (topology:orientations (topology:orientations assembler)))
+             (do-oligomer-shape (monomer-shape monomer monomer-context monomer-shape-kind) oligomer-shape
+               (when (typep monomer-shape 'backbone-residue-shape)
+                 (let* ((monomer-pos (let ((mp (gethash monomer (monomer-positions assembler))))
+                                       (unless mp
+                                         (error "Could not find monomer ~s in monomer-positions with keys ~s" monomer (alexandria:hash-table-keys (monomer-positions assembler))))
+                                       mp))
+                        (atresidue (at-position (ataggregate assembler) monomer-pos))
+                        (topology (topology atresidue))
+                        (constitution (constitution topology))
+                        (residue-properties (residue-properties constitution))
+                        (dihedrals (getf residue-properties :dihedrals))
+                        (dihedrals-to-cache (loop for dihedral in dihedrals
+                                                  when (and (typep dihedral 'dihedral-info-atom)
+                                                            (member (name dihedral) '(:phi :psi :phi-1 :psi-1)))
+                                                    collect dihedral))
+                        (dihedral-cache (make-backbone-dihedral-cache)))
+                   (loop for dihedral in dihedrals-to-cache
+                         for dihedral-name = (name dihedral)
+                         for atom-name = (atom-name dihedral)
+                         for joint = (joint-with-name atresidue atom-name)
+                         for parent = (kin:parent joint)
+                         for grand-parent = (kin:parent parent)
+                         for great-grand-parent = (kin:parent grand-parent)
+                         for jpos = (kin:xyz-joint/transformed-pos joint)
+                         for ppos = (kin:xyz-joint/transformed-pos parent)
+                         for gppos = (kin:xyz-joint/transformed-pos grand-parent)
+                         for ggppos = (kin:xyz-joint/transformed-pos great-grand-parent)
+                         for dih = (geom:calculate-dihedral jpos ppos gppos ggppos)
+                         for dih-deg = (bin-dihedral-deg (rad-to-deg dih))
+                         do (add-to-cache dihedral-cache dihedral-name dih-deg))
+                   (setf (backbone-dihedral-cache-deg monomer-shape) dihedral-cache)
+                   ))))))
 
-(defun make-assembler (oligomer-shapes &key orientations monomer-subset tune-energy-function (keep-interaction t))
+(defun make-assembler (oligomer-shapes &key orientations monomer-subset energy-function-factory)
   "Build a assembler for the OLIGOMER-SHAPES.
 
 OLIGOMER-SHAPES - A list of OLIGOMER-SHAPEs that the ASSEMBLER will build.
 ORIENTATIONS - An ORIENTATIONS object that maps OLIGOMER-SHAPES to ORIENTATIONs.
-TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assembler and modifies the energy-function."
+USE-EXCLUDED-ATOMS - A parameter passed to make-energy-function.
+ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the energy-function.
+/*KEEP-INTERACTION-FACTORY-FACTORY - T or a lambda that takes a list of (cons oligomer-shape molecule) and returns a keep-interaction-factory function for the energy-function.*/
+/*TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assembler and modifies the energy-function.*/"
   (cond
     ((not (or (= (length oligomer-shapes) 1) orientations))
      (error "You must provide orientations when there is more than one oligomer-shape"))
@@ -346,7 +354,9 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
                           atagg))
            (joint-tree (make-joint-tree))
            (adjustments (make-instance 'adjustments))
-           (energy-function (chem:make-energy-function :keep-interaction keep-interaction :matter aggregate))
+           (energy-function (if energy-function-factory
+                                (funcall energy-function-factory aggregate)
+                                (chem:make-energy-function :matter aggregate)))
            (assembler (loop for oligomer-shape-molecule in oligomer-shapes-molecules
                             for oligomer-shape = (car oligomer-shape-molecule)
                             for oligomer = (oligomer oligomer-shape)
@@ -381,11 +391,12 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
                                                            :ataggregate ataggregate
                                                            :monomer-subset monomer-subset
                                                            :joint-tree joint-tree
+                                                           :energy-function energy-function
                                                            :adjustments adjustments)))))
       ;; The energy-function may be adjusted for the assembler
-      (when tune-energy-function
+#|      (when tune-energy-function
         (funcall tune-energy-function energy-function assembler))
-      (setf (energy-function assembler) energy-function)
+      (setf (energy-function assembler) energy-function)|#
       ;; The assembler is built - initialize the adjustments
       (loop for atmol across (atmolecules ataggregate)
             for atmol-index from 0
@@ -408,14 +419,15 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
       assembler)))
 
 
-(defun make-ligand-receptor-assembler (&key ligand receptor orientations monomer-subset tune-energy-function (keep-interaction t))
+(defun make-ligand-receptor-assembler (&key ligand receptor orientations monomer-subset energy-function-factory #|tune-energy-function (keep-interaction-factory-factory t)|#)
   "Define an assembler for a complex between a LIGAND and a RECEPTOR."
   ;; The ligand is the first oligomer-shape and the receptor is the second one
   (make-assembler (list ligand receptor)
                   :orientations orientations
                   :monomer-subset monomer-subset
-                  :tune-energy-function tune-energy-function
-                  :keep-interaction keep-interaction))
+                  :energy-function-factory energy-function-factory))
+#|                  :tune-energy-function tune-energy-function
+                  :keep-interaction-factory-factory keep-interaction-factory-factory))|#
 
 (defun make-training-assembler (oligomers &key focus-monomer)
   "Build a assembler for the oligomers. This is used for building training molecules."
@@ -521,6 +533,15 @@ TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assemble
                               do (return-from find-joint-for-atom joint))))
     (error "Could not find atom ~s" atom)
     ))
+
+(defun find-atom-for-joint (assembler joint)
+  "Return the atom corresponding to the JOINT in the aggregate of the ASSEMBLER."
+  (destructuring-bind (mol-idx res-idx atm-idx) (kin:id joint)
+    (let ((aggregate (aggregate assembler)))
+      (let* ((mol (chem:content-at aggregate mol-idx))
+             (res (chem:content-at mol res-idx))
+             (atm (chem:content-at res atm-idx)))
+        atm))))
 
 (defun copy-joint-positions-into-atoms (assembler coords oligomer-shape)
   (let ((pos (position oligomer-shape (oligomer-shapes assembler))))
@@ -763,18 +784,16 @@ Some specialized methods will need coordinates for the assembler"))
 (defun copy-atom-positions-to-xyz-joint-pos (assembler)
   (do-joint-atom (joint atm assembler)
     (when (typep joint 'kin:xyz-joint)
-      (let ((pos (chem:get-position atm)))
         (when (geom:is-defined pos)
-          (kin:xyz-joint/set-pos joint pos))))))
+          (kin:xyz-joint/set-atom joint atm)))))
 
 (defun copy-xyz-joint-pos-to-atom-positions (assembler)
   (do-joint-atom (joint atm assembler)
     (when (typep joint 'kin:xyz-joint)
-      (let ((pos (kin:xyz-joint/get-pos joint)))
+      (let* ((joint-atom (kin:xyz-joint/get-atom joint))
+             (pos (chem:atom/get-position joint-atom)))
         (when (geom:is-defined pos)
           (chem:set-position atm pos))))))
-
-
 
 (defun copy-externals (assembler monomers-to-residues)
   (maphash (lambda (monomer residue)

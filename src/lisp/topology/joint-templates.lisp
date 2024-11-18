@@ -312,11 +312,11 @@
                           res)))
           index*3)))))
 
-(defun residue-shape-atom-pos (nil-or-monomer-shape atom-name)
+(defun residue-shape-atom (nil-or-monomer-shape atom-name)
   (let* ((residue (residue nil-or-monomer-shape))
          (atm (chem:matter/first-atom-with-name residue atom-name)))
     (unless atm (error "Could not find atom with name ~s in ~s" atom-name residue))
-    (chem:get-position atm)))
+    atm))
 
 (defgeneric write-into-joint-tree (joint-template
                                    parent-joint
@@ -357,7 +357,7 @@
          (joint (etypecase nil-or-monomer-shape
                   (null (kin:make-jump-joint atomid atom-name atom-table))
                   (rotamer-shape (kin:make-jump-joint atomid atom-name atom-table))
-                  (residue-shape (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom-pos nil-or-monomer-shape atom-name)))))
+                  (residue-shape (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom nil-or-monomer-shape atom-name)))))
          )
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
@@ -408,7 +408,7 @@
         (null (make-complex-bonded-joint))
         (rotamer-shape (make-complex-bonded-joint))
         (residue-shape
-         (let ((joint (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom-pos nil-or-monomer-shape atom-name))))
+         (let ((joint (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom nil-or-monomer-shape atom-name))))
            (put-joint atresidue joint constitution-atoms-index)
            (when parent-joint (kin:joint/add-child parent-joint joint))
            joint))))))
@@ -433,7 +433,7 @@
            (etypecase nil-or-monomer-shape
              (null (kin:make-bonded-joint atomid atom-name atom-table))
              (rotamer-shape (kin:make-bonded-joint atomid atom-name atom-table))
-             (residue-shape (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom-pos nil-or-monomer-shape atom-name))))))
+             (residue-shape (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom nil-or-monomer-shape atom-name))))))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
@@ -448,14 +448,14 @@
          (base-parent-joint (kin:parent base-joint0))
          (base-grand-parent-joint (kin:parent base-parent-joint))
          (base-great-grand-parent-joint (kin:parent base-grand-parent-joint))
-         (base-j-pos (kin:joint/position base-joint0 base-coordinates))
-         (base-pj-pos (kin:joint/position base-parent-joint base-coordinates))
-         (base-gpj-pos (kin:joint/position base-grand-parent-joint base-coordinates))
-         (base-ggpj-pos (kin:joint/position base-great-grand-parent-joint base-coordinates))
+         (base-j-atom (find-atom-for-joint base-assembler base-joint0))
+         (base-pj-atom (find-atom-for-joint base-assembler base-parent-joint))
+         (base-gpj-atom (find-atom-for-joint base-assembler base-grand-parent-joint))
+         (base-ggpj-atom (find-atom-for-joint base-assembler base-great-grand-parent-joint))
          (constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint (kin:make-stub-joint atomid atom-name atom-table base-j-pos base-pj-pos base-gpj-pos base-ggpj-pos))
+         (joint (kin:make-stub-joint atomid atom-name atom-table base-j-atom base-pj-atom base-gpj-atom base-ggpj-atom))
          (backbone-atom-tree-spliced-parent (gethash monomer (monomers monomer-subset))))
     (put-joint atresidue joint constitution-atoms-index)
     (kin:joint/set-parent joint backbone-atom-tree-spliced-parent)

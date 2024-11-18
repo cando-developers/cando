@@ -130,7 +130,7 @@ num_real chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_f
   return val;
 };
 
-EnergyComponent_sp EnergyComponent_O::filterCopyComponent(core::T_sp keepInteraction) {
+EnergyComponent_sp EnergyComponent_O::filterCopyComponent(core::T_sp keepInteractionFactory) {
   IMPLEMENT_ME();
 }
 

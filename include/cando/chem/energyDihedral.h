@@ -315,7 +315,7 @@ public:
 
   core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::HashTable_sp atomTypes );
 
-  EnergyDihedral_sp copyFilter(core::T_sp keepInteraction);
+  EnergyDihedral_sp copyFilter(core::T_sp keepInteractionFactory);
 
 public:
   EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor

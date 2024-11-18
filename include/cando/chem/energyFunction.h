@@ -99,14 +99,13 @@ FORWARD(BoundingBox);
 #define	DefaultChiralRestraintWeight	100000.0
 #define	DefaultAnchorRestraintWeight	10.0
 
+core::T_sp specializeKeepInteractionFactory( core::T_sp keepInteractionFactory, core::T_sp aclass );
 
 bool skipInteraction( core::T_sp keepInteractionFunction,
-                      core::T_sp interactionClass,
-                      core::T_sp atomA = nil<core::T_O>(),
-                      core::T_sp atomB = nil<core::T_O>(),
-                      core::T_sp atomC = nil<core::T_O>(),
-                      core::T_sp atomD = nil<core::T_O>(),
-                      core::T_sp option = nil<core::T_O>() );
+                      Atom_sp atomA = unbound<Atom_O>(),
+                      Atom_sp atomB = unbound<Atom_O>(),
+                      Atom_sp atomC = unbound<Atom_O>(),
+                      Atom_sp atomD = unbound<Atom_O>() );
  /*! Throw this exception from Cando if you want the minimizer to deal with a bad interaction */
   class	InteractionCondition 
   {
@@ -137,7 +136,7 @@ namespace chem {
                                   double vdwScale = 1.0,
                                   double eelScale = 1.0,
                                   bool useExcludedAtoms=false,
-                                  core::T_sp keepInteraction=nil<core::T_O>(),
+                                  core::T_sp keepInteractionFactory=nil<core::T_O>(),
                                   bool assign_types=false );
   public:
     void initialize();
@@ -182,13 +181,13 @@ namespace chem {
   public:
     void	_eraseMissingParameters() { this->_MissingParameters = nil<core::T_O>();};
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
-    void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp keepInteraction );
+    void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp keepInteractionFactory );
 
     void	flagDihedralRestraintsAboveThreshold(NVector_sp nvPosition);
     core::T_mv enabledDisabled() const;
   private:
-    int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
-    void _addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp keepInteraction );
+    int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
+    void _addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp keepInteractionFactory );
 
   public:
 
@@ -275,17 +274,17 @@ namespace chem {
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
-    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteraction=nil<core::T_O>(), bool assign_types=true );
-    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteraction, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
+    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true );
+    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
     void generateStandardEnergyFunctionTables(Matter_sp mol,
                                               FFStretchDb_sp stretchDb,
                                               FFAngleDb_sp angleDb,
                                               FFPtorDb_sp ptorDb,
                                               FFItorDb_sp itorDb,
-                                              core::T_sp keepInteraction,
+                                              core::T_sp keepInteractionFactory,
                                               core::HashTable_sp atomTypes);
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
-    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteraction, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
+    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
 
     CL_DEFMETHOD void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
     CL_DEFMETHOD double	getDielectricConstant() { return this->_DielectricConstant; };
@@ -296,7 +295,7 @@ namespace chem {
      * This allows restraints to be applied to the system
      * without having to add them to the molecule/aggregate.
      */
-    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
+    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
 
 
     double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i, core::T_sp activeAtomMask );
@@ -330,7 +329,7 @@ namespace chem {
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
 
-    EnergyFunction_sp copyFilter(core::T_sp keepInteraction);
+    EnergyFunction_sp copyFilter(core::T_sp keepInteractionFactory);
 
     EnergyFunction_O(BoundingBox_sp bounding_box) :
         _Matter(unbound<Matter_O>())

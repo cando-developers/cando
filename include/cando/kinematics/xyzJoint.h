@@ -54,9 +54,9 @@ public:
   int		_NumberOfChildren;
         // _Children start with the value unbound
   Joint_sp	_Children[MaxChildren];
-  Vector3       _Pos;
+  chem::Atom_sp       _Atom;
 public:
-  static XyzJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, const Vector3& pos);
+  static XyzJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp atom );
 public:
 	/*! Xyz atoms can have different numbers of children wrt JumpJoints */
   virtual int _maxNumberOfChildren() const { return MaxChildren;};
@@ -79,10 +79,16 @@ public:
 public:
   XyzJoint_O() : Joint_O(),
                  _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()} {};
-  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, const Vector3& pos )
+
+  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp atom )
       : Joint_O(atomId,name,atomTable),
         _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
-        _Pos(pos) {};
+        _Atom(gc::As<chem::Atom_sp>(atom)) {};
+
+  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable)
+      : Joint_O(atomId,name,atomTable),
+        _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
+        _Atom(unbound<chem::Atom_O>()) {};
 
   virtual core::Symbol_sp typeSymbol() const;
 
@@ -116,10 +122,10 @@ public:
 	/*! Geta the value of the DOF */
   double dof(DofType const& dof) const;
 
-  CL_NAME(KIN:XYZ-JOINT/GET-POS);
-  CL_DEFMETHOD Vector3 getPos() const { return this->_Pos; };
-  CL_DEFMETHOD void setPos(const Vector3& pos) { this->_Pos = pos; };
-  CL_DEFMETHOD Vector3 transformedPos() const { return this->_Pos; };
+  CL_DEFMETHOD chem::Atom_sp getAtom() const { ASSERT(this->_Atom.boundp()); return this->_Atom; };
+  CL_DEFMETHOD void setAtom(chem::Atom_sp atm) { this->_Atom = atm; };
+  CL_DEFMETHOD Vector3 transformedPos() const;
+  CL_DEFMETHOD Vector3 untransformedPos() const;
 
 };
 
@@ -142,26 +148,26 @@ public:
 public:
   static const NodeType nodeType = stubJoint;
 public:
-  Vector3       _ParentPos;
-  Vector3       _GrandParentPos;
-  Vector3       _GreatGrandParentPos;
+  chem::Atom_sp       _ParentAtom;
+  chem::Atom_sp       _GrandParentAtom;
+  chem::Atom_sp       _GreatGrandParentAtom;
 public:
   static StubJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable,
-                           const Vector3& pos,
-                           const Vector3& parentPos,
-                           const Vector3& grandParentPos,
-                           const Vector3& greatGrandParentPos
+                           chem::Atom_sp atom,
+                           chem::Atom_sp parentAtom,
+                           chem::Atom_sp grandParentAtom,
+                           chem::Atom_sp greatGrandParentAtom
                            );
 public:
   StubJoint_O() : XyzJoint_O() {};
   StubJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, 
-              const Vector3& pos,
-              const Vector3& parentPos,
-              const Vector3& grandParentPos,
-              const Vector3& greatGrandParentPos
+              chem::Atom_sp atom,
+              chem::Atom_sp parentAtom,
+              chem::Atom_sp grandParentAtom,
+              chem::Atom_sp greatGrandParentAtom
               )
-      : XyzJoint_O(atomId,name,atomTable,pos), _ParentPos(parentPos), _GrandParentPos(grandParentPos),
-        _GreatGrandParentPos(greatGrandParentPos) {}
+      : XyzJoint_O(atomId,name,atomTable,atom), _ParentAtom(parentAtom), _GrandParentAtom(grandParentAtom),
+        _GreatGrandParentAtom(greatGrandParentAtom) {}
 
   Vector3 transformedParentPos() const;
   Vector3 transformedGrandParentPos() const;

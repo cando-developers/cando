@@ -166,7 +166,7 @@ public:
      * This allows restraints to be applied to the system
      * without having to add them to the molecule/aggregate.
      */
-//    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp keepInteraction );
+//    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp keepInteractionFactory );
 
 
 #if 0

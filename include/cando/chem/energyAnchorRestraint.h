@@ -179,7 +179,7 @@ public:
 
     virtual string	beyondThresholdInteractionsAsString();
 
-  EnergyAnchorRestraint_sp copyFilter(core::T_sp keepInteraction);
+  EnergyAnchorRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
 
 public:
     EnergyAnchorRestraint_O( const EnergyAnchorRestraint_O& ss ); //!< Copy constructor

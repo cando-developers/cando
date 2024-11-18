@@ -244,7 +244,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
           unless (member comp valid-components)
             do (error "~s is not a valid component name - must be one of ~s" comp valid-components))))
 
-(defun optimize-structure-debug (matter &key (keep-interaction t)
+(defun optimize-structure-debug (matter &key (keep-interaction-factory t)
                                           (disable-components nil)
                                           (enable-components nil)
                                           (use-excluded-atoms t)
@@ -265,7 +265,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
   (let* ((energy-function (chem:make-energy-function :matter matter
                                                      :use-excluded-atoms use-excluded-atoms
                                                      :assign-types t
-                                                     :keep-interaction keep-interaction))
+                                                     :keep-interaction-factory keep-interaction-factory))
          (min (chem:make-minimizer energy-function))
          (valid-components nil))
     (when disable-components
@@ -301,7 +301,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
     (finish-output t)
     (values matter energy-function)))
 
-(defun optimize-structure (matter &key (keep-interaction t)
+(defun optimize-structure (matter &key (keep-interaction-factory t)
                                     (disable-components nil)
                                     (enable-components nil)
                                     (use-excluded-atoms t)
@@ -323,7 +323,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
   (let* ((energy-function (chem:make-energy-function :matter matter
                                                      :use-excluded-atoms use-excluded-atoms
                                                      :assign-types t
-                                                     :keep-interaction keep-interaction))
+                                                     :keep-interaction-factory keep-interaction-factory))
          (min (chem:make-minimizer energy-function))
          (valid-components nil))
     (when disable-components
@@ -365,7 +365,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
     (finish-output t)
     (values matter energy-function)))
 
-(defun optimize-structure-with-restarts (matter &key (keep-interaction t)
+(defun optimize-structure-with-restarts (matter &key (keep-interaction-factory t)
                                                   (turn-off-nonbond t)
                                                   verbose
                                                   energy-function
@@ -380,7 +380,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                               energy-function
                               (chem:make-energy-function :matter matter
                                                          :assign-types t
-                                                         :keep-interaction keep-interaction)))
+                                                         :keep-interaction-factory keep-interaction-factory)))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
                          :sd-tolerance sd-tolerance
@@ -609,14 +609,14 @@ Disabling happens before enabling - so you can disable all with T and then selec
   ((dynamics :initarg :dynamics :accessor dynamics)
    (energy-function :initarg :energy-function :accessor energy-function)))
 
-(defun make-rapid-starting-geometry (agg &key energy-function accumulate-coordinates verbose (keep-interaction t))
+(defun make-rapid-starting-geometry (agg &key energy-function accumulate-coordinates verbose (keep-interaction-factory t))
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
   (let ((atom-types (make-hash-table))
         (energy-function (if energy-function
                              energy-function
                              (chem:make-energy-function :matter agg
                                                         :assign-types t
-                                                        :keep-interaction keep-interaction))))
+                                                        :keep-interaction-factory keep-interaction-factory))))
     (unless (= (chem:content-size agg) 1)
       (format t "The aggregate must have a single molecule.")
       (return-from make-rapid-starting-geometry nil))

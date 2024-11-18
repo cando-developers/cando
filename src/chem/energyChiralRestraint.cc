@@ -136,14 +136,15 @@ core::List_sp EnergyChiralRestraint::encode() const {
                                   core::Cons_O::create(INTERN_(kw,atom4), this->_Atom4));
 }
 
-EnergyChiralRestraint_sp EnergyChiralRestraint_O::copyFilter(core::T_sp keepInteraction) {
+EnergyChiralRestraint_sp EnergyChiralRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyChiralRestraint_O::staticClass() );
   EnergyChiralRestraint_sp copy = EnergyChiralRestraint_O::create();
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
     Atom_sp a3 = edi->_Atom3;
     Atom_sp a4 = edi->_Atom4;
-    if ( skipInteraction( keepInteraction, EnergyChiralRestraint_O::staticClass(), a1, a2, a3, a4 ) ) continue;
+    if ( skipInteraction( keepInteraction, a1, a2, a3, a4 ) ) continue;
     copy->_Terms.push_back(*edi);
   }
   return copy;

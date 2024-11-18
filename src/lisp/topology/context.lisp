@@ -203,7 +203,7 @@
                              :node-count (1+ node-count))
               (1+ node-count)))))
 
-(defgeneric matches-impl (pattern monomer oligomer match))
+(defgeneric matches-impl (pattern monomer oligomer match cache))
 
 (defclass wild-card-monomer () ())
 
@@ -217,11 +217,11 @@
        monomer)
       (t (error "monomer ~a must be a topology:monomer" monomer)))))
 
-(defmethod matches-impl ((pattern null) (monomer topology:monomer) oligomer match)
+(defmethod matches-impl ((pattern null) (monomer topology:monomer) oligomer match cache)
   (declare (ignore oligomer match))
   (ensure-monomer-or-nil monomer))
 
-(defmethod matches-impl ((pattern monomer-match-node) (monomer topology:monomer) (oligomer-space topology:oligomer-space) match)
+(defmethod matches-impl ((pattern monomer-match-node) (monomer topology:monomer) (oligomer-space topology:oligomer-space) match cache)
   (ensure-monomer-or-nil
    (progn
      (loop for monomer-name in (topology:monomers monomer)
@@ -230,71 +230,94 @@
      (add-match match (topology:monomers monomer) monomer)
      monomer)))
 
-(defmethod matches-impl ((pattern monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match)
+(defstruct match-cache monomer-names)
+
+(defun cached-stereoisomer-name (cache monomer oligomer)
+  (let ((cached-name (gethash monomer (match-cache-monomer-names cache))))
+    (if cached-name
+        cached-name
+        (let ((name (topology:current-stereoisomer-name monomer oligomer)))
+          (setf monomer (match-cache-monomer-names cache))
+          name))))
+
+(defmethod matches-impl ((pattern monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match cache)
   (ensure-monomer-or-nil
-   (let ((monomer-name (topology:current-stereoisomer-name monomer oligomer)))
+   (let ((monomer-name (cached-stereoisomer-name cache monomer oligomer)))
      (when (member monomer-name (names pattern))
        (add-match match monomer-name monomer)
        monomer))))
 
-(defmethod matches-impl ((pattern trained-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match)
-   (let ((monomer-name (topology:current-stereoisomer-name monomer oligomer)))
+(defmethod matches-impl ((pattern trained-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match cache)
+   (let ((monomer-name (cached-stereoisomer-name cache monomer oligomer)))
      (when (eq monomer-name (name pattern))
        (add-match match monomer-name monomer)
        monomer)))
 
-(defmethod matches-impl ((pattern untrained-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match)
-  (let ((monomer-name (topology:current-stereoisomer-name monomer oligomer)))
+(defmethod matches-impl ((pattern untrained-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match cache)
+  (let ((monomer-name (cached-stereoisomer-name cache monomer oligomer)))
     (change-class pattern 'trained-monomer-match-node
                   :name monomer-name)
     monomer))
 
-(defmethod matches-impl ((pattern wild-card-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match)
+(defmethod matches-impl ((pattern wild-card-monomer-match-node) (monomer topology:monomer) (oligomer topology:oligomer) match cache)
   (warn "Returning monomer ~s for wild-card-monomer-match-node" monomer)
   monomer)
 
-(defmethod matches-impl ((pattern plug-to-monomer-node) (monomer topology:monomer) oligomer match)
+(defmethod matches-impl ((pattern plug-to-monomer-node) (monomer topology:monomer) oligomer match cache)
   (ensure-monomer-or-nil
    (let* ((plug-name (plug-name pattern))
           (coupling (gethash plug-name (topology:couplings monomer))))
      (when coupling
        (add-match match plug-name)
        (let ((other-monomer (topology:other-monomer coupling monomer)))
-         (when (matches-impl (monomer-match-node pattern) other-monomer oligomer match)
+         (when (matches-impl (monomer-match-node pattern) other-monomer oligomer match cache)
            other-monomer))))))
 
-(defmethod matches-impl ((pattern (eql :***)) (monomer topology:monomer) oligomer match)
+(defmethod matches-impl ((pattern (eql :***)) (monomer topology:monomer) oligomer match cache)
   (ensure-monomer-or-nil
    *wild-card-monomer*))
 
-(defmethod matches-impl ((pattern chain-node) (monomer topology:monomer) oligomer match)
+(defmethod matches-impl ((pattern chain-node) (monomer topology:monomer) oligomer match cache)
   (ensure-monomer-or-nil
-   (let ((head-monomer (matches-impl (head pattern) monomer oligomer match)))
+   (let ((head-monomer (matches-impl (head pattern) monomer oligomer match cache)))
     (when head-monomer
-      (matches-impl (tail pattern) head-monomer oligomer match)))))
+      (matches-impl (tail pattern) head-monomer oligomer match cache)))))
 
-(defmethod matches-impl ((pattern branch-node) (monomer topology:monomer) oligomer match)
+(defmethod matches-impl ((pattern branch-node) (monomer topology:monomer) oligomer match cache)
   (ensure-monomer-or-nil
    (let ((cursor (cursor match)))
      (add-match match #\{)
-     (if (matches-impl (left pattern) monomer oligomer match)
+     (if (matches-impl (left pattern) monomer oligomer match cache)
          (progn
            (add-match match #\})
-           (matches-impl (right pattern) monomer oligomer match))
+           (matches-impl (right pattern) monomer oligomer match cache))
          (progn
            (unwind-cursor match cursor)
            nil)))))
+
+(defparameter *match-cache* nil)
+
+(defmacro with-match-cache (&body body)
+  `(let ((*match-cache* (make-match-cache :monomer-names (make-hash-table))))
+     ,@body))
 
 (defun match (pattern monomer oligomer-or-space)
   "Try to match the pattern starting on the monomer in the oligomer-space.
 If oligomer-or-space is an oligomer-space then the match can be iterated over to generate
 all monomer-contexts that match.  Use (match-iterator match) to generate that iterator."
-  (let ((match (make-instance 'match)))
-    (when (matches-impl pattern monomer oligomer-or-space match)
-      match)))
+  (if *match-cache*
+      (let ((match (make-instance 'match)))
+        (when (matches-impl pattern monomer oligomer-or-space match *match-cache*)
+          match))
+      (with-match-cache
+          (let ((match (make-instance 'match)))
+            (when (matches-impl pattern monomer oligomer-or-space match *match-cache*)
+              match))
+        )))
 
 
 (defun copy-specialized (matcher focus-monomer oligomer)
   (let ((untrained (%copy-specialize matcher)))
-    (monomer-context:match untrained focus-monomer oligomer)
+    (with-match-cache
+        (monomer-context:match untrained focus-monomer oligomer))
     untrained))

@@ -218,7 +218,7 @@ public:
 
   core::List_sp lookupStretchTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, core::HashTable_sp atomTypes );
 
-  EnergyStretch_sp copyFilter(core::T_sp keepInteraction);
+  EnergyStretch_sp copyFilter(core::T_sp keepInteractionFactory);
 
   void reset();
 public:

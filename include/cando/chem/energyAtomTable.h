@@ -217,7 +217,7 @@ public:
   size_t getAtomFlag(size_t index);
 
   void	dumpTerms(core::HashTable_sp atomTypes);
-  void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
+  void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
 
   size_t push_back_excluded_atom_indexes_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndexes, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indexes starting at 0.
@@ -226,7 +226,7 @@ public:
       To generate an AMBER excluded atom list, add 1 to each entry.
       Return Values(number_excluded_atoms,excluded_atom_list).
   */
-  CL_DEFMETHOD core::T_mv calculate_excluded_atom_list();
+  CL_DEFMETHOD core::T_mv calculate_excluded_atom_list(core::T_sp keepInteractionsFactory);
 
   // ------------------------------------------------------------
   //

@@ -157,20 +157,21 @@ and a list means disable those components. Use enable-components to in a second 
 : enable-components - NIL (default) or a list of component class names. NIL means enable no components and a list of component class names enables
 those components.
 : use-excluded-atoms - T (default) uses excluded atoms for nonbond terms and NIL uses pairwise terms. Only small molecules can use pairwise terms.
-: keep-interaction - T (default) means keep all interactions; NIL means no interactions (an empty energy function that
-evaluates nothing and (lambda (component-name &rest args) ...) will be called for each interaction and the function returns T or NIL if
+: keep-interaction-factory - T (default) means keep all interactions; NIL means no interactions (an empty energy function that
+evaluates nothing) and (lambda (component-class)) returns a (lambda (&rest atoms) ...) or specialized versions that take a fixed number of atom arguments
+that will be called for each interaction and the function returns T or NIL if
 each interaction should be added to the energy function.
 : assign-types - T (default) assign atom types as part of generating the energy function.  [I don't know what will happen if assing-types is NIL.)doc");
-CL_LAMBDA(&key matter disable-components enable-components (vdw-scale 1.0) (electrostatic-scale 1.0) (use-excluded-atoms t) (keep-interaction t) (assign-types t));
+CL_LAMBDA(&key matter disable-components enable-components (vdw-scale 1.0) (electrostatic-scale 1.0) (use-excluded-atoms t) (keep-interaction-factory t) (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
                                                              double vdwScale, double electrostaticScale,
-                                                             bool useExcludedAtoms, core::T_sp keepInteraction, bool assign_types )
+                                                             bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types )
 {
   auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
   me->setVdwScale(vdwScale);
   me->setElectrostaticScale(electrostaticScale);
-  if ( matter.notnilp() ) me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteraction,assign_types);
+  if ( matter.notnilp() ) me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteractionFactory,assign_types);
   //
   // Disable and then enable components
   //
@@ -1035,52 +1036,48 @@ void	EnergyFunction_O::dumpTerms()
   }
 }
 
+core::T_sp specializeKeepInteractionFactory( core::T_sp keepInteractionFactory, core::T_sp aclass ) {
+  if (keepInteractionFactory.nilp()) return keepInteractionFactory;
+  if (keepInteractionFactory == _lisp->_true()) return keepInteractionFactory;
+  core::T_sp keepInteractionFunction = core::eval::funcall(keepInteractionFactory,aclass);
+  return keepInteractionFunction;
+}
 
 bool skipInteraction( core::T_sp keepInteractionFunction,
-                      core::T_sp interactionClass,
-                      core::T_sp atomA,
-                      core::T_sp atomB,
-                      core::T_sp atomC,
-                      core::T_sp atomD,
-                      core::T_sp option )
+                      Atom_sp atomA,
+                      Atom_sp atomB,
+                      Atom_sp atomC,
+                      Atom_sp atomD )
 {
   if (keepInteractionFunction.nilp()) return true;
   if (keepInteractionFunction == _lisp->_true()) return false;
-  unlikely_if (gc::IsA<core::Function_sp>(keepInteractionFunction)) {
+  unlikely_if (!gc::IsA<core::Function_sp>(keepInteractionFunction)) {
     SIMPLE_ERROR("The object {} must be NIL, T or a function object", keepInteractionFunction );
   }
-  if (atomD.notnilp()) {
-    core::T_sp result = core::eval::funcall( keepInteractionFunction,
-                                             interactionClass,
-                                             atomA, atomB, atomC, atomD, option );
+  if (atomD.boundp()) {
+    core::T_sp result = core::eval::funcall( keepInteractionFunction, atomA, atomB, atomC, atomD );
     return result.nilp();
   }
-  if (atomC.notnilp()) {
-    core::T_sp result = core::eval::funcall( keepInteractionFunction,
-                                             interactionClass,
-                                             atomA, atomB, atomC );
+  if (atomC.boundp()) {
+    core::T_sp result = core::eval::funcall( keepInteractionFunction, atomA, atomB, atomC );
     return result.nilp();
   }
-  if (atomB.notnilp()) {
-    core::T_sp result = core::eval::funcall( keepInteractionFunction,
-                                             interactionClass,
-                                             atomA, atomB );
+  if (atomB.boundp()) {
+    core::T_sp result = core::eval::funcall( keepInteractionFunction, atomA, atomB );
     return result.nilp();
   }
-  if (atomA.notnilp()) {
-    core::T_sp result = core::eval::funcall( keepInteractionFunction,
-                                             interactionClass,
-                                             atomA );
+  if (atomA.boundp()) {
+    core::T_sp result = core::eval::funcall( keepInteractionFunction, atomA );
     return result.nilp();
   }
   return false;
 }
 
-int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp restraintIterator, core::T_sp keepInteraction, core::HashTable_sp atomTypes )
+int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp restraintIterator, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
 {
   int terms = 0;
   restraintIterator->first();
-  if (keepInteraction.nilp()) return 0;
+  if (keepInteractionFactory.nilp()) return 0;
   while ( restraintIterator->notDone() ) {
     Restraint_sp restraint = restraintIterator->current<Restraint_O>();
     if ( !restraint->isActive() ) goto CONT;
@@ -1088,7 +1085,8 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
     {
       RestraintDihedral_sp dih = (restraint).as<RestraintDihedral_O>();
       EnergyDihedralRestraint energyTerm;
-      if (skipInteraction(keepInteraction,RestraintDihedral_O::staticClass(), dih->getAtomA(), dih->getAtomB(), dih->getAtomC(), dih->getAtomD() )) goto CONT;
+      core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,RestraintDihedral_O::staticClass());
+      if (skipInteraction(keepInteraction, dih->getAtomA(), dih->getAtomB(), dih->getAtomC(), dih->getAtomD() )) goto CONT;
       energyTerm._Atom1 = dih->getAtomA();
       energyTerm._Atom2 = dih->getAtomB();
       energyTerm._Atom3 = dih->getAtomC();
@@ -1112,7 +1110,8 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       EnergyAnchorRestraint	iterm;
       Vector3		anchorPos;
       Atom_sp a1 = anchor->getAtom();
-      if ( skipInteraction(keepInteraction,RestraintAnchor_O::staticClass(),a1) ) goto CONT;
+      core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,RestraintAnchor_O::staticClass());
+      if ( skipInteraction(keepInteraction,a1) ) goto CONT;
       EnergyAtom* ea1 = this->getEnergyAtomPointer(a1);
       LOG("Create an anchor restraint for {}" , a1->description()  );
       anchorPos = anchor->getAnchorPos();
@@ -1135,7 +1134,8 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
         while ( loop.advanceLoopAndProcess() ) 
         {
           Atom_sp a1 = loop.getAtom();
-          if ( skipInteraction( keepInteraction, RestraintFixedNonbond_O::staticClass(), a1 ) ) goto CONT;
+          core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,RestraintFixedNonbond_O::staticClass());
+          if ( skipInteraction( keepInteraction, a1 ) ) goto CONT;
           if ( a1.isA<VirtualAtom_O>() ) continue; // skip virtuals
           this->_FixedNonbondRestraint->addFixedAtom(nonbondDb,a1,atomTypes);
           ++terms;
@@ -1158,13 +1158,14 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
 
 void EnergyFunction_O::_addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight, core::T_sp keepInteraction)
 {
-  if ( skipInteraction( keepInteraction, RestraintDihedral_O::staticClass(), a1, a2, a3, a4 ) ) return;
+  if ( skipInteraction( keepInteraction, a1, a2, a3, a4 ) ) return;
   this->_DihedralRestraint->addDihedralRestraint(this->asSmartPtr(),a1,a2,a3,a4,minDegrees*0.0174533,maxDegrees*0.0174533,weight);
 }
 
-void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens, core::T_sp keepInteraction )
+void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens, core::T_sp keepInteractionFactory )
 {
-  if (keepInteraction.nilp()) return;
+  if (keepInteractionFactory.nilp()) return;
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, RestraintDihedral_O::staticClass());
   gctools::Vec0<Atom_sp>::iterator ni;
   double transMin = -160.0;
   double transMax = 160.0;
@@ -1201,16 +1202,16 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
       LOG("Applying a secondary amide restraint between {} and {}" , ax->description() , ay->description()  );
 		    //
 		    // H3(ax2) and O5(ay1) should be trans
-      if (!skipInteraction(keepInteraction, EnergyDihedral_O::staticClass(), ax1, ax, ay, ay1 ))
+      if (!skipInteraction(keepInteraction, ax1, ax, ay, ay1 ))
         this->_addDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,keepInteraction);
       LOG("Restrain cis {} - {} - {} -{}" , ax1->description() , ax->description() , ay->description() , ay1->description()  );
-      if (!skipInteraction(keepInteraction, EnergyDihedral_O::staticClass(), ax1, ax, ay, ay2 )) 
+      if (!skipInteraction(keepInteraction, ax1, ax, ay, ay2 )) 
         this->_addDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,keepInteraction);
       LOG("Restrain trans {} - {} - {} -{}" , ax1->description() , ax->description() , ay->description() , ay2->description()  );
-      if (!skipInteraction(keepInteraction, EnergyDihedral_O::staticClass(), ax2, ax, ay, ay1 )) 
+      if (!skipInteraction(keepInteraction, ax2, ax, ay, ay1 )) 
         this->_addDihedralRestraint(ax2,ax,ay,ay1,transMin,transMax,weight,keepInteraction);
       LOG("Restrain trans {} - {} - {} -{}" , ax2->description() , ax->description() , ay->description() , ay1->description()  );
-      if (!skipInteraction(keepInteraction, EnergyDihedral_O::staticClass(), ax2, ax, ay, ay2 )) 
+      if (!skipInteraction(keepInteraction, ax2, ax, ay, ay2 )) 
         this->_addDihedralRestraint(ax2,ax,ay,ay2,cisMin,cisMax,weight,keepInteraction);
       LOG("Restrain cis {} - {} - {} -{}" , ax2->description() , ax->description() , ay->description() , ay2->description()  );
     }
@@ -1237,8 +1238,8 @@ SYMBOL_EXPORT_SC_(ChemPkg,identify_aromatic_rings);
 SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_aromaticity_informationSTAR);
 
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction t) (assign-types t));
-CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteraction, bool assign_types )
+CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) (assign-types t));
+CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types )
 {
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
@@ -1317,12 +1318,12 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 #endif
     }
   }
-  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,keepInteraction,cip,atomTypes);
+  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,keepInteractionFactory,cip,atomTypes);
 }
 
 
-CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction t) cip-priorities atom-types);
-CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteraction, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
+CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) cip-priorities atom-types);
+CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
 {
   if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
     SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
@@ -1395,9 +1396,9 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
       if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when about to call generate-molecule-energy-function-tables - it should not be");
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,keepInteraction,atomTypes);
+      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,keepInteractionFactory,atomTypes);
       if (chem__verbose(0)) core::clasp_write_string(fmt::format("Generating parameters for {} using {} force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
-      core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,keepInteraction);
+      core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,keepInteractionFactory);
       final_solute_residue_iptres += onemol->contentSize();
       ++number_of_molecules_nspm;
     }
@@ -1414,8 +1415,8 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
       core::T_sp force_field_name = onemol->force_field_name();
       core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
-      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,keepInteraction,atomTypes);
-      core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,keepInteraction);
+      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,keepInteractionFactory,atomTypes);
+      core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,keepInteractionFactory);
       ++number_of_molecules_nspm;
     }
   } else {
@@ -1428,9 +1429,9 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
       if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when we were about to call generate-molecule-energy-function-tables for a single molecule - it should not be");
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-      this->_AtomTable->constructFromMolecule(molecule,nonbondForceField,keepInteraction,atomTypes);
+      this->_AtomTable->constructFromMolecule(molecule,nonbondForceField,keepInteractionFactory,atomTypes);
     if (chem__verbose(0)) core::clasp_write_string(fmt::format("Generating parameters for {} using {} force-field.\n" , _rep_(molecule->getName()) , _rep_(force_field_name) ));
-    core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),molecule,forceField,keepInteraction);
+    core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),molecule,forceField,keepInteractionFactory);
     final_solute_residue_iptres = molecule->contentSize();
     number_of_molecules_nspm = 1;
     first_solvent_molecule_nspsol = 2;
@@ -1445,8 +1446,8 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   {
     if (chem__verbose(1)) core::clasp_write_string("About to calculate nonbond and restraint terms");
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
-    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,keepInteraction,atomTypes);
-    this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,keepInteraction,cip_priorities,atomTypes);
+    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,keepInteractionFactory,atomTypes);
+    this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,keepInteractionFactory,cip_priorities,atomTypes);
   }
   core::eval::funcall(_sym_report_parameter_warnings);
 }
@@ -1469,17 +1470,17 @@ core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
   return ht;
 }
 
-CL_LAMBDA((energy-function chem:energy-function) molecule ffstretches ffangles ffptors ffitors &key (keep-interaction t) atom-types)
+CL_LAMBDA((energy-function chem:energy-function) molecule ffstretches ffangles ffptors ffitors &key (keep-interaction-factory t) atom-types)
 CL_DOCSTRING(R"dx(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.)dx")
 CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule,
                                                                          FFStretchDb_sp ffstretches,
                                                                          FFAngleDb_sp ffangles,
                                                                          FFPtorDb_sp ffptors,
                                                                          FFItorDb_sp ffitors,
-                                                                         core::T_sp keepInteraction,
+                                                                         core::T_sp keepInteractionFactory,
                                                                          core::HashTable_sp atomTypes )
 {
-  if (keepInteraction.nilp()) return;
+  if (keepInteractionFactory.nilp()) return;
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
   core::Symbol_sp  t1, t2, t3, t4, t141, t144;
@@ -1513,11 +1514,12 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   {
     size_t terms = 0;
     size_t missing_terms = 0;
+    core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyStretch_O::staticClass() );
     loop.loopTopGoal(molecule,BONDS);
     while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getBondA1();
       a2 = loop.getBondA2();
-      if ( skipInteraction( keepInteraction, EnergyStretch_O::staticClass(), a1, a2 ) ) continue;
+      if ( skipInteraction( keepInteraction, a1, a2 ) ) continue;
 //      printf("%s:%d Looking at STRETCH term between %s - %s\n", __FILE__, __LINE__, _rep_(a1).c_str(), _rep_(a2).c_str());
       t1 = a1->getType(atomTypes);
       t2 = a2->getType(atomTypes);
@@ -1546,6 +1548,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 #endif
   // Search the angle terms
   {
+    core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyAngle_O::staticClass() );
     size_t terms = 0;
     size_t missing_terms = 0;
     loop.loopTopGoal(molecule,ANGLES);
@@ -1554,7 +1557,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       a1 = loop.getAtom1();
       a2 = loop.getAtom2();
       a3 = loop.getAtom3();
-      if ( skipInteraction( keepInteraction, EnergyAngle_O::staticClass(), a1, a2, a3 ) ) continue;
+      if ( skipInteraction( keepInteraction, a1, a2, a3 ) ) continue;
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
@@ -1576,6 +1579,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   }
   // Search the ptor terms
   {
+    core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedral_O::staticClass() );
     size_t terms = 0;
     size_t missing_terms = 0;
     loop.loopTopGoal(molecule,PROPERS);
@@ -1584,7 +1588,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       a2 = loop.getAtom2();
       a3 = loop.getAtom3();
       a4 = loop.getAtom4();
-      if ( skipInteraction( keepInteraction, EnergyDihedral_O::staticClass(), a1, a2, a3, a4 ) ) continue;
+      if ( skipInteraction( keepInteraction, a1, a2, a3, a4 ) ) continue;
       t1 = a1->getType(atomTypes);
       t2 = a2->getType(atomTypes);
       t3 = a3->getType(atomTypes);
@@ -1664,6 +1668,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   }
   // Search the itor terms
   {
+    core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedral_O::staticClass() );
     EnergyDihedral energyDihedral;
     size_t terms = 0;
     loop.loopTopGoal(molecule,IMPROPERS);
@@ -1673,7 +1678,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       a3 = loop.getAtom3();
       a4 = loop.getAtom4();
       FFItorDb_O::improperAtomSort(a1,a2,a4,atomTypes);
-      if ( skipInteraction( keepInteraction, EnergyDihedral_O::staticClass(), a1, a2, a3, a4 ) ) continue;
+      if ( skipInteraction( keepInteraction, a1, a2, a3, a4 ) ) continue;
       t1 = a1->getType(atomTypes);
       t2 = a2->getType(atomTypes);
       t3 = a3->getType(atomTypes);
@@ -1709,9 +1714,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
 CL_DOCSTRING(R"dx(Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.)dx");
-CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes )
+CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
 {
-  if (keepInteraction.nilp()) return;
+  if (keepInteractionFactory.nilp()) return;
   if (chem__verbose(0))
     core::clasp_write_string(fmt::format("Built atom table for {} atoms\n" , this->_AtomTable->getNumberOfAtoms()));
 #ifdef	DEBUG_DEFINE_ENERGY
@@ -1730,23 +1735,23 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
     // -----------
 //    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
       
-    this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, nonbondForceField);
-    this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteraction,atomTypes);
+    this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, nonbondForceField,keepInteractionFactory);
+    this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
     LOG("Done construct14InteractionTerms");
 //    printf("%s:%d:%s    nonbond -> %d\n", __FILE__, __LINE__, __FUNCTION__, _Nonbond->numberOfTerms());
 
   } else {
-    this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, nonbondForceField,atomTypes);
+    this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, nonbondForceField,atomTypes, keepInteractionFactory );
   }
   if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built nonbond table for {} terms\n" , this->_Nonbond->numberOfTerms()));
 }
 
 
-CL_LAMBDA((energy-function chem:energy-function) matter force-field &key (keep-interaction t) cip-priorities atom-types);
+CL_LAMBDA((energy-function chem:energy-function) matter force-field &key (keep-interaction-factory t) cip-priorities atom-types);
 CL_DOCSTRING(R"dx(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
 This should be called after generateStandardEnergyFunctionTables.
 You need to pass a hash-table of atoms to relative CIP priorities (calculated using CipPrioritizer_O::assignPrioritiesHashTable(matter) for stereochemical restraints.)dx")
-CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, core::T_sp ffNonbond, core::T_sp keepInteraction, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
+CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, core::T_sp ffNonbond, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
 {
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
@@ -1756,8 +1761,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFPtor_sp        ffPtor;
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
-  if (chem__verbose(1)) core::lisp_write(fmt::format("In generateRestraintEnergyFunctionTables keepInteraction = {}\n", keepInteraction) );
-  if (keepInteraction.nilp()) return;
+  if (chem__verbose(1)) core::lisp_write(fmt::format("In generateRestraintEnergyFunctionTables keepInteractionFactory = {}\n", keepInteractionFactory) );
+  if (keepInteractionFactory.nilp()) return;
     	//
 	// Setup the atom chiral restraints
 	//
@@ -1765,6 +1770,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
     if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
       SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
     }
+    core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyChiralRestraint_O::staticClass() );
     core::HashTable_sp cip = gc::As_unsafe<core::HashTable_sp>(cip_priorities);
     EnergyChiralRestraint	ichiral;
     Atom_sp	n1,n2,n3,n4;
@@ -1864,7 +1870,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           ichiral._Atom2 = ea2->atom();
           ichiral._Atom3 = eaCenter->atom();
           ichiral._Atom4 = ea3->atom();
-          if ( !skipInteraction( keepInteraction, EnergyChiralRestraint_O::staticClass(), ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
+          if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
             ichiral.term.I1 = ea1->coordinateIndexTimes3();
             ichiral.term.I2 = ea2->coordinateIndexTimes3();
             ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
@@ -1878,7 +1884,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           }
           
           ichiral._Atom4 = ea4->atom();
-          if ( !skipInteraction( keepInteraction, EnergyChiralRestraint_O::staticClass(), ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
+          if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
             ichiral.term.I4 = ea4->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
             ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
@@ -1896,7 +1902,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           ichiral._Atom2 = ea4->atom();
           ichiral._Atom3 = eaCenter->atom();
           ichiral._Atom4 = ea3->atom();
-          if ( !skipInteraction( keepInteraction, EnergyChiralRestraint_O::staticClass(), ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
+          if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
             ichiral.term.I1 = ea2->coordinateIndexTimes3();
             ichiral.term.I2 = ea4->coordinateIndexTimes3();
             ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
@@ -1909,7 +1915,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 				// on the chiral center, just flip the sign
 				// of K
           ichiral._Atom4 = ea1->atom();
-          if ( !skipInteraction( keepInteraction, EnergyChiralRestraint_O::staticClass(), ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
+          if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
             ichiral.term.I4 = ea1->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
             ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
@@ -1953,7 +1959,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 	//
   {
     IterateRestraints_sp restraintIt = IterateRestraints_O::create(matter);
-    int terms = this->_applyRestraints(ffNonbond,restraintIt,keepInteraction,atomTypes);
+    int terms = this->_applyRestraints(ffNonbond,restraintIt,keepInteractionFactory,atomTypes);
     if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built restraints including {} terms\n" , terms ));
   }
   LOG("Done terms" );
@@ -1962,12 +1968,12 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 
 
 CL_LISPIFY_NAME("addTermsForListOfRestraints");
-CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList, core::T_sp keepInteraction,core::HashTable_sp atomTypes)
+CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes)
 {
-  if (keepInteraction.nilp()) return;
+  if (keepInteractionFactory.nilp()) return;
   adapt::IterateCons_sp	iterate;
   iterate = adapt::IterateCons_O::create(restraintList);
-  this->_applyRestraints(forceField->getNonbondDb(),iterate,keepInteraction,atomTypes);
+  this->_applyRestraints(forceField->getNonbondDb(),iterate,keepInteractionFactory,atomTypes);
 }
 
 CL_DOCSTRING(R"doc(Write the coordinates into the nvector from the atom positions of the structure that this energy-function is based on.)doc");
@@ -2163,28 +2169,28 @@ void EnergyFunction_O::disableDebug()
 
 
 CL_DEFMETHOD
-EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteraction)
+EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory)
 {
   auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
   me->_Matter = this->_Matter;
   me->_AtomTable = this->_AtomTable;
   me->_NonbondCrossTermTable = this->_NonbondCrossTermTable;
   me->_BoundingBox = this->_BoundingBox;
-  if (keepInteraction.notnilp()) {
-    me->_Stretch = this->_Stretch->copyFilter(keepInteraction);
-    me->_Angle = this->_Angle->copyFilter(keepInteraction);
-    me->_Dihedral = this->_Dihedral->copyFilter(keepInteraction);
-    me->_Nonbond = this->_Nonbond->copyFilter(keepInteraction);
-    me->_DihedralRestraint = this->_DihedralRestraint->copyFilter(keepInteraction);
-    me->_ChiralRestraint = this->_ChiralRestraint->copyFilter(keepInteraction);
-    me->_AnchorRestraint = this->_AnchorRestraint->copyFilter(keepInteraction);
-    me->_FixedNonbondRestraint = this->_FixedNonbondRestraint->copyFilter(keepInteraction);
+  if (keepInteractionFactory.notnilp()) {
+    me->_Stretch = this->_Stretch->copyFilter(keepInteractionFactory);
+    me->_Angle = this->_Angle->copyFilter(keepInteractionFactory);
+    me->_Dihedral = this->_Dihedral->copyFilter(keepInteractionFactory);
+    me->_Nonbond = this->_Nonbond->copyFilter(keepInteractionFactory);
+    me->_DihedralRestraint = this->_DihedralRestraint->copyFilter(keepInteractionFactory);
+    me->_ChiralRestraint = this->_ChiralRestraint->copyFilter(keepInteractionFactory);
+    me->_AnchorRestraint = this->_AnchorRestraint->copyFilter(keepInteractionFactory);
+    me->_FixedNonbondRestraint = this->_FixedNonbondRestraint->copyFilter(keepInteractionFactory);
     ql::list ll;
     for ( auto cur : this->_OtherEnergyComponents ) {
       core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
       core::T_sp name = oCar(pair);
       EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
-      ll << core::Cons_O::create(name, component->filterCopyComponent(keepInteraction) );
+      ll << core::Cons_O::create(name, component->filterCopyComponent(keepInteractionFactory) );
     }
     me->_OtherEnergyComponents = ll.cons();
   }

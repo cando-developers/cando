@@ -192,7 +192,7 @@ public:
 
     virtual string	beyondThresholdInteractionsAsString();
 
-  EnergyChiralRestraint_sp copyFilter(core::T_sp keepInteraction);
+  EnergyChiralRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
 
 public:
     EnergyChiralRestraint_O( const EnergyChiralRestraint_O& ss ); //!< Copy constructor

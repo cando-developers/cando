@@ -318,7 +318,7 @@ public:
 
   CL_DEFMETHOD virtual void dumpTerms(core::HashTable_sp atomTypes) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteraction);
+  virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteractionFactory);
   
   CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                                        NVector_sp 	pos,

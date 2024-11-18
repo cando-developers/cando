@@ -100,8 +100,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
     (loop for joint across (joints atresidue)
           for name = (kin:joint/name joint)
           for atm = (chem:first-atom-with-name residue name)
-          for pos = (chem:get-position atm)
-          do (kin:set-pos joint pos))))
+          do (kin:xyz-joint/set-atom joint atm))))
 
 (defclass backbone-monomer-shape (residue-shape)
   ()
@@ -199,6 +198,16 @@ to the components and evaluate the BODY in that scope."
 (defmethod kin:orientation-transform ((jump-joint kin:jump-joint))
   (unless (boundp '*orientation*)
     (error "~s must be bound for kin:orientation-transform to work" '*orientation*))
+  (kin:orientation-transform *orientation*))
+
+(defmethod kin:orientation-transform ((joint kin:xyz-joint))
+  (unless (boundp '*orientation*)
+    (error "For joint ~s ~s must be bound for kin:orientation-transform to work" joint '*orientation*))
+  (kin:orientation-transform *orientation*))
+
+(defmethod kin:orientation-transform ((joint kin:stub-joint))
+  (unless (boundp '*orientation*)
+    (error "For joint ~s ~s must be bound for kin:orientation-transform to work" joint '*orientation*))
   (kin:orientation-transform *orientation*))
 
 (defmacro with-orientation (orientation &body body)
@@ -731,7 +740,8 @@ the atom-tree.
 ASSEMBLER - the assembler to update.
 OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wrong) in the assembler."
   (fill-internals-from-oligomer-shape assembler oligomer-shape verbose)
-  (adjust-internals assembler oligomer-shape))
+  (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
+    (adjust-internals assembler oligomer-shape)))
 
 
 (defun build-rotamer-shape-map (oligomer)

@@ -504,7 +504,7 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
 }
 
 CL_DEFMETHOD
-void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes )
+void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
 {
   uint idx = this->_Atoms.size();
   uint coordinateIndex = idx*3;
@@ -620,8 +620,15 @@ SYMBOL_EXPORT_SC_(ClPkg,copy_seq);
 
 /*! Calculate the AMBER excluded atom list and return two vectors, one containing the number of
 excluded atoms for each atom and the second containing the sorted excluded atom list */
-CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
+CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list(core::T_sp keepInteractionFactory)
 {
+  if (keepInteractionFactory.nilp()) {
+    SIMPLE_ERROR("keepInteractionFactory in calculate_excluded_atom_list is nil - it shoudn't be");
+  }
+  if (gc::IsA<core::Function_sp>(keepInteractionFactory)) {
+    SIMPLE_ERROR("keepInteractionFactory in calculate_excluded_atom_list is a function - add support for this or switch to nonbond terms");
+  }
+
 //  printf("%s:%d In calculate_excludec_atom_list\n", __FILE__, __LINE__ );
 
   core::ComplexVector_int32_t_sp number_excluded_atoms = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));

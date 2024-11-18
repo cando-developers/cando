@@ -192,7 +192,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
 
   virtual string	beyondThresholdInteractionsAsString();
  
-  EnergyDihedralRestraint_sp copyFilter(core::T_sp keepInteraction);
+  EnergyDihedralRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
 
  public:
   EnergyDihedralRestraint_O( const EnergyDihedralRestraint_O& ss ); //!< Copy constructor

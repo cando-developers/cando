@@ -261,20 +261,20 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   core::T_sp getFFNonbondDb();
 
-  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, core::T_sp nbforceField);
-  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes);
-  void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction );
-  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteraction, core::HashTable_sp atomTypes );
-  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField);
+  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory );
+  void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory );
+  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
+  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField, core::T_sp keepInteractionFactory );
 
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
-                                                            core::T_sp prepareAmberEnergyNonbond );
+                                                            core::T_sp prepareAmberEnergyNonbond,
+                                                            core::T_sp keepInteractionFactory );
 
   void constructNonbondTermsFromAList(core::List_sp values);
   core::List_sp nonbondTermsAsAList();
   
   void setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms);
-  EnergyNonbond_sp copyFilter(core::T_sp keepInteraction);
+  EnergyNonbond_sp copyFilter(core::T_sp keepInteractionFactory);
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
 

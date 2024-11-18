@@ -483,7 +483,9 @@
    #:make-backbone-dihedral-cache
    #:backbone-dihedral-cache
    #:monomer-center
-   #:validate-indexes-for-shape-keys))
+   #:validate-indexes-for-shape-keys
+   #:lookup-orientation
+   #:find-atom-for-joint))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
@@ -505,6 +507,7 @@
    #:match
    #:match-iterator
    #:copy-specialized
+   #:with-match-cache
    #:node-count))
 
 (defpackage #:topology.graphviz

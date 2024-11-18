@@ -729,12 +729,13 @@ core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_s
   return result.result();
 }
 
-EnergyStretch_sp EnergyStretch_O::copyFilter(core::T_sp keepInteraction) {
+EnergyStretch_sp EnergyStretch_O::copyFilter(core::T_sp keepInteractionFactory) {
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyStretch_O::staticClass() );
   EnergyStretch_sp copy = EnergyStretch_O::create();
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
-    if ( skipInteraction( keepInteraction, EnergyStretch_O::staticClass(), a1, a2 ) ) continue;
+    if ( skipInteraction( keepInteraction, a1, a2 ) ) continue;
     copy->_Terms.push_back(*edi);
   }
   return copy;

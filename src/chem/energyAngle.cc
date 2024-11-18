@@ -792,13 +792,14 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
   return result.result();
 }
 
-EnergyAngle_sp EnergyAngle_O::copyFilter(core::T_sp keepInteraction) {
+EnergyAngle_sp EnergyAngle_O::copyFilter(core::T_sp keepInteractionFactory ) {
   EnergyAngle_sp copy = EnergyAngle_O::create();
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyAngle_O::staticClass() );
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
     Atom_sp a3 = edi->_Atom3;
-    if ( skipInteraction( keepInteraction, EnergyAngle_O::staticClass(), a1, a2, a3 ) ) continue;
+    if ( skipInteraction( keepInteraction, a1, a2, a3 ) ) continue;
     copy->_Terms.push_back(*edi);
   }
   return copy;
