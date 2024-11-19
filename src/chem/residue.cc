@@ -369,7 +369,9 @@ CL_DEFMETHOD bool	Residue_O::containsAtom(Atom_sp a)
   return false;
 }
 
-
+CL_DEFUN bool chem__quickContainsAtom(Residue_sp r, Atom_sp a) {
+  return r->containsAtom(a);
+}
 
 //
 //	removeAtomDontDeleteBonds

@@ -71,38 +71,32 @@ inline	string	XmlTag_EnergyNonbond() { return "EnergyNonbond"; };
  */
 class EnergyNonbond : public EnergyTerm {
 public:
-	string	className()	{ return "EnergyNonbond"; };
-public:
-                // Parameters
-                // Variables
-	bool		_Is14;
-        Atom_sp      	_Atom1;
-        Atom_sp      	_Atom2;
-	REAL		_A;
-	REAL		_C;
-	REAL		_Charge1;
-	REAL		_Charge2;
-	REAL		_RStar;
-	TermNonBond	term;
-//	REAL		_NonBondScale; // Used in Amber
-//	REAL		_ElectrostaticScale; // Used in Amber
+  bool		_Is14;
+  Atom_sp      	_Atom1_enb;
+  Atom_sp      	_Atom2_enb;
+  REAL		_A_enb;
+  REAL		_C_enb;
+  REAL		_Charge1_enb;
+  REAL		_Charge2_enb;
+  REAL		_RStar_enb;
+  TermNonBond	term;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	bool		_calcForce;
-	bool		_calcDiagonalHessian;
-	bool		_calcOffDiagonalHessian;
+  bool		_calcForce;
+  bool		_calcDiagonalHessian;
+  bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_Nonbond_debugEvalDeclares.cc>
 #endif
-
-  Atom_sp	getAtom1() { return this->_Atom1; };
-  Atom_sp	getAtom2() { return this->_Atom2; };
-  double	getDistance();
+public:
+  string	className()	{ return "EnergyNonbond"; };
+  Atom_sp	getAtom1() { return this->_Atom1_enb; };
+  Atom_sp	getAtom2() { return this->_Atom2_enb; };
   bool	defineFrom(core::T_sp	forceField,
                    bool		is14,
                    EnergyAtom	*iea1,
                    EnergyAtom	*iea2,
                    EnergyNonbond_sp nb,
                    core::HashTable_sp atomTypes );
-bool	defineForAtomPair(core::T_sp	forceField,
+  bool	defineForAtomPair(core::T_sp	forceField,
                           bool		is14,
                           Atom_sp        a1,
                           Atom_sp        a2,
@@ -113,13 +107,13 @@ bool	defineForAtomPair(core::T_sp	forceField,
 
 public:
 public:
-	adapt::QDomNode_sp	asXml();
-	void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
-	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
+  adapt::QDomNode_sp	asXml();
+  void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
+  void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
 public:
-        core::List_sp encode() const;
-        void decode(core::List_sp alist);
+  core::List_sp encode() const;
+  void decode(core::List_sp alist);
 };
 };
 

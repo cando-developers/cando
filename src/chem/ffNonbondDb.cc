@@ -363,13 +363,13 @@ CL_DEFMETHOD bool    FFNonbondDb_O::hasType(core::Symbol_sp type)
   return this->_Parameters->gethash(type).notnilp();
 }
 
-CL_DEFMETHOD core::T_sp FFNonbondDb_O::FFNonbond_findType(core::Symbol_sp type)
+CL_DEFUN core::T_sp chem__FFNonbond_findType(FFNonbondDb_sp ffNonbondDb, core::Symbol_sp type)
 {
-  core::T_sp val = this->_Parameters->gethash(type);
+  core::T_sp val = ffNonbondDb->_Parameters->gethash(type);
   if ( val.fixnump() ) {
 //    printf("%s:%d:%s FFNonbondDb_O::findType type: %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(type).c_str());
     uint index = static_cast<uint>(val.unsafe_fixnum());
-    return this->_Terms[index];
+    return ffNonbondDb->_Terms[index];
   }
   return nil<core::T_O>();
 }

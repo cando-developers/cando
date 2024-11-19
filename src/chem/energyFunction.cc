@@ -151,6 +151,16 @@ core::List_sp EnergyFunction_O::allComponents() const {
   return result;
 }
 
+CL_DOCSTRING(R"doc(Create an energy-scale object for an energy-function.)doc");
+CL_LISPIFY_NAME(make_energy_scale);
+CL_DEF_CLASS_METHOD EnergyScale_sp EnergyScale_O::make()
+{
+  auto energyScale = gctools::GC<EnergyScale_O>::allocate_with_default_constructor();
+  return energyScale;
+}
+
+
+
 CL_DOCSTRING(R"doc(Create an energy function for the matter.
 : disable-components - NIL (default), T or a list of component class names.  NIL means don't disable any components; T means disable all components;
 and a list means disable those components. Use enable-components to in a second step enable components.
@@ -162,15 +172,16 @@ evaluates nothing) and (lambda (component-class)) returns a (lambda (&rest atoms
 that will be called for each interaction and the function returns T or NIL if
 each interaction should be added to the energy function.
 : assign-types - T (default) assign atom types as part of generating the energy function.  [I don't know what will happen if assing-types is NIL.)doc");
-CL_LAMBDA(&key matter disable-components enable-components (vdw-scale 1.0) (electrostatic-scale 1.0) (use-excluded-atoms t) (keep-interaction-factory t) (assign-types t));
+CL_LAMBDA(&key matter disable-components enable-components energy-scale (use-excluded-atoms t) (keep-interaction-factory t) (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
-                                                             double vdwScale, double electrostaticScale,
-                                                             bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types )
+                                                             core::T_sp energyScale, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types )
 {
+  if (energyScale.unboundp() || energyScale.nilp()) {
+    energyScale = gctools::GC<EnergyScale_O>::allocate_with_default_constructor();
+  };
   auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
-  me->setVdwScale(vdwScale);
-  me->setElectrostaticScale(electrostaticScale);
+  me->setEnergyScale(energyScale);
   if ( matter.notnilp() ) me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteractionFactory,assign_types);
   //
   // Disable and then enable components
@@ -229,6 +240,20 @@ CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, 
   }
   return me;
 };
+
+
+EnergyScale_sp EnergyFunction_O::energyScale() {
+  return gc::As<EnergyScale_sp>(this->_EnergyScale);
+}
+
+void EnergyFunction_O::setEnergyScale(core::T_sp energyScale) {
+  if (!gc::IsA<EnergyScale_sp>(energyScale)) {
+    TYPE_ERROR(energyScale,_sym_EnergyScale_O);
+  }
+  this->_EnergyScale = energyScale;
+}
+
+
 CL_DOCSTRING("Return (values enabled-component-class-names disabled-component-class-names)");
 CL_DEFMETHOD core::T_mv EnergyFunction_O::enabledDisabled() const
 {
@@ -288,7 +313,6 @@ void	EnergyFunction_O::initialize()
 #endif
   this->setScoringFunctionName(nil<core::T_O>());
   this->_Message = nil<core::T_O>();
-  this->setDielectricConstant(1.0);
   this->useDefaultSettings();
 }
 
@@ -321,9 +345,6 @@ void	EnergyFunction_O::useDefaultSettings()
   this->_DihedralRestraint->initialize();
   this->_FixedNonbondRestraint->initialize();
 #endif
-  this->_ChiralRestraintWeight = DefaultChiralRestraintWeight;
-  this->_ChiralRestraintOffset = DefaultChiralRestraintOffset;
-  this->_AnchorRestraintWeight = DefaultAnchorRestraintWeight;
   this->_RestrainSecondaryAmides = true;
 }
 
@@ -1118,7 +1139,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       iterm.term.xa = anchorPos.getX();
       iterm.term.ya = anchorPos.getY();
       iterm.term.za = anchorPos.getZ();
-      iterm.term.ka = this->_AnchorRestraintWeight;
+      iterm.term.ka = this->energyScale()->_AnchorRestraintWeight;
       iterm.term.I1 = ea1->coordinateIndexTimes3();
       this->_AnchorRestraint->addTerm(iterm);
       ++terms;
@@ -1358,10 +1379,6 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   this->_AtomTable->setNonbondForceFieldForAggregate(nonbondForceField);
   
   //
-  // This should be user configurable from a dynamic variable that contains a bunch of
-  // system parameters
-  //
-  this->_DielectricConstant = 1.0;
 
   // Separate the molecules for solute from the solvent and handle them solute first then solvent
   size_t final_solute_residue_iptres = 0;
@@ -1875,8 +1892,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             ichiral.term.I2 = ea2->coordinateIndexTimes3();
             ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
             ichiral.term.I4 = ea3->coordinateIndexTimes3();
-            ichiral.term.K = this->_ChiralRestraintWeight * side;
-            ichiral.term.CO = this->_ChiralRestraintOffset;
+            ichiral.term.K = this->energyScale()->_ChiralRestraintWeight * side;
+            ichiral.term.CO = this->energyScale()->_ChiralRestraintOffset;
             this->_ChiralRestraint->addTerm(ichiral);
 				// Now apply it to the other atom
 				// on the chiral center, just flip the sign
@@ -1887,8 +1904,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
             ichiral.term.I4 = ea4->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
-            ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
-            ichiral.term.CO = this->_ChiralRestraintOffset;
+            ichiral.term.K = this->energyScale()->_ChiralRestraintWeight * side * -1.0;
+            ichiral.term.CO = this->energyScale()->_ChiralRestraintOffset;
             this->_ChiralRestraint->addTerm(ichiral);
           }
 			// To try and increase the number of molecules that
@@ -1907,8 +1924,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             ichiral.term.I2 = ea4->coordinateIndexTimes3();
             ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
             ichiral.term.I4 = ea3->coordinateIndexTimes3();
-            ichiral.term.K = this->_ChiralRestraintWeight * side;
-            ichiral.term.CO = this->_ChiralRestraintOffset;
+            ichiral.term.K = this->energyScale()->_ChiralRestraintWeight * side;
+            ichiral.term.CO = this->energyScale()->_ChiralRestraintOffset;
             this->_ChiralRestraint->addTerm(ichiral);
           }
 				// Now apply it to the other atom
@@ -1918,8 +1935,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
             ichiral.term.I4 = ea1->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
-            ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
-            ichiral.term.CO = this->_ChiralRestraintOffset;
+            ichiral.term.K = this->energyScale()->_ChiralRestraintWeight * side * -1.0;
+            ichiral.term.CO = this->energyScale()->_ChiralRestraintOffset;
             this->_ChiralRestraint->addTerm(ichiral);
           }
         } else {

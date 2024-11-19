@@ -69,6 +69,7 @@ namespace       chem
   FORWARD(FFPtorDb);
   FORWARD(FFItorDb);
   FORWARD(FFNonbondDb);
+  FORWARD(EnergyScale);
   
   class EnergyAtom;
 
@@ -117,6 +118,48 @@ bool skipInteraction( core::T_sp keepInteractionFunction,
   FORWARD(EnergyFunction);
 };
 
+namespace chem {
+  FORWARD(EnergyScale);
+class EnergyScale_O : public core::CxxObject_O 
+  {
+    LISP_CLASS(chem,ChemPkg,EnergyScale_O,"EnergyScale",core::CxxObject_O);
+  public:
+    double		                _DielectricConstant;
+    double		                _NonbondCutoff;
+    double		                _ScaleVdw;
+    double		                _ScaleElectrostatic;
+    double				_ChiralRestraintWeight;
+    double				_ChiralRestraintOffset;
+    double				_AnchorRestraintWeight;
+    double				_FixedNonbondRestraintWeight;
+    EnergyScale_O() : _DielectricConstant(1.0),
+                      _NonbondCutoff(16.0),
+                      _ScaleVdw(1.0),
+                      _ScaleElectrostatic(1.0),
+                      _ChiralRestraintWeight(1.0),
+                      _ChiralRestraintOffset(1.0),
+                      _AnchorRestraintWeight(1.0),
+                      _FixedNonbondRestraintWeight(1.0)
+    {
+      this->_ChiralRestraintWeight = DefaultChiralRestraintWeight;
+      this->_ChiralRestraintOffset = DefaultChiralRestraintOffset;
+      this->_AnchorRestraintWeight = DefaultAnchorRestraintWeight;
+    };
+    static EnergyScale_sp make();
+    CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
+    CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
+    CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
+    CL_DEFMETHOD double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
+    CL_DEFMETHOD void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
+    CL_DEFMETHOD double	getDielectricConstant() { return this->_DielectricConstant; };
+    CL_DEFMETHOD void	setNonbondCutoff(double d) { this->_NonbondCutoff = d; };
+    CL_DEFMETHOD double	getNonbondCutoff() { return this->_NonbondCutoff; };
+
+};
+
+};
+
+
 template <>
 struct gctools::GCInfo<chem::EnergyFunction_O> {
   static bool constexpr NeedsInitialization = true;
@@ -131,10 +174,9 @@ namespace chem {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
   public:
     static EnergyFunction_sp make(core::T_sp matter,
-                                  core::T_sp disableComponents,
-                                  core::List_sp enableComponents,
-                                  double vdwScale = 1.0,
-                                  double eelScale = 1.0,
+                                  core::T_sp disableComponents=nil<core::T_O>(),
+                                  core::List_sp enableComponents=nil<core::T_O>(),
+                                  core::T_sp energyScale=unbound<core::T_O>(),
                                   bool useExcludedAtoms=false,
                                   core::T_sp keepInteractionFactory=nil<core::T_O>(),
                                   bool assign_types=false );
@@ -145,6 +187,7 @@ namespace chem {
     void fields(core::Record_sp node);
   public:
     Matter_sp				_Matter;	// Aggregate or Molecule
+    core::T_sp                      _EnergyScale;
     /*! Stores cross terms for evaluating nonbond interactions
      */
     FFNonbondCrossTermTable_sp		_NonbondCrossTermTable;
@@ -159,25 +202,13 @@ namespace chem {
     EnergyFixedNonbondRestraint_sp	_FixedNonbondRestraint;
     core::List_sp                       _OtherEnergyComponents; // alist of additional (name . energy-function) pairs
     BoundingBox_sp                      _BoundingBox;
-    double		                _DielectricConstant;
-    double		                _NonbondCutoff;
-    double		                _ScaleVdw;
-    double		                _ScaleElectrostatic;
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
     bool					_RestrainSecondaryAmides;
-    double					_ChiralRestraintWeight;
-    double					_ChiralRestraintOffset;
-    double					_AnchorRestraintWeight;
-    double					_FixedNonbondRestraintWeight;
     core::T_sp                   _Message;
     core::List_sp			_MissingParameters;
   public:
-  CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
-  CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
-  CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
-  CL_DEFMETHOD double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
   public:
     void	_eraseMissingParameters() { this->_MissingParameters = nil<core::T_O>();};
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
@@ -196,6 +227,8 @@ namespace chem {
 
     core::List_sp allComponents() const;
 
+    EnergyScale_sp energyScale();
+    void  setEnergyScale(core::T_sp energyScale);
     string	energyTermsEnabled() ;
     void	loadCoordinatesIntoVector(NVector_sp pos);
     void	saveCoordinatesFromVector(NVector_sp pos);
@@ -286,11 +319,6 @@ namespace chem {
     void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
 
-    CL_DEFMETHOD void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
-    CL_DEFMETHOD double	getDielectricConstant() { return this->_DielectricConstant; };
-    CL_DEFMETHOD void	setNonbondCutoff(double d) { this->_NonbondCutoff = d; };
-    CL_DEFMETHOD double	getNonbondCutoff() { return this->_NonbondCutoff; };
-
     /*! Add the restraints to the energy function.
      * This allows restraints to be applied to the system
      * without having to add them to the molecule/aggregate.
@@ -345,10 +373,6 @@ namespace chem {
         , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
         ,_OtherEnergyComponents(nil<core::T_O>())
         ,_BoundingBox(bounding_box)
-        ,_DielectricConstant(1.0)
-        ,_NonbondCutoff(16.0)
-        ,_ScaleVdw(1.0)
-        ,_ScaleElectrostatic(1.0)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
 
@@ -366,10 +390,6 @@ namespace chem {
         , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
         ,_OtherEnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
-        ,_DielectricConstant(1.0)
-        ,_NonbondCutoff(16.0)
-        ,_ScaleVdw(1.0)
-        ,_ScaleElectrostatic(1.0)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
     EnergyFunction_O( const EnergyFunction_O& ef ) :

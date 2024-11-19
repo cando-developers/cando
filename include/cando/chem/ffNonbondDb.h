@@ -283,7 +283,6 @@ namespace chem {
     
     void add( FFNonbond_sp nonbonded );
     bool hasType( core::Symbol_sp type);
-    core::T_sp FFNonbond_findType( core::Symbol_sp type );
     FFNonbond_sp getFFNonbondUsingTypeIndex( uint typeIdx );
     uint findTypeIndex( core::Symbol_sp type );
     size_t ffnonbond_find_atom_type_position( core::Symbol_sp type );
@@ -311,6 +310,7 @@ namespace chem {
   };
 
 
+core::T_sp chem__FFNonbond_findType( FFNonbondDb_sp ffNonbondDb, core::Symbol_sp type );
 
 };
 #endif
