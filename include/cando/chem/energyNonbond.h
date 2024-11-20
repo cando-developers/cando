@@ -71,15 +71,10 @@ inline	string	XmlTag_EnergyNonbond() { return "EnergyNonbond"; };
  */
 class EnergyNonbond : public EnergyTerm {
 public:
-  bool		_Is14;
   Atom_sp      	_Atom1_enb;
   Atom_sp      	_Atom2_enb;
-  REAL		_A_enb;
-  REAL		_C_enb;
-  REAL		_Charge1_enb;
-  REAL		_Charge2_enb;
-  REAL		_RStar_enb;
   TermNonBond	term;
+  bool		_Is14;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
   bool		_calcForce;
   bool		_calcDiagonalHessian;
@@ -90,12 +85,14 @@ public:
   string	className()	{ return "EnergyNonbond"; };
   Atom_sp	getAtom1() { return this->_Atom1_enb; };
   Atom_sp	getAtom2() { return this->_Atom2_enb; };
+#if 0
   bool	defineFrom(core::T_sp	forceField,
                    bool		is14,
                    EnergyAtom	*iea1,
                    EnergyAtom	*iea2,
                    EnergyNonbond_sp nb,
                    core::HashTable_sp atomTypes );
+#endif
   bool	defineForAtomPair(core::T_sp	forceField,
                           bool		is14,
                           Atom_sp        a1,
@@ -166,9 +163,10 @@ class EnergyNonbond_O : public EnergyComponent_O
  public:
   typedef EnergyNonbond TermType;
  public: // instance variables
-  double		_ScaleElectrostatic;
   double		_EnergyElectrostatic;
   bool                _UsesExcludedAtoms;
+    size_t                              _NonbondsKept;
+    size_t                              _NonbondsDiscarded;
     // Original way of defining nonbonds with list of nonbond terms
   gctools::Vec0<TermType>	_Terms;
   gctools::Vec0<TermType>	_BeyondThresholdTerms;
@@ -193,6 +191,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   // Excluded atom table
   core::SimpleVector_int32_t_sp   _NumberOfExcludedAtomIndexes;
   core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
+  size_t _InteractionsKept;
+  size_t _InteractionsDiscarded;
  public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
@@ -274,7 +274,9 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   EnergyNonbond_O() :
       _UsesExcludedAtoms(true),
-      _FFNonbondDb(nil<core::T_O>())
+      _FFNonbondDb(nil<core::T_O>()),
+      _InteractionsKept(0),
+      _InteractionsDiscarded(0)
   {};
 };
 

@@ -242,7 +242,7 @@ CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, 
 };
 
 
-EnergyScale_sp EnergyFunction_O::energyScale() {
+CL_DEFMETHOD EnergyScale_sp EnergyFunction_O::energyScale() {
   return gc::As<EnergyScale_sp>(this->_EnergyScale);
 }
 
@@ -352,6 +352,7 @@ void	EnergyFunction_O::useDefaultSettings()
 
 void EnergyFunction_O::fields(core::Record_sp node)
 {
+  node->field_if_not_unbound(INTERN_(kw,EnergyScale),this->_EnergyScale);
   node->field_if_not_unbound(INTERN_(kw,AtomTable),this->_AtomTable);
   node->field_if_not_unbound(INTERN_(kw,Stretch),this->_Stretch);
 #if USE_ALL_ENERGY_COMPONENTS
