@@ -232,7 +232,13 @@
 
 (defstruct match-cache monomer-names)
 
+(defparameter *trap-cached-stereoisomer-name* nil)
 (defun cached-stereoisomer-name (cache monomer oligomer)
+  #+(or)(when *trap-cached-stereoisomer-name*
+    (let ((*print-pretty* nil))
+      (format t "Looking up monomer ~s in oligomer ~s~%" monomer oligomer))
+    (finish-output t)
+    (break "CHeck what is being searched"))
   (let ((cached-name (gethash monomer (match-cache-monomer-names cache))))
     (if cached-name
         cached-name

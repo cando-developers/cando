@@ -365,10 +365,15 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                             for foldamer = (foldamer oligomer-space)
                             for molecule-index from 0
                             for monomer-to-monomer-shape-map = (monomer-shape-map oligomer-shape)
-                            do (loop for monomer across (monomers oligomer-space)
+                            do (if monomer-subset
+                                   (loop for monomer in (alexandria:hash-table-keys (topology:monomers monomer-subset))
+                                         when (topology:monomer-position monomer (topology:oligomer-space oligomer))
+                                           do (let ((monomer-context (foldamer-monomer-context monomer oligomer foldamer)))
+                                                (setf (gethash monomer monomer-contexts) monomer-context)))
+                                   (loop for monomer across (monomers oligomer-space)
                                      for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
-                                     do (setf (gethash monomer monomer-contexts) monomer-context))
-                               ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
+                                     do (setf (gethash monomer monomer-contexts) monomer-context)))
+                               ;. This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
                                ;; Use the monomers-to-topologys
                             do (let* ((atmolecule (build-atmolecule-using-oligomer oligomer
                                                                                    monomer-to-monomer-shape-map
@@ -784,8 +789,7 @@ Some specialized methods will need coordinates for the assembler"))
 (defun copy-atom-positions-to-xyz-joint-pos (assembler)
   (do-joint-atom (joint atm assembler)
     (when (typep joint 'kin:xyz-joint)
-        (when (geom:is-defined pos)
-          (kin:xyz-joint/set-atom joint atm)))))
+          (kin:xyz-joint/set-atom joint atm))))
 
 (defun copy-xyz-joint-pos-to-atom-positions (assembler)
   (do-joint-atom (joint atm assembler)

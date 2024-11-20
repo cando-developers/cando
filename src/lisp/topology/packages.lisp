@@ -485,7 +485,8 @@
    #:monomer-center
    #:validate-indexes-for-shape-keys
    #:lookup-orientation
-   #:find-atom-for-joint))
+   #:find-atom-for-joint
+   #:monomer-position))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

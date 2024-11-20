@@ -511,6 +511,10 @@ Examples:
     oligomer-space))
 
 
+(defun monomer-position (monomer oligomer-space)
+  "Return the position of the MONOMER in the OLIGOMER-SPACE or NIL"
+  (position monomer (monomers oligomer-space)))
+
 (defun monomers-of-shape-kind (oligomer-space desired-shape-kind)
   "Return a list of monomers with the desired-shape-kind"
   (loop for monomer across (monomers oligomer-space)
