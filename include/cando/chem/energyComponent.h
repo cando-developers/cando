@@ -71,6 +71,30 @@ This is an open source license for the CANDO software from Temple University, bu
 #endif
 #include <cando/adapt/quickDom.fwd.h>// energyComponent.h wants QDomNode needs quickDom.fwd.h
 
+namespace chem {
+class KahanSummation {
+private:
+  double sum;
+  double c; // A running compensation for lost low-order bits.
+
+public:
+      // Constructor initializes sum and compensation to zero.
+  KahanSummation() : sum(0.0), c(0.0) {}
+
+      // Adds a new value to the running total using Kahan summation algorithm.
+  void add(double input) {
+    double y = input - c;
+    double t = sum + y;
+    c = (t - sum) - y;
+    sum = t;
+  }
+
+      // Returns the current value of the sum.
+  double getSum() const {
+    return sum;
+  }
+};
+};
 namespace       chem {
 
 
@@ -280,6 +304,9 @@ public:
 //protected:		// Define these in subclasses
 //	vector<TermClass>	_Terms;
 //	vector<TermClass>	_BeyondThresholdTerms;
+public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
  public:
   CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   void setScale(double s) {this->_Scale = s; };
@@ -322,6 +349,7 @@ public:
   
   CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                                        NVector_sp 	pos,
+                                                     core::T_sp energyScale,
                                                        core::T_sp componentEnergy,
                                                        bool 		calcForce,
                                                        gc::Nilable<NVector_sp> 	force,

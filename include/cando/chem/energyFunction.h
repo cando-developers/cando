@@ -69,7 +69,6 @@ namespace       chem
   FORWARD(FFPtorDb);
   FORWARD(FFItorDb);
   FORWARD(FFNonbondDb);
-  FORWARD(EnergyScale);
   
   class EnergyAtom;
 
@@ -96,10 +95,6 @@ namespace       chem
 FORWARD(BoundingBox);
 
 
-#define	DefaultChiralRestraintOffset	0.2
-#define	DefaultChiralRestraintWeight	100000.0
-#define	DefaultAnchorRestraintWeight	10.0
-
 core::T_sp specializeKeepInteractionFactory( core::T_sp keepInteractionFactory, core::T_sp aclass );
 
 bool skipInteraction( core::T_sp keepInteractionFunction,
@@ -116,47 +111,6 @@ bool skipInteraction( core::T_sp keepInteractionFunction,
   };
 
   FORWARD(EnergyFunction);
-};
-
-namespace chem {
-  FORWARD(EnergyScale);
-class EnergyScale_O : public core::CxxObject_O 
-  {
-    LISP_CLASS(chem,ChemPkg,EnergyScale_O,"EnergyScale",core::CxxObject_O);
-  public:
-    double		                _DielectricConstant;
-    double		                _NonbondCutoff;
-    double		                _ScaleVdw;
-    double		                _ScaleElectrostatic;
-    double				_ChiralRestraintWeight;
-    double				_ChiralRestraintOffset;
-    double				_AnchorRestraintWeight;
-    double				_FixedNonbondRestraintWeight;
-    EnergyScale_O() : _DielectricConstant(1.0),
-                      _NonbondCutoff(16.0),
-                      _ScaleVdw(1.0),
-                      _ScaleElectrostatic(1.0),
-                      _ChiralRestraintWeight(1.0),
-                      _ChiralRestraintOffset(1.0),
-                      _AnchorRestraintWeight(1.0),
-                      _FixedNonbondRestraintWeight(1.0)
-    {
-      this->_ChiralRestraintWeight = DefaultChiralRestraintWeight;
-      this->_ChiralRestraintOffset = DefaultChiralRestraintOffset;
-      this->_AnchorRestraintWeight = DefaultAnchorRestraintWeight;
-    };
-    static EnergyScale_sp make();
-    CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
-    CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
-    CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
-    CL_DEFMETHOD double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
-    CL_DEFMETHOD void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
-    CL_DEFMETHOD double	getDielectricConstant() { return this->_DielectricConstant; };
-    CL_DEFMETHOD void	setNonbondCutoff(double d) { this->_NonbondCutoff = d; };
-    CL_DEFMETHOD double	getNonbondCutoff() { return this->_NonbondCutoff; };
-
-};
-
 };
 
 
@@ -176,7 +130,6 @@ namespace chem {
     static EnergyFunction_sp make(core::T_sp matter,
                                   core::T_sp disableComponents=nil<core::T_O>(),
                                   core::List_sp enableComponents=nil<core::T_O>(),
-                                  core::T_sp energyScale=unbound<core::T_O>(),
                                   bool useExcludedAtoms=false,
                                   core::T_sp keepInteractionFactory=nil<core::T_O>(),
                                   bool assign_types=false );
@@ -187,7 +140,6 @@ namespace chem {
     void fields(core::Record_sp node);
   public:
     Matter_sp				_Matter;	// Aggregate or Molecule
-    core::T_sp                      _EnergyScale;
     /*! Stores cross terms for evaluating nonbond interactions
      */
     FFNonbondCrossTermTable_sp		_NonbondCrossTermTable;
@@ -227,8 +179,6 @@ namespace chem {
 
     core::List_sp allComponents() const;
 
-    EnergyScale_sp energyScale();
-    void  setEnergyScale(core::T_sp energyScale);
     string	energyTermsEnabled() ;
     void	loadCoordinatesIntoVector(NVector_sp pos);
     void	saveCoordinatesFromVector(NVector_sp pos);
@@ -244,7 +194,7 @@ namespace chem {
     void setBoundingBox(BoundingBox_sp bounding_box);
     void makUnboundBoundingBox();
     
-    ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask );
+    ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask );
 
     CL_LISPIFY_NAME("getMatter");
     CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
@@ -326,9 +276,10 @@ namespace chem {
     void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
 
 
-    double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i, core::T_sp activeAtomMask );
-    double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j, core::T_sp activeAtomMask );
+    double	calculateNumericalDerivative(NVector_sp pos, core::T_sp energyScale, double delta, uint i, core::T_sp activeAtomMask );
+    double	calculateNumericalSecondDerivative(NVector_sp pos, core::T_sp energyScale, double delta, uint i, uint j, core::T_sp activeAtomMask );
     double	evaluateAll(NVector_sp pos,
+                            core::T_sp energyScale,
                             core::T_sp componentEnergy,
                             bool calcForce,
                             gc::Nilable<NVector_sp> force,
@@ -348,8 +299,8 @@ namespace chem {
 //		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
     uint		countTermsBeyondThreshold();
 
-    void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta, core::T_sp activeAtomMask );
-    void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta, core::T_sp activeAtomMask);
+    void	evaluateNumericalForce(NVector_sp pos, core::T_sp energyScale, NVector_sp numForce, double delta, core::T_sp activeAtomMask );
+    void	evaluateNumericalHessian(NVector_sp pos, core::T_sp energyScale, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta, core::T_sp activeAtomMask);
 
     core::List_sp checkForBeyondThresholdInteractions(double threshold);
 

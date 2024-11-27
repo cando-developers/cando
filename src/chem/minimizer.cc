@@ -308,11 +308,16 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
  *      in nvForce (which must be an initialized vector,
  *      but does not need to be filled with zeros).
  */
-double	Minimizer_O::dTotalEnergy( NVector_sp nvPos, core::T_sp activeAtomMask )
+double	Minimizer_O::dTotalEnergy( NVector_sp pos,
+                                   core::T_sp energyScale,
+                                   core::T_sp activeAtomMask )
 {
   double          dEnergy;
 
-  dEnergy = this->_ScoringFunction->evaluateEnergy( nvPos, activeAtomMask );
+  dEnergy = this->_ScoringFunction->evaluateEnergy( pos,
+                                                    energyScale,
+                                                    nil<core::T_O>(),
+                                                    activeAtomMask );
   return(dEnergy);
 }
 
@@ -327,9 +332,13 @@ double	Minimizer_O::dTotalEnergy( NVector_sp nvPos, core::T_sp activeAtomMask )
  *      in nvForce (which must be an initialized vector,
  *      but does not need to be filled with zeros).
  */
-double	Minimizer_O::dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce, core::T_sp activeAtomMask )
+double	Minimizer_O::dTotalEnergyForce( NVector_sp pos,
+                                        core::T_sp energyScale,
+                                        NVector_sp nvForce, core::T_sp activeAtomMask )
 {
-  return this->_ScoringFunction->evaluateEnergyForce(nvPos,true,nvForce,activeAtomMask);
+  return this->_ScoringFunction->evaluateEnergyForce(pos,
+                                                     energyScale,
+                                                     true,nvForce,activeAtomMask);
 }
 
 
@@ -338,7 +347,7 @@ double	Minimizer_O::dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce, cor
  *
  *	Calculate the energy along a 1D coordinate
  */
-double	Minimizer_O::d1DTotalEnergy( double x, core::T_sp activeAtomMask )
+double	Minimizer_O::d1DTotalEnergy( double x, core::T_sp energyScale, core::T_sp activeAtomMask )
 {
 #ifdef	DEBUG_ON
 //    this->nvP1DSearchOrigin->debugDump("origin");
@@ -346,7 +355,7 @@ double	Minimizer_O::d1DTotalEnergy( double x, core::T_sp activeAtomMask )
 //    this->nvP1DSearchDirection->debugDump("direction");
 #endif
   this->getPosition(this->nvP1DSearchTemp1, this->nvP1DSearchOrigin, this->nvP1DSearchDirection,x, activeAtomMask );
-  return this->_ScoringFunction->evaluateEnergy(this->nvP1DSearchTemp1,activeAtomMask);
+  return this->_ScoringFunction->evaluateEnergy(this->nvP1DSearchTemp1,energyScale,nil<core::T_O>(),activeAtomMask);
 }
 
 
@@ -355,7 +364,7 @@ double	Minimizer_O::d1DTotalEnergy( double x, core::T_sp activeAtomMask )
  *
  *	Calculate the energy/derivative along a 1D coordinate
  */
-double	Minimizer_O::d1DTotalEnergyForce( double x, double* fx, double * dfx, core::T_sp activeAtomMask )
+double	Minimizer_O::d1DTotalEnergyForce( double x, core::T_sp energyScale, double* fx, double * dfx, core::T_sp activeAtomMask )
 {
 #ifdef	DEBUG_ON
 //    this->nvP1DSearchOrigin->debugDump("origin");
@@ -366,6 +375,7 @@ double	Minimizer_O::d1DTotalEnergyForce( double x, double* fx, double * dfx, cor
                     this->nvP1DSearchOrigin,
                     this->nvP1DSearchDirection, x, activeAtomMask );
   *fx = this->_ScoringFunction->evaluateEnergyForce( this->nvP1DSearchTemp1,
+                                                     energyScale,
                                                      true, this->nvP1DSearchTemp2,
                                                      activeAtomMask );
   *dfx = -dotProductWithActiveAtomMask(this->nvP1DSearchTemp2,this->nvP1DSearchDirection,activeAtomMask);
@@ -387,6 +397,7 @@ double	Minimizer_O::d1DTotalEnergyForce( double x, double* fx, double * dfx, cor
  */
 void	Minimizer_O::minBracket(
                                 NVector_sp	nvOrigin,
+                                core::T_sp      energyScale,
                                 NVector_sp	nvDir,
                                 double		*dPxa,
                                 double		*dPxb,
@@ -402,15 +413,15 @@ void	Minimizer_O::minBracket(
   this->_MinBracketSteps = 0;
   xa = *dPxa;
   xb = *dPxb;
-  fa = this->d1DTotalEnergy(xa,activeAtomMask);
-  fb = this->d1DTotalEnergy(xb,activeAtomMask);
+  fa = this->d1DTotalEnergy(xa,energyScale,activeAtomMask);
+  fb = this->d1DTotalEnergy(xb,energyScale,activeAtomMask);
     // Make sure that we are going downhill a->b
   if ( fb > fa ) {
     SWAP_VALUES( xa, xb, temp );
     SWAP_VALUES( fa, fb, temp );
   }
   xc = xb+GOLD*(xb-xa);
-  fc = this->d1DTotalEnergy(xc,activeAtomMask);
+  fc = this->d1DTotalEnergy(xc,energyScale,activeAtomMask);
   LOG("Start: xa({}) xb({}) xc({}) | fa({}) fb({}) fc({})" , xa , xb , xc , fa , fb , fc );
   while ( fb > fc ) {
     numSteps++;
@@ -426,7 +437,7 @@ void	Minimizer_O::minBracket(
       (2.0*SIGN(MAX(fabs(q-r),TINY),q-r));
     ulim = (xb)+GLIMIT*(xc-xb);
     if (( xb-u)*(u-xc)>0.0) {
-      fu = this->d1DTotalEnergy(u,activeAtomMask);
+      fu = this->d1DTotalEnergy(u,energyScale,activeAtomMask);
       if ( fu<fc ) {
         xa = xb;
         xb = u;
@@ -439,20 +450,20 @@ void	Minimizer_O::minBracket(
         goto DONE;
       }
       u = xc+GOLD*(xc-xb);
-      fu = this->d1DTotalEnergy(u,activeAtomMask);
+      fu = this->d1DTotalEnergy(u,energyScale,activeAtomMask);
     } else if ((xc-u)*(u-ulim) > 0.0) {
-      fu = this->d1DTotalEnergy(u,activeAtomMask);
+      fu = this->d1DTotalEnergy(u,energyScale,activeAtomMask);
       if ( fu < fc ) {
         LEFT_SHIFT_VALUES( xb, xc, u, xc+GOLD*(xc-xb) );
-        LEFT_SHIFT_VALUES( fb, fc, fu, this->d1DTotalEnergy(u,activeAtomMask));
+        LEFT_SHIFT_VALUES( fb, fc, fu, this->d1DTotalEnergy(u,energyScale,activeAtomMask));
       }
 	    // Limit parabolic u to maximum allowed value
     } else if ((u-ulim)*(ulim-xc)>=0.0 ){
       u = ulim;
-      fu = this->d1DTotalEnergy(u,activeAtomMask);
+      fu = this->d1DTotalEnergy(u,energyScale,activeAtomMask);
     } else {
       u = xc+GOLD*(xc-xb);
-      fu = this->d1DTotalEnergy(u,activeAtomMask);
+      fu = this->d1DTotalEnergy(u,energyScale,activeAtomMask);
     }
     LEFT_SHIFT_VALUES( xa, xb, xc, u );
     LEFT_SHIFT_VALUES( fa, fb, fc, fu );
@@ -488,6 +499,7 @@ void	Minimizer_O::minBracket(
  *	new minimum in (xmin)
  */
 double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
+                                core::T_sp energyScale,
                                 double tol,
                                 double& lineStep,
                                 int&	energyEvals,
@@ -516,7 +528,7 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
 //
 // Calculate the derivative along the search direction
 //
-  ft = d1DTotalEnergyForce( x, &fx, &dx, activeAtomMask );
+  ft = d1DTotalEnergyForce( x, energyScale, &fx, &dx, activeAtomMask );
   forceEvals++;
   LOG("dbrent: derivative x,fx,dx = {} {} {}" , x , fx , dx  );
   fw=fv=fx;
@@ -597,11 +609,11 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
     }
     if (fabs(_d) >= tol1) {
       u=x+_d;
-      fu=d1DTotalEnergy(u,activeAtomMask);
+      fu=d1DTotalEnergy(u,energyScale,activeAtomMask);
       energyEvals++;
     } else {
       u = x+SIGN(tol1,_d);
-      fu=d1DTotalEnergy(u,activeAtomMask);
+      fu=d1DTotalEnergy(u,energyScale,activeAtomMask);
       energyEvals++;
       if ( fu>fx) { // If the minimum lineStep in the downhill direction takes us
 			  // uphill, then we are done
@@ -617,7 +629,7 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
 //
 // Calculate the force along the search direction
 //
-    ft = d1DTotalEnergyForce( u, &ft, &du, activeAtomMask ); // Now housekeeping
+    ft = d1DTotalEnergyForce( u, energyScale, &ft, &du, activeAtomMask ); // Now housekeeping
     forceEvals++;
 //
     if (fu<=fx) {
@@ -649,7 +661,9 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
 
 
 void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
-                                           NVector_sp nvPos, NVector_sp nvDir, NVector_sp nvForce,
+                                           NVector_sp nvPos,
+                                           core::T_sp energyScale,
+                                           NVector_sp nvDir, NVector_sp nvForce,
                                            double xa, double xb, double xc,
                                            double fa, double fb, double fc,
                                            core::T_sp activeAtomMask )
@@ -674,7 +688,7 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   report->_Fc = fc;
   report->_MinBracketSteps = this->_MinBracketSteps;
   report->_EnergyTermsEnabled = this->_ScoringFunction->energyTermsEnabled();
-  report->_TotalEnergy = this->d1DTotalEnergy(0.0,activeAtomMask);
+  report->_TotalEnergy = this->d1DTotalEnergy(0.0,energyScale,activeAtomMask);
   report->_DirectionMagnitude = magnitudeWithActiveAtomMask(nvDir,activeAtomMask);
   report->_ForceMagnitude = magnitudeWithActiveAtomMask(nvForce,activeAtomMask);
   report->_MinimizerStatus = this->statusAsString();
@@ -706,7 +720,7 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("FixedNonbondRestraint"),xmin,xinc);
 
   for ( zx=dxa;zx<=dxc;zx+=(dxc-dxa)/100.0 ) {
-    zy = this->d1DTotalEnergy(zx,activeAtomMask);
+    zy = this->d1DTotalEnergy(zx,energyScale,activeAtomMask);
     report->_TotalEnergyFn->appendValue(zy);
 #if 0
             // skipping components - it's not general
@@ -768,6 +782,7 @@ void	Minimizer_O::stepReport( StepReport_sp report, double energy, NVector_sp fo
 void	Minimizer_O::lineSearch(	double	*dPstep,
                                         double	*dPfnew,
                                         NVector_sp nvOrigin,
+                                        core::T_sp energyScale,
                                         NVector_sp nvDirection,
                                         NVector_sp nvForce,
                                         NVector_sp nvTemp1,
@@ -804,7 +819,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
     core::clasp_write_string(fmt::format("Trying to bracket min this->_InitialLineSearchStep,directionMag,xb -> {},{},{}\n" , this->_InitialLineSearchStep , directionMag , xb));
   }
 
-  this->minBracket( nvOrigin, nvDirection,
+  this->minBracket( nvOrigin, energyScale, nvDirection,
                     &xa, &xb, &xc, &fa, &fb, &fc, activeAtomMask );
   LOG("Bracketed minimum" );
   LOG("xa,xb,xc = {} {} {} " , xa , xb , xc  );
@@ -816,7 +831,11 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
 
   if ( this->_DebugOn )
   {
-    this->lineSearchInitialReport(report,nvOrigin,nvDirection,nvForce,
+    this->lineSearchInitialReport(report,
+                                  nvOrigin,
+                                  energyScale,
+                                  nvDirection,
+                                  nvForce,
                                   xa,xb,xc,fa,fb,fc,activeAtomMask);
   }
 
@@ -828,7 +847,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
   int energyEvals = 0;
   int forceEvals = 0;
   int dbrentSteps = 0;
-  fb = dbrent( xa, xb, xc, TOL, step, energyEvals, forceEvals, dbrentSteps, activeAtomMask );
+  fb = dbrent( xa, xb, xc, energyScale, TOL, step, energyEvals, forceEvals, dbrentSteps, activeAtomMask );
   LOG("brent bracketed step = {}" , step  );
   if ( this->_DebugOn )
   {
@@ -937,6 +956,7 @@ bool	Minimizer_O::_displayIntermediateMessage(NVector_sp       pos,
  */
 void	Minimizer_O::_steepestDescent( int numSteps,
                                        NVector_sp pos,
+                                       core::T_sp energyScale,
                                        double forceTolerance,
                                        core::T_sp activeAtomMask,
                                        core::T_sp callback )
@@ -988,7 +1008,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 	// Done
   innerSteps = MIN(iRestartSteps,ITMAX);
   LOG("step" );
-  double fp = this->dTotalEnergyForce( pos, forceVec, activeAtomMask );
+  double fp = this->dTotalEnergyForce( pos, energyScale, forceVec, activeAtomMask );
   LOG("step" );
 //    r->inPlaceTimesScalar(-1.0);
 	//  no preconditioning
@@ -1032,7 +1052,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 	    // Lets save the current conformation
 	    // before throwing this higher
 	    //
-        fp = dTotalEnergyForce( pos, forceVec, activeAtomMask );
+        fp = dTotalEnergyForce( pos, energyScale, forceVec, activeAtomMask );
         this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,forceVec);
         ERROR(_sym_MinimizerExceededSD_MaxSteps, (ql::list() 
                                                << kw::_sym_minimizer << this->asSmartPtr()
@@ -1081,7 +1101,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
           steepestDescent = true;
           cosAngle = 0.0;
         }
-        this->lineSearch( &step, &fnew, pos, dirVec, forceVec, tv1, tv2, localSteps, stepReport, activeAtomMask );
+        this->lineSearch( &step, &fnew, pos, energyScale, dirVec, forceVec, tv1, tv2, localSteps, stepReport, activeAtomMask );
         prevStep = step;
         printedLatestMessage = false;
         if ( this->_PrintIntermediateResults ) {
@@ -1104,7 +1124,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         inPlaceAddTimesScalarWithActiveAtomMask( pos, dirVec, step, activeAtomMask );
 
 		    // r = -f'(x)   r == force!!!!
-        fp = dTotalEnergyForce( pos, forceVec, activeAtomMask );
+        fp = dTotalEnergyForce( pos, energyScale, forceVec, activeAtomMask );
         if (callback.notnilp()) core::eval::funcall( callback, _sym_steepest_descent, this->_ScoringFunction, pos, activeAtomMask );
         if ( this->_DebugOn ) {
           this->stepReport(stepReport,fp,forceVec,activeAtomMask);
@@ -1130,7 +1150,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
     this->_displayIntermediateMessage(pos,step,fnew,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
   }
-  fp = dTotalEnergyForce( pos, forceVec, activeAtomMask );
+  fp = dTotalEnergyForce( pos, energyScale, forceVec, activeAtomMask );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,forceVec);
   LOG("Wrote coordinates and force to atoms" );
   if ( this->_DebugOn )
@@ -1154,6 +1174,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 
 void	Minimizer_O::_conjugateGradient(int numSteps,
                                         NVector_sp x,
+                                        core::T_sp energyScale,
                                         double forceTolerance,
                                         core::T_sp activeAtomMask,
                                         core::T_sp callback )
@@ -1199,7 +1220,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   tv2 = NVector_O::create(iRestartSteps);
     // Done
   innerSteps = MIN(iRestartSteps,ITMAX);
-  double fp = dTotalEnergyForce( x, force, activeAtomMask );
+  double fp = dTotalEnergyForce( x, energyScale, force, activeAtomMask );
 //    r->inPlaceTimesScalar(-1.0);
     // TODO calculate preconditioner here
     // s = M^(-1)r rather than just copying it from r
@@ -1274,7 +1295,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 	// Lets save the current conformation
 	// before throwing this higher
 	//
-          fp = dTotalEnergyForce( x, force, activeAtomMask );
+          fp = dTotalEnergyForce( x, energyScale, force, activeAtomMask );
           this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
           ERROR(_sym_MinimizerExceededCG_MaxSteps, (ql::list() 
                                                  << kw::_sym_minimizer << this->asSmartPtr()
@@ -1294,7 +1315,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 	// Lets save the current conformation
 	// before throwing this higher
 	//
-          fp = dTotalEnergyForce( x, force, activeAtomMask );
+          fp = dTotalEnergyForce( x, energyScale, force, activeAtomMask );
           this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
           MINIMIZER_STUCK_ERROR("Stuck in conjugate gradients");
         }
@@ -1355,7 +1376,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
           steepestDescent = true;
         }
 
-        this->lineSearch( &step, &fnew, x, d, force,
+        this->lineSearch( &step, &fnew, x, energyScale, d, force,
                           tv1, tv2, localSteps,
                           stepReport, activeAtomMask );
 
@@ -1367,7 +1388,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 		// x = x + (step)d
 		// r = -f'(x)   r == force!!!!
         inPlaceAddTimesScalarWithActiveAtomMask(x, d, step, activeAtomMask );
-        fp = dTotalEnergyForce( x, force, activeAtomMask );
+        fp = dTotalEnergyForce( x, energyScale, force, activeAtomMask );
         if (callback.notnilp()) core::eval::funcall( callback, _sym_conjugate_gradient, this->_ScoringFunction, x, activeAtomMask );
 
         if ( this->_DebugOn )
@@ -1436,7 +1457,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
     this->_displayIntermediateMessage(x,step,fnew,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
   }
-  fp = dTotalEnergyForce( x, force, activeAtomMask );
+  fp = dTotalEnergyForce( x, energyScale, force, activeAtomMask );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
   if ( this->_DebugOn )
   {
@@ -1450,6 +1471,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 
 void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
                                                NVector_sp			xk,
+                                               core::T_sp                       energyScale,
                                                SparseLargeSquareMatrix_sp	mprecon,
                                                SparseLargeSquareMatrix_sp	ldlt,
                                                NVector_sp 			force,
@@ -1525,6 +1547,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
     //
 
     this->_ScoringFunction->evaluateAll( xk,
+                                         energyScale,
                                          nil<core::T_O>(),
                                          true, nvDummy,
                                          true, true, nmDummy,
@@ -1634,9 +1657,9 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
 #define	SQRT_EPSILONF	1.0e-5
 #define	CUBERT_EPSILONF	4.6416e-4
 
-__attribute__((optnone))
 void	Minimizer_O::_truncatedNewton(int numSteps,
                                       NVector_sp xK,
+                                      core::T_sp energyScale,
                                       double forceTolerance,
                                       core::T_sp activeAtomMask,
                                       core::T_sp callback )
@@ -1693,7 +1716,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
     // Evaluate initial energy and force
     //
   LOG("Evaluating initial energy and force" );
-  energyXkNext = dTotalEnergyForce( xK, forceK, activeAtomMask );
+  energyXkNext = dTotalEnergyForce( xK, energyScale, forceK, activeAtomMask );
   rmsForceMag = rmsMagnitudeWithActiveAtomMask(forceK,activeAtomMask);
   if ( this->_PrintIntermediateResults )
   {
@@ -1739,7 +1762,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    //
 	    // Inner loop
 	    //
-      _truncatedNewtonInnerLoop( kk, xK, opt_mprecon, opt_ldlt,
+      _truncatedNewtonInnerLoop( kk, xK, energyScale, opt_mprecon, opt_ldlt,
                                  forceK, rmsForceMag, dirVec,
                                  dirVecNext, rj, dj, zj, qj,
                                  innerLoopDeltaJ1,
@@ -1775,7 +1798,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
       }
 
       energyXk = energyXkNext;
-      this->lineSearch( &alphaK, &energyXkNext, xK, dirVec, forceK, zj, qj, kk, stepReport, activeAtomMask );
+      this->lineSearch( &alphaK, &energyXkNext, xK, energyScale, dirVec, forceK, zj, qj, kk, stepReport, activeAtomMask );
       if (this->_StepCallback.notnilp()) {
         core::DoubleFloat_sp dstep = core::DoubleFloat_O::create(alphaK);
         core::eval::funcall(this->_StepCallback, _sym_truncated_newton, xK, forceK, dstep, dirVec, opt_mprecon, opt_ldlt  );
@@ -1785,7 +1808,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    //
 	    // Evaluate the force at the new position
 	    //
-      fp = dTotalEnergyForce( xKNext, forceK, activeAtomMask );
+      fp = dTotalEnergyForce( xKNext, energyScale, forceK, activeAtomMask );
       if ( this->_DebugOn )
       {
         this->stepReport(stepReport,fp,forceK,activeAtomMask);
@@ -1869,7 +1892,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	// Lets save the current conformation
 	// before throwing this higher
 	//
-        dTotalEnergyForce( xK, forceK, activeAtomMask );
+        dTotalEnergyForce( xK, energyScale, forceK, activeAtomMask );
         this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(xK,forceK);
         ERROR(_sym_MinimizerExceededTN_MaxSteps, (ql::list() 
                                                << kw::_sym_minimizer << this->asSmartPtr()
@@ -1885,7 +1908,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
     }
   }
   copyVector(xK,xKNext);
-  dTotalEnergyForce( xK, forceK, activeAtomMask );
+  dTotalEnergyForce( xK, energyScale, forceK, activeAtomMask );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(xK,forceK);
   if ( this->_DebugOn )
   {
@@ -1905,7 +1928,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 
 */
 
-void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nvPos, core::T_sp activeAtomMask )
+void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nvPos, core::T_sp energyScale, core::T_sp activeAtomMask )
 {
 #define MINSLOPE        0.000001
 #define MINCHANGE       0.01
@@ -1928,7 +1951,7 @@ void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nv
   iCount = 0;
   this->_Iteration = 1;
   do {
-    dEnergy = this->dTotalEnergyForce( nvPos, nvNewForce, activeAtomMask );
+    dEnergy = this->dTotalEnergyForce( nvPos, energyScale, nvNewForce, activeAtomMask );
     if ( iCount % 10000 == 0 ) {
       core::clasp_writeln_string(fmt::format("Evaluating energy step#{}" , iCount ));
     }
@@ -1940,11 +1963,11 @@ void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nv
 }
 
 
-void	Minimizer_O::validateForce(NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask )
+void	Minimizer_O::validateForce(NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask )
 {
   ForceMatchReport_sp	report;
   if ( this->_DebugOn ) {
-    report = this->_ScoringFunction->checkIfAnalyticalForceMatchesNumericalForce(pos,force,activeAtomMask);
+    report = this->_ScoringFunction->checkIfAnalyticalForceMatchesNumericalForce(pos,energyScale,force,activeAtomMask);
     this->_Log->addReport(report);
   }
 }
@@ -2054,30 +2077,30 @@ CL_DEFMETHOD     void	Minimizer_O::setEnergyFunction(ScoringFunction_sp f)
 }
 
 CL_LISPIFY_NAME("evaluateEnergyAndForceManyTimes");
-CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps, core::T_sp activeAtomMask)
+CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(core::T_sp energyScale, int numSteps, core::T_sp activeAtomMask)
 {
   NVector_sp	pos;
   ASSERT(this->_ScoringFunction);
   this->_Iteration = 1;
   pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
   this->_ScoringFunction->loadCoordinatesIntoVector(pos);
-  this->_evaluateEnergyAndForceManyTimes(numSteps,pos,activeAtomMask);
+  this->_evaluateEnergyAndForceManyTimes(numSteps,pos,energyScale,activeAtomMask);
 }
 
 
 
 CL_LISPIFY_NAME("resetAndMinimize");
-CL_LAMBDA((minimizer chem:minimizer) &optional active-atom-mask callback );
-CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize(core::T_sp activeAtomMask, core::T_sp callback )
+CL_LAMBDA((minimizer chem:minimizer) &key energy-scale active-atom-mask callback );
+CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback )
 {
   this->_Status = minimizerIdle;
-  this->minimize(activeAtomMask, callback );
+  this->minimize(energyScale, activeAtomMask, callback );
 }
 
 
 CL_LISPIFY_NAME("minimize");
-CL_LAMBDA((minimizer chem:minimizer) &optional active-atom-mask callback);
-CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask, core::T_sp callback)
+CL_LAMBDA((minimizer chem:minimizer) &key energy-scale active-atom-mask callback);
+CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback)
 {
   NVector_sp	pos;
   int		retries;
@@ -2097,7 +2120,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask, core::T
       }
       if ( this->_NumberOfSteepestDescentSteps > 0 ) {
         this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
-                                pos, this->_SteepestDescentTolerance, activeAtomMask, callback );
+                                pos, energyScale, this->_SteepestDescentTolerance, activeAtomMask, callback );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Steepest Descent #steps = 0");
@@ -2105,7 +2128,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask, core::T
       }
       if ( this->_NumberOfConjugateGradientSteps > 0 ) {
         this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
-                                  pos, this->_ConjugateGradientTolerance, activeAtomMask, callback );
+                                  pos, energyScale, this->_ConjugateGradientTolerance, activeAtomMask, callback );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Conjugate Gradients #steps = 0");
@@ -2113,7 +2136,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask, core::T
       }
       if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
         this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
-                                pos, this->_TruncatedNewtonTolerance, activeAtomMask, callback );
+                                pos, energyScale, this->_TruncatedNewtonTolerance, activeAtomMask, callback );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Truncated Newton #steps = 0");
@@ -2138,7 +2161,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp activeAtomMask, core::T
                               << kw::_sym_minimizer << this->asSmartPtr()
                               << kw::_sym_coordinates << pos).result());
  DONE:
-  return Values(pos,mk_double_float(this->dTotalEnergy(pos,activeAtomMask)));
+  return Values(pos,mk_double_float(this->dTotalEnergy(pos,energyScale,activeAtomMask)));
 }
 
 

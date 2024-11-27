@@ -147,7 +147,7 @@ public:
   adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
-  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask );
+  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale,NVector_sp force, core::T_sp activeAtomMask );
 
   CL_LISPIFY_NAME("getGraph");
   CL_DEFMETHOD     core::T_sp	getGraph() { return this->_Graph;};
@@ -188,9 +188,10 @@ public:
   void	dumpTerms(core::HashTable_sp atomTypes);
   CL_DEFMETHOD     core::T_sp	getMessage() { return this->_Message;};
 
-  double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i, core::T_sp activeAtomMask );
-  double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j, core::T_sp activeAtomMask );
+  double	calculateNumericalDerivative(NVector_sp pos, core::T_sp energyScale, double delta, uint i, core::T_sp activeAtomMask );
+  double	calculateNumericalSecondDerivative(NVector_sp pos, core::T_sp energyScale, double delta, uint i, uint j, core::T_sp activeAtomMask );
   double	evaluateAll(NVector_sp pos,
+                            core::T_sp energyScale,
                             core::T_sp componentEnergy,
                             bool calcForce,
                             gc::Nilable<NVector_sp> force,
@@ -210,8 +211,8 @@ public:
 //		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
   uint		countTermsBeyondThreshold();
 
-  void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta, core::T_sp activeAtomMask );
-  void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta, core::T_sp activeAtomMask );
+  void	evaluateNumericalForce(NVector_sp pos, core::T_sp energyScale, NVector_sp numForce, double delta, core::T_sp activeAtomMask );
+  void	evaluateNumericalHessian(NVector_sp pos, core::T_sp energyScale, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta, core::T_sp activeAtomMask );
 
   string	debugLogAsString();
 

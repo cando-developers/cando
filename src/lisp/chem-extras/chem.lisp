@@ -343,7 +343,7 @@ evaluates the body in that dynamic environment."
   (setf *save-pos* pos)
   (with-output-to-string (sout)
     (let* ((energy-components (chem:make-energy-components))
-           (total-energy (chem:evaluate-all energy-function pos energy-components)))
+           (total-energy (chem:evaluate-all energy-function pos :component-energy energy-components)))
       (format sout "Total E. ~10,5f  mask ~a~%" total-energy (not (null active-atom-mask)))
       (format sout "~s~%" (chem:energy-components/component-energies energy-components)))))
 #||

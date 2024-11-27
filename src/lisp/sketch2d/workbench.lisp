@@ -27,7 +27,7 @@
     (loop for x from 0.5 below 100.0 by 0.5
           for y = (progn
                     (setf (elt *v* 0) x)
-                    (chem:evaluate-energy-force *sk* *v* t *f* ))
+                    (chem:evaluate-energy-force *sk* *v* :calc-force t :force *f* ))
           do (format t "~a ~a~%" x y)))
   )
 

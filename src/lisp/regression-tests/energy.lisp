@@ -18,9 +18,9 @@
 (format t "pos = ~s~%" pos)
 #+(or)(progn
 ;;  (gctools:wait-for-user-signal "signal")
-  (time (dotimes (i 1) (defparameter energy (chem:evaluate-energy-force ef pos t force)))))
+  (time (dotimes (i 1) (defparameter energy (chem:evaluate-energy-force ef pos :calc-force t :force force)))))
 (format t "About to calculate energy~%")
-(defparameter energy (chem:evaluate-energy-force ef pos t force))
+(defparameter energy (chem:evaluate-energy-force ef pos :calc-force t :force force))
 (defparameter expected-energy 20937032.6233387)
 (format t "         energy = ~f~%" energy)
 (format t "expected-energy = ~f~%" expected-energy)
@@ -133,7 +133,7 @@
 (defun energy-components (name en pos mask)
   (let ((components (chem:all-components en))
         (ht (make-hash-table)))
-    (format t "~s energy total = ~f~%" name (chem:evaluate-energy en pos mask))
+    (format t "~s energy total = ~f~%" name (chem:evaluate-energy en pos :active-atom-mask mask))
     (loop for comp in components
           for energy = (chem:energy-component-evaluate-energy en comp pos mask)
           for class-name = (class-name (class-of comp))

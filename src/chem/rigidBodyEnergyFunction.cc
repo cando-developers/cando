@@ -184,7 +184,7 @@ double	RigidBodyEnergyFunction_O::evaluateRaw( NVector_sp pos, NVector_sp force 
   adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
-ForceMatchReport_sp RigidBodyEnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask ) {
+ForceMatchReport_sp RigidBodyEnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask ) {
   IMPLEMENT_ME();
 }
 
@@ -213,6 +213,7 @@ void	RigidBodyEnergyFunction_O::setOptions( core::List_sp options )
 
 
 double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
+                                                core::T_sp energyScale,
                                                 core::T_sp componentEnergy,
                                                 bool calcForce,
                                                 gc::Nilable<NVector_sp> force,
@@ -263,6 +264,7 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
     if (term->isEnabled()) {
       totalEnergy += term->evaluateAllComponent(this->asSmartPtr(),
                                                 pos,
+                                                energyScale,
                                                 componentEnergy,
                                                 calcForce,
                                                 force,
@@ -368,6 +370,7 @@ CL_LISPIFY_NAME("rigid-body-velocity-verlet-step-limit-displacement");
 DOCGROUP(cando);
 CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(ScoringFunction_sp scoringFunc,
                                                                          NVector_sp position,
+                                                                         core::T_sp energyScale,
                                                                          NVector_sp velocity,
                                                                          NVector_sp force,
                                                                          NVector_sp force_dt,
@@ -431,7 +434,9 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
     }
     body_idx++;
   }
-  scoringFunc->evaluateEnergyForce(position,true,force_dt,tunfrozen);
+  scoringFunc->evaluateEnergyForce(position,
+                                   energyScale,
+                                   true,force_dt,tunfrozen);
   body_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=7 ) {
     if (!unfrozen || unfrozen->testBit(body_idx)==1) {

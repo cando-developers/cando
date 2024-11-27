@@ -614,8 +614,5 @@ monomer-context-index indexes into ...
 (defmethod apply-fragment-internals-to-atresidue ((fragment-internals linearized-fragment-internals) rotamer-index atresidue)
   (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (joints atresidue)
-        for index from 0 by 3
-        for bond = (elt (internals-values fragment-internals) index)
-        for angle-rad = (elt (internals-values fragment-internals) (+ 1 index))
-        for dihedral-rad = (elt (internals-values fragment-internals) (+ 2 index))
-        do (fill-joint-internals joint bond angle-rad dihedral-rad)))
+        for index3 from 0 by 3
+        do (fill-internals-from-vector joint internals-values index3)))

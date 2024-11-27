@@ -65,6 +65,48 @@ namespace chem {
   FORWARD(ScoringFunction);
 };
 
+#define	DefaultChiralRestraintOffset	0.2
+#define	DefaultChiralRestraintWeight	100000.0
+#define	DefaultAnchorRestraintWeight	10.0
+
+namespace chem {
+  FORWARD(EnergyScale);
+class EnergyScale_O : public core::CxxObject_O 
+{
+  LISP_CLASS(chem,ChemPkg,EnergyScale_O,"EnergyScale",core::CxxObject_O);
+public:
+  double		                _DielectricConstant;
+  double		                _NonbondCutoff;
+  double		                _ScaleVdw;
+  double		                _ScaleElectrostatic;
+  double				_FixedNonbondRestraintWeight;
+  EnergyScale_O() : _DielectricConstant(1.0),
+                    _NonbondCutoff(16.0),
+                    _ScaleVdw(1.0),
+                    _ScaleElectrostatic(1.0),
+                    _FixedNonbondRestraintWeight(1.0)
+  {
+  };
+
+  static EnergyScale_sp make();
+  CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
+  CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
+  CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
+  CL_DEFMETHOD double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
+  CL_DEFMETHOD void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
+  CL_DEFMETHOD double	getDielectricConstant() { return this->_DielectricConstant; };
+  CL_DEFMETHOD void	setNonbondCutoff(double d) { this->_NonbondCutoff = d; };
+  CL_DEFMETHOD double	getNonbondCutoff() { return this->_NonbondCutoff; };
+
+};
+
+extern double energyScaleDielectricConstant(core::T_sp energyScale);
+extern double energyScaleVdwScale(core::T_sp energyScale);
+extern double energyScaleElectrostaticScale(core::T_sp energyScale);
+extern double energyScaleNonbondCutoff(core::T_sp energyScale);
+
+};
+
 template <>
 struct gctools::GCInfo<chem::ScoringFunction_O> {
   static bool constexpr NeedsInitialization = false;
@@ -115,7 +157,7 @@ public:
   NVector_sp makeCoordinates() const;
 //    virtual double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce ) = 0;
 
-  virtual ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask ) = 0;
+  virtual ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask ) = 0;
 
   CL_LISPIFY_NAME("useDefaultSettings");
   CL_DEFMETHOD    virtual void	useDefaultSettings() = 0;
@@ -176,14 +218,15 @@ public:
   CL_DEFMETHOD double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j, core::T_sp activeAtomMask );
 #endif
 
+#if 0
   double calculateEnergy(core::T_sp activeAtomMask, core::T_sp debugInteractions );
-
-  core::T_mv calculateEnergyAndForce(core::T_sp activeAtomMask, core::T_sp debugInteractions );
-
+  core::T_mv calculateEnergyAndForce(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions );
+#endif
  
   CL_LISPIFY_NAME("evaluateAll");
-  CL_LAMBDA((scoring-function chem:scoring-function) pos &optional component-energy calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions);
+  CL_LAMBDA((scoring-function chem:scoring-function) pos &key energy-scale component-energy calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions);
   CL_DEFMETHOD virtual double	evaluateAll( 	NVector_sp pos,
+                                                core::T_sp energyScale,
                                                 core::T_sp componentEnergy,
                                                 bool calcForce,
                                                 gc::Nilable<NVector_sp> force,
@@ -194,22 +237,28 @@ public:
                                                 gc::Nilable<NVector_sp> dvec,
                                                 core::T_sp activeAtomMask,
                                                 core::T_sp debugInteractions = nil<core::T_O>()) = 0;
-  virtual double	evaluateEnergy( NVector_sp pos, core::T_sp activeAtomMask, core::T_sp debugInteractions=nil<core::T_O>() );
+  virtual double	evaluateEnergy( NVector_sp pos,
+                                        core::T_sp energyScale,
+                                        core::T_sp componentEnergy,
+                                        core::T_sp activeAtomMask,
+                                        core::T_sp debugInteractions=nil<core::T_O>() );
   virtual double	evaluateEnergyForce( NVector_sp pos,
+                                             core::T_sp energyScale,
                                              bool calcForce,
                                              NVector_sp force,
                                              core::T_sp activeAtomMask,
                                              core::T_sp debugInteractions = nil<core::T_O>() );
   virtual double	evaluateEnergyForceFullHessian(NVector_sp pos,
+                                                       core::T_sp energyScale,
                                                        bool calcForce, NVector_sp force,
                                                        bool calcDiagonalHessian,
                                                        bool calcOffDiagonalHessian,
                                                        AbstractLargeSquareMatrix_sp hessian,
                                                        core::T_sp activeAtomMask,
                                                        core::T_sp debugInteractions=nil<core::T_O>());
-  virtual double	evaluateEnergyForceFullHessianForDebugging(core::T_sp activeAtomMask, core::T_sp debugInteractions );
+  virtual double	evaluateEnergyForceFullHessianForDebugging(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions );
 
-  void evaluateFiniteDifferenceForce(NVector_sp pos, NVector_sp force, double delta=0.00001, core::T_sp activeAtomMask=nil<core::T_O>() );
+  void evaluateFiniteDifferenceForce(NVector_sp pos, core::T_sp energyScale, NVector_sp force, double delta=0.00001, core::T_sp activeAtomMask=nil<core::T_O>() );
 #if 0
 
   string	summarizeBeyondThresholdInteractionsAsString();
@@ -257,6 +306,7 @@ public:
 };
 
 void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp energyComponentName, double energy );
+
 
 };
 

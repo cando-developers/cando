@@ -129,6 +129,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
     
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
+                                       core::T_sp energyScale,
                                          core::T_sp componentEnergy,
                                          bool 		calcForce,
                                          gc::Nilable<NVector_sp> 	force,
@@ -141,6 +142,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                                          core::T_sp debugInteractions );
 
  double  evaluateTerms( NVector_sp 	pos,
+                        core::T_sp energyScale,
                           core::T_sp componentEnergy,
                           bool 		calcForce,
                           gc::Nilable<NVector_sp> 	force,

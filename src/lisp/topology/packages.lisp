@@ -373,12 +373,9 @@
    #:assembler-base
    #:oligomer-shapes
    #:walk-atmolecule-joints
-   #:build-all-oligomer-shapes-in-coordinates
-   #:build-external-coordinates
    #:aggregate*
    #:make-monomer-subset
 
-   #:update-internals-for-atresidue
    #:update-internals
    #:update-externals
    #:build-oligomer-shape-externals
@@ -486,7 +483,13 @@
    #:validate-indexes-for-shape-keys
    #:lookup-orientation
    #:find-atom-for-joint
-   #:monomer-position))
+   #:monomer-position
+   #:monomer-contexts
+   #:oligomer-space-contains-monomer
+   #:orientation-for-oligomer-shape
+   #:oligomer-space-orientations
+   #:update-internals-for-monomer-shape
+   #:update-externals-for-monomer-shape))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

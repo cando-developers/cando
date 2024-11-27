@@ -56,17 +56,18 @@ class EnergyRigidBodyComponent_O : public EnergyComponent_O
     DEFAULT_CTOR_DTOR(EnergyRigidBodyComponent_O);
 
   virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
-                                               NVector_sp 	pos,
-                                               core::T_sp componentEnergy,
-                                               bool 		calcForce,
-                                               gc::Nilable<NVector_sp> 	force,
-                                               bool		calcDiagonalHessian,
-                                               bool		calcOffDiagonalHessian,
-                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                               gc::Nilable<NVector_sp>	hdvec,
-                                               gc::Nilable<NVector_sp> dvec,
-                                               core::T_sp activeAtomMask,
-                                               core::T_sp debugInteractions ) = 0;
+                                             NVector_sp 	pos,
+                                             core::T_sp energyScale,
+                                             core::T_sp componentEnergy,
+                                             bool 		calcForce,
+                                             gc::Nilable<NVector_sp> 	force,
+                                             bool		calcDiagonalHessian,
+                                             bool		calcOffDiagonalHessian,
+                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                             gc::Nilable<NVector_sp>	hdvec,
+                                             gc::Nilable<NVector_sp> dvec,
+                                             core::T_sp activeAtomMask,
+                                             core::T_sp debugInteractions ) = 0;
 
 };
 

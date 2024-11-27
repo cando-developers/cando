@@ -142,7 +142,7 @@ public:
   adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
-  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force, core::T_sp activeAtomMask );
+  ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask );
 
   void	useDefaultSettings();
 
@@ -154,6 +154,7 @@ public:
   void	setOptions( core::List_sp options );
 
   double	evaluateAll(NVector_sp pos,
+                            core::T_sp energyScale,
                             core::T_sp componentEnergy,
                             bool calcForce,
                             gc::Nilable<NVector_sp> force,

@@ -81,7 +81,7 @@ Methods are specialized on this class in cando-nglview.lisp."))
           for dt-over-m = (/ delta-t mass)
           do (setf (aref delta-t-over-mass index) (geom:vecreal dt-over-m)))
     (chem:load-coordinates-into-vector scoring-function coordinates)
-    (chem:evaluate-energy-force scoring-function coordinates t forces)
+    (chem:evaluate-energy-force scoring-function coordinates :calc-force t :force forces)
     (let ((sim (make-instance 'simulation
                               :scoring-function scoring-function
                               :coordinates coordinates
@@ -111,7 +111,7 @@ Methods are specialized on this class in cando-nglview.lisp."))
           for dt-over-m = delta-t
           do (setf (aref delta-t-over-mass index) dt-over-m))
     (chem:load-coordinates-into-vector scoring-function coordinates)
-    (chem:evaluate-energy-force scoring-function coordinates t forces)
+    (chem:evaluate-energy-force scoring-function coordinates :calc-force t :force forces)
     (let ((sim (make-instance 'simulation
                               :scoring-function scoring-function
                               :coordinates coordinates
@@ -146,12 +146,13 @@ Methods are specialized on this class in cando-nglview.lisp."))
   (funcall velocity-verlet-function
            (scoring-function dynamics)
            (coordinates dynamics)
-           (velocity dynamics)
-           (forces dynamics)
-           (temp-forces dynamics)
-           (delta-t-over-mass dynamics)
-           (delta-t dynamics)
-           unfrozen)
+           :energy-scale nil
+           :velocity (velocity dynamics)
+           :force (forces dynamics)
+           :force-dt (temp-forces dynamics)
+           :delta-t-over-mass (delta-t-over-mass dynamics)
+           :delta-t (delta-t dynamics)
+           :unfrozen unfrozen)
   (when (accumulate-coordinates dynamics)
     (do-accumulate-coordinates dynamics (coordinates dynamics)))
   (incf (current-time dynamics) (delta-t dynamics)))
@@ -164,13 +165,14 @@ Methods are specialized on this class in cando-nglview.lisp."))
   (funcall velocity-verlet-function
            (scoring-function dynamics)
            (coordinates dynamics)
-           (velocity dynamics)
-           (forces dynamics)
-           (temp-forces dynamics)
-           (delta-t-over-mass dynamics)
-           (delta-t dynamics)
-           unfrozen
-           limit-displacement)
+           :energy-scale nil
+           :velocity (velocity dynamics)
+           :force (forces dynamics)
+           :force-dt (temp-forces dynamics)
+           :delta-t-over-mass (delta-t-over-mass dynamics)
+           :delta-t (delta-t dynamics)
+           :tunfrozen unfrozen
+           :limit-displacement limit-displacement)
   (when (accumulate-coordinates dynamics)
     (do-accumulate-coordinates dynamics (coordinates dynamics)))
   (incf (current-time dynamics) (delta-t dynamics)))

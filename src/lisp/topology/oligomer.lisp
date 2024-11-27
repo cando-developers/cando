@@ -177,18 +177,17 @@
                                            unique-ring-couplings)))))))
     result))
 
-(defun ordered-monomers (oligomer)
-  "Return a canonical sequence of monomers"
-  (let ((root-monomer (root-monomer oligomer)))
-    (let ((monomer-out-couplings (make-hash-table))
-          (unique-ring-couplings nil))
-      (loop for index below (length (couplings oligomer))
-            for coupling = (elt (couplings oligomer) index)
-            if (typep coupling 'directional-coupling)
-              do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
-            else
-              do (pushnew coupling unique-ring-couplings))
-      (ordered-sequence-monomers oligomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
+(defun ordered-monomers (oligomer &key (root-monomer (root-monomer oligomer)))
+  "Return a canonical sequence of monomers in the OLIGOMER. If ROOT-MONOMER is provided then start from that."
+  (let ((monomer-out-couplings (make-hash-table))
+        (unique-ring-couplings nil))
+    (loop for index below (length (couplings oligomer))
+          for coupling = (elt (couplings oligomer) index)
+          if (typep coupling 'directional-coupling)
+            do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
+          else
+            do (pushnew coupling unique-ring-couplings))
+    (ordered-sequence-monomers oligomer nil root-monomer monomer-out-couplings unique-ring-couplings)))
 
 
 (defun build-residue (oligomer

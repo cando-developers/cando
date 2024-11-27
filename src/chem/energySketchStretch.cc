@@ -179,6 +179,7 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 
 double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                                     NVector_sp 	pos,
+                                                    core::T_sp energyScale,
                                                     core::T_sp componentEnergy,
                                                     bool 		calcForce,
                                                     gc::Nilable<NVector_sp> 	force,

@@ -165,6 +165,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::setupHessianPreconditioner(NVect
 
 void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp score,
                                                                  NVector_sp 	pos,
+                                                                 core::T_sp     energyScale,
                                                                  bool 		calcForce,
                                                                  gc::Nilable<NVector_sp> 	force,
                                                                  bool		calcDiagonalHessian,
@@ -179,7 +180,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
   double Evdw = 0.0;
   double Eeel = 0.0;
   double cutoff;
-  energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
+  energyFunctionNonbondParameters(score,energyScale,dielectricConstant,dQ1Q2Scale,cutoff);
 #define CUTOFF_SQUARED (cutoff*cutoff)
   double nonbondCutoffSquared = cutoff*cutoff;
   double nonbondCutoffReciprocal6 = 1.0/(cutoff*cutoff*cutoff*cutoff*cutoff*cutoff);
@@ -330,6 +331,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
 
 void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
                                                                               NVector_sp 	pos,
+                                                                              core::T_sp        energyScale,
                                                                               bool 		calcForce,
                                                                               gc::Nilable<NVector_sp> 	force,
                                                                               bool		calcDiagonalHessian,
@@ -342,7 +344,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   double dielectricConstant;
   double dQ1Q2Scale;
   double cutoff;
-  EnergyFunction_sp energyFunction = energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
+  EnergyFunction_sp energyFunction = energyFunctionNonbondParameters(score,energyScale,dielectricConstant,dQ1Q2Scale,cutoff);
   double nonbondCutoffSquared = cutoff*cutoff;
 #define CUTOFF_SQUARED nonbondCutoffSquared
   double nonbondCutoffReciprocal6 = 1.0/(cutoff*cutoff*cutoff*cutoff*cutoff*cutoff);

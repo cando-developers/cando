@@ -99,20 +99,23 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
 }
 
 double EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                      NVector_sp 	pos,
-                                                      core::T_sp componentEnergy,
-                                                      bool 		calcForce,
-                                                      gc::Nilable<NVector_sp> 	force,
-                                                      bool		calcDiagonalHessian,
-                                                      bool		calcOffDiagonalHessian,
-                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                      gc::Nilable<NVector_sp>	hdvec, 
-                                                      gc::Nilable<NVector_sp> 	dvec,
-                                                      core::T_sp activeAtomMask,
-                                                      core::T_sp debugInteractions )
+                                                    NVector_sp 	pos,
+                                                    core::T_sp energyScale,
+                                                    core::T_sp componentEnergy,
+                                                    bool 		calcForce,
+                                                    gc::Nilable<NVector_sp> 	force,
+                                                    bool		calcDiagonalHessian,
+                                                    bool		calcOffDiagonalHessian,
+                                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                    gc::Nilable<NVector_sp>	hdvec, 
+                                                    gc::Nilable<NVector_sp> 	dvec,
+                                                    core::T_sp activeAtomMask,
+                                                    core::T_sp debugInteractions )
 {
 // Evaluate everything using terms
-  double totalEnergy = this->evaluateTerms(pos,componentEnergy,
+  double totalEnergy = this->evaluateTerms(pos,
+                                           energyScale,
+                                           componentEnergy,
                                            calcForce,force,
                                              calcDiagonalHessian, calcOffDiagonalHessian, hessian,hdvec,dvec,activeAtomMask);
   return totalEnergy;
@@ -121,15 +124,16 @@ double EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     
 
 double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
-                                                     core::T_sp         componentEnergy,
-                                                     bool 		calcForce,
-                                                     gc::Nilable<NVector_sp> 	force,
-                                                     bool		calcDiagonalHessian,
-                                                     bool		calcOffDiagonalHessian,
-                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                     gc::Nilable<NVector_sp>	hdvec, 
-                                                     gc::Nilable<NVector_sp> 	dvec,
-                                                     core::T_sp activeAtomMask)
+                                             core::T_sp energyScale,
+                                             core::T_sp         componentEnergy,
+                                             bool 		calcForce,
+                                             gc::Nilable<NVector_sp> 	force,
+                                             bool		calcDiagonalHessian,
+                                             bool		calcOffDiagonalHessian,
+                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                             gc::Nilable<NVector_sp>	hdvec, 
+                                             gc::Nilable<NVector_sp> 	dvec,
+                                             core::T_sp activeAtomMask)
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   core::T_sp debugInteractions = nil<core::T_O>();
