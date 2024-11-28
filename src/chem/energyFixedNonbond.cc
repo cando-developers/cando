@@ -211,14 +211,17 @@ SYMBOL_EXPORT_SC_(ChemPkg, energyElectrostatic);
 SYMBOL_EXPORT_SC_(ChemPkg, energyVdw14);
 SYMBOL_EXPORT_SC_(ChemPkg, energyElectrostatic14);
 
-double EnergyFixedNonbondRestraint_O::evaluateAllComponent(ScoringFunction_sp score, NVector_sp pos, core::T_sp componentEnergy,
+double EnergyFixedNonbondRestraint_O::evaluateAllComponent(ScoringFunction_sp score,
+                                                           NVector_sp pos,
+                                                           core::T_sp energyScale,
+                                                           core::T_sp componentEnergy,
                                                            bool calcForce, gc::Nilable<NVector_sp> force, bool calcDiagonalHessian,
                                                            bool calcOffDiagonalHessian,
                                                            gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
                                                            gc::Nilable<NVector_sp> hdvec, gc::Nilable<NVector_sp> dvec,
                                                            core::T_sp activeAtomMask, core::T_sp debugInteractions) {
-  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
-  double dielectricConstant = energyFunction->energyScale()->getDielectricConstant();
+
+  double dielectricConstant = energyScaleDielectricConstant(energyScale);
   double amber_charge_conversion_18dot2223 =
       core::Number_O::as_double_float(gc::As<core::Number_sp>(_sym_STARamber_charge_conversion_18_DOT_2223STAR->symbolValue()));
   double dQ1Q2Scale = amber_charge_conversion_18dot2223 * amber_charge_conversion_18dot2223;

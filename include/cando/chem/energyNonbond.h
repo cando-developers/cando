@@ -142,7 +142,7 @@ struct	to_object<chem::EnergyNonbond>
 
 namespace chem {
 
-double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
+double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score, core::T_sp energyScale,
                                     int I1, int I2, core::T_sp activeAtomMask, 
                                     num_real x1, num_real y1, num_real z1,
                                     num_real x2, num_real y2, num_real z2,
@@ -219,35 +219,38 @@ class EnergyNonbond_O : public EnergyComponent_O
   void verifyExcludedAtoms(Matter_sp matter, ScoringFunction_sp score);
   
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                                         NVector_sp 	pos,
-                                         core::T_sp componentEnergy,
-                                         bool 		calcForce,
-                                         gc::Nilable<NVector_sp> 	force,
-                                         bool		calcDiagonalHessian,
-                                         bool		calcOffDiagonalHessian,
-                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                         gc::Nilable<NVector_sp>	hdvec,
-                                         gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask,
-                                         core::T_sp debugInteractions );
+                                       NVector_sp 	pos,
+                                       core::T_sp energyScale,
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec,
+                                       core::T_sp activeAtomMask,
+                                       core::T_sp debugInteractions );
 
   double debugAllComponent( ScoringFunction_sp scorer,
-                                         NVector_sp 	pos,
-                                         core::T_sp componentEnergy,
-                                         bool 		calcForce,
-                                         gc::Nilable<NVector_sp> 	force,
-                                         bool		calcDiagonalHessian,
-                                         bool		calcOffDiagonalHessian,
-                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                         gc::Nilable<NVector_sp>	hdvec,
-                                         gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask,
-                                         core::T_sp debugInteractions );
+                            NVector_sp 	pos,
+                            core::T_sp energyScale,
+                            core::T_sp componentEnergy,
+                            bool 		calcForce,
+                            gc::Nilable<NVector_sp> 	force,
+                            bool		calcDiagonalHessian,
+                            bool		calcOffDiagonalHessian,
+                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                            gc::Nilable<NVector_sp>	hdvec,
+                            gc::Nilable<NVector_sp> dvec,
+                            core::T_sp activeAtomMask,
+                            core::T_sp debugInteractions );
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm( ScoringFunction_sp score,
                                                                                 NVector_sp pos,
+                                                                                core::T_sp energyScale,
                                                                                 core::T_sp activeAtomMask );
 
-  void expandExcludedAtomsToTerms(ScoringFunction_sp score);
+  void expandExcludedAtomsToTerms(ScoringFunction_sp score, core::T_sp energyScale );
 
   virtual string	beyondThresholdInteractionsAsString();
 
@@ -280,7 +283,11 @@ class EnergyNonbond_O : public EnergyComponent_O
   {};
 };
 
-EnergyFunction_sp energyFunctionNonbondParameters(ScoringFunction_sp score, double& dielectricConstant, double& dQ1Q2Scale, double& cutoff );
+EnergyFunction_sp energyFunctionNonbondParameters(ScoringFunction_sp score,
+                                                  core::T_sp energyScale,
+                                                  double& dielectricConstant,
+                                                  double& dQ1Q2Scale,
+                                                  double& cutoff );
 
 };
 

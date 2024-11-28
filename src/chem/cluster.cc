@@ -155,7 +155,6 @@ void  Kmeans_O::Cluster(core::SimpleVector_sp centers, Clusters clusters)
 /* Calculate the center of each cluster.
  * Return the number of empty clusters.
 */
-__attribute__((optnone))
 CL_DEFMETHOD int Kmeans_O::Center(core::SimpleVector_sp centers, Clusters clusters)
 {
   int emptyClusters = 0;

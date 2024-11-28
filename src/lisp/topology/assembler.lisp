@@ -2,12 +2,13 @@
 
 
 (defclass orientation ()
-  ((to-origin :initarg :to-origin :accessor to-origin
+  ((to-origin :initarg :to-origin :reader to-origin
               :documentation "This is the transform that takes the object to the origin")
-   (adjust :initarg :adjust :accessor adjust
+   (adjust :initarg :adjust :reader adjust
            :documentation "Apply this to the coordinates after the to-origin transform was applied")
-   (from-origin :initarg :from-origin :accessor from-origin
-                :documentation "This is the second transform that takes the object after to-origin is applied"))
+   (from-origin :initarg :from-origin :reader from-origin
+                :documentation "This is the second transform that takes the object after to-origin is applied")
+   (transform-cache :initarg :transform-cache :reader transform-cache))
   (:documentation "Represent the orientation of a molecule in a design calculation.
 There are three transforms that define the orientation.
 The `to-origin` transform moves something on the molecule onto the origin.
@@ -26,10 +27,12 @@ default to the identity matrix."
     (error "make-orientation adjust must be non-nil"))
   (unless to-origin
     (error "make-orientation to-origin must be non-nil"))
-  (make-instance 'orientation
-                 :from-origin from-origin
-                 :adjust adjust
-                 :to-origin to-origin))
+  (let ((transform (calculate-orientation-transform from-origin adjust to-origin)))
+    (make-instance 'orientation
+                   :from-origin from-origin
+                   :adjust adjust
+                   :to-origin to-origin
+                   :transform-cache transform)))
 
 (defun copy-orientation (orientation)
   "Copy an ORIENTATION."
@@ -46,22 +49,18 @@ default to the identity matrix."
 
 (defgeneric kin:orientation-transform (orientation))
 
-(defmethod kin:orientation-transform ((orientation orientation))
-  "Combine the components of the ORIENTATION into a 4x4 homogeneous matrix."
-  (let* ((from-origin (topology:from-origin orientation))
-         (adjust (adjust orientation))
-         (to-origin (to-origin orientation))
-         (transform0 (geom:m*m adjust to-origin))
+(defun calculate-orientation-transform (from-origin adjust to-origin)
+  (let* ((transform0 (geom:m*m adjust to-origin))
          (transform (geom:m*m from-origin transform0)))
     transform))
+
+(defmethod kin:orientation-transform ((orientation orientation))
+  "Combine the components of the ORIENTATION into a 4x4 homogeneous matrix."
+  (transform-cache orientation))
 
 (defclass orientations ()
   ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations))
   (:documentation "A hash-table that maps OLIGOMER-SHAPEs to ORIENTATIONs"))
-
-(defun orientation-for-oligomer-shape (assembler oligomer-shape)
-  "Return the orientation for the OLIGOMER-SHAPE in the ASSEMBLER"
-  (gethash oligomer-shape (orientations (orientations assembler))))
 
 (defun ensure-complete-orientations (orientations oligomer-shapes)
   (loop for oligomer-shape in oligomer-shapes
@@ -81,6 +80,13 @@ default to the identity matrix."
           do (setf (gethash oligomer-shape ht) orientation))
     (make-instance 'orientations :orientations ht)))
 
+(defun oligomer-space-orientations (orientations)
+  "Convert the orientations hash-table to be keyed on oligomer-space, rather than oligomer or oligomer-shape"
+  (let ((ht (make-hash-table)))
+    (maphash (lambda (key value)
+               (setf (gethash (oligomer-space key) ht) value))
+             (orientations orientations))
+    (make-instance 'orientations :orientations ht)))
 
 (defclass monomer-position ()
   ((molecule-index :initarg :molecule-index :reader molecule-index)
@@ -150,9 +156,18 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
         (receptor-oligomer-shape-orientation assembler)
       (values ligand-oligomer-shape ligand-orientation receptor-oligomer-shape receptor-orientation))))
 
-(defun lookup-orientation (assembler oligomer-shape)
-  "Return the orientation for the OLIGOMER-SHAPE in the ASSEMBLER."
-  (gethash oligomer-shape (orientations (orientations assembler))))
+(defgeneric lookup-orientation (assembler-or-orientations oligomer-thing)
+  (:documentation "Return the orientation for the OLIGOMER-THING in the ASSEMBLER-OR-ORIENTATION"))
+
+(defmethod lookup-orientation ((assembler assembler) oligomer-thing)
+  "Return the orientation for the OLIGOMER-THING (oligomer-space, oligomer, or oligomer-shape) in the ASSEMBLER."
+  (or (gethash oligomer-thing (orientations (orientations assembler)))
+      (error "Could not find ~s as a key in ~s" oligomer-thing assembler)))
+
+
+(defmethod lookup-orientation ((orientations orientations) oligomer-thing)
+  (or (gethash oligomer-thing (orientations orientations))
+      (error "Could not find ~s as a key in ~s" oligomer-thing orientations)))
 
 (defclass subset-assembler (assembler)
   ()
@@ -209,6 +224,18 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
       (error "Could not find ~s in ~s" monomer assembler)
       nil))
 
+(defgeneric orientation-for-oligomer-shape (thing oligomer-shape))
+
+(defmethod orientation-for-oligomer-shape ((assembler assembler) oligomer-shape)
+  "Return the orientation for the OLIGOMER-SHAPE in the ASSEMBLER"
+  (or (gethash oligomer-shape (orientations (orientations assembler)))
+      (error "Could not find the orientation for ~s in ~s" oligomer-shape assembler)))
+
+(defmethod orientation-for-oligomer-shape ((orientations orientations) oligomer-shape)
+  "Return the orientation for the OLIGOMER-SHAPE in the ORIENTATIONS"
+  (or (gethash oligomer-shape (orientations orientations))
+      (error "Could not find the orientation for ~s in ~s" oligomer-shape orientations)))
+
 (defun make-coordinates-for-number-of-atoms (number-of-atoms)
     (make-array (* 3 number-of-atoms) :element-type (geom:vecreal-type)
                                       :initial-element (geom:vecreal 0.0)))
@@ -263,13 +290,13 @@ Specialize the foldamer argument to provide methods"))
                    :coordinates coordinates
                    :monomers ht)))
 
-(defun in-monomer-subset (monomer-subset &rest monomers)
+(defun in-monomer-subset (monomer-subset monomer)
   (cond
     ((null monomer-subset)
      ;; If monomer-subset is NULL then everything is in the subset
      t)
     ((typep monomer-subset 'monomer-subset)
-     (every (lambda (mon) (gethash mon (monomers monomer-subset))) monomers))
+     (gethash monomer (monomers monomer-subset)))
     (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
 
 (defun maybe-update-backbone-dihedral-cache (assembler)
@@ -308,15 +335,13 @@ Specialize the foldamer argument to provide methods"))
                    (setf (backbone-dihedral-cache-deg monomer-shape) dihedral-cache)
                    ))))))
 
-(defun make-assembler (oligomer-shapes &key orientations monomer-subset energy-function-factory)
+(defun make-assembler (oligomer-shapes &key (orientations nil orientations-p) monomer-subset energy-function-factory (monomer-contexts nil monomer-contexts-p))
   "Build a assembler for the OLIGOMER-SHAPES.
-
 OLIGOMER-SHAPES - A list of OLIGOMER-SHAPEs that the ASSEMBLER will build.
+MONOMER-CONTEXTS - A map of monomers to monomer-contexts copied from another assembler (avoids recalculating them).
 ORIENTATIONS - An ORIENTATIONS object that maps OLIGOMER-SHAPES to ORIENTATIONs.
 USE-EXCLUDED-ATOMS - A parameter passed to make-energy-function.
-ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the energy-function.
-/*KEEP-INTERACTION-FACTORY-FACTORY - T or a lambda that takes a list of (cons oligomer-shape molecule) and returns a keep-interaction-factory function for the energy-function.*/
-/*TUNE-ENERGY-FUNCTION - A function that takes the energy-function and an assembler and modifies the energy-function.*/"
+ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the energy-function."
   (cond
     ((not (or (= (length oligomer-shapes) 1) orientations))
      (error "You must provide orientations when there is more than one oligomer-shape"))
@@ -348,10 +373,12 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                           :monomer-positions-accumulator monomer-positions)
                                           do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
                                           collect (cons oligomer-shape molecule))))
-    (let* ((monomer-contexts (make-hash-table))
-           (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
+    (let* ((ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
                           (resize-atmolecules atagg (length oligomer-shapes))
                           atagg))
+           (new-monomer-contexts (if monomer-contexts-p
+                                     monomer-contexts
+                                     (make-hash-table)))
            (joint-tree (make-joint-tree))
            (adjustments (make-instance 'adjustments))
            (energy-function (if energy-function-factory
@@ -365,14 +392,18 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                             for foldamer = (foldamer oligomer-space)
                             for molecule-index from 0
                             for monomer-to-monomer-shape-map = (monomer-shape-map oligomer-shape)
-                            do (if monomer-subset
-                                   (loop for monomer in (alexandria:hash-table-keys (topology:monomers monomer-subset))
-                                         when (topology:monomer-position monomer (topology:oligomer-space oligomer))
-                                           do (let ((monomer-context (foldamer-monomer-context monomer oligomer foldamer)))
-                                                (setf (gethash monomer monomer-contexts) monomer-context)))
-                                   (loop for monomer across (monomers oligomer-space)
-                                     for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
-                                     do (setf (gethash monomer monomer-contexts) monomer-context)))
+                            do (cond
+                                 (monomer-contexts-p nil)
+                                 (monomer-subset
+                                  (let ((monomer-contexts (make-hash-table)))
+                                    (loop for monomer in (alexandria:hash-table-keys (topology:monomers monomer-subset))
+                                          when (topology:monomer-position monomer (topology:oligomer-space oligomer))
+                                            do (let ((monomer-context (foldamer-monomer-context monomer oligomer foldamer)))
+                                                 (setf (gethash monomer new-monomer-contexts) monomer-context)))))
+                                 (t
+                                  (loop for monomer across (monomers oligomer-space)
+                                        for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
+                                        do (setf (gethash monomer new-monomer-contexts) monomer-context))))
                                ;. This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
                                ;; Use the monomers-to-topologys
                             do (let* ((atmolecule (build-atmolecule-using-oligomer oligomer
@@ -389,7 +420,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                                'subset-assembler
                                                                'assembler)
                                                            :monomer-positions monomer-positions
-                                                           :monomer-contexts monomer-contexts
+                                                           :monomer-contexts new-monomer-contexts
                                                            :oligomer-shapes oligomer-shapes
                                                            :orientations orientations
                                                            :aggregate aggregate
@@ -582,25 +613,6 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                (declare (ignore atom-id))
                                (kin:update-internal-coord joint coordinates)))))
 
-(defun build-external-coordinates (assembler &key oligomer-shape
-                                               (orientation :identity orientationp)
-                                               (coords (topology:make-coordinates-for-assembler assembler)))
-  (if oligomer-shape
-      (progn
-        (when (and oligomer-shape (not orientationp))
-          (error "You must provide orientation when you provide oligomer-shape"))
-        (build-atom-tree-external-coordinates* assembler coords oligomer-shape orientation)
-        (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
-      (loop for oligomer-shape in (oligomer-shapes assembler)
-            do (build-external-coordinates assembler :oligomer-shape oligomer-shape
-                                                     :orientation oligomer-shape
-                                                     :coords coords))))
-
-(defun update-externals (assembler &key oligomer-shape
-                                     (orientation :identity orientationp)
-                                     (coords (topology:make-coordinates-for-assembler assembler)))
-  (build-external-coordinates assembler :oligomer-shape oligomer-shape :orientation orientation :coords coords))
-
 
 (defun build-atom-tree-external-coordinates* (assembler coords oligomer-shape maybe-orientation)
   (let* ((orientation (orientation maybe-orientation assembler))
@@ -612,12 +624,16 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
       (loop for joint in joints
             do (kin:update-xyz-coords joint coords)))))
 
-(defun build-all-external-coordinates (assembler &key (coords (topology:make-coordinates-for-assembler assembler)))
-  (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (build-external-coordinates assembler
-                                       :coords coords
-                                       :oligomer-shape oligomer-shape
-                                       :orientation oligomer-shape)))
+
+(defun build-atom-tree-for-monomer-shape-external-coordinates* (assembler coords oligomer-shape monomer-shape maybe-orientation)
+  (let* ((orientation (orientation maybe-orientation assembler))
+         (one-oligomer (oligomer oligomer-shape))
+         (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
+    (when (null joints)
+      (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
+    (with-orientation orientation
+      (loop for joint in joints
+            do (kin:update-xyz-coords joint coords)))))
 
 
 (defun adjust-atom-tree-external-coordinates (assembler coords oligomer-shape)
@@ -669,21 +685,24 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (adjust-internals assembler oligomer-shape)))
 
-(defgeneric apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape monomer-shape monomer-context atresidue coordinates &key verbose)
+(defgeneric apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape monomer-shape monomer-context atresidue &key verbose)
   (:documentation "Specialize this on different monomer-shape classes.
 Fill in internal coordinates into the atresidue for the monomer-shape.
 Some specialized methods will need coordinates for the assembler"))
 
 
-
-(defun fill-internals-from-oligomer-shape (assembler oligomer-shape &optional verbose)
-  "Fill internal coordinates from the fragments"
+#+(or)
+(defun fill-internals-from-oligomer-shape (assembler oligomer-shape
+                                           &key (root-monomer (topology:root-monomer (topology:oligomer oligomer-shape)) root-monomer-p)
+                                             verbose)
+  "Fill internal coordinates from the monomer-shapes in OLIGOMER-SHAPE of the ASSEMBLER.
+If ROOT-MONOMER is provided, then start from that."
   (when verbose (let ((*print-pretty* nil)) (format t "fill-internals-from-oligomer-shape ~s~%" oligomer-shape)))
   (let ((coordinates (topology:make-coordinates-for-assembler assembler)))
     (loop for ass-oligomer-shape in (oligomer-shapes assembler)
           when (eq ass-oligomer-shape oligomer-shape)
             do (let* ((oligomer (oligomer ass-oligomer-shape))
-                      (ordered-monomers (ordered-monomers oligomer)))
+                      (ordered-monomers (ordered-monomers oligomer :root-monomer root-monomer)))
                  (when verbose
                    (let ((*print-pretty* nil))
                      (format t "fill-internals-from-oligomer-shape ~s ordered-monomers: ~s~%" ass-oligomer-shape ordered-monomers)))
@@ -704,6 +723,62 @@ Some specialized methods will need coordinates for the assembler"))
                                                     ms)))
                               (when verbose (format t "applying internals for monomer: ~s~%" monomer))
                               (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres coordinates :verbose verbose)))))))
+
+(defun fill-internals-from-oligomer-shape (assembler oligomer-shape &key verbose)
+  "Fill internal coordinates from the monomer-shapes in OLIGOMER-SHAPE of the ASSEMBLER."
+  (when verbose (let ((*print-pretty* nil)) (format t "fill-internals-from-oligomer-shape ~s~%" oligomer-shape)))
+  (loop for ass-oligomer-shape in (oligomer-shapes assembler)
+        when (eq ass-oligomer-shape oligomer-shape)
+          do (let* ((oligomer (oligomer ass-oligomer-shape))
+                    (monomers (monomers (oligomer-space oligomer))))
+               (loop with atagg = (ataggregate assembler)
+                     ;;  IGNORING THE FOLLOWING
+                     ;; It's really important that we use the ordered-monomers so that the monomer-shapes
+                     ;;  will install internal coordinates in the order from the root outwards.
+                     ;;  so that any preceeding monomer-shapes are built before any following ones.
+                     for monomer across monomers
+                     when (in-monomer-subset (monomer-subset assembler) monomer)
+                       do (let* ((monomer-context (gethash monomer (monomer-contexts assembler)))
+                                 (monomer-position (gethash monomer (monomer-positions assembler)))
+                                 (molecule-index (molecule-index monomer-position))
+                                 (residue-index (residue-index monomer-position))
+                                 (atmol (elt (atmolecules atagg) molecule-index))
+                                 (atres (elt (atresidues atmol) residue-index))
+                                 (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
+                                                  (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
+                                                  ms)))
+                            (when verbose (format t "applying internals for monomer: ~s~%" monomer))
+                            (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres :verbose verbose))))))
+
+(defun update-internals (assembler oligomer-shape &key verbose)
+  "Update the internal coordinates of the assembler for the oligomer-shape
+or whatever type the second argument is.
+The MONOMER-SHAPEs of the OLIGOMER-SHAPE are used to update the internal coordinates in
+the atom-tree.
+
+ASSEMBLER - the assembler to update.
+OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wrong) in the assembler."
+  (fill-internals-from-oligomer-shape assembler oligomer-shape :verbose verbose)
+  (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
+    (adjust-internals assembler oligomer-shape)))
+
+(defun update-internals-for-monomer-shape (assembler oligomer-shape monomer-shape &key verbose)
+  "Fill internal coordinates from the MONOMER-SHAPE in OLIGOMER-SHAPE of the ASSEMBLER."
+  (let* ((atagg (ataggregate assembler))
+         (monomer-shape-pos (or (gethash monomer-shape (monomer-shape-to-index oligomer-shape))
+                                (error "Could not find monomer-shape ~s in oligomer-shape ~s" monomer-shape oligomer-shape)))
+         (monomer-info (aref (monomer-shape-info-vector oligomer-shape) monomer-shape-pos))
+         (monomer (monomer monomer-info))
+         (monomer-context (gethash monomer (monomer-contexts assembler)))
+         (monomer-position (gethash monomer (monomer-positions assembler)))
+         (molecule-index (molecule-index monomer-position))
+         (residue-index (residue-index monomer-position))
+         (atmol (elt (atmolecules atagg) molecule-index))
+         (atres (elt (atresidues atmol) residue-index)))
+    (when verbose (format t "applying internals for monomer: ~s~%" monomer))
+    (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres :verbose verbose))
+  (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
+    (adjust-internals assembler oligomer-shape)))
 
 #|
 ;;;Idea to make monomer-shape subclasses control how internal coordinates get generated.
@@ -897,3 +972,42 @@ Some specialized methods will need coordinates for the assembler"))
           do (incf centerz z)
           do (incf num))
     (geom:vec (/ centerx num) (/ centery num) (/ centerz num))))
+
+(defun update-externals (assembler &key oligomer-shape
+                                     (orientation :identity orientationp)
+                                     (coords (topology:make-coordinates-for-assembler assembler)))
+  "Update the external coordinates in COORDS using the ASSEMBLER and ORIENTATION.
+IF OLIGOMER-SHAPE is provided then just build externals for that OLIGOMER-SHAPE.
+If OLIGOMER-SHAPE is not provided then build them all and use the OLIGOMER-SHAPE as the ORIENTATION key.
+Return the COORDS."
+  (if oligomer-shape
+      (progn
+        (when (and oligomer-shape (not orientationp))
+          (error "You must provide orientation when you provide oligomer-shape"))
+        (build-atom-tree-external-coordinates* assembler coords oligomer-shape orientation)
+        (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
+      (loop for oligomer-shape in (oligomer-shapes assembler)
+            do (update-externals assembler :oligomer-shape oligomer-shape
+                                           :orientation oligomer-shape
+                                           :coords coords)))
+  coords)
+
+
+(defun update-externals-for-monomer-shape (assembler oligomer-shape monomer-shape coords orientation)
+  "Update the external coordinates for one MONOMER-SHAPE in the OLIGOMER-SHAPE in the ASSEMBLER using the ORIENTATION."
+  (let* ((atagg (ataggregate assembler))
+         (monomer-shape-pos (or (gethash monomer-shape (monomer-shape-to-index oligomer-shape))
+                                (error "Could not find monomer-shape ~s in oligomer-shape ~s" monomer-shape oligomer-shape)))
+         (monomer-info (aref (monomer-shape-info-vector oligomer-shape) monomer-shape-pos))
+         (monomer (monomer monomer-info))
+         (monomer-context (gethash monomer (monomer-contexts assembler)))
+         (monomer-position (gethash monomer (monomer-positions assembler)))
+         (molecule-index (molecule-index monomer-position))
+         (residue-index (residue-index monomer-position))
+         (atmol (elt (atmolecules atagg) molecule-index))
+         (atres (elt (atresidues atmol) residue-index))
+         (joints (joints atres))
+         (joint0 (elt joints 0)))
+    (with-orientation orientation
+      (kin:update-xyz-coords joint0 coords))
+    (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))

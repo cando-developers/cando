@@ -73,12 +73,12 @@ CL_DEFMETHOD Joint_sp XyzJoint_O::inputStubJoint1() const { return this->parent(
 	/*! Return the stubJoint3 */
 CL_DEFMETHOD Joint_sp XyzJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
-
 CL_LAMBDA(atom-id name atom-table &optional atom)
 CL_LISPIFY_NAME("make_XyzJoint");
 CL_DEF_CLASS_METHOD
 XyzJoint_sp XyzJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp atom) {
   if (atom.nilp()) {
+    SIMPLE_ERROR("You must define the atom for XyzJoint creation");
     auto obj = gctools::GC<XyzJoint_O>::allocate(atomId,name,atomTable);
     return obj;
   } else {

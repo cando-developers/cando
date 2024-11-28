@@ -56,7 +56,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
          (context-rotamers (topology:lookup-rotamers-for-context rotamers-database monomer-context)))
     (make-instance 'rotamer-shape :rotamer-shape-context-rotamers context-rotamers)))
 
-(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue coordinates &key verbose)
+(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue &key verbose)
   (when verbose
     (let ((*print-pretty* nil))
       (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   rotamer-shape ~s~%  monomer-context ~s~%"
@@ -92,7 +92,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
     (format stream "~s" (chem:get-name (residue obj)))))
 
 
-(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (residue-shape residue-shape) monomer-context atresidue coordinates &key verbose)
+(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (residue-shape residue-shape) monomer-context atresidue &key verbose)
   (when verbose
     (let ((*print-pretty* nil))
       (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   residue-shape ~s~%  monomer-context ~s~%" oligomer-shape residue-shape monomer-context)))
@@ -117,18 +117,20 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
 
 
 (defclass oligomer-shape ()
-  ((name :initarg :name :accessor name)
+  ((name :initarg :name :reader name)
    (rotamers-state :initarg :rotamers-state :accessor rotamers-state
-                   :type (member :undefined :incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers))
-   (oligomer :initarg :oligomer :accessor oligomer)
-   (rotamers-database :initarg :rotamers-database :accessor rotamers-database)
+                   :type (member :undefined :incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers)
+                   :documentation "Mutable slot")
+   (oligomer :initarg :oligomer :reader oligomer)
+   (rotamers-database :initarg :rotamers-database :reader rotamers-database)
    (monomer-shape-info-vector :initarg :monomer-shape-info-vector :reader monomer-shape-info-vector)
-   (the-root-monomer :initarg :the-root-monomer :accessor the-root-monomer)
-   (in-monomers :initarg :in-monomers :accessor in-monomers)
-   (out-monomers :initarg :out-monomers :accessor out-monomers)
+   (the-root-monomer :initarg :the-root-monomer :reader the-root-monomer)
+   (in-monomers :initarg :in-monomers :reader in-monomers)
+   (out-monomers :initarg :out-monomers :reader out-monomers)
    (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector
                          :documentation "This is mutable")
-   (monomer-shape-map :initarg :monomer-shape-map :accessor monomer-shape-map)
+   (monomer-shape-to-index :initarg :monomer-shape-to-index :reader monomer-shape-to-index)
+   (monomer-shape-map :initarg :monomer-shape-map :reader monomer-shape-map)
    ))
 
 (defmacro do-oligomer-shape ((monomer-shape monomer monomer-context monomer-shape-kind) oligomer-shape &body body)
@@ -161,14 +163,16 @@ to the components and evaluate the BODY in that scope."
 
 (defmethod copy-oligomer-shape ((oligomer-shape oligomer-shape))
   (let ((monomer-shape-vector (make-array (length (monomer-shape-vector oligomer-shape))))
-        (monomer-shape-map (make-hash-table)))
+        (monomer-shape-map (make-hash-table))
+        (monomer-shape-to-index (make-hash-table)))
     (loop for monomer-shape across (monomer-shape-vector oligomer-shape)
           for index from 0
           for monomer-shape-info across (monomer-shape-info-vector oligomer-shape)
           for monomer = (monomer monomer-shape-info)
           for new-monomer-shape = (copy-monomer-shape monomer-shape)
           do (setf (aref monomer-shape-vector index) new-monomer-shape
-                   (gethash monomer monomer-shape-map) new-monomer-shape))
+                   (gethash monomer monomer-shape-map) new-monomer-shape
+                   (gethash monomer-shape monomer-shape-to-index) index))
     (make-instance 'oligomer-shape
                    :name (name oligomer-shape)
                    :rotamers-state (rotamers-state oligomer-shape)
@@ -176,13 +180,16 @@ to the components and evaluate the BODY in that scope."
                    :rotamers-database (rotamers-database oligomer-shape)
                    :monomer-shape-info-vector (monomer-shape-info-vector oligomer-shape)
                    :the-root-monomer (the-root-monomer oligomer-shape)
+                   :monomer-shape-to-index monomer-shape-to-index
                    :in-monomers  (in-monomers oligomer-shape)
                    :out-monomers (out-monomers oligomer-shape)
                    :monomer-shape-vector monomer-shape-vector
                    :monomer-shape-map monomer-shape-map)))
 
+(defmethod oligomer-space ((oligomer-shape oligomer-shape))
+  "Return the oligomer-space for the oligomer of the OLIGOMER-SHAPE"
+  (oligomer-space (oligomer oligomer-shape)))
 
-  
 (defmethod print-object ((obj oligomer-shape) stream)
   (print-unreadable-object (obj stream :type t)
     (format stream "~s" (name obj))))
@@ -316,9 +323,11 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
          (shape-info (shape-info foldamer))
          #+(or)(kind-order (loop for kind-keys in (kind-keys shape-info)
                                  collect (kind kind-keys))))
-    (multiple-value-bind (monomer-shape-vector monomer-shape-info-vector the-root-monomer in-monomers out-monomers monomer-shape-map)
+    (multiple-value-bind (monomer-shape-vector monomer-shape-info-vector monomer-shape-to-index
+                                               the-root-monomer in-monomers out-monomers monomer-shape-map)
         (loop with monomer-shape-vector = (make-array (length (monomers oligomer)))
               with monomer-shape-info-vector = (make-array (length (monomers oligomer)))
+              with monomer-shape-to-index = (make-hash-table)
               with in-monomers = (make-hash-table)
               with out-monomers = (make-hash-table)
               with the-root-monomer = nil
@@ -364,15 +373,17 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
               do (unless in-monomer (setf the-root-monomer monomer))
               do (setf (gethash monomer out-monomers) out-mons)
               do (setf (aref monomer-shape-vector index) monomer-shape)
+              do (setf (gethash monomer-shape monomer-shape-to-index) index)
               do (setf (aref monomer-shape-info-vector index) monomer-shape-info)
                  ;;            do (format t "monomer-context ~a~%" monomer-context)
-              finally (return (values monomer-shape-vector monomer-shape-info-vector the-root-monomer in-monomers out-monomers monomer-shape-map)))
+              finally (return (values monomer-shape-vector monomer-shape-info-vector monomer-shape-to-index the-root-monomer in-monomers out-monomers monomer-shape-map)))
       (let* ((os (apply 'make-instance
                         oligomer-shape-class-name
                         :oligomer oligomer
                         :rotamers-database rotamers-database
                         :monomer-shape-info-vector monomer-shape-info-vector
                         :monomer-shape-vector monomer-shape-vector
+                        :monomer-shape-to-index monomer-shape-to-index
                         :monomer-shape-map monomer-shape-map
                         :the-root-monomer the-root-monomer
                         :in-monomers in-monomers
@@ -511,6 +522,7 @@ If UNINITIALIZED then leave them unbound."
       (random-rotamer-index-impl root-monomer-shape oligomer-shape))))
 
 
+#+(or)
 (defun build-shapes (oligomer-shapes assembler &key monomer-order)
   (let ((coordinates (chem:make-coordinates (topology:energy-function assembler))))
     (chem:energy-function/load-coordinates-into-vector (topology:energy-function assembler) coordinates)
@@ -584,33 +596,29 @@ If UNINITIALIZED then leave them unbound."
 (defun lookup-dihedral-cache (oligomer-shape monomer-shape dihedral-name &key ignore-degrees)
   (lookup-dihedral-cache-impl oligomer-shape monomer-shape dihedral-name :ignore-degrees ignore-degrees))
 
-
+#+(or)
 (defun build-externals-from-internals (assembler &key oligomer-shape into-coords)
   (let ((coords (make-coordinates-for-assembler assembler)))
     (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
     (copy-joint-positions-into-atoms assembler coords oligomer-shape)))
 
+#+(or)
 (defun build-oligomer-shape-in-aggregate (assembler oligomer-shape)
   (let ((coords (make-coordinates-for-assembler assembler)))
     (update-internals assembler oligomer-shape)
     (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape)
     (copy-joint-positions-into-atoms assembler coords oligomer-shape)))
 
-(defun update-internals-for-atresidue (assembler rotamer rotamer-index atresidue)
-  "This is for writing/adjusting the internals for a single atresidue"
-  (apply-fragment-internals-to-atresidue rotamer rotamer-index atresidue)
-  (let ((adjustments (gethash atresidue (internal-adjustments (adjustments assembler)))))
-    (loop for adjustment in adjustments
-          do (internal-adjust adjustment assembler))))
- 
-
+#+(or)
 (defgeneric build-initial-oligomer-shape-externals (assembler oligomer-shape &key orientation coords)
   (:documentation "Build the oligomer-shape in the coordinates by generating the initial externals"))
 
+#+(or)
 (defmethod build-initial-oligomer-shape-externals (assembler oligomer-shape &key (coords (make-coordinates-for-assembler assembler)) orientation)
   (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape orientation)
   coords)
 
+#+(or)
 (defun build-all-externals (assembler &key (coords (make-coordinates-for-assembler assembler)))
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape oligomer-shape))
@@ -618,16 +626,6 @@ If UNINITIALIZED then leave them unbound."
 
 (defun build-oligomer-shape-keep-internals-in-coordinates (assembler oligomer-shape coords)
   (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))
-
-(defun build-all-oligomer-shapes-in-coordinates (assembler &optional (coords (make-coordinates-for-assembler assembler)))
-  (loop for oligomer-shape in (topology:oligomer-shapes assembler)
-        do (update-internals assembler oligomer-shape)
-        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape))
-  coords)
-
-(defun build-all-oligomer-shapes-from-internals-in-coordinates (assembler coords)
-  (loop for oligomer-shape in (topology:oligomer-shapes assembler)
-        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape oligomer-shape)))
 
 (defmethod aggregate (oligomer-shape)
   "Generate a random oligomer-shape and return the aggregate"
@@ -639,11 +637,14 @@ If UNINITIALIZED then leave them unbound."
              (coords (make-coordinates-for-assembler ass))
              )
         (update-internals ass oligomer-shape)
-        (build-all-oligomer-shapes-from-internals-in-coordinates ass coords)
+        (update-externals ass :oligomer-shape oligomer-shape
+                              :orientation oligomer-shape
+                              :coords coords)
         (copy-all-joint-positions-into-atoms ass coords)
         (aggregate ass)))))
 
 
+#+(or)
 (defun assembler-aggregate (assembler oligomer-shapes)
   (let ((coords (make-coordinates-for-assembler assembler)))
     (loop for oligomer-shape in oligomer-shapes
@@ -667,6 +668,7 @@ If UNINITIALIZED then leave them unbound."
   (let* ((oligomer-shape (make-oligomer-shape-of-rotamer-shapes oligomer)))
     (aggregate oligomer-shape)))
 
+#+(or)
 (defun analyze-oligomer-shape (oligomer-shape)
   "Print an analysis of the oligomer-shape. Print the number of backbone and sidechain monomer-shapes that have defined rotamer-index's "
   (let ((backbone-count 0)
@@ -725,23 +727,12 @@ If UNINITIALIZED then leave them unbound."
              (coords (make-coordinates-for-assembler ass))
              )
         (update-internals ass oligomer-shape)
-        (build-all-oligomer-shapes-from-internals-in-coordinates ass coords)
+        (update-externals ass :oligomer-shape oligomer-shape
+                              :orientation oligomer-shape
+                              :coords coords)
         (copy-all-joint-positions-into-atoms ass coords)
         (aggregate ass)))))
 
-
-
-(defun update-internals (assembler oligomer-shape &key verbose)
-  "Update the internal coordinates of the assembler for the oligomer-shape
-or whatever type the second argument is.
-The MONOMER-SHAPEs of the OLIGOMER-SHAPE are used to update the internal coordinates in
-the atom-tree.
-
-ASSEMBLER - the assembler to update.
-OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wrong) in the assembler."
-  (fill-internals-from-oligomer-shape assembler oligomer-shape verbose)
-  (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
-    (adjust-internals assembler oligomer-shape)))
 
 
 (defun build-rotamer-shape-map (oligomer)

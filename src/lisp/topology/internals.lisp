@@ -370,15 +370,11 @@ changing the BACKBONE-DIHEDRAL-CACHE."
 
 (defgeneric apply-fragment-internals-to-atresidue (fragment-internals rotamer-index atresidue))
 
-(defmethod apply-fragment-internals-to-atresidue ((obj rotamer) rotamer-index atresidue)
+(defmethod apply-fragment-internals-to-atresidue ((rotamer rotamer) rotamer-index atresidue)
   (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (topology:joints atresidue)
-        for index from 0
-        do (multiple-value-bind (bond angle-rad dihedral-rad)
-               (topology:extract-bond-angle-rad-dihedral-rad obj index)
-             (when (typep joint 'kin:bonded-joint)
-               (topology:fill-joint-internals joint bond angle-rad dihedral-rad)))))
-
+        for index3 from 0 by 3
+        do (fill-joint-internals-from-vector joint (internals-values rotamer) index3)))
 
 (defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
   (context-to-rotamers obj))
@@ -813,7 +809,6 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
     (format finternals "end-conformation~%")
     ))
 
-
 (defgeneric fill-joint-internals (joint bond angle-rad dihedral-rad))
 
 (defmethod fill-joint-internals ((joint kin:jump-joint) bond angle-rad dihedral-rad)
@@ -823,9 +818,33 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   "Do nothing with xyz-joints"
   )
 
+(defgeneric fill-joint-internals-from-vector (joint vector index3))
+
+(defmethod fill-joint-internals-from-vector ((joint kin:jump-joint) vector index3) #|do nothing|#)
+(defmethod fill-joint-internals-from-vector ((joint kin:xyz-joint) vector index3) #|do nothing|#)
+
+(defmethod fill-joint-internals-from-vector ((joint kin:bonded-joint) vector index3)
+  (multiple-value-bind (bond angle-rad dihedral-rad)
+      (values (aref vector index3)
+              (aref vector (+ 1 index3))
+              (aref vector (+ 2 index3)))
+    (kin:set-distance joint bond)
+    (kin:set-theta joint angle-rad)
+    (kin:bonded-joint/set-phi joint dihedral-rad)))
+
+(defmethod fill-joint-internals-from-vector ((joint kin:bonded-joint) (vector sys:simple-vector-double) index3)
+  (kin:fill-internals-from-simple-vector-double joint vector index3))
+
+(defmethod fill-joint-internals-from-vector ((joint kin:bonded-joint) (vector sys:simple-vector-float) index3)
+  (kin:fill-internals-from-simple-vector-single joint vector index3))
+
+
 (defun fill-joint-phi (joint phi)
+  "Write a dihedral angle in radians in PHI into the JOINT.
+I have this to trap writing specific phi values for debugging."
   (kin:bonded-joint/set-phi joint phi))
 
+#+(or)
 (defmethod fill-joint-internals ((joint kin:bonded-joint) bond angle-rad dihedral-rad)
   (kin:set-distance joint bond)
   (kin:set-theta joint angle-rad)
@@ -833,6 +852,8 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   )
 
 (defun extract-bond-angle-rad-dihedral-rad (rotamer index)
+"Extract the bond, angle-rad, and dihedral-rad from the ROTAMER at INDEX.
+INDEX counts by 1 and _not_ by 3."
   (let ((index3 (* 3 index)))
     (values (aref (internals-values rotamer) index3)
             (aref (internals-values rotamer) (+ 1 index3))
@@ -842,10 +863,8 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
 (defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) rotamer-index atresidue)
   (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (joints atresidue)
-        for index from 0
-        do (multiple-value-bind (bond angle-rad dihedral-rad)
-               (extract-bond-angle-rad-dihedral-rad fragment-internals index)
-             (fill-joint-internals joint bond angle-rad dihedral-rad))))
+        for index3 from 0 by 3
+        do (fill-joint-internals-from-vector joint (internals-values fragment-internals) index3)))
 
 (defun analyze-atresidue (atresidue)
   (let ((internals-count 0)
@@ -881,13 +900,12 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
         for index from 0
         for index3 from 0 by 3
         if (or (null updated-internals-mask)
-                 (= (aref updated-internals-mask index) 1))
+               (= (aref updated-internals-mask index) 1))
           do (typecase joint
                (kin:bonded-joint
                 (when verbose (format t "Updating bonded-joint ~s~%" joint))
-                (fill-joint-internals joint (aref internals index3)
-                                      (aref internals (+ 1 index3))
-                                      (aref internals (+ 2 index3))))
+                (error "An error is about to occur - you need to pass the internals-values of internals and not internals")
+                (fill-joint-internals-from-vector joint internals index3))
                (kin:xyz-joint
                 (if (kin:xyz-joint/definedp joint)
                     (warn "Skipping defining xyz-joint")

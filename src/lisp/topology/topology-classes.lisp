@@ -453,7 +453,6 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t))))
 
-
 (defun topologys-in-oligomer-space (oligomer-space)
   (loop for monomer across (monomers oligomer-space)
         for monomer-names = (monomers monomer)
@@ -510,6 +509,8 @@ Examples:
     (topology:verify-oligomer-space oligomer-space)
     oligomer-space))
 
+(defun oligomer-space-contains-monomer (oligomer-space monomer)
+  (position monomer (monomers oligomer-space)))
 
 (defun monomer-position (monomer oligomer-space)
   "Return the position of the MONOMER in the OLIGOMER-SPACE or NIL"

@@ -167,7 +167,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                      (invoke-restart 'cando:skip-rest-of-minimization err))))
           (with-handle-linear-angles-dihedrals (:max-times 3 :verbose verbose)
             (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
-              (chem:minimize minimizer active-atoms-mask))))
+              (chem:minimize minimizer :active-atom-mask active-atoms-mask))))
       ;; skip-rest-of-minimization can also be triggered by the user from the debugger
       (skip-rest-of-minimization (err)
         :report "Skip the rest of the current minimization - continue processing"
@@ -288,7 +288,6 @@ Disabling happens before enabling - so you can disable all with T and then selec
                    (chem:enable comp))))
     (validate-energy-components disable-components valid-components)
     (validate-energy-components enable-components valid-components)
-    (chem:set-electrostatic-scale energy-function electrostatic-scale)
     (configure-minimizer min
                          :sd-tolerance sd-tolerance
                          :cg-tolerance cg-tolerance
@@ -346,7 +345,6 @@ Disabling happens before enabling - so you can disable all with T and then selec
                    (chem:enable comp))))
     (validate-energy-components disable-components valid-components)
     (validate-energy-components enable-components valid-components)
-    (chem:set-electrostatic-scale energy-function electrostatic-scale)
     (configure-minimizer min
                          :sd-tolerance sd-tolerance
                          :cg-tolerance cg-tolerance

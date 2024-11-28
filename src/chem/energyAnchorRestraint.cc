@@ -252,17 +252,18 @@ void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
 
 
 double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                        NVector_sp 	pos,
-                                                        core::T_sp componentEnergy,
-                                                        bool 		calcForce,
-                                                        gc::Nilable<NVector_sp> 	force,
-                                                        bool		calcDiagonalHessian,
-                                                        bool		calcOffDiagonalHessian,
-                                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                        gc::Nilable<NVector_sp>	hdvec,
-                                                        gc::Nilable<NVector_sp> dvec,
-                                                        core::T_sp activeAtomMask,
-                                                        core::T_sp debugInteractions )
+                                                      NVector_sp 	pos,
+                                                      core::T_sp energyScale,
+                                                      core::T_sp componentEnergy,
+                                                      bool 		calcForce,
+                                                      gc::Nilable<NVector_sp> 	force,
+                                                      bool		calcDiagonalHessian,
+                                                      bool		calcOffDiagonalHessian,
+                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                      gc::Nilable<NVector_sp>	hdvec,
+                                                      gc::Nilable<NVector_sp> dvec,
+                                                      core::T_sp activeAtomMask,
+                                                      core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());

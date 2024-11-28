@@ -171,7 +171,9 @@ struct RestartMinimizer {};
     void set_initial_line_search_step(double step);
     
     void lineSearchInitialReport( StepReport_sp report,
-                                  NVector_sp nvPos, NVector_sp nvDir,
+                                  NVector_sp nvPos,
+                                  core::T_sp energyScale,
+                                  NVector_sp nvDir,
                                   NVector_sp nvForce,
                                   double xa, double xx, double xb,
                                   double fa, double fx, double fb,
@@ -181,11 +183,12 @@ struct RestartMinimizer {};
     void stepReport( StepReport_sp report, double energy,NVector_sp force,core::T_sp activeAtomMask );
 
     void	getPosition(NVector_sp nvResult, NVector_sp nvOrigin, NVector_sp nvDirection, double x, core::T_sp activeAtomMask);
-    double dTotalEnergy(NVector_sp pos,core::T_sp activeAtomMask);
-    double dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce, core::T_sp activeAtomMask);
-    double d1DTotalEnergy(double x, core::T_sp activeAtomMask );
-    double d1DTotalEnergyForce( double x, double* fx, double* dfx, core::T_sp activeAtomMask );
+    double dTotalEnergy(NVector_sp pos,core::T_sp energyScale,core::T_sp activeAtomMask);
+    double dTotalEnergyForce( NVector_sp nvPos, core::T_sp energyScale, NVector_sp nvForce, core::T_sp activeAtomMask);
+    double d1DTotalEnergy(double x, core::T_sp energyScale, core::T_sp activeAtomMask );
+    double d1DTotalEnergyForce( double x, core::T_sp energyScale, double* fx, double* dfx, core::T_sp activeAtomMask );
     void   minBracket(	NVector_sp	nvOrigin,
+                        core::T_sp      energyScale,
                         NVector_sp	nvDir,
                         double		*dPxa,
                         double		*dPxb,
@@ -195,6 +198,7 @@ struct RestartMinimizer {};
                         double		*dPfc,
                         core::T_sp activeAtomMask );
     double 	dbrent(	double ax, double bx, double cx,
+                        core::T_sp energyScale,
 			double tol, double& step,
 			int&	energyEvals,
 			int&	forceEvals,
@@ -203,6 +207,7 @@ struct RestartMinimizer {};
     void	lineSearch(	double	*dPxnew,
 				double	*dPfnew,
 				NVector_sp nvOrigin,
+                                core::T_sp energyScale,
 				NVector_sp nvDirection,
 				NVector_sp nvForce,
 				NVector_sp nvTemp1,
@@ -220,25 +225,32 @@ struct RestartMinimizer {};
         /*! Return true on success */
     void	_steepestDescent( int numSteps,
 				  NVector_sp p,
+                                  core::T_sp energyScale,
 				  double rmsGradientTol,
                                   core::T_sp activeAtomMask,
                                   core::T_sp callback );
         /*! Return true on success */
     void	_conjugateGradient( int numSteps,
 				    NVector_sp p,
+                                  core::T_sp energyScale,
 				    double rmsGradientTol,
                                     core::T_sp activeAtomMask,
                                     core::T_sp callback );
     void	_truncatedNewton( int numSteps,
 				  NVector_sp p,
+                                  core::T_sp energyScale,
 				  double rmsGradientTol,
                                   core::T_sp activeAtomMask,
                                   core::T_sp callback );
 
 
-    void	_evaluateEnergyAndForceManyTimes( int numSteps, NVector_sp nvPos,
+    void	_evaluateEnergyAndForceManyTimes( int numSteps,
+                                                  NVector_sp nvPos,
+                                                  core::T_sp energyScale,
                                                   core::T_sp activeAtomMask );
-    void	validateForce(NVector_sp pos, NVector_sp force,
+    void	validateForce(NVector_sp pos,
+                              core::T_sp energyScale,
+                              NVector_sp force,
                               core::T_sp activeAtomMask );
 
     void	debugBeginIteration(int i);
@@ -260,10 +272,11 @@ struct RestartMinimizer {};
     void _truncatedNewtonInnerLoop(
                                    int				k,
                                    NVector_sp			xj,
+                                   core::T_sp                   energyScale,
                                    SparseLargeSquareMatrix_sp	mprecon,
                                    SparseLargeSquareMatrix_sp	ldlt,
                                    NVector_sp 			force,
-                                   double				rmsForceMag,
+                                   double			rmsForceMag,
                                    NVector_sp			pj,
                                    NVector_sp			pjNext,
                                    NVector_sp			rj,
@@ -332,11 +345,11 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
 
     void	minimizeSteepestDescent();
     void	minimizeConjugateGradient();
-    void	resetAndMinimize(core::T_sp activeAtomMask, core::T_sp callback );
-    core::T_mv minimize(core::T_sp activeAtomMask, core::T_sp callback);
+    void	resetAndMinimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback );
+    core::T_mv minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback);
         // If the minimization is aborted the intermediate results can be recovered
     void    writeIntermediateResultsToEnergyFunction();
-    void	evaluateEnergyAndForceManyTimes(int times,core::T_sp activeAtomMask );
+    void	evaluateEnergyAndForceManyTimes(core::T_sp energyScale, int times,core::T_sp activeAtomMask );
 
     adapt::QDomNode_sp	asXml();
 

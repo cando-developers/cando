@@ -493,7 +493,7 @@
       (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
              (atom-name (atom-name joint-template))
              (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-             (new-joint (kin:make-xyz-joint atomid atom-name atom-table)))
+             (new-joint (kin:make-xyz-joint atomid atom-name atom-table (chem:make-atom atom-name :DU))))
         (put-joint atresidue new-joint constitution-atoms-index)
         (when parent-joint (kin:joint/add-child parent-joint new-joint))
         new-joint)))

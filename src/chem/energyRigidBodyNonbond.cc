@@ -432,22 +432,23 @@ inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& 
 }
 
 double EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                         NVector_sp 	pos,
-                                                         core::T_sp componentEnergy,
-                                                         bool 		calcForce,
-                                                         gc::Nilable<NVector_sp> 	force,
-                                                         bool		calcDiagonalHessian,
-                                                         bool		calcOffDiagonalHessian,
-                                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                         gc::Nilable<NVector_sp>	hdvec, 
-                                                         gc::Nilable<NVector_sp> 	dvec,
-                                                         core::T_sp activeAtomMask,
-                                                         core::T_sp debugInteractions )
+                                                       NVector_sp 	pos,
+                                                       core::T_sp energyScale,
+                                                       core::T_sp componentEnergy,
+                                                       bool 		calcForce,
+                                                       gc::Nilable<NVector_sp> 	force,
+                                                       bool		calcDiagonalHessian,
+                                                       bool		calcOffDiagonalHessian,
+                                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                       gc::Nilable<NVector_sp>	hdvec, 
+                                                       gc::Nilable<NVector_sp> 	dvec,
+                                                       core::T_sp activeAtomMask,
+                                                       core::T_sp debugInteractions )
 {
   double dielectricConstant;
   double dQ1Q2Scale;
   double cutoff;
-  energyFunctionNonbondParameters(score,dielectricConstant,dQ1Q2Scale,cutoff);
+  energyFunctionNonbondParameters(score,energyScale,dielectricConstant,dQ1Q2Scale,cutoff);
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
 //  SIMPLE_WARN("FIXactiveAtomMask How do I deal with activeAtomMask");

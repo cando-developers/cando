@@ -66,6 +66,7 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
     
   virtual void evaluateUsingExcludedAtoms( ScoringFunction_sp score,
                                            NVector_sp 	pos,
+                                           core::T_sp        energyScale,
                                            bool 		calcForce,
                                            gc::Nilable<NVector_sp> 	force,
                                            bool		calcDiagonalHessian,
@@ -76,6 +77,7 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
                                            core::T_sp activeAtomMask );
   virtual void evaluateTerms( ScoringFunction_sp score,
                               NVector_sp 	pos,
+                              core::T_sp        energyScale,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
                               bool		calcDiagonalHessian,

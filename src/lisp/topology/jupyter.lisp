@@ -158,7 +158,7 @@
   (let* ((assembler (topology:make-assembler (list object)))
          (coords (topology:make-coordinates-for-assembler assembler)))
     (topology:update-internals assembler object)
-    (topology:build-external-coordinates assembler :coords coords
+    (topology:update-externals assembler :coords coords
                                                    :oligomer-shape object
                                                    :orientation :identity)
     (cando-widgets::show-on-pane pane-instance (cando:mol (topology:aggregate* assembler coords) 0))))

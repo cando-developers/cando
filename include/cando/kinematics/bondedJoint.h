@@ -112,7 +112,7 @@ FORWARD(BondedJoint);
 
       /*! Get the stub and update the XYZ coordinate */
       void updateXyzCoord(chem::NVector_sp coords);
-      
+
       virtual Stub getInputStub(chem::NVector_sp coords) const;
 
       virtual bool definedp() const;

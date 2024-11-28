@@ -193,6 +193,7 @@ public:
                                             core::T_sp activeAtomMask);
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
+                                       core::T_sp energyScale,
                                          core::T_sp     componentEnergy,
                                          bool 		calcForce,
                                          gc::Nilable<NVector_sp> 	force,

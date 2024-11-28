@@ -95,6 +95,18 @@ CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint1() const { return this->pare
 CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
 
+CL_DEFUN void kin__fillInternalsFromSimpleVectorDouble(BondedJoint_sp joint, core::SimpleVector_double_sp values, size_t index3) {
+  joint->setDistance((*values)[index3]);
+  joint->setTheta((*values)[index3+1]);
+  joint->setPhi((*values)[index3+2]);
+}
+
+CL_DEFUN void kin__fillInternalsFromSimpleVectorSingle(BondedJoint_sp joint, core::SimpleVector_float_sp values, size_t index3) {
+  joint->setDistance((*values)[index3]);
+  joint->setTheta((*values)[index3+1]);
+  joint->setPhi((*values)[index3+2]);
+}
+
 CL_LAMBDA(atom-id name atom-table);
 CL_LISPIFY_NAME("make_BondedJoint");
 CL_DEF_CLASS_METHOD

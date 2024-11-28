@@ -251,17 +251,18 @@ bool		calcOffDiagonalHessian = true;
 
 
 double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
-                                                          chem::NVector_sp 	pos,
-                                                          core::T_sp componentEnergy,
-                                                          bool 		calcForce,
-                                                          gc::Nilable<chem::NVector_sp> 	force,
-                                                          bool		calcDiagonalHessian,
-                                                          bool		calcOffDiagonalHessian,
-                                                          gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                                          gc::Nilable<chem::NVector_sp>	hdvec,
-                                                          gc::Nilable<chem::NVector_sp> dvec,
-                                                          core::T_sp activeAtomMask,
-                                                          core::T_sp debugInteractions )
+                                                        chem::NVector_sp 	pos,
+                                                        core::T_sp energyScale,
+                                                        core::T_sp componentEnergy,
+                                                        bool 		calcForce,
+                                                        gc::Nilable<chem::NVector_sp> 	force,
+                                                        bool		calcDiagonalHessian,
+                                                        bool		calcOffDiagonalHessian,
+                                                        gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                                        gc::Nilable<chem::NVector_sp>	hdvec,
+                                                        gc::Nilable<chem::NVector_sp> dvec,
+                                                        core::T_sp activeAtomMask,
+                                                        core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
