@@ -453,7 +453,8 @@
    #:ensure-complete-orientations
    #:make-monomer-indexes
    #:first-monomers
-   #:adjust
+   #:adjust-rotation
+   #:adjust-translation
    #:make-rotamer-shape
    #:make-oligomer-shape-of-rotamer-shapes
    #:residue-shape

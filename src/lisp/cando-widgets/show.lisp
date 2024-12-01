@@ -540,8 +540,9 @@
     (let ((molecules (nreverse rev-molecules)))
       (loop for mol in molecules
             for append = nil then t
-            with pane-instance = nil
-            do (setf pane-instance (apply #'show-on-pane pane-instance mol :append append rest))))))
+;;;            with pane-instance = nil
+            do (setf pane-instance (apply #'show-on-pane pane-instance mol :append append rest))
+            finally (return pane-instance)))))
 
 
 (defmethod show-on-pane (pane-instance (object chem:molecule) &rest rest &key &allow-other-keys)

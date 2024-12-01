@@ -528,8 +528,8 @@ Returns an instance of permissible-sidechain-rotamers."
     (:incomplete-backbone-rotamers
      (call-next-method))
     (:complete-sidechain-and-backbone-rotamers
-     (set-rotamers-state oligomer-shape :incomplete-backbone-rotamers)
-     (call-next-method))
+     (call-next-method)
+     (set-rotamers-state oligomer-shape :incomplete-backbone-rotamers))
     (t (error "Illegal rotamers-state ~s" (rotamers-state oligomer-shape))))
   )
 

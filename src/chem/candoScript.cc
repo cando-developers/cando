@@ -1014,4 +1014,38 @@ CHARGES
 }
 
 
+CL_DEFUN core::T_sp chem__coerce_to_simple_vector_float(core::Array_sp array) {
+  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
+    return array;
+  } else if (gc::IsA<core::SimpleVector_double_sp>(array)) {
+    core::SimpleVector_double_sp svd = gc::As_unsafe<core::SimpleVector_double_sp>(array);
+    core::SimpleVector_float_sp svf = core::SimpleVector_float_O::make(array->length());
+    for ( size_t ii=0; ii<array->length(); ii++ ) {
+      (*svf)[ii] = (*svd)[ii];
+    }
+    return svf;
+  }
+  SIMPLE_ERROR("Handle conversion to simple-vector-float");
+}
+
+CL_DEFUN void chem__coerce_to_simple_vector_float_in_place(core::SimpleVector_float_sp svf, core::Array_sp array) {
+  if (svf->length()!=array->length()) {
+    SIMPLE_ERROR("Length mismatch between vectors {} and {}", svf->length(), array->length() );
+  }
+  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
+    core::SimpleVector_float_sp svf_array = gc::As_unsafe<core::SimpleVector_float_sp>(array);
+    for ( size_t ii=0; ii<array->length(); ii++ ) (*svf)[ii] = (*svf_array)[ii];
+    return;
+  } else if (gc::IsA<core::SimpleVector_double_sp>(array)) {
+    core::SimpleVector_double_sp svd = gc::As_unsafe<core::SimpleVector_double_sp>(array);
+    for ( size_t ii=0; ii<array->length(); ii++ ) {
+      (*svf)[ii] = (*svd)[ii];
+    }
+    return;
+  }
+  SIMPLE_ERROR("Handle conversion to simple-vector-float");
+}
+
+
+
 };

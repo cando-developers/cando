@@ -244,6 +244,13 @@ CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 }
 
 
+CL_DEFUN float chem__bond_length(Bond_sp bond) {
+  Vector3 p1 = bond->_Atom1->getPosition();
+  Vector3 p2 = bond->_Atom2->getPosition();
+  Vector3 diff = p1-p2;
+  return diff.length();
+}
+
 
 CL_LISPIFY_NAME("Bond/getOtherAtom");
 CL_DEFMETHOD Atom_sp Bond_O::getOtherAtom(Atom_sp atom) const
