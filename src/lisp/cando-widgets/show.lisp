@@ -534,6 +534,8 @@
     agg))
 
 (defmethod show-on-pane (pane-instance (object chem:aggregate) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance object rest)
+  #+(or)
   (let ((rev-molecules nil))
     (chem:do-molecules (mol object)
       (push mol rev-molecules))

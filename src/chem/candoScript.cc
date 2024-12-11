@@ -253,7 +253,7 @@ CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool
 
 CL_LAMBDA(matter &optional use-sybyl-types atom-types);
 DOCGROUP(cando);
-CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes, core::T_sp atom_types)
+CL_DEFUN core::SimpleBaseString_mv chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes, core::T_sp atom_types)
 {
   core::HashTable_sp ht;
   if (useSybylTypes) {
@@ -262,8 +262,11 @@ CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool us
     ht = gc::As<core::HashTable_sp>(atom_types);
   }
   stringstream ss;
-  mol2WriteAggregateStream(matter,ss,ht);
-  return ss.str();
+  core::T_sp res_atom_map = mol2WriteAggregateStream(matter,ss,ht);
+  if(res_atom_map.nilp()) {
+    SIMPLE_ERROR("mol2WriteAggregateStream did not return a res-atom-map");
+  }
+  return Values(core::SimpleBaseString_O::make(ss.str()),res_atom_map);
 }
 
 CL_LAMBDA(matter &optional use-sybyl-types atom-types);

@@ -693,7 +693,7 @@ core::HashTable_sp assignSybylTypes( Matter_sp matter) {
   return atom_types;
 }
 
-void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types )
+core::HashTableEql_sp	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types )
 {
   Loop		loop, lRes;
   uint		atomCount, bondCount, residueCount;
@@ -916,6 +916,7 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTa
     id++;
   }
   LOG("Returning" );
+  return ht;
 }
 
 
