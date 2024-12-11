@@ -490,7 +490,8 @@
    #:orientation-for-oligomer-shape
    #:oligomer-space-orientations
    #:update-internals-for-monomer-shape
-   #:update-externals-for-monomer-shape))
+   #:update-externals-for-monomer-shape
+   #:monomer-shape-to-index))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
