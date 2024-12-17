@@ -58,7 +58,7 @@ public:
   void initialize();
 
 private:
-   HashTableEqual_sp strs;
+   HashTable_sp strs;
    bool rest;
 
 public:

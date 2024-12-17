@@ -87,7 +87,7 @@ string	mol2AtomType(Atom_sp a);
 
 core::HashTable_sp assignSybylTypes(Matter_sp matter);
 
-core::HashTableEql_sp mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types );
+core::HashTable_sp mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types );
 void	mol2WriteAggregateToFileName( Aggregate_sp a, core::T_sp sFileName, core::HashTable_sp atom_types );
 
 void	mol2WriteDumbAggregateToFileName( Aggregate_O& a, core::T_sp sFileName, core::HashTable_sp atom_types );

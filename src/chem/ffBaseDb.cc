@@ -112,7 +112,7 @@ void FFBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
 
 CL_LISPIFY_NAME(FFParameterBaseDb/parameters);
 CL_DEFMETHOD
-core::HashTableEq_sp FFParameterBaseDb_O::parameters() const {
+core::HashTable_sp FFParameterBaseDb_O::parameters() const {
   return this->_Parameters;
 }
 
@@ -124,7 +124,7 @@ void FFParameterBaseDb_O::fields(core::Record_sp node)
 
 void FFParameterBaseDb_O::initialize()
 {
-  this->_Parameters = core::HashTableEq_O::create_default();
+  this->_Parameters = core::HashTable_O::createEq();
   this->Base::initialize();
 }
 

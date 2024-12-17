@@ -81,7 +81,7 @@ public:
   void setFromString(const string &s);
   string asString();
 
-   core::HashTableEqual_sp asStringSet();
+   core::HashTable_sp asStringSet();
 
 #ifdef USEBOOSTPYTHON
   void python_setFromList(boost::python::list res);

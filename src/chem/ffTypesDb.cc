@@ -223,11 +223,11 @@ string FFTypeRule_O::__repr__() const {
 }
 
 CL_DOCSTRING(R"dx(Return the atom types as a hash-table with the atoms as keys and types as values)dx");
-CL_DEFMETHOD core::HashTableEq_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matter)
+CL_DEFMETHOD core::HashTable_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matter)
 { 
   chem::Loop    				lAtoms;
   chem::Atom_sp  				atom;
-  core::HashTableEq_sp atomTypes = core::HashTableEq_O::create_default();
+  core::HashTable_sp atomTypes = core::HashTable_O::createEq();
   if (this->_TypeAssignmentRules.size()==0)  return atomTypes;
   lAtoms.loopTopGoal(matter,ATOMS);
   LOG("defined loop" );

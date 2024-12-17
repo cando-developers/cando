@@ -47,7 +47,7 @@ SMART(ObjectSet);
 public:
 
 GCPRIVATE:
-  HashTableEq_sp _Set;
+  HashTable_sp _Set;
 
 public:
 CL_NAME("CONTAINS");

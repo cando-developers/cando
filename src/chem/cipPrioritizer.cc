@@ -188,7 +188,7 @@ CL_LISPIFY_NAME(chem:assign-priorities-hash-table);
 DOCGROUP(cando);
 CL_DEFUN core::HashTable_sp CipPrioritizer_O::assignPrioritiesHashTable(Matter_sp matter)
 {
-  core::HashTable_sp cip = core::HashTableEq_O::create_default();
+  core::HashTable_sp cip = core::HashTable_O::createEq();
   CipPrioritizer_sp prior;
   if (gc::IsA<Molecule_sp>(matter)) {
     prior = CipPrioritizer_O::create();
@@ -542,8 +542,8 @@ Return these two values in a pair of hash-tables each keyed on the atom)dx")
 CL_LISPIFY_NAME("calculateStereochemicalTypeForAllAtoms");
 CL_DEFMETHOD core::HashTable_mv CipPrioritizer_O::calculateStereochemistryTypeForAllAtoms( Matter_sp molOrAgg )
 {
-  core::HashTable_sp cip = core::HashTableEq_O::create_default();
-  core::HashTable_sp stereochemistryType = core::HashTableEq_O::create_default();
+  core::HashTable_sp cip = core::HashTable_O::createEq();
+  core::HashTable_sp stereochemistryType = core::HashTable_O::createEq();
   this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority( molOrAgg, cip );
   Loop l;
   l.loopTopGoal( molOrAgg, ATOMS );
@@ -621,9 +621,9 @@ Return (values atom-to-stereochemistry-type-hash-table atom-to-configuration-has
 CL_LAMBDA(matter &key use-structure)
 DOCGROUP(cando);
 CL_DEFUN core::HashTable_mv chem__calculateStereochemistry( Matter_sp matter, bool useStructure ) {
-  core::HashTableEq_sp stereochemistryTypes = core::HashTableEq_O::create_default();
-  core::HashTableEq_sp configurations = core::HashTableEq_O::create_default();
-  core::HashTableEq_sp cips = core::HashTableEq_O::create_default();
+  core::HashTable_sp stereochemistryTypes = core::HashTable_O::createEq();
+  core::HashTable_sp configurations = core::HashTable_O::createEq();
+  core::HashTable_sp cips = core::HashTable_O::createEq();
   if (gc::IsA<Molecule_sp>(matter)) {
     doCalculateStereochemistry( useStructure, gc::As_unsafe<Molecule_sp>( matter ), cips, stereochemistryTypes, configurations );
   } else if (gc::IsA<Aggregate_sp>(matter)) {

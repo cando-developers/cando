@@ -167,7 +167,7 @@ public:
     void	checkMonomersAndNeighborsForErrors(CandoDatabase_sp bdb, gctools::SmallOrderedSet<Monomer_sp>& monomers ); // s e t<Monomer_sp> monomers);
     void	checkMonomersAndNotNeighborsForErrors(CandoDatabase_sp bdb, gctools::SmallOrderedSet<Monomer_sp>& monomers ); // s e t<Monomer_sp> monomers);
     void	signal_monomerContentsChanged();
-  core::HashTableEqual_sp allAliases();
+  core::HashTable_sp allAliases();
 
 public:
     // Atomic oligomer modifying routines

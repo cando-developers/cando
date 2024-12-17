@@ -97,7 +97,7 @@ private: // archive
   core::Symbol_sp				_Name;
   string				_DateCreated;
   string				_DateUpdated;
-  core::HashTableEq_sp          _Topologys;
+  core::HashTable_sp          _Topologys;
   
 private:
 	/*! Return true if the entity with the name (name) is recognized and is a subclass of classId

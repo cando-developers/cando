@@ -185,7 +185,7 @@ public:
     CDBonds			_Bonds;
     int				_LargestId;
     gc::Nilable<Molecule_sp> _Molecule;
-//    core::HashTableEq_sp		_Properties;
+//    core::HashTable_sp		_Properties;
 public:
     void	initialize();
  public:

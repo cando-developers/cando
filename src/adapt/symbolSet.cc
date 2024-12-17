@@ -213,7 +213,7 @@ void SymbolSet_O::remove(Symbol_sp s) {
 
 void SymbolSet_O::initialize() {
   this->Base::initialize();
-  this->_Symbols = HashTableEq_O::create_default();
+  this->_Symbols = HashTable_O::createEq();
 }
 
 SymbolSet_O::SymbolSet_O(const SymbolSet_O &ss) : Base(ss) {

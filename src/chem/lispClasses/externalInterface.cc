@@ -56,7 +56,7 @@ namespace chem
     void	ExternalInterface_O::initialize()
     {
 	this->Base::initialize();
-	this->_Data = core::HashTableEq_O::create_default();
+	this->_Data = core::HashTable_O::createEq();
 	this->_AtomNames = core::StringList_O::create();
 	this->_WeakConformationExplorer = _Nil<ConformationExplorer_O>();
     }

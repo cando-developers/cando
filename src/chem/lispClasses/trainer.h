@@ -226,7 +226,7 @@ namespace       chem
 
 
 
-    core::HashTableEq_sp readTrainerHeader( core::Path_sp const& path);
+    core::HashTable_sp readTrainerHeader( core::Path_sp const& path);
     core::T_sp readTrainerHeader_cando( core::Cons_sp args,  core::Environment_sp environ, core::LispPtr lisp);
 
 

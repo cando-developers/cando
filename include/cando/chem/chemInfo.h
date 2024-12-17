@@ -76,12 +76,12 @@ size_t calculate_maxtag(ChemInfoNode_sp node);
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static ChemInfoMatch_sp make(Root_sp root,size_t maxtag, core::HashTableEql_sp ring);
+    static ChemInfoMatch_sp make(Root_sp root,size_t maxtag, core::HashTable_sp ring);
   public:
     bool		  _Matches;
     size_t                _MaxTagPlus1;
     Root_sp               _Root;
-    core::HashTableEql_sp _RingLookup;
+    core::HashTable_sp _RingLookup;
     core::SimpleVector_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
     core::List_sp         _TagHistory;
   public:
@@ -99,7 +99,7 @@ size_t calculate_maxtag(ChemInfoNode_sp node);
 CL_LISPIFY_NAME("tag");
 CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag(tag);};
     CL_DEFMETHOD core::List_sp tag_history() const { return this->_TagHistory; };
-    core::HashTableEql_sp tags_as_hashtable() const;
+    core::HashTable_sp tags_as_hashtable() const;
     core::Vector_sp tags_as_vector() const;
     void forgetAtomTag(core::T_sp tag);
 
@@ -134,7 +134,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
   private:
-    core::HashTableEqual_sp _AtomWildCards; // core::StringMap<adapt::StringSet_O>	_AtomWildCards;
+    core::HashTable_sp _AtomWildCards; // core::StringMap<adapt::StringSet_O>	_AtomWildCards;
   public:
     void    addWildName(core::Symbol_sp  wildName);
     void    addWildNameMap(core::Symbol_sp wildName, core::Symbol_sp elementName );
@@ -1067,7 +1067,7 @@ public:
     auto  obj = gctools::GC<Root_O>::allocate( originalCode, node, maxtag ); // RP_Create<Root_O>(lisp);
     return obj;
   }
-  core::HashTableEq_sp lazyTests();
+  core::HashTable_sp lazyTests();
   void setTests(core::List_sp tests);
   void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
   bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
@@ -1220,7 +1220,7 @@ class MoleculeGraph_O : public core::CxxObject_O
 public:
   void initialize();
 public:
-  core::HashTableEq_sp     _nodes_to_index;
+  core::HashTable_sp     _nodes_to_index;
   core::ComplexVector_T_sp _nodes;
   MoleculeGraphType*       _moleculeGraph;
   size_t                   _num_edges;
@@ -1314,7 +1314,7 @@ public:
   void initialize();
 public:
   Root_sp                _Root;
-  core::HashTableEq_sp   _nodes_to_index;
+  core::HashTable_sp   _nodes_to_index;
   gctools::Vec0<size_t>          _nodeOrder;
   gctools::Vec0<ChemInfoNode_sp> _atomNodes;
   gctools::Vec0<BondToAtomTest_sp> _bondNodes;

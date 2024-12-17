@@ -86,7 +86,7 @@ void Oligomer_O::fields(core::Record_sp node)
 
 Oligomer_O::Oligomer_O(const Oligomer_O& original)
 {
-  core::HashTableEq_sp newMonomersFromOld = core::HashTableEq_O::create_default();
+  core::HashTable_sp newMonomersFromOld = core::HashTable_O::createEq();
   gctools::Vec0<Monomer_sp> copiedMonomers;
   this->_Monomers.resize(original._Monomers.size());
   for ( size_t i=0, iEnd(this->_Monomers.size()); i<iEnd; ++i ) {
@@ -641,7 +641,7 @@ int			residueNetCharge;
     Molecule_sp 			mol;
     mol = Molecule_O::create();
     core::clasp_write_string(fmt::format("{}:{} Creating residues\n" , __FILE__ , __LINE__ ));
-    core::HashTableEq_sp monomersToResidues = core::HashTableEq_O::create_default();
+    core::HashTable_sp monomersToResidues = core::HashTable_O::createEq();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
       Topology_sp topology = (*mi)->currentTopology();
@@ -1015,7 +1015,7 @@ CL_DEFUN core::T_sp chem__oligomer_sequence(Oligomer_sp olig)
 
 void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 {
-  core::HashTableEq_sp monomerMap = core::HashTableEq_O::create_default();
+  core::HashTable_sp monomerMap = core::HashTable_O::createEq();
   for ( auto p : parts ) {
     OligomerPart_Base_sp oligPart = p->car<OligomerPart_Base_O>();
     Monomer_sp mon = oligPart->createMonomer(bdb);
@@ -1042,7 +1042,7 @@ CL_DEFMETHOD core::T_sp Oligomer_O::deepCopyOligomer() const
 {
   auto newOligomer = gctools::GC<Oligomer_O>::copy(*this);
 #if 0
-  core::HashTableEq_sp monomerCopies = core::HashTableEq_O::create_default();
+  core::HashTable_sp monomerCopies = core::HashTable_O::createEq();
   for ( auto mon : this->_Monomers ) {
     Monomer_sp newMon = mon->copyAndRemoveCouplings();
     monomerCopies->setf_gethash(mon,newMon);

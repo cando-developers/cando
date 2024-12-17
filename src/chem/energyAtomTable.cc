@@ -152,7 +152,7 @@ AtomTable_sp AtomTable_O::make()
 
 void AtomTable_O::initialize()
 {
-  this->_AtomTableIndexes = core::HashTableEq_O::create_default();
+  this->_AtomTableIndexes = core::HashTable_O::createEq();
   core::ComplexVector_int32_t_sp residue_pointers = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
   core::ComplexVector_T_sp residue_names = core::ComplexVector_T_O::make(32,nil<core::T_O>(),core::make_fixnum(0));
   core::ComplexVector_int32_t_sp atoms_per_molecule = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
@@ -243,7 +243,7 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexTimes3ForAtomAtIndex(size_t i
   SIMPLE_ERROR("Atom index {} is out of range (0...{})" , index, this->_Atoms.size());
 }
 
-CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndexes() {
+CL_DEFMETHOD core::HashTable_sp AtomTable_O::getAtomTableIndexes() {
   return this->_AtomTableIndexes;
 }
 CL_DOCSTRING(R"dx(Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.)dx");

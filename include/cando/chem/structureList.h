@@ -70,7 +70,7 @@ public:
 	Structure_Old_List_sp		_WeakStructureList;
         geom::SimpleVectorCoordinate_sp	_AllCoordinates;
         geom::SimpleVectorCoordinate_sp	_SuperposeCoordinates;
-    core::HashTableEq_sp 	_Data;
+    core::HashTable_sp 	_Data;
 	uint			_Members;
 
 public:
@@ -87,7 +87,7 @@ public:
 
 	void	translateAllCoordinates(const Vector3& offset);
 
-    core::HashTableEq_sp getData() { return this->_Data;};
+    core::HashTable_sp getData() { return this->_Data;};
 
         void setAllCoordinates(geom::SimpleVectorCoordinate_sp ac);
         geom::SimpleVectorCoordinate_sp getAllCoordinates() { return this->_AllCoordinates; }
@@ -126,7 +126,7 @@ protected:
     gctools::SmallOrderedSet<Atom_sp>			_AllAtoms;
     gctools::SmallOrderedSet<Atom_sp>			_SuperposeAtoms;
 	double					_RmsCutOff;
-    core::HashTableEq_sp			_Data;
+    core::HashTable_sp			_Data;
 protected:
 
 public:
@@ -134,7 +134,7 @@ public:
 
 public:
 
-    core::HashTableEq_sp	getData() { return this->_Data;};
+    core::HashTable_sp	getData() { return this->_Data;};
     typedef	gctools::Vec0<Structure_Old_ListEntry_sp>::iterator	entryIterator;
 
 	void	saveAs(const string& fn);

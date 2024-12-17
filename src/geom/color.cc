@@ -71,7 +71,7 @@ namespace geom
 
 void initialize_colors()
 {
-  core::HashTableEq_sp colorTable = core::HashTableEq_O::create_default();
+  core::HashTable_sp colorTable = core::HashTable_O::createEq();
   SYMBOL_EXPORT_SC_(GeomPkg,colorTable);
   _lisp->defvar(_sym_colorTable,colorTable);
 #define DEF_COLOR(name,rgb) {\

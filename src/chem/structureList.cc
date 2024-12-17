@@ -67,7 +67,7 @@ void	Structure_Old_ListEntry_O::initialize()
     this->_Members = 0;
     this->_AllCoordinates = geom::SimpleVectorCoordinate_O::create();
     this->_SuperposeCoordinates = geom::SimpleVectorCoordinate_O::create();
-    this->_Data = core::HashTableEq_O::create_default();
+    this->_Data = core::HashTable_O::createEq();
 }
 
 
@@ -125,7 +125,7 @@ void	Structure_Old_List_O::initialize()
     this->_Matter = nil<Matter_O>();
     this->_SuperposeAtoms.clear();
     this->_AllAtoms.clear();
-    this->_Data = core::HashTableEq_O::create_default();
+    this->_Data = core::HashTable_O::createEq();
     this->clearEntries();
 }
 

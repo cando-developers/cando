@@ -120,7 +120,7 @@ CL_LISPIFY_NAME("FFTypesDb-numberOfRules");
 CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();};
     chem::FFTypeRule_sp	getRule(uint index);
 
-    core::HashTableEq_sp atomTypes(chem::Matter_sp matter);
+    core::HashTable_sp atomTypes(chem::Matter_sp matter);
     
   core::HashTable_sp assignTypes( chem::Matter_sp matter, core::HashTable_sp atom_types );
   core::Symbol_sp    assignType( chem::Atom_sp atom );

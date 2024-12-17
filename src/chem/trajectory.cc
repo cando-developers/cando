@@ -87,7 +87,7 @@ void	Trajectory_O::initialize()
 {
     this->Base::initialize();
     this->_Matter = nil<Matter_O>();
-    this->_Namespace = core::HashTableEq_O::create_default();
+    this->_Namespace = core::HashTable_O::createEq();
 }
 
 void	Trajectory_O::_setupAtomList(Matter_sp matter)

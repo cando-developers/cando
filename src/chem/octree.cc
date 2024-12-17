@@ -926,8 +926,8 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
 	 *	the atoms' temporary floating-point values w/ their sizes.
 	 */
 
-  this->atomsToResidues = core::HashTableEq_O::create_default();
-  this->residuesToMolecules = core::HashTableEq_O::create_default();
+  this->atomsToResidues = core::HashTable_O::createEq();
+  this->residuesToMolecules = core::HashTable_O::createEq();
   iDefaultedRadius = 0;
   Loop lMol;
   lMol.loopTopAggregateGoal(uUnit,MOLECULES);

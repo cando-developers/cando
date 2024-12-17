@@ -180,12 +180,12 @@ class FFParameterBaseDb_O : public FFBaseDb_O {
   void fields(core::Record_sp node);
   void initialize();
  public:
-  core::HashTableEq_sp _Parameters;
+  core::HashTable_sp _Parameters;
   core::ComplexVector_T_sp _ParameterVector;
  public:
   virtual void forceFieldMerge(FFBaseDb_sp other);
- FFParameterBaseDb_O() : FFBaseDb_O(), _Parameters(unbound<core::HashTableEq_O>()) {};
-  core::HashTableEq_sp parameters() const;
+ FFParameterBaseDb_O() : FFBaseDb_O(), _Parameters(unbound<core::HashTable_O>()) {};
+  core::HashTable_sp parameters() const;
   string __repr__() const;
 };
 

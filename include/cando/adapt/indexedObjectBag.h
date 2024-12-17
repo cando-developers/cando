@@ -41,7 +41,7 @@ namespace adapt {
 
 public:
 GCPRIVATE:
-  gc::Nilable<core::HashTableEq_sp> _Bag;
+  gc::Nilable<core::HashTable_sp> _Bag;
   gc::Fixnum         _NextIndex;
 public:
 

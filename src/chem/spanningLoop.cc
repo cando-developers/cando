@@ -212,7 +212,7 @@ void SpanningLoop_O::initialize() {
   this->Base::initialize();
   this->initialized = false;
   this->_OnlyFollowRealBonds = false;
-  this->_BackSpan = core::HashTableEq_O::create_default();
+  this->_BackSpan = core::HashTable_O::createEq();
 }
 
 bool SpanningLoop_O::lookupSpanningInfo(Atom_sp a, SpanningInfo_sp &info) {
