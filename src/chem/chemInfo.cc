@@ -2240,14 +2240,14 @@ void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
 bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   ASSERTF(testSym.notnilp(), ("The test symbol was nil! - this should never occur"));
   LOG("Looking up test with symbol<{}>", _rep_(testSym));
-  core::KeyValuePair* find = lazyTests()->find(testSym);
+  auto find = lazyTests()->find(testSym);
   if (!find) {
     SIMPLE_ERROR("Could not find named ChemInfo/Smarts test[{}] in Smarts object - available named tests are[{}]", _rep_(testSym),
                  this->lazyTests()->keysAsString());
   }
-  core::Function_sp func = core::coerce::functionDesignator(find->_Value);
+  core::Function_sp func = core::coerce::functionDesignator(*find);
   if (!gctools::IsA<core::Function_sp>(func)) {
-    SIMPLE_ERROR("The test ChemInfo/Smarts test[{}] must be a function - instead it is a {}", _rep_(testSym), _rep_(find->_Value));
+    SIMPLE_ERROR("The test ChemInfo/Smarts test[{}] must be a function - instead it is a {}", _rep_(testSym), _rep_(*find));
   }
   core::Function_sp testCode = gctools::As_unsafe<core::Function_sp>(func);
   ASSERTF(testCode.notnilp(), ("testCode was nil - it should never be"));

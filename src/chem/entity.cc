@@ -77,10 +77,10 @@ CL_DEFMETHOD RepresentativeList_sp Entity_O::minimalRepresentativeList() const {
     RepresentedEntityNameSet_sp curNameSet = expandedList->rowMajorAref(i).as<RepresentedEntityNameSet_O>();
     core::Symbol_sp representor = curNameSet->getRepresentative();
     RepresentedEntityNameSet_sp minimalRepresentedEntityNameSet;
-    core::KeyValuePair* pair = binder->find(representor);
-    if (pair) {
+    auto found = binder->find(representor);
+    if (found) {
       minimalRepresentedEntityNameSet =
-          pair->_Value.as<RepresentedEntityNameSet_O>(); // binder->indexed_value(bi).as<RepresentedEntityNameSet_O>();
+          found->as<RepresentedEntityNameSet_O>(); // binder->indexed_value(bi).as<RepresentedEntityNameSet_O>();
       minimalRepresentedEntityNameSet->mergeEntityNames(curNameSet);
     } else {
       auto temp = gctools::GC<RepresentedEntityNameSet_O>::copy(*curNameSet); // = RP_Copy<RepresentedEntityNameSet_O>(curNameSet);
