@@ -241,7 +241,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) c
 }
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueSingleName() const {
-  core::HashTable_sp cip = core::HashTableEq_O::create_default(); // dummy hash table
+  core::HashTable_sp cip = core::HashTable_O::createEq(); // dummy hash table
   if (this->_StereoisomerAtomProperties.size()==1) {
       return this->buildResidueForIsomer(0);
   }

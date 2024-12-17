@@ -71,7 +71,7 @@ private:
   bool				_Complete;
   ConformationExplorerEntry_sp	_WeakConformationExplorerEntry;
   geom::SimpleVectorCoordinate_sp	_FinalCoordinates;
-  core::HashTableEq_sp			_Binder;
+  core::HashTable_sp			_Binder;
 			//! Energy of the conformation in kcal as calculated by the package/model
   double				_EnergyKCal;
 			//! ExternalInterfaceName is cando, gamess, gaussian, nwchem etc
@@ -123,7 +123,7 @@ CL_DEFMETHOD 	void	setComplete(bool b) { this->_Complete = b;};
 
 	void	setConformationExplorerEntry(ConformationExplorerEntry_sp s);
 CL_LISPIFY_NAME("getBinder");
-CL_DEFMETHOD 	core::HashTableEq_sp getBinder() { return this->_Binder; };
+CL_DEFMETHOD 	core::HashTable_sp getBinder() { return this->_Binder; };
 
 	void	translateFinalCoordinates(const Vector3& offset);
 
@@ -180,14 +180,14 @@ private:
 	ConformationExplorerEntryStage_sp		_SelectedStage;
 	/*! Every time an entry is created it gets a new UniqueEntryIndex */
 	int							_UniqueEntryIndex;
-	core::HashTableEq_sp				_Binder;
+	core::HashTable_sp				_Binder;
 public:
     typedef	gctools::Vec0<ConformationExplorerEntryStage_sp>::iterator	stageIterator;
 public:
 CL_LISPIFY_NAME("getConformationExplorer");
 CL_DEFMETHOD 	ConformationExplorer_sp	getConformationExplorer() {_OF(); ASSERTNOTNULL(this->_WeakConformationExplorer);return this->_WeakConformationExplorer;};
 	void	setConformationExplorer(ConformationExplorer_sp s);
-	core::HashTableEq_sp getBinder() { return this->_Binder; };
+	core::HashTable_sp getBinder() { return this->_Binder; };
 public:
 
 	stageIterator	begin_Stages() { return this->_Stages.begin(); };
@@ -260,7 +260,7 @@ protected:
     gctools::Vec0<ConformationExplorerEntry_sp>	_Entries;
     gctools::SmallOrderedSet<Atom_sp>			_AllAtoms;
 	core::ComplexVector_byte32_t_sp		_SuperposeAtomIndexes;
-	core::HashTableEq_sp			_Binder;
+	core::HashTable_sp			_Binder;
 protected:
 	Atom_sp	_getAtomAtIndex(unsigned i);
 public:
@@ -288,7 +288,7 @@ public:
 
 public:
 CL_LISPIFY_NAME("getBinder");
-CL_DEFMETHOD 	core::HashTableEq_sp	getBinder() { return this->_Binder;};
+CL_DEFMETHOD 	core::HashTable_sp	getBinder() { return this->_Binder;};
 
 	void	saveAs(const string& fn);
 

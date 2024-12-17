@@ -450,7 +450,7 @@ void AGVertex_O::receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, 
 	    // vertex collisions
 	    //
 
-  core::HashTableEq_sp vertexDict = core::HashTableEq_O::create_default();
+  core::HashTable_sp vertexDict = core::HashTable_O::createEq();
   {
     LOG("Filling vertexDict" );
     for ( uint i=0; i<numEdges; i++ ) { 
@@ -709,7 +709,7 @@ void RingFinder_O::initializeRingSearch()
     this->_finalRings.clear();
     RingFinderVertexInitializeMapper mapper;
     this->_vertices->lowLevelMapHash(&mapper);
-    this->_rings = core::HashTableEql_O::create_default();
+    this->_rings = core::HashTable_O::createEql();
     this->_gaussian.clear();
 }
 

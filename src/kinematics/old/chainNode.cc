@@ -97,7 +97,7 @@ void ChainNode_O::fields(core::Record_sp node) {
     void ChainNode_O::buildUsingOligomer(chem::Oligomer_sp oligomer, int chainId)
     {
 	chem::Monomer_sp rootMonomer = oligomer->rootMonomer();
-	RingClosingMonomerMap	ringClosingMonomerMap = core::HashTableEq_O::create_default();
+	RingClosingMonomerMap	ringClosingMonomerMap = core::HashTable_O::createEq();
 	MonomerNode_sp rootMonomerNode = this->monomerNodeFactory(this->asSmartPtr(),ringClosingMonomerMap,rootMonomer);
 	rootMonomerNode->recursivelyBuildChildren(this->sharedThis<ChainNode_O>(),
 						  ringClosingMonomerMap,nil<core::T_O>(),

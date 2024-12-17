@@ -1288,7 +1288,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
     // Assign atom types for each molecule
     //
 
-  core::HashTableEq_sp force_fields = core::HashTableEq_O::create_default();
+  core::HashTable_sp force_fields = core::HashTable_O::createEq();
   Loop moleculeLoop;
   moleculeLoop.loopTopGoal(matter,MOLECULES);
   while (moleculeLoop.advanceLoopAndProcess() ) {
@@ -1299,7 +1299,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
       force_fields->setf_gethash(force_field_name,combined_force_field);
     }
   }
-  core::HashTable_sp atomTypes = core::HashTableEq_O::create_default();
+  core::HashTable_sp atomTypes = core::HashTable_O::createEq();
   // Assign given atom-types
   Loop atom_loop;
   atom_loop.loopTopGoal(matter,ATOMS);
@@ -1476,7 +1476,7 @@ core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
 {
   Loop lRes;
   Loop lAtoms;
-  core::HashTableEq_sp ht = core::HashTableEq_O::create_default();
+  core::HashTable_sp ht = core::HashTable_O::createEq();
   lRes.loopTopGoal(molecule,RESIDUES);
   while (lRes.advanceLoopAndProcess()) {
     Residue_sp res = lRes.getResidue();

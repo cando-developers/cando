@@ -77,7 +77,7 @@ private:
 	string			_StageName;
 	string			_ExternalScript;
 	core::SymbolMap<core::Str_O>		_ScriptSubstitutions;
-    core::HashTableEq_sp	_Data;
+    core::HashTable_sp	_Data;
 	string			_Directory;
 	string			_FileNamePrefix;
 protected:
@@ -137,7 +137,7 @@ public:
 //	scriptSubstitutionIterator end_ScriptSubstitutions() {return this->_ScriptSubstitutions.end(); };
 
 
-    core::HashTableEq_sp	getData()	{ return this->_Data;};
+    core::HashTable_sp	getData()	{ return this->_Data;};
 
 	string	getFileNamePrefix() { return this->_FileNamePrefix; };
 

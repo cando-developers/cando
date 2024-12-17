@@ -36,7 +36,7 @@ namespace adapt {
 using namespace core;
 
 void IndexedObjectBag_O::initialize() {
-  this->_Bag = HashTableEq_O::create_default();
+  this->_Bag = HashTable_O::createEq();
 }
 
 CL_LISPIFY_NAME("set_next_available_entry");

@@ -132,7 +132,7 @@ private: // instance variables
     gctools::Vec0<core::Class_sp>	_FieldClasses;
     gctools::Vec0<TableEntry_sp>	_Entries;
 private: // Don't serialize
-    core::HashTableEq_sp                      _FieldIndices; // m a p<core::Symbol_sp,uint>	_FieldIndices;
+    core::HashTable_sp                      _FieldIndices; // m a p<core::Symbol_sp,uint>	_FieldIndices;
 public:
     typedef gctools::Vec0<TableEntry_sp>::iterator	entryIterator;
 	entryIterator beginEntry() { return this->_Entries.begin(); };

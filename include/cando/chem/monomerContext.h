@@ -148,7 +148,7 @@ public:
 		 * recognizes.  This is done by expanding all 
 		 * group names to monomer names. 
 		 */
-  core::HashTableEqual_sp	getAllSpecificKeys();
+  core::HashTable_sp	getAllSpecificKeys();
 		//! Return the first specific key
   core::Symbol_sp		getFirstSpecificKey();
 

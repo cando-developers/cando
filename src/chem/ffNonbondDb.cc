@@ -279,7 +279,7 @@ CL_DOCSTRING(R"dx(Join the other FFNonbondDb_sp to the current one - signal an e
 CL_DEFMETHOD void FFNonbondDb_O::FFNonbondDb_concatenate(FFNonbondDb_sp other, core::Symbol_sp other_name) {
   // What do we do with the nonbond parameters?
   // There needs to be something to control how nonbond interactions work across the whole system
-  core::HashTable_sp terms_ht = core::HashTableEq_O::create_default();
+  core::HashTable_sp terms_ht = core::HashTable_O::createEq();
   for ( size_t myi=0; myi<this->_Terms.size(); ++myi ) {
     terms_ht->setf_gethash(this->_Terms[myi]->_Type,_lisp->_true());
   }
@@ -302,7 +302,7 @@ CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global
   // There needs to be something to control how nonbond interactions work across the whole system
   FFNonbondDb_sp conc = FFNonbondDb_O::create();
   conc->forceFieldMergeGlobalParameters(global_nonbond);
-  core::HashTable_sp terms_ht = core::HashTableEq_O::create_default();
+  core::HashTable_sp terms_ht = core::HashTable_O::createEq();
   for ( auto cur : nonbond_force_fields ) {
     core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
     FFNonbondDb_sp nb = gc::As<FFNonbondDb_sp>(CONS_CAR(pair));

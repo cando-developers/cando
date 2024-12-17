@@ -72,7 +72,7 @@ CL_LISPIFY_NAME("minimalRepresentativeList");
 CL_DEFMETHOD RepresentativeList_sp Entity_O::minimalRepresentativeList() const {
   
   RepresentativeList_sp expandedList = this->expandedRepresentativeList();
-  core::HashTableEq_sp binder = core::HashTableEq_O::create_default();
+  core::HashTable_sp binder = core::HashTable_O::createEq();
   for (int i(0), iEnd(expandedList->length()); i < iEnd; ++i) {
     RepresentedEntityNameSet_sp curNameSet = expandedList->rowMajorAref(i).as<RepresentedEntityNameSet_O>();
     core::Symbol_sp representor = curNameSet->getRepresentative();

@@ -267,7 +267,7 @@ void	_calculateElementAndHybridization(Atom_sp a)
 Otherwise return (values aggregate atom-types) */
 core::T_mv mol2Read(Mol2File& fIn)
 {
-  core::HashTable_sp                    atom_types = core::HashTableEq_O::create_default();
+  core::HashTable_sp                    atom_types = core::HashTable_O::createEq();
   string				line;
   TriposMolecule			mol;
   vector<TriposMolecule>		molecules;
@@ -682,7 +682,7 @@ core::HashTable_sp assignSybylTypes( Matter_sp matter) {
     SIMPLE_ERROR("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types");
   }
   FFTypesDb_sp sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
-  core::HashTableEq_sp atom_types = core::HashTableEq_O::create_default();
+  core::HashTable_sp atom_types = core::HashTable_O::createEq();
   Loop lAtoms;
   lAtoms.loopTopGoal(matter,ATOMS);
   while ( lAtoms.advanceLoopAndProcess() ) {
@@ -693,7 +693,7 @@ core::HashTable_sp assignSybylTypes( Matter_sp matter) {
   return atom_types;
 }
 
-core::HashTableEql_sp	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types )
+core::HashTable_sp	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types )
 {
   Loop		loop, lRes;
   uint		atomCount, bondCount, residueCount;
@@ -704,7 +704,7 @@ core::HashTableEql_sp	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &
   gctools::Vec0<ResidueOut> residueList;
   ResidueOut	oneResOut;
   AtomInfo	one;
-  core::HashTableEql_sp ht = core::HashTableEql_O::create_default();
+  core::HashTable_sp ht = core::HashTable_O::createEql();
  
  	//
 	// Count the atoms

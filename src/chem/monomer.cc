@@ -683,7 +683,7 @@ void Monomer_O::fields(core::Record_sp node)
 void Monomer_O::initialize()
 {
   this->Base::initialize();
-//        this->_Couplings = core::HashTableEq_O::create_default();
+//        this->_Couplings = core::HashTable_O::createEq();
   this->_Id = nil<core::Symbol_O>();
   this->_SequenceNumber = 0;
   this->_Monomers.clear();

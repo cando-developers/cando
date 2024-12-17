@@ -66,7 +66,7 @@ public:
 public:
   ConformationCollection_sp	     _WeakConformationCollection;
   geom::SimpleVectorCoordinate_sp    _AllCoordinates;
-  core::HashTableEq_sp		     _Data;
+  core::HashTable_sp		     _Data;
 
 public:
   void setAllCoordinates(geom::SimpleVectorCoordinate_sp ac);
@@ -75,7 +75,7 @@ public:
 
   CL_DEFMETHOD ConformationCollection_sp	getConformationCollection() {_OF(); ASSERTNOTNULL(this->_WeakConformationCollection);return this->_WeakConformationCollection;};
   void	setConformationCollection(ConformationCollection_sp s);
-//	core::HashTableEq_sp getData() { return this->_Data; };
+//	core::HashTable_sp getData() { return this->_Data; };
 
   void	translateAllCoordinates(const Vector3& offset);
 
@@ -120,7 +120,7 @@ public:
   Matter_sp	       			        _Matter;
   gctools::Vec0<ConformationCollectionEntry_sp>	_Entries;
   gctools::SmallOrderedSet<Atom_sp>		_AllAtoms;
-  core::HashTableEq_sp			        _Data;
+  core::HashTable_sp			        _Data;
 public:
   typedef	gctools::Vec0<ConformationCollectionEntry_sp>::iterator	entryIterator;
   typedef	gctools::Vec0<ConformationCollectionEntry_sp>::const_iterator	const_entryIterator;
@@ -128,7 +128,7 @@ public:
 public:
   geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
 public:
-  core::HashTableEq_sp	getData() { return this->_Data;};
+  core::HashTable_sp	getData() { return this->_Data;};
 
   void	saveAs(const string& fn);
 

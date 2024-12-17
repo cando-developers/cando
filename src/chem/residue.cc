@@ -426,7 +426,7 @@ contentIterator	aCur;
 
 void Residue_O::ensureAllAtomNamesAreUnique() const
 {
-  core::HashTableEq_sp names = core::HashTableEq_O::create_default();
+  core::HashTable_sp names = core::HashTable_O::createEq();
   Loop lAtoms(this->asSmartPtr(),ATOMS);
   while (lAtoms.advanceLoopAndProcess()) {
     Atom_sp atom = lAtoms.getAtom();
@@ -448,7 +448,7 @@ void CDFragment_O::uniqifyResidueAtomNames(Molecule_sp mol, bool verbose)
   while (lResidues.advanceLoopAndProcess()) {
     Residue_sp res = lResidues.getResidue();
     Loop lAtoms(res,ATOMS);
-    core::HashTableEq_sp namesToIndexes = core::HashTableEq_O::create_default();
+    core::HashTable_sp namesToIndexes = core::HashTable_O::createEq();
     while (lAtoms.advanceLoopAndProcess()) {
       Atom_sp atom = lAtoms.getAtom();
       if (namesToIndexes->gethash(atom->getName()).notnilp()) {
@@ -479,7 +479,7 @@ void CDFragment_O::uniqifyResidueAtomNames(Molecule_sp mol, bool verbose)
 void Residue_O::makeAllAtomNamesInEachResidueUnique()
 {
   Loop lAtoms(this->asSmartPtr(),ATOMS);
-  core::HashTableEq_sp namesToIndexes = core::HashTableEq_O::create_default();
+  core::HashTable_sp namesToIndexes = core::HashTable_O::createEq();
   size_t index = 0;
   while (lAtoms.advanceLoopAndProcess()) {
     Atom_sp atom = lAtoms.getAtom();
@@ -506,7 +506,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
     contentIterator ai;
     adapt::SymbolSet_sp allNames = adapt::SymbolSet_O::create();
     adapt::SymbolSet_sp allNamesAccumulate = adapt::SymbolSet_O::create();
-    core::HashTableEq_sp atomsThatShareName = core::HashTableEq_O::create_default();
+    core::HashTable_sp atomsThatShareName = core::HashTable_O::createEq();
 //    multimap<string,Atom_sp>	atomsThatShareName;
     for ( ai=this->begin_atoms();
           ai != this->end_atoms(); ai++ ) {
@@ -630,7 +630,7 @@ contentIterator	atom;
 
 core::HashTable_sp Residue_O::atomToResidueMap()
 {
-  core::HashTableEq_sp map = core::HashTableEq_O::create_default();
+  core::HashTable_sp map = core::HashTable_O::createEq();
   for ( auto aa = this->begin_atoms(); aa!=this->end_atoms(); ++aa ) {
     map->setf_gethash(*aa,this->asSmartPtr());
   }

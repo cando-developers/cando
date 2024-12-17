@@ -103,7 +103,7 @@ private:
 	AtomFlags			fVisibleFlagsOn;
 	AtomFlags			fVisibleFlagsOff;
 	int				iTempInt;
-        core::HashTableEq_sp            _BackSpan;
+        core::HashTable_sp            _BackSpan;
 
 	void	clearAtomIndexes();
         core::T_sp next(core::T_sp funcDesig);

@@ -60,7 +60,7 @@ namespace chem {
 void	ConformationCollectionEntry_O::initialize()
 {
     this->Base::initialize();
-    this->_Data = core::HashTableEq_O::create_default();
+    this->_Data = core::HashTable_O::createEq();
     this->_AllCoordinates = geom::SimpleVectorCoordinate_O::make(16,Vector3(),false,0,NULL);
 }
 
@@ -125,7 +125,7 @@ void	ConformationCollection_O::initialize()
     this->Base::initialize();
     this->_Matter = nil<Matter_O>();
     this->_AllAtoms.clear();
-    this->_Data = core::HashTableEq_O::create_default();
+    this->_Data = core::HashTable_O::createEq();
     this->clearEntries();
 }
 

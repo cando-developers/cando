@@ -232,7 +232,7 @@ CL_DEFMETHOD core::Symbol_sp MonomerContext_O::getKey()
 
 
 CL_LISPIFY_NAME("getAllSpecificKeys");
-CL_DEFMETHOD     core::HashTableEqual_sp	MonomerContext_O::getAllSpecificKeys()
+CL_DEFMETHOD     core::HashTable_sp	MonomerContext_O::getAllSpecificKeys()
     {
       IMPLEMENT_ME();
 #if 0

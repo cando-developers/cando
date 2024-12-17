@@ -57,7 +57,7 @@ namespace chem
 SYMBOL_EXPORT_SC_(ChemPkg,name);
 
 // Ensure that property is a Keyword symbol
-void set_property(core::HashTableEq_sp properties, core::T_sp property, core::T_sp val)
+void set_property(core::HashTable_sp properties, core::T_sp property, core::T_sp val)
 {
   core::Symbol_sp psym = gc::As<core::Symbol_sp>(property);
   if (!psym->isKeywordSymbol()) {
@@ -412,7 +412,7 @@ int CDFragment_O::countNeighbors(CDNode_sp node)
 }
 
 #if 0
-void CDFragment_O::addProperties(core::HashTableEq_sp d)
+void CDFragment_O::addProperties(core::HashTable_sp d)
 {
   d->mapHash([this] (core::T_sp key, core::T_sp value) {
       set_property(this->_Properties,key,value);
@@ -786,7 +786,7 @@ void CDFragment_O::createAtomsAndBonds()
 
 Molecule_sp CDFragment_O::createMolecule()
 {
-  core::HashTable_sp atomsToNodes = core::HashTableEq_O::create_default();
+  core::HashTable_sp atomsToNodes = core::HashTable_O::createEq();
   // Gather all of the nodes that have atoms
   for ( auto cur : this->_Nodes ) {
     if ( cur.second->_Atom.notnilp() ) {
@@ -834,7 +834,7 @@ Molecule_sp CDFragment_O::createMolecule()
 #if 0
 core::T_sp	CDFragment_O::getProperty(core::Symbol_sp s)
 {
-  core::HashTableEq_sp dict = this->getProperties();
+  core::HashTable_sp dict = this->getProperties();
   if ( !dict->contains(s) )
   {
     stringstream serr;
@@ -849,7 +849,7 @@ core::T_sp	CDFragment_O::getProperty(core::Symbol_sp s)
 
 core::T_sp	CDFragment_O::getPropertyOrDefault(core::Symbol_sp s, core::T_sp df)
 {
-  core::HashTableEq_sp dict = this->getProperties();
+  core::HashTable_sp dict = this->getProperties();
   if ( dict->contains(s) )
   {
     return dict->gethash(s);
@@ -1124,7 +1124,7 @@ void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
                                        )
 {
   CDFragment_sp frag = this->_NamedFragments.get(name);
-  core::HashTableEq_sp properties = core::HashTableEq_O::create_default();
+  core::HashTable_sp properties = core::HashTable_O::createEq();
   if ( comment.notnilp() ) properties->setf_gethash(kw::_sym_comment, comment );
   if ( chiral_centers.notnilp() ) properties->setf_gethash(kw::_sym_chiral_centers, chiral_centers );
   if ( group.notnilp() ) properties->setf_gethash(kw::_sym_group, group );
@@ -1143,7 +1143,7 @@ void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
 void	ChemDraw_O::setFragmentProperties(core::List_sp props)
 {
   DEPRECATED();
-  core::HashTableEq_sp kargs = core::HashTableEq_O::createFromKeywordCons(props,validChemdrawKeywords);
+  core::HashTable_sp kargs = core::HashTable_O::createFromKeywordCons(props,validChemdrawKeywords);
   if ( !kargs->contains(_kw_name) )
   {
     stringstream ss;
@@ -1172,7 +1172,7 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose, bool addHyd
     fragment->parseFromXml(child,verbose);
     if ( fragment->interpret(verbose, addHydrogens) ) {
 #if 0
-      core::HashTableEq_sp properties = fragment->getProperties();
+      core::HashTable_sp properties = fragment->getProperties();
       if ( !properties->contains(INTERN_(kw,name)))
       {
         SIMPLE_ERROR("Every fragment must have a property({}) available properties: {}" , _rep_(INTERN_(kw,name)) , properties->keysAsString());

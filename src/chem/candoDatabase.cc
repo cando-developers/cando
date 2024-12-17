@@ -74,7 +74,7 @@ namespace chem {
 void CandoDatabase_O::initialize() {
   
   this->Base::initialize();
-  this->_Topologys = core::HashTableEq_O::create_default();
+  this->_Topologys = core::HashTable_O::createEq();
   this->_Topologys->setupThreadSafeHashTable();
   //    AllCandoDatabases.append(this->sharedThis<CandoDatabase_O>());
 }

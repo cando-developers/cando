@@ -101,7 +101,7 @@ namespace chem
 SYMBOL_EXPORT_SC_(ChemPkg,set_energy);
 
 
-ScoringFunction_O::ScoringFunction_O() : _VelocityScale(Vector3(1.0,1.0,1.0)), _AtomTypes(core::HashTableEq_O::create_default()) {};
+ScoringFunction_O::ScoringFunction_O() : _VelocityScale(Vector3(1.0,1.0,1.0)), _AtomTypes(core::HashTable_O::createEq()) {};
 
 CL_DEFMETHOD void ScoringFunction_O::setf_velocity_scale(double xscale, double yscale, double zscale) {
   this->_VelocityScale.set(xscale,yscale,zscale);

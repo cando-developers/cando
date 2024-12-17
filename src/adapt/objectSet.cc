@@ -35,7 +35,7 @@ namespace adapt {
 
 void ObjectSet_O::initialize() {
   this->Base::initialize();
-  this->_Set = HashTableEq_O::create_default();
+  this->_Set = HashTable_O::createEq();
 }
 
 CL_LISPIFY_NAME("addObjects");
