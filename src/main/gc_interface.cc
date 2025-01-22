@@ -89,7 +89,6 @@ typedef bool _Bool;
 #include <clasp/core/cxxClass.h>
 #include <clasp/core/random.h>
 #include <clasp/core/weakKeyMapping.h>
-#include <clasp/core/weakHashTable.h>
 #include <clasp/core/array.h>
 #include <clasp/core/smallMultimap.h>
 #include <clasp/core/funcallableStandardClass.h>
@@ -120,7 +119,6 @@ typedef bool _Bool;
 #include <clasp/core/smallMap.h>
 #include <clasp/core/pathname.h>
 #include <clasp/core/strWithFillPtr.h>
-#include <clasp/core/weakHashTable.h>
 
 #include <clasp/clbind/clbind.h>
 
