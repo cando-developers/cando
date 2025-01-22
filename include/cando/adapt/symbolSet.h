@@ -64,7 +64,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 GCPRIVATE:
-  HashTableEq_sp _Symbols;
+  HashTable_sp _Symbols;
 
 public:
   static SymbolSet_sp make(List_sp vals);

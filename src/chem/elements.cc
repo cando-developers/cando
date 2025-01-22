@@ -65,7 +65,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,I);
 
 
 void ElementsInfo_O::initialize() {
-  this->_elementFromAtomicSymbol = core::HashTableEq_O::create_default();
+  this->_elementFromAtomicSymbol = core::HashTable_O::createEq();
 };
   
 ElementsInfo_sp elementsInfo() {
@@ -368,7 +368,7 @@ void initializeElementsAndHybridization()
 
 //  core::af_def(ChemPkg,"elementFromAtomNameString",&elementFromAtomNameString);
   core::Symbol_sp elementColors = _sym__PLUS_elementColors_PLUS_;
-  core::HashTableEql_sp dict = core::HashTableEql_O::create_default();
+  core::HashTable_sp dict = core::HashTable_O::createEql();
   dict->setf_gethash(core::clasp_make_fixnum(element_C),geom::Color_O::systemColor(kw::_sym_cyan));
   dict->setf_gethash(core::clasp_make_fixnum(element_H),geom::Color_O::systemColor(kw::_sym_white));
   dict->setf_gethash(core::clasp_make_fixnum(element_O),geom::Color_O::systemColor(kw::_sym_red));

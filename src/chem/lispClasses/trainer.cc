@@ -283,7 +283,7 @@ TrainerHeader_sp Trainer_O::getHeader()
 }
 
 
-core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::LispPtr lisp )
+core::HashTable_sp readTrainerHeader(core::Path_sp path, core::LispPtr lisp )
 {
     char buffer[1024];
     string fileName = path->asString();
@@ -317,7 +317,7 @@ core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::LispPtr lisp )
     fin.close();
     vector<string>::iterator it;
     it = parts.begin(); it++; // Throw away the Html Line
-    core::HashTableEq_sp dict = core::HashTableEq_O::create_default();
+    core::HashTable_sp dict = core::HashTable_O::createEq();
     for ( ; it<parts.end(); it++ )
     {
 	vector<string> onePair = core::split(*it,"=");

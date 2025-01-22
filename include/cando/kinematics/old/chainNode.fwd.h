@@ -36,7 +36,7 @@ namespace kinematics
 {
     FORWARD(ChainNode);
 
-    typedef core::HashTableEq_sp	RingClosingMonomerMap;
+    typedef core::HashTable_sp	RingClosingMonomerMap;
 
 
 }; /* kinematics */

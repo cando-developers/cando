@@ -74,7 +74,7 @@ namespace chem {
 void CandoDatabase_O::initialize() {
   
   this->Base::initialize();
-  this->_Topologys = core::HashTableEq_O::create_default();
+  this->_Topologys = core::HashTable_O::createEq();
   this->_Topologys->setupThreadSafeHashTable();
   //    AllCandoDatabases.append(this->sharedThis<CandoDatabase_O>());
 }
@@ -135,8 +135,8 @@ CL_DEFMETHOD bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symb
 
 bool CandoDatabase_O::recognizesMonomerPack(core::Symbol_sp name) {
   
-  core::KeyValuePair *pair = this->_Entities->find(name);
-  return pair && gc::As<Entity_sp>(pair->_Value).isA<MonomerPack_O>();
+  auto found = this->_Entities->find(name);
+  return found.has_value() && gc::As<Entity_sp>(*found).isA<MonomerPack_O>();
 }
 #endif
 

@@ -216,7 +216,7 @@ namespace chem
     void	Table_O::initialize()
     {
 	this->Base::initialize();
-        this->_FieldIndexes = core::HashTableEq_O::create_default();
+        this->_FieldIndexes = core::HashTable_O::createEq();
     }
 
 #ifdef XML_ARCHIVE

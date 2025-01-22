@@ -187,7 +187,7 @@ CL_DEFUN void chem__walk_chem_info_with_parent(ChemInfoNode_sp top, core::T_sp c
   });
 };
 
-ChemInfoMatch_sp ChemInfoMatch_O::make(Root_sp root, size_t maxTag, core::HashTableEql_sp ringLookup) {
+ChemInfoMatch_sp ChemInfoMatch_O::make(Root_sp root, size_t maxTag, core::HashTable_sp ringLookup) {
   auto match = gctools::GC<ChemInfoMatch_O>::allocate(root, maxTag + 1);
   match->_TagLookup = core::SimpleVector_O::make(maxTag + 1);
   match->_RingLookup = ringLookup;
@@ -198,7 +198,7 @@ void ChemInfoMatch_O::initialize() {
   this->Base::initialize();
   this->_Matches = false;
   this->_TagLookup = core::SimpleVector_O::make(this->_MaxTagPlus1);
-  //  this->_ClosestMatch = core::HashTableEqual_O::create_default();
+  //  this->_ClosestMatch = core::HashTable_O::createEqual();
 }
 
 void ChemInfoMatch_O::fields(core::Record_sp node) {
@@ -307,7 +307,7 @@ bool ChemInfoMatch_O::matchesRingTag(Atom_sp atom, core::T_sp tag) {
 
 void WildElementDict_O::initialize() {
   this->Base::initialize();
-  this->_AtomWildCards = core::HashTableEqual_O::create_default();
+  this->_AtomWildCards = core::HashTable_O::createEqual();
 }
 
 CL_LISPIFY_NAME("addWildName");
@@ -2190,11 +2190,11 @@ void AntechamberBondToAtomTest_O::fields(core::Record_sp node) {
 
 // ------- Root
 
-core::HashTableEq_sp Root_O::lazyTests() {
+core::HashTable_sp Root_O::lazyTests() {
   if (this->_Tests.nilp()) {
-    this->_Tests = core::HashTableEq_O::create_default();
+    this->_Tests = core::HashTable_O::createEq();
   }
-  return gc::As_unsafe<core::HashTableEq_sp>(this->_Tests);
+  return gc::As_unsafe<core::HashTable_sp>(this->_Tests);
 }
 
 uint Root_O::depth() const {
@@ -2240,14 +2240,14 @@ void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
 bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   ASSERTF(testSym.notnilp(), ("The test symbol was nil! - this should never occur"));
   LOG("Looking up test with symbol<{}>", _rep_(testSym));
-  core::KeyValuePair* find = lazyTests()->find(testSym);
+  auto find = lazyTests()->find(testSym);
   if (!find) {
     SIMPLE_ERROR("Could not find named ChemInfo/Smarts test[{}] in Smarts object - available named tests are[{}]", _rep_(testSym),
                  this->lazyTests()->keysAsString());
   }
-  core::Function_sp func = core::coerce::functionDesignator(find->_Value);
+  core::Function_sp func = core::coerce::functionDesignator(*find);
   if (!gctools::IsA<core::Function_sp>(func)) {
-    SIMPLE_ERROR("The test ChemInfo/Smarts test[{}] must be a function - instead it is a {}", _rep_(testSym), _rep_(find->_Value));
+    SIMPLE_ERROR("The test ChemInfo/Smarts test[{}] must be a function - instead it is a {}", _rep_(testSym), _rep_(*find));
   }
   core::Function_sp testCode = gctools::As_unsafe<core::Function_sp>(func);
   ASSERTF(testCode.notnilp(), ("testCode was nil - it should never be"));
@@ -2377,8 +2377,8 @@ FAIL:
 
 CL_DEFMETHOD core::Vector_sp ChemInfoMatch_O::tags_as_vector() const { return this->_TagLookup; }
 
-CL_DEFMETHOD core::HashTableEql_sp ChemInfoMatch_O::tags_as_hashtable() const {
-  core::HashTableEql_sp ht = core::HashTableEql_O::create_default();
+CL_DEFMETHOD core::HashTable_sp ChemInfoMatch_O::tags_as_hashtable() const {
+  core::HashTable_sp ht = core::HashTable_O::createEql();
   for (size_t ii = 0; ii < this->_TagLookup->length(); ++ii) {
     if (this->_TagLookup->rowMajorAref(ii).notnilp()) {
       ht->setf_gethash(core::make_fixnum(ii), this->_TagLookup->rowMajorAref(ii));
@@ -2446,7 +2446,7 @@ CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string &code, WildEl
 
 DOCGROUP(cando);
 CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom) {
-  core::HashTableEql_sp ringHashTable = core::HashTableEql_O::create_default();
+  core::HashTable_sp ringHashTable = core::HashTable_O::createEql();
   ChemInfoMatch_sp current_match = ChemInfoMatch_O::make(testRoot, testRoot->_MaxTag, ringHashTable);
   core::DynamicScopeManager scope(_sym_STARcurrent_matchSTAR, current_match);
   bool matches = testRoot->matches_Atom(testRoot, atom);
@@ -2688,7 +2688,7 @@ CL_DEFMETHOD void MoleculeGraph_O::walk_edges(core::T_sp callback) {
 }
 
 void MoleculeGraph_O::initialize() {
-  this->_nodes_to_index = core::HashTableEq_O::create_default();
+  this->_nodes_to_index = core::HashTable_O::createEq();
   this->_moleculeGraph = nullptr;
   this->_nodes = core::ComplexVector_T_O::make(64, nil<core::T_O>(), core::make_fixnum(0));
 }
@@ -2766,7 +2766,7 @@ ChemInfoGraph_O::~ChemInfoGraph_O() {
 }
 
 void ChemInfoGraph_O::initialize() {
-  this->_nodes_to_index = core::HashTableEq_O::create_default();
+  this->_nodes_to_index = core::HashTable_O::createEq();
 }
 
 CL_DOCSTRING(R"dx(Make a chem:chem-info-graph from a chem:root object)dx");
@@ -2873,7 +2873,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
 
   // Transform a ChemInfo graph into a boost graph
   // This is tricky code
-  core::HashTableEq_sp parent_nodes = core::HashTableEq_O::create_default();
+  core::HashTable_sp parent_nodes = core::HashTable_O::createEq();
   walk_nodes_with_parent(
       nil<core::T_O>(), pattern->_Node, [&graph, &parent_nodes, &closers
 #if DEBUG_SETF_GETHASH
@@ -3197,7 +3197,7 @@ CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, Mol
   if (boost::num_vertices(*chemInfoGraph->_chemInfoGraph) > boost::num_vertices(*moleculeGraph->_moleculeGraph)) {
     return nil<core::T_O>();
   }
-  core::HashTableEql_sp ringHashTable = core::HashTableEql_O::create_default();
+  core::HashTable_sp ringHashTable = core::HashTable_O::createEql();
   ChemInfoMatch_sp current_match = ChemInfoMatch_O::make(chemInfoGraph->_Root, chemInfoGraph->_Root->_MaxTag, ringHashTable);
   core::DynamicScopeManager scope(_sym_STARcurrent_matchSTAR, current_match);
   EdgeComp edge_comp(chemInfoGraph, moleculeGraph);

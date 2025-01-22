@@ -94,7 +94,7 @@ private: // instance variables
   Matter_sp		_Matter;
   gctools::Vec0<Atom_sp>		_AtomList;
   gctools::Vec0<TrajectoryFrame_sp>	_Frames;
-  core::HashTableEq_sp	_Namespace;
+  core::HashTable_sp	_Namespace;
 
 public:
   bool fieldsp() const { return true; };

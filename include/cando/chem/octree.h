@@ -99,8 +99,8 @@ public:
   gctools::Vec0<double> PdHalfEdges;
   gctools::Vec0<double> PdHalfDiagonals;
   gctools::Vec0<Atom_sp> vaAtoms;
-  core::HashTableEq_sp atomsToResidues;
-  core::HashTableEq_sp residuesToMolecules;
+  core::HashTable_sp atomsToResidues;
+  core::HashTable_sp residuesToMolecules;
   OctNode_sp onHead;
 
 public:

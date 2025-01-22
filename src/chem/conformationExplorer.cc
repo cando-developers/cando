@@ -57,7 +57,7 @@ namespace chem {
 
 void ConformationExplorerEntryStage_O::initialize() {
   this->Base::initialize();
-  this->_Binder = core::HashTableEq_O::create_default();
+  this->_Binder = core::HashTable_O::createEq();
   this->_FinalCoordinates = geom::SimpleVectorCoordinate_O::create();
   this->_WeakConformationExplorerEntry = nil<ConformationExplorerEntry_O>();
   this->_Complete = true;
@@ -246,7 +246,7 @@ CL_DEFMETHOD void ConformationExplorerEntryStage_O::extractCoordinatesFromMatter
 
 void ConformationExplorerEntry_O::initialize() {
   this->Base::initialize();
-  this->_Binder = core::HashTableEq_O::create_default();
+  this->_Binder = core::HashTable_O::createEq();
   this->_UniqueEntryIndex = -1;
 }
 
@@ -394,7 +394,7 @@ CL_DEFMETHOD ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getE
 #endif
 
 core::HashTable_sp ConformationExplorerEntry_O::getEntryStageNames() {
-  core::HashTableEq_sp stageNames = core::HashTableEq_O::create_default();
+  core::HashTable_sp stageNames = core::HashTable_O::createEq();
   for (auto it = this->begin_Stages(); it != this->end_Stages(); it++) {
     stageNames->setf_gethash((*it)->getStageName(), _lisp->_true());
   }
@@ -405,7 +405,7 @@ void ConformationExplorer_O::initialize() {
   this->Base::initialize();
   this->_Matter = nil<Matter_O>();
   this->_AllAtoms.clear();
-  this->_Binder = core::HashTableEq_O::create_default();
+  this->_Binder = core::HashTable_O::createEq();
   this->clearEntries();
   this->_SuperposeAtomIndexes =
       core::ComplexVector_byte32_t_O::make_vector(0, 0, core::make_fixnum(0), nil<core::T_O>(), false, core::make_fixnum(0));

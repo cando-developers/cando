@@ -1227,7 +1227,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allBondsAsList(bool allowVirtualAtoms ) con
 
 
 core::HashTable_sp Matter_O::atomToResidueMap() {
-  core::HashTableEq_sp map = core::HashTableEq_O::create_default();
+  core::HashTable_sp map = core::HashTable_O::createEq();
   Loop lres(this->asSmartPtr(),RESIDUES);
   while (lres.advance()) {
     Residue_sp res = lres.getResidue();

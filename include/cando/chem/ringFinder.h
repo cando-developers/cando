@@ -155,7 +155,7 @@ class RingFinder_O : public core::CxxObject_O
 private:
     core::HashTable_sp			_vertices;
     gctools::Vec0<AGEdge_sp>		_edges;
-    core::HashTableEql_sp               _rings; // m a p<uint,core::List_sp>		_rings;
+    core::HashTable_sp               _rings; // m a p<uint,core::List_sp>		_rings;
     gctools::Vec0<PathMessage_sp>		_finalRings;
     gctools::Vec0<core::SimpleBitVector_sp>	_gaussian;
 public:

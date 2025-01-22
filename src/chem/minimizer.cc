@@ -190,7 +190,7 @@ void	Minimizer_O::changeOptions(core::List_sp optionCons)
 {
   IMPLEMENT_ME();
 #if 0
-  core::HashTableEq_sp options = core::HashTableEq_O::createFromKeywordCons(optionCons,minimizerOptions);
+  core::HashTable_sp options = core::HashTable_O::createFromKeywordCons(optionCons,minimizerOptions);
   options->setBoolValueIfAvailable(this->_ShowElapsedTime,":showElapsedTime");
 #endif
 }
