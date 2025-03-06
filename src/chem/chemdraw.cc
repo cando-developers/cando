@@ -570,7 +570,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
         if (cdorder == dativeCDBond) {
           targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,geom::OVector2_O::createFromVector2(propertyNode->_Pos),INTERN_(kw,property_position));
         }
-        core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyCode),core::clasp_make_fixnum(0),nil<core::T_O>());
+        core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyCode),0,nil<core::T_O>());
         core::Symbol_mv parsedProperty;
         do {
           parsedProperty = parse_property(stream, propertyCode, *bi, targetNode->_Label);
@@ -1033,7 +1033,7 @@ bool CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
   if (verbose) core::clasp_write_string(fmt::format("CDText parsed: {}" , stext));
   core::StringInputStream_sp sin =
     gc::As<core::StringInputStream_sp>(core::cl__make_string_input_stream(core::Str_O::create(stext)
-                                                                          ,core::clasp_make_fixnum(0)
+                                                                          ,0
                                                                           ,nil<core::T_O>()));
 
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemPkg));

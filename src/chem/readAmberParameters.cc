@@ -216,7 +216,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
         if (chem__verbose(2)) {
           core::clasp_write_string(fmt::format("{}\n", sol->get_std_string()));
         }
-        core::T_sp linestream = core::cl__make_string_input_stream(sol,core::make_fixnum(0),nil<core::T_O>());
+        core::T_sp linestream = core::cl__make_string_input_stream(sol,0,nil<core::T_O>());
         LOG("Parsing line|{}|" , line.c_str()  );
         //      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
         core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,nil<core::T_O>()));
