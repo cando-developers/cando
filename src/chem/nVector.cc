@@ -383,6 +383,14 @@ NVector_sp chem__copy_nvector(NVector_sp source, size_t start, core::T_sp end)
   return copy_nvector(source,start,end);
 }
 
+DOCGROUP(cando);
+CL_LAMBDA(source &key (start 0) end)
+CL_DEFUN
+NVector_sp chem__nvector_copy(NVector_sp source, size_t start, core::T_sp end)
+{
+  return copy_nvector(source,start,end);
+}
+
 CL_DOCSTRING("Add two nvectors together and return the result in a newly allocated nvector")
 CL_DEFUN NVector_sp chem__nvector_PLUS_(NVector_sp x, NVector_sp y)
 {

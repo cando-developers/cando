@@ -553,6 +553,36 @@ If UNINITIALIZED then leave them unbound."
       (t (rotamer-index shape-key)))))
 
 
+(defun lookup-dihedral-joint-impl (assembler oligomer monomer dihedral-name)
+  (let* ((monomer-index (position monomer (monomers oligomer)))
+         (monomer-name (oligomer-monomer-name oligomer monomer))
+         (topology (chem:find-topology monomer-name))
+         (constitution (constitution topology))
+         (residue-properties (residue-properties constitution))
+         (dihedrals (getf residue-properties :dihedrals)))
+    (cond
+      (dihedrals
+       (let* ((dihedral-info (find dihedral-name dihedrals :key #'name)))
+         (etypecase dihedral-info
+           (dihedral-info-external
+            (loop for plug-name in (plug-path dihedral-info)
+                  do (setf monomer (monomer-on-other-side monomer plug-name)))
+            (lookup-dihedral-joint-impl assembler oligomer monomer (external-dihedral-name dihedral-info)))
+           (dihedral-info-atom
+            (let* ((monomer-pos (gethash monomer (monomer-positions assembler)))
+                   (atagg (ataggregate assembler))
+                   (atmol (aref (atmolecules atagg) (molecule-index monomer-pos)))
+                   (atres (aref (atresidues atmol) (residue-index monomer-pos)))
+                   (atom-name (atom-name dihedral-info))
+                   (joint (joint-with-name atres atom-name)))
+              joint)))))
+      (t (error "there was no :dihedrals property in ~s" topology)))))
+
+(defun lookup-dihedral-joint (assembler oligomer monomer dihedral-name)
+  "Lookup the joint in the assembler corresponding to the DIHEDRAL-NAME"
+  (lookup-dihedral-joint-impl assembler oligomer monomer dihedral-name))
+
+
 (defun lookup-dihedral-cache-impl (oligomer-shape monomer-shape dihedral-name &key ignore-degrees)
   (let* ((monomer-shape-index (position monomer-shape (monomer-shape-vector oligomer-shape)))
          (monomer-shape-info (aref (monomer-shape-info-vector oligomer-shape) monomer-shape-index))

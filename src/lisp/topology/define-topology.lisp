@@ -594,6 +594,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
 
 (defun topologies-from-graph (graph group-names restraints
                               &key types xyz-joints dihedrals cluster-dihedrals
+                                rings
                                 residue-properties plug-names)
   (unless (or (listp xyz-joints)
               (eq :all xyz-joints))
@@ -633,9 +634,14 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               do (setf (atom-type ca) type)))
       (let ((dihedral-info (if dihedrals
                                (parse-dihedral-info dihedrals)
-                               (create-dihedral-info-from-constitution constitution))))
+                               (create-dihedral-info-from-constitution constitution)))
+            (ring-info (when rings
+                           (parse-ring-info rings))))
         (setf (residue-properties constitution)
               (list* :dihedrals dihedral-info (residue-properties constitution)))
+        (when ring-info
+          (setf (residue-properties constitution)
+                (list* :rings ring-info (residue-properties constitution))))
         (when cluster-dihedrals
           (validate-cluster-dihedrals :name cluster-dihedrals dihedral-info constitution)
           (setf (residue-properties constitution)
@@ -670,7 +676,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         do (setf counter (recursively-order-children-atom-nodes child counter)))
   counter)
 
-(defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals residue-properties plug-names)
+(defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings residue-properties plug-names)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -689,18 +695,20 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                            :types types
                            :dihedrals dihedrals
                            :cluster-dihedrals cluster-dihedrals
+                           :rings rings
                            :residue-properties (validate-residue-properties residue-properties name)
                            :plug-names plug-names
                            :xyz-joints xyz-joints
                            )))
 
-(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals residue-properties plugs)
+(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings residue-properties plugs)
   `(do-define-topology ',name ',sexp
      :restraints ',restraints
      :dihedrals ',dihedrals
      :residue-properties ',residue-properties
      :cluster-dihedrals ',cluster-dihedrals
      :plug-names ',plugs
+     :rings ',rings
      :xyz-joints ',xyz-joints
      ))
 

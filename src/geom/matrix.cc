@@ -1579,10 +1579,10 @@ CL_DEFUN double calculateDihedralArray( size_t iva,
   }
   if (gc::IsA<core::SimpleVector_float_sp>(array)) {
     auto sfa = gc::As<core::SimpleVector_float_sp>(array);
-    Vector3 va(sfa,iva);
-    Vector3 vb(sfa,ivb);
-    Vector3 vc(sfa,ivc);
-    Vector3 vd(sfa,ivd);
+    Vector3 va(sfa,iva,Unsafe());
+    Vector3 vb(sfa,ivb,Unsafe());
+    Vector3 vc(sfa,ivc,Unsafe());
+    Vector3 vd(sfa,ivd,Unsafe());
     return calculateDihedral(va,vb,vc,vd);
   }
   SIMPLE_ERROR("Handle array type {}", _rep_(array));

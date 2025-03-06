@@ -17,6 +17,7 @@
                #:sketch2d
                #:cando-build
                #:lparallel
+               #:chem-info
                )
   :serial t
   :components ((:file "packages")

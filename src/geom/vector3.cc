@@ -46,16 +46,6 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <clasp/core/wrappers.h>
 #include <clasp/core/array.h>
 
-Vector3::Vector3(core::SimpleVector_float_sp svf, size_t index) {
-  if (index + 2 < svf->length()) {
-    this->coords[0] = (*svf)[index];
-    this->coords[1] = (*svf)[index + 1];
-    this->coords[2] = (*svf)[index + 2];
-    return;
-  }
-  SIMPLE_ERROR("The index {} is out of range for a 3D vector within the array of length {}", index, svf->length());
-}
-
 Vector3 Vector3::inNanometers() const { return Vector3(this->coords[0] * 0.1, this->coords[1] * 0.1, this->coords[2] * 0.1); }
 
 void Vector3::dump() { core::clasp_write_string(fmt::format("<{},{},{}>\n", this->coords[0], this->coords[1], this->coords[2])); }

@@ -44,6 +44,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #define MY_PI 3.1415926535897932
 #define SMALL_NUMBER 1e-6
 
+struct Safe {};
+struct Unsafe {};
 
 /*! A vector stores xyz coordinates in Angstroms */
 class Vector3 {
@@ -61,7 +63,39 @@ public:
   ~Vector3() {};
   Vector3( vecreal x, vecreal y, vecreal z ) : coords{x,y,z} {};
 
-  Vector3( core::SimpleVector_float_sp svf, size_t index );
+  Vector3( core::SimpleVector_float_sp svf, size_t index, Unsafe unsafe ) {
+    ASSERT(index + 2 < svf->length());
+    this->coords[0] = (*svf)[index];
+    this->coords[1] = (*svf)[index + 1];
+    this->coords[2] = (*svf)[index + 2];
+  }
+  Vector3( core::SimpleVector_float_sp svf, size_t index, Safe safe ) {
+    if (index + 2 < svf->length()) {
+      this->coords[0] = (*svf)[index];
+      this->coords[1] = (*svf)[index + 1];
+      this->coords[2] = (*svf)[index + 2];
+      return;
+    }
+    SIMPLE_ERROR("The index {} is out of range for a 3D vector within the array of length {}", index, svf->length());
+  }
+
+  Vector3( core::SimpleVector_double_sp svf, size_t index, Unsafe unsafe ) {
+    ASSERT(index + 2 < svf->length());
+    this->coords[0] = (*svf)[index];
+    this->coords[1] = (*svf)[index + 1];
+    this->coords[2] = (*svf)[index + 2];
+  }
+
+  Vector3( core::SimpleVector_double_sp svf, size_t index, Safe safe ) {
+    if (index + 2 < svf->length()) {
+      this->coords[0] = (*svf)[index];
+      this->coords[1] = (*svf)[index + 1];
+      this->coords[2] = (*svf)[index + 2];
+      return;
+    }
+    SIMPLE_ERROR("The index {} is out of range for a 3D vector within the array of length {}", index, svf->length());
+  }
+
 
   /*! Return the vector in nanometers */
   Vector3 inNanometers() const;
