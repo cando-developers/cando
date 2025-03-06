@@ -1,5 +1,6 @@
 (k:sources :libclasp
            #~"rigid_staple.cc"
+           #~"cremerPople.cc"
            #~"chemInfo.cc"
            #~"ffTypesDb.cc"
            #~"ffStretchDb.cc"

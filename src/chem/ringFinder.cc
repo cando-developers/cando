@@ -30,7 +30,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 /* This file implements the Smallest Set of Smallest Ring (SSSR) finding algorithm described
-   by Balducci and Pearlman in  J. Chem. Inf. Comput. Sci. Vol 34, No. 4, 1994
+   Efficient Exact Solution of the Ring Perception Problem
+   Balducci and Pearlman in  J. Chem. Inf. Comput. Sci. Vol 34, No. 4, 1994, p 822-831
 
    It works well for small molecules <2048 atoms but not for very large systems.
 */
@@ -824,7 +825,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
     for ( ; ringList.notnilp(); ringList = oCdr(ringList) ) {
       if ( gc::As<PathMessage_sp>(oCar(ringList))->beep()->equal(beep) ) {
 #ifdef DEBUG_RING_MESSAGE
-        core::clasp_write_string(fmt::format("Found a matching beep - returning\n"));
+        core::clasp_write_string(fmt::format("Found a matching beep - NOT adding ring - returning\n"));
 #endif
         return;
       }
@@ -836,7 +837,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
     this->_rings->setf_gethash(hash,ringList);
     if ( this->linearlyIndependentRing(ring) ) {
 #ifdef DEBUG_RING_MESSAGE
-      core::clasp_write_string(fmt::format("addRing push_back\n"));
+      core::clasp_write_string(fmt::format("addRing good ring push_back into ring list\n"));
 #endif
 	this->_finalRings.push_back(ring);
     } else {
@@ -850,7 +851,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
 bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 {
 #ifdef DEBUG_RING_MESSAGE
-  core::clasp_write_string(fmt::format("In linearlyIndependentRing beep = {}\n", _rep_(ring->beep())));
+  core::clasp_write_string(fmt::format("In linearlyIndependentRing beep             = {}\n", _rep_(ring->beep())));
 #endif
   core::SimpleBitVector_sp orig_sbv = ring->beep();
   core::SimpleBitVector_sp beep = core::SimpleBitVector_copy(orig_sbv);
@@ -869,17 +870,31 @@ bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
     return true;
   }
 
-	    //
-	    // figure where to insert the 
-	    //
-  uint left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
+  core::T_sp tleft = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
+  uint left;
+  if (tleft.fixnump()) {
+    left = tleft.unsafe_fixnum();
+  } else {
+    SIMPLE_ERROR("Calculating left, encountered a bitvector full of zeros in the gaussian matrix ");
+  }
 #ifdef DEBUG_RING_MESSAGE
+  core::clasp_write_string(fmt::format("    glast = {}    left = {}\n", glast, left ));
   for ( uint zzz = 0; zzz<this->_gaussian.size(); zzz++ ) {
-    core::clasp_write_string(fmt::format("Start linearlyIndependentRing gaussian[{}] = {}\n", zzz, _rep_(this->_gaussian[zzz])));
+    core::clasp_write_string(fmt::format("Start linearlyIndependentRing gaussian[{:3}] = {}\n", zzz, _rep_(this->_gaussian[zzz])));
   }
 #endif
   for ( uint z = 0; z<glast; z++ ) {
-    uint gleft = core::SimpleBitVector_lowestIndex(this->_gaussian[z]);
+    core::T_sp tgleft = core::SimpleBitVector_lowestIndex(this->_gaussian[z]);
+    uint gleft;
+    if (tgleft.fixnump()) {
+      gleft = tgleft.unsafe_fixnum();
+    } else {
+      SIMPLE_ERROR("Calculating gleft, encountered a bitvector full of zeros in the gaussian matrix");
+    }
+#ifdef DEBUG_RING_MESSAGE
+    core::clasp_write_string(fmt::format("Checking gaussian[{:3}] = {}\n", z, _rep_(this->_gaussian[z])));
+    core::clasp_write_string(fmt::format("    z = {}  gleft = {}\n", z, gleft ));
+#endif
     if ( gleft > left ) {
 		    // swap rows
 	    //print "Swapping rows"
@@ -892,7 +907,16 @@ bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 #endif
     } else if ( gleft == left ) {
       core::SimpleBitVector_inPlaceXor(this->_gaussian[glast],this->_gaussian[z]);
-      left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
+      tleft = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
+      if (tleft.fixnump()) {
+        left = tleft.unsafe_fixnum();
+      } else {
+#ifdef DEBUG_RING_MESSAGE
+        core::clasp_write_string(fmt::format("After inPlaceXor, linearlyIndependentRing returning false gaussian[{}] = {}\n", glast, _rep_(this->_gaussian[glast])));
+#endif
+    this->_gaussian.pop_back();
+    return false;
+      }
 #ifdef DEBUG_RING_MESSAGE
       core::clasp_write_string(fmt::format("linearlyIndependentRing nPlaceXor {} and {}\n", glast, z ));
 #endif

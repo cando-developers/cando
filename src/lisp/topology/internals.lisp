@@ -96,6 +96,60 @@
                                                :external-dihedral-name (second info)))
                   (t (error "Could not parse ~s as dihedral-info" one)))))
 
+(defclass one-ring-info (cando.serialize:serializable)
+  ((name-to-atom-names :initarg :name-to-atom-names :reader name-to-atom-names)))
+
+(defclass complete-ring-info (one-ring-info) ())
+(defclass start-ring-info (one-ring-info) ())
+(defclass end-ring-info (one-ring-info) ())
+
+
+
+(defclass ring-info (cando.serialize:serializable)
+  ((complete :initform (make-hash-table) :initarg :complete :reader complete)
+   (start :initform (make-hash-table) :initarg :start :reader :start)
+   (end :initform (make-hash-table) :initarg :end :reader end)))
+
+(defun check-ring-args (rings)
+  (loop with complete-count = 0
+        with start-count = 0
+        with end-count = 0
+        for (k v) on rings by #'cddr
+        unless (member k '(:complete :start :end))
+          do (error "Illegal ring argument ~s" k)
+        when (eq k :complete)
+          do (progn
+               (incf complete-count)
+               (unless (consp v)
+                 (error "The argument of :complete must be a list - not ~s" v)))
+        when (eq k :start)
+          do (progn
+               (incf start-count)
+               (unless (consp v)
+                 (error "The argument of :start must be a list - not ~s" v)))
+        when (eq k :end)
+          do (progn
+               (incf end-count)
+               (unless (consp v)
+                 (error "The argument of :end must be a list - not ~s" v)))
+        finally (progn
+                  (when (> complete-count 1)
+                    (error "There should be only one :complete entry"))
+                  (when (> start-count 1)
+                    (error "There should be only one :start entry"))
+                  (when (> end-count 1)
+                    (error "There should be only one :end entry")))))
+
+(defun parse-ring-info (rings)
+  (check-ring-args rings)
+  (let ((complete-plist (getf rings :complete))
+        (start-plist (getf rings :start))
+        (end-plist (getf rings :end)))
+    (make-instance 'ring-info
+                   :complete (alexandria:plist-hash-table complete-plist)
+                   :start (alexandria:plist-hash-table start-plist)
+                   :end (alexandria:plist-hash-table end-plist))))
+
 (defclass internal (serial:serializable)
   ((name :initarg :name :accessor name)
    ))
@@ -1067,6 +1121,7 @@ that is 1 for each heavy atom."
                        ))))
         finally (return-from internals (values temp-internals updated-internals-mask))))
 
+#+(or)
 (defun overwrite-missing-internals (atresidue to-internals rotamer-internals undefined-internals-mask verbose)
   (break "Check arguments")
   (loop named internals

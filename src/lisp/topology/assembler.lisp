@@ -194,15 +194,6 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
 (defclass training-assembler (assembler-base)
   ((oligomers :initarg :oligomers :accessor oligomers)))
 
-(defclass focused-training-assembler (training-assembler)
-  ((focus-monomer :initarg :focus-monomer :accessor focus-monomer))
-  (:documentation "An assembler with a focus monomer"))
-
-(defun make-focused-training-assembler (oligomers focus-monomer)
-  (let ((assembler (make-training-assembler oligomers :focus-monomer focus-monomer)))
-    (change-class assembler 'focused-training-assembler :focus-monomer focus-monomer)
-    assembler))
-
 (defgeneric oligomer-containing-monomer (assembler monomer &optional errorp))
 
 (defmethod oligomer-containing-monomer ((assembler training-assembler) monomer &optional errorp)
@@ -833,7 +824,34 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
                               do (fill-joint-internals joint internal))
                         ))))
 
+(defgeneric do-atresidue-residue-fun (assembler fun)
+  (:documentation "Iterate over atresidue/residue pairs and call fun with each pair"))
 
+(defmethod do-atresidue-residue-fun ((assembler assembler) fun)
+  (loop for oligomer-shape in (topology:oligomer-shapes assembler)
+        do (loop for monomer-shape-info across (topology:monomer-shape-info-vector oligomer-shape)
+                 for monomer = (topology:monomer monomer-shape-info)
+                 for monomer-pos = (gethash monomer (topology:monomer-positions assembler))
+                 for atresidue = (topology:at-position (topology:ataggregate assembler) monomer-pos)
+                 for residue = (topology:at-position (topology:aggregate assembler) monomer-pos)
+                 do (funcall fun atresidue residue))))
+
+(defmethod do-atresidue-residue-fun ((assembler training-assembler) fun)
+  (loop for oligomer in (topology:oligomers assembler)
+        do (loop for monomer across (topology:monomers (topology:oligomer-space oligomer))
+                 for monomer-pos = (gethash monomer (topology:monomer-positions assembler))
+                 for atresidue = (topology:at-position (topology:ataggregate assembler) monomer-pos)
+                 for residue = (topology:at-position (topology:aggregate assembler) monomer-pos)
+                 do (funcall fun atresidue residue))))
+
+(defmacro do-atresidue-residue ((atresidue residue assembler) &body body)
+  "Iterate over each atresidue and residue pair in the assembler"
+  `(do-atresidue-residue-fun ,assembler
+     (lambda (,atresidue ,residue)
+       (progn
+         ,@body))))
+
+#+(or)
 (defmacro do-atresidue-residue ((atresidue residue assembler) &body body)
   "Iterate over each atresidue and residue pair in the assembler"
   (let ((oligomer-shape (gensym "oligomer-shape"))

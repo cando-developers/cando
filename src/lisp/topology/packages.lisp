@@ -491,7 +491,8 @@
    #:oligomer-space-orientations
    #:update-internals-for-monomer-shape
    #:update-externals-for-monomer-shape
-   #:monomer-shape-to-index))
+   #:monomer-shape-to-index
+   #:lookup-dihedral-joint))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
