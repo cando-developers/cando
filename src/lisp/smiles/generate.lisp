@@ -229,7 +229,8 @@
 (defun generate (mol)
   (check-type mol chem:molecule)
   (let* ((chem:*current-rings* (chem:identify-rings mol)))
-    (chem:with-aromaticity-information (mol :am1bcc)
+    (chem:with-aromaticity-information (temp-aromaticity-info mol :am1bcc)
+      (declare (ignore temp-aromaticity-info))
       (let* ((ranks (cangen mol))
              (root-atm (block find-root
                          (maphash (lambda (atm rank)

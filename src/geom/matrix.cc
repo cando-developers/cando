@@ -1567,6 +1567,53 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
   return dih*sgn;
 }
 
+CL_DEFUN double calculateDistanceArray(size_t ivc,
+                                       size_t ivd,
+                                       core::Array_sp array) {
+  size_t len = array->length();
+  int64_t max_index = len-2;
+  if (max_index<=0) {
+    SIMPLE_ERROR("The array does not contain 3D vectors");
+  }
+  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_float_sp>(array);
+    Vector3 vc(sfa,ivc,Unsafe());
+    Vector3 vd(sfa,ivd,Unsafe());
+    return calculateDistance(vc,vd);
+  } else if (gc::IsA<core::SimpleVector_double_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_double_sp>(array);
+    Vector3 vc(sfa,ivc,Unsafe());
+    Vector3 vd(sfa,ivd,Unsafe());
+    return calculateDistance(vc,vd);
+  }
+  SIMPLE_ERROR("Handle array type {}", _rep_(array));
+}
+
+CL_DEFUN double calculateAngleArray(size_t ivb,
+                                    size_t ivc,
+                                    size_t ivd,
+                                    core::Array_sp array) {
+  size_t len = array->length();
+  int64_t max_index = len-2;
+  if (max_index<=0) {
+    SIMPLE_ERROR("The array does not contain 3D vectors");
+  }
+  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_float_sp>(array);
+    Vector3 vb(sfa,ivb,Unsafe());
+    Vector3 vc(sfa,ivc,Unsafe());
+    Vector3 vd(sfa,ivd,Unsafe());
+    return calculateAngle(vb,vc,vd);
+  } else if (gc::IsA<core::SimpleVector_double_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_double_sp>(array);
+    Vector3 vb(sfa,ivb,Unsafe());
+    Vector3 vc(sfa,ivc,Unsafe());
+    Vector3 vd(sfa,ivd,Unsafe());
+    return calculateAngle(vb,vc,vd);
+  }
+  SIMPLE_ERROR("Handle array type {}", _rep_(array));
+}
+
 CL_DEFUN double calculateDihedralArray( size_t iva,
                                         size_t ivb,
                                         size_t ivc,
@@ -1579,6 +1626,13 @@ CL_DEFUN double calculateDihedralArray( size_t iva,
   }
   if (gc::IsA<core::SimpleVector_float_sp>(array)) {
     auto sfa = gc::As<core::SimpleVector_float_sp>(array);
+    Vector3 va(sfa,iva,Unsafe());
+    Vector3 vb(sfa,ivb,Unsafe());
+    Vector3 vc(sfa,ivc,Unsafe());
+    Vector3 vd(sfa,ivd,Unsafe());
+    return calculateDihedral(va,vb,vc,vd);
+  } else if (gc::IsA<core::SimpleVector_double_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_double_sp>(array);
     Vector3 va(sfa,iva,Unsafe());
     Vector3 vb(sfa,ivb,Unsafe());
     Vector3 vc(sfa,ivc,Unsafe());

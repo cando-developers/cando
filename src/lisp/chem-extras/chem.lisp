@@ -325,11 +325,12 @@ for the node in the table."))
 ;; Make this work using the hash-table returned by chem:identify-aromatic-rings
 
 
-(defmacro chem::with-aromaticity-information ((matter force-field-name) &body body)
+(defmacro chem::with-aromaticity-information ((var matter force-field-name) &body body)
   "Provide a dynamic environment where the aromaticity:is-aromatic function works.
 This macro first calculates the aromaticity information of the matter and then
 evaluates the body in that dynamic environment."
-  `(let ((chem:*current-aromaticity-information* (chem:identify-aromatic-rings ,matter ,force-field-name)))
+  `(let* ((,var (chem:identify-aromatic-rings ,matter ,force-field-name))
+          (chem:*current-aromaticity-information* ,var))
      ,@body))
 
 
