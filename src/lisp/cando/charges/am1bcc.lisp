@@ -362,7 +362,8 @@
 (defun calculate-bcc-corrections (mol)
   "Return an ObjectMap from Atoms to Am1Bcc charge corrections"
   (let ((chem:*current-rings* (chem:identify-rings mol)))
-    (chem:with-aromaticity-information (mol :am1bcc)
+    (chem:with-aromaticity-information (temp-aromaticity-info mol :am1bcc)
+      (declare (ignore temp-aromaticity-info))
       (let ((correction-map (make-hash-table)))
         (assign-am1-bcc-bond-types mol)
         (apply-atom-types mol)

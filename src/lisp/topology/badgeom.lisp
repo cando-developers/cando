@@ -196,7 +196,8 @@
 
 (defun bad-aromatic-geometry-p (agg)
   (unless chem:*current-rings* (error "The chem:*current-rings* dynamic variable must be defined - use (chem:identify-rings matter)"))
-  (chem:with-aromaticity-information (agg :am1bcc)
+  (chem:with-aromaticity-information (temp-aromaticity-info agg :am1bcc)
+    (declare (ignore temp-aromaticity-info))
     (let* ((mol (chem:content-at agg 0))
            (mol-graph (chem:make-molecule-graph-from-molecule mol))
            (matches (chem:boost-graph-vf2 *planar-aromatic* mol-graph)))

@@ -292,9 +292,7 @@ NVector_sp chem__cpring_6_cremer_pople_to_zjs( double phi2, double q2, double qn
 }
 
 CL_DEFUN
-core::T_mv chem__cpring_coordinates_to_distances_and_angles( NVector_sp coordinates, core::SimpleVector_byte32_t_sp indexes3 ) {
-  core::SimpleVector_double_sp distances = core::SimpleVector_double_O::create(indexes3->length());
-  core::SimpleVector_double_sp angles = core::SimpleVector_double_O::create(indexes3->length());
+void chem__cpring_coordinates_to_distances_and_angles( core::ComplexVector_double_sp distances, core::ComplexVector_double_sp angles, NVector_sp coordinates, core::SimpleVector_byte32_t_sp indexes3 ) {
   size_t N = indexes3->length();
   for (size_t j = 0; j<N; j++ ) {
     int idxm1 = (j - 1);
@@ -311,7 +309,6 @@ core::T_mv chem__cpring_coordinates_to_distances_and_angles( NVector_sp coordina
     (*distances)[j] = geom::calculateDistance(pos,posp1);
     (*angles)[j] = geom::calculateAngle(posm1,pos,posp1);
   }
-  return Values( distances, angles );
 };
 
 
