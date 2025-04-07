@@ -54,9 +54,8 @@ namespace       chem {
 
 struct TermImproperRestraint
 {
-	REAL		K;	// Force constant
-    	REAL		U;	// Upper bound in radians domain [-180,180]
-	REAL		L;	// Lower bound in radians domain [-180,180]
+	REAL		kdh;	// Force constant
+    	REAL		phi0;	// Upper bound in radians domain [-180,180]
 	INT		I1;
 	INT		I2;
 	INT		I3;
@@ -163,7 +162,9 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
   void addTerm(const TermType& term);
-  void addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minRadians, double maxRadians, double weight);
+  size_t addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0, double kdh);
+  void changeDihedralRestraint( size_t index, double phi0, double kdh );
+  core::T_mv getDihedralRestraint( size_t index );
 
   virtual bool is_restraint() const { return true; };
   
@@ -194,6 +195,8 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
   virtual string	beyondThresholdInteractionsAsString();
  
   EnergyDihedralRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
+
+  virtual string __repr__() const;
 
  public:
   EnergyDihedralRestraint_O( const EnergyDihedralRestraint_O& ss ); //!< Copy constructor

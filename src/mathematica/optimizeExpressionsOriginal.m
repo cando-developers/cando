@@ -20,9 +20,8 @@
 (*Turn off those annoying spelling warnings*)
 
 
-BeginPackage["foo`"]
+BeginPackage["optimizeExpressions`"]
 
-Print["optimizeExpressionsTest is being loaded"];
 
 Off[General::spell];
 Off[General::spell1];
@@ -64,23 +63,13 @@ selectRules[exps_] := Select[exps,Head[#]===Rule&];
 packSelectRules[pack_] := Select[Rules/.pack,Head[#]==Rule&]
 
 
- recursiveSimplifyEquation[eq_,dispatch_] :=
-        Module[{ne},
-               ne = ReplaceAll[eq,dispatch];
-               If[eq==ne,
-                  Return[ne];];
-               ne = recursiveSimplifyEquation[ne,dispatch];
-               ne
-        ];
-
-
 simplifyEquation[eq_,terms_] :=
-    Module[{ne,rules,dispatch,res},
-           rules = selectRules[terms];
-           dispatch = Dispatch[rules];
-           res = recursiveSimplifyEquation[eq,dispatch];
-           res
-           ];
+        Module[{ne},
+               ne = eq/.selectRules[terms];
+               If[eq==ne,Return[ne];];
+               ne = simplifyEquation[ne,terms];
+               Return[ne];
+        ];
 
 
 collectTermsForOneLevel[fAndTerms_] :=
@@ -90,6 +79,7 @@ collectTermsForOneLevel[fAndTerms_] :=
 	       (*nf = nf/.nt;*)
 	       lev = Depth[nf];
 	       ts = Union[Level[nf,{lev-2}]](*/.nt*);
+               PrintTemporary["lev = ", lev, " Length[ts] = ", Length[ts] ];
 	       For[i=1,i<=Length[ts],i++,
 		   expr = ts[[i]];
 		   If[!((Head[expr]=== Integer) ||
@@ -110,23 +100,22 @@ collectTermsForOneLevel[fAndTerms_] :=
 		      nf = nf/.(expr -> map[expr]);
 		   ];
 	       ];
-	       {nf,nt}
+	       Return[{nf,nt}];
         ];
 
 
 collectTermsForOneExpression[name_,fn_, terms_]:=
-    Module[{nf,nt,res},
-           nt=terms;
-           nf = simplifyEquation[fn,nt];
-           While[Depth[nf]>2,
-	         PrintTemporary["About to collectTermsForOneLevel Depth[nf] = ", Depth[nf] ];
-                 res = collectTermsForOneLevel[{nf,nt}];
-                 nf = res[[1]];
-                 nt = res[[2]];
-                 ];
-           nt = Append[nt,nf->name];
-           nt
-           ];
+        Module[{nf,nt,res},
+	       nt=terms;
+	       nf=simplifyEquation[fn,nt];
+	       While[Depth[nf]>2,
+		     res=collectTermsForOneLevel[{nf,nt}];
+		     nf=res[[1]];
+		     nt=res[[2]];
+	       ];
+	       nt=Append[nt,nf->name];
+	       Return[nt];
+        ];
 
 
 (* ::Subsection:: *)
@@ -189,23 +178,24 @@ identifyRules[packet_] :=
         ];
 
 collectTerms[packet_,outputs_] :=
-        Module[{changes,pack,rules,newnt,result, nt,i,numberOfNewTerms,startTime},
-               rules = Rules/.packet;
+        Module[{changes,pack,equations,newnt,result, nt,i,numberOfNewTerms,startTime},
+               equations = Rules/.packet;
                nt = {};
                changes = False;
                startTime = AbsoluteTime[];
-               For[i=1,i<=Length[rules],i++,
-                   If[ Head[rules[[i]]]===Rule, (*If this is a rule then collect the sub-expressions, if not then just add it to the list of rules *)
-                       newnt = collectTermsForOneExpression[rules[[i]][[2]],rules[[i]][[1]],nt];
-                       numberOfNewTerms = Length[newnt]-Length[nt]-1; (* One term is always added from the rules list *)
-                       If[numberOfNewTerms>0,
+               For[i=1,i<=Length[equations],i++,
+                   If[ Head[equations[[i]]]===Rule, (*If this is a rule then collect the sub-expressions, if not then just add it to the list of equations *)
+                       PrintTemporary["Collecting terms for rule: ",i, " ", equations[[i]][[2]]];
+                       newnt = collectTermsForOneExpression[equations[[i]][[2]],equations[[i]][[1]],nt];
+                       numberOfNewTerms = Length[newnt]-Length[nt]-1; (* One term is always added from the equations list *)
+                       If[numberOfNewTerms!=0,
                           changes = True;
-                          PrintTemporary["Collected terms for rule: ",i, " ", rules[[i]][[2]], " numberOfNewTerms: ", numberOfNewTerms ];
+                          Print["   collected "<>ToString[numberOfNewTerms]<>" terms"]
                        ];
                        nt = newnt;
                      ,
-                       (*Print["Appending non-term"<>rules[[i]]];*)
-                       nt = Append[nt,rules[[i]]];
+                       (*Print["Appending non-term"<>equations[[i]]];*)
+                       nt = Append[nt,equations[[i]]];
                    ];
                    (* Print[nt]; *) (*Comment out*)
                ];
@@ -245,7 +235,7 @@ associativePrintComplexTerms[terms_,type_] :=
                    ];
                    allNt = Append[allNt,nt];
                ];
-               Sort[allNt]
+               Return[Sort[allNt]];
         ];
 
 
@@ -254,7 +244,7 @@ associativeTermContains[assoc_,vars_] :=
                (*Return True if the associative object contains all of the vars.*)
                tl = Table[assoc[[i]],{i,1,Length[assoc]}]; (*Accumulate all of the variables in the associative term*)
                If[Union[tl,vars]==tl,res=True,res=False]; (*Return True if vars is a subset of t1*)
-               res
+               Return[res]
         ];
 
 
@@ -269,7 +259,7 @@ associativeSubstitute[rule_,vars_,newVar_,type_] :=
                (*Print["associativeSubstitute newTimes=",newTimes];*)
                newTerm = newTimes->rightSide;
                (*Print["associativeSubstitute newTerm=", newTerm];*)
-               newTerm
+               Return[newTerm];
         ];
 
 
@@ -285,12 +275,11 @@ associativeFirstUse[rules_,vars_,type_] :=
                       ];
                    ];
                ];
-               -1
-        ];
+               Return[-1]];
 
 
 associativeSimplifyPair[rules_,vars_,type_] :=
-        Module[{pos,fu,i,newRules,subs, oneRule,insTerm,insertedTerms, newTimes, newVar, newRule},
+        Module[{pos,fu,i,newRules,subs, oneRule,insTerm,insertedTerms, newTimes, newVar},
                (*Create a new variable for the pair product and add its definition to the term list and then substitute all matching pair products with the new definition*)
                pos = associativeFirstUse[rules,vars,type];
                (*Print["First use=",pos];*)
@@ -298,26 +287,28 @@ associativeSimplifyPair[rules_,vars_,type_] :=
                uniqueVariableIndex = uniqueVariableIndex + 1;
                (*Print["New var= ",newVar ];*)
                If[pos<0,Throw["terms not found: "<>ToString[vars]]];
+               newRules={};
                subs = 0;
-               newRules = Map[ Function[oneRule,
-                                        If[(Head[oneRule]===Rule&&Head[oneRule[[1]]]===type&&associativeTermContains[oneRule[[1]],vars]),
-                                           (*Print["associativeSimplifyPair:: oneRule=", oneRule];*)
-                                           newRule=associativeSubstitute[oneRule,vars,newVar,type];
-                                           (*Print["associativeSimplifyPair new oneRule=", oneRule];*)
-                                           subs++;
-                                         ,
-                                           newRule = oneRule
-                                        ];
-                                        newRule
-                               ]
-                             ,
-                               rules ];
+               For[i=1,i<=Length[rules],i++,
+                   oneRule = rules[[i]];
+                   If[Head[oneRule]===Rule,
+                      If[Head[oneRule[[1]]]===type,
+                         If[associativeTermContains[oneRule[[1]],vars],
+                            (*Print["associativeSimplifyPair:: oneRule=", oneRule];*)
+                            oneRule=associativeSubstitute[oneRule,vars,newVar,type];
+                            (*Print["associativeSimplifyPair new oneRule=", oneRule];*)
+                            subs++;
+                         ];
+                      ];
+                   ];
+                   AppendTo[newRules,oneRule];
+               ];
                insTerm = Apply[type,vars]->newVar;
                insertedTerms = Insert[newRules,insTerm,pos];
                Print["Substitute term: "<>ToString[CForm[insTerm[[2]]]] <>"="
 				        <>ToString[CForm[insTerm[[1]]]]<>" at position:"
 				        <>ToString[pos]<>" substitutions: "<>ToString[subs] ];
-               insertedTerms
+               Return[insertedTerms];
         ];
 
 
@@ -327,7 +318,6 @@ associativeExtractComplexTerms[terms_,type_] := Select[selectRules[terms],Head[#
 associativeExtractFactors[rules_] := Table[Table[rules[[i]][[1]][[j]],{j,1,Length[rules[[i]][[1]]]}],{i,1,Length[rules]}];
 
 
-(*
 associativePossiblePairs[listOfFactors_] :=
         Module[{a,i,j,factors,pp},
                pp = {};
@@ -339,65 +329,50 @@ associativePossiblePairs[listOfFactors_] :=
                        ];
                    ];
                ];
-               Union[pp]
-        ];
- *)
-associativePossiblePairs[listOfFactors_] :=
-        Module[{allpp},
-               allpp = Map[Function[ff,
-                                    factors = Sort[ff];
-                                    pp = Subsets[factors,{2}];
-                                    pp],
-                           listOfFactors];
-               Union[Flatten[allpp,1]]
-        ];
-
-associativeMostCommonPairsMap[terms_, type_] :=
-        Module[{prods, rule, all, pair, pairs, seen, trialPairs, index, symbols, sortedPairs},
-               prods = associativeExtractComplexTerms[terms, type];
-               (*index=Association[];EchoTiming[Do[Scan[(index[#]=Append[Lookup[
-   index,#,{}],rule])&,List@@rule[[1]]],{rule,prods}];,
-   "Build index"];*)
-               (*PrintTemporary["Prods=",prods];*)
-               If[Length[prods] == 0, Return[{}]];
-               (*build an index of symbols to rules*)
-               index = Association[Reap[Do[symbols = List @@ rule[[1]];
-                                           Scan[Sow[rule, #] &, symbols], {rule, prods}], _, Rule][[2]]];
-               all = associativeExtractFactors[prods];
-               trialPairs = associativePossiblePairs[all];
-               (*PrintTemporary["Possible pairs=",trialPairs];*)
-               pairs = Map[Function[pair,
-                                    seen = Intersection[index[pair[[1]]] /. {} -> {},
-                                                        index[pair[[2]]] /. {} -> {}];
-                                    {Length[seen], pair, seen}], trialPairs];
-               sortedPairs = ReverseSort[pairs];
-               sortedPairs
+               Return[Union[pp]];
         ];
 
 
-associativeMostCommonPairsForLoop[terms_,type_] :=
+associativeMostCommonPairParallelMap[terms_,type_] :=
         Module[{prods, all,pair,pairs,seen,trialPairs,i,j},
-               prods = associativeExtractComplexTerms[terms,type]; (*fast*)
+               prods = associativeExtractComplexTerms[terms,type];
                If[Length[prods]==0,Return[{}]];
                (*PrintTemporary["Prods=",prods];*)
-               all = associativeExtractFactors[prods]; (*fast*)
-               trialPairs = associativePossiblePairs[all]; (*slow*)
+               all = associativeExtractFactors[prods];
+               trialPairs = associativePossiblePairs[all];
+               (*PrintTemporary["Possible pairs=",trialPairs ];*)
+               Parallelize[
+                       pairs = Map[Function[pair,
+                                            seen = Cases[prods,x_/;MemberQ[x[[1]],pair[[1]]]&&MemberQ[x[[1]],pair[[2]]]];
+                                            {Length[seen], pair, seen}
+                                   ],
+                                   trialPairs];
+               ];
+               Return[Sort[pairs][[-1]]];
+        ];
+
+associativeMostCommonPairForLoop[terms_,type_] :=
+        Module[{prods, all,pair,pairs,seen,trialPairs,i,j},
+               prods = associativeExtractComplexTerms[terms,type];
+               If[Length[prods]==0,Return[{}]];
+               (*PrintTemporary["Prods=",prods];*)
+               all = associativeExtractFactors[prods];
+               trialPairs = associativePossiblePairs[all];
                (*PrintTemporary["Possible pairs=",trialPairs ];*)
                pairs = {};
                For[i=1,i<=Length[trialPairs],i++,
                    pair = trialPairs[[i]];
                    (*PrintTemporary["Pair = ", pair];*)
-                   (*seen = Cases[prods,x_/;MemberQ[x[[1]],pair[[1]]]&&MemberQ[x[[1]],pair[[2]]]];*)
-                   seen = Select[prods,SubsetQ[#[[1]],pair]&];
+                   seen = Cases[prods,x_/;MemberQ[x[[1]],pair[[1]]]&&MemberQ[x[[1]],pair[[2]]]];
                    (*PrintTemporary[ "seen=", seen];*)
                    pairs = Append[pairs,{Length[seen],pair,seen}];
                ];
-               Sort[pairs]
+               Return[Sort[pairs][[-1]]];
         ];
 
 
 associativesSimplify[packet_,type_,outputs_] :=
-        Module[{terms,newTerms,done,commons,common,firstAbsoluteTime,oneAbsoluteTime},
+        Module[{terms,newTerms,done,common,firstAbsoluteTime,oneAbsoluteTime},
                (*Right now simplifyProducts doesn't set Changes properly when a pair product is simplified.*)
 	       terms = Rules/.packet;
 	       newTerms = terms;
@@ -406,19 +381,21 @@ associativesSimplify[packet_,type_,outputs_] :=
                Print["associativesSimplify for ", type ];
 	       While[ !done,
                       oneAbsoluteTime = AbsoluteTime[];
-		      commons = associativeMostCommonPairsMap[newTerms,type];
-		      If[Length[commons]==0,
+		      common = associativeMostCommonPairForLoop[newTerms,type];
+                      Print["Most common: ",common[[2]], " number=",common[[1]]];
+		      Print["elapsed for associativeMostCommonPairForLoop = ", AbsoluteTime[]-oneAbsoluteTime, " seconds"];
+		      If[Length[common]==0,
                          done= True,
-                         common = commons[[1]];
 			 If[common[[1]]>1,
+                            oneAbsoluteTime = AbsoluteTime[];
 			    newTerms=associativeSimplifyPair[newTerms,common[[2]],type];
+                            Print["associativeSimplify elapsed: ", AbsoluteTime[]-firstAbsoluteTime,
+                                  " seconds  iteration: ", AbsoluteTime[]-oneAbsoluteTime, " seconds"];
 			  ,
 			    done=True;
 			 ];
 			 (*PrintTemporary[printComplexProductTerms[newTerms]//MatrixForm];*)
 		      ];
-                      Print["associativeSimplify elapsed: ", AbsoluteTime[]-firstAbsoluteTime,
-                            " seconds  iteration: ", AbsoluteTime[]-oneAbsoluteTime, " seconds"];
 	       ];
 	       Print["associativeSimplify>>Got to eliminateTrivialRules"];
 	       newTerms = eliminateTrivialRules[{Rules->newTerms},outputs];
@@ -441,7 +418,7 @@ variableList[terms_,outputs_] := Block[
 	rules = selectRules[terms];
 	on = ToString/@outputs;
 	res = Union[Table[ToString[rules[[i]][[2]]],{i,Length[rules]}],on];
-	res
+	Return[res];
 ];
 
 
@@ -450,7 +427,7 @@ cFormVariableDeclarations[terms_,outputs_,additionalCDeclares_] := Module[{u,i},
 	decls = "";
 	For[i=1,i<=Length[u],i++,decls = decls<>"DECLARE_FLOAT("<>ToString[u[[i]]]<>");\n"];
 	decls = decls<>additionalCDeclares<>"\n";
-	decls
+	Return[decls];
 ];
 
 
@@ -469,7 +446,7 @@ cFormCode[rules_] :=
 	      For[i=1,i<=Length[rules],i++,
 		  str = str <> toC[rules[[i]],i];
 	      ];
-	      str
+	      Return [str];
         ];
 
 
@@ -486,7 +463,7 @@ cFormListOfTerms[terms_,outputs_,additionalCDeclares_] := Module[{i,str},
 		]; *)
 	];
 	str = str<>"#endif //TERM_CODE ]\n";
-	str
+	Return[str];
 ];
 
 
@@ -692,12 +669,12 @@ matchExpEval[exp_,eval_] :=
 
 
 initializeTree[] := Module[{},
-                           Clear[tree,treeSpan];
-                           tree[i_] = {Height->0,TreeSpan->0,Branch->666,Description->0,SubBranches->{},Color->Black};
-                           treeSpan = Table[1,{200}];
-                           treeValues = {};
-                           treeHeight = 0;
-                    ];
+Clear[tree,treeSpan];
+tree[i_] ={Height->0,TreeSpan->0,Branch->666,Description->0,SubBranches->{},Color->Black};
+treeSpan = Table[1,{200}];
+treeValues = {};
+treeHeight = 0;
+];
 
 
 locateBranches[term_] := Module[
@@ -708,7 +685,7 @@ locateBranches[term_] := Module[
 	For[i=1,i<=Length[tl],i++,
 		AppendTo[poss,tree[tl[[i]]]];
 	];
-	poss;
+	Return[poss];
 ];
 
 
@@ -727,7 +704,7 @@ createBranch[height_,branch_,descr_,subBranches_,color_] := Module[{},
 	treeHeight = Max[treeHeight,height];
 	(*PrintTemporary["treeHeight=",treeHeight];*)
 	AppendTo[treeValues,branch];
-	tree[branch]
+	Return[tree[branch]];
 ];
 
 
@@ -749,7 +726,7 @@ locateCreateBranches[term_] :=
                    (*PrintTemporary["locateCreateBranches:: branch=",branch];*)
                    AppendTo[branches,branch];
                ];
-               branches
+               Return[branches];
         ];
 
 
@@ -778,10 +755,10 @@ createRoot[rule_] :=
 
 
 createEntireTree[allTerms_]:=Module[{i,terms},
-                                    initializeTree[];
-                                    terms = selectRules[allTerms];
-                                    Map[createRoot,terms];
-                             ];
+initializeTree[];
+terms = selectRules[allTerms];
+Map[createRoot,terms];
+];
 
 
 heightOfTree[] := treeHeight
@@ -793,7 +770,7 @@ treePos[side_,el_,asx_,asy_] :=
                dev = max/treeSpan[[Height/.el]];
                x = ((Height/.el)-1);
                y = dev*(((TreeSpan/.el)-1)+0.5);
-               {(side*0.3+x)*asx,y*asy}
+               Return[{(side*0.3+x)*asx,y*asy}];
         ];
 
 
@@ -804,7 +781,7 @@ branchesInto[x_] :=
                    br = tree[treeValues[[i]]];
                    If[MemberQ[SubBranches/.br,x],AppendTo[refs,Branch/.br]];
                ];
-               refs
+               Return[refs];
         ];
 
 
@@ -830,7 +807,7 @@ buildTreeGraphics[asx_,asy_] :=
 		   txt = {color,Text[Description/.br,treePos[0,br,asx,asy],Background->Automatic]};
 		   AppendTo[graphics,txt];
 	       ];
-	       Flatten[{lines,graphics}]
+	       Return[Flatten[{lines,graphics}]];
         ];
 
 
@@ -977,7 +954,7 @@ packOptimize[pack_] :=
 	       Print["Directory: "<>ToString[Directory[]]];
 	       Put[result,fileNamePrefix<>".m"];
                Print["Total time: ", AbsoluteTime[]-startTime, " seconds"];
-	       result
+	       Return[result];
         ];
 
 
@@ -985,7 +962,7 @@ toArgs[str_] := StringReplace[str,{"{"->"(","}"->")"}];
 
 
 energyFunctionName[pack_]:=Block[{},
-	"_evaluateEnergyOnly_"<>(Name/.pack)
+	Return["_evaluateEnergyOnly_"<>(Name/.pack)];
 ];
 
 
@@ -1035,7 +1012,7 @@ assembleFiniteDifferenceDiagonalHessian[pack_,d_] :=
 	      res=res<>oneDiagonalHessianName[d]<>",\n";
 	      res=res<>"index";
 	      res=res<>");\n";
-	      res
+	      Return[res];
         ];
 
 
@@ -1061,7 +1038,7 @@ assembleFiniteDifferenceOffDiagonalHessian[pack_,d1_,d2_] :=
 		    <>oneOffDiagonalHessianName[ToString[d1]<>ToString[d2]]<>",\n"
 		    <>"index"
 		    <>");\n";
-	        res
+	        Return[res];
         ];
 
 

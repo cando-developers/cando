@@ -152,14 +152,19 @@ inline string	atomLabel(Atom_sp a)
 #endif
 #define	myPow(x,y)	(pow(x,y))
 #define	ArcCos(x)	(acos(x))
+#define	ArcTan(x,y)	(atan2(y,x))
+#define myatan2(y,x)    (atan2(y,x))
 #define	Cos(x)		(cos(x))
 #define	Sin(x)		(sin(x))
 
+#define	Pi		(3.14159265)
 #define	TWOPI		(3.14159265*2.0)
 #define	reciprocal(x)	(1.0/(x))
 #define	mysqrt(x)	sqrt(x)
+#define	mymod(x,y)	fmod(x,y)
 #define	power1(x)	(x)
 #define	power2(x)	((x)*(x))
+#define	powern2(x)	(1.0/(x)*(x))
 #define	c_two		2.0
 #define	c_six		6.0
 #define	oneHalf		0.5

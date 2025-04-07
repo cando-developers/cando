@@ -46,19 +46,29 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/wrappers.h>
 
 
+#define INCLUDE_DEBUG_FINITE_DIFFERENCE  "cando/chem/energy_functions/_DihedralHarmonic_debugFiniteDifference.cc"
+#define INCLUDE_DEBUG_EVAL_SET "cando/chem/energy_functions/_DihedralHarmonic_debugEvalSet.cc"
+#define INCLUDE_TERM_DECLARES "cando/chem/energy_functions/_DihedralHarmonicSpeedy_termDeclares.cc"
+#define INCLUDE_TERM_CODE "cando/chem/energy_functions/_DihedralHarmonicSpeedy_termCode.cc"
+
 namespace chem {
+
+// This is super important!  Mathematica uses the opposite order of arguments from atan2
+#define ArcTan(x_,y_) atan2(y_,x_)
+
+
 
 #undef ZERO_SMALL_LEN
 #define ZERO_SMALL_LEN(RL,L) {double fabs_ = fabs(L); int cmp = (fabs_ < TENM3); RL = cmp ? 0.0 : RL; }
 
-#define IMPROPER_RESTRAINT_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+#define DIHEDRAL_HARMONIC_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
          && bitvectorActiveAtomMask->testBit(I2/3) \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) goto SKIP_term;
-#define IMPROPER_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
+#define DIHEDRAL_HARMONIC_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,EnergyDihedralRestraint_O::static_classSymbol(), \
                           mk_double_float(Energy), \
@@ -67,10 +77,9 @@ if (hasActiveAtomMask \
 
 
 core::List_sp EnergyDihedralRestraint::encode() const {
-  return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,k),core::clasp_make_double_float(this->term.K)),
-                              core::Cons_O::create(core::Cons_O::create(INTERN_(kw,U),core::clasp_make_double_float(this->term.U)),
-                                                   core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,L),core::clasp_make_double_float(this->term.L)),
-                                                                            core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+  return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,kdh),core::clasp_make_double_float(this->term.kdh)),
+                              core::Cons_O::create(core::Cons_O::create(INTERN_(kw,phi0),core::clasp_make_double_float(this->term.phi0)),
+                                                   core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
                                                                             core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
                                                                             core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.I3)),
                                                                             core::Cons_O::create(INTERN_(kw,i4), core::make_fixnum(this->term.I4)),
@@ -100,7 +109,7 @@ double	_evaluateEnergyOnly_ImproperRestraint(
 		num_real x2, num_real y2, num_real z2,
 		num_real x3, num_real y3, num_real z3,
 		num_real x4, num_real y4, num_real z4,
-		num_real K, num_real L, num_real U )
+		num_real kdh, num_real phi0 )
 {
   IMPLEMENT_ME();
   #if 0
@@ -108,27 +117,27 @@ num_real	EraseLinearDihedral;
 num_real	UShift, PhiShift;
 bool	RestraintActive;
 
-#undef	IMPROPER_RESTRAINT_SET_PARAMETER
-#define	IMPROPER_RESTRAINT_SET_PARAMETER(x)	{}
-#undef	IMPROPER_RESTRAINT_SET_POSITION
-#define	IMPROPER_RESTRAINT_SET_POSITION(x,ii,of)	{}
-#undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
-#define	IMPROPER_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	IMPROPER_RESTRAINT_PHI_SET
-#define	IMPROPER_RESTRAINT_PHI_SET(x)	{}
-#undef	IMPROPER_RESTRAINT_CALC_FORCE	// Don't calculate FORCE or HESSIAN
+#undef	DIHEDRAL_HARMONIC_SET_PARAMETER
+#define	DIHEDRAL_HARMONIC_SET_PARAMETER(x)	{}
+#undef	DIHEDRAL_HARMONIC_SET_POSITION
+#define	DIHEDRAL_HARMONIC_SET_POSITION(x,ii,of)	{}
+#undef	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE(e) {}
+#undef	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE(i,o,v) {}
+#undef	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	DIHEDRAL_HARMONIC_PHI_SET
+#define	DIHEDRAL_HARMONIC_PHI_SET(x)	{}
+#undef	DIHEDRAL_HARMONIC_CALC_FORCE	// Don't calculate FORCE or HESSIAN
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
+#include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
-#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#include INCLUDE_TERM_CODE
 
     return Energy;
     #endif
@@ -142,7 +151,7 @@ void EnergyDihedralRestraint_O::addTerm(const EnergyDihedralRestraint& e)
 
 
 CL_DEFMETHOD
-void EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minRadians, double maxRadians, double weight)
+size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0, double kdh)
 {
   EnergyDihedralRestraint energyTerm;
   energyTerm._Atom1 = a1;
@@ -157,11 +166,41 @@ void EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFun
   energyTerm.term.I2 = ea2->coordinateIndexTimes3();
   energyTerm.term.I3 = ea3->coordinateIndexTimes3();
   energyTerm.term.I4 = ea4->coordinateIndexTimes3();
-  energyTerm.term.U = minRadians;
-  energyTerm.term.L = maxRadians;
-  energyTerm.term.K = weight;
+  energyTerm.term.phi0 = phi0;
+  energyTerm.term.kdh = kdh;
+  size_t index = this->_Terms.size();
   this->addTerm(energyTerm);
+  return index;
 }
+
+CL_DEFMETHOD
+core::T_mv EnergyDihedralRestraint_O::getDihedralRestraint( size_t index )
+{
+  if (index<this->_Terms.size()) {
+    EnergyDihedralRestraint& energyTerm = this->_Terms[index];
+    return Values(
+        mk_double_float(energyTerm.term.phi0),
+        mk_double_float(energyTerm.term.kdh),
+        energyTerm._Atom1,
+        energyTerm._Atom2,
+        energyTerm._Atom3,
+        energyTerm._Atom4 );
+  }
+  SIMPLE_ERROR("index {} is out of bounds - must be less than {}", index, this->_Terms.size() );
+}
+
+CL_DEFMETHOD
+void EnergyDihedralRestraint_O::changeDihedralRestraint( size_t index, double phi0, double kdh)
+{
+  if (index<this->_Terms.size()) {
+    EnergyDihedralRestraint& energyTerm = this->_Terms[index];
+    energyTerm.term.phi0 = phi0;
+    energyTerm.term.kdh = kdh;
+    return;
+  }
+  SIMPLE_ERROR("index {} is out of bounds - must be less than {}", index, this->_Terms.size() );
+}
+
 
 
 
@@ -203,43 +242,42 @@ bool		calcOffDiagonalHessian = true;
 //
 // -----------------------
 
-#undef	IMPROPER_RESTRAINT_SET_PARAMETER
-#define	IMPROPER_RESTRAINT_SET_PARAMETER(x)	{x=iri->term.x;}
-#undef	IMPROPER_RESTRAINT_SET_POSITION
-#define	IMPROPER_RESTRAINT_SET_POSITION(x,ii,of) {x=nvPosition->element(ii+of);}
-#undef	IMPROPER_RESTRAINT_PHI_SET
-#define	IMPROPER_RESTRAINT_PHI_SET(x) {}
-#undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
-#define	IMPROPER_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
+#undef	DIHEDRAL_HARMONIC_SET_PARAMETER
+#define	DIHEDRAL_HARMONIC_SET_PARAMETER(x)	{x=iri->term.x;}
+#undef	DIHEDRAL_HARMONIC_SET_POSITION
+#define	DIHEDRAL_HARMONIC_SET_POSITION(x,ii,of) {x=nvPosition->element(ii+of);}
+#undef	DIHEDRAL_HARMONIC_PHI_SET
+#define	DIHEDRAL_HARMONIC_PHI_SET(x) {}
+#undef	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE(e) {}
+#undef	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE(i,o,v) {}
+#undef	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
 	  m->addToElement((i1)+(o1),(i2)+(o2),v);\
 }
-#undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
+#undef	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
 	  m->addToElement((i1)+(o1),(i2)+(o2),v);\
 }
-#define IMPROPER_RESTRAINT_CALC_FORCE
-#define IMPROPER_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define IMPROPER_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
+#define DIHEDRAL_HARMONIC_CALC_FORCE
+#define DIHEDRAL_HARMONIC_CALC_DIAGONAL_HESSIAN
+#define DIHEDRAL_HARMONIC_CALC_OFF_DIAGONAL_HESSIAN
 
  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include	<cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
+#include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
 	num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-	num_real K,U,L;
-	num_real EraseLinearDihedral, UShift, PhiShift;
+	num_real kdh, phi0;
 	bool RestraintActive;
 	int	I1, I2, I3, I4;
 	for ( gctools::Vec0<EnergyDihedralRestraint>::iterator iri=this->_Terms.begin();
 		    iri!=this->_Terms.end(); iri++ ) {
 #define DEBUG_IMPROPER_RESTRAINT 1
 #define VEC_CONST(x) (x)
-#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#include INCLUDE_TERM_CODE
 #undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
 	}
@@ -285,32 +323,31 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 // Copy from implementAmberFunction::evaluateAll
 //
 // -----------------------
-#define IMPROPER_RESTRAINT_CALC_FORCE
-#define IMPROPER_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define IMPROPER_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	IMPROPER_RESTRAINT_SET_PARAMETER
-#define	IMPROPER_RESTRAINT_SET_PARAMETER(x)	{x = iri->term.x;}
-#undef	IMPROPER_RESTRAINT_SET_POSITION
-#define	IMPROPER_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	IMPROPER_RESTRAINT_PHI_SET
-#define	IMPROPER_RESTRAINT_PHI_SET(x) {}
-#undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
-#undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
-#undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_FORCE_ACCUMULATE 		ForceAcc
-#define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
+#define DIHEDRAL_HARMONIC_CALC_FORCE
+#define DIHEDRAL_HARMONIC_CALC_DIAGONAL_HESSIAN
+#define DIHEDRAL_HARMONIC_CALC_OFF_DIAGONAL_HESSIAN
+#undef	DIHEDRAL_HARMONIC_SET_PARAMETER
+#define	DIHEDRAL_HARMONIC_SET_PARAMETER(x)	{x = iri->term.x;}
+#undef	DIHEDRAL_HARMONIC_SET_POSITION
+#define	DIHEDRAL_HARMONIC_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
+#undef	DIHEDRAL_HARMONIC_PHI_SET
+#define	DIHEDRAL_HARMONIC_PHI_SET(x) {}
+#undef	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE(e) totalEnergy += (e);
+#undef	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE
+#undef	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE
+#undef	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE 		ForceAcc
+#define	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
+#define	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
   {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
+#include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    num_real K,U,L;
-    num_real EraseLinearDihedral, UShift, PhiShift;
+    num_real kdh, phi0;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
     gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
@@ -329,29 +366,30 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
     
 #define DEBUG_IMPROPER_RESTRAINT 1
 #define VEC_CONST(x) (x) 
-#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#include INCLUDE_TERM_CODE
 #undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
+#if 0
       if ( EraseLinearDihedral == 0.0 ) {
         ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4),
                                                                       kw::_sym_coordinates,pos,
                                                                       kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
       }
+#endif
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       iri->_calcForce = calcForce;
       iri->_calcDiagonalHessian = calcDiagonalHessian;
       iri->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define EVAL_SET(var,val)	{ iri->eval.var=val;};
-#include <cando/chem/energy_functions/_ImproperRestraint_debugEvalSet.cc>
+#include INCLUDE_DEBUG_EVAL_SET
 #endif //]
 
       if ( this->_DebugEnergy ) 
       {
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} args cando\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} K {:f}\n" , (i+1) , K ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} U {:f}\n" , (i+1) , U ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} L {:f}\n" , (i+1) , L ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} kdh {:f}\n" , (i+1) , kdh ));
+        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} phi0 {:f}\n" , (i+1) , phi0 ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x1 {:5.3f} {}\n" , (i+1) , x1 , (I1/3+1) ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y1 {:5.3f} {}\n" , (i+1) , y1 , (I1/3+1) ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z1 {:5.3f} {}\n" , (i+1) , z1 , (I1/3+1) ));
@@ -365,14 +403,6 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y4 {:5.3f} {}\n" , (i+1) , y4 , (I4/3+1) ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z4 {:5.3f} {}\n" , (i+1) , z4 , (I4/3+1) ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} results\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} CosPhi {:f}\n" , (i+1) , CosPhi ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} SinPhi {:f}\n" , (i+1) , SinPhi ));
-        if ( CosPhi>0.1 ) {
-          Phi = safe_asin(SinPhi);
-        } else {
-          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
-        }
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Phi {:f}\n" , (i+1) , Phi ));
         core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Energy {:f}\n" , (i+1) , Energy));
         if ( calcForce ) 
         {
@@ -410,11 +440,6 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         LOG_ENERGY(( "MEISTER improperRestraint %d results\n") , (i+1) );
         LOG_ENERGY(( "MEISTER improperRestraint %d CosPhi %lf\n") , (i+1) , CosPhi );
         LOG_ENERGY(( "MEISTER improperRestraint %d SinPhi %lf\n") , (i+1) , SinPhi );
-        if ( CosPhi>0.1 ) {
-          Phi = safe_asin(SinPhi);
-        } else {
-          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
-        }
         LOG_ENERGY(( "MEISTER improperRestraint %d Phi %lf\n") , (i+1) , Phi );
         LOG_ENERGY(( "MEISTER improperRestraint %d Energy %lf\n") , (i+1) , Energy);
         if ( calcForce ) {
@@ -461,30 +486,30 @@ void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 // copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 //
 //------------------
-#define IMPROPER_RESTRAINT_CALC_FORCE
-#define IMPROPER_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define IMPROPER_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	IMPROPER_RESTRAINT_SET_PARAMETER
-#define	IMPROPER_RESTRAINT_SET_PARAMETER(x)	{x = iri->term.x;}
-#undef	IMPROPER_RESTRAINT_SET_POSITION
-#define	IMPROPER_RESTRAINT_SET_POSITION(x,ii,of) {x = pos->element(ii+of);}
-#undef	IMPROPER_RESTRAINT_PHI_SET
-#define	IMPROPER_RESTRAINT_PHI_SET(x) {}
-#undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
-#define	IMPROPER_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#define DIHEDRAL_HARMONIC_CALC_FORCE
+#define DIHEDRAL_HARMONIC_CALC_DIAGONAL_HESSIAN
+#define DIHEDRAL_HARMONIC_CALC_OFF_DIAGONAL_HESSIAN
+#undef	DIHEDRAL_HARMONIC_SET_PARAMETER
+#define	DIHEDRAL_HARMONIC_SET_PARAMETER(x)	{x = iri->term.x;}
+#undef	DIHEDRAL_HARMONIC_SET_POSITION
+#define	DIHEDRAL_HARMONIC_SET_POSITION(x,ii,of) {x = pos->element(ii+of);}
+#undef	DIHEDRAL_HARMONIC_PHI_SET
+#define	DIHEDRAL_HARMONIC_PHI_SET(x) {}
+#undef	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE(e) {}
+#undef	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE(i,o,v) {}
+#undef	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
   {
     
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
+#include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
     num_real K,U,L;
@@ -495,10 +520,10 @@ void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
     for ( i=0,iri =this->_Terms.begin();
           iri!=this->_Terms.end(); iri++,i++ ) {
 #define DEBUG_IMPROPER_RESTRAINT 1
-#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#include INCLUDE_TERM_CODE
 #undef DEBUG_IMPROPER_RESTRAINT
       int index = i;
-#include <cando/chem/energy_functions/_ImproperRestraint_debugFiniteDifference.cc>
+#include INCLUDE_DEBUG_FINITE_DIFFERENCE
     }
   }
 
@@ -520,41 +545,39 @@ int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
 // Copy from implementAmberFunction::checkForBeyondThresholdInteractions
 //
 //------------------
-#undef IMPROPER_RESTRAINT_CALC_FORCE
-#undef IMPROPER_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#undef IMPROPER_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	IMPROPER_RESTRAINT_SET_PARAMETER
-#define	IMPROPER_RESTRAINT_SET_PARAMETER(x)	{x = iri->term.x;}
-#undef	IMPROPER_RESTRAINT_SET_POSITION
-#define	IMPROPER_RESTRAINT_SET_POSITION(x,ii,of) {x = pos->element(ii+of);}
-#undef	IMPROPER_RESTRAINT_PHI_SET
-#define	IMPROPER_RESTRAINT_PHI_SET(x) {}
-#undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
-#define	IMPROPER_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef DIHEDRAL_HARMONIC_CALC_FORCE
+#undef DIHEDRAL_HARMONIC_CALC_DIAGONAL_HESSIAN
+#undef DIHEDRAL_HARMONIC_CALC_OFF_DIAGONAL_HESSIAN
+#undef	DIHEDRAL_HARMONIC_SET_PARAMETER
+#define	DIHEDRAL_HARMONIC_SET_PARAMETER(x)	{x = iri->term.x;}
+#undef	DIHEDRAL_HARMONIC_SET_POSITION
+#define	DIHEDRAL_HARMONIC_SET_POSITION(x,ii,of) {x = pos->element(ii+of);}
+#undef	DIHEDRAL_HARMONIC_PHI_SET
+#define	DIHEDRAL_HARMONIC_PHI_SET(x) {}
+#undef	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE(e) {}
+#undef	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE(i,o,v) {}
+#undef	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
+#undef	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
   {
-    
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
+#include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    num_real K,U,L;
-    num_real EraseLinearDihedral, UShift, PhiShift;
+    num_real kdh, phi0;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
     gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
     for ( i=0,iri =this->_Terms.begin();
           iri!=this->_Terms.end(); iri++,i++ ) {
 #define DEBUG_IMPROPER_RESTRAINT 1
-#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#include INCLUDE_TERM_CODE
 #undef DEBUG_IMPROPER_RESTRAINT
       if ( RestraintActive ) {
         chem::Atom_sp a1, a2, a3, a4;
@@ -601,6 +624,14 @@ void EnergyDihedralRestraint_O::initialize()
     this->setErrorThreshold(0.001);
 }
 
+string EnergyDihedralRestraint_O::__repr__() const
+{
+  stringstream ss;
+  ss << "#<" << this->className();
+  ss << " :terms " << this->_Terms.size();
+  ss << ">";
+  return ss.str();
+}
 #ifdef XML_ARCHIVE
 void EnergyDihedralRestraint_O::archiveBase(core::ArchiveP node)
 {

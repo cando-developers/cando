@@ -1115,9 +1115,8 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       energyTerm.term.I2 = ea2->coordinateIndexTimes3();
       energyTerm.term.I3 = ea3->coordinateIndexTimes3();
       energyTerm.term.I4 = ea4->coordinateIndexTimes3();
-      energyTerm.term.U = dih->getMaxDegrees()*0.0174533;
-      energyTerm.term.L = dih->getMinDegrees()*0.0174533;
-      energyTerm.term.K = dih->getWeight();
+      energyTerm.term.phi0 = dih->getMaxDegrees()*0.0174533;
+      energyTerm.term.kdh = dih->getWeight();
       this->_DihedralRestraint->addTerm(energyTerm);
       ++terms;
     } else if ( restraint.isA<RestraintAnchor_O>() )
@@ -1172,10 +1171,10 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
   return terms;
 }
 
-void EnergyFunction_O::_addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight, core::T_sp keepInteraction)
+void EnergyFunction_O::_addDihedralRestraintDegrees(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0_degrees, double kdh, core::T_sp keepInteraction)
 {
   if ( skipInteraction( keepInteraction, a1, a2, a3, a4 ) ) return;
-  this->_DihedralRestraint->addDihedralRestraint(this->asSmartPtr(),a1,a2,a3,a4,minDegrees*0.0174533,maxDegrees*0.0174533,weight);
+  this->_DihedralRestraint->addDihedralRestraint(this->asSmartPtr(),a1,a2,a3,a4,phi0_degrees*0.0174533,kdh);
 }
 
 void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens, core::T_sp keepInteractionFactory )
@@ -1183,10 +1182,8 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   if (keepInteractionFactory.nilp()) return;
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, RestraintDihedral_O::staticClass());
   gctools::Vec0<Atom_sp>::iterator ni;
-  double transMin = -160.0;
-  double transMax = 160.0;
-  double cisMin = 20.0;
-  double cisMax = -20.0;
+  double trans  = 180.0;
+  double cis    = 0.0;
   double weight = 1.0;
   for ( ni=nitrogens.begin(); ni!=nitrogens.end(); ni++ )
   {
@@ -1219,16 +1216,16 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 		    //
 		    // H3(ax2) and O5(ay1) should be trans
       if (!skipInteraction(keepInteraction, ax1, ax, ay, ay1 ))
-        this->_addDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,keepInteraction);
+        this->_addDihedralRestraintDegrees(ax1,ax,ay,ay1,cis,weight,keepInteraction);
       LOG("Restrain cis {} - {} - {} -{}" , ax1->description() , ax->description() , ay->description() , ay1->description()  );
       if (!skipInteraction(keepInteraction, ax1, ax, ay, ay2 )) 
-        this->_addDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,keepInteraction);
+        this->_addDihedralRestraintDegrees(ax1,ax,ay,ay2,trans,weight,keepInteraction);
       LOG("Restrain trans {} - {} - {} -{}" , ax1->description() , ax->description() , ay->description() , ay2->description()  );
       if (!skipInteraction(keepInteraction, ax2, ax, ay, ay1 )) 
-        this->_addDihedralRestraint(ax2,ax,ay,ay1,transMin,transMax,weight,keepInteraction);
+        this->_addDihedralRestraintDegrees(ax2,ax,ay,ay1,trans,weight,keepInteraction);
       LOG("Restrain trans {} - {} - {} -{}" , ax2->description() , ax->description() , ay->description() , ay1->description()  );
       if (!skipInteraction(keepInteraction, ax2, ax, ay, ay2 )) 
-        this->_addDihedralRestraint(ax2,ax,ay,ay2,cisMin,cisMax,weight,keepInteraction);
+        this->_addDihedralRestraintDegrees(ax2,ax,ay,ay2,cis,weight,keepInteraction);
       LOG("Restrain cis {} - {} - {} -{}" , ax2->description() , ax->description() , ay->description() , ay2->description()  );
     }
   }

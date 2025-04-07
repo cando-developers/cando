@@ -170,7 +170,7 @@ namespace chem {
     core::T_mv enabledDisabled() const;
   private:
     int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
-    void _addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp keepInteractionFactory );
+    void _addDihedralRestraintDegrees(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0_degrees, double kdh, core::T_sp keepInteractionFactory );
 
   public:
 
