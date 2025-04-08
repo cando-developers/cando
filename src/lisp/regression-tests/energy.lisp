@@ -220,3 +220,27 @@
   (format t "no mask simd8 timing~%")
   (time (energy-multiple-dihedral 100000 ef2 pos2 mask)))
 
+
+(let* ((butane (load-mol2 "data/butane.mol2")))
+  (chem:setf-force-field-name (cando:mol butane 0)  :smirnoff)
+  (leap:load-smirnoff-params (probe-file "sys:extensions;cando;src;lisp;regression-tests;data;force-field.offxml"))
+  (let* ((butane-ef (chem:make-energy-function :matter butane))
+         (dh (chem:energy-function/get-dihedral-restraint-component butane-ef))
+         (a1 (chem:matter/first-atom-with-name butane :C1))
+         (a2 (chem:matter/first-atom-with-name butane :C2))
+         (a3 (chem:matter/first-atom-with-name butane :C3))
+         (a4 (chem:matter/first-atom-with-name butane :C4))
+         (ri (chem:add-dihedral-restraint dh butane-ef a1 a2 a3 a4 (* -180.0 0.0174533) 100000.0 ))
+         (minimizer (chem:make-minimizer butane-ef))
+         )
+    (format t "dh = ~s~%" dh)
+    (with-open-file (sdf-stream "/tmp/butane.sdf" :direction :output :if-exists :supersede)
+      (loop for angle from -180 by 20 below 180
+            do (format t "angle = ~d~%" angle)
+            do (chem:change-dihedral-restraint dh ri (* angle 0.0174533) 100000.0)
+            do (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+                 (chem:minimize minimizer))
+            do (sdf:write-sdf-stream butane sdf-stream))))
+  (defparameter *butane* butane)
+  )
+

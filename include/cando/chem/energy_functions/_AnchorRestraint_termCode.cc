@@ -22,30 +22,31 @@
 	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(Energy);
 	#ifdef ANCHOR_RESTRAINT_CALC_FORCE //[
 	if ( calcForce ) {
-	 gx1 = 2.*ka*tx4; 		/* rule 24 */
-	 fx1 = -gx1; 		/* rule 25 */
+	 tzz10 = 2.*ka; 		/* rule 24 */
+	 gx1 = tx4*tzz10; 		/* rule 25 */
+	 fx1 = -gx1; 		/* rule 26 */
 	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(I1, 0, fx1 );
-	 gy1 = 2.*ka*tx5; 		/* rule 27 */
-	 fy1 = -gy1; 		/* rule 28 */
+	 gy1 = tx5*tzz10; 		/* rule 28 */
+	 fy1 = -gy1; 		/* rule 29 */
 	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(I1, 1, fy1 );
-	 gz1 = 2.*ka*tx6; 		/* rule 30 */
-	 fz1 = -gz1; 		/* rule 31 */
+	 gz1 = tx6*tzz10; 		/* rule 31 */
+	 fz1 = -gz1; 		/* rule 32 */
 	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(I1, 2, fz1 );
 	#ifdef ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN //[
 	if ( calcDiagonalHessian ) {
-	 dhx1x1 = 2.*ka; 		/* rule 35 */
+	 dhx1x1 = tzz10; 		/* rule 36 */
 	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 0, dhx1x1);
-	 dhy1y1 = dhx1x1; 		/* rule 37 */
+	 dhy1y1 = dhx1x1; 		/* rule 38 */
 	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I1, 1, dhy1y1);
-	 dhz1z1 = dhy1y1; 		/* rule 39 */
+	 dhz1z1 = dhy1y1; 		/* rule 40 */
 	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I1, 2, dhz1z1);
 	#ifdef ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN //[
 	if ( calcOffDiagonalHessian ) {
-	 ohx1y1 = 0; 		/* rule 43 */
+	 ohx1y1 = 0; 		/* rule 44 */
 	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 1, ohx1y1);
-	 ohx1z1 = ohx1y1; 		/* rule 45 */
+	 ohx1z1 = ohx1y1; 		/* rule 46 */
 	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 2, ohx1z1);
-	 ohy1z1 = ohx1z1; 		/* rule 47 */
+	 ohy1z1 = ohx1z1; 		/* rule 48 */
 	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I1, 2, ohy1z1);
 	} /*if calcOffDiagonalHessian */ 
 	#endif /* ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN ]*/

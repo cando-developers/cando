@@ -27,78 +27,86 @@
 	#ifdef EREP_CALC_FORCE //[
 	if ( calcForce ) {
 	 tx12 = reciprocal(tx10); 		/* rule 28 */
-	 gx1 = crep*tx12*tx4; 		/* rule 29 */
-	 fx1 = -gx1; 		/* rule 30 */
+	 tzz23 = crep*tx12; 		/* rule 29 */
+	 gx1 = tx4*tzz23; 		/* rule 30 */
+	 fx1 = -gx1; 		/* rule 31 */
 	EREP_FORCE_ACCUMULATE(I1, 0, fx1 );
-	 gy1 = crep*tx12*tx5; 		/* rule 32 */
-	 fy1 = -gy1; 		/* rule 33 */
+	 gy1 = tx5*tzz23; 		/* rule 33 */
+	 fy1 = -gy1; 		/* rule 34 */
 	EREP_FORCE_ACCUMULATE(I1, 1, fy1 );
-	 gz1 = crep*tx12*tx6; 		/* rule 35 */
-	 fz1 = -gz1; 		/* rule 36 */
+	 gz1 = tx6*tzz23; 		/* rule 36 */
+	 fz1 = -gz1; 		/* rule 37 */
 	EREP_FORCE_ACCUMULATE(I1, 2, fz1 );
-	 gx2 = fx1; 		/* rule 38 */
-	 fx2 = -gx2; 		/* rule 39 */
+	 tzz26 = -tzz23; 		/* rule 39 */
+	 gx2 = tx4*tzz26; 		/* rule 40 */
+	 fx2 = -gx2; 		/* rule 41 */
 	EREP_FORCE_ACCUMULATE(I2, 0, fx2 );
-	 gy2 = fy1; 		/* rule 41 */
-	 fy2 = -gy2; 		/* rule 42 */
+	 gy2 = tx5*tzz26; 		/* rule 43 */
+	 fy2 = -gy2; 		/* rule 44 */
 	EREP_FORCE_ACCUMULATE(I2, 1, fy2 );
-	 gz2 = fz1; 		/* rule 44 */
-	 fz2 = -gz2; 		/* rule 45 */
+	 gz2 = tx6*tzz26; 		/* rule 46 */
+	 fz2 = -gz2; 		/* rule 47 */
 	EREP_FORCE_ACCUMULATE(I2, 2, fz2 );
 	#ifdef EREP_CALC_DIAGONAL_HESSIAN //[
 	if ( calcDiagonalHessian ) {
-	 tx13 = power2(tx12); 		/* rule 49 */
-	 tx14 = crep*tx12; 		/* rule 50 */
-	 tx15 = -2.*crep*tx13*tx7; 		/* rule 51 */
-	 dhx1x1 = tx14 + tx15; 		/* rule 52 */
+	 tx13 = power2(tx12); 		/* rule 51 */
+	 tx14 = tzz23; 		/* rule 52 */
+	 tzz22 = crep*tx13; 		/* rule 53 */
+	 tzz25 = -2.*tzz22; 		/* rule 54 */
+	 tx15 = tx7*tzz25; 		/* rule 55 */
+	 dhx1x1 = tx14 + tx15; 		/* rule 56 */
 	EREP_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 0, dhx1x1);
-	 tx16 = -2.*crep*tx13*tx8; 		/* rule 54 */
-	 dhy1y1 = tx14 + tx16; 		/* rule 55 */
+	 tx16 = tx8*tzz25; 		/* rule 58 */
+	 dhy1y1 = tx14 + tx16; 		/* rule 59 */
 	EREP_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I1, 1, dhy1y1);
-	 tx17 = -2.*crep*tx13*tx9; 		/* rule 57 */
-	 dhz1z1 = tx14 + tx17; 		/* rule 58 */
+	 tx17 = tx9*tzz25; 		/* rule 61 */
+	 dhz1z1 = tx14 + tx17; 		/* rule 62 */
 	EREP_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I1, 2, dhz1z1);
-	 dhx2x2 = dhx1x1; 		/* rule 60 */
+	 dhx2x2 = dhx1x1; 		/* rule 64 */
 	EREP_DIAGONAL_HESSIAN_ACCUMULATE(I2, 0, I2, 0, dhx2x2);
-	 dhy2y2 = dhy1y1; 		/* rule 62 */
+	 dhy2y2 = dhy1y1; 		/* rule 66 */
 	EREP_DIAGONAL_HESSIAN_ACCUMULATE(I2, 1, I2, 1, dhy2y2);
-	 dhz2z2 = dhz1z1; 		/* rule 64 */
+	 dhz2z2 = dhz1z1; 		/* rule 68 */
 	EREP_DIAGONAL_HESSIAN_ACCUMULATE(I2, 2, I2, 2, dhz2z2);
 	#ifdef EREP_CALC_OFF_DIAGONAL_HESSIAN //[
 	if ( calcOffDiagonalHessian ) {
-	 ohx1y1 = -2.*crep*tx13*tx4*tx5; 		/* rule 68 */
+	 tzz29 = tx4*tx5; 		/* rule 72 */
+	 ohx1y1 = tzz25*tzz29; 		/* rule 73 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 1, ohx1y1);
-	 ohx1z1 = -2.*crep*tx13*tx4*tx6; 		/* rule 70 */
+	 tzz27 = tx6*tzz25; 		/* rule 75 */
+	 ohx1z1 = tx4*tzz27; 		/* rule 76 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I1, 2, ohx1z1);
-	 tx18 = -tx14; 		/* rule 72 */
-	 tx19 = 2.*crep*tx13*tx7; 		/* rule 73 */
-	 ohx1x2 = tx18 + tx19; 		/* rule 74 */
+	 tx18 = tzz26; 		/* rule 78 */
+	 tzz24 = 2.*tzz22; 		/* rule 79 */
+	 tx19 = tx7*tzz24; 		/* rule 80 */
+	 ohx1x2 = tx18 + tx19; 		/* rule 81 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I2, 0, ohx1x2);
-	 ohx1y2 = 2.*crep*tx13*tx4*tx5; 		/* rule 76 */
+	 ohx1y2 = tzz24*tzz29; 		/* rule 83 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I2, 1, ohx1y2);
-	 ohx1z2 = 2.*crep*tx13*tx4*tx6; 		/* rule 78 */
+	 tzz28 = tx6*tzz24; 		/* rule 85 */
+	 ohx1z2 = tx4*tzz28; 		/* rule 86 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 0, I2, 2, ohx1z2);
-	 ohy1z1 = -2.*crep*tx13*tx5*tx6; 		/* rule 80 */
+	 ohy1z1 = tx5*tzz27; 		/* rule 88 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I1, 2, ohy1z1);
-	 ohy1x2 = ohx1y2; 		/* rule 82 */
+	 ohy1x2 = ohx1y2; 		/* rule 90 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I2, 0, ohy1x2);
-	 tx20 = 2.*crep*tx13*tx8; 		/* rule 84 */
-	 ohy1y2 = tx18 + tx20; 		/* rule 85 */
+	 tx20 = tx8*tzz24; 		/* rule 92 */
+	 ohy1y2 = tx18 + tx20; 		/* rule 93 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I2, 1, ohy1y2);
-	 ohy1z2 = 2.*crep*tx13*tx5*tx6; 		/* rule 87 */
+	 ohy1z2 = tx5*tzz28; 		/* rule 95 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 1, I2, 2, ohy1z2);
-	 ohz1x2 = ohx1z2; 		/* rule 89 */
+	 ohz1x2 = ohx1z2; 		/* rule 97 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I2, 0, ohz1x2);
-	 ohz1y2 = ohy1z2; 		/* rule 91 */
+	 ohz1y2 = ohy1z2; 		/* rule 99 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I2, 1, ohz1y2);
-	 tx21 = 2.*crep*tx13*tx9; 		/* rule 93 */
-	 ohz1z2 = tx18 + tx21; 		/* rule 94 */
+	 tx21 = tx9*tzz24; 		/* rule 101 */
+	 ohz1z2 = tx18 + tx21; 		/* rule 102 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I1, 2, I2, 2, ohz1z2);
-	 ohx2y2 = ohx1y1; 		/* rule 96 */
+	 ohx2y2 = ohx1y1; 		/* rule 104 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I2, 0, I2, 1, ohx2y2);
-	 ohx2z2 = ohx1z1; 		/* rule 98 */
+	 ohx2z2 = ohx1z1; 		/* rule 106 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I2, 0, I2, 2, ohx2z2);
-	 ohy2z2 = ohy1z1; 		/* rule 100 */
+	 ohy2z2 = ohy1z1; 		/* rule 108 */
 	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(I2, 1, I2, 2, ohy2z2);
 	} /*if calcOffDiagonalHessian */ 
 	#endif /* EREP_CALC_OFF_DIAGONAL_HESSIAN ]*/
