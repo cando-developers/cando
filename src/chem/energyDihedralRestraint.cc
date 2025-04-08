@@ -151,7 +151,11 @@ void EnergyDihedralRestraint_O::addTerm(const EnergyDihedralRestraint& e)
 
 
 CL_DEFMETHOD
-size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0, double kdh)
+size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction,
+                                                       double kdh,
+                                                       double phi0,
+                                                       Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4
+                                                       )
 {
   EnergyDihedralRestraint energyTerm;
   energyTerm._Atom1 = a1;

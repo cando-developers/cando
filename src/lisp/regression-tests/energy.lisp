@@ -190,10 +190,11 @@
          )
     (format t "dh = ~s~%" dh)
     (with-open-file (sdf-stream "/tmp/butane.sdf" :direction :output :if-exists :supersede)
-      (loop for angle from -180 by 20 below 0
+      (loop for angle from -180 by 20 below 180
             do (format t "angle = ~d~%" angle)
             do (chem:change-dihedral-restraint dh ri (* angle 0.0174533) 100000.0)
-            do (chem:minimize minimizer)
+            do (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+                 (chem:minimize minimizer))
             do (sdf:write-sdf-stream butane sdf-stream))))
   (defparameter *butane* butane)
   )

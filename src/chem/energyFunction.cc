@@ -1174,7 +1174,11 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
 void EnergyFunction_O::_addDihedralRestraintDegrees(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0_degrees, double kdh, core::T_sp keepInteraction)
 {
   if ( skipInteraction( keepInteraction, a1, a2, a3, a4 ) ) return;
-  this->_DihedralRestraint->addDihedralRestraint(this->asSmartPtr(),a1,a2,a3,a4,phi0_degrees*0.0174533,kdh);
+  this->_DihedralRestraint->addDihedralRestraint(this->asSmartPtr(),
+                                                 kdh,
+                                                 phi0_degrees*0.0174533,
+                                                 a1,a2,a3,a4
+                                                 );
 }
 
 void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens, core::T_sp keepInteractionFactory )

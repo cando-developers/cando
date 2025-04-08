@@ -162,7 +162,11 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
   void addTerm(const TermType& term);
-  size_t addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0, double kdh);
+  size_t addDihedralRestraint(EnergyFunction_sp energyFunction,
+                              double kdh,
+                              double phi0,
+                              Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4
+                              );
   void changeDihedralRestraint( size_t index, double phi0, double kdh );
   core::T_mv getDihedralRestraint( size_t index );
 
