@@ -114,6 +114,7 @@ default to the identity matrix."
 
 (defclass assembler-base (cando.serialize:serializable)
   ((monomer-positions :initarg :monomer-positions :accessor monomer-positions)
+   (internals :initarg :internals :reader internals)
    (monomer-contexts :type hash-table :initarg :monomer-contexts :accessor monomer-contexts)
    (aggregate :initarg :aggregate :accessor aggregate)
    (energy-function :initarg :energy-function :accessor energy-function)
@@ -191,8 +192,46 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
     (chem:set-name agg name)
     agg))
 
+(defun joint-definedp (assembler joint)
+  "Return T if JOINT in ASSEMBLER has defined internal coordinates"
+  (kin:joint/definedp joint (internals assembler)))
+
+(defun joint-distance-defined-p (assembler joint)
+  (kin:complex-bonded-joint/distance-defined-p joint (internals assembler)))
+
+(defun joint-theta-defined-p (assembler joint)
+  (kin:complex-bonded-joint/theta-defined-p joint (internals assembler)))
+
+(defun joint-phi-defined-p (assembler joint)
+  (kin:complex-bonded-joint/phi-defined-p joint (internals assembler)))
+
+(defun joint-get-distance (assembler joint)
+  (kin:bonded-joint/get-distance joint (internals assembler)))
+
+(defun joint-get-theta (assembler joint)
+  (kin:bonded-joint/get-theta joint (internals assembler)))
+
+(defun joint-get-phi (assembler joint)
+  (kin:bonded-joint/get-phi joint (internals assembler)))
+
+(defun joint-set-distance (assembler joint val)
+  (kin:bonded-joint/set-distance joint (internals assembler) val))
+
+(defun joint-set-theta (assembler joint val)
+  (kin:bonded-joint/set-theta joint (internals assembler) val))
+
+(defun joint-set-phi (assembler joint val)
+  (kin:bonded-joint/get-phi joint (internals assembler) val))
+
+(defun update-internal-coords (assembler joint coordinates)
+  (kin:update-internal-coords joint (internals assembler) coordinates))
+
+(defun update-xyz-coords (assembler joint coordinates)
+  (kin:update-xyz-coords joint (internals assembler) coordinates))
+
 (defclass training-assembler (assembler-base)
-  ((oligomers :initarg :oligomers :accessor oligomers)))
+  ((focus-monomer :initarg :focus-monomer :reader focus-monomer)
+   (oligomers :initarg :oligomers :accessor oligomers)))
 
 (defgeneric oligomer-containing-monomer (assembler monomer &optional errorp))
 
@@ -230,8 +269,7 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
       (error "Could not find the orientation for ~s in ~s" oligomer-shape orientations)))
 
 (defun make-coordinates-for-number-of-atoms (number-of-atoms)
-    (make-array (* 3 number-of-atoms) :element-type (geom:vecreal-type)
-                                      :initial-element (geom:vecreal 0.0)))
+  (chem:make-nvector (* 3 number-of-atoms) :initial-element (geom:vecreal 0.0)))
 
 (defun make-coordinates-for-assembler (assembler)
   "Make a vector of coordinates that can store the external coordinates of the structure in the assembler."
@@ -377,6 +415,8 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
            (energy-function (if energy-function-factory
                                 (funcall energy-function-factory aggregate)
                                 (chem:make-energy-function :matter aggregate)))
+           (number-of-atoms (chem:number-of-atoms aggregate))
+           (interals (chem:make-nvector-nan (* 3 number-of-atoms)))
            (assembler (loop for oligomer-shape-molecule in oligomer-shapes-molecules
                             for oligomer-shape = (car oligomer-shape-molecule)
                             for oligomer = (oligomer oligomer-shape)
@@ -417,6 +457,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                            :oligomer-shapes oligomer-shapes
                                                            :orientations orientations
                                                            :aggregate aggregate
+                                                           :internals internals 
                                                            :ataggregate ataggregate
                                                            :monomer-subset monomer-subset
                                                            :joint-tree joint-tree
@@ -460,6 +501,8 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 
 (defun make-training-assembler (oligomers &key focus-monomer)
   "Build a assembler for the oligomers. This is used for building training molecules."
+  (unless focus-monomer
+    (error "For make-training-assembler focus-monomer is required"))
   (unless (every (lambda (os) (typep os 'oligomer)) oligomers)
     (error "You must provide a list of oligomers"))
   (let* ((aggregate (chem:make-aggregate :all))
@@ -504,10 +547,12 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                                                  nil)))
                                (put-atmolecule ataggregate atmolecule molecule-index))
                           finally (return (make-instance 'training-assembler
+                                                         :focus-monomer focus-monomer
                                                          :monomer-positions monomer-positions
                                                          :monomer-contexts monomer-contexts
                                                          :oligomers oligomers
                                                          :aggregate aggregate
+                                                         :internals (chem:make-nvector-nan (* 3 (chem:number-of-atoms aggregate)))
                                                          :energy-function energy-function
                                                          :ataggregate ataggregate
                                                          :joint-tree joint-tree)))))
@@ -590,21 +635,21 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
   (walk-atresidue-joints atresidue
                          (lambda (joint atom-id)
                            (declare (ignore atom-id))
-                           (kin:update-internal-coord joint coordinates)
+                           (kin:update-internal-coord joint (internals assembler) coordinates)
                            )))
 
 (defun update-atmolecule-joint-tree-internal-coordinates (assembler atmolecule coordinates)
   (walk-atmolecule-joints atmolecule
                           (lambda (joint atom-id)
                             (declare (ignore atom-id))
-                            (kin:update-internal-coord joint coordinates))))
+                            (kin:update-internal-coord joint (internals assembler) coordinates))))
 
 (defun update-ataggregate-joint-tree-internal-coordinates (assembler coordinates)
   (let ((ataggregate (ataggregate assembler)))
     (walk-ataggregate-joints ataggregate
                              (lambda (joint atom-id)
                                (declare (ignore atom-id))
-                               (kin:update-internal-coord joint coordinates)))))
+                               (kin:update-internal-coord joint (internals assembler) coordinates)))))
 
 
 (defun build-atom-tree-external-coordinates* (assembler coords oligomer-shape maybe-orientation)
@@ -615,7 +660,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
     (with-orientation orientation
       (loop for joint in joints
-            do (kin:update-xyz-coords joint coords)))))
+            do (update-xyz-coords assembler joint coords)))))
 
 
 (defun build-atom-tree-for-monomer-shape-external-coordinates* (assembler coords oligomer-shape monomer-shape maybe-orientation)
@@ -626,7 +671,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
     (with-orientation orientation
       (loop for joint in joints
-            do (kin:update-xyz-coords joint coords)))))
+            do (update-xyz-coords assembler joint coords)))))
 
 
 (defun adjust-atom-tree-external-coordinates (assembler coords oligomer-shape)
@@ -649,10 +694,11 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
   (build-atom-tree-external-coordinates* assembler coords oligomer-shape maybe-orientation)
   (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
 
-(defun build-atresidue-atom-tree-external-coordinates (atresidue coords)
+#+(or)
+(defun build-atresidue-atom-tree-external-coordinates (assembler atresidue coords)
   (loop for atom-index below (length (joints atresidue))
         for joint = (aref (joints atresidue) atom-index)
-        do (kin:update-xyz-coords joint coords)))
+        do (update-xyz-coords assembler joint coords)))
 
 (defun zero-all-atom-tree-external-coordinates (conf)
   "Set the external coordinates for each joint to the origin"
@@ -931,12 +977,12 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
                  if (eq :backbone monomer-shape-kind)
                    do (loop for joint across (joints atresidue)
                             do (incf backbone-internals-count)
-                                when (kin:joint/definedp joint)
+                                when (kin:joint/definedp joint (internals assembler))
                                   do (incf backbone-internals-defined))
                  else
                    do (loop for joint across (joints atresidue)
                             do (incf sidechain-internals-count)
-                            when (kin:joint/definedp joint)
+                            when (kin:joint/definedp joint (internals assembler))
                                  do (incf sidechain-internals-defined)))
         do (analyze-oligomer-shape oligomer-shape)
         do (format t "  backbone-internals-count ~d~%" backbone-internals-count)
@@ -949,7 +995,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
   (loop for atmol across (atmolecules (ataggregate assembler))
         do (loop for atres across (atresidues atmol)
                  for undefs = (loop for joint across (joints atres)
-                                    when (not (kin:joint/definedp joint))
+                                    when (not (kin:joint/definedp joint (internals assembler)))
                                       collect joint)
                  do (when undefs
                       (format t "atres: ~s~%" atres)
@@ -993,7 +1039,18 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
           do (incf num))
     (geom:vec (/ centerx num) (/ centery num) (/ centerz num))))
 
-(defun update-externals (assembler &key oligomer-shape
+(defgeneric update-externals (assembler &key &allow-other-keys))
+
+(defmethod update-externals ((assembler training-assembler) &key internals coords)
+  (let* ((one-oligomer (first (oligomers assembler)))
+         (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
+    (when (null joints)
+      (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
+    (with-orientation (make-orientation)
+      (loop for joint in joints
+            do (kin:update-xyz-coords joint internals coords)))))
+
+(defmethod update-externals ((assembler assembler) &key oligomer-shape
                                      (orientation :identity orientationp)
                                      (coords (topology:make-coordinates-for-assembler assembler)))
   "Update the external coordinates in COORDS using the ASSEMBLER and ORIENTATION.
@@ -1029,5 +1086,5 @@ Return the COORDS."
          (joints (joints atres))
          (joint0 (elt joints 0)))
     (with-orientation orientation
-      (kin:update-xyz-coords joint0 coords))
+      (update-xyz-coords assembler joint0 coords))
     (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))

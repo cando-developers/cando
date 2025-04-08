@@ -55,25 +55,14 @@ void BondedJoint_O::fields(core::Record_sp record) {
   case core::Record_O::initializing:
   case core::Record_O::loading:
     {
-      double thetaDegrees;
-      double phiDegrees;
-      record->field(INTERN_(kw,phi_deg),phiDegrees);
-      record->field(INTERN_(kw,theta_deg),thetaDegrees);
-      this->_Phi = phiDegrees*0.0174533;
-      this->_Theta = thetaDegrees*0.0174533;
     }
     break;
   case core::Record_O::saving: {
-    double thetaDegrees = this->_Theta/0.0174533;
-    double phiDegrees = this->_Phi/0.0174533;
-    record->field(INTERN_(kw,phi_deg),phiDegrees);
-    record->field(INTERN_(kw,theta_deg),thetaDegrees);
   }
       break;
   default:
       break;
   }
-  record->field(INTERN_(kw,distance),this->_Distance);
   record->field(INTERN_(kw,dof_propagates),this->_DofChangePropagatesToYoungerSiblings);
   this->Base::fields(record);
 }
@@ -95,16 +84,16 @@ CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint1() const { return this->pare
 CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
 
-CL_DEFUN void kin__fillInternalsFromSimpleVectorDouble(BondedJoint_sp joint, core::SimpleVector_double_sp values, size_t index3) {
-  joint->setDistance((*values)[index3]);
-  joint->setTheta((*values)[index3+1]);
-  joint->setPhi((*values)[index3+2]);
+CL_DEFUN void kin__fillInternalsFromSimpleVectorDouble(BondedJoint_sp joint, chem::NVector_sp internals, core::SimpleVector_double_sp values, size_t index3) {
+  joint->setDistance(internals,(*values)[index3]);
+  joint->setTheta(internals,(*values)[index3+1]);
+  joint->setPhi(internals,(*values)[index3+2]);
 }
 
-CL_DEFUN void kin__fillInternalsFromSimpleVectorSingle(BondedJoint_sp joint, core::SimpleVector_float_sp values, size_t index3) {
-  joint->setDistance((*values)[index3]);
-  joint->setTheta((*values)[index3+1]);
-  joint->setPhi((*values)[index3+2]);
+CL_DEFUN void kin__fillInternalsFromSimpleVectorSingle(BondedJoint_sp joint, chem::NVector_sp internals, core::SimpleVector_float_sp values, size_t index3) {
+  joint->setDistance(internals,(*values)[index3]);
+  joint->setTheta(internals,(*values)[index3+1]);
+  joint->setPhi(internals,(*values)[index3+2]);
 }
 
 CL_LAMBDA(atom-id name atom-table);
@@ -114,8 +103,8 @@ BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name, 
   return gctools::GC<BondedJoint_O>::allocate(atomId,name,atomTable);
 }
 
-bool BondedJoint_O::definedp() const {
-  return (!std::isnan(this->_Phi));
+bool BondedJoint_O::definedp(chem::NVector_sp internals) const {
+  return (!std::isnan((*internals)[this->_PositionIndexX3]));
 }
 
 void BondedJoint_O::_appendChild(Joint_sp c)
@@ -164,7 +153,7 @@ void BondedJoint_O::_releaseAllChildren()
   this->_NumberOfChildren = 0;
 }
 
-void BondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
+void BondedJoint_O::_updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   if (!this->position(coords).isDefined()) return;
   KIN_LOG(" <<< {}\n" , _rep_(this->asSmartPtr()));
@@ -192,17 +181,23 @@ void BondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
       SIMPLE_ERROR("The A joint {} has undefined position", _rep_(jB));
     }
     double phi = geom::calculateDihedral(this->position(coords),C,B,A);
-    this->_Distance = distance;
-    this->_Theta = theta;
-    this->setPhi(phi);
+    this->setDistance(internals,distance);
+    this->setTheta(internals,theta);
+    this->setPhi(internals,phi);
     KIN_LOG("_Phi = {}\n", (this->_Phi/0.0174533));
     return;
   }
   Vector3 vec = this->position(coords);
   if (!vec.isDefined()) return;
+  double distance;
+  double theta;
+  double phi;
   geom::internalCoordinatesFromPointAndStub(vec,
                                             this->getInputStub(coords)._Transform,
-                                            this->_Distance, this->_Theta, this->_Phi );
+                                            distance, theta, phi );
+  this->setDistance(internals, distance );
+  this->setTheta(internals, theta );
+  this->setPhi(internals, phi );
 }
 
 bool BondedJoint_O::keepDofFixed(DofType dof) const
@@ -235,18 +230,14 @@ string BondedJoint_O::asString() const
 {
   stringstream ss;
   ss << this->Joint_O::asString();
-  ss << fmt::format("  _Distance[{}]  _Theta[{}]/deg  _Phi[{}]/deg"
-                     , this->_Distance
-                     , (this->_Theta/0.0174533)
-                     , (this->_Phi/0.0174533) ) << std::endl;
   return ss.str();
 }
 
-CL_DEFMETHOD void BondedJoint_O::setPhi(double dihedral) {
+CL_DEFMETHOD void BondedJoint_O::setPhi(chem::NVector_sp internals, double dihedral) {
   if (std::isnan(dihedral)) {
     SIMPLE_ERROR("Hit NAN dihedral");
   }
-  this->_Phi = dihedral;
+  (*internals)[this->_PositionIndexX3+2] = dihedral;
 }
 
 /*! There are three possible situations
@@ -294,13 +285,13 @@ Stub BondedJoint_O::getInputStub(chem::NVector_sp coords) const
 }
 
 
-void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
+void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords) {
   if (this->_numberOfChildren()>0) {
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
     for ( int ii=0; ii < firstNonJumpIndex; ii++) {
       Stub jstub = this->_child(ii)->getInputStub(coords);
     // I should ratchet the newStub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(coords,jstub);
+      this->_child(ii)->_updateXyzCoord(internals,coords,jstub);
     // ratchet newStub
 //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
@@ -308,30 +299,30 @@ void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
     Stub stub = this->_child(firstNonJumpIndex)->getInputStub(coords);
     for ( int ii=firstNonJumpIndex; ii < this->_numberOfChildren(); ii++) {
     // I should ratchet the stub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(coords,stub);
+      this->_child(ii)->_updateXyzCoord(internals, coords,stub);
 //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
     }
     for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-      this->_child(ii)->_updateChildrenXyzCoords(coords);
+      this->_child(ii)->_updateChildrenXyzCoords(internals, coords);
     }
   }
 }
 
-void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
+void BondedJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  if (!this->definedp()) {
+  if (!this->definedp(internals)) {
     SIMPLE_ERROR("{} failed this->definedp()", core::_rep_(this->asSmartPtr()));
   }
   KIN_LOG("name = {} stub = \n{}\n", _rep_(this->_Name), stub._Transform.asString());
-  double bcTheta = std::isnan(this->_Theta) ? 0.0 : this->_Theta;
-  double phi = std::isnan(this->_Phi) ? 0.0 : this->_Phi;
+  double bcTheta = std::isnan(this->getTheta(internals)) ? 0.0 : this->getTheta(internals);
+  double phi = std::isnan(this->getPhi(internals)) ? 0.0 : this->getPhi(internals);
   KIN_LOG("_Distance = {}  _Theta = {} deg   _Phi = {} deg\n", this->_Distance , (theta/0.0174533) , (phi/0.0174533) );
   Vector3 d2;
 //  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
 //  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, theta/0.0174533, phi/0.0174533 );
-  Vector3 newpos = geom::pointFromStubAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, phi, d2 );
+  Vector3 newpos = geom::pointFromStubAndInternalCoordinates(stub._Transform,this->getDistance(internals), bcTheta, phi, d2 );
   if (!newpos.isDefined()) SIMPLE_ERROR("newpos could not be determined for {}", _rep_(this->asSmartPtr()));
   this->setPosition(coords,newpos);
 #if 0
@@ -355,12 +346,12 @@ void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
   
 }
 
-CL_DEFMETHOD void BondedJoint_O::updateXyzCoord(chem::NVector_sp coords) {
+CL_DEFMETHOD void BondedJoint_O::updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords) {
   Stub stub = this->getInputStub(coords);
-  this->_updateXyzCoord(coords,stub);
+  this->_updateXyzCoord(internals,coords,stub);
 }
 
-
+#if 0
 double BondedJoint_O::dof(DofType const& dof) const
 {
   if ( dof == DofType::phi )
@@ -375,7 +366,7 @@ double BondedJoint_O::dof(DofType const& dof) const
   }
   SIMPLE_ERROR("Illegal dof request for BondedJoint - I can only handle internal dofs not rigid body");
 }
-
+#endif
 
 core::Symbol_sp BondedJoint_O::typeSymbol() const { return _sym_bonded;};
 

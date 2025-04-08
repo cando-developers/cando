@@ -1052,6 +1052,12 @@ void	EnergyFunction_O::dumpTerms()
   }
 }
 
+/*
+ * keepInteractionFactory can be one of ...
+ * nil = discard all interactions
+ * T   = keep all interactions
+ * Fn  = pass up to 4 atoms to the function and if the function returns true then the interaction is kept
+ */
 core::T_sp specializeKeepInteractionFactory( core::T_sp keepInteractionFactory, core::T_sp aclass ) {
   if (keepInteractionFactory.nilp()) return keepInteractionFactory;
   if (keepInteractionFactory == _lisp->_true()) return keepInteractionFactory;

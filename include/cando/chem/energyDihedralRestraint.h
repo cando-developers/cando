@@ -129,12 +129,9 @@ struct	from_object<chem::EnergyDihedralRestraint>
 namespace chem {
 
 
-double	_evaluateEnergyOnly_ImproperRestraint(
-		num_real x1, num_real y1, num_real z1,
-		num_real x2, num_real y2, num_real z2,
-		num_real x3, num_real y3, num_real z3,
-		num_real x4, num_real y4, num_real z4,
-		num_real K, num_real L, num_real U );
+double	evaluateEnergyOnly_ImproperRestraint(
+    Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
+    num_real K, num_real L, num_real U );
 
 
 FORWARD(EnergyDihedralRestraint);
@@ -154,7 +151,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
 
  public:	// Creation class functions
 
- public:	
+ public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
@@ -162,11 +159,12 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
  public:
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
-  void addTerm(const TermType& term);
-  void addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minRadians, double maxRadians, double weight);
+  size_t addTerm(const TermType& term);
+  size_t addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minRadians, double maxRadians, double weight);
+  void modifyDihedralRestraint(size_t index, double minRadians, double maxRadians, double weight);
 
   virtual bool is_restraint() const { return true; };
-  
+
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
@@ -185,6 +183,23 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
                                        gc::Nilable<NVector_sp> dvec,
                                        core::T_sp activeAtomMask,
                                        core::T_sp debugInteractions );
+
+  double evaluateOneTerm( ScoringFunction_sp score,
+                          size_t termIndex, 
+                          chem::NVector_sp 	pos,
+                          core::T_sp energyScale,
+                          core::T_sp componentEnergy,
+                          bool 		calcForce,
+                          gc::Nilable<chem::NVector_sp> 	force,
+                          bool		calcDiagonalHessian,
+                          bool		calcOffDiagonalHessian,
+                          gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                          gc::Nilable<chem::NVector_sp>	hdvec,
+                          gc::Nilable<chem::NVector_sp> dvec,
+                          core::T_sp activeAtomMask,
+                          core::T_sp debugInteractions );
+
+  core::T_mv getRestraint( size_t index );
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                NVector_sp pos );

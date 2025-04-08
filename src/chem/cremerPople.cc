@@ -294,6 +294,8 @@ NVector_sp chem__cpring_6_cremer_pople_to_zjs( double phi2, double q2, double qn
 CL_DEFUN
 void chem__cpring_coordinates_to_distances_and_angles( core::ComplexVector_double_sp distances, core::ComplexVector_double_sp angles, NVector_sp coordinates, core::SimpleVector_byte32_t_sp indexes3 ) {
   size_t N = indexes3->length();
+  if (distances->size()!=N) SIMPLE_ERROR("The distances argument has length {} but it must be {}\n", distances->size(), N );
+  if (angles->size()!=N) SIMPLE_ERROR("The angles argument has length {} but it must be {}\n", angles->size(), N );
   for (size_t j = 0; j<N; j++ ) {
     int idxm1 = (j - 1);
     if (idxm1<0) idxm1 += N;
@@ -312,8 +314,13 @@ void chem__cpring_coordinates_to_distances_and_angles( core::ComplexVector_doubl
 };
 
 
+CL_LAMBDA(zjs r-values beta-rad-values coordinates indexes3 &optional displacement)
 CL_DEFUN
-core::T_mv chem__cpring_generate_coordinates( NVector_sp zjs, core::SimpleVector_double_sp r_values, core::SimpleVector_double_sp beta_rad_values, NVector_sp coordinates, core::SimpleVector_byte32_t_sp indexes3 ) {
+core::T_mv chem__cpring_generate_coordinates( NVector_sp zjs, core::ComplexVector_double_sp r_values, core::ComplexVector_double_sp beta_rad_values, NVector_sp coordinates, core::SimpleVector_byte32_t_sp indexes3, core::T_sp displacement ) {
+  Vector3 vdisplace(0.0,0.0,0.0);
+  if (gc::IsA<geom::OVector3_sp>(displacement)) {
+    vdisplace = gc::As_unsafe<geom::OVector3_sp>(displacement)->get();
+  }
   core::SimpleVector_double_sp r_prime_values = core::SimpleVector_double_O::create(zjs->length());
   core::SimpleVector_double_sp beta_prime_values = core::SimpleVector_double_O::create(zjs->length());
   for ( size_t ii = 0; ii<zjs->length(); ii++ ) {
@@ -334,25 +341,25 @@ core::T_mv chem__cpring_generate_coordinates( NVector_sp zjs, core::SimpleVector
   for ( size_t ii = 0; ii < zjs->length(); ii ++ ) {
     size_t index3 = (*indexes3)[ii];
     if (ii==0) {
-      (*coordinates)[index3]   = 0.0;
-      (*coordinates)[index3+1] = 0.0;
-      (*coordinates)[index3+2] = (*zjs)[ii];
+      (*coordinates)[index3]   = 0.0+vdisplace.getX();
+      (*coordinates)[index3+1] = 0.0+vdisplace.getY();
+      (*coordinates)[index3+2] = (*zjs)[ii]+vdisplace.getZ();
     } else if (ii==1) {
       size_t index3m1 = (*indexes3)[0];
       Vector3 posm1((*coordinates)[index3m1],(*coordinates)[index3m1+1],(*coordinates)[index3m1+2]);
       Vector3 pos = geom::geom__build_using_bond( (*r_prime_values)[ii-1], posm1 );
-      (*coordinates)[index3]   = pos.getX();
-      (*coordinates)[index3+1] = pos.getY();
-      (*coordinates)[index3+2] = (*zjs)[ii];
+      (*coordinates)[index3]   = pos.getX()+vdisplace.getX();
+      (*coordinates)[index3+1] = pos.getY()+vdisplace.getY();
+      (*coordinates)[index3+2] = (*zjs)[ii]+vdisplace.getZ();
     } else {
       size_t index3m2 = (*indexes3)[ii-2];
       size_t index3m1 = (*indexes3)[ii-1];
       Vector3 posm2((*coordinates)[index3m2+0],(*coordinates)[index3m2+1],(*coordinates)[index3m2+2]);
       Vector3 posm1((*coordinates)[index3m1+0],(*coordinates)[index3m1+1],(*coordinates)[index3m1+2]);
-      Vector3 pos = geom::geom__build_using_bond_angle( (*r_prime_values)[ii-1], posm1, (*beta_prime_values)[ii-1], posm2 );
-      (*coordinates)[index3]   = pos.getX();
-      (*coordinates)[index3+1] = pos.getY();
-      (*coordinates)[index3+2] = (*zjs)[ii];
+      Vector3 pos = geom::geom__build_using_bond_angle( (*r_prime_values)[ii-1], posm1, -(*beta_prime_values)[ii-1], posm2 );
+      (*coordinates)[index3]   = pos.getX()+vdisplace.getX();
+      (*coordinates)[index3+1] = pos.getY()+vdisplace.getY();
+      (*coordinates)[index3+2] = (*zjs)[ii]+vdisplace.getZ();
     }
   }
   return Values( coordinates, r_prime_values, beta_prime_values );

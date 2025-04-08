@@ -63,14 +63,14 @@ ComplexBondedJoint_sp ComplexBondedJoint_O::make(const chem::AtomId& atomId, cor
 }
 
 
-bool ComplexBondedJoint_O::definedp() const {
+bool ComplexBondedJoint_O::definedp(chem::NVector_sp internals) const {
 
   if (this->inputStubJoint2BoundP()) {
-    return !std::isnan(this->_Phi);
+    return !std::isnan(this->getPhi(internals));
   } else if (this->inputStubJoint1BoundP()) {
-    return !std::isnan(this->_Theta);
+    return !std::isnan(this->getTheta(internals));
   }
-  return !std::isnan(this->_Distance);
+  return !std::isnan(this->getDistance(internals));
 }
 
 
@@ -131,11 +131,11 @@ CL_DEFMETHOD void ComplexBondedJoint_O::makeUnboundInputStubJoint2() {
   this->_InputStubJoints[1] = unbound<Joint_O>();
 }
 
-void ComplexBondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
-  this->Joint_O::_updateChildrenXyzCoords(coords);
+void ComplexBondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp internals,chem::NVector_sp coords) {
+  this->Joint_O::_updateChildrenXyzCoords(internals,coords);
 }
 
-void ComplexBondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
+void ComplexBondedJoint_O::_updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   KIN_LOG(" <<< {}\n", _rep_(this->asSmartPtr()));
 //	using numeric::x_rotation_matrix_radians;
@@ -143,18 +143,18 @@ void ComplexBondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
 //	using numeric::constants::d::pi;
   Joint_sp jC = this->parent();
   Vector3 C = jC->position(coords);
-  this->_Distance = geom::calculateDistance(this->position(coords),C);
+  this->setDistance(internals, geom::calculateDistance(this->position(coords),C));
   KIN_LOG("Calculated _Distance = {}\n", this->_Distance );
   if (!this->inputStubJoint1().unboundp()) {
     Joint_sp jB = this->inputStubJoint1();
     Vector3 B = jB->position(coords);
 //    this->_Theta = PREPARE_ANGLE(geom::calculateAngle(this->position(coords),C,B)); // Must be from incoming direction
-    this->_Theta = geom::calculateAngle(this->position(coords),C,B); // Must be from incoming direction
+    this->setTheta( internals, geom::calculateAngle(this->position(coords),C,B)); // Must be from incoming direction
     KIN_LOG("_Theta = {}\n", (this->_Theta/0.0174533));
     if (!this->inputStubJoint2().unboundp()) {
       Joint_sp jA = this->inputStubJoint2();
       Vector3 A = jA->position(coords);
-      this->_Phi = geom::calculateDihedral(this->position(coords),C,B,A);
+      this->setPhi( internals, geom::calculateDihedral(this->position(coords),C,B,A));
       KIN_LOG("_Phi = {}\n", (this->_Phi/0.0174533));
       return;
     }
@@ -162,7 +162,7 @@ void ComplexBondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
     Joint_sp jB = this->inputStubJoint2();
     Vector3 B = jB->position(coords);
 //    this->_Theta = PREPARE_ANGLE(geom::calculateAngle(this->position(coords),C,B)); // Must be from incoming direction
-    this->_Theta = geom::calculateAngle(this->position(coords),C,B); // Must be from incoming direction
+    this->setTheta( internals, geom::calculateAngle(this->position(coords),C,B)); // Must be from incoming direction
     KIN_LOG("_Theta = {}\n", (this->_Theta/0.0174533));
   }
 }

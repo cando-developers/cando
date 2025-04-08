@@ -376,6 +376,24 @@ NVector_sp chem__make_nvector(size_t size, vecreal initial_element)
 }
 
 DOCGROUP(cando);
+CL_LAMBDA(size)
+CL_DEFUN
+NVector_sp chem__make_nvector_nan(size_t size)
+{
+  auto nv = NVector_O::make(size,0.0,true);
+  for ( size_t ii = 0; ii<size; ii++ ) {
+    (*nv)[ii] = std::numeric_limits<vecreal>::quiet_NaN();
+  }
+  return nv;
+}
+CL_DEFUN
+bool chem__nvector_element_nan_p(NVector_sp vec, size_t index)
+{
+  return std::isnan((*vec)[index]);
+}
+
+
+DOCGROUP(cando);
 CL_LAMBDA(source &key (start 0) end)
 CL_DEFUN
 NVector_sp chem__copy_nvector(NVector_sp source, size_t start, core::T_sp end)

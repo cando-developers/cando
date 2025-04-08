@@ -56,11 +56,11 @@ public:
 public:
   virtual Stub getInputStub(chem::NVector_sp coords) const;
 
-  CL_DEFMETHOD bool distanceDefinedP() const { return !std::isnan(this->_Distance); }
-  CL_DEFMETHOD bool thetaDefinedP() const { return !std::isnan(this->_Theta); }
-  CL_DEFMETHOD bool phiDefinedP() const { return !std::isnan(this->_Phi); }
+  CL_DEFMETHOD bool distanceDefinedP(chem::NVector_sp internals) const { return !std::isnan(this->getDistance(internals)); }
+  CL_DEFMETHOD bool thetaDefinedP(chem::NVector_sp internals) const { return !std::isnan(this->getTheta(internals)); }
+  CL_DEFMETHOD bool phiDefinedP(chem::NVector_sp internals) const { return !std::isnan(this->getPhi(internals)); }
 
-  bool definedp() const;
+  bool definedp(chem::NVector_sp internals) const;
   
   	/*! Return the stubJoint1 */
   virtual Joint_sp inputStubJoint0() const { return this->parent();}
@@ -81,8 +81,8 @@ public:
   void setInputStubJoint2(Joint_sp joint);
   void makeUnboundInputStubJoint2();
 
-  virtual void _updateInternalCoord(chem::NVector_sp coords);
-  void _updateChildrenXyzCoords(chem::NVector_sp coords);
+  virtual void _updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords);
+  void _updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords);
 
 };
 };

@@ -134,7 +134,7 @@ void XyzJoint_O::_releaseAllChildren()
   this->_NumberOfChildren = 0;
 }
 
-void XyzJoint_O::_updateInternalCoord(chem::NVector_sp coords)
+void XyzJoint_O::_updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   KIN_LOG(" <<< {}\n" , _rep_(this->asSmartPtr()));
 //	using numeric::x_rotation_matrix_radians;
@@ -173,17 +173,17 @@ Stub XyzJoint_O::getInputStub(chem::NVector_sp coords) const
   return stub;
 }
 
-bool XyzJoint_O::definedp() const {
+bool XyzJoint_O::definedp(chem::NVector_sp internals) const {
   return (this->_Atom->getPosition().isDefined());
 }
 
-void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
+void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords) {
   if (this->_numberOfChildren()>0) {
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
     for ( int ii=0; ii < firstNonJumpIndex; ii++) {
       Stub jstub = this->_child(ii)->getInputStub(coords);
     // I should ratchet the newStub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(coords,jstub);
+      this->_child(ii)->_updateXyzCoord(internals,coords,jstub);
     // ratchet newStub
 //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
@@ -191,12 +191,12 @@ void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
     Stub stub = this->_child(firstNonJumpIndex)->getInputStub(coords);
     for ( int ii=firstNonJumpIndex; ii < this->_numberOfChildren(); ii++) {
     // I should ratchet the stub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(coords,stub);
+      this->_child(ii)->_updateXyzCoord(internals,coords,stub);
 //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
     }
     for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-      this->_child(ii)->_updateChildrenXyzCoords(coords);
+      this->_child(ii)->_updateChildrenXyzCoords(internals,coords);
     }
   }
 }
@@ -204,7 +204,7 @@ void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
 SYMBOL_EXPORT_SC_(KinPkg,undefined_internal_coordinates);
 SYMBOL_EXPORT_SC_(KeywordPkg,joint);
 
-void XyzJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
+void XyzJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   Vector3 d2 = this->_Atom->getPosition();
@@ -242,9 +242,9 @@ Vector3 XyzJoint_O::untransformedPos() const {
   return d2;
 }
 
-CL_DEFMETHOD void XyzJoint_O::updateXyzCoord(chem::NVector_sp coords) {
+CL_DEFMETHOD void XyzJoint_O::updateXyzCoord(chem::NVector_sp internals,chem::NVector_sp coords) {
   Stub stub = this->getInputStub(coords);
-  this->_updateXyzCoord(coords,stub);
+  this->_updateXyzCoord(internals,coords,stub);
 }
 
 
@@ -276,10 +276,10 @@ void StubJoint_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-void StubJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
+void StubJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  this->Base::_updateXyzCoord(coords,stub);
+  this->Base::_updateXyzCoord(internals,coords,stub);
 }
 
 CL_DEFMETHOD

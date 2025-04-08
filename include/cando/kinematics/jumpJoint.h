@@ -77,9 +77,9 @@ namespace kinematics
     Stub getInputStub(chem::NVector_sp coords) const;
 
 
-    virtual bool definedp() const;
+    virtual bool definedp(chem::NVector_sp internals ) const;
 
-    virtual void _updateInternalCoord(chem::NVector_sp coords);
+    virtual void _updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords);
     
 	/*! Yes, this is a JumpJoint */
     bool isJump() const { return true;};
@@ -97,12 +97,12 @@ namespace kinematics
 
     bool keepDofFixed(DofType dof) const;
 
-    virtual void updateXyzCoord(chem::NVector_sp coords);
+    virtual void updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords);
 
     /*! Update just this joints position */
-    virtual void _updateXyzCoord(chem::NVector_sp coords,Stub& stub);
+    virtual void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords,Stub& stub);
 
-    virtual void _updateChildrenXyzCoords(chem::NVector_sp coords);
+    virtual void _updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords);
 
 	/*! Return the DOF */
     double dof(DofType const& dof) const;
