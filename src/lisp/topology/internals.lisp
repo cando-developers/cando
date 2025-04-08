@@ -3,6 +3,28 @@
 (defparameter *2pi-s* (* 2.0s0 (float PI 1.0s0)))
 (defparameter *pi-s* (float PI 1.0s0))
 (defparameter *-pi-s* (- (float PI 1.0s0)))
+(defconstant +bin-size+ 10 )
+
+(defclass dihedral-range (cando.serialize:serializable)
+  ((min-phi :initarg :min-phi :reader :min-phi)
+   (max-phi :initarg :max-phi :reader :max-phi)
+   (min-psi :initarg :min-psi :reader :min-psi)
+   (max-psi :initarg :max-psi :reader :max-psi)))
+
+(defun bin-dihedral-range (dihedral-range)
+  "Convert DIGITAL-RANGE into a decimal range and step size"
+  (with-slots (min-phi max-phi min-psi max-psi) dihedral-range
+    (let ((digital-min-phi (* +bin-size+ (floor min-phi +bin-size+)))
+          (digital-max-phi (* +bin-size+ (floor max-phi +bin-size+)))
+          (digital-min-psi (* +bin-size+ (ceiling min-psi +bin-size+)))
+          (digital-max-psi (* +bin-size+ (ceiling max-psi +bin-size+))))
+      (values digital-min-phi digital-max-phi +bin-size+
+              digital-min-psi digital-max-psi +bin-size+))))
+
+(defun bin-dihedral-deg (dih-deg)
+  "Take a dihedral in degrees and round it to the nearest +bin-size+ degrees"
+  (floor (degrees-limit (floor (* +bin-size+ (round dih-deg +bin-size+))))))
+
 
 (defun deg-to-rad (deg)
   (* deg 0.0173433s0))
@@ -422,13 +444,13 @@ changing the BACKBONE-DIHEDRAL-CACHE."
     (format t "There were ~d empty indexes and ~d filled ones~%" empty-indexes filled-indexes)))
 
 
-(defgeneric apply-fragment-internals-to-atresidue (fragment-internals rotamer-index atresidue))
+(defgeneric apply-fragment-internals-to-atresidue (assembler fragment-internals rotamer-index atresidue))
 
-(defmethod apply-fragment-internals-to-atresidue ((rotamer rotamer) rotamer-index atresidue)
+(defmethod apply-fragment-internals-to-atresidue (assembler (rotamer rotamer) rotamer-index atresidue)
   (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (topology:joints atresidue)
         for index3 from 0 by 3
-        do (fill-joint-internals-from-vector joint (internals-values rotamer) index3)))
+        do (fill-joint-internals-from-vector assembler joint (internals-values rotamer) index3)))
 
 (defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
   (context-to-rotamers obj))
@@ -448,7 +470,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
          (joint (joint-with-name atres atom-name)))
     joint))
 
-(defun find-named-fragment-internals-joints (focused-assembler fragment-internals dihedral-names)
+(defun find-named-joints (focused-assembler dihedral-names)
   "Gather up the joints that are named in dihedral-names."
   (let* ((focus-monomer (focus-monomer focused-assembler))
          (oligomer (oligomer-containing-monomer focused-assembler focus-monomer))
@@ -482,7 +504,6 @@ changing the BACKBONE-DIHEDRAL-CACHE."
           else
             do (error "About to return a NIL joint for ~s" info))))
 
-
 (defun extract-dihedral-rad-from-joint (joint)
   "Return the internal dihedral value and if not available return (values 0.0 nil).
     If it is available return (values dihedral-rad joint). "
@@ -515,8 +536,8 @@ changing the BACKBONE-DIHEDRAL-CACHE."
              (great-grand-parent-joint-index-x3 (and great-grand-parent-joint (kin:joint/position-index-x3 great-grand-parent-joint))))
         (list joint-index-x3 parent-joint-index-x3 grand-parent-joint-index-x3 great-grand-parent-joint-index-x3))))
 
-(defun find-named-fragment-internals-rad (focused-assembler fragment-internals dihedral-names)
-  (let ((joints (find-named-fragment-internals-joints focused-assembler fragment-internals dihedral-names)))
+(defun find-named-fragment-internals-rad (focused-assembler dihedral-names)
+  (let ((joints (find-named-joints focused-assembler  dihedral-names)))
     (mapcar #'extract-dihedral-rad-from-joint joints)))
 
 (defun joint-to-root-p (joint ht)
@@ -542,8 +563,8 @@ changing the BACKBONE-DIHEDRAL-CACHE."
             do (return-from find-joint-closest-to-root joint)))
   (error "Could not find a joint closest to root joints: ~s" joints))
 
-(defun find-named-fragment-canonical-transform (focused-assembler fragment-internals dihedral-names coords)
-  (let* ((joints (find-named-fragment-internals-joints focused-assembler fragment-internals dihedral-names))
+(defun find-named-fragment-canonical-transform (focused-assembler dihedral-names coords)
+  (let* ((joints (find-named-joints focused-assembler dihedral-names))
          (joint-closest-to-root (find-joint-closest-to-root joints))
          (maybe-transform nil))
     (when (kin:joint/parent-bound-p joint-closest-to-root)
@@ -578,8 +599,8 @@ changing the BACKBONE-DIHEDRAL-CACHE."
         maybe-transform
         (geom:make-matrix t))))
 
-(defun find-named-fragment-line-segments (focused-assembler fragment-internals dihedral-names)
-  (let* ((joints (find-named-fragment-internals-joints focused-assembler fragment-internals dihedral-names)))
+(defun find-named-fragment-line-segments (focused-assembler dihedral-names)
+  (let* ((joints (find-named-joints focused-assembler dihedral-names)))
     (mapcar (lambda (joint) (extract-dihedral-line-segment-from-joint joint))
             joints)))
 
@@ -596,10 +617,10 @@ changing the BACKBONE-DIHEDRAL-CACHE."
                                                                 collect (cos dihedral)
                                                                 collect (sin dihedral))))
 
-(defun cluster-dihedral-rad-vector (focused-assembler fragment-internals names &optional coords)
+(defun cluster-dihedral-rad-vector (focused-assembler names &optional coords)
   (when coords
     (update-ataggregate-joint-tree-internal-coordinates focused-assembler coords))
-  (find-named-fragment-internals-rad focused-assembler fragment-internals names))
+  (find-named-fragment-internals-rad focused-assembler names))
 
 (defun cluster-dihedral-line-segments (focused-assembler fragment-internals names)
   "For debugging purposes, return line-segments for the dihedrals using in clustering"
@@ -872,25 +893,25 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   "Do nothing with xyz-joints"
   )
 
-(defgeneric fill-joint-internals-from-vector (joint vector index3))
+(defgeneric fill-joint-internals-from-vector (assembler joint vector index3))
 
-(defmethod fill-joint-internals-from-vector ((joint kin:jump-joint) vector index3) #|do nothing|#)
-(defmethod fill-joint-internals-from-vector ((joint kin:xyz-joint) vector index3) #|do nothing|#)
+(defmethod fill-joint-internals-from-vector (assembler (joint kin:jump-joint) vector index3) #|do nothing|#)
+(defmethod fill-joint-internals-from-vector (assembler (joint kin:xyz-joint) vector index3) #|do nothing|#)
 
-(defmethod fill-joint-internals-from-vector ((joint kin:bonded-joint) vector index3)
+(defmethod fill-joint-internals-from-vector (assembler (joint kin:bonded-joint) vector index3)
   (multiple-value-bind (bond angle-rad dihedral-rad)
       (values (aref vector index3)
               (aref vector (+ 1 index3))
               (aref vector (+ 2 index3)))
-    (kin:set-distance joint bond)
-    (kin:set-theta joint angle-rad)
-    (kin:bonded-joint/set-phi joint dihedral-rad)))
+    (joint-set-distance assembler joint bond)
+    (joint-set-theta assembler joint angle-rad)
+    (joint-set-phi assembler joint dihedral-rad)))
 
-(defmethod fill-joint-internals-from-vector ((joint kin:bonded-joint) (vector sys:simple-vector-double) index3)
-  (kin:fill-internals-from-simple-vector-double joint vector index3))
+(defmethod fill-joint-internals-from-vector (assembler (joint kin:bonded-joint) (vector sys:simple-vector-double) index3)
+  (kin:fill-internals-from-simple-vector-double joint (internals assembler) vector index3))
 
-(defmethod fill-joint-internals-from-vector ((joint kin:bonded-joint) (vector sys:simple-vector-float) index3)
-  (kin:fill-internals-from-simple-vector-single joint vector index3))
+(defmethod fill-joint-internals-from-vector (assembler (joint kin:bonded-joint) (vector sys:simple-vector-float) index3)
+  (kin:fill-internals-from-simple-vector-single joint (internals assembler) vector index3))
 
 
 (defun fill-joint-phi (joint phi)
@@ -914,42 +935,24 @@ INDEX counts by 1 and _not_ by 3."
             (aref (internals-values rotamer) (+ 2 index3)))))
 
 
-(defmethod apply-fragment-internals-to-atresidue ((fragment-internals fragment-internals) rotamer-index atresidue)
+(defmethod apply-fragment-internals-to-atresidue (assembler (fragment-internals fragment-internals) rotamer-index atresidue)
   (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (joints atresidue)
         for index3 from 0 by 3
-        do (fill-joint-internals-from-vector joint (internals-values fragment-internals) index3)))
+        do (fill-joint-internals-from-vector assembler joint (internals-values fragment-internals) index3)))
 
-(defun analyze-atresidue (atresidue)
+(defun analyze-atresidue (assembler atresidue)
   (let ((internals-count 0)
         (internals-defined 0))
     (loop for joint across (joints atresidue)
           do (incf internals-count)
-          when (kin:joint/definedp joint)
+          when (kin:joint/definedp joint (internals assembler))
             do (incf internals-defined))
     (format t "  atresidue internals-count ~d~%" internals-count)
     (format t "  atresidue internals-defined ~d~%" internals-defined)
     ))
 
-#|
-(defun defined-dihedrals (assembler atresidue)
-  (let ((residue (block find-residue
-                  (do-atresidue-residue (search-atresidue search-residue assembler)
-                    (when (eq atresidue search-atresidue)
-                      (return-from find-residue residue)))
-                  (error "Could not find atresidue ~s in ~s" atresidue assembler))))
-  (let ((internals-count 0)
-        (internals-defined 0))
-    (loop for joint across (joints atresidue)
-          do (incf internals-count)
-          when (kin:joint/definedp joint)
-            do (incf internals-defined))
-    (format t "  atresidue internals-count ~d~%" internals-count)
-    (format t "  atresidue internals-defined ~d~%" internals-defined)
-    ))
-|#
-
-(defun write-internals (atresidue internals updated-internals-mask &key verbose)
+(defun write-internals (assembler atresidue internals updated-internals-mask &key verbose)
   (loop for joint across (joints atresidue)
         for index from 0
         for index3 from 0 by 3
@@ -959,9 +962,9 @@ INDEX counts by 1 and _not_ by 3."
                (kin:bonded-joint
                 (when verbose (format t "Updating bonded-joint ~s~%" joint))
                 (error "An error is about to occur - you need to pass the internals-values of internals and not internals")
-                (fill-joint-internals-from-vector joint internals index3))
+                (fill-joint-internals-from-vector assembler joint internals index3))
                (kin:xyz-joint
-                (if (kin:xyz-joint/definedp joint)
+                (if (kin:xyz-joint/definedp joint (internals assembler))
                     (warn "Skipping defining xyz-joint")
                     (break "What do we do with an undefined xyz-joint?")))
                (t (error "Add support for ~s~%" joint))
@@ -969,16 +972,16 @@ INDEX counts by 1 and _not_ by 3."
         else
           do (when verbose (format t "NOT updating joint ~s~%" joint))))
 
-(defgeneric write-internals-to-vector (joint index3 internals joint-mask))
+(defgeneric write-internals-to-vector (assembler joint index3 internals joint-mask))
 
-(defmethod write-internals-to-vector ((joint kin:bonded-joint) index3 internals joint-mask)
+(defmethod write-internals-to-vector (assembler (joint kin:bonded-joint) index3 internals joint-mask)
   "xyz-joint get their distance,theta,phi coordinates"
-  (setf (aref internals index3) (kin:bonded-joint/get-distance joint)
-        (aref internals (+ 1 index3)) (kin:bonded-joint/get-theta joint)
-        (aref internals (+ 2 index3)) (kin:bonded-joint/get-phi joint)
+  (setf (aref internals index3) (kin:bonded-joint/get-distance joint (internals assembler))
+        (aref internals (+ 1 index3)) (kin:bonded-joint/get-theta joint (internals assembler))
+        (aref internals (+ 2 index3)) (kin:bonded-joint/get-phi joint (internals assembler))
         (aref joint-mask (/ index3 3)) 1))
 
-(defmethod write-internals-to-vector ((joint kin:xyz-joint) index3 internals joint-mask)
+(defmethod write-internals-to-vector (assembler (joint kin:xyz-joint) index3 internals joint-mask)
   "xyz-joint get write their x,y,z coordinates"
   (let ((pos (kin:xyz-joint/transformed-pos joint)))
     (setf (aref internals index3) (geom:vx pos)
@@ -994,7 +997,7 @@ INDEX counts by 1 and _not_ by 3."
          (ca-element (element ca)))
     (not (chem:element-is-hydrogen ca-element))))
 
-(defun extract-internals (atresidue)
+(defun extract-internals (assembler atresidue)
   "Extract the internals into a vector of internals and a mask of what internals were defined.
 Return the internals, a joint-mask of 1 for each joint that has defined internals and a heavy-atom-mask
 that is 1 for each heavy atom."
@@ -1009,8 +1012,8 @@ that is 1 for each heavy atom."
           for index3 from 0 by 3
           when (heavy-atom-p joint constitution-atoms)
             do (setf (aref heavy-atom-mask index) 1)
-          when (kin:definedp joint)
-            do (write-internals-to-vector joint index3 internals joint-mask))
+          when (kin:definedp joint (internals assembler))
+            do (write-internals-to-vector assembler joint index3 internals joint-mask))
     (values internals joint-mask heavy-atom-mask)))
 
 

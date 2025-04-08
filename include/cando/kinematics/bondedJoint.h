@@ -52,9 +52,6 @@ FORWARD(BondedJoint);
 	int		_NumberOfChildren;
         // _Children have the value unbound unbound
 	Joint_sp	_Children[MaxChildren];
-	Real		_Phi;
-	Real		_Theta;
-	Real		_Distance;
 	bool		_DofChangePropagatesToYoungerSiblings;
     public:
       static BondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
@@ -79,12 +76,10 @@ FORWARD(BondedJoint);
 
     public:
       BondedJoint_O() : Joint_O(), _NumberOfChildren(0),
-                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
-                        _Phi(std::numeric_limits<Real>::quiet_NaN()), _Theta(std::numeric_limits<Real>::quiet_NaN()), _Distance(std::numeric_limits<Real>::quiet_NaN())
+                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()}
       {};
       BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) : Joint_O(atomId,name,atomTable), _NumberOfChildren(0),
-                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
-                        _Phi(std::numeric_limits<Real>::quiet_NaN()), _Theta(std::numeric_limits<Real>::quiet_NaN()), _Distance(std::numeric_limits<Real>::quiet_NaN())
+                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()}
       {};
 
 	virtual core::Symbol_sp typeSymbol() const;
@@ -98,38 +93,38 @@ FORWARD(BondedJoint);
 	/*! Return the stubJoint3 */
       virtual Joint_sp inputStubJoint2() const;
 
-      virtual void _updateInternalCoord(chem::NVector_sp coords);
+      virtual void _updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords);
 
 	bool keepDofFixed(DofType dof) const;
 
 
 	string asString() const;
 
-      void _updateChildrenXyzCoords(chem::NVector_sp coords);
+      void _updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords);
 
 	/*! Update the external coordinates using the input stub */
-      virtual void _updateXyzCoord(chem::NVector_sp coords,Stub& stub);
+      virtual void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords,Stub& stub);
 
       /*! Get the stub and update the XYZ coordinate */
-      void updateXyzCoord(chem::NVector_sp coords);
+      void updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords);
 
       virtual Stub getInputStub(chem::NVector_sp coords) const;
 
-      virtual bool definedp() const;
+      virtual bool definedp(chem::NVector_sp internals) const;
 
 	/*! Geta the value of the DOF */
-	double dof(DofType const& dof) const;
+//	double dof(DofType const& dof) const;
 
       CL_NAME(KIN:BONDED-JOINT/GET-DISTANCE);
-      CL_DEFMETHOD double getDistance() const { return this->_Distance; }
+      CL_DEFMETHOD double getDistance(chem::NVector_sp internals) const { return (*internals)[this->_PositionIndexX3]; };
       CL_NAME(KIN:BONDED-JOINT/GET-THETA);
-      CL_DEFMETHOD double getTheta() const { return this->_Theta; };
+      CL_DEFMETHOD double getTheta(chem::NVector_sp internals) const { return (*internals)[this->_PositionIndexX3+1]; };
       CL_NAME(KIN:BONDED-JOINT/GET-PHI);
-      CL_DEFMETHOD double getPhi() const { return this->_Phi; };
+      CL_DEFMETHOD double getPhi(chem::NVector_sp internals) const { return (*internals)[this->_PositionIndexX3+2]; };
 
-      CL_DEFMETHOD void setDistance(double distance) { this->_Distance = distance;}
-      CL_DEFMETHOD void setTheta(double angle) { this->_Theta = angle;}
-      void setPhi(double dihedral);
+      CL_DEFMETHOD void setDistance(chem::NVector_sp internals, double distance) { (*internals)[this->_PositionIndexX3] = distance;}
+      CL_DEFMETHOD void setTheta(chem::NVector_sp internals, double angle) { (*internals)[this->_PositionIndexX3+1] = angle;}
+      void setPhi(chem::NVector_sp internals, double dihedral);
 
 
     };

@@ -195,10 +195,10 @@ public:
   void recursiveDumpChildrenIntoStringStream(const string& prefix,
                                              stringstream& out);
 
-  void updateInternalCoord(chem::NVector_sp coords);
-  virtual void _updateInternalCoord(chem::NVector_sp coords) { THROW_HARD_ERROR("Subclass must implement"); };
+  void updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords);
+  virtual void _updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords) { THROW_HARD_ERROR("Subclass must implement"); };
 	/*! Update the internal coordinates */
-  void updateInternalCoords(chem::NVector_sp coords);
+  void updateInternalCoords(chem::NVector_sp internals, chem::NVector_sp coords);
 
 	/*! Return true if this Joint is a JumpJoint (or subclass) */
   virtual bool isJump() const { return false;};
@@ -253,17 +253,17 @@ public:
 
 
 	/*! Update the external coordinates after calculating the input stub */
-  virtual void updateXyzCoords(chem::NVector_sp coords);
+  virtual void updateXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords);
 
   /*! Update the external coordinate of just this node */
-  virtual void updateXyzCoord(chem::NVector_sp coords);
+  virtual void updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords);
 
 	/*! Update the external coordinates using the input stub */
-  virtual void _updateXyzCoords(chem::NVector_sp coords, Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
+  virtual void _updateXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
-  virtual void _updateXyzCoord(chem::NVector_sp coords,Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
+  virtual void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords,Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
-  void _updateChildrenXyzCoords(chem::NVector_sp coords);
+  void _updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords);
 
 	/*! Ensure proper function of the output-sensitive refold subroutine
 	  derived classes must invoke this function during their updateXyzCoords subroutines

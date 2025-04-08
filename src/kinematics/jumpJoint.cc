@@ -44,7 +44,7 @@ SYMBOL_EXPORT_SC_(KinPkg,orientation_transform);
 JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable ) : Joint_O(atomId,name,atomTable) {
 };
 
-bool JumpJoint_O::definedp() const
+bool JumpJoint_O::definedp(chem::NVector_sp internals) const
 {
   return true;
 }
@@ -92,7 +92,7 @@ void JumpJoint_O::_releaseAllChildren()
 }
 
 
-void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
+void JumpJoint_O::_updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   KIN_LOG(" <<< {}\n", _rep_(this->asSmartPtr()));
 }
@@ -104,32 +104,32 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 }
 
 
-void JumpJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
+void JumpJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub)
 {
 //  ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n{}") , stub.asString());
   this->setPosition(coords,stub._Transform.getTranslation());
   KIN_LOG("orientation {}\n", stub.asString() );
 }
 
-void JumpJoint_O::updateXyzCoord(chem::NVector_sp coords)
+void JumpJoint_O::updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   Stub newStub = this->getInputStub(coords);
-  this->_updateXyzCoord(coords,newStub);
+  this->_updateXyzCoord(internals, coords,newStub);
 }
 
     /*! Update the external coordinates using the input stub */
-void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords)
+void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   Stub newStub;
   newStub._Transform = this->transform();
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    this->_child(ii)->_updateXyzCoord(coords,newStub);
+    this->_child(ii)->_updateXyzCoord(internals, coords,newStub);
     // ratchet newStub
 //    this->_DofChangePropagatesToYoungerSiblings = false;
     this->noteXyzUpToDate();
   }
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    this->_child(ii)->_updateChildrenXyzCoords(coords);
+    this->_child(ii)->_updateChildrenXyzCoords(internals, coords);
   }
 }
 

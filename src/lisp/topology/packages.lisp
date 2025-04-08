@@ -492,7 +492,23 @@
    #:update-internals-for-monomer-shape
    #:update-externals-for-monomer-shape
    #:monomer-shape-to-index
-   #:lookup-dihedral-joint))
+   #:lookup-dihedral-joint
+   #:joint-definedp
+   #:joint-distance-defined-p
+   #:joint-theta-defined-p
+   #:joint-phi-defined-p
+   #:update-internal-coords
+   #:update-external-coords
+   #:joint-get-distance
+   #:joint-get-theta
+   #:joint-get-phi
+   #:joint-set-distance
+   #:joint-set-theta
+   #:joint-set-phi
+   #:update-xyz-coords
+   #:dihedral-range
+   #:bin-dihedral-range
+   #:find-named-joints))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

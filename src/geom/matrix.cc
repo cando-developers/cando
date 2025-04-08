@@ -1537,6 +1537,36 @@ CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const V
   return dPos;
 }
 
+DOCGROUP(cando);
+CL_DEFUN void geom__in_place_build_using_bond_angle_dihedral_array( core::Array_sp array, size_t id,
+                                                                    double distance, size_t ic,
+                                                                    double angle, size_t ib,
+                                                                    double dihedral, size_t ia )
+{
+  if (gc::IsA<core::SimpleVector_float_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_float_sp>(array);
+    Vector3 va(sfa,ia,Unsafe());
+    Vector3 vb(sfa,ib,Unsafe());
+    Vector3 vc(sfa,ic,Unsafe());
+    Vector3 vd = geom__build_using_bond_angle_dihedral( distance, vc, angle, vb, dihedral, va );
+    (*sfa)[id] = vd.getX();
+    (*sfa)[id+1] = vd.getY();
+    (*sfa)[id+2] = vd.getZ();
+    return;
+  } else if (gc::IsA<core::SimpleVector_double_sp>(array)) {
+    auto sfa = gc::As<core::SimpleVector_double_sp>(array);
+    Vector3 va(sfa,ia,Unsafe());
+    Vector3 vb(sfa,ib,Unsafe());
+    Vector3 vc(sfa,ic,Unsafe());
+    Vector3 vd = geom__build_using_bond_angle_dihedral( distance, vc, angle, vb, dihedral, va );
+    (*sfa)[id] = vd.getX();
+    (*sfa)[id+1] = vd.getY();
+    (*sfa)[id+2] = vd.getZ();
+    return;
+  }
+  SIMPLE_ERROR("Handle array of type {}", _rep_(array));
+}
+
 /*! Return the dihedral in radians
  */
 DOCGROUP(cando);

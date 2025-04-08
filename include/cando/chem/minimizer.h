@@ -346,7 +346,7 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
     void	minimizeSteepestDescent();
     void	minimizeConjugateGradient();
     void	resetAndMinimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback );
-    core::T_mv minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback);
+    core::T_mv minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback, core::T_sp coordinates=nil<core::T_O>() );
         // If the minimization is aborted the intermediate results can be recovered
     void    writeIntermediateResultsToEnergyFunction();
     void	evaluateEnergyAndForceManyTimes(core::T_sp energyScale, int times,core::T_sp activeAtomMask );

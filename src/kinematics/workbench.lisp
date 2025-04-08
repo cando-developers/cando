@@ -115,34 +115,34 @@
 
 (kin:update-internal-coords jroot)
 
-(defgeneric dump-internal (atom-id joint stream))
+(defgeneric dump-internal (assembler atom-id joint stream))
 
-(defmethod dump-internal (atom-id (joint kin:jump-joint) stream)
+(defmethod dump-internal (assembler atom-id (joint kin:jump-joint) stream)
   (format stream "jj  ~a ~3a~%" atom-id (kin:name joint)))
 
-(defmethod dump-internal (atom-id (joint kin:complex-bonded-joint) stream)
+(defmethod dump-internal (assembler atom-id (joint kin:complex-bonded-joint) stream)
   (format stream "cbj ~a ~a ~3,2f ~a ~3,2f ~a ~3,2f ~a~%" atom-id (kin:name joint)
-          (kin:get-distance joint) (kin:input-stub-joint0 joint)
-          (/ (kin:get-theta joint) 0.0174533) (when (kin:input-stub-joint1bound-p joint)
+          (kin:get-distance joint (internals assembler)) (kin:input-stub-joint0 joint)
+          (/ (kin:get-theta joint (internals assembler)) 0.0174533) (when (kin:input-stub-joint1bound-p joint)
                                   (kin:input-stub-joint1 joint))
-          (/ (kin:get-phi joint) 0.0174533)  (when (kin:input-stub-joint2bound-p joint)
+          (/ (kin:get-phi joint (internals assembler)) 0.0174533)  (when (kin:input-stub-joint2bound-p joint)
                                 (kin:input-stub-joint2 joint))
           ))
 
 
-(defmethod dump-internal (atom-id (joint kin:bonded-joint) stream)
+(defmethod dump-internal (assembler atom-id (joint kin:bonded-joint) stream)
   (format stream "bj  ~a ~a ~3,2f ~a ~3,2f ~a ~3,2f ~a~%" atom-id
           (kin:name joint)
-          (kin:get-distance joint)
+          (kin:get-distance joint (internals assembler))
           (kin:input-stub-joint0 joint)
-          (/ (kin:get-theta joint) 0.0174533)
+          (/ (kin:get-theta joint (internals assembler)) 0.0174533)
           (kin:input-stub-joint1 joint)
-          (/ (kin:get-phi joint) 0.0174533)
+          (/ (kin:get-phi joint (internals assembler)) 0.0174533)
           (kin:input-stub-joint1 joint)))
 
-(defun dump-internals (aimj stream)
+(defun dump-internals (assembler aimj stream)
   (chem:walk aimj (lambda (atom-id joint)
-                    (dump-internal atom-id joint stream))))
+                    (dump-internal assembler atom-id joint stream))))
 
 
 (defun input-stub (joint)

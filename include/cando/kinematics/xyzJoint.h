@@ -101,23 +101,23 @@ public:
 	/*! Return the stubJoint3 */
   virtual Joint_sp inputStubJoint2() const;
 
-  virtual void _updateInternalCoord(chem::NVector_sp coords);
+  virtual void _updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords);
 
   bool keepDofFixed(DofType dof) const;
 
 
   string asString() const;
 
-  void _updateChildrenXyzCoords(chem::NVector_sp coords);
+  void _updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords);
 
 	/*! Update the external coordinates using the input stub */
-  virtual void _updateXyzCoord(chem::NVector_sp coords,Stub& stub);
+  virtual void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords,Stub& stub);
 
       /*! Get the stub and update the XYZ coordinate */
-  void updateXyzCoord(chem::NVector_sp coords);
+  void updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords);
 
   virtual Stub getInputStub(chem::NVector_sp coords) const;
-  CL_DEFMETHOD virtual bool definedp() const;
+  CL_DEFMETHOD virtual bool definedp(chem::NVector_sp internals) const;
 
 	/*! Geta the value of the DOF */
   double dof(DofType const& dof) const;
@@ -174,7 +174,7 @@ public:
   Vector3 transformedGreatGrandParentPos() const;
 
   Joint_sp parent() const { SIMPLE_ERROR("Never ask for the parent of {}", _rep_(this->asSmartPtr()) ); };
-  void _updateXyzCoord(chem::NVector_sp coords, Stub& stub);
+  void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub);
 };
 
 

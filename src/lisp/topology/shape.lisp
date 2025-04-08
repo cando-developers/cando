@@ -7,10 +7,6 @@
 (defun shape-key-dihedral-name-p (name)
   (member name (list +phi+ +phi-1+ +psi+ +psi-1+)))
 
-(defun bin-dihedral-deg (dih-deg)
-  "Take a dihedral in degrees and round it to the nearest 10 degrees"
-  (floor (degrees-limit (floor (* 10 (round dih-deg 10.0))))))
-
 (defclass monomer-shape-info ()
   ((monomer :initarg :monomer :accessor monomer)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
@@ -73,7 +69,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
                        (error "Check rots ~a because rotamer-index ~a is out of bounds" rots rotamer-index))
                      (elt rots rotamer-index))))
     (setf (rotamer-index atresidue) rotamer-index)
-    (apply-fragment-internals-to-atresidue rotamers rotamer-index atresidue)))
+    (apply-fragment-internals-to-atresidue assembler rotamers rotamer-index atresidue)))
 
 (defclass residue-shape (monomer-shape)
   ((residue :initarg :residue :reader residue)

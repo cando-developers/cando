@@ -144,7 +144,7 @@ string Joint_O::__repr__() const {
   stringstream ss;
   ss << "#<";
   ss << this->className();
-  ss << " " << _rep_(this->_Name) << " @" << (void*)this << ">";
+  ss << " " << _rep_(this->_Name) << " " << this->_PositionIndexX3<< " @" << (void*)this << ">";
   return ss.str();
 }
  
@@ -476,47 +476,47 @@ void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
   }
 }
 
-CL_DEFMETHOD void Joint_O::updateInternalCoord(chem::NVector_sp coords)
+CL_DEFMETHOD void Joint_O::updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
-  this->_updateInternalCoord(coords);
+  this->_updateInternalCoord(internals,coords);
 }
 
-CL_DEFMETHOD void Joint_O::updateInternalCoords(chem::NVector_sp coords)
+CL_DEFMETHOD void Joint_O::updateInternalCoords(chem::NVector_sp internals, chem::NVector_sp coords)
 {
-  this->_updateInternalCoord(coords);
+  this->_updateInternalCoord(internals,coords);
   for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
-    this->_child(childIdx)->updateInternalCoords(coords);
+    this->_child(childIdx)->updateInternalCoords(internals,coords);
   }
 }
 
-void Joint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
+void Joint_O::_updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords) {
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
     Stub stub = this->_child(ii)->getInputStub(coords);
     // I should ratchet the newStub around the X axis and use relative dihedral
-    this->_child(ii)->_updateXyzCoord(coords,stub);
+    this->_child(ii)->_updateXyzCoord(internals,coords,stub);
     // ratchet newStub
 //    this->_DofChangePropagatesToYoungerSiblings = false;
     this->noteXyzUpToDate();
   }
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    this->_child(ii)->_updateChildrenXyzCoords(coords);
+    this->_child(ii)->_updateChildrenXyzCoords(internals,coords);
   }
 }
 
 
-CL_DEFMETHOD void Joint_O::updateXyzCoord(chem::NVector_sp coords)
+CL_DEFMETHOD void Joint_O::updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   KIN_LOG("base method\n");
   Stub stub = this->getInputStub(coords);
-  this->_updateXyzCoord(coords,stub);
+  this->_updateXyzCoord(internals,coords,stub);
 }
 
 
-CL_DEFMETHOD void Joint_O::updateXyzCoords(chem::NVector_sp coords)
+CL_DEFMETHOD void Joint_O::updateXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   Stub stub = this->getInputStub(coords);
-  this->_updateXyzCoord(coords,stub);
-  this->_updateChildrenXyzCoords(coords);
+  this->_updateXyzCoord(internals,coords,stub);
+  this->_updateChildrenXyzCoords(internals,coords);
 }
 
 CL_DEFMETHOD core::T_sp Joint_O::getParentOrNil() const {
