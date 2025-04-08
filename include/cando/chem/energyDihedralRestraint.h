@@ -164,7 +164,10 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
                               double phi0,
                               Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4
                               );
-  void changeDihedralRestraint( size_t index, double phi0, double kdh );
+  void updateDihedralRestraint( size_t index, double kdh, double phi0_rad );
+
+  double measureDihedralRestraintAngle( size_t index, NVector_sp nvPosition );
+  
   core::T_mv getDihedralRestraint( size_t index );
 
   virtual bool is_restraint() const { return true; };
@@ -188,6 +191,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
                                        core::T_sp activeAtomMask,
                                        core::T_sp debugInteractions );
 
+  #if 0
   double evaluateOneTerm( ScoringFunction_sp score,
                           size_t termIndex, 
                           chem::NVector_sp 	pos,
@@ -202,6 +206,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
                           gc::Nilable<chem::NVector_sp> dvec,
                           core::T_sp activeAtomMask,
                           core::T_sp debugInteractions );
+  #endif
 
   core::T_mv getRestraint( size_t index );
 

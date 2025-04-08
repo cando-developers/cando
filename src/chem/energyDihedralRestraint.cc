@@ -143,36 +143,10 @@ bool	RestraintActive;
     #endif
 }
 
-CL_DEFMETHOD
-void EnergyDihedralRestraint_O::modifyDihedralRestraint( size_t index, double minRadians, double maxRadians, double weight )
-{
-  if (!(index < this->_Terms.size())) {
-    SIMPLE_ERROR("The index {} is out of bounds - it must be less than {}", index, this->_Terms.size());
-  }
-  EnergyDihedralRestraint& energyTerm = this->_Terms[index];
-  energyTerm.term.U = minRadians;
-  energyTerm.term.L = maxRadians;
-  energyTerm.term.K = weight;
-}
 
-CL_DOCSTRING("Return the (atom1-index3 atom2-index3 atom3-index3 atom4-index3 min-radians max-radians weight atom1 atom2 atom3 atom4) of the restraint");
-CL_DEFMETHOD
-core::T_mv EnergyDihedralRestraint_O::getRestraint( size_t index )
+void EnergyDihedralRestraint_O::addTerm(const EnergyDihedralRestraint& e)
 {
-  if (!(index < this->_Terms.size())) SIMPLE_ERROR("The index {} is out of bounds - it must be less than {}", index, this->_Terms.size());
-  EnergyDihedralRestraint& energyTerm = this->_Terms[index];
-  return Values(
-      core::make_fixnum(energyTerm.term.I1),
-      core::make_fixnum(energyTerm.term.I2),
-      core::make_fixnum(energyTerm.term.I3),
-      core::make_fixnum(energyTerm.term.I4),
-      core::clasp_make_double_float(energyTerm.term.U),
-      core::clasp_make_double_float(energyTerm.term.L),
-      core::clasp_make_double_float(energyTerm.term.K),
-      energyTerm._Atom1,
-      energyTerm._Atom2,
-      energyTerm._Atom3,
-      energyTerm._Atom4 );
+  this->_Terms.push_back(e);
 }
 
 
@@ -220,7 +194,7 @@ core::T_mv EnergyDihedralRestraint_O::getDihedralRestraint( size_t index )
 }
 
 CL_DEFMETHOD
-void EnergyDihedralRestraint_O::changeDihedralRestraint( size_t index, double phi0, double kdh)
+void EnergyDihedralRestraint_O::updateDihedralRestraint( size_t index, double kdh, double phi0 )
 {
   if (index<this->_Terms.size()) {
     EnergyDihedralRestraint& energyTerm = this->_Terms[index];
@@ -229,6 +203,20 @@ void EnergyDihedralRestraint_O::changeDihedralRestraint( size_t index, double ph
     return;
   }
   SIMPLE_ERROR("index {} is out of bounds - must be less than {}", index, this->_Terms.size() );
+}
+
+CL_DEFMETHOD
+double EnergyDihedralRestraint_O::measureDihedralRestraintAngle( size_t dihedralRestraintIndex, NVector_sp nvPosition ) {
+  if (dihedralRestraintIndex<this->_Terms.size()) {
+    EnergyDihedralRestraint& energyTerm = this->_Terms[dihedralRestraintIndex];
+    Vector3 va(nvPosition,energyTerm.term.I1,Unsafe());
+    Vector3 vb(nvPosition,energyTerm.term.I2,Unsafe());
+    Vector3 vc(nvPosition,energyTerm.term.I3,Unsafe());
+    Vector3 vd(nvPosition,energyTerm.term.I4,Unsafe());
+    double dihedral = geom::calculateDihedral(va,vb,vc,vd);
+    return dihedral;
+  }
+  SIMPLE_ERROR("index {} is out of bounds - must be less than {}", dihedralRestraintIndex, this->_Terms.size() );
 }
 
 void	EnergyDihedralRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
@@ -497,6 +485,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
   return totalEnergy;
 }
 
+#if 0
 double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
                                                    size_t termIndex, 
                                                    chem::NVector_sp 	pos,
@@ -554,7 +543,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
   {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
+#include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
     num_real K,U,L;
@@ -578,7 +567,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
     
 #define DEBUG_IMPROPER_RESTRAINT 1
 #define VEC_CONST(x) (x) 
-#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#include	INCLUDE_TERM_CODE
 #undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
       if ( EraseLinearDihedral == 0.0 ) {
@@ -592,7 +581,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
       iri->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define EVAL_SET(var,val)	{ iri->eval.var=val;};
-#include <cando/chem/energy_functions/_ImproperRestraint_debugEvalSet.cc>
+#include INCLUDE_DEBUG_EVAL_SET
 #endif //]
 
       if ( this->_DebugEnergy ) 
@@ -694,7 +683,8 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
   maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
-
+#endif
+#if 0
 double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
                                                    size_t termIndex, 
                                                    chem::NVector_sp 	pos,
@@ -752,7 +742,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
   {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
+#include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
     num_real K,U,L;
@@ -776,7 +766,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
     
 #define DEBUG_IMPROPER_RESTRAINT 1
 #define VEC_CONST(x) (x) 
-#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#include	INCLUDE_TERM_CODE
 #undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
       if ( EraseLinearDihedral == 0.0 ) {
@@ -790,7 +780,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
       iri->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define EVAL_SET(var,val)	{ iri->eval.var=val;};
-#include <cando/chem/energy_functions/_ImproperRestraint_debugEvalSet.cc>
+#include INCLUDE_DEBUG_EVAL_SET
 #endif //]
 
       if ( this->_DebugEnergy ) 
@@ -892,6 +882,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
   maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
+#endif
 
 void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos)
 {

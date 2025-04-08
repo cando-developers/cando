@@ -294,8 +294,8 @@ NVector_sp chem__cpring_6_cremer_pople_to_zjs( double phi2, double q2, double qn
 CL_DEFUN
 void chem__cpring_coordinates_to_distances_and_angles( core::ComplexVector_double_sp distances, core::ComplexVector_double_sp angles, NVector_sp coordinates, core::SimpleVector_byte32_t_sp indexes3 ) {
   size_t N = indexes3->length();
-  if (distances->size()!=N) SIMPLE_ERROR("The distances argument has length {} but it must be {}\n", distances->size(), N );
-  if (angles->size()!=N) SIMPLE_ERROR("The angles argument has length {} but it must be {}\n", angles->size(), N );
+  if (distances->length()!=N) SIMPLE_ERROR("The distances argument has length {} but it must be {}\n", distances->length(), N );
+  if (angles->length()!=N) SIMPLE_ERROR("The angles argument has length {} but it must be {}\n", angles->length(), N );
   for (size_t j = 0; j<N; j++ ) {
     int idxm1 = (j - 1);
     if (idxm1<0) idxm1 += N;

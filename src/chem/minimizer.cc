@@ -1731,7 +1731,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   rmsForceMag = rmsMagnitudeWithActiveAtomMask(forceK,activeAtomMask);
   if ( this->_PrintIntermediateResults )
   {
-    this->_displayIntermediateMessage( pos,prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false,activeAtomMask);
+    this->_displayIntermediateMessage( pos,prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false,false,activeAtomMask);
   }
 
     //
@@ -1911,7 +1911,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
                                                << kw::_sym_coordinates << pos).result());
       }
       if ( this->_PrintIntermediateResults ) {
-        this->_displayIntermediateMessage(pos,prevAlphaK,fp,rmsForceMag,cosAngle,false,activeAtomMask);
+        this->_displayIntermediateMessage(pos,prevAlphaK,fp,rmsForceMag,cosAngle,false,false,activeAtomMask);
       }
 
 // Handle queued interrupts
