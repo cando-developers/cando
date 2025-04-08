@@ -150,12 +150,10 @@ void EnergyDihedralRestraint_O::addTerm(const EnergyDihedralRestraint& e)
 }
 
 
-CL_DEFMETHOD
-size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction,
-                                                       double kdh,
-                                                       double phi0,
-                                                       Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4
-                                                       )
+CL_DEFMETHOD size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction,
+                                                                    double kdh,
+                                                                    double phi0,
+                                                                    Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4)
 {
   EnergyDihedralRestraint energyTerm;
   energyTerm._Atom1 = a1;
@@ -183,8 +181,8 @@ core::T_mv EnergyDihedralRestraint_O::getDihedralRestraint( size_t index )
   if (index<this->_Terms.size()) {
     EnergyDihedralRestraint& energyTerm = this->_Terms[index];
     return Values(
-        mk_double_float(energyTerm.term.phi0),
         mk_double_float(energyTerm.term.kdh),
+        mk_double_float(energyTerm.term.phi0),
         energyTerm._Atom1,
         energyTerm._Atom2,
         energyTerm._Atom3,
