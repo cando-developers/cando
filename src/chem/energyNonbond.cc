@@ -248,6 +248,7 @@ inline double calculate_dQ1Q2(double electrostaticScale, double electrostaticMod
     It is a template function so that template arguments can inline or elide testing code.
  */
 template <class MaybeFiniteDiff>
+//__attribute__((optnone))
 double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFunction_sp score, NVector_sp pos,
                                            core::T_sp energyScale,
                                            core::T_sp componentEnergy, bool calcForce, gc::Nilable<NVector_sp> force,
@@ -1364,11 +1365,43 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
 EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory) {
   EnergyNonbond_sp copy = EnergyNonbond_O::create();
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
-  for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
-    Atom_sp a1 = edi->_Atom1_enb;
-    Atom_sp a2 = edi->_Atom2_enb;
-    if (skipInteraction(keepInteraction, a1, a2)) continue;
-    copy->_Terms.push_back(*edi);
+
+#define COPY_FIELD(xxx) { copy->xxx = this->xxx; }
+  COPY_FIELD(_EnergyElectrostatic);
+  COPY_FIELD(_UsesExcludedAtoms);
+  COPY_FIELD(_NonbondsKept);
+  COPY_FIELD(_NonbondsDiscarded);
+  COPY_FIELD(_FFNonbondDb);
+  COPY_FIELD(_AtomTable);
+  COPY_FIELD(_ntypes);
+  COPY_FIELD(_atom_name_vector);
+  COPY_FIELD(_charge_vector);
+  COPY_FIELD(_mass_vector);
+  COPY_FIELD(_atomic_number_vector);
+  COPY_FIELD(_ico_vec);
+  COPY_FIELD(_iac_vec);
+  COPY_FIELD(_atom_type_vector);
+  COPY_FIELD(_local_typej_vec);
+  COPY_FIELD(_cn1_vec);
+  COPY_FIELD(_cn2_vec);
+  COPY_FIELD(_NumberOfExcludedAtomIndexes);
+  COPY_FIELD(_ExcludedAtomIndexes);
+  COPY_FIELD(_InteractionsKept);
+  COPY_FIELD(_InteractionsDiscarded);
+
+  if (!this->_UsesExcludedAtoms) {
+    for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
+      Atom_sp a1 = edi->_Atom1_enb;
+      Atom_sp a2 = edi->_Atom2_enb;
+      if (skipInteraction(keepInteraction, a1, a2)) continue;
+      copy->_Terms.push_back(*edi);
+    }
+  } else {
+    if (keepInteraction==_lisp->_true()) {
+      // Everything was done above
+    } else {
+      SIMPLE_ERROR("EnergyNonbond uses excluded atoms and we don't support keepInteraction = {}", _rep_(keepInteraction));
+    }
   }
   return copy;
 }

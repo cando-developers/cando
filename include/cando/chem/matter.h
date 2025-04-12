@@ -183,6 +183,7 @@ protected:
 
  public:
   core::T_sp extract_coordinates(core::T_sp coords) const;
+  Matter_sp apply_coordinates(core::T_sp coords);
   contentIterator begin_contents() { return this->_Contents.begin(); };
   contentIterator end_contents() { return this->_Contents.end(); };
   const_contentIterator begin_contents() const { return this->_Contents.begin(); };

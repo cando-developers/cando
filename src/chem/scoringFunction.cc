@@ -474,4 +474,14 @@ void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp name, double energy 
   }
 }
 
+string EnergyComponents_O::__repr__() const {
+  stringstream ss;
+  ss << "#<EnergyComponents ";
+  for (auto cur : (core::List_sp)this->_Components ) {
+    core::Cons_sp entry = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    ss << _rep_(CONS_CAR(entry)) << " " << _rep_(CONS_CDR(entry)) << "\n";
+  }
+  ss << ">";
+  return ss.str();
+}
 };

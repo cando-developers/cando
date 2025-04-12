@@ -663,9 +663,11 @@ void Matter_O::applyTransformToRestraints(const Matrix& m)
   }
 }
 
-CL_DEFUN void chem__matter_apply_coordinates(Matter_sp matter, core::Array_sp coord_array)
+CL_DEFMETHOD
+Matter_sp Matter_O::apply_coordinates(core::T_sp coord_array)
 {
-  size_t numberOfAtoms = matter->numberOfAtoms();
+  size_t numberOfAtoms = this->numberOfAtoms();
+  Matter_sp matter = this->asSmartPtr();
   if ( gc::IsA<NVector_sp>(coord_array) ) {
     auto coords = gc::As_unsafe<NVector_sp>(coord_array);
     if ( (numberOfAtoms*3)!= coords->length()) {
@@ -682,7 +684,7 @@ CL_DEFUN void chem__matter_apply_coordinates(Matter_sp matter, core::Array_sp co
       idx += 3;
       atm->setPosition(pos);
     }
-    return;
+    return this->asSmartPtr();
   } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(coord_array)) {
     auto coords = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(coord_array);
     if ( (numberOfAtoms)!= coords->length()) {
@@ -699,10 +701,9 @@ CL_DEFUN void chem__matter_apply_coordinates(Matter_sp matter, core::Array_sp co
       idx++;
       atm->setPosition(pos);
     }
-    return;
+    return this->asSmartPtr();
   }
   TYPE_ERROR(coord_array,core::Cons_O::createList(NVector_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
-
 }
 
 CL_LAMBDA((self chem:matter) &optional coordinates)

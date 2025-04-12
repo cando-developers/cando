@@ -346,7 +346,7 @@ evaluates the body in that dynamic environment."
     (let* ((energy-components (chem:make-energy-components))
            (total-energy (chem:evaluate-all energy-function pos :component-energy energy-components)))
       (format sout "Total E. ~10,5f  mask ~a~%" total-energy (not (null active-atom-mask)))
-      (format sout "~s~%" (chem:energy-components/component-energies energy-components)))))
+      (format sout "~s~%" (chem:energy-components/components energy-components)))))
 #||
       (loop for component in components
             for comp-energy = (chem:energy-component-evaluate-energy energy-function component pos active-atom-mask)
@@ -364,7 +364,7 @@ evaluates the body in that dynamic environment."
 
 
 (defun amber-energy-components (energy-components)
-  (let* ((comps (chem:energy-components/component-energies energy-components))
+  (let* ((comps (chem:energy-components/components energy-components))
          (bond (cdr (assoc 'chem:energy-stretch comps)))
          (angle (cdr (assoc 'chem:energy-angle comps)))
          (dihed (cdr (assoc 'chem:energy-dihedral comps)))

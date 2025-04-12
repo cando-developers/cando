@@ -2120,7 +2120,8 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp
   if (coords.nilp()) {
     pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
   } else if (gc::IsA<NVector_sp>(coords)) {
-    pos = gc::As_unsafe<NVector_sp>(coords);
+    // Use a copy of the coords so we don't overwrite the input
+    pos = copy_nvector(gc::As_unsafe<NVector_sp>(coords),0,nil<core::T_O>());
     if (this->_ScoringFunction->getNVectorSize()!=pos->size()) {
       SIMPLE_ERROR("You provided coordinates but they have the wrong length {} elements - expected {} elements", pos->size(), this->_ScoringFunction->getNVectorSize());
     }

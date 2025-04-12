@@ -300,9 +300,11 @@ public:
   core::T_sp  _Components;
 public:
   EnergyComponents_O() : _Components(nil<core::T_O>()) {};
-
+  string __repr__() const;
   virtual void setEnergy(core::T_sp component, double energy );
-  CL_DEFMETHOD core::T_sp   componentEnergies() const { return this->_Components; };
+
+  CL_DOCSTRING("Return the components as a list of pairs (name energy)");
+  CL_DEFMETHOD core::T_sp components() const { return this->_Components; };
 };
 
 void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp energyComponentName, double energy );
