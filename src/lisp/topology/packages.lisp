@@ -508,7 +508,8 @@
    #:update-xyz-coords
    #:dihedral-range
    #:bin-dihedral-range
-   #:find-named-joints))
+   #:find-named-joints
+   #:conformers-database))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

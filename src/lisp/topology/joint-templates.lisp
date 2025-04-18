@@ -71,15 +71,15 @@
   (when (slot-boundp adjustment 'other)
     (let* ((joint (joint adjustment))
            (other (other adjustment))
-           (phi-original (kin:bonded-joint/get-phi joint))
-           (phi-other (kin:bonded-joint/get-phi other))
+           (phi-original (kin:bonded-joint/get-phi joint (internals assembler)))
+           (phi-other (kin:bonded-joint/get-phi other (internals assembler)))
            (phi-adjust (radians-add phi-other PI)))
       #+(or)(format t "internal-adjust ~s phi-original ~8,3f  phi-adjust ~8,3f~%"
               joint
               (topology:rad-to-deg phi-original) (topology:rad-to-deg phi-adjust))
       #+(or)(kin:bonded-joint/set-distance joint 1.47)
       #+(or)(kin:bonded-joint/set-theta joint (topology:deg-to-rad 120.0))
-      (fill-joint-phi joint phi-adjust)
+      (fill-joint-phi joint phi-adjust assembler)
       )))
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
@@ -430,10 +430,16 @@
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint
-           (etypecase nil-or-monomer-shape
-             (null (kin:make-bonded-joint atomid atom-name atom-table))
-             (rotamer-shape (kin:make-bonded-joint atomid atom-name atom-table))
-             (residue-shape (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom nil-or-monomer-shape atom-name))))))
+           (cond
+             ((null nil-or-monomer-shape)
+              (kin:make-bonded-joint atomid atom-name atom-table))
+             ((eq nil-or-monomer-shape :no-rotamer-shape)
+              (kin:make-bonded-joint atomid atom-name atom-table))
+             ((typep nil-or-monomer-shape 'rotamer-shape)
+              (kin:make-bonded-joint atomid atom-name atom-table))
+             ((tyepep nil-or-monomer-shape 'residue-shape)
+              (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom nil-or-monomer-shape atom-name)))
+             (t (error "Handle nil-or-monomer-shape of value ~s" nil-or-monomer-shape)))))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))

@@ -416,7 +416,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                 (funcall energy-function-factory aggregate)
                                 (chem:make-energy-function :matter aggregate)))
            (number-of-atoms (chem:number-of-atoms aggregate))
-           (interals (chem:make-nvector-nan (* 3 number-of-atoms)))
+           (internals (chem:make-nvector-nan (* 3 number-of-atoms)))
            (assembler (loop for oligomer-shape-molecule in oligomer-shapes-molecules
                             for oligomer-shape = (car oligomer-shape-molecule)
                             for oligomer = (oligomer oligomer-shape)
@@ -501,6 +501,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 
 (defun make-training-assembler (oligomers &key focus-monomer)
   "Build a assembler for the oligomers. This is used for building training molecules."
+  #+(or)
   (unless focus-monomer
     (error "For make-training-assembler focus-monomer is required"))
   (unless (every (lambda (os) (typep os 'oligomer)) oligomers)

@@ -43,14 +43,16 @@
       (make-instance 'rotamer-shape
                      :rotamer-shape-context-rotamers (rotamer-shape-context-rotamers monomer-shape))))
 
-(defun make-rotamer-shape (monomer oligomer)
+(defun make-rotamer-shape (monomer oligomer &key ignore-sidechains)
   "Convenience function to make a rotamer-shape for a MONOMER in an OLIGOMER.
 If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy its ROTAMER-INDEX."
   (let* ((foldamer (foldamer (oligomer-space oligomer)))
          (monomer-context (foldamer-monomer-context monomer oligomer foldamer))
          (rotamers-database (foldamer-rotamers-database foldamer))
-         (context-rotamers (topology:lookup-rotamers-for-context rotamers-database monomer-context)))
-    (make-instance 'rotamer-shape :rotamer-shape-context-rotamers context-rotamers)))
+         (context-rotamers (topology:lookup-rotamers-for-context rotamers-database monomer-context :ignore-sidechains ignore-sidechains :errorp nil :error-value :no-context-rotamers)))
+    (if (eq context-rotamers :no-context-rotamers)
+        :no-rotamer-shape
+        (make-instance 'rotamer-shape :rotamer-shape-context-rotamers context-rotamers))))
 
 (defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue &key verbose)
   (when verbose
@@ -70,6 +72,10 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
                      (elt rots rotamer-index))))
     (setf (rotamer-index atresidue) rotamer-index)
     (apply-fragment-internals-to-atresidue assembler rotamers rotamer-index atresidue)))
+
+(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (no-rotamer-shape symbol) monomer-context atresidue &key verbose)
+  (format t "Entered apply-monomer-shape-to-atresidue-internals with the no-rotamer-shape symbol")
+  )
 
 (defclass residue-shape (monomer-shape)
   ((residue :initarg :residue :reader residue)
@@ -332,7 +338,7 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
               for monomer across (monomers (oligomer-space oligomer)) ; (ordered-monomers oligomer)
               for monomer-context = (topology:foldamer-monomer-context monomer oligomer foldamer)
               ;; The following is not good - to not define a slot when rotamers-database is NIL
-              for context-rotamers = (topology:lookup-rotamers-for-context rotamers-database monomer-context)
+              ;; for context-rotamers = (topology:lookup-rotamers-for-context rotamers-database monomer-context)
               for shape-kind = (topology:shape-kind foldamer monomer oligomer)
               for couplings = (couplings monomer)
               for in-monomer = (let (in-monomer)
@@ -396,13 +402,14 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
                                                   &rest args
                                                   &key (name :default)
                                                     uninitialized
+                                                    ignore-sidechains
                                                     )
   "Build an oligomer-shape using only rotamer-shapes for OLIGOMER.
 By default initialize the rotamer-indexes to random allowed values.
 If UNINITIALIZED then leave them unbound."
   (let ((monomer-to-monomer-shape-map (loop with map = (make-hash-table)
                                             for monomer across (monomers (oligomer-space oligomer))
-                                            for monomer-shape = (make-rotamer-shape monomer oligomer)
+                                            for monomer-shape = (make-rotamer-shape monomer oligomer :ignore-sidechains ignore-sidechains)
                                             do (setf (gethash monomer map) monomer-shape)
                                             finally (return map))))
     (if uninitialized
@@ -743,15 +750,16 @@ If UNINITIALIZED then leave them unbound."
     (format t "       residue-shapes ~d      rotamer-shapes ~d~%" sidechain-residue-shapes sidechain-rotamer-shapes)
     ))
 
-(defun random-oligomer-shape-aggregate (oligomer-shape)
+(defun random-oligomer-shape-aggregate (oligomer-shape &key prepare-assembler)
   "Generate a random oligomer-shape and return the aggregate"
   (let* ((bs (make-permissible-backbone-rotamers oligomer-shape)))
     (write-rotamers oligomer-shape bs (random-rotamers bs))
     (let ((ss (make-permissible-sidechain-rotamers oligomer-shape)))
       (write-rotamers oligomer-shape ss (random-rotamers ss))
       (let* ((ass (make-assembler (list oligomer-shape)))
-             (coords (make-coordinates-for-assembler ass))
-             )
+             (coords (make-coordinates-for-assembler ass)))
+        (when prepare-assembler
+          (funcall prepare-assembler ass))
         (update-internals ass oligomer-shape)
         (update-externals ass :oligomer-shape oligomer-shape
                               :orientation oligomer-shape

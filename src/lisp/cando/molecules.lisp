@@ -309,8 +309,8 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                     (sd-tolerance 500.0)
                                     (cg-tolerance 0.5)
                                     (tn-tolerance 0.0001)
-                                    (max-sd-steps 500)
-                                    (max-cg-steps 500)
+                                    (max-sd-steps 1000)
+                                    (max-cg-steps 2000)
                                     (max-tn-steps 500)
                                     verbose)
   "Minimize energy of a structure with lots of control.

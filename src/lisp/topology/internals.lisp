@@ -416,11 +416,15 @@ changing the BACKBONE-DIHEDRAL-CACHE."
   ())
 
 
-(defclass rotamers-database (cando.serialize:serializable)
+(defclass rotamers-conformers-database (cando.serialize:serializable)
   ((context-to-rotamers :initarg :context-to-rotamers :initform (make-hash-table) :reader context-to-rotamers)
    (foldamer-name :initarg :foldamer-name :reader foldamer-name)))
 
-(defmethod print-object ((obj rotamers-database) stream)
+(defclass rotamers-database (rotamers-conformers-database) ())
+
+(defclass conformers-database (rotamers-conformers-database) ())
+
+(defmethod print-object ((obj rotamers-conformers-database) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t )
@@ -455,15 +459,30 @@ changing the BACKBONE-DIHEDRAL-CACHE."
 (defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
   (context-to-rotamers obj))
 
-(defgeneric lookup-rotamers-for-context (fcc context &optional errorp))
+(defmethod monomer-context-to-context-rotamers ((obj conformers-database))
+  (context-to-rotamers obj))
 
-(defmethod lookup-rotamers-for-context ((db rotamers-database) monomer-context &optional (errorp t))
+(defgeneric lookup-rotamers-for-context (fcc context &key errorp ignore-sidechains))
+
+(defmethod lookup-rotamers-for-context ((db rotamers-database) monomer-context &key (errorp t) ignore-sidechains)
+  (when ignore-sidechains
+    (error "ignore-sidechains is only allowed for a conformers-database"))
   (let ((rot (gethash monomer-context (context-to-rotamers db))))
     (if rot
         rot
         (if errorp
             (error "Could not find rotamers for ~s" monomer-context)
             nil))))
+
+(defmethod lookup-rotamers-for-context ((db conformers-database) monomer-context &key (errorp t) (error-value :no-sidechain-rotamer) ignore-sidechains)
+  (unless ignore-sidechains
+    (error "ignore-sidechains must be set for conformers-database"))
+  (let ((rot (gethash monomer-context (context-to-rotamers db))))
+    (if rot
+        rot
+        (if errorp
+            (error "Could not find rotamers for ~s" monomer-context)
+            error-value))))
 
 (defun extract-dihedral-joint (assembler monomer atom-name)
   (let* ((atres (assembler-atresidue assembler monomer))
@@ -504,16 +523,16 @@ changing the BACKBONE-DIHEDRAL-CACHE."
           else
             do (error "About to return a NIL joint for ~s" info))))
 
-(defun extract-dihedral-rad-from-joint (joint)
+(defun extract-dihedral-rad-from-joint (joint internals)
   "Return the internal dihedral value and if not available return (values 0.0 nil).
     If it is available return (values dihedral-rad joint). "
     (cond
       ((typep joint 'kin:complex-bonded-joint)
-       (if (kin:complex-bonded-joint/phi-defined-p joint)
-           (values (kin:bonded-joint/get-phi joint) joint)
+       (if (kin:complex-bonded-joint/phi-defined-p joint internals)
+           (values (kin:bonded-joint/get-phi joint) joint internals)
            (values 0.0 nil)))
       ((typep joint 'kin:bonded-joint)
-       (values (kin:bonded-joint/get-phi joint) joint))
+       (values (kin:bonded-joint/get-phi joint internals) joint))
       ;; Otherwise return zero because its
       ;; a jump-joint or a complex-bonded-joint
       ;; and the user said it was an important dihedral
@@ -536,9 +555,11 @@ changing the BACKBONE-DIHEDRAL-CACHE."
              (great-grand-parent-joint-index-x3 (and great-grand-parent-joint (kin:joint/position-index-x3 great-grand-parent-joint))))
         (list joint-index-x3 parent-joint-index-x3 grand-parent-joint-index-x3 great-grand-parent-joint-index-x3))))
 
-(defun find-named-fragment-internals-rad (focused-assembler dihedral-names)
+(defun find-named-fragment-internals-rad (focused-assembler dihedral-names internals)
   (let ((joints (find-named-joints focused-assembler  dihedral-names)))
-    (mapcar #'extract-dihedral-rad-from-joint joints)))
+    (mapcar (lambda (joint)
+              (extract-dihedral-rad-from-joint joint internals))
+            joints)))
 
 (defun joint-to-root-p (joint ht)
   "Return true if a path to the root can be found without hitting any joint in ht."
@@ -620,11 +641,11 @@ changing the BACKBONE-DIHEDRAL-CACHE."
 (defun cluster-dihedral-rad-vector (focused-assembler names &optional coords)
   (when coords
     (update-ataggregate-joint-tree-internal-coordinates focused-assembler coords))
-  (find-named-fragment-internals-rad focused-assembler names))
+  (find-named-fragment-internals-rad focused-assembler names (internals focused-assembler)))
 
 (defun cluster-dihedral-line-segments (focused-assembler fragment-internals names)
   "For debugging purposes, return line-segments for the dihedrals using in clustering"
-  (let ((dihedrals (find-named-fragment-line-segments focused-assembler fragment-internals names)))
+  (let ((dihedrals (find-named-fragment-line-segments focused-assembler names)))
     dihedrals))
 
 (defun calculate-cluster-dihedral-names (focus-monomer oligomer)
@@ -914,10 +935,10 @@ No checking is done to make sure that the list of clusterable-context-rotamers a
   (kin:fill-internals-from-simple-vector-single joint (internals assembler) vector index3))
 
 
-(defun fill-joint-phi (joint phi)
+(defun fill-joint-phi (joint phi assembler)
   "Write a dihedral angle in radians in PHI into the JOINT.
 I have this to trap writing specific phi values for debugging."
-  (kin:bonded-joint/set-phi joint phi))
+  (kin:bonded-joint/set-phi joint (internals assembler) phi))
 
 #+(or)
 (defmethod fill-joint-internals ((joint kin:bonded-joint) bond angle-rad dihedral-rad)

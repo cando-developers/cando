@@ -1,6 +1,7 @@
 (in-package :cando-user)
 
 (defvar *started-swank* nil)
+(defvar *swank-port* nil)
 
 (defvar *slime-home* nil
   "You can set cando-user:*slime-home* in your .clasprc to the pathname where slime is installed to start swank")
@@ -37,7 +38,8 @@
                                          (let ((port (funcall swank-create-server
                                                               :port port
                                                               :interface "0.0.0.0")))
-                                           (format t "Started swank server on port ~d~%" port))
+                                           (format t "Started swank server on port ~d~%" port)
+                                           (setf *swank-port* port))
                                          (format *debug-io* "Leaving server thread~%")))
               #+(or)(sleep 1)
               (setf *started-swank* t))))
@@ -48,7 +50,7 @@
 Within emacs use M-x slime-connect to connect."
   ;; Bad!  This is hard-coded to work with docker
   (if *started-swank*
-      (format t "Swank is already running~%")
+      (format t "Swank is already running on port ~a~%" *swank-port*)
       (if (find-package :cl-ipywidgets)
           (let ((save-jupyter-cell-state-symbol (find-symbol "SAVE-JUPYTER-CELL-STATE" :cl-ipywidgets)))
             (if save-jupyter-cell-state-symbol
