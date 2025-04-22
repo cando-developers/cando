@@ -337,6 +337,12 @@ changing the BACKBONE-DIHEDRAL-CACHE."
                                 :accessor backbone-dihedral-cache-deg)
    (shape-key :initarg :shape-key :accessor shape-key)))
 
+(defmethod print-object ((obj backbone-with-sidechain-rotamer) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~s" (shape-key obj)))))
+
 (defun make-backbone-with-sidechain-rotamer (&key internals-values delta-energy probability shape-key backbone-dihedral-cache-deg)
   (unless backbone-dihedral-cache-deg
     (error "You must provide the backbone-dihedral-cache-deg with shape-key ~s" shape-key))
@@ -424,6 +430,10 @@ changing the BACKBONE-DIHEDRAL-CACHE."
 
 (defclass conformers-database (rotamers-conformers-database) ())
 
+(defun get-conformers (monomer-context rotamers-conformers-database)
+  "Return the conformers for the MONOMER-CONTEXT in the ROTAMERS-CONFORMERS-DATABASE"
+  (gethash monomer-context (context-to-rotamers rotamers-conformers-database)))
+
 (defmethod print-object ((obj rotamers-conformers-database) stream)
   (if *print-readably*
       (call-next-method)
@@ -489,10 +499,9 @@ changing the BACKBONE-DIHEDRAL-CACHE."
          (joint (joint-with-name atres atom-name)))
     joint))
 
-(defun find-named-joints (focused-assembler dihedral-names)
+(defun find-named-joints (focused-assembler focus-monomer dihedral-names)
   "Gather up the joints that are named in dihedral-names."
-  (let* ((focus-monomer (focus-monomer focused-assembler))
-         (oligomer (oligomer-containing-monomer focused-assembler focus-monomer))
+  (let* ((oligomer (oligomer-containing-monomer focused-assembler focus-monomer))
          (focus-topology (chem:find-topology (oligomer-monomer-name-for-monomer oligomer focus-monomer)))
          (focus-constitution (constitution focus-topology))
          (focus-dihedrals (getf (residue-properties focus-constitution) :dihedrals))
@@ -556,7 +565,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
         (list joint-index-x3 parent-joint-index-x3 grand-parent-joint-index-x3 great-grand-parent-joint-index-x3))))
 
 (defun find-named-fragment-internals-rad (focused-assembler dihedral-names internals)
-  (let ((joints (find-named-joints focused-assembler  dihedral-names)))
+  (let ((joints (find-named-joints focused-assembler (focus-monomer focused-assembler) dihedral-names)))
     (mapcar (lambda (joint)
               (extract-dihedral-rad-from-joint joint internals))
             joints)))
@@ -584,8 +593,8 @@ changing the BACKBONE-DIHEDRAL-CACHE."
             do (return-from find-joint-closest-to-root joint)))
   (error "Could not find a joint closest to root joints: ~s" joints))
 
-(defun find-named-fragment-canonical-transform (focused-assembler dihedral-names coords)
-  (let* ((joints (find-named-joints focused-assembler dihedral-names))
+(defun find-named-fragment-canonical-transform (focused-assembler focus-monomer dihedral-names coords)
+  (let* ((joints (find-named-joints focused-assembler focus-monomer dihedral-names))
          (joint-closest-to-root (find-joint-closest-to-root joints))
          (maybe-transform nil))
     (when (kin:joint/parent-bound-p joint-closest-to-root)
@@ -621,7 +630,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
         (geom:make-matrix t))))
 
 (defun find-named-fragment-line-segments (focused-assembler dihedral-names)
-  (let* ((joints (find-named-joints focused-assembler dihedral-names)))
+  (let* ((joints (find-named-joints focused-assembler (focus-monomer focused-assembler) dihedral-names)))
     (mapcar (lambda (joint) (extract-dihedral-line-segment-from-joint joint))
             joints)))
 

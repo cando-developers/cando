@@ -121,6 +121,10 @@ default to the identity matrix."
    (ataggregate :initarg :ataggregate :accessor ataggregate)
    (joint-tree :initarg :joint-tree :accessor joint-tree)))
 
+(defun get-monomer-context (monomer assembler-base)
+  "Lookup a monomer-context using the MONOMER and ASSEMBLER-BASE"
+  (gethash monomer (monomer-contexts assembler-base)))
+
 (defclass assembler (assembler-base)
   ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
    (orientations :initarg :orientations :reader orientations)

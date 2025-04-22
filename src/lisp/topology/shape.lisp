@@ -74,7 +74,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
     (apply-fragment-internals-to-atresidue assembler rotamers rotamer-index atresidue)))
 
 (defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (no-rotamer-shape symbol) monomer-context atresidue &key verbose)
-  (format t "Entered apply-monomer-shape-to-atresidue-internals with the no-rotamer-shape symbol")
+  ;;(format t "Entered apply-monomer-shape-to-atresidue-internals with the no-rotamer-shape symbol~%")
   )
 
 (defclass residue-shape (monomer-shape)
@@ -765,9 +765,7 @@ If UNINITIALIZED then leave them unbound."
                               :orientation oligomer-shape
                               :coords coords)
         (copy-all-joint-positions-into-atoms ass coords)
-        (aggregate ass)))))
-
-
+        (values (aggregate ass) ass)))))
 
 (defun build-rotamer-shape-map (oligomer)
   "Build a monomer-to-monomer-shape-map of only rotamer-shapes.

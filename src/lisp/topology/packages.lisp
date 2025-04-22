@@ -509,7 +509,9 @@
    #:dihedral-range
    #:bin-dihedral-range
    #:find-named-joints
-   #:conformers-database))
+   #:conformers-database
+   #:get-monomer-context
+   #:get-conformers))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
