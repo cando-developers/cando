@@ -1749,7 +1749,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   rmsForceMag = rmsMagnitudeWithActiveAtomMask(forceK,activeAtomMask);
   if ( this->_PrintIntermediateResults )
   {
-    this->_displayIntermediateMessage( pos,prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false,false,activeAtomMask);
+    this->_displayIntermediateMessage(pos,prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false,false,activeAtomMask);
   }
 
     //
