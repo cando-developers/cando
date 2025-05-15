@@ -358,15 +358,6 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
       dQ1Q2 = calculate_dQ1Q2(1.0, dQ1Q2Scale, charge11, charge22);
 //      printf("%s:%d charge1     {} and charge2     {}\n", __FILE__, __LINE__, charge11, charge22);
 //      printf("%s:%d electrostaticScale     {} and dQ1Q2     {}\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
-#ifdef DEBUG_NONBOND_TERM
-      if (mthis->_DebugEnergy) {
-        LOG_ENERGY(("nonbond localindex1 {}\n"), localindex1);
-        LOG_ENERGY(("nonbond localindex2 {}\n"), localindex2);
-        LOG_ENERGY(("nonbond dA {:5.3f}\n"), dA);
-        LOG_ENERGY(("nonbond dC {:5.3f}\n"), dC);
-        LOG_ENERGY(("nonbond dQ1Q2 {:5.3f}\n"), dQ1Q2);
-      }
-#endif
       ////////////////////////////////////////////////////////////
       //
       // To here
@@ -374,19 +365,6 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
       ////////////////////////////////////////////////////////////
       I1 = index1 * 3;
       I2 = index2 * 3;
-#ifdef DEBUG_NONBOND_TERM
-      if (mthis->_DebugEnergy) {
-        LOG_ENERGY(("nonbond I1 {}\n"), I1);
-        LOG_ENERGY(("nonbond I2 {}\n"), I2);
-      }
-#endif
-#ifdef DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if (mthis->_Debug_NumberOfNonbondTermsToCalculate > 0) {
-        if (i >= mthis->_Debug_NumberOfNonbondTermsToCalculate) {
-          break;
-        }
-      }
-#endif
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #undef CUTOFF_SQUARED
 #undef DIELECTRIC
@@ -405,39 +383,6 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
 #include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
 #endif //]
 #ifdef DEBUG_NONBOND_TERM
-      if (mthis->_DebugEnergy) {
-        std::string key;
-        std::string atom1Name = gc::As<core::Symbol_sp>((*mthis->_atom_name_vector)[index1])->symbolNameAsString();
-        std::string atom2Name = gc::As<core::Symbol_sp>((*mthis->_atom_name_vector)[index2])->symbolNameAsString();
-        if (atom1Name < atom2Name) {
-          key = atom1Name + "-" + atom2Name;
-        } else {
-          key = atom2Name + "-" + atom1Name;
-        }
-        LOG_ENERGY(("MEISTER nonbond {} args cando\n"), key);
-        LOG_ENERGY(("MEISTER nonbond {} dA {:5.3f}\n"), key, dA);
-        LOG_ENERGY(("MEISTER nonbond {} dC {:5.3f}\n"), key, dC);
-        LOG_ENERGY(("MEISTER nonbond {} dQ1Q2 {:5.3f}\n"), key, dQ1Q2);
-        LOG_ENERGY(("MEISTER nonbond {} x1 {:5.3f} {}\n"), key, x1, (I1 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} y1 {:5.3f} {}\n"), key, y1, (I1 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} z1 {:5.3f} {}\n"), key, z1, (I1 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} x2 {:5.3f} {}\n"), key, x2, (I2 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} y2 {:5.3f} {}\n"), key, y2, (I2 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} z2 {:5.3f} {}\n"), key, z2, (I2 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} results\n"), key);
-        LOG_ENERGY(("MEISTER nonbond {} evdw {}\n"), key, Evdw);
-        LOG_ENERGY(("MEISTER nonbond {} eeel {}\n"), key, Eeel);
-        LOG_ENERGY(("MEISTER nonbond {} Enonbond(evdw+eeel) {}\n"), key, (Evdw + Eeel));
-        if (calcForce) {
-          LOG_ENERGY(("MEISTER nonbond {} fx1 {} {}\n"), key, fx1, (I1 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} fy1 {} {}\n"), key, fy1, (I1 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} fz1 {} {}\n"), key, fz1, (I1 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} fx2 {} {}\n"), key, fx2, (I2 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} fy2 {} {}\n"), key, fy2, (I2 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} fz2 {} {}\n"), key, fz2, (I2 / 3 + 1));
-        }
-        LOG_ENERGY(("MEISTER nonbond {} stop\n"), key);
-      }
 #endif
       // BOTTOM-INNER
     }
@@ -570,45 +515,6 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
 #include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
 #endif //]
 
-#ifdef DEBUG_NONBOND_TERM
-        if (mthis->_DebugEnergy) {
-          std::string key;
-          std::string key1 = nbi->_Atom1->getName()->symbolNameAsString();
-          std::string key2 = nbi->_Atom2->getName()->symbolNameAsString();
-          if (key1 < key2) {
-            key = key1 + "-" + key2;
-          } else {
-            key = key2 + "-" + key1;
-          }
-          if (nbi->_Is14) {
-            LOG_ENERGY("MEISTER nonbond {} 1-4 args cando\n", key);
-          } else {
-            LOG_ENERGY(("MEISTER nonbond {} args cando\n"), key);
-          }
-          LOG_ENERGY(("MEISTER nonbond {} dA {:5.3f}\n"), key, (nbi->term.dA));
-          LOG_ENERGY(("MEISTER nonbond {} dC {:5.3f}\n"), key, (nbi->term.dC));
-          LOG_ENERGY(("MEISTER nonbond {} dQ1Q2 {:5.3f}\n"), key, (nbi->term.dQ1Q2));
-          LOG_ENERGY(("MEISTER nonbond {} x1 {:5.3f} {}\n"), key, x1, (I1 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} y1 {:5.3f} {}\n"), key, y1, (I1 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} z1 {:5.3f} {}\n"), key, z1, (I1 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} x2 {:5.3f} {}\n"), key, x2, (I2 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} y2 {:5.3f} {}\n"), key, y2, (I2 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} z2 {:5.3f} {}\n"), key, z2, (I2 / 3 + 1));
-          LOG_ENERGY(("MEISTER nonbond {} results\n"), key);
-          LOG_ENERGY(("MEISTER nonbond {} evdw {}\n"), key, Evdw);
-          LOG_ENERGY(("MEISTER nonbond {} eeel {}\n"), key, Eeel);
-          LOG_ENERGY(("MEISTER nonbond {} Enonbond(evdw+eeel) {}\n"), key, (Evdw + Eeel));
-          if (calcForce) {
-            LOG_ENERGY(("MEISTER nonbond {} fx1 {} {}\n"), key, fx1, (I1 / 3 + 1));
-            LOG_ENERGY(("MEISTER nonbond {} fy1 {} {}\n"), key, fy1, (I1 / 3 + 1));
-            LOG_ENERGY(("MEISTER nonbond {} fz1 {} {}\n"), key, fz1, (I1 / 3 + 1));
-            LOG_ENERGY(("MEISTER nonbond {} fx2 {} {}\n"), key, fx2, (I2 / 3 + 1));
-            LOG_ENERGY(("MEISTER nonbond {} fy2 {} {}\n"), key, fy2, (I2 / 3 + 1));
-            LOG_ENERGY(("MEISTER nonbond {} fz2 {} {}\n"), key, fz2, (I2 / 3 + 1));
-          }
-          LOG_ENERGY(("MEISTER nonbond {} stop\n"), key);
-        }
-#endif
       }
     }
   }
@@ -984,42 +890,6 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp
       ++termIndex;
 //      printf( "nonbond index1 name %s index2 %s\n",  this->_AtomTable->elt_atom_name(index1),
 //      this->_AtomTable->elt_atom_name(index2));
-#ifdef DEBUG_NONBOND_TERM
-      if (this->_DebugEnergy) {
-        std::string key;
-        std::string atom1Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index1])->symbolNameAsString();
-        std::string atom2Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index2])->symbolNameAsString();
-        if (atom1Name < atom2Name) {
-          key = atom1Name + "-" + atom2Name;
-        } else {
-          key = atom2Name + "-" + atom1Name;
-        }
-        // printf( "nonbond {}  vdw({}) electrostatic({})\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
-        LOG_ENERGY(("MEISTER nonbond {} args cando\n"), key);
-        LOG_ENERGY(("MEISTER nonbond {} dA {:5.3f}\n"), key, dA);
-        LOG_ENERGY(("MEISTER nonbond {} dC {:5.3f}\n"), key, dC);
-        LOG_ENERGY(("MEISTER nonbond {} dQ1Q2 {:5.3f}\n"), key, dQ1Q2);
-        LOG_ENERGY(("MEISTER nonbond {} x1 {:5.3f} {}\n"), key, x1, (I1 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} y1 {:5.3f} {}\n"), key, y1, (I1 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} z1 {:5.3f} {}\n"), key, z1, (I1 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} x2 {:5.3f} {}\n"), key, x2, (I2 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} y2 {:5.3f} {}\n"), key, y2, (I2 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} z2 {:5.3f} {}\n"), key, z2, (I2 / 3 + 1));
-        LOG_ENERGY(("MEISTER nonbond {} results\n"), key);
-        //        LOG_ENERGY(( "MEISTER nonbond {} evdw {}\n") , key , Evdw);
-        //        LOG_ENERGY(( "MEISTER nonbond {} eeel {}\n") , key , Eeel);
-        //        LOG_ENERGY(( "MEISTER nonbond {} Enonbond(evdw+eeel) {}\n") , key , (Evdw+Eeel) );
-        //        if ( calcForce ) {
-        //          LOG_ENERGY(( "MEISTER nonbond {} fx1 {} {}\n") , key , fx1 , (I1/3+1) );
-        //          LOG_ENERGY(( "MEISTER nonbond {} fy1 {} {}\n") , key , fy1 , (I1/3+1) );
-        //          LOG_ENERGY(( "MEISTER nonbond {} fz1 {} {}\n") , key , fz1 , (I1/3+1) );
-        //          LOG_ENERGY(( "MEISTER nonbond {} fx2 {} {}\n") , key , fx2 , (I2/3+1) );
-        //          LOG_ENERGY(( "MEISTER nonbond {} fy2 {} {}\n") , key , fy2 , (I2/3+1) );
-        //          LOG_ENERGY(( "MEISTER nonbond {} fz2 {} {}\n") , key , fz2 , (I2/3+1) );
-        //        }
-        LOG_ENERGY(("MEISTER nonbond {} stop\n"), key);
-      }
-#endif
     }
     if (!has_excluded_atoms) {
       // No excluded atoms for the current index2 so increment excludedAtomIndex because inner loop didn't do it.
@@ -1040,7 +910,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg, force);
 
 void EnergyNonbond_O::initialize() {
   this->Base::initialize();
-  this->setErrorThreshold(1.0);
 }
 
 void EnergyNonbond_O::addTerm(const EnergyNonbond &term) { this->_Terms.push_back(term); }
@@ -1364,6 +1233,7 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
 
 EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory) {
   EnergyNonbond_sp copy = EnergyNonbond_O::create();
+  copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
 
 #define COPY_FIELD(xxx) { copy->xxx = this->xxx; }

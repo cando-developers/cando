@@ -47,7 +47,6 @@ namespace chem {
 void	EnergyComponent_O::initialize()
 {
   this->Base::initialize();
-  this->setDebug_NumberOfTermsToCalculate(-1);
 }
 
 
@@ -146,5 +145,10 @@ EnergyComponent_sp EnergyComponent_O::filterCopyComponent(core::T_sp keepInterac
   IMPLEMENT_ME();
 }
 
+void copyEnergyComponent(EnergyComponent_sp newComponent, EnergyComponent_sp orig )
+{
+  newComponent->_Enabled = orig->_Enabled;
+  newComponent->_Scale = orig->_Scale;
+}
 
 };

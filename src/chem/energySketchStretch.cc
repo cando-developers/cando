@@ -194,10 +194,6 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
-  if ( this->_DebugEnergy ) {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n") , this->className());
-  }
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -253,37 +249,6 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #define EVAL_SET(var,val) {si->eval.var=val;}
 #include <cando/chem/energy_functions/_Stretch_debugEvalSet.cc>
 #endif //]
-      if ( this->_DebugEnergy ) {
-        LOG_ENERGY(( "MEISTER stretch %d args cando\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER stretch %d address %x \n") , (i+1) , (&(*si)) );
-        LOG_ENERGY(( "MEISTER stretch %d r0 %5.3lf\n") , (i+1) , r0 );
-        LOG_ENERGY(( "MEISTER stretch %d kb %5.1lf\n") , (i+1) , kb );
-        LOG_ENERGY(( "MEISTER stretch %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER stretch %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER stretch %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER stretch %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER stretch %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER stretch %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER stretch %d results\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER stretch %d Energy %lf\n") , (i+1) , Energy );
-        if ( calcForce ) {
-          LOG_ENERGY(( "MEISTER stretch %d fx1 %lf %d\n") , (i+1) , fx1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER stretch %d fy1 %lf %d\n") , (i+1) , fy1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER stretch %d fz1 %lf %d\n") , (i+1) , fz1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER stretch %d fx2 %lf %d\n") , (i+1) , fx2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER stretch %d fy2 %lf %d\n") , (i+1) , fy2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER stretch %d fz2 %lf %d\n") , (i+1) , fz2 , (I2/3+1) );
-        }
-        LOG_ENERGY(( "MEISTER stretch %d stop\n") , (i+1) );
-      }
-		/* Add the forces */
-
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
     }
   }
   maybeSetEnergy( componentEnergy, EnergySketchStretch_O::static_classSymbol(), totalEnergy );
@@ -304,7 +269,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg,force);
 void EnergySketchStretch_O::initialize()
 {
   this->Base::initialize();
-  this->setErrorThreshold(0.05);
 }
 
 void EnergySketchStretch_O::fields(core::Record_sp node)

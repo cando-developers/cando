@@ -511,7 +511,13 @@
    #:find-named-joints
    #:conformers-database
    #:get-monomer-context
-   #:get-conformers))
+   #:get-conformers
+   #:aggregate-with-coordinates
+   #:lookup-rotamer-limit-data
+   #:rotamer-limit-data
+   #:driver-kind
+   #:dihedrals-deg
+   #:rotamer-limits))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

@@ -2181,18 +2181,6 @@ CL_DEFUN void chem__fill_energy_function_from_alist(EnergyFunction_sp energy, co
   energy->_Nonbond = (safe_alist_lookup<EnergyNonbond_sp>(alist,kw::_sym_nonbond));
 }
 
-
-void EnergyFunction_O::enableDebug()
-{
-  ALL_ENERGY_COMPONENTS(enableDebug());
-}
-
-void EnergyFunction_O::disableDebug()
-{
-  ALL_ENERGY_COMPONENTS(disableDebug());
-}
-
-
 CL_DEFMETHOD
 EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory)
 {

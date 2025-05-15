@@ -317,11 +317,6 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
   this->_Evaluations++;
-  if ( this->_DebugEnergy ) {
-    core::clasp_write_string(fmt::format("{}\n" , __FUNCTION__ ));
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {") , this->className());
-  }
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -371,22 +366,11 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         }
       }
 #endif
-  if ( this->_DebugEnergy ) {
-    core::clasp_write_string(fmt::format("Evaluating term: {}\n" , i ));
-  }
-    
 #define DEBUG_IMPROPER_RESTRAINT 1
 #define VEC_CONST(x) (x) 
 #include INCLUDE_TERM_CODE
 #undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
-#if 0
-      if ( EraseLinearDihedral == 0.0 ) {
-        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4),
-                                                                      kw::_sym_coordinates,pos,
-                                                                      kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
-      }
-#endif
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       iri->_calcForce = calcForce;
       iri->_calcDiagonalHessian = calcDiagonalHessian;
@@ -396,94 +380,16 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 #include INCLUDE_DEBUG_EVAL_SET
 #endif //]
 
-      if ( this->_DebugEnergy ) 
-      {
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} args cando\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} kdh {:f}\n" , (i+1) , kdh ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} phi0 {:f}\n" , (i+1) , phi0 ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x1 {:5.3f} {}\n" , (i+1) , x1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y1 {:5.3f} {}\n" , (i+1) , y1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z1 {:5.3f} {}\n" , (i+1) , z1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x2 {:5.3f} {}\n" , (i+1) , x2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y2 {:5.3f} {}\n" , (i+1) , y2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z2 {:5.3f} {}\n" , (i+1) , z2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x3 {:5.3f} {}\n" , (i+1) , x3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y3 {:5.3f} {}\n" , (i+1) , y3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z3 {:5.3f} {}\n" , (i+1) , z3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x4 {:5.3f} {}\n" , (i+1) , x4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y4 {:5.3f} {}\n" , (i+1) , y4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z4 {:5.3f} {}\n" , (i+1) , z4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} results\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Energy {:f}\n" , (i+1) , Energy));
-        if ( calcForce ) 
-        {
-//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx1 {:8.5f} {}\n", (i+1) , fx1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy1 {:8.5f} {}\n", (i+1) , fy1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz1 {:8.5f} {}\n", (i+1) , fz1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx2 {:8.5f} {}\n", (i+1) , fx2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy2 {:8.5f} {}\n", (i+1) , fy2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz2 {:8.5f} {}\n", (i+1) , fz2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx3 {:8.5f} {}\n", (i+1) , fx3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy3 {:8.5f} {}\n", (i+1) , fy3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz3 {:8.5f} {}\n", (i+1) , fz3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx4 {:8.5f} {}\n", (i+1) , fx4 , (I4/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy4 {:8.5f} {}\n", (i+1) , fy4 , (I4/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz4 {:8.5f} {}\n", (i+1) , fz4 , (I4/3+1) ));
-        }
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} stop\n" , (i+1) ));
-        LOG_ENERGY(( "MEISTER improperRestraint %d args cando\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d K %lf\n") , (i+1) , K );
-        LOG_ENERGY(( "MEISTER improperRestraint %d U %lf\n") , (i+1) , U );
-        LOG_ENERGY(( "MEISTER improperRestraint %d L %lf\n") , (i+1) , L );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d results\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d CosPhi %lf\n") , (i+1) , CosPhi );
-        LOG_ENERGY(( "MEISTER improperRestraint %d SinPhi %lf\n") , (i+1) , SinPhi );
-        LOG_ENERGY(( "MEISTER improperRestraint %d Phi %lf\n") , (i+1) , Phi );
-        LOG_ENERGY(( "MEISTER improperRestraint %d Energy %lf\n") , (i+1) , Energy);
-        if ( calcForce ) {
-//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
-        }
-        LOG_ENERGY(( "MEISTER improperRestraint %d stop\n") , (i+1) );
-      }
-			/* Add the forces */
-
     }
   }
   LOG_ENERGY(( "DihedralRestraint energy = %lf\n") , (double)(this->_TotalEnergy) );
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
-  }
   maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 
-#if 0
+
+CL_LAMBDA((energy-dihedral-restraint chem:energy-dihedral-restraint) energy-function term-index pos &key energy-scale component-energy calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions);
+CL_DEFMETHOD
 double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
                                                    size_t termIndex, 
                                                    chem::NVector_sp 	pos,
@@ -503,11 +409,6 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
   this->_Evaluations++;
-  if ( this->_DebugEnergy ) {
-    core::clasp_write_string(fmt::format("{}\n" , __FUNCTION__ ));
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {") , this->className());
-  }
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -520,23 +421,23 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
 // Copy from implementAmberFunction::evaluateAll
 //
 // -----------------------
-#define IMPROPER_RESTRAINT_CALC_FORCE
-#define IMPROPER_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define IMPROPER_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	IMPROPER_RESTRAINT_SET_PARAMETER
-#define	IMPROPER_RESTRAINT_SET_PARAMETER(x)	{x = iri->term.x;}
-#undef	IMPROPER_RESTRAINT_SET_POSITION
-#define	IMPROPER_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	IMPROPER_RESTRAINT_PHI_SET
-#define	IMPROPER_RESTRAINT_PHI_SET(x) {}
-#undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
-#undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
-#undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_FORCE_ACCUMULATE 		ForceAcc
-#define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
+#define DIHEDRAL_HARMONIC_CALC_FORCE
+#define DIHEDRAL_HARMONIC_CALC_DIAGONAL_HESSIAN
+#define DIHEDRAL_HARMONIC_CALC_OFF_DIAGONAL_HESSIAN
+#undef	DIHEDRAL_HARMONIC_SET_PARAMETER
+#define	DIHEDRAL_HARMONIC_SET_PARAMETER(x)	{x = iri->term.x;}
+#undef	DIHEDRAL_HARMONIC_SET_POSITION
+#define	DIHEDRAL_HARMONIC_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
+#undef	DIHEDRAL_HARMONIC_PHI_SET
+#define	DIHEDRAL_HARMONIC_PHI_SET(x) {}
+#undef	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE(e) totalEnergy += (e);
+#undef	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE
+#undef	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE
+#undef	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE 		ForceAcc
+#define	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
+#define	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
   {
 #pragma clang diagnostic push
@@ -544,8 +445,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
 #include INCLUDE_TERM_DECLARES
 #pragma clang diagnostic pop
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    num_real K,U,L;
-    num_real EraseLinearDihedral, UShift, PhiShift;
+    num_real kdh, phi0;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
     gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
@@ -559,20 +459,11 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
         }
       }
 #endif
-      if ( this->_DebugEnergy ) {
-        core::clasp_write_string(fmt::format("Evaluating term: {}\n" , i ));
-      }
-    
 #define DEBUG_IMPROPER_RESTRAINT 1
 #define VEC_CONST(x) (x) 
 #include	INCLUDE_TERM_CODE
 #undef VEC_CONST
 #undef DEBUG_IMPROPER_RESTRAINT
-      if ( EraseLinearDihedral == 0.0 ) {
-        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4),
-                                                                      kw::_sym_coordinates,pos,
-                                                                      kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
-      }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       iri->_calcForce = calcForce;
       iri->_calcDiagonalHessian = calcDiagonalHessian;
@@ -582,305 +473,12 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
 #include INCLUDE_DEBUG_EVAL_SET
 #endif //]
 
-      if ( this->_DebugEnergy ) 
-      {
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} args cando\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} K {:f}\n" , (i+1) , K ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} U {:f}\n" , (i+1) , U ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} L {:f}\n" , (i+1) , L ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x1 {:5.3f} {}\n" , (i+1) , x1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y1 {:5.3f} {}\n" , (i+1) , y1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z1 {:5.3f} {}\n" , (i+1) , z1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x2 {:5.3f} {}\n" , (i+1) , x2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y2 {:5.3f} {}\n" , (i+1) , y2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z2 {:5.3f} {}\n" , (i+1) , z2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x3 {:5.3f} {}\n" , (i+1) , x3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y3 {:5.3f} {}\n" , (i+1) , y3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z3 {:5.3f} {}\n" , (i+1) , z3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x4 {:5.3f} {}\n" , (i+1) , x4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y4 {:5.3f} {}\n" , (i+1) , y4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z4 {:5.3f} {}\n" , (i+1) , z4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} results\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} CosPhi {:f}\n" , (i+1) , CosPhi ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} SinPhi {:f}\n" , (i+1) , SinPhi ));
-        if ( CosPhi>0.1 ) {
-          Phi = safe_asin(SinPhi);
-        } else {
-          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
-        }
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Phi {:f}\n" , (i+1) , Phi ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Energy {:f}\n" , (i+1) , Energy));
-        if ( calcForce ) 
-        {
-//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx1 {:8.5f} {}\n", (i+1) , fx1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy1 {:8.5f} {}\n", (i+1) , fy1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz1 {:8.5f} {}\n", (i+1) , fz1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx2 {:8.5f} {}\n", (i+1) , fx2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy2 {:8.5f} {}\n", (i+1) , fy2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz2 {:8.5f} {}\n", (i+1) , fz2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx3 {:8.5f} {}\n", (i+1) , fx3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy3 {:8.5f} {}\n", (i+1) , fy3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz3 {:8.5f} {}\n", (i+1) , fz3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx4 {:8.5f} {}\n", (i+1) , fx4 , (I4/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy4 {:8.5f} {}\n", (i+1) , fy4 , (I4/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz4 {:8.5f} {}\n", (i+1) , fz4 , (I4/3+1) ));
-        }
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} stop\n" , (i+1) ));
-        LOG_ENERGY(( "MEISTER improperRestraint %d args cando\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d K %lf\n") , (i+1) , K );
-        LOG_ENERGY(( "MEISTER improperRestraint %d U %lf\n") , (i+1) , U );
-        LOG_ENERGY(( "MEISTER improperRestraint %d L %lf\n") , (i+1) , L );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d results\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d CosPhi %lf\n") , (i+1) , CosPhi );
-        LOG_ENERGY(( "MEISTER improperRestraint %d SinPhi %lf\n") , (i+1) , SinPhi );
-        if ( CosPhi>0.1 ) {
-          Phi = safe_asin(SinPhi);
-        } else {
-          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
-        }
-        LOG_ENERGY(( "MEISTER improperRestraint %d Phi %lf\n") , (i+1) , Phi );
-        LOG_ENERGY(( "MEISTER improperRestraint %d Energy %lf\n") , (i+1) , Energy);
-        if ( calcForce ) {
-//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
-        }
-        LOG_ENERGY(( "MEISTER improperRestraint %d stop\n") , (i+1) );
-      }
-			/* Add the forces */
     }
   }
   LOG_ENERGY(( "DihedralRestraint energy = %lf\n") , (double)(this->_TotalEnergy) );
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
-  }
   maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
-#endif
-#if 0
-double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
-                                                   size_t termIndex, 
-                                                   chem::NVector_sp 	pos,
-                                                   core::T_sp energyScale,
-                                                   core::T_sp componentEnergy,
-                                                   bool 		calcForce,
-                                                   gc::Nilable<chem::NVector_sp> 	force,
-                                                   bool		calcDiagonalHessian,
-                                                   bool		calcOffDiagonalHessian,
-                                                   gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                                   gc::Nilable<chem::NVector_sp>	hdvec,
-                                                   gc::Nilable<chem::NVector_sp> dvec,
-                                                   core::T_sp activeAtomMask,
-                                                   core::T_sp debugInteractions )
-{
-  MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
-  double totalEnergy = 0.0;
-  this->_Evaluations++;
-  if ( this->_DebugEnergy ) {
-    core::clasp_write_string(fmt::format("{}\n" , __FUNCTION__ ));
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {") , this->className());
-  }
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-
-//
-// Copy from implementAmberFunction::evaluateAll
-//
-// -----------------------
-#define IMPROPER_RESTRAINT_CALC_FORCE
-#define IMPROPER_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define IMPROPER_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	IMPROPER_RESTRAINT_SET_PARAMETER
-#define	IMPROPER_RESTRAINT_SET_PARAMETER(x)	{x = iri->term.x;}
-#undef	IMPROPER_RESTRAINT_SET_POSITION
-#define	IMPROPER_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	IMPROPER_RESTRAINT_PHI_SET
-#define	IMPROPER_RESTRAINT_PHI_SET(x) {}
-#undef	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE
-#define	IMPROPER_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
-#undef	IMPROPER_RESTRAINT_FORCE_ACCUMULATE
-#undef	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	IMPROPER_RESTRAINT_FORCE_ACCUMULATE 		ForceAcc
-#define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include INCLUDE_TERM_DECLARES
-#pragma clang diagnostic pop
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    num_real K,U,L;
-    num_real EraseLinearDihedral, UShift, PhiShift;
-    bool RestraintActive;
-    int	I1, I2, I3, I4,i;
-    gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
-    i = termIndex;
-    iri = this->_Terms.begin()+termIndex;
-    { 
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfDihedralRestraintTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfDihedralRestraintTermsToCalculate ) {
-          break;
-        }
-      }
-#endif
-      if ( this->_DebugEnergy ) {
-        core::clasp_write_string(fmt::format("Evaluating term: {}\n" , i ));
-      }
-    
-#define DEBUG_IMPROPER_RESTRAINT 1
-#define VEC_CONST(x) (x) 
-#include	INCLUDE_TERM_CODE
-#undef VEC_CONST
-#undef DEBUG_IMPROPER_RESTRAINT
-      if ( EraseLinearDihedral == 0.0 ) {
-        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4),
-                                                                      kw::_sym_coordinates,pos,
-                                                                      kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
-      }
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-      iri->_calcForce = calcForce;
-      iri->_calcDiagonalHessian = calcDiagonalHessian;
-      iri->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-#undef EVAL_SET
-#define EVAL_SET(var,val)	{ iri->eval.var=val;};
-#include INCLUDE_DEBUG_EVAL_SET
-#endif //]
-
-      if ( this->_DebugEnergy ) 
-      {
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} args cando\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} K {:f}\n" , (i+1) , K ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} U {:f}\n" , (i+1) , U ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} L {:f}\n" , (i+1) , L ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x1 {:5.3f} {}\n" , (i+1) , x1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y1 {:5.3f} {}\n" , (i+1) , y1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z1 {:5.3f} {}\n" , (i+1) , z1 , (I1/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x2 {:5.3f} {}\n" , (i+1) , x2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y2 {:5.3f} {}\n" , (i+1) , y2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z2 {:5.3f} {}\n" , (i+1) , z2 , (I2/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x3 {:5.3f} {}\n" , (i+1) , x3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y3 {:5.3f} {}\n" , (i+1) , y3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z3 {:5.3f} {}\n" , (i+1) , z3 , (I3/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} x4 {:5.3f} {}\n" , (i+1) , x4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} y4 {:5.3f} {}\n" , (i+1) , y4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} z4 {:5.3f} {}\n" , (i+1) , z4 , (I4/3+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} results\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} CosPhi {:f}\n" , (i+1) , CosPhi ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} SinPhi {:f}\n" , (i+1) , SinPhi ));
-        if ( CosPhi>0.1 ) {
-          Phi = safe_asin(SinPhi);
-        } else {
-          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
-        }
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Phi {:f}\n" , (i+1) , Phi ));
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} Energy {:f}\n" , (i+1) , Energy));
-        if ( calcForce ) 
-        {
-//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx1 {:8.5f} {}\n", (i+1) , fx1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy1 {:8.5f} {}\n", (i+1) , fy1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz1 {:8.5f} {}\n", (i+1) , fz1 , (I1/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx2 {:8.5f} {}\n", (i+1) , fx2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy2 {:8.5f} {}\n", (i+1) , fy2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz2 {:8.5f} {}\n", (i+1) , fz2 , (I2/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx3 {:8.5f} {}\n", (i+1) , fx3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy3 {:8.5f} {}\n", (i+1) , fy3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz3 {:8.5f} {}\n", (i+1) , fz3 , (I3/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fx4 {:8.5f} {}\n", (i+1) , fx4 , (I4/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fy4 {:8.5f} {}\n", (i+1) , fy4 , (I4/3+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} fz4 {:8.5f} {}\n", (i+1) , fz4 , (I4/3+1) ));
-        }
-        core::clasp_write_string(fmt::format( "MEISTER improperRestraint {} stop\n" , (i+1) ));
-        LOG_ENERGY(( "MEISTER improperRestraint %d args cando\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d K %lf\n") , (i+1) , K );
-        LOG_ENERGY(( "MEISTER improperRestraint %d U %lf\n") , (i+1) , U );
-        LOG_ENERGY(( "MEISTER improperRestraint %d L %lf\n") , (i+1) , L );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d results\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER improperRestraint %d CosPhi %lf\n") , (i+1) , CosPhi );
-        LOG_ENERGY(( "MEISTER improperRestraint %d SinPhi %lf\n") , (i+1) , SinPhi );
-        if ( CosPhi>0.1 ) {
-          Phi = safe_asin(SinPhi);
-        } else {
-          Phi = safe_acos(CosPhi)*SIGN(SinPhi);
-        }
-        LOG_ENERGY(( "MEISTER improperRestraint %d Phi %lf\n") , (i+1) , Phi );
-        LOG_ENERGY(( "MEISTER improperRestraint %d Energy %lf\n") , (i+1) , Energy);
-        if ( calcForce ) {
-//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER improperRestraint %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
-        }
-        LOG_ENERGY(( "MEISTER improperRestraint %d stop\n") , (i+1) );
-      }
-			/* Add the forces */
-    }
-  }
-  LOG_ENERGY(( "DihedralRestraint energy = %lf\n") , (double)(this->_TotalEnergy) );
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
-  }
-  maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
-  return totalEnergy;
-}
-#endif
 
 void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos)
 {
@@ -1016,6 +614,7 @@ int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
 EnergyDihedralRestraint_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedralRestraint_O::staticClass() );
   EnergyDihedralRestraint_sp copy = EnergyDihedralRestraint_O::create();
+  copyEnergyComponent( copy, this->asSmartPtr() );
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
@@ -1031,7 +630,6 @@ EnergyDihedralRestraint_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keep
 void EnergyDihedralRestraint_O::initialize()
 {
     this->Base::initialize();
-    this->setErrorThreshold(0.001);
 }
 
 string EnergyDihedralRestraint_O::__repr__() const
@@ -1042,13 +640,6 @@ string EnergyDihedralRestraint_O::__repr__() const
   ss << ">";
   return ss.str();
 }
-#ifdef XML_ARCHIVE
-void EnergyDihedralRestraint_O::archiveBase(core::ArchiveP node)
-{
-    this->Base::archiveBase(node);
-    IMPLEMENT_ME();
-}
-#endif
 
 
 };

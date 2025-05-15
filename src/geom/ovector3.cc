@@ -75,6 +75,16 @@ CL_DEFUN OVector3_sp OVector3_O::make(vecreal x, vecreal y, vecreal z)
   return ov;
 }
 
+CL_NAME("VEC-ARRAY");
+DOCGROUP(cando);
+CL_DEFUN OVector3_sp OVector3_O::make_array(chem::NVector_sp coordinates, size_t index0)
+{
+  auto ov = gctools::GC<OVector3_O>::allocate((*coordinates)[index0],
+                                              (*coordinates)[index0+1],
+                                              (*coordinates)[index0+2]);
+  return ov;
+}
+
 CL_DOCSTRING(R"dx(Return T if the vec is anything other than 0.0,0.0,0.0)dx");
 CL_NAME("VEC-P");
 DOCGROUP(cando);

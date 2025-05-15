@@ -493,11 +493,11 @@ int	EnergyAnchorRestraint_O::checkForBeyondThresholdInteractions(
 void EnergyAnchorRestraint_O::initialize()
 {
   this->Base::initialize();
-  this->setErrorThreshold(0.2);
 }
 
 EnergyAnchorRestraint_sp EnergyAnchorRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
   EnergyAnchorRestraint_sp copy = EnergyAnchorRestraint_O::create();
+  copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyAnchorRestraint_O::staticClass());
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;

@@ -312,6 +312,11 @@ changing the BACKBONE-DIHEDRAL-CACHE."
 (defclass sidechain-rotamer (rotamer)
   (()))
 
+(defmethod print-object ((obj rotamer) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream ":probability ~5,3f" (probability obj)))))
 
 (defun make-sidechain-rotamer (&key internals-values delta-energy probability)
   (make-instance 'sidechain-rotamer
@@ -618,8 +623,8 @@ changing the BACKBONE-DIHEDRAL-CACHE."
                    (xypoint (geom:vec gpx gpy gpz))
                    (xvec (geom:vnormalized (geom:v- xpoint origin)))
                    (xyvec (geom:vnormalized (geom:v- xypoint origin)))
-                   (zvec (geom:vnormalized (geom:vcross xyvec xvec)))
-                   (yvec (geom:vnormalized (geom:vcross xvec zvec)))
+                   (zvec (geom:vnormalized (geom:vcross xvec xyvec)))
+                   (yvec (geom:vnormalized (geom:vcross zvec xvec)))
                    (toorigin (geom:make-m4-translate (geom:v* origin -1.0)))
                    (rotate (geom:make-m4-rotation-rows xvec yvec zvec))
                    (transform (geom:m*m rotate toorigin))

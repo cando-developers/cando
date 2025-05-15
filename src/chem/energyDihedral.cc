@@ -750,11 +750,6 @@ if (hasActiveAtomMask \
     ) goto SKIP_term_and_angle_test;
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n") , this->className());
-  }
   double totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
@@ -836,71 +831,10 @@ if (hasActiveAtomMask \
 #include	<cando/chem/energy_functions/_Dihedral_debugEvalSet.cc>
 #endif //]
 
-    if ( this->_DebugEnergy ) 
-    {
-      LOG_ENERGY(( "MEISTER dihedral %d args cando\n") , (i+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d V %lf\n") , (i+1) , V );
-      LOG_ENERGY(( "MEISTER dihedral %d DN %lf\n") , (i+1) , DN );
-      LOG_ENERGY(( "MEISTER dihedral %d IN %d\n") , (i+1) , IN );
-//		    LOG_ENERGY(( "MEISTER dihedral %d phase %lf\n") , (i+1) , phase );
-      LOG_ENERGY(( "MEISTER dihedral %d sinPhase %lf\n") , (i+1) , sinPhase );
-      LOG_ENERGY(( "MEISTER dihedral %d cosPhase %lf\n") , (i+1) , cosPhase );
-      LOG_ENERGY(( "MEISTER dihedral %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
-      LOG_ENERGY(( "MEISTER dihedral %d results\n") , (i+1) );
-	//	LOG_ENERGY(( "MEISTER dihedral %d Phi %lf (%lf degrees)\n") , (i+1) %
-	//		    	Phi, Phi/0.0174533 );
-      LOG_ENERGY(( "MEISTER dihedral %d Energy %lf\n") , (i+1) , Energy);
-      if ( calcForce ) {
-        LOG_ENERGY(( "MEISTER dihedral %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER dihedral %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
-      }
-      LOG_ENERGY(( "MEISTER dihedral %d stop\n") , (i+1) );
-    }
-			/* Add the forces */
-
-    if ( calcForce ) {
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
-    }
     i++;
   }
 #pragma diagnostic pop
 
-  if ( this->_DebugEnergy )
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
-  }
   return totalEnergy;
 }
 
@@ -913,7 +847,6 @@ if (hasActiveAtomMask \
 void EnergyDihedral_O::initialize()
 {
   this->Base::initialize();
-  this->setErrorThreshold(3.0);
 }
 
 void EnergyDihedral_O::fields(core::Record_sp node)
@@ -1044,6 +977,7 @@ CL_DEFMETHOD void EnergyDihedral_O::addDihedralTerm(AtomTable_sp atomTable, Atom
 EnergyDihedral_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteractionFactory) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyDihedral_O::staticClass());
   EnergyDihedral_sp copy = EnergyDihedral_O::create();
+  copyEnergyComponent( copy, this->asSmartPtr() );
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
@@ -1079,10 +1013,6 @@ double EnergyDihedral_O::evaluateAllComponentSimd8(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  if ( this->_DebugEnergy ) {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n") , this->className());
-  }
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -1336,10 +1266,6 @@ double EnergyDihedral_O::evaluateAllComponentSimd8(
 #endif //]
     i += VREAL8_WIDTH;
   }
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
-  }
   return totalEnergy;
 #endif
 }
@@ -1374,10 +1300,6 @@ double EnergyDihedral_O::evaluateAllComponentSimd4(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  if ( this->_DebugEnergy ) {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n") , this->className());
-  }
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -1536,10 +1458,6 @@ double EnergyDihedral_O::evaluateAllComponentSimd4(
 #endif //]
     i += VREAL4_WIDTH;
   }
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
-  }
   return totalEnergy;
 #endif
 }
@@ -1574,10 +1492,6 @@ double EnergyDihedral_O::evaluateAllComponentSimd2(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  if ( this->_DebugEnergy ) {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n") , this->className());
-  }
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -1721,10 +1635,6 @@ double EnergyDihedral_O::evaluateAllComponentSimd2(
 #include	<cando/chem/energy_functions/_Dihedral_debugEvalSet.cc>
 #endif //]
     i += VREAL2_WIDTH;
-  }
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
   }
   return totalEnergy;
 #endif

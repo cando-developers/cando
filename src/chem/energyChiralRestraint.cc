@@ -139,6 +139,7 @@ core::List_sp EnergyChiralRestraint::encode() const {
 EnergyChiralRestraint_sp EnergyChiralRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyChiralRestraint_O::staticClass() );
   EnergyChiralRestraint_sp copy = EnergyChiralRestraint_O::create();
+  copyEnergyComponent( copy, this->asSmartPtr() );
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;
     Atom_sp a2 = edi->_Atom2;
@@ -262,11 +263,6 @@ double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n") , this->className());
-  }
   double totalEnergy = 0.0;
   ANN(force);
   ANN(hessian);
@@ -340,61 +336,7 @@ double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 #include	<cando/chem/energy_functions/_ChiralRestraint_debugEvalSet.cc>
 #endif //]
 
-      if ( this->_DebugEnergy ) {
-        LOG_ENERGY(( "MEISTER chiralRestraint %d args cando\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d K %lf\n") , (i+1) , K );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d results\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER chiralRestraint %d Energy %lf\n") , (i+1) , Energy);
-        if ( calcForce ) {
-//			LOG_ENERGY(( "MEISTER chiralRestraint %d DePhi %lf\n") , (i+1) , DePhi);
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
-          LOG_ENERGY(( "MEISTER chiralRestraint %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
-        }
-        LOG_ENERGY(( "MEISTER chiralRestraint %d stop\n") , (i+1) );
-      }
-			/* Add the forces */
-
-      if ( calcForce ) {
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
-      }
     }
-  }
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
   }
   maybeSetEnergy( componentEnergy, EnergyChiralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
@@ -567,7 +509,6 @@ int	fails = 0;
 void EnergyChiralRestraint_O::initialize()
 {
     this->Base::initialize();
-    this->setErrorThreshold(0.2);
 }
 
 

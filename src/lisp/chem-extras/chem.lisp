@@ -1,5 +1,6 @@
 (in-package :chem.extras)
 
+(defparameter chem:*save-positions* nil)
 
 (defgeneric chem:compute-merged-nonbond-force-field-for-aggregate (aggregate atom-types))
 

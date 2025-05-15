@@ -569,58 +569,12 @@ double EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
 #include <cando/chem/energy_functions/_NONBONDRBPB_debugEvalSet.cc>
 #endif //]
-#ifdef DEBUG_NONBOND_TERM
-          if ( this->_DebugEnergy ) {
-            std::string key;
-            key = _rep_(ea1._Object)+"-"+_rep_(ea2._Object);
-            LOG_ENERGY(( "MEISTER nonbond %s args cando\n") , key );
-            LOG_ENERGY(( "MEISTER nonbond %s iHelix1->%3d iHelix2->%3d  I1Cur->%3d I2Cur->%3d\n") , key , iHelix1 , iHelix2 , I1cur , I2cur );
-            LOG_ENERGY(( "MEISTER nonbond %s dA %5.3lf\n") , key , dA );
-            LOG_ENERGY(( "MEISTER nonbond %s dC %5.3lf\n") , key , dC );
-            LOG_ENERGY(( "MEISTER nonbond %s dQ1Q2 %5.3lf\n") , key , dQ1Q2 );
-#if 0
-            LOG_ENERGY(( "MEISTER nonbond %s x1 %5.3lf %d\n") , key , x1 , (I1/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s y1 %5.3lf %d\n") , key , y1 , (I1/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s z1 %5.3lf %d\n") , key , z1 , (I1/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s x2 %5.3lf %d\n") , key , x2 , (I2/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s y2 %5.3lf %d\n") , key , y2 , (I2/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s z2 %5.3lf %d\n") , key , z2 , (I2/3+1) );
-#endif
-            LOG_ENERGY(( "MEISTER nonbond %s results\n") , key );
-            LOG_ENERGY(( "MEISTER nonbond %s EnergyVdw %lf\n") , key , EnergyVdw);
-            LOG_ENERGY(( "MEISTER nonbond %s EnergyElectrostatic %lf\n") , key , EnergyElectrostatic);
-            LOG_ENERGY(( "MEISTER nonbond %s Enonbond(EnergyVdw+EnergyElectrostatic) %lf\n") , key , (EnergyVdw+EnergyElectrostatic) );
-            if ( calcForce ) {
-              LOG_ENERGY(( "MEISTER nonbond %s fam %lf %d\n") , key , fam , (I1cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fbm %lf %d\n") , key , fbm , (I1cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fcm %lf %d\n") , key , fcm , (I1cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fdm %lf %d\n") , key , fdm , (I1cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fxm %lf %d\n") , key , fxm , (I1cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fym %lf %d\n") , key , fym , (I1cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fzm %lf %d\n") , key , fzm , (I1cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fan %lf %d\n") , key , fan , (I2cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fbn %lf %d\n") , key , fbn , (I2cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fcn %lf %d\n") , key , fcn , (I2cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fdn %lf %d\n") , key , fdn , (I2cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fxn %lf %d\n") , key , fxn , (I2cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fyn %lf %d\n") , key , fyn , (I2cur/3+1) );
-              LOG_ENERGY(( "MEISTER nonbond %s fzn %lf %d\n") , key , fzn , (I2cur/3+1) );
-            }
-            LOG_ENERGY(( "MEISTER nonbond %s stop\n") , key );
-          }
-#endif
         }
       }
     }
     gctools::handle_all_queued_interrupts();
     I1start = I1end;
   }
-#ifdef DEBUG_NONBOND_TERM
-  if ( this->_DebugEnergy ) {
-    LOG_ENERGY(( "MEISTER nonbond interactions -> %d\n") , interactions);
-  }
-#endif
-
   maybeSetEnergy( componentEnergy, EnergyRigidBodyNonbond_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
@@ -689,7 +643,6 @@ void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermB
 void EnergyRigidBodyNonbond_O::initialize()
 {
   this->Base::initialize();
-  this->setErrorThreshold(1.0);
   this->setDielectricConstant(80.0);
   this->setVdwScale(1.0);
   this->setElectrostaticScale(1.0);

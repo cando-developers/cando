@@ -136,20 +136,6 @@ CL_DEFMETHOD void RigidBodyEnergyFunction_O::set_coordinates(NVector_sp pos) {
 }
 
 
-void RigidBodyEnergyFunction_O::enableDebug() {
-  for ( auto cur : this->_Terms ) {
-     EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-    term->enableDebug();
-  }
-}
-
-void RigidBodyEnergyFunction_O::disableDebug() {
-  for ( auto cur : this->_Terms ) {
-    EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-    term->disableDebug();
-  }
-}
-
 void RigidBodyEnergyFunction_O::setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,
                                                             core::T_sp activeAtomMask ) {
   IMPLEMENT_ME();

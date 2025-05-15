@@ -82,6 +82,7 @@ SYMBOL_SC_(ChemPkg,_PLUS_preconditionerTypeConverter_PLUS_);
 
 SYMBOL_EXPORT_SC_(KeywordPkg,number_of_steps);
 SYMBOL_EXPORT_SC_(KeywordPkg,minimizer);
+SYMBOL_EXPORT_SC_(KeywordPkg,localSteps);
 
 SYMBOL_EXPORT_SC_(ChemPkg,steepest_descent);
 SYMBOL_EXPORT_SC_(ChemPkg,conjugate_gradient);
@@ -95,13 +96,14 @@ SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededMaxSteps);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerStuck);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerError);
 
+SYMBOL_EXPORT_SC_(ChemPkg,STARsave_positionsSTAR);
 namespace chem
 {
 
 
 #define MINIMIZER_ERROR(msg) ERROR(_sym_MinimizerError,core::lisp_createList(kw::_sym_message,core::Str_O::create(msg)))
 #define MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(msg) ERROR(_sym_MinimizerExceededMaxSteps,core::lisp_createList(kw::_sym_minimizer,msg._Minimizer, kw::_sym_number_of_steps, core::make_fixnum(msg._NumberOfSteps)));
-#define MINIMIZER_STUCK_ERROR(msg) ERROR(_sym_MinimizerStuck,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg)))
+#define MINIMIZER_STUCK_ERROR(msg,localSteps) ERROR(_sym_MinimizerStuck,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg), kw::_sym_localSteps, core::clasp_make_fixnum(localSteps)))
 
 
 
@@ -297,6 +299,24 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
                                   core::T_sp activeAtomMask )
 {
   XPlusYTimesScalarWithActiveAtomMask(nvResult,nvOrigin,nvDirection,x,activeAtomMask);
+}
+
+
+void maybeSavePosition(NVector_sp pos) {
+  if (chem::_sym_STARsave_positionsSTAR->symbolValue().notnilp()) {
+    core::T_sp ovec = chem::_sym_STARsave_positionsSTAR->symbolValue();
+    size_t iDimensions = pos->size();
+    auto tempPos = core::SimpleVector_float_O::create(iDimensions);
+    if (gc::IsA<core::ComplexVector_sp>(ovec)) {
+      auto vec = gc::As_unsafe<core::ComplexVector_sp>(ovec);
+      for (size_t idx=0; idx<iDimensions; idx++ ) {
+        (*tempPos)[idx] = (*pos)[idx];
+      }
+      vec->vectorPushExtend(tempPos);
+      return;
+    }
+    SIMPLE_ERROR("Add support for pos with the value {}", _rep_(pos));
+  }
 }
 
 
@@ -750,12 +770,6 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   }
 };
 
-CL_LISPIFY_NAME("throwMinimizerStuck");
-CL_DEFMETHOD     void Minimizer_O::throwMinimizerStuck()
-{
-  MINIMIZER_STUCK_ERROR("test throw of MinimizerStuck");
-};
-
 
 CL_LISPIFY_NAME("throwMinimizerError");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerError()
@@ -1129,10 +1143,12 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         if ( prevStep == 0.0 && step == 0.0 ) {
           ERROR(_sym_MinimizerStuck, (ql::list()
                                       << kw::_sym_minimizer << this->asSmartPtr()
+                                      << kw::_sym_localSteps << core::clasp_make_fixnum(localSteps)
                                       << kw::_sym_coordinates << pos).result());
         }
         // Advance to new pos
         inPlaceAddTimesScalarWithActiveAtomMask( pos, dirVec, step, activeAtomMask );
+        maybeSavePosition(pos);
 
 		    // r = -f'(x)   r == force!!!!
         fp = dTotalEnergyForce( pos, energyScale, forceVec, activeAtomMask );
@@ -1328,7 +1344,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 	//
           fp = dTotalEnergyForce( pos, energyScale, force, activeAtomMask );
           this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,force);
-          MINIMIZER_STUCK_ERROR("Stuck in conjugate gradients");
+          MINIMIZER_STUCK_ERROR("Stuck in conjugate gradients",localSteps);
         }
       }
        
@@ -1399,6 +1415,8 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 		// x = x + (step)d
 		// r = -f'(x)   r == force!!!!
         inPlaceAddTimesScalarWithActiveAtomMask( pos, d, step, activeAtomMask );
+        maybeSavePosition(pos);
+
         fp = dTotalEnergyForce( pos, energyScale, force, activeAtomMask );
         if (callback.notnilp()) core::eval::funcall( callback, _sym_conjugate_gradient, this->_ScoringFunction, pos, activeAtomMask );
 
@@ -1816,6 +1834,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
       }
       if (callback.notnilp()) core::eval::funcall( callback, _sym_truncated_newton, this->_ScoringFunction, pos, activeAtomMask );
       XPlusYTimesScalarWithActiveAtomMask(posNext, pos, dirVec, alphaK,activeAtomMask);
+      maybeSavePosition(posNext);
 	    //
 	    // Evaluate the force at the new position
 	    //

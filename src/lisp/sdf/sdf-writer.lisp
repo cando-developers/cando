@@ -68,5 +68,6 @@
                  (format stream "~s~%" (cdr data-item)) ; write readably
                  )
             do (format stream "~%"))
-      (format stream "$$$$~%"))))
+      (format stream "$$$$~%")
+      atoms)))
 

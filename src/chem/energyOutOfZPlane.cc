@@ -435,7 +435,6 @@ int	fails = 0;
 void EnergyOutOfZPlane_O::initialize()
 {
     this->Base::initialize();
-    this->setErrorThreshold(0.2);
 }
 
 void EnergyOutOfZPlane_O::reset()

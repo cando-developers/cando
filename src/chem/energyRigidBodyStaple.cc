@@ -199,12 +199,6 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
 //  SIMPLE_WARN("FIXactiveAtomMask How do I deal with activeAtomMask");
   this->_Evaluations++;
-  if ( this->_DebugEnergy ) 
-  {
-    //core::clasp_write_string_CLEAR();
-    core::clasp_write_string(fmt::format("{} {{\n" , this->className()));
-  }
-
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -262,66 +256,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
 #define EVAL_SET(var,val) {si->eval.var=val;}
 #include <cando/energy-functions/_STAPLE_debugEvalSet.cc>
 #endif //]
-      if ( this->_DebugEnergy ) {
-        core::clasp_write_string(fmt::format( "MEISTER staple {} args cando\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} address {} \n" , (i+1) , ((void*)&(*si)) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} r0  {:5.3f}\n" , (i+1) , r0 ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} ks  {:5.1f}\n" , (i+1) , ks ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} I1  {:4}\n" , (i+1) , I1 ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} I2  {:4}\n" , (i+1) , I2 ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} ak  {:5.3f} {}\n" , (i+1) , ak , (I1/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} bk  {:5.3f} {}\n" , (i+1) , bk , (I1/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} ck  {:5.3f} {}\n" , (i+1) , ck , (I1/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} dk  {:5.3f} {}\n" , (i+1) , dk , (I1/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} xk  {:5.3f} {}\n" , (i+1) , xk , (I1/7+1) )); 
-        core::clasp_write_string(fmt::format( "MEISTER staple {} yk  {:5.3f} {}\n" , (i+1) , yk , (I1/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} zk  {:5.3f} {}\n" , (i+1) , zk , (I1/7+1) )); 
-        core::clasp_write_string(fmt::format( "MEISTER staple {} pxk {:5.3f} {}\n" , (i+1) , pxk , (I1/7+1) )); 
-        core::clasp_write_string(fmt::format( "MEISTER staple {} pyk {:5.3f} {}\n" , (i+1) , pyk , (I1/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} pzk {:5.3f} {}\n" , (i+1) , pzk , (I1/7+1) )); 
-        core::clasp_write_string(fmt::format( "MEISTER staple {} al  {:5.3f} {}\n" , (i+1) , al , (I2/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} bl  {:5.3f} {}\n" , (i+1) , bl , (I2/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} cl  {:5.3f} {}\n" , (i+1) , cl , (I2/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} dl  {:5.3f} {}\n" , (i+1) , dl , (I2/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} xl  {:5.3f} {}\n" , (i+1) , xl , (I2/7+1) )); 
-        core::clasp_write_string(fmt::format( "MEISTER staple {} yl  {:5.3f} {}\n" , (i+1) , yl , (I2/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} zl  {:5.3f} {}\n" , (i+1) , zl , (I2/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} pxl {:5.3f} {}\n" , (i+1) , pxl , (I2/7+1) )); 
-        core::clasp_write_string(fmt::format( "MEISTER staple {} pyl {:5.3f} {}\n" , (i+1) , pyl , (I2/7+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} pzl {:5.3f} {}\n" , (i+1) , pzl , (I2/7+1) )); 
-        core::clasp_write_string(fmt::format( "MEISTER staple {} results\n" , (i+1) ));
-        core::clasp_write_string(fmt::format( "MEISTER staple {} Energy {:f}\n" , (i+1) , Energy ));
-        if ( calcForce ) {
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fak  {:5.3f} {}\n" , (i+1) , fak , (I1/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fbk  {:5.3f} {}\n" , (i+1) , fbk , (I1/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fck  {:5.3f} {}\n" , (i+1) , fck , (I1/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fdk  {:5.3f} {}\n" , (i+1) , fdk , (I1/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fxk  {:5.3f} {}\n" , (i+1) , fxk , (I1/7+1) )); 
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fyk  {:5.3f} {}\n" , (i+1) , fyk , (I1/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fzk  {:5.3f} {}\n" , (i+1) , fzk , (I1/7+1) )); 
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fal  {:5.3f} {}\n" , (i+1) , fal , (I2/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fbl  {:5.3f} {}\n" , (i+1) , fbl , (I2/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fcl  {:5.3f} {}\n" , (i+1) , fcl , (I2/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fdl  {:5.3f} {}\n" , (i+1) , fdl , (I2/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fxl  {:5.3f} {}\n" , (i+1) , fxl , (I2/7+1) )); 
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fyl  {:5.3f} {}\n" , (i+1) , fyl , (I2/7+1) ));
-          core::clasp_write_string(fmt::format( "MEISTER staple {} fzl  {:5.3f} {}\n" , (i+1) , fzl , (I2/7+1) ));
-        }
-        core::clasp_write_string(fmt::format( "MEISTER staple {} stop\n" , (i+1) ));
-      }
-		/* Add the forces */
-
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
     }
-  }
-  if ( this->_DebugEnergy ) 
-  {
-    core::clasp_write_string(fmt::format("{} }}" , this->className()));
   }
   maybeSetEnergy( componentEnergy, EnergyRigidBodyStaple_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
@@ -345,7 +280,6 @@ void	EnergyRigidBodyStaple_O::dumpTerms(core::HashTable_sp atomTypes)
 void EnergyRigidBodyStaple_O::initialize()
 {
   this->Base::initialize();
-  this->setErrorThreshold(0.05);
 }
 
 

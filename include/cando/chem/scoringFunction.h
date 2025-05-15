@@ -174,16 +174,6 @@ public:
   CL_DEFMETHOD virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,
                                                             core::T_sp activeAtomMask ) = 0;
 
-            /*! Enable debugging on all scoring components
-     */
-  CL_LISPIFY_NAME("enableDebug");
-  CL_DEFMETHOD virtual void	enableDebug() = 0;
-    /*! Disable debugging on all scoring components
-     */ 
-  CL_LISPIFY_NAME("disableDebug");
-  CL_DEFMETHOD virtual void	disableDebug() = 0;
-
-
 //    virtual void	summarizeTerms() = 0;
   CL_LISPIFY_NAME("dumpTerms");
   CL_DEFMETHOD virtual void dumpTerms() = 0;

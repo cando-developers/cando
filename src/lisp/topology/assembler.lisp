@@ -196,6 +196,9 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
     (chem:set-name agg name)
     agg))
 
+(defun aggregate-with-coordinates (assembler coordinates)
+  (aggregate* assembler coordinates))
+
 (defun joint-definedp (assembler joint)
   "Return T if JOINT in ASSEMBLER has defined internal coordinates"
   (kin:joint/definedp joint (internals assembler)))
@@ -230,8 +233,10 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
 (defun update-internal-coords (assembler joint coordinates)
   (kin:update-internal-coords joint (internals assembler) coordinates))
 
-(defun update-xyz-coords (assembler joint coordinates)
-  (kin:update-xyz-coords joint (internals assembler) coordinates))
+(defun update-xyz-coords (assembler joint coordinates &key internals)
+  (if internals
+      (kin:update-xyz-coords joint internals coordinates)
+      (kin:update-xyz-coords joint (internals assembler) coordinates)))
 
 (defclass training-assembler (assembler-base)
   ((focus-monomer :initarg :focus-monomer :reader focus-monomer)
@@ -1056,8 +1061,8 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
             do (kin:update-xyz-coords joint internals coords)))))
 
 (defmethod update-externals ((assembler assembler) &key oligomer-shape
-                                     (orientation :identity orientationp)
-                                     (coords (topology:make-coordinates-for-assembler assembler)))
+                                                     (orientation :identity orientationp)
+                                                     (coords (topology:make-coordinates-for-assembler assembler)))
   "Update the external coordinates in COORDS using the ASSEMBLER and ORIENTATION.
 IF OLIGOMER-SHAPE is provided then just build externals for that OLIGOMER-SHAPE.
 If OLIGOMER-SHAPE is not provided then build them all and use the OLIGOMER-SHAPE as the ORIENTATION key.

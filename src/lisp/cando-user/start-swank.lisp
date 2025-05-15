@@ -58,3 +58,63 @@ Within emacs use M-x slime-connect to connect."
                 (error "cl-ipywidgets isn't loaded - can't save cell state"))
             (start-swank-server port))
           (start-swank-server port))))
+
+
+(defvar *started-slynk* nil)
+(defvar *slynk-port* nil)
+
+(defvar *slime-home* nil
+  "You can set cando-user:*slime-home* in your .clasprc to the pathname where slime is installed to start slynk")
+
+(defun start-slynk-server (&optional (port 4005))
+  (format t "Checking SLY_HOME and cando-user:*sly-home*~%")
+  (let ((sly-home (or (and (ext:getenv "SLY_HOME") (probe-file (pathname (ext:getenv "SLY_HOME"))))
+                        (and *sly-home* (probe-file (pathname *sly-home*))))))
+    (unless sly-home
+      (format t "Neither were set~%")
+      (let ((sly-dirs (directory "~/Development/sly/")))
+        (loop with max-date = 0
+              with max-sly-dir = nil
+              for sly-dir in sly-dirs
+              for date = (file-write-date sly-dir)
+              when (> date max-date)
+                do (setf max-date date
+                         max-sly-dir sly-dir)
+              finally (progn
+                        (format t "Found sly-home at ~s~%" max-sly-dir)
+                        (setf sly-home max-sly-dir)))))
+    (if sly-home
+        (let ((slynk-loader (probe-file (merge-pathnames "slynk/slynk-loader.lisp" sly-home))))
+          (load slynk-loader)
+          (let* ((sly-cache (merge-pathnames "fasl/" sly-home))
+                 (sly-cache-symbol (find-symbol "*FASL-DIRECTORY*" :SLYNK-LOADER)))
+            (setf (symbol-value sly-cache-symbol) sly-cache)
+            (let ((slynk-loader-init (find-symbol "INIT" "SLYNK-LOADER")))
+              (funcall slynk-loader-init :delete nil :reload nil :load-contribs nil))
+            (let ((slynk-create-server (find-symbol "CREATE-SERVER" "SLYNK")))
+              (mp:process-run-function 'slynk-main
+                                       (lambda ()
+                                         (format *debug-io* "Starting server thread~%")
+                                         (let ((port (funcall slynk-create-server
+                                                              :port port
+                                                              :interface "0.0.0.0")))
+                                           (format t "Started slynk server on port ~d~%" port)
+                                           (setf *slynk-port* port))
+                                         (format *debug-io* "Leaving server thread~%")))
+              #+(or)(sleep 1)
+              (setf *started-slynk* t))))
+        (error "Could not determine directory for sly - set SLY_HOME or cando-user:*sly-home*"))))
+
+(defun start-slynk (&optional (port 4005))
+  "Start a slynk server to connect sly.
+Within emacs use M-x sly-connect to connect."
+  ;; Bad!  This is hard-coded to work with docker
+  (if *started-slynk*
+      (format t "Slynk is already running on port ~a~%" *slynk-port*)
+      (if (find-package :cl-ipywidgets)
+          (let ((save-jupyter-cell-state-symbol (find-symbol "SAVE-JUPYTER-CELL-STATE" :cl-ipywidgets)))
+            (if save-jupyter-cell-state-symbol
+                (funcall save-jupyter-cell-state-symbol)
+                (error "cl-ipywidgets isn't loaded - can't save cell state"))
+            (start-slynk-server port))
+          (start-slynk-server port))))

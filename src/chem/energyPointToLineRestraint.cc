@@ -163,7 +163,6 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
 void EnergyPointToLineRestraint_O::initialize()
 {
     this->Base::initialize();
-    this->setErrorThreshold(0.2);
 }
 
 

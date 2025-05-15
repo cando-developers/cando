@@ -88,7 +88,7 @@ void jacobi(Matrix &a, int n, double d[], Matrix &v, int *nrot)
                  // the form tapq as in equation (11.1.14).
   }
   *nrot = 0;
-  for (i = 1; i <= 50; i++) {
+  for (i = 1; i <= 100; i++) {
     sm = 0.0;
     for (ip = 0; ip < n - 1; ip++) { // Sum o-diagonal elements.
       for (iq = ip + 1; iq < n; iq++)
@@ -153,8 +153,9 @@ void jacobi(Matrix &a, int n, double d[], Matrix &v, int *nrot)
       z[ip] = 0.0;   // and reinitialize z.
     }
   }
-  THROW_HARD_ERROR(("Too many iterations in routine jacobi"));
+  SIMPLE_ERROR("Too many iterations in routine jacobi input matrix = {}", a.asString());
 }
+
 
 Matrix::Matrix() { this->setToIdentity(); }
 

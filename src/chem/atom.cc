@@ -1787,6 +1787,7 @@ CL_DEFUN double chem__calculate_dihedral_for_atoms(Atom_sp a, Atom_sp b, Atom_sp
   Vector3 vc = c->getPosition();
   Vector3 vd = d->getPosition();
   return geom::calculateDihedral(va,vb,vc,vd);
+  
 }
 
 CL_DOCSTRING(R"doc(Write the x,y,z position of the atom into the nvector starting at index3.

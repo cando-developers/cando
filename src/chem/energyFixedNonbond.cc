@@ -228,10 +228,6 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent(ScoringFunction_sp sc
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
-  if (this->_DebugEnergy) {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n"), this->className());
-  }
   if (this->_Terms.size() == 0)
     return 0.0;
   ASSERTNOTNULL(this->_MobileAtomTable);
@@ -328,29 +324,6 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent(ScoringFunction_sp sc
               //			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
               //			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
               //			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-            }
-
-            if (this->_DebugEnergy) {
-              LOG_ENERGY(("MEISTER fixed nonbond %d args cando\n"), (i + 1));
-              LOG_ENERGY(("MEISTER fixed nonbond %d dA %5.3lf\n"), (i + 1), dA);
-              LOG_ENERGY(("MEISTER fixed nonbond %d dC %5.3lf\n"), (i + 1), dC);
-              LOG_ENERGY(("MEISTER fixed nonbond %d dQ1Q2 %5.3lf\n"), (i + 1), dQ1Q2);
-              LOG_ENERGY(("MEISTER fixed nonbond %d x1 %5.3lf %d\n"), (i + 1), x1, (I1 / 3 + 1));
-              LOG_ENERGY(("MEISTER fixed nonbond %d y1 %5.3lf %d\n"), (i + 1), y1, (I1 / 3 + 1));
-              LOG_ENERGY(("MEISTER fixed nonbond %d z1 %5.3lf %d\n"), (i + 1), z1, (I1 / 3 + 1));
-              LOG_ENERGY(("MEISTER fixed nonbond %d xf %5.3lf %d\n"), (i + 1), xf, (ifixed));
-              LOG_ENERGY(("MEISTER fixed nonbond %d yf %5.3lf %d\n"), (i + 1), yf, (ifixed));
-              LOG_ENERGY(("MEISTER fixed nonbond %d zf %5.3lf %d\n"), (i + 1), zf, (ifixed));
-              LOG_ENERGY(("MEISTER fixed nonbond %d results\n"), (i + 1));
-              LOG_ENERGY(("MEISTER fixed nonbond %d Efixed nonbond %lf\n"), (i + 1), (Efvdw + Efeel));
-              LOG_ENERGY(("MEISTER fixed nonbond %d efvdw %lf\n"), (i + 1), Efvdw);
-              LOG_ENERGY(("MEISTER fixed nonbond %d efeel %lf\n"), (i + 1), Efeel);
-              if (calcForce) {
-                LOG_ENERGY(("MEISTER fixed nonbond %d fx1 %lf %d\n"), (i + 1), fx1, (I1 / 3 + 1));
-                LOG_ENERGY(("MEISTER fixed nonbond %d fy1 %lf %d\n"), (i + 1), fy1, (I1 / 3 + 1));
-                LOG_ENERGY(("MEISTER fixed nonbond %d fz1 %lf %d\n"), (i + 1), fz1, (I1 / 3 + 1));
-              }
-              LOG_ENERGY(("MEISTER fixed nonbond %d stop\n"), (i + 1));
             }
             i++;
           }
@@ -528,7 +501,6 @@ int	fails = 0;
 
 void EnergyFixedNonbondRestraint_O::initialize() {
   this->Base::initialize();
-  this->setErrorThreshold(1.0);
   this->setDielectricConstant(80.0);
   this->setVdwScale(1.0);
   this->setElectrostaticScale(1.0);
@@ -538,6 +510,7 @@ void EnergyFixedNonbondRestraint_O::initialize() {
 
 EnergyFixedNonbondRestraint_sp EnergyFixedNonbondRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
   EnergyFixedNonbondRestraint_sp copy = EnergyFixedNonbondRestraint_O::create();
+  copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyFixedNonbondRestraint_O::staticClass() );
   for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
     Atom_sp a1 = edi->_FixedAtom;

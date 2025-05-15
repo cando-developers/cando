@@ -73,11 +73,15 @@
                   :coordinates coordinates
                   :number-of-steps number-of-steps))
 
-(define-condition chem:minimizer-stuck (chem:minimizer-error) ())
+(define-condition chem:minimizer-stuck (chem:minimizer-error)
+  ((local-steps :initarg :local-steps :reader local-steps))
+  (:report (lambda (condition stream)
+             (format stream "~a ~a :local-steps ~a" (class-name (class-of condition)) (message condition) (local-steps condition)))))
 
 (defun make-minimizer-stuck (minimizer coordinates number-of-steps)
   (make-condition 'chem:minimizer-stuck
                   :minimizer minimizer
+                  :local-steps number-of-steps
                   :coordinates coordinates))
 
 

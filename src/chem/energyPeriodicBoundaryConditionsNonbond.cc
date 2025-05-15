@@ -280,45 +280,6 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
 #include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
 #endif //]
 
-#ifdef DEBUG_NONBOND_TERM
-        if ( this->_DebugEnergy ) {
-          std::string key;
-          std::string key1 = nbi->_Atom1->getName()->symbolNameAsString();
-          std::string key2 = nbi->_Atom2->getName()->symbolNameAsString();
-          if ( key1<key2 ) {
-            key = key1+"-"+key2;
-          } else {
-            key = key2+"-"+key1;
-          }
-          if (nbi->_Is14 ) {
-            LOG_ENERGY(( "MEISTER nonbond %s 1-4 args cando\n") , key );
-          } else {
-            LOG_ENERGY(( "MEISTER nonbond %s args cando\n") , key );
-          }
-          LOG_ENERGY(( "MEISTER nonbond %s dA %5.3lf\n") , key , (nbi->term.dA) );
-          LOG_ENERGY(( "MEISTER nonbond %s dC %5.3lf\n") , key , (nbi->term.dC) );
-          LOG_ENERGY(( "MEISTER nonbond %s dQ1Q2 %5.3lf\n") , key , (nbi->term.dQ1Q2) );
-          LOG_ENERGY(( "MEISTER nonbond %s x1 %5.3lf %d\n") , key , x1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER nonbond %s y1 %5.3lf %d\n") , key , y1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER nonbond %s z1 %5.3lf %d\n") , key , z1 , (I1/3+1) );
-          LOG_ENERGY(( "MEISTER nonbond %s x2 %5.3lf %d\n") , key , x2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER nonbond %s y2 %5.3lf %d\n") , key , y2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER nonbond %s z2 %5.3lf %d\n") , key , z2 , (I2/3+1) );
-          LOG_ENERGY(( "MEISTER nonbond %s results\n") , key );
-          LOG_ENERGY(( "MEISTER nonbond %s evdw %lf\n") , key , Evdw);
-          LOG_ENERGY(( "MEISTER nonbond %s eeel %lf\n") , key , Eeel);
-          LOG_ENERGY(( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n") , key , (Evdw+Eeel) );
-          if ( calcForce ) {
-            LOG_ENERGY(( "MEISTER nonbond %s fx1 %lf %d\n") , key , fx1 , (I1/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s fy1 %lf %d\n") , key , fy1 , (I1/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s fz1 %lf %d\n") , key , fz1 , (I1/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s fx2 %lf %d\n") , key , fx2 , (I2/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s fy2 %lf %d\n") , key , fy2 , (I2/3+1) );
-            LOG_ENERGY(( "MEISTER nonbond %s fz2 %lf %d\n") , key , fz2 , (I2/3+1) );
-          }
-          LOG_ENERGY(( "MEISTER nonbond %s stop\n") , key );
-        }
-#endif
         (void)0;
       }
     }
@@ -450,15 +411,6 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
 #endif
 //        printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
 //        printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
-#ifdef DEBUG_NONBOND_TERM
-      if ( this->_DebugEnergy ) {
-        LOG_ENERGY(( "nonbond localindex1 %d\n") , localindex1 );
-        LOG_ENERGY(( "nonbond localindex2 %d\n") , localindex2 );
-        LOG_ENERGY(( "nonbond dA %5.3lf\n") , dA );
-        LOG_ENERGY(( "nonbond dC %5.3lf\n") , dC );
-        LOG_ENERGY(( "nonbond dQ1Q2 %5.3lf\n") , dQ1Q2 );
-      }
-#endif
       ////////////////////////////////////////////////////////////
       //
       // To here
@@ -466,19 +418,6 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
       ////////////////////////////////////////////////////////////
       I1 = index1*3; 
       I2 = index2*3; 
-#ifdef DEBUG_NONBOND_TERM
-      if ( this->_DebugEnergy ) {
-        LOG_ENERGY(( "nonbond I1 %d\n") , I1 );
-        LOG_ENERGY(( "nonbond I2 %d\n") , I2 );
-      }
-#endif
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
-          break;
-        }
-      }
-#endif
       bool InteractionIs14 = false; // Always false for excluded atoms
   double vdwScale = 1.0;
   double eelScale = 1.0;
@@ -730,15 +669,6 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
       dQ1Q2 = charge11*charge22;
 //      printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
 //      printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
-#ifdef DEBUG_NONBOND_TERM
-      if ( this->_DebugEnergy ) {
-        LOG_ENERGY(( "nonbond localindex1 %d\n") , localindex1 );
-        LOG_ENERGY(( "nonbond localindex2 %d\n") , localindex2 );
-        LOG_ENERGY(( "nonbond dA %5.3lf\n") , dA );
-        LOG_ENERGY(( "nonbond dC %5.3lf\n") , dC );
-        LOG_ENERGY(( "nonbond dQ1Q2 %5.3lf\n") , dQ1Q2 );
-      }
-#endif
       ////////////////////////////////////////////////////////////
       //
       // To here
@@ -746,19 +676,6 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
       ////////////////////////////////////////////////////////////
       I1 = index1*3; 
       I2 = index2*3; 
-#ifdef DEBUG_NONBOND_TERM
-      if ( this->_DebugEnergy ) {
-        LOG_ENERGY(( "nonbond I1 %d\n") , I1 );
-        LOG_ENERGY(( "nonbond I2 %d\n") , I2 );
-      }
-#endif
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
-          break;
-        }
-      }
-#endif
   double vdwScale = 1.0;
   double eelScale = 1.0;
   double DIELECTRIC = 1.0;

@@ -783,19 +783,6 @@ EnergyAtom*	SketchFunction_O::getEnergyAtomPointer(Atom_sp a)
 #endif
 
 
-void SketchFunction_O::enableDebug()
-{
-  this->_Stretch->enableDebug();
-  this->_PointToLineRestraint->enableDebug();
-  this->_OutOfZPlane->enableDebug();
-}
-
-void SketchFunction_O::disableDebug()
-{
-  this->_Stretch->disableDebug();
-  this->_PointToLineRestraint->disableDebug();
-  this->_OutOfZPlane->disableDebug();
-}
 
 void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments)
 {

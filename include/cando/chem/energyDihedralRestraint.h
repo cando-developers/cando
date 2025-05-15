@@ -191,22 +191,20 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
                                        core::T_sp activeAtomMask,
                                        core::T_sp debugInteractions );
 
-  #if 0
   double evaluateOneTerm( ScoringFunction_sp score,
                           size_t termIndex, 
                           chem::NVector_sp 	pos,
-                          core::T_sp energyScale,
-                          core::T_sp componentEnergy,
-                          bool 		calcForce,
-                          gc::Nilable<chem::NVector_sp> 	force,
-                          bool		calcDiagonalHessian,
-                          bool		calcOffDiagonalHessian,
-                          gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                          gc::Nilable<chem::NVector_sp>	hdvec,
-                          gc::Nilable<chem::NVector_sp> dvec,
-                          core::T_sp activeAtomMask,
-                          core::T_sp debugInteractions );
-  #endif
+                          core::T_sp energyScale=nil<core::T_O>(),
+                          core::T_sp componentEnergy=nil<core::T_O>(),
+                          bool 		calcForce=false,
+                          gc::Nilable<chem::NVector_sp> 	force=nil<chem::NVector_O>(),
+                          bool		calcDiagonalHessian=false,
+                          bool		calcOffDiagonalHessian=false,
+                          gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian=nil<chem::AbstractLargeSquareMatrix_O>(),
+                          gc::Nilable<chem::NVector_sp>	hdvec=nil<chem::NVector_O>(),
+                          gc::Nilable<chem::NVector_sp> dvec=nil<chem::NVector_O>(),
+                          core::T_sp activeAtomMask=nil<core::T_O>(),
+                          core::T_sp debugInteractions=nil<core::T_O>() );
 
   core::T_mv getRestraint( size_t index );
 

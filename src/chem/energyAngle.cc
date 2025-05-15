@@ -455,11 +455,6 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   num_real termEnergy = 0.0;
   this->_Evaluations++;
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(("%s {\n") , this->className());
-  }
 
 //bool	fail = false;
   ANN(force);
@@ -529,53 +524,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	EVAL_SET(var,val)	{ ai->eval.var=val;};
 #include	<cando/chem/energy_functions/_Angle_debugEvalSet.cc>
 #endif //]
-      if ( this->_DebugEnergy ) 
-      {
-        LOG_ENERGY(( "MEISTER angle %d args cando\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER angle %d t0 %lf\n") , (i+1) , t0 );
-        LOG_ENERGY(( "MEISTER angle %d kt %lf\n") , (i+1) , kt);
-        LOG_ENERGY(( "MEISTER angle %d x1 %5.3lf %d\n") , (i+1) , x1 %(I1/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d y1 %5.3lf %d\n") , (i+1) , y1 %(I1/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d z1 %5.3lf %d\n") , (i+1) , z1 %(I1/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d x2 %5.3lf %d\n") , (i+1) , x2 %(I2/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d y2 %5.3lf %d\n") , (i+1) , y2 %(I2/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d z2 %5.3lf %d\n") , (i+1) , z2 %(I2/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d x3 %5.3lf %d\n") , (i+1) , x3 %(I3/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d y3 %5.3lf %d\n") , (i+1) , y3 %(I3/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d z3 %5.3lf %d\n") , (i+1) , z3 %(I3/3+1) );
-        LOG_ENERGY(( "MEISTER angle %d results\n") , (i+1) );
-        LOG_ENERGY(( "MEISTER angle %d Energy %lf\n") , (i+1) , Energy );
-        if ( calcForce ) 
-        {
-          LOG_ENERGY(( "MEISTER angle %d fx1 %8.5lf %d\n") , (i+1) , fx1 %(I1/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fy1 %8.5lf %d\n") , (i+1) , fy1 %(I1/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fz1 %8.5lf %d\n") , (i+1) , fz1 %(I1/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fx2 %8.5lf %d\n") , (i+1) , fx2 %(I2/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fy2 %8.5lf %d\n") , (i+1) , fy2 %(I2/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fz2 %8.5lf %d\n") , (i+1) , fz2 %(I2/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fx3 %8.5lf %d\n") , (i+1) , fx3 %(I3/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fy3 %8.5lf %d\n") , (i+1) , fy3 %(I3/3+1) );
-          LOG_ENERGY(( "MEISTER angle %d fz3 %8.5lf %d\n") , (i+1) , fz3 %(I3/3+1) );
-        }
-        LOG_ENERGY(( "MEISTER angle %d stop\n") , (i+1) );
-      }
-		    /* Add the forces */
-      if ( calcForce ) {
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
-//		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
-      }
     }
-  }
-  if ( this->_DebugEnergy ) 
-  {
-    LOG_ENERGY(("%s }\n") , this->className());
   }
   maybeSetEnergy( componentEnergy, EnergyAngle_O::static_classSymbol(), termEnergy );
   return termEnergy;
@@ -673,7 +622,6 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
 void EnergyAngle_O::initialize()
 {
     this->Base::initialize();
-    this->setErrorThreshold(0.2);
 }
 
 void EnergyAngle_O::fields(core::Record_sp node)
@@ -795,6 +743,7 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
 
 EnergyAngle_sp EnergyAngle_O::copyFilter(core::T_sp keepInteractionFactory ) {
   EnergyAngle_sp copy = EnergyAngle_O::create();
+  copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyAngle_O::staticClass() );
   for ( auto edi=this->_Terms.begin(); edi!=this->_Terms.end(); edi++ ) {
     Atom_sp a1 = edi->_Atom1;

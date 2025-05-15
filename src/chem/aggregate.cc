@@ -337,6 +337,7 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
     }
 
 
+CL_DEFMETHOD
 Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
     {
 	int molId = atomId.moleculeId();

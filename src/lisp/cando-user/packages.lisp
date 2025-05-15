@@ -30,11 +30,12 @@
   (:shadow #:ash)
   (:use #:common-lisp)
   (:import-from :leap.pdb #:loadPdb)
-  (:export #:start-swank
+  (:export #:start-swank #:start-slynk
            #:loadPdb
            #:jupyterlab-fork-server
            #:force-field-viewer
            #:*slime-home*
+           #:*sly-home*
            )
   )
 

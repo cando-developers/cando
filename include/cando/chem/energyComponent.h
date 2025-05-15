@@ -297,18 +297,11 @@ class EnergyComponent_O : public core::CxxObject_O
  public:
  public: // virtual functions inherited from Object
   void initialize();
- protected: // instance variables
+public: // instance variables
   bool		        _Enabled;
   double		_Scale;
-  double		_ErrorThreshold;
-  bool		_DebugEnergy;
-  int		_Debug_NumberOfTermsToCalculate;
-  core::StringOutputStream_sp 	_DebugLog;
 public:
-  size_t        _Evaluations;
-//protected:		// Define these in subclasses
-//	vector<TermClass>	_Terms;
-//	vector<TermClass>	_BeyondThresholdTerms;
+  size_t                _Evaluations;
 public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
@@ -321,18 +314,6 @@ public:
   CL_DEFMETHOD 	void enable() {this->_Enabled = true; };
   CL_LISPIFY_NAME("disable");
   CL_DEFMETHOD 	void disable() {this->_Enabled = false; };
-  CL_LISPIFY_NAME("getDebugOn");
-  CL_DEFMETHOD 	bool getDebugOn() {return this->_DebugEnergy; };
-  CL_LISPIFY_NAME("enableDebug");
-  CL_DEFMETHOD 	void enableDebug() {this->_DebugEnergy = true; };
-  CL_LISPIFY_NAME("disableDebug");
-  CL_DEFMETHOD 	void disableDebug() {this->_DebugEnergy = false; };
-  CL_LISPIFY_NAME("setDebug_NumberOfTermsToCalculate");
-  CL_DEFMETHOD 	void setDebug_NumberOfTermsToCalculate(int i) {this->_Debug_NumberOfTermsToCalculate=i;}
-  CL_LISPIFY_NAME("setErrorThreshold");
-  CL_DEFMETHOD 	void	setErrorThreshold(double tr) { this->_ErrorThreshold = tr; };
-  CL_LISPIFY_NAME("getErrorThreshold");
-  CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
 
   CL_DOCSTRING("Some energy-components are restraints - and should be disabled to calculate conformational energies");
   CL_DEFMETHOD
@@ -372,9 +353,7 @@ public:
  public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
-  EnergyComponent_O() : _Enabled(true),
-                        _Scale(1.0),
-                        _DebugEnergy(false), _Evaluations(0) {};
+  EnergyComponent_O() : _Enabled(true), _Scale(1.0) {};
 };
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
@@ -386,7 +365,8 @@ SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
   }
   SIMPLE_ERROR("Could not find {}" , _rep_(key));
 }
-  
+
+void copyEnergyComponent(EnergyComponent_sp newComponent, EnergyComponent_sp originalComponent );
 ;
 };
 

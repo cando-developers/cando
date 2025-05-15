@@ -293,7 +293,6 @@ struct RestartMinimizer {};
 
 
     void throwMinimizerExceededMaxSteps();
-    void throwMinimizerStuck();
     void throwMinimizerError();
 
     CL_LISPIFY_NAME("getEnergyFunction");

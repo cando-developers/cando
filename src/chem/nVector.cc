@@ -144,10 +144,6 @@ double	rmsMagnitude(NVector_sp me)
   return sqrt(dDot/me->length());
 }
 
-CL_DEFUN double chem__nvector_rms(NVector_sp me) {
-  return rmsMagnitude(me);
-}
-
 double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask)
 {
   ASSERT(me->length()>0);
@@ -189,6 +185,12 @@ double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask)
   SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
 }
 
+
+CL_LAMBDA(nvector &key active-atom-mask)
+CL_DEFUN double chem__nvector_rms(NVector_sp me, core::T_sp activeAtomMask ) {
+  if (activeAtomMask.notnilp()) return rmsMagnitudeWithActiveAtomMask(me,activeAtomMask);
+  return rmsMagnitude(me);
+}
 
 
 
@@ -430,6 +432,23 @@ CL_DEFUN NVector_sp chem__nvector_MINUS_(NVector_sp x, NVector_sp y)
   vecreal* vx = &(*x)[0];
   vecreal* vy = &(*y)[0];
   for ( size_t ii=0; ii<x->size(); ii++ ) vres[ii] = vx[ii]-vy[ii];
+  return res;
+}
+
+CL_DOCSTRING("Transform each point within this nvector by the matrix")
+CL_DEFUN NVector_sp chem__nvector_transform(NVector_sp x, const Matrix& s)
+{
+  NVector_sp res = NVector_O::make(x->size(),0.0,false);
+  vecreal* vres = &(*res)[0];
+  vecreal* vx = &(*x)[0];
+  for ( size_t ii=0; ii<x->size(); ii+=3 ) {
+    Vector3 vv;
+    vv.set((*x)[ii+0], (*x)[ii+1], (*x)[ii+2] );
+    vv = s*vv;
+    (*res)[ii+0] = vv.getX();
+    (*res)[ii+1] = vv.getY();
+    (*res)[ii+2] = vv.getZ();
+  }
   return res;
 }
 

@@ -121,11 +121,6 @@ public:
   CL_DEFMETHOD NVector_sp get_coordinates() const { return this->_SavedCoordinates; };
   CL_DEFMETHOD void set_coordinates(NVector_sp coords);
 
-  virtual void	enableDebug() override;
-    /*! Disable debugging on all energy components
-     */
-  virtual void	disableDebug() override;
-
   virtual string	energyTermsEnabled() override;
 
   virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian,

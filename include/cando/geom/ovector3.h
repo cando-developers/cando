@@ -52,6 +52,7 @@ public:
   Vector3	_Value;
 public:
   static OVector3_sp make(vecreal x, vecreal y, vecreal z);
+  static OVector3_sp make_array(chem::NVector_sp array, size_t index);
 public:
   static OVector3_sp createFromVector3(const Vector3& pos);
   static OVector3_sp create(Vector3 const& pos);

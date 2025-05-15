@@ -219,7 +219,8 @@
            #:chemical-formula
            #:align-atoms
            #:align-transform
-           #:heavy-atom-p))
+           #:heavy-atom-p
+           #:align-heavy-atoms))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

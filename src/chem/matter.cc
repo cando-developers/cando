@@ -685,6 +685,23 @@ Matter_sp Matter_O::apply_coordinates(core::T_sp coord_array)
       atm->setPosition(pos);
     }
     return this->asSmartPtr();
+  } else if ( gc::IsA<core::SimpleVector_float_sp>(coord_array) ) {
+    auto coords = gc::As_unsafe<core::SimpleVector_float_sp>(coord_array);
+    if ( (numberOfAtoms*3)!= coords->length()) {
+      SIMPLE_ERROR("The length of nvector coordinates {} must match {} the number of atoms * 3",
+                   coords->length(),
+                   (numberOfAtoms*3));
+    }
+    size_t idx = 0;
+    Loop lAtoms2(matter, ATOMS);
+    float* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      Vector3 pos(cur[idx+0],cur[idx+1],cur[idx+2]);
+      idx += 3;
+      atm->setPosition(pos);
+    }
+    return this->asSmartPtr();
   } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(coord_array)) {
     auto coords = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(coord_array);
     if ( (numberOfAtoms)!= coords->length()) {
@@ -703,7 +720,7 @@ Matter_sp Matter_O::apply_coordinates(core::T_sp coord_array)
     }
     return this->asSmartPtr();
   }
-  TYPE_ERROR(coord_array,core::Cons_O::createList(NVector_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
+  TYPE_ERROR(coord_array,core::Cons_O::createList(NVector_O::static_classSymbol(), core::SimpleVector_float_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
 }
 
 CL_LAMBDA((self chem:matter) &optional coordinates)
