@@ -249,8 +249,7 @@ public:
 	    << distDih->getAtomC()->getTempInt() << " "
 	    << distDih->getAtomD()->getTempInt() << " "
 	    << " 2 "
-	    << distDih->getMinDegrees() << " "
-	    << distDih->getMaxDegrees() << " "
+	    << distDih->getDegrees() << " "
          << distDih->getWeight() << std::endl;
     return;
 }
@@ -1213,7 +1212,7 @@ void	MoeReadFile::readNextLine()
 		    restraint->setAtomB(atoms[(*resAtoms)[1]-1]);
 		    restraint->setAtomC(atoms[(*resAtoms)[2]-1]);
 		    restraint->setAtomD(atoms[(*resAtoms)[3]-1]);
-		    restraint->setParameters( (*target)[0], (*target)[1], weight );
+		    restraint->setParameters( (*target)[0], weight );
 		    aggRestraints = core::Cons_O::create(restraint,aggRestraints);
 		} else if ( type == "angle" ) 
 		{

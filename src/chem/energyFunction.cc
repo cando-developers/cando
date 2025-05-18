@@ -1121,7 +1121,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       energyTerm.term.I2 = ea2->coordinateIndexTimes3();
       energyTerm.term.I3 = ea3->coordinateIndexTimes3();
       energyTerm.term.I4 = ea4->coordinateIndexTimes3();
-      energyTerm.term.phi0 = dih->getMaxDegrees()*0.0174533;
+      energyTerm.term.phi0 = dih->getDegrees()*0.0174533;
       energyTerm.term.kdh = dih->getWeight();
       this->_DihedralRestraint->addTerm(energyTerm);
       ++terms;
@@ -1192,8 +1192,18 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   if (keepInteractionFactory.nilp()) return;
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, RestraintDihedral_O::staticClass());
   gctools::Vec0<Atom_sp>::iterator ni;
-  double trans  = 180.0;
+#if 0
+  // right
+  core::clasp_write_string("%s:%d:%s Generating correct dihedral restraint for amide.\n", __FILE__, __LINE__, __FUNCTION__);
+  double trans  = -180.0;
   double cis    = 0.0;
+#else
+  // wrong/testing
+  core::clasp_write_string("%s:%d:%s Generating WRONG dihedral restraint for amide.\n", __FILE__, __LINE__, __FUNCTION__);
+  double trans  = 90.0;
+  double cis    = -90.0;
+#endif
+
   double weight = 1.0;
   for ( ni=nitrogens.begin(); ni!=nitrogens.end(); ni++ )
   {

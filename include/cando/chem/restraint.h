@@ -252,24 +252,14 @@ public:
 	Atom_sp		_B;
 	Atom_sp		_C;
 	Atom_sp		_D;
-		/*! I think these should be between 0 and 360
-		 * But look at stereochemistry.cc line 211 transMin/transMax
-		 * and cisMin/cisMax are between -180 and 180
-		 */
-	double		_MinDegrees;
-		/*! I think these should be between 0 and 360
-		 * But look at stereochemistry.cc line 211 transMin/transMax
-		 * and cisMin/cisMax are between -180 and 180
-		 */
-	double		_MaxDegrees;
+	double		_Degrees;
 	double		_Weight;
 
 public:
 
 
-	void	setParameters(double mn,double mx, double wt ) {
-			this->_MinDegrees=mn;
-			this->_MaxDegrees=mx;
+	void	setParameters(double deg, double wt ) {
+			this->_Degrees=deg;
 			this->_Weight=wt;
 	};
 	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
@@ -281,8 +271,7 @@ public:
 	void	setAtomC(Atom_sp a) {this->_C=a;};
 	void	setAtomD(Atom_sp a) {this->_D=a;};
 
-	double	getMinDegrees() {return this->_MinDegrees;};
-	double	getMaxDegrees() {return this->_MaxDegrees;};
+	double	getDegrees() {return this->_Degrees;};
 	double	getWeight() {return this->_Weight;};
 
 	Restraint_sp	copyDontRedirectAtoms();

@@ -124,14 +124,14 @@ RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_
 
 void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
 				Atom_sp p1X, Atom_sp pX, Atom_sp pY, Atom_sp p1Y,
-				double min, double max, double weight)
+				double deg, double weight)
 {
     RestraintDihedral_sp dih = RestraintDihedral_O::create();
     dih->setAtomA(p1X);
     dih->setAtomB(pX);
     dih->setAtomC(pY);
     dih->setAtomD(p1Y);
-    dih->setParameters(min,max,weight);
+    dih->setParameters(deg,weight);
     residue->addRestraint(dih);
 }
 
@@ -149,72 +149,79 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
  * for "E"  x1&y1 trans
  * for "Z"  x1&y1 cis
  */
-    void	RestrainedPiBond_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip)
+void	RestrainedPiBond_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip)
 {
-    core::Symbol_sp config = this->_Configuration;
-    Atom_sp pX  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomX()));
-    Atom_sp pY  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomY()));
+  size_t terms = 0;
+  core::Symbol_sp config = this->_Configuration;
+  Atom_sp pX  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomX()));
+  Atom_sp pY  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomY()));
 
-    Atom_sp p1X = pX->highestPriorityNeighborThatIsnt(pY,cip);
-    Atom_sp p2X = pX->lowestPriorityNeighborThatIsnt(pY,cip);
-    if ( p2X == p1X )
+  Atom_sp p1X = pX->highestPriorityNeighborThatIsnt(pY,cip);
+  Atom_sp p2X = pX->lowestPriorityNeighborThatIsnt(pY,cip);
+  if ( p2X == p1X )
     {
-	p2X = nil<Atom_O>();
+      p2X = nil<Atom_O>();
     }
-    Atom_sp p1Y = pY->highestPriorityNeighborThatIsnt(pX,cip);
-    Atom_sp p2Y = pY->lowestPriorityNeighborThatIsnt(pX,cip);
-    if ( p2Y == p1Y )
+  Atom_sp p1Y = pY->highestPriorityNeighborThatIsnt(pX,cip);
+  Atom_sp p2Y = pY->lowestPriorityNeighborThatIsnt(pX,cip);
+  if ( p2Y == p1Y )
     {
-	p2Y = nil<Atom_O>();
+      p2Y = nil<Atom_O>();
     }
-    if ( pX->numberOfBonds() < 2 || pX->numberOfBonds() > 3  )
+  if ( pX->numberOfBonds() < 2 || pX->numberOfBonds() > 3  )
     {
-	stringstream ss;
-	ss << "Dihedral restraints X atom: " << this->_PiAtomX;
-	ss << " must have between 2 and 3 bonds - it has " << pX->numberOfBonds();
-	SIMPLE_ERROR("Dihedral restraints Y atom: {}" , core::_rep_(this->_PiAtomY) );
-	ss << " must have between 2 and 3 bonds - it has " << pY->numberOfBonds();
-	SIMPLE_ERROR("{}" , ss.str() );
+      stringstream ss;
+      ss << "Dihedral restraints X atom: " << this->_PiAtomX;
+      ss << " must have between 2 and 3 bonds - it has " << pX->numberOfBonds();
+      SIMPLE_ERROR("Dihedral restraints Y atom: {}" , core::_rep_(this->_PiAtomY) );
+      ss << " must have between 2 and 3 bonds - it has " << pY->numberOfBonds();
+      SIMPLE_ERROR("{}" , ss.str() );
     }
-    double transMin = -170.0;
-    double transMax = 170.0;
-    double cisMin = 10.0;
-    double cisMax = -10.0;
-    double weight = 1.0;
-    if ( config == chemkw::_sym_Z )
+  double transDeg = -180.0;
+  double cisDeg = 0.0;
+  double weight = 1.0;
+  if ( config == chemkw::_sym_Z )
     {
-	this->fillOneDihedralRestraint(residue,p1X,pX,pY,p1Y,cisMin,cisMax,weight);
-	if ( p2Y.notnilp() ) 
+      this->fillOneDihedralRestraint(residue,p1X,pX,pY,p1Y,cisDeg,weight);
+      if ( p2Y.notnilp() ) 
 	{
-	    this->fillOneDihedralRestraint(residue,p1X,pX,pY,p2Y,transMin,transMax,weight);
+          this->fillOneDihedralRestraint(residue,p1X,pX,pY,p2Y,transDeg,weight);
+          terms++;
 	}
-	if ( p2X.notnilp() ) 
+      if ( p2X.notnilp() ) 
 	{
-	    this->fillOneDihedralRestraint(residue,p2X,pX,pY,p1Y,transMin,transMax,weight);
+          this->fillOneDihedralRestraint(residue,p2X,pX,pY,p1Y,transDeg,weight);
+          terms++;
 	}
-	if ( p2X.notnilp() && p2Y.notnilp() )
+      if ( p2X.notnilp() && p2Y.notnilp() )
 	{
-	    this->fillOneDihedralRestraint(residue,p2X,pX,pY,p2Y,cisMin,cisMax,weight);
+          this->fillOneDihedralRestraint(residue,p2X,pX,pY,p2Y,cisDeg,weight);
+          terms++;
 	}
     } else if ( config == chemkw::_sym_E )
     {
-	this->fillOneDihedralRestraint(residue,p1X,pX,pY,p1Y,transMin,transMax,weight);
-	if ( p2Y.notnilp() )
+      this->fillOneDihedralRestraint(residue,p1X,pX,pY,p1Y,transDeg,weight);
+      if ( p2Y.notnilp() )
 	{
-	    this->fillOneDihedralRestraint(residue,p1X,pX,pY,p2Y,cisMin,cisMax,weight);
+          this->fillOneDihedralRestraint(residue,p1X,pX,pY,p2Y,cisDeg,weight);
+          terms++;
 	}
-	if ( p2X.notnilp() )
+      if ( p2X.notnilp() )
 	{
-	    this->fillOneDihedralRestraint(residue,p2X,pX,pY,p1Y,cisMin,cisMax,weight);
+          this->fillOneDihedralRestraint(residue,p2X,pX,pY,p1Y,cisDeg,weight);
+          terms++;
 	}
-	if ( p2X.notnilp() && p2Y.notnilp() )
+      if ( p2X.notnilp() && p2Y.notnilp() )
 	{
-	    this->fillOneDihedralRestraint(residue,p2X,pX,pY,p2Y,transMin,transMax,weight);
+          this->fillOneDihedralRestraint(residue,p2X,pX,pY,p2Y,transDeg,weight);
+          terms++;
 	}
     } else
     {
       SIMPLE_ERROR("Illegal Pi bond configuration: {} must be E or Z" , core::_rep_(config));
     }
+
+  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built RestrainedPiBond_O::fillRestraints  E/Z restraints including {} terms\n" , terms ));
 }
 
 

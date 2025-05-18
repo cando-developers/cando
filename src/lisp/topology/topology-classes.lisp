@@ -93,23 +93,19 @@
    (atom2-name :initarg :atom2-name :accessor atom2-name)
    (atom3-name :initarg :atom3-name :accessor atom3-name)
    (atom4-name :initarg :atom4-name :accessor atom4-name)
-   (dihedral-min-degrees :initarg :dihedral-min-degrees
-                         :accessor dihedral-min-degrees)
-   (dihedral-max-degrees :initarg :dihedral-max-degrees
-                         :accessor dihedral-max-degrees)
+   (dihedral-degrees :initarg :dihedral-degrees :accessor dihedral-degrees)
    (weight :initarg :weight :accessor weight)))
 
 (cando.serialize:make-class-save-load dihedral-restraint
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a ~a ~a ~a ~a ~a ~a"
+     (format stream "~a ~a ~a ~a ~a ~a"
              (atom1-name obj)
              (atom2-name obj)
              (atom3-name obj)
              (atom4-name obj)
-             (dihedral-min-degrees obj)
-             (dihedral-max-degrees obj)
+             (dihedral-degrees obj)
              (weight obj)))))
 
 (defclass abstract-topology (cando.serialize:serializable)

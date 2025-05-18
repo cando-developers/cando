@@ -167,7 +167,7 @@ CL_DEFMETHOD     void	setPiAtomY(MatterName n) { this->_PiAtomY = n; };
 
     void fillOneDihedralRestraint(Residue_sp residue,
 				Atom_sp p1X, Atom_sp pX, Atom_sp pY, Atom_sp p1Y,
-				double min, double max, double weight);
+				double deg, double weight);
     virtual void fillRestraints(Residue_sp residue, core::HashTable_sp cip);
 
     DEFAULT_CTOR_DTOR(RestrainedPiBond_O);

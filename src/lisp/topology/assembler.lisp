@@ -508,7 +508,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 #|                  :tune-energy-function tune-energy-function
                   :keep-interaction-factory-factory keep-interaction-factory-factory))|#
 
-(defun make-training-assembler (oligomers &key focus-monomer)
+(defun make-training-assembler (oligomers &key focus-monomer build-all-monomer-contexts)
   "Build a assembler for the oligomers. This is used for building training molecules."
   #+(or)
   (unless focus-monomer
@@ -536,7 +536,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                           for oligomer-space = (oligomer-space oligomer)
                           for foldamer = (foldamer oligomer-space)
                           for molecule-index from 0
-                          do (if focus-monomer
+                          do (if (or (null build-all-monomer-contexts) focus-monomer)
                                  (progn
                                    (let ((focus-monomer-context (foldamer-monomer-context focus-monomer oligomer foldamer)))
                                      (setf (gethash focus-monomer monomer-contexts) focus-monomer-context)

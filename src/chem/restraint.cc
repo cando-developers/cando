@@ -283,15 +283,14 @@ void	RestraintAngle_O::serialize(serialize::SNode node)
 
 
 CL_DEFUN RestraintDihedral_sp make_RestraintDihedral(Atom_sp atom1, Atom_sp atom2, Atom_sp atom3, Atom_sp atom4,
-                                                     double minDegrees, double maxDegrees, double weight)
+                                                     double degrees, double weight)
 {
   RestraintDihedral_sp rest  = gctools::GC<RestraintDihedral_O>::allocate();
   rest->_A = atom1;
   rest->_B = atom2;
   rest->_C = atom3;
   rest->_D = atom4;
-  rest->_MinDegrees = minDegrees;
-  rest->_MaxDegrees = maxDegrees;
+  rest->_Degrees = degrees;
   rest->_Weight = weight;
   return rest;
 }
@@ -302,8 +301,7 @@ RestraintDihedral_O::RestraintDihedral_O(const RestraintDihedral_O& old) : Restr
   this->_B = old._B;
   this->_C = old._C;
   this->_D = old._D;
-  this->_MinDegrees = old._MinDegrees;
-  this->_MaxDegrees = old._MaxDegrees;
+  this->_Degrees = old._Degrees;
   this->_Weight = old._Weight;
 }
 
@@ -325,37 +323,9 @@ void	RestraintDihedral_O::redirectAtoms()
   this->_D = this->getAtomD()->getCopyAtom();
 }
 
-#ifdef XML_ARCHIVE
-void	RestraintDihedral_O::archiveBase(core::ArchiveP node)
-{
-  node->archiveWeakPointer("AtomA",this->_A);
-  node->archiveWeakPointer("AtomB",this->_B);
-  node->archiveWeakPointer("AtomC",this->_C);
-  node->archiveWeakPointer("AtomD",this->_D);
-  node->attribute("MinDegrees",this->_MinDegrees);
-  node->attribute("MaxDegrees",this->_MaxDegrees);
-  node->attribute("Weight",this->_Weight);
-}
-#endif
-
-
-#ifdef OLD_SERIALIZE
-void	RestraintDihedral_O::serialize(serialize::SNode node)
-{
-  node->archiveWeakPointer("AtomA",this->_A);
-  node->archiveWeakPointer("AtomB",this->_B);
-  node->archiveWeakPointer("AtomC",this->_C);
-  node->archiveWeakPointer("AtomD",this->_D);
-  node->attribute("MinDegrees",this->_MinDegrees);
-  node->attribute("MaxDegrees",this->_MaxDegrees);
-  node->attribute("Weight",this->_Weight);
-}
-#endif
-
 void	RestraintDihedral_O::invertStereochemistryOfRestraint()
 {
-  this->_MinDegrees = 360.0 - this->_MinDegrees;
-  this->_MaxDegrees = 360.0 - this->_MaxDegrees;
+  this->_Degrees = - this->_Degrees;
 }
 
 

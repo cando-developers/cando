@@ -504,15 +504,14 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         append (cond
                  ((eq kind :dihedral-restraints)
                   (loop for restraint in data
-                        collect (destructuring-bind (atom1 atom2 atom3 atom4 min-deg max-deg weight)
+                        collect (destructuring-bind (atom1 atom2 atom3 atom4 deg weight)
                                     restraint
                                   (make-instance 'dihedral-restraint
                                                  :atom1-name (intern (string atom1) :keyword)
                                                  :atom2-name (intern (string atom2) :keyword)
                                                  :atom3-name (intern (string atom3) :keyword)
                                                  :atom4-name (intern (string atom4) :keyword)
-                                                 :dihedral-min-degrees min-deg
-                                                 :dihedral-max-degrees max-deg
+                                                 :dihedral-degrees deg
                                                  :weight weight))))
                  (t (error "Add support for restraint ~a" kind)))))
 
