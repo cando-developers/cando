@@ -1,7 +1,8 @@
 (in-package #:cando-user)
 
 (defun initialize-cando-user ()
-  (let ((amber-home (uiop:getenv-absolute-directory "AMBERHOME"))
+  (let ((amber-home (or (uiop:getenv-absolute-directory "AMBERHOME")
+                        (probe-file "/opt/amber/")))
         (threads (if (ext:getenv "CANDO_THREADS")
                      (parse-integer (ext:getenv "CANDO_THREADS"))
                      (sys:num-logical-processors))))

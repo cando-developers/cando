@@ -147,6 +147,10 @@ to the components and evaluate the BODY in that scope."
          do (progn
               ,@body))))
 
+(defmethod lookup-orientation ((orientations orientations) (oligomer-thing topology:oligomer-shape))
+  (or (gethash (topology:oligomer-space oligomer-thing) (orientations orientations))
+      (error "Could not find ~s as a key in ~s" oligomer-thing orientations)))
+
 (defun ensure-valid-rotamers-state (state)
   (unless (member state
                   '(:incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers))
@@ -315,7 +319,8 @@ to the components and evaluate the BODY in that scope."
                                   callback-backbone-rotamer-indexes
                                   callback-sidechain-rotamer-indexes
                                   extra-arguments
-                                  name)
+                                  name
+                                  ignore-sidechains)
   "Make an oligomer-shape for the OLIGOMER.  Use the MONOMER-TO-MONOMER-SHAPE-MAP to lookup monomer-shapes for each monomer.
 Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES to set rotamer-indexes of any rotamer-shapes."
   (check-type callback-backbone-rotamer-indexes (or null function))
@@ -370,7 +375,7 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
                                                       )
               for monomer-shape = (if monomer-to-monomer-shape-map
                                       (gethash monomer monomer-to-monomer-shape-map)
-                                      (make-rotamer-shape monomer oligomer))
+                                      (make-rotamer-shape monomer oligomer :ignore-sidechains ignore-sidechains))
               do (setf (gethash monomer monomer-shape-map) monomer-shape)
               do (unless in-monomer (setf the-root-monomer monomer))
               do (setf (gethash monomer out-monomers) out-mons)

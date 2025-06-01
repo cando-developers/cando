@@ -66,7 +66,7 @@ private: // instance variables
 public:	// Creation class functions
 public:
 
-  CL_DEFMETHOD virtual void fillRestraints(Residue_sp residue, core::HashTable_sp cip) {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  CL_DEFMETHOD virtual size_t fillRestraints(Residue_sp residue, core::HashTable_sp cip) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 public:
 	ComplexRestraint_O( const ComplexRestraint_O& ss ); //!< Copy constructor
@@ -117,7 +117,7 @@ public:
     void setExoCyclicAtomName(const string& name);
     string getExoCyclicAtomName();
 
-    void fillRestraints(Residue_sp residue, core::HashTable_sp cip);
+    size_t fillRestraints(Residue_sp residue, core::HashTable_sp cip);
 
 public:
     RestrainedExoCyclicAtom_O( const RestrainedExoCyclicAtom_O& ss ); //!< Copy constructor
@@ -168,7 +168,7 @@ CL_DEFMETHOD     void	setPiAtomY(MatterName n) { this->_PiAtomY = n; };
     void fillOneDihedralRestraint(Residue_sp residue,
 				Atom_sp p1X, Atom_sp pX, Atom_sp pY, Atom_sp p1Y,
 				double deg, double weight);
-    virtual void fillRestraints(Residue_sp residue, core::HashTable_sp cip);
+    virtual size_t fillRestraints(Residue_sp residue, core::HashTable_sp cip);
 
     DEFAULT_CTOR_DTOR(RestrainedPiBond_O);
 };

@@ -149,7 +149,7 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
  * for "E"  x1&y1 trans
  * for "Z"  x1&y1 cis
  */
-void	RestrainedPiBond_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip)
+size_t	RestrainedPiBond_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip)
 {
   size_t terms = 0;
   core::Symbol_sp config = this->_Configuration;
@@ -220,8 +220,7 @@ void	RestrainedPiBond_O::fillRestraints(Residue_sp residue, core::HashTable_sp c
     {
       SIMPLE_ERROR("Illegal Pi bond configuration: {} must be E or Z" , core::_rep_(config));
     }
-
-  if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built RestrainedPiBond_O::fillRestraints  E/Z restraints including {} terms\n" , terms ));
+  return terms;
 }
 
 
@@ -279,23 +278,23 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
 
 
 
-void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip )
+size_t RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip )
 {
   SIMPLE_ERROR("Fix the implementation of {}" , __FUNCTION__);
-    this->lazyInitializeSmarts();
-    if ( !residue->hasAtomWithName(this->_ExoCyclicAtomName) )
+  this->lazyInitializeSmarts();
+  if ( !residue->hasAtomWithName(this->_ExoCyclicAtomName) )
     {
       SIMPLE_ERROR("Residue({}) doesn't have atom with name({})" , residue->description() , core::_rep_(this->_ExoCyclicAtomName) );
     }
-    Atom_sp exoCyclicAtom = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->_ExoCyclicAtomName));
-    Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
-    core::T_mv match_mv = chem__chem_info_match(atomExoToSixMemberedRing,exoCyclicAtom);
-    if ( match_mv.nilp() )
+  Atom_sp exoCyclicAtom = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->_ExoCyclicAtomName));
+  Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
+  core::T_mv match_mv = chem__chem_info_match(atomExoToSixMemberedRing,exoCyclicAtom);
+  if ( match_mv.nilp() )
     {
-	SIMPLE_ERROR("In residue({}) the atom with name({}) is not exo-cyclic to a six-membered ring" , residue->description() , _rep_(this->_ExoCyclicAtomName) );
+      SIMPLE_ERROR("In residue({}) the atom with name({}) is not exo-cyclic to a six-membered ring" , residue->description() , _rep_(this->_ExoCyclicAtomName) );
     }
-    //ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(match_mv.number_of_values()));
-    FIX_ME(); // is the above correct?
+  //ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(match_mv.number_of_values()));
+  FIX_ME(); // is the above correct?
 }
 
 

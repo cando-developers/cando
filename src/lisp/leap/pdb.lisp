@@ -209,17 +209,9 @@ odd atom name maps only to the last standard atom name it was mapped to."
                        :documentation "A list of sequences (proper order) in pushed in reverse order"))
   (:documentation " Keep track of sequence and matrix info while scanning a PDB file"))
 
-(defun shallow-copy (object)
-  (let* ((class (class-of object))
-         (copy (allocate-instance class)))
-    (dolist (slotd (clos:class-slots class) copy)
-      (when (clos:slot-boundp-using-class class object slotd)
-        (setf (clos:slot-value-using-class class copy slotd)
-              (clos:slot-value-using-class class object slotd))))))
-
 
 (defun shallow-copy-pdb-scanner (original)
-  (let ((dup (shallow-copy original)))
+  (let ((dup (cando:shallow-copy original)))
     (let ((new-sequences (loop for sequence in (sequences dup)
                                collect (copy-seq sequence))))
       (setf (sequences dup) new-sequences))
@@ -536,7 +528,7 @@ create more problems."
                      do (if do-ignore-residue
                             (setf (car inner-cur) nil)
                             (when (or do-ignore-atoms do-renamed-residue do-rename-atoms)
-                              (let ((new-pdb-residue (shallow-copy pdb-residue)))
+                              (let ((new-pdb-residue (cando:shallow-copy pdb-residue)))
                                 (when do-renamed-residue
                                   (let ((topology (lookup-topology-using-pdb-name-and-context do-renamed-residue (context pdb-residue))))
                                     (setf (name new-pdb-residue) do-renamed-residue
@@ -600,7 +592,7 @@ create more problems."
              (return-from apply-filter-to-line nil))))
        (when (or (rename-residues line-filter)
                  (rename-atoms line-filter))
-         (let ((dup (shallow-copy data)))
+         (let ((dup (cando:shallow-copy data)))
            (setf data dup))
          (when (rename-residues line-filter)
            (let ((to-name (gethash (residue-name original) (rename-residues line-filter))))

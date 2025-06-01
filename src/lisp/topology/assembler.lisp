@@ -172,7 +172,7 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
       (error "Could not find ~s as a key in ~s" oligomer-thing assembler)))
 
 
-(defmethod lookup-orientation ((orientations orientations) oligomer-thing)
+(defmethod lookup-orientation ((orientations orientations) (oligomer-thing topology:oligomer-space))
   (or (gethash oligomer-thing (orientations orientations))
       (error "Could not find ~s as a key in ~s" oligomer-thing orientations)))
 
@@ -265,6 +265,10 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
       (error "Could not find ~s in ~s" monomer assembler)
       nil))
 
+(defmethod lookup-orientation ((assembler training-assembler) oligomer-thing)
+  "Return the orientation for the OLIGOMER-THING (oligomer-space, oligomer, or oligomer-shape) in the ASSEMBLER."
+  (make-orientation))
+
 (defgeneric orientation-for-oligomer-shape (thing oligomer-shape))
 
 (defmethod orientation-for-oligomer-shape ((assembler assembler) oligomer-shape)
@@ -302,7 +306,7 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
   "Return the atresidue corresponding to the focus-monomer"
   (assembler-atresidue focused-assembler (focus-monomer focused-assembler)))
 
-(defgeneric foldamer-monomer-context (focus-monomer oligomer foldamer)
+(defgeneric foldamer-monomer-context (focus-monomer oligomer foldamer &optional errorp error-value)
   (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
 Specialize the foldamer argument to provide methods"))
 
@@ -508,7 +512,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 #|                  :tune-energy-function tune-energy-function
                   :keep-interaction-factory-factory keep-interaction-factory-factory))|#
 
-(defun make-training-assembler (oligomers &key focus-monomer build-all-monomer-contexts)
+(defun make-training-assembler (oligomers &key focus-monomer incomplete-monomer-contexts)
   "Build a assembler for the oligomers. This is used for building training molecules."
   #+(or)
   (unless focus-monomer
@@ -536,14 +540,18 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                           for oligomer-space = (oligomer-space oligomer)
                           for foldamer = (foldamer oligomer-space)
                           for molecule-index from 0
-                          do (if (or (null build-all-monomer-contexts) focus-monomer)
-                                 (progn
-                                   (let ((focus-monomer-context (foldamer-monomer-context focus-monomer oligomer foldamer)))
-                                     (setf (gethash focus-monomer monomer-contexts) focus-monomer-context)
-                                     ))
-                                 (loop for monomer across (monomers oligomer-space)
-                                       for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
-                                       do (setf (gethash monomer monomer-contexts) monomer-context)))
+                          do (cond
+                               (incomplete-monomer-contexts
+                                (loop for monomer across (monomers oligomer-space)
+                                      for monomer-context = (foldamer-monomer-context monomer oligomer foldamer nil :missing-monomer-context)
+                                      do (setf (gethash monomer monomer-contexts) monomer-context)))
+
+                               (focus-monomer
+                                (let ((focus-monomer-context (foldamer-monomer-context focus-monomer oligomer foldamer)))
+                                  (setf (gethash focus-monomer monomer-contexts) focus-monomer-context)))
+                               (t (loop for monomer across (monomers oligomer-space)
+                                        for monomer-context = (foldamer-monomer-context monomer oligomer foldamer)
+                                        do (setf (gethash monomer monomer-contexts) monomer-context))))
                              ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
                              ;; Use the monomers-to-topologys
                           do (let* ((atmolecule (build-atmolecule-using-oligomer oligomer
@@ -719,7 +727,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                (declare (ignore atom-id))
                                (kin:set-position joint (geom:vec 0.0 0.0 0.0))))))
 
-(defun adjust-internals (assembler oligomer-shape)
+(defmethod adjust-internals ((assembler assembler) oligomer-shape)
   "Do the adjustment of internal coordinates"
   (let* ((pos (position oligomer-shape (oligomer-shapes assembler)))
          (atmol (aref (atmolecules (ataggregate assembler)) pos)))
@@ -728,6 +736,16 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
           do (loop for adjustment in adjustments
                    do (internal-adjust adjustment assembler)))))
 
+
+(defmethod adjust-internals ((assembler training-assembler) oligomer-shape)
+  "Do the adjustment of internal coordinates"
+  (let* ((oligomer (topology:oligomer oligomer-shape))
+         (pos (position oligomer (oligomers assembler)))
+         (atmol (aref (atmolecules (ataggregate assembler)) pos)))
+    #+(or)(loop for atres across (atresidues atmol)
+                for adjustments = (gethash atres (internal-adjustments (adjustments assembler)))
+                do (loop for adjustment in adjustments
+                         do (internal-adjust adjustment assembler)))))
 
 (defun adjust-all-internals (assembler)
   "Do the adjustment of internal coordinates"
@@ -773,31 +791,50 @@ If ROOT-MONOMER is provided, then start from that."
                               (when verbose (format t "applying internals for monomer: ~s~%" monomer))
                               (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres coordinates :verbose verbose)))))))
 
-(defun fill-internals-from-oligomer-shape (assembler oligomer-shape &key verbose)
+
+(defun do-fill-internals-from-oligomer-shape (assembler oligomer-shape monomers &key verbose)
+  (loop with atagg = (ataggregate assembler)
+        ;;  IGNORING THE FOLLOWING
+        ;; It's really important that we use the ordered-monomers so that the monomer-shapes
+        ;;  will install internal coordinates in the order from the root outwards.
+        ;;  so that any preceeding monomer-shapes are built before any following ones.
+        for monomer in monomers
+        do (let* ((monomer-context (gethash monomer (monomer-contexts assembler)))
+                  (monomer-position (gethash monomer (monomer-positions assembler)))
+                  (molecule-index (molecule-index monomer-position))
+                  (residue-index (residue-index monomer-position))
+                  (atmol (elt (atmolecules atagg) molecule-index))
+                  (atres (elt (atresidues atmol) residue-index))
+                  (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
+                                   (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
+                                   ms)))
+             (when verbose (format t "applying internals for monomer: ~s~%" monomer))
+             (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres :verbose verbose))))
+
+
+(defmethod fill-internals-from-oligomer-shape ((assembler assembler) oligomer-shape &key verbose)
   "Fill internal coordinates from the monomer-shapes in OLIGOMER-SHAPE of the ASSEMBLER."
   (when verbose (let ((*print-pretty* nil)) (format t "fill-internals-from-oligomer-shape ~s~%" oligomer-shape)))
   (loop for ass-oligomer-shape in (oligomer-shapes assembler)
         when (eq ass-oligomer-shape oligomer-shape)
           do (let* ((oligomer (oligomer ass-oligomer-shape))
                     (monomers (monomers (oligomer-space oligomer))))
-               (loop with atagg = (ataggregate assembler)
-                     ;;  IGNORING THE FOLLOWING
-                     ;; It's really important that we use the ordered-monomers so that the monomer-shapes
-                     ;;  will install internal coordinates in the order from the root outwards.
-                     ;;  so that any preceeding monomer-shapes are built before any following ones.
-                     for monomer across monomers
-                     when (in-monomer-subset (monomer-subset assembler) monomer)
-                       do (let* ((monomer-context (gethash monomer (monomer-contexts assembler)))
-                                 (monomer-position (gethash monomer (monomer-positions assembler)))
-                                 (molecule-index (molecule-index monomer-position))
-                                 (residue-index (residue-index monomer-position))
-                                 (atmol (elt (atmolecules atagg) molecule-index))
-                                 (atres (elt (atresidues atmol) residue-index))
-                                 (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
-                                                  (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
-                                                  ms)))
-                            (when verbose (format t "applying internals for monomer: ~s~%" monomer))
-                            (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres :verbose verbose))))))
+               (do-fill-internals-from-oligomer-shape assembler oligomer-shape
+                 (loop for monomer across monomers
+                       when (in-monomer-subset (monomer-subset assembler) monomer)
+                         collect monomer)
+                 :verbose verbose)
+               )))
+
+(defmethod fill-internals-from-oligomer-shape ((assembler training-assembler) oligomer-shape &key verbose)
+  "Fill internal coordinates from the monomer-shapes in OLIGOMER-SHAPE of the ASSEMBLER."
+  (when verbose (let ((*print-pretty* nil)) (format t "fill-internals-from-oligomer-shape ~s~%" oligomer-shape)))
+  (let ((oligomer (oligomer oligomer-shape)))
+    (loop for ass-oligomer in (oligomers assembler)
+          when (eq ass-oligomer oligomer)
+            do (let ((monomers (coerce (monomers (oligomer-space ass-oligomer)) 'list)))
+                 (do-fill-internals-from-oligomer-shape assembler oligomer-shape monomers :verbose verbose)
+                 ))))
 
 (defun update-internals (assembler oligomer-shape &key verbose)
   "Update the internal coordinates of the assembler for the oligomer-shape
@@ -1057,8 +1094,11 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
     (when (null joints)
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
     (with-orientation (make-orientation)
-      (loop for joint in joints
-            do (kin:update-xyz-coords joint internals coords)))))
+      (if internals
+          (loop for joint in joints
+                do (kin:update-xyz-coords joint internals coords))
+          (loop for joint in joints
+                do (kin:update-xyz-coords joint (internals assembler) coords))))))
 
 (defmethod update-externals ((assembler assembler) &key oligomer-shape
                                                      (orientation :identity orientationp)

@@ -225,7 +225,7 @@
 
 (defclass rotamer (cando.serialize:serializable)
   ((internals-values :initarg :internals-values :accessor internals-values)
-   (delta-energy :initform 1.0s0 :initarg :delta-energy :accessor delta-energy)
+   (free-energy :initform 1.0s0 :initarg :free-energy :accessor free-energy)
    (probability :initform 1.0s0 :initarg :probability :accessor probability)))
 
 (defclass fragment-internals (rotamer)
@@ -280,7 +280,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
                  :trainer-index (trainer-index fragment-internals)
                  :probability (probability fragment-internals)
                  :energy (energy fragment-internals)
-                 :delta-energy (delta-energy fragment-internals)
+                 :free-energy (free-energy fragment-internals)
                  :internals-values (copy-seq (internals-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
                  :backbone-dihedral-cache-deg backbone-dihedral-cache-deg
@@ -291,10 +291,10 @@ changing the BACKBONE-DIHEDRAL-CACHE."
       (call-next-method)
       (let ((*print-pretty* nil))
         (print-unreadable-object (obj stream :type t)
-          (format stream "~a :trainer-index ~a :delta-energy ~5,2f"
+          (format stream "~a :trainer-index ~a :free-energy ~5,2f"
                   (monomer-context obj)
                   (trainer-index obj)
-                  (delta-energy obj)
+                  (free-energy obj)
                   )
           #+(or)(format stream ":trainer-index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (trainer-index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral-rad x)))) internals ))))))
 
@@ -318,17 +318,17 @@ changing the BACKBONE-DIHEDRAL-CACHE."
       (print-unreadable-object (obj stream :type t)
         (format stream ":probability ~5,3f" (probability obj)))))
 
-(defun make-sidechain-rotamer (&key internals-values delta-energy probability)
+(defun make-sidechain-rotamer (&key internals-values free-energy probability)
   (make-instance 'sidechain-rotamer
                  :internals-values internals-values
-                 :delta-energy delta-energy
+                 :free-energy free-energy
                  :probability probability))
 
 (defun make-sidechain-rotamer-from-fragment-internals (fragment-internals)
   (check-type fragment-internals fragment-internals)
   (make-sidechain-rotamer
    :internals-values (internals-values fragment-internals)
-   :delta-energy (delta-energy fragment-internals)
+   :free-energy (free-energy fragment-internals)
    :probability (probability fragment-internals)))
 
 
@@ -348,12 +348,12 @@ changing the BACKBONE-DIHEDRAL-CACHE."
       (print-unreadable-object (obj stream :type t)
         (format stream "~s" (shape-key obj)))))
 
-(defun make-backbone-with-sidechain-rotamer (&key internals-values delta-energy probability shape-key backbone-dihedral-cache-deg)
+(defun make-backbone-with-sidechain-rotamer (&key internals-values free-energy probability shape-key backbone-dihedral-cache-deg)
   (unless backbone-dihedral-cache-deg
     (error "You must provide the backbone-dihedral-cache-deg with shape-key ~s" shape-key))
   (make-instance 'backbone-with-sidechain-rotamer
                  :internals-values internals-values
-                 :delta-energy delta-energy
+                 :free-energy free-energy
                  :probability probability
                  :backbone-dihedral-cache-deg backbone-dihedral-cache-deg
                  :shape-key shape-key))
@@ -362,7 +362,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
   (check-type fragment-internals fragment-internals-with-shape-key)
   (make-backbone-with-sidechain-rotamer
    :internals-values (internals-values fragment-internals)
-   :delta-energy (delta-energy fragment-internals)
+   :free-energy (free-energy fragment-internals)
    :probability (probability fragment-internals)
    :backbone-dihedral-cache-deg (backbone-dihedral-cache-deg fragment-internals)
    :shape-key (shape-key fragment-internals)))
@@ -371,17 +371,17 @@ changing the BACKBONE-DIHEDRAL-CACHE."
 (defclass backbone-without-sidechain-rotamer (backbone-rotamer-base)
   ())
 
-(defun make-backbone-without-sidechain-rotamer (&key internals-values delta-energy probability)
+(defun make-backbone-without-sidechain-rotamer (&key internals-values free-energy probability)
   (make-instance 'backbone-without-sidechain-rotamer
                  :internals-values internals-values
-                 :delta-energy delta-energy
+                 :free-energy free-energy
                  :probability probability))
 
 (defun make-backbone-without-sidechain-rotamer-from-fragment-internals (fragment-internals)
   (check-type fragment-internals fragment-internals)
   (make-backbone-without-sidechain-rotamer
    :internals-values (internals-values fragment-internals)
-   :delta-energy (delta-energy fragment-internals)
+   :free-energy (free-energy fragment-internals)
    :probability (probability fragment-internals)))
 
 
@@ -392,7 +392,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
                  :trainer-index (trainer-index fragment-internals)
                  :probability (probability fragment-internals)
                  :energy (energy fragment-internals)
-                 :delta-energy (delta-energy fragment-internals)
+                 :free-energy (free-energy fragment-internals)
                  :internals-values (copy-seq (internals-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
                  ))

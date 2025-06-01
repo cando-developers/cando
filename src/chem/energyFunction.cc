@@ -1199,7 +1199,7 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   double cis    = 0.0;
 #else
   // wrong/testing
-  core::clasp_write_string("%s:%d:%s Generating WRONG dihedral restraint for amide.\n", __FILE__, __LINE__, __FUNCTION__);
+  core::clasp_write_string(fmt::format("%s:%d:%s Generating WRONG dihedral restraint for amide.\n", __FILE__, __LINE__, __FUNCTION__));
   double trans  = 90.0;
   double cis    = -90.0;
 #endif

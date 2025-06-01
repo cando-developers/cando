@@ -220,7 +220,8 @@
            #:align-atoms
            #:align-transform
            #:heavy-atom-p
-           #:align-heavy-atoms))
+           #:align-heavy-atoms
+           #:shallow-copy))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

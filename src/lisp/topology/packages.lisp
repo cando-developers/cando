@@ -286,7 +286,7 @@
    #:plug-name
    #:external-dihedral-name
    #:oligomer-containing-monomer
-   #:delta-energy
+   #:free-energy
    #:lookup-rotamers-for-context
    #:monomer-shape-kind
    #:only-other-out-coupling-plug-name
@@ -517,7 +517,8 @@
    #:rotamer-limit-data
    #:driver-kind
    #:dihedrals-deg
-   #:rotamer-limits))
+   #:rotamer-limits
+   #:fragment-internals-with-shape-key))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
