@@ -288,6 +288,20 @@ CL_DEFUN OMatrix_sp make_m4_rows(const Vector3& row0, const Vector3& row1, const
   return res;
 }
 
+CL_DOCSTRING(R"doc(Decompose the MATRIX into a T_translation x T_rotation pair)doc");
+CL_DEFUN OMatrix_mv geom__decompose_into_translation_rotation(OMatrix_sp matrix) {
+  Matrix mrot = matrix->_Value.extract3x3();
+  Matrix mtrans;
+  mtrans.setToIdentity();
+  mtrans.setTranslate(matrix->_Value);
+  OMatrix_sp omrot = OMatrix_O::create();
+  omrot->_Value = mrot;
+  OMatrix_sp omtrans = OMatrix_O::create();
+  omtrans->_Value = mtrans;
+  return Values(omtrans,omrot);
+}
+
+
 CL_LISPIFY_NAME("make-m4-rotation-columns");
 DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotation_columns(const Vector3& col0, const Vector3& col1, const Vector3& col2)

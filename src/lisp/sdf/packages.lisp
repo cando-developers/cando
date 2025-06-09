@@ -26,6 +26,7 @@
 
 (defpackage #:sdf
   (:use #:common-lisp)
+  (:shadow #:load)
   (:export
    #:parse-sdf-file
    #:sdf-parse-error
@@ -33,4 +34,5 @@
    #:load-sdf-as-aggregate
    #:write-sdf-stream
    #:write-sdf-to-file
-   ))
+   #:save
+   #:load))

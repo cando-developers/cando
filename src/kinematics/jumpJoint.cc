@@ -39,7 +39,6 @@ namespace kinematics
 
 SYMBOL_EXPORT_SC_(KinPkg,orientation_selfFrame);
 SYMBOL_EXPORT_SC_(KinPkg,orientation_labFrame);
-SYMBOL_EXPORT_SC_(KinPkg,orientation_transform);
 
 JumpJoint_O::JumpJoint_O( const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable ) : Joint_O(atomId,name,atomTable) {
 };
@@ -136,7 +135,8 @@ void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVe
  Matrix JumpJoint_O::transform() const {
    // Invoke kin:orientation-transform to return the transform
    // for this jump-joint
-   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->asSmartPtr()))->ref();
+   Matrix m;
+   m.setToIdentity();
    return m;
  }
 

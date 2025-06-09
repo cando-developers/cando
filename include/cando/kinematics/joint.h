@@ -113,6 +113,9 @@ public:
   Joint_sp childWithName(core::T_sp name) const;
 
   CL_DEFMETHOD int positionIndexX3() const { return this->_PositionIndexX3; };
+
+
+
 public:
 
   Joint_O() : _Parent(unbound<Joint_O>()), _Name(nil<core::T_O>()), _Id() {};
@@ -264,6 +267,25 @@ public:
   virtual void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords,Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
   void _updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords);
+
+  void applyTransformToXyzCoordsRecursively(const Matrix& transform, core::Array_sp coords);
+
+  template <typename DestVectorType, typename SourceVectorType>
+  void extractXyzCoordinatesRecursivelyImpl(DestVectorType destination, Joint_sp sourceJoint, SourceVectorType source) {
+    if (this->_Name != sourceJoint->_Name) {
+      SIMPLE_ERROR("extractXyzCoordinatesRecursivelyImpl encountered a mismatch of joint names {} and {}", _rep_(this->_Name), _rep_(sourceJoint->_Name));
+    }
+    (*destination)[this->_PositionIndexX3] = (*source)[sourceJoint->_PositionIndexX3];
+    (*destination)[this->_PositionIndexX3+1] = (*source)[sourceJoint->_PositionIndexX3+1];
+    (*destination)[this->_PositionIndexX3+2] = (*source)[sourceJoint->_PositionIndexX3+2];
+    if (this->_numberOfChildren() != sourceJoint->_numberOfChildren()) {
+      SIMPLE_ERROR("There is a child size mismatch when extractXyzCoordinatesRecursiveImpl running this -> {}  sourceJoint-> {}", _rep_(this->asSmartPtr()), _rep_(sourceJoint));
+    }
+    for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+      this->_child(ii)->extractXyzCoordinatesRecursivelyImpl(destination,sourceJoint->_child(ii),source);
+    }
+  }
+  void extractXyzCoordinatesRecursively(core::Array_sp dest, Joint_sp sourceJoint, core::Array_sp source);
 
 	/*! Ensure proper function of the output-sensitive refold subroutine
 	  derived classes must invoke this function during their updateXyzCoords subroutines

@@ -723,6 +723,68 @@ Matter_sp Matter_O::apply_coordinates(core::T_sp coord_array)
   TYPE_ERROR(coord_array,core::Cons_O::createList(NVector_O::static_classSymbol(), core::SimpleVector_float_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
 }
 
+CL_DEFMETHOD
+Matter_sp Matter_O::apply_coordinates_to_heavy_atoms(core::T_sp coord_array)
+{
+  size_t numberOfAtoms = this->numberOfAtoms();
+  Matter_sp matter = this->asSmartPtr();
+  if ( gc::IsA<NVector_sp>(coord_array) ) {
+    auto coords = gc::As_unsafe<NVector_sp>(coord_array);
+    size_t idx = 0;
+    Loop lAtoms2(matter, ATOMS);
+    vecreal* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      if (elementIsHydrogen(atm->getElement())) {
+        Vector3 pos;
+        atm->setPosition(pos);
+      } else {
+        if (idx>=coords->length()) SIMPLE_ERROR("Not enough coordinates to write heavy atoms", coords->length() );
+        Vector3 pos(cur[idx+0],cur[idx+1],cur[idx+2]);
+        idx += 3;
+        atm->setPosition(pos);
+      }
+    }
+    return this->asSmartPtr();
+  } else if ( gc::IsA<core::SimpleVector_float_sp>(coord_array) ) {
+    auto coords = gc::As_unsafe<core::SimpleVector_float_sp>(coord_array);
+    size_t idx = 0;
+    Loop lAtoms2(matter, ATOMS);
+    float* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      if (elementIsHydrogen(atm->getElement())) {
+        Vector3 pos;
+        atm->setPosition(pos);
+      } else {
+        if (idx>=coords->length()) SIMPLE_ERROR("Not enough coordinates to write heavy atoms", coords->length() );
+        Vector3 pos(cur[idx+0],cur[idx+1],cur[idx+2]);
+        idx += 3;
+        atm->setPosition(pos);
+      }
+    }
+    return this->asSmartPtr();
+  } else if (gc::IsA<geom::SimpleVectorCoordinate_sp>(coord_array)) {
+    auto coords = gc::As_unsafe<geom::SimpleVectorCoordinate_sp>(coord_array);
+    size_t idx = 0;
+    Loop lAtoms2(matter, ATOMS);
+    Vector3* cur = &(*coords)[0];
+    while (lAtoms2.advanceLoopAndProcess()) {
+      Atom_sp atm = lAtoms2.getAtom();
+      if (elementIsHydrogen(atm->getElement())) {
+        Vector3 pos;
+        atm->setPosition(pos);
+      } else {
+        if (idx>=coords->length()) SIMPLE_ERROR("Not enough coordinates to write heavy atoms", coords->length() );
+        Vector3 pos(cur[idx].getX(),cur[idx].getY(),cur[idx+2].getZ());
+        idx += 3;
+        atm->setPosition(pos);
+      }
+    }
+    return this->asSmartPtr();
+  }
+  TYPE_ERROR(coord_array,core::Cons_O::createList(NVector_O::static_classSymbol(), core::SimpleVector_float_O::static_classSymbol(), geom::SimpleVectorCoordinate_O::static_classSymbol()));
+}
 CL_LAMBDA((self chem:matter) &optional coordinates)
 CL_DEFMETHOD core::T_sp Matter_O::extract_coordinates(core::T_sp coordinates) const {
   size_t numberOfAtoms = this->numberOfAtoms();

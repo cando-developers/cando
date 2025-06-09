@@ -519,6 +519,40 @@ CL_DEFMETHOD void Joint_O::updateXyzCoords(chem::NVector_sp internals, chem::NVe
   this->_updateChildrenXyzCoords(internals,coords);
 }
 
+
+CL_DEFMETHOD void Joint_O::applyTransformToXyzCoordsRecursively(const Matrix& transform, core::Array_sp coords) {
+  if (gc::IsA<chem::NVector_sp>(coords)) {
+    Vector3 pos;
+    transform.transform_nvector_point( pos.getX(), pos.getY(), pos.getZ(), coords, this->_PositionIndexX3 );
+    geom::vec_put_unsafe(coords,pos,this->_PositionIndexX3);
+    for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+      this->_child(ii)->applyTransformToXyzCoordsRecursively(transform,coords);
+    }
+    return;
+  }
+  SIMPLE_ERROR("Unsupported type for coordinates {}", _rep_(coords));
+}
+
+
+CL_DEFMETHOD void Joint_O::extractXyzCoordinatesRecursively(core::Array_sp dest, Joint_sp sourceJoint, core::Array_sp source) {
+  if (gc::IsA<chem::NVector_sp>(dest) && gc::IsA<chem::NVector_sp>(source)) {
+    auto nvdest = gc::As_unsafe<chem::NVector_sp>(dest);
+    auto nvsource = gc::As_unsafe<chem::NVector_sp>(source);
+    this->extractXyzCoordinatesRecursivelyImpl(nvdest,sourceJoint,nvsource);
+    return;
+  } else if (gc::IsA<core::SimpleVector_float_sp>(dest) && gc::IsA<chem::NVector_sp>(source)) {
+      auto tdest = gc::As_unsafe<core::SimpleVector_float_sp>(dest);
+      auto nvsource = gc::As_unsafe<chem::NVector_sp>(source);
+      this->extractXyzCoordinatesRecursivelyImpl(tdest,sourceJoint,nvsource);
+      return;
+    }
+  SIMPLE_ERROR("Handle types dest={} and source={}", dest->className(), source->className());
+}
+
+
+
+
+
 CL_DEFMETHOD core::T_sp Joint_O::getParentOrNil() const {
   return this->_Parent.unboundp() ? nil<core::T_O>() : gc::As_unsafe<core::T_sp>(this->_Parent);
 };

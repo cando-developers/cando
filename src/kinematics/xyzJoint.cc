@@ -212,8 +212,6 @@ void XyzJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp co
     ERROR(kinematics::_sym_undefined_internal_coordinates,core::lisp_createList(kw::_sym_joint,this->asSmartPtr()));
   }
   ASSERT(d2.isDefined());
-  Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->asSmartPtr()))->ref();
-  d2 = m*d2;
   this->setPosition(coords,d2);
 }
 
@@ -226,8 +224,6 @@ Vector3 XyzJoint_O::transformedPos() const
     ERROR(kinematics::_sym_undefined_internal_coordinates,core::lisp_createList(kw::_sym_joint,this->asSmartPtr()));
   }
   ASSERT(d2.isDefined());
-  Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->asSmartPtr()))->ref();
-  d2 = m*d2;
   return d2;
 }
 
@@ -286,8 +282,6 @@ CL_DEFMETHOD
 Vector3 StubJoint_O::transformedParentPos() const {
   chem::Atom_sp atm = this->_ParentAtom;
   Vector3 pos = atm->getPosition();
-  Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->asSmartPtr()))->ref();
-  pos = m*pos;
   return pos;
 }
 
@@ -295,8 +289,6 @@ CL_DEFMETHOD
 Vector3 StubJoint_O::transformedGrandParentPos() const {
    chem::Atom_sp atm = this->_GrandParentAtom;
    Vector3 pos = atm->getPosition();
-   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->asSmartPtr()))->ref();
-   pos = m*pos;
    return pos;
 }
 
@@ -304,8 +296,6 @@ CL_DEFMETHOD
 Vector3 StubJoint_O::transformedGreatGrandParentPos() const {
    chem::Atom_sp atm = this->_GreatGrandParentAtom;
    Vector3 pos = atm->getPosition();
-   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, this->asSmartPtr()))->ref();
-   pos = m*pos;
    return pos;
 }
   

@@ -518,7 +518,15 @@
    #:driver-kind
    #:dihedrals-deg
    #:rotamer-limits
-   #:fragment-internals-with-shape-key))
+   #:fragment-internals-with-shape-key
+   #:oligomers-or-oligomer-shapes
+   #:always-oligomers
+   #:local-frame-specs
+   #:make-local-frame-specs
+   #:make-orientation-from-local-frame-specs
+   #:adjustment-transform
+   #:global-positioning-transform
+   #:root-joint))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

@@ -1,64 +1,188 @@
 (in-package :topology)
 
 
-(defclass orientation ()
-  ((to-origin :initarg :to-origin :reader to-origin
-              :documentation "This is the transform that takes the object to the origin")
-   (adjust-rotation :initarg :adjust-rotation :reader adjust-rotation
-           :documentation "Apply this to the coordinates after the to-origin transform was applied")
-   (adjust-translation :initarg :adjust-translation :reader adjust-translation
-           :documentation "Apply this to the coordinates after the adjust-rotation transform was applied")
-   (from-origin :initarg :from-origin :reader from-origin
-                :documentation "This is the second transform that takes the object after adjusting to-origin is applied")
-   (transform-cache :initarg :transform-cache :reader transform-cache))
-  (:documentation "Represent the orientation of a molecule in a design calculation.
-There are three transforms that define the orientation.
-The `to-origin` transform moves something on the molecule onto the origin.
-The `adjust` transform is for small adjustments of the molecule on the origin.
-The `from-origin` transform moves the molecule to wherever it needs to be in the laboratory
-frame to say, position it within a protein receptor."))
+(defclass local-frame-specs (cando.serialize:serializable)
+  ((origin-spec :initarg :origin-spec :reader origin-spec)
+   (x-spec :initarg :x-spec :reader x-spec)
+   (xy-spec :initarg :xy-spec :reader xy-spec))
+  (:documentation
+   "This class specifies three labeled atoms used to define a local
+coordinate frame on a molecule.
 
-(defun make-orientation (&key (from-origin (geom:make-matrix-identity))
-                           (adjust-rotation (geom:make-matrix-identity))
-                           (adjust-translation (geom:make-matrix-identity))
-                           (to-origin (geom:make-matrix-identity)))
-  "Make an ORIENTATION object, if any of FROM-ORIGIN, ADJUST, or TO-ORIGIN are not specified then they
-default to the identity matrix." 
-  (let ((transform (calculate-orientation-transform from-origin adjust-translation adjust-rotation to-origin)))
-    (make-instance 'orientation
-                   :from-origin from-origin
-                   :adjust-rotation adjust-rotation
-                   :adjust-translation adjust-translation
-                   :to-origin to-origin
-                   :transform-cache transform)))
+The origin-spec defines the origin of the frame. The x-spec identifies
+a second atom that lies along the local x-axis, and the xy-spec
+identifies a third atom that defines the xy-plane. Together, these
+three points uniquely determine a right-handed local coordinate
+system."))
 
-(defun copy-orientation (orientation)
-  "Copy an ORIENTATION."
-  (make-instance 'orientation
-                 :from-origin (geom:copy-matrix (from-origin orientation))
-                 :adjust-rotation (geom:copy-matrix (adjust-rotation orientation))
-                 :adjust-translation (geom:copy-matrix (adjust-translation orientation))
-                 :to-origin (geom:copy-matrix (to-origin orientation))
-                 :transform-cache (geom:copy-matrix (transform-cache orientation))
-                 ))
-
-(defmethod print-object ((obj orientation) stream)
+(defmethod print-object ((obj local-frame-specs) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t)
-        (format stream ":from-origin~%~s~%:adjust-rot~%~s~%:adjust-trans~%~s~%:to-origin~%~s~%" (from-origin obj) (adjust-rotation obj) (adjust-translation obj) (to-origin obj)))))
+        (format stream "~s ~s ~s" (origin-spec obj) (x-spec obj) (xy-spec obj)))))
 
-(defgeneric kin:orientation-transform (orientation))
+(defun make-local-frame-specs (origin-spec x-spec xy-spec)
+  (make-instance 'local-frame-specs
+                 :origin-spec origin-spec
+                 :x-spec x-spec
+                 :xy-spec xy-spec))
 
-(defun calculate-orientation-transform (from-origin adjust-translation adjust-rotation to-origin)
-  (let* ((transform0 (geom:m*m adjust-rotation to-origin))
-         (transform1 (geom:m*m adjust-translation transform0))
-         (transform (geom:m*m from-origin transform1)))
+(defclass orientation (cando.serialize:serializable) ())
+
+(defclass local-to-global-orientation (orientation)
+  ((local-frame-specs
+    :type local-frame-specs
+    :initarg :local-frame-specs
+    :accessor local-frame-specs
+    :documentation "Three atom labels defining the local coordinate frame: origin, x-axis point, and xy-plane point.")
+
+   (adjustment-transform
+    :initarg :adjustment-transform
+    :accessor adjustment-transform
+    :documentation "A transform applied after aligning the local frame to the global origin, used for refinement.")
+
+   (global-positioning-transform
+    :initarg :global-positioning-transform
+    :accessor global-positioning-transform
+    :documentation "The final transform that moves the ligand from the aligned local frame to its final global position."))
+  (:documentation
+   "This class represents the orientation and positioning of a oligomer(-shape)
+using a sequence of coordinate transformations.
+
+The local-frame-specs specify three atoms on the oligomer-shape that define a
+local coordinate system: the first atom defines the origin, the second
+lies along the local x-axis, and the third defines the xy-plane. A
+transform is computed that moves these atoms so the local frame aligns
+with the global origin and axes.
+
+After this initial alignment, an adjustment-transform is applied to
+refine the ligand's position or orientation. Finally, the
+global-positioning-transform is applied to place the ligand into its
+final location and orientation in the global coordinate frame.
+
+The transform-cache stores a single transform that does all of this and
+it is calculated anytime something changes."))
+
+
+(defun make-orientation (&key local-frame-specs
+                           (adjustment-transform (geom:make-matrix-identity))
+                           (global-positioning-transform (geom:make-matrix-identity)))
+  "Make an ORIENTATION object, if any of LOCAL-FRAME-SPECS, ADJUSTMENT-TRANSFORM, GLOBAL-POSITIONING-TRANSFORM
+default to the identity matrix." 
+    (make-instance 'local-to-global-orientation
+                   :local-frame-specs local-frame-specs
+                   :adjustment-transform adjustment-transform
+                   :global-positioning-transform global-positioning-transform))
+
+
+(defmethod make-orientation-from-local-frame-specs (local-frame-specs assembler (coordinates array) &key (adjustment-transform (geom:make-matrix-identity)))
+  "Build a local-to-global-orientation using LOCAL-FRAME-SPECS to build a global-positioning-transform to place a built
+molecule in the global frame."
+  (let* ((origin (origin-spec local-frame-specs))
+         (x (x-spec local-frame-specs))
+         (xy (xy-spec local-frame-specs))
+         (origin-index3 (find-specifier-index3 assembler origin))
+         (x-index3 (find-specifier-index3 assembler x))
+         (xy-index3 (find-specifier-index3 assembler xy))
+         (origin-pos (geom:vec-array coordinates origin-index3))
+         (x-pos (geom:vec-array coordinates x-index3))
+         (xy-pos (geom:vec-array coordinates xy-index3))
+         (transform (calculate-global-positioning-transform origin-pos x-pos xy-pos)))
+    (make-instance 'local-to-global-orientation
+                   :local-frame-specs local-frame-specs
+                   :adjustment-transform adjustment-transform
+                   :global-positioning-transform transform)))
+
+(defmethod make-orientation-from-local-frame-specs (local-frame-specs assembler (aggregate chem:aggregate) &key (adjustment-transform (geom:make-matrix-identity)))
+  (let ((coords (chem:matter/extract-coordinates aggregate)))
+    (make-orientation-from-local-frame-specs local-frame-specs assembler coords :adjustment-transform adjustment-transform)))
+
+(defun copy-orientation (orientation)
+  "Copy an ORIENTATION."
+  (make-instance 'local-to-global-orientation
+                 :local-frame-specs (local-frame-specs orientation)
+                 :adjustment-transform (geom:copy-matrix (adjustment-transform orientation))
+                 :global-positioning-transform (geom:copy-matrix (global-positioning-transform orientation))
+                 ))
+
+(defmethod print-object ((obj local-to-global-orientation) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (let ((*print-pretty* nil))
+          (format stream ":local-frame-specs ~s~%:adjust-transform~%~s~%:global-positioning-transform~%~s~%" (local-frame-specs obj) (adjustment-transform obj) (global-positioning-transform obj))))))
+
+(defgeneric orientation-transform (orientation assembler coordinates))
+
+(defun monomers-for-label (assembler monomer-label)
+  (loop for olig in (topology:always-oligomers assembler)
+        for olig-space = (topology:oligomer-space olig)
+        for monomer = (gethash monomer-label (topology:labeled-monomers olig-space))
+        when monomer
+          collect monomer))
+
+(defun find-specifier-index3 (assembler specifier)
+  (let* ((monomer-label (first specifier))
+         (atom-name (second specifier))
+         (monomer (let ((maybe-monomers (monomers-for-label assembler monomer-label)))
+                     (unless (= (length maybe-monomers) 1)
+                       (error "There must be one monomer with the label ~s" monomer-label))
+                     (first maybe-monomers)))
+         (monomer-pos (gethash monomer (topology:monomer-positions assembler)))
+         (ataggregate (topology:ataggregate assembler))
+         (atresidue (topology:at-position ataggregate monomer-pos))
+         (joint (topology:joint-with-name atresidue atom-name))
+         (index3 (kin:joint/position-index-x3 joint))
+         )
+    index3))
+
+(defun to-origin-x-xy (origin x xy)
+  (let* ((unitx (geom:vnormalized (geom:v- x origin)))
+         (unitxy (let ((xyo (geom:v- xy origin)))
+                   (if (> (geom:vlength xyo) 0.0)
+                       (geom:vnormalized (geom:v- xy origin))
+                       (error "xy - origin will be zero length and cannot be normalized"))))
+         (zcross (geom:vcross unitx unitxy))
+         (unitz (progn
+                  (if (> (geom:vlength zcross) 0.0)
+                      (geom:vnormalized zcross)
+                      (error "zcross has zero length and cannot be normalized"))))
+         (unity (geom:vcross unitz unitx))
+         (rot (geom:make-m4-rotation-rows unitx unity unitz))
+         (translate (geom:make-m4-translate (geom:v* origin -1.0s0)))
+         (transform (geom:m*m rot translate)))
     transform))
 
-(defmethod kin:orientation-transform ((orientation orientation))
-  "Combine the components of the ORIENTATION into a 4x4 homogeneous matrix."
-  (transform-cache orientation))
+(defun calculate-global-positioning-transform (origin x xy)
+  (let* ((unitx (geom:vnormalized (geom:v- x origin)))
+         (unitxy (let ((xyo (geom:v- xy origin)))
+                   (if (> (geom:vlength xyo) 0.0)
+                       (geom:vnormalized (geom:v- xy origin))
+                       (error "xy - origin will be zero length and cannot be normalized"))))
+         (zcross (geom:vcross unitx unitxy))
+         (unitz (progn
+                  (if (> (geom:vlength zcross) 0.0)
+                      (geom:vnormalized zcross)
+                      (error "zcross has zero length and cannot be normalized"))))
+         (unity (geom:vcross unitz unitx))
+         (rot (geom:make-m4-rotation-columns unitx unity unitz))
+         (translate (geom:make-m4-translate (geom:v* origin 1.0s0)))
+         (transform (geom:m*m translate rot)))
+    transform))
+
+
+(defmethod orientation-transform (orientation assembler coordinates)
+  (let* ((local-frame-specs (local-frame-specs orientation))
+         (origin-index3 (find-specifier-index3 assembler (origin-spec local-frame-specs)))
+         (x-index3 (find-specifier-index3 assembler (x-spec local-frame-specs)))
+         (xy-index3 (find-specifier-index3 assembler (xy-spec local-frame-specs)))
+         (origin-vec (geom:vec-array coordinates origin-index3))
+         (x-vec (geom:vec-array coordinates x-index3))
+         (xy-vec (geom:vec-array coordinates xy-index3))
+         (to-origin (to-origin-x-xy origin-vec x-vec xy-vec))
+         (m1 (geom:m*m (adjustment-transform orientation) to-origin))
+         (m2 (geom:m*m (global-positioning-transform orientation) m1)))
+    m2))
 
 (defclass orientations ()
   ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations))
@@ -130,11 +254,25 @@ default to the identity matrix."
    (orientations :initarg :orientations :reader orientations)
    (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset)
    (adjustments :initarg :adjustments :accessor adjustments))
-  (:documentation "The assembler class maintains a list of OLIGOMER-SHAPEs and a hash-table of
+  (:documentation "Te assembler class maintains a list of OLIGOMER-SHAPEs and a hash-table of
 OLIGOMER-SHAPE to ORIENTATIONs.
 
 The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
  ))
+
+
+(defgeneric oligomers-or-oligomer-shapes (assembler)
+  (:documentation "assemblers store oligomer-shapes and training-assemblers store oligomers - return the right thing"))
+
+(defgeneric always-oligomers (assembler)
+  (:documentation "assemblers store oligomer-shapes and training-assemblers store oligomers - return oligomers always"))
+
+(defmethod oligomers-or-oligomer-shapes ((assembler assembler))
+  (oligomer-shapes assembler))
+
+(defmethod always-oligomers ((assembler assembler))
+  (mapcar #'oligomer (oligomer-shapes assembler)))
+
 
 (defun ligand-oligomer-shape (assembler)
   "Return the ligand oligomer-shape for the ASSEMBLER."
@@ -196,8 +334,8 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
     (chem:set-name agg name)
     agg))
 
-(defun aggregate-with-coordinates (assembler coordinates)
-  (aggregate* assembler coordinates))
+(defun aggregate-with-coordinates (assembler coordinates &key (name :all))
+  (aggregate* assembler coordinates :name name))
 
 (defun joint-definedp (assembler joint)
   "Return T if JOINT in ASSEMBLER has defined internal coordinates"
@@ -228,7 +366,7 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
   (kin:bonded-joint/set-theta joint (internals assembler) val))
 
 (defun joint-set-phi (assembler joint val)
-  (kin:bonded-joint/get-phi joint (internals assembler) val))
+  (kin:bonded-joint/set-phi joint (internals assembler) val))
 
 (defun update-internal-coords (assembler joint coordinates)
   (kin:update-internal-coords joint (internals assembler) coordinates))
@@ -241,6 +379,12 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
 (defclass training-assembler (assembler-base)
   ((focus-monomer :initarg :focus-monomer :reader focus-monomer)
    (oligomers :initarg :oligomers :accessor oligomers)))
+
+(defmethod oligomers-or-oligomer-shapes ((assembler training-assembler))
+  (oligomers assembler))
+
+(defmethod always-oligomers ((assembler training-assembler))
+  (oligomers assembler))
 
 (defgeneric oligomer-containing-monomer (assembler monomer &optional errorp))
 
@@ -268,6 +412,11 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
 (defmethod lookup-orientation ((assembler training-assembler) oligomer-thing)
   "Return the orientation for the OLIGOMER-THING (oligomer-space, oligomer, or oligomer-shape) in the ASSEMBLER."
   (make-orientation))
+
+(defmethod lookup-orientation ((assembler assembler) (orientation local-to-global-orientation))
+  "Return the ORIENTATION"
+  (declare (ignore assembler))
+  orientation)
 
 (defgeneric orientation-for-oligomer-shape (thing oligomer-shape))
 
@@ -496,7 +645,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
       (unless monomer-subset
         ;; update the internals so we can build dihedral caches
         (loop for oligomer-shape in (oligomer-shapes assembler)
-              do (update-internals assembler oligomer-shape))
+              do (update-internals assembler :oligomer-shape oligomer-shape))
         ;; update the dihedral caches
         (maybe-update-backbone-dihedral-cache assembler))
       assembler)))
@@ -670,6 +819,20 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                (kin:update-internal-coord joint (internals assembler) coordinates)))))
 
 
+(defgeneric root-joint (assembler &optional oligomer-shape))
+
+(defmethod root-joint ((assembler assembler) &optional (oligomer-shape (first (oligomer-shapes assembler))))
+  (let* ((joint-tree (joint-tree assembler))
+         (root-map (root-map joint-tree))
+         (oligomer (oligomer oligomer-shape))
+         (root-joint (gethash oligomer root-map))
+         )
+    (unless (= 1 (length root-joint))
+      (error "There must be just one root-joint"))
+    (car root-joint)))
+
+
+
 (defun build-atom-tree-external-coordinates* (assembler coords oligomer-shape maybe-orientation)
   (let* ((orientation (orientation maybe-orientation assembler))
          (one-oligomer (oligomer oligomer-shape))
@@ -836,7 +999,7 @@ If ROOT-MONOMER is provided, then start from that."
                  (do-fill-internals-from-oligomer-shape assembler oligomer-shape monomers :verbose verbose)
                  ))))
 
-(defun update-internals (assembler oligomer-shape &key verbose)
+(defun update-internals (assembler &key oligomer-shape verbose)
   "Update the internal coordinates of the assembler for the oligomer-shape
 or whatever type the second argument is.
 The MONOMER-SHAPEs of the OLIGOMER-SHAPE are used to update the internal coordinates in
@@ -844,9 +1007,14 @@ the atom-tree.
 
 ASSEMBLER - the assembler to update.
 OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wrong) in the assembler."
-  (fill-internals-from-oligomer-shape assembler oligomer-shape :verbose verbose)
-  (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
-    (adjust-internals assembler oligomer-shape)))
+  (if oligomer-shape
+      (progn
+        (fill-internals-from-oligomer-shape assembler oligomer-shape :verbose verbose)
+        (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
+          (adjust-internals assembler oligomer-shape)))
+      (loop for oligomer-shape in (oligomer-shapes assembler)
+            do (update-internals assembler :oligomer-shape oligomer-shape
+                                           :verbose verbose))))
 
 (defun update-internals-for-monomer-shape (assembler oligomer-shape monomer-shape &key verbose)
   "Fill internal coordinates from the MONOMER-SHAPE in OLIGOMER-SHAPE of the ASSEMBLER."
@@ -1098,7 +1266,17 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
           (loop for joint in joints
                 do (kin:update-xyz-coords joint internals coords))
           (loop for joint in joints
-                do (kin:update-xyz-coords joint (internals assembler) coords))))))
+                do (kin:update-xyz-coords joint (internals assembler) coords))))
+    ))
+
+(defun transform-externals-to-global-frame (assembler oligomer-shape orientation coords)
+  (let* ((one-oligomer (oligomer oligomer-shape))
+         (joints (gethash one-oligomer (root-map (joint-tree assembler))))
+         (transform (orientation-transform orientation assembler coords)))
+    (unless (= 1 (length joints))
+      (error "There can be only one root joint"))
+    (kin:joint/apply-transform-to-xyz-coords-recursively (car joints) transform coords)))
+
 
 (defmethod update-externals ((assembler assembler) &key oligomer-shape
                                                      (orientation :identity orientationp)
@@ -1108,11 +1286,14 @@ IF OLIGOMER-SHAPE is provided then just build externals for that OLIGOMER-SHAPE.
 If OLIGOMER-SHAPE is not provided then build them all and use the OLIGOMER-SHAPE as the ORIENTATION key.
 Return the COORDS."
   (if oligomer-shape
-      (progn
+      (let ((orientation (lookup-orientation assembler orientation)))
         (when (and oligomer-shape (not orientationp))
           (error "You must provide orientation when you provide oligomer-shape"))
         (build-atom-tree-external-coordinates* assembler coords oligomer-shape orientation)
-        (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
+        (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)
+        (when (local-frame-specs orientation)
+          (transform-externals-to-global-frame assembler oligomer-shape orientation coords))
+        )
       (loop for oligomer-shape in (oligomer-shapes assembler)
             do (update-externals assembler :oligomer-shape oligomer-shape
                                            :orientation oligomer-shape

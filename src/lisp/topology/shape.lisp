@@ -151,6 +151,12 @@ to the components and evaluate the BODY in that scope."
   (or (gethash (topology:oligomer-space oligomer-thing) (orientations orientations))
       (error "Could not find ~s as a key in ~s" oligomer-thing orientations)))
 
+(defmethod lookup-orientation ((assembler assembler) (oligomer-thing topology:oligomer-shape))
+  (let ((result (or (gethash oligomer-thing (orientations (orientations assembler)))
+                    (error "Could not find ~s as a key in ~s" oligomer-thing assembler))))
+    result))
+
+
 (defun ensure-valid-rotamers-state (state)
   (unless (member state
                   '(:incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers))
@@ -207,21 +213,6 @@ to the components and evaluate the BODY in that scope."
   (gethash oligomer-shape (orientations (orientations assembler))))
 
 (defvar *orientation*)
-
-(defmethod kin:orientation-transform ((jump-joint kin:jump-joint))
-  (unless (boundp '*orientation*)
-    (error "~s must be bound for kin:orientation-transform to work" '*orientation*))
-  (kin:orientation-transform *orientation*))
-
-(defmethod kin:orientation-transform ((joint kin:xyz-joint))
-  (unless (boundp '*orientation*)
-    (error "For joint ~s ~s must be bound for kin:orientation-transform to work" joint '*orientation*))
-  (kin:orientation-transform *orientation*))
-
-(defmethod kin:orientation-transform ((joint kin:stub-joint))
-  (unless (boundp '*orientation*)
-    (error "For joint ~s ~s must be bound for kin:orientation-transform to work" joint '*orientation*))
-  (kin:orientation-transform *orientation*))
 
 (defmacro with-orientation (orientation &body body)
   "Set the *orientation* dynamic variable so that external coordinate building can function"
@@ -674,7 +665,7 @@ If UNINITIALIZED then leave them unbound."
       (let* ((ass (make-assembler (list oligomer-shape)))
              (coords (make-coordinates-for-assembler ass))
              )
-        (update-internals ass oligomer-shape)
+        (update-internals ass :oligomer-shape oligomer-shape)
         (update-externals ass :oligomer-shape oligomer-shape
                               :orientation oligomer-shape
                               :coords coords)
@@ -696,7 +687,7 @@ If UNINITIALIZED then leave them unbound."
   "Generate an aggregate for the OLIGOMER-SHAPE"
   (let* ((ass (make-assembler (list oligomer-shape)))
          (coords (make-coordinates-for-assembler ass)))
-    (update-internals ass oligomer-shape)
+    (update-internals ass :oligomer-shape oligomer-shape)
     (build-all-atom-tree-external-coordinates-and-adjust ass coords)
     (copy-all-joint-positions-into-atoms ass coords)
     (aggregate ass)))
@@ -765,7 +756,7 @@ If UNINITIALIZED then leave them unbound."
              (coords (make-coordinates-for-assembler ass)))
         (when prepare-assembler
           (funcall prepare-assembler ass))
-        (update-internals ass oligomer-shape)
+        (update-internals ass :oligomer-shape oligomer-shape)
         (update-externals ass :oligomer-shape oligomer-shape
                               :orientation oligomer-shape
                               :coords coords)

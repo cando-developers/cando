@@ -61,7 +61,7 @@
                 (list x y z label (mapcar #'second nrest))))
 
 (esrap:defrule bond-line
-    (and digits3 digits3 digits3 digits3 digits3 digits3 parser.common-rules:whitespace*)
+    (and digits3 digits3 digits3 digits3 (* digits3) parser.common-rules:whitespace*)
   (:lambda (x)
     x))
 
@@ -180,21 +180,13 @@
             for index = (1- (car index-charge))
             for charge = (cdr index-charge)
             do (chem:set-charge (elt atom-vector index) charge))
-      (let ((atom-to-index (make-hash-table))
-            groups)
+      (let ((atom-to-index (make-hash-table)))
         (loop for index below (length atom-vector)
               for atom = (aref atom-vector index)
               do (setf (gethash atom atom-to-index) index))
-        (loop for index below (length atom-vector)
-              for atom = (aref atom-vector index)
-              when atom
-                do (let* ((spanning-loop (chem:spanning-loop/make atom))
-                          (group (loop for span-atom in (chem:all-atoms spanning-loop)
-                                       for index = (gethash span-atom atom-to-index)
-                                       do (setf (aref atom-vector index) nil)
-                                       collect span-atom)))
-                     (push group groups)))
-        (values groups name)))))
+        (let* ((group (coerce atom-vector 'list))
+               (groups (list group)))
+          (values groups name))))))
 
 (defun parse-mdl-molecule (fin eof-error-p eof)
   (multiple-value-bind (atom-groups name)
@@ -280,4 +272,8 @@
     (loop for mol in molecules
           do (chem:add-matter aggregate mol))
     aggregate))
-    
+
+(defun load (fname)
+  "Load all of the molecules in the SDF file as a single aggregate"
+  (load-sdf-as-aggregate fname))
+  

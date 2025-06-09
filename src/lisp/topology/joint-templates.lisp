@@ -437,7 +437,7 @@
               (kin:make-bonded-joint atomid atom-name atom-table))
              ((typep nil-or-monomer-shape 'rotamer-shape)
               (kin:make-bonded-joint atomid atom-name atom-table))
-             ((tyepep nil-or-monomer-shape 'residue-shape)
+             ((typep nil-or-monomer-shape 'residue-shape)
               (kin:make-xyz-joint atomid atom-name atom-table (residue-shape-atom nil-or-monomer-shape atom-name)))
              (t (error "Handle nil-or-monomer-shape of value ~s" nil-or-monomer-shape)))))
     (put-joint atresidue joint constitution-atoms-index)

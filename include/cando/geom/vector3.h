@@ -285,6 +285,14 @@ namespace serialize
 namespace geom {
 void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size_t index0);
 
+inline void vec_put_unsafe(chem::NVector_sp coordinates, const Vector3 &pos, size_t index3) {
+  (*coordinates)[index3] = pos.getX();
+  (*coordinates)[index3 + 1] = pos.getY();
+  (*coordinates)[index3 + 2] = pos.getZ();
+}
+
+void geom__vec_put(chem::NVector_sp coordinates, const Vector3 &pos, size_t index3);
+
 };
 
 #endif

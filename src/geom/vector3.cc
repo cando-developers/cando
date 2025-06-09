@@ -491,15 +491,13 @@ CL_DEFUN void geom__vec_extract(Vector3 &vec, chem::NVector_sp coordinates, size
 CL_DOCSTRING(R"dx(Put a geom:vec into a nvector at the particular index.)dx");
 CL_LISPIFY_NAME("vec-put");
 DOCGROUP(cando);
-CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3 &pos, size_t index0) {
-  if ((index0 + 2) < coordinates->length()) {
-    (*coordinates)[index0] = pos.getX();
-    (*coordinates)[index0 + 1] = pos.getY();
-    (*coordinates)[index0 + 2] = pos.getZ();
+CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3 &pos, size_t index3) {
+  if ((index3 + 2) < coordinates->length()) {
+    vec_put_unsafe(coordinates,pos,index3);
     return;
   }
   SIMPLE_ERROR("Out of bounds extraction of geom:vec from nvector. Trying to put starting at {} and the nvector length is {}",
-               index0, coordinates->length());
+               index3, coordinates->length());
 }
 
 CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx");

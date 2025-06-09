@@ -4,6 +4,11 @@
   (with-open-file (fout filename :direction :output :if-exists :supersede)
     (write-sdf-stream aggregate fout)))
 
+(defun save (aggregate filename)
+  "Save the aggregate to the filename in the SDF format"
+  (write-sdf-to-file aggregate filename)
+  t)
+
 (defun write-sdf-stream (aggregate stream &key name data-items)
   "Write the aggregate to the sdf stream.
 - data-items : an a-list with names and data to write into the sdf file."
