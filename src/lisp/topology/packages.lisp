@@ -325,7 +325,7 @@
    #:backbone-with-sidechain-rotamers
    #:rotamers-database
    #:context-to-rotamers
-   #:backbone-dihedral-cache-deg
+   #:shape-key-cache-deg
    #:sidechain-monomer-stepper
    #:backbone-monomer-stepper
    #:is-oligomer-space-supported
@@ -478,8 +478,8 @@
    #:cache-alist-copy
    #:find-in-cache
    #:add-to-cache
-   #:make-backbone-dihedral-cache
-   #:backbone-dihedral-cache
+   #:make-shape-key-cache
+   #:shape-key-cache
    #:monomer-center
    #:validate-indexes-for-shape-keys
    #:lookup-orientation

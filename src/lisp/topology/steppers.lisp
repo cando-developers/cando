@@ -144,9 +144,9 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
           :with shape-key-to-index = (topology:shape-key-to-index sidechain-rotamers)
           :for ii :below (length backbone-rotamers)
           :for backbone-rotamer = (aref backbone-rotamers ii)
-          :for backbone-dihedral-cache-deg = (topology:backbone-dihedral-cache-deg backbone-rotamer)
-          :for phi-1 = (find-in-cache backbone-dihedral-cache-deg :phi-1)
-          :for psi-1 = (find-in-cache backbone-dihedral-cache-deg :psi-1)
+          :for shape-key-cache-deg = (topology:shape-key-cache-deg backbone-rotamer)
+          :for phi-1 = (find-in-cache shape-key-cache-deg :phi-1)
+          :for psi-1 = (find-in-cache shape-key-cache-deg :psi-1)
           :for binned-phi-1 = (topology:bin-dihedral-deg phi-1)
           :for binned-psi-1 = (topology:bin-dihedral-deg psi-1)
           ;; Get the shape-key for the backbone

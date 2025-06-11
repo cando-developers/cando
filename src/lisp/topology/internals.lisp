@@ -235,46 +235,48 @@
    (coordinates :initarg :coordinates :accessor coordinates)
    ))
 
-(defclass backbone-dihedral-cache (cando.serialize:serializable)
+(defclass shape-key-cache (cando.serialize:serializable)
   ((cache :initform nil :type list :initarg :cache :accessor cache))
-  (:documentation "Maintain cache as a map of dihedral names to dihedral angles"))
+  (:documentation "Maintain cache as a map of shape-key names to shape-keys"))
 
-(defmethod print-object ((obj backbone-dihedral-cache) stream)
+(defmethod print-object ((obj shape-key-cache) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t)
         (format stream "~s" (cache obj)))))
 
-(defun make-backbone-dihedral-cache ()
-  "Create an empty BACKBONE-DIHEDRAL-CACHE"
-  (make-instance 'backbone-dihedral-cache))
+(defun make-shape-key-cache ()
+  "Create an empty SHAPE-KEY-CACHE"
+  (make-instance 'shape-key-cache))
 
-(defun add-to-cache (backbone-dihedral-cache name dihedral-angle-deg)
-  "Add a NAME DIHEDRAL-ANGLE-DEG pair to the BACKBONE-DIHEDRAL-CACHE"
-  (unless (integerp dihedral-angle-deg)
-    (error "dihedral-angle-deg ~s must be an integer" dihedral-angle-deg))
-  (push (cons name dihedral-angle-deg) (cache backbone-dihedral-cache)))
+(defun add-to-cache (shape-key-cache name shape-key)
+  "Add a NAME SHAPE-KEY pair to the SHAPE-KEY-CACHE"
+  (unless (or (integerp shape-key)
+              (and (consp shape-key)
+                   (every (lambda (vv) (integerp vv)) shape-key)))
+    (error "shape-key ~s must be an integer or a list of integers" shape-key))
+  (push (cons name shape-key) (cache shape-key-cache)))
 
-(defun find-in-cache (backbone-dihedral-cache name)
-  "Return the dihedral-angle associated with the NAME in BACKBONE-DIHEDRAL-CACHE"
-  (let ((entry (assoc name (cache backbone-dihedral-cache))))
+(defun find-in-cache (shape-key-cache name)
+  "Return the dihedral-angle associated with the NAME in SHAPE-KEY-CACHE"
+  (let ((entry (assoc name (cache shape-key-cache))))
     (cdr entry)))
 
-(defun cache-alist-copy (backbone-dihedral-cache)
-  "Return an alist version of the BACKBONE-DIHEDRAL-CACHE that can be altered without
-changing the BACKBONE-DIHEDRAL-CACHE."
-  (copy-seq (cache backbone-dihedral-cache)))
+(defun cache-alist-copy (shape-key-cache)
+  "Return an alist version of the SHAPE-KEY-CACHE that can be altered without
+changing the SHAPE-KEY-CACHE."
+  (copy-seq (cache shape-key-cache)))
 
 (defclass fragment-internals-with-shape-key (fragment-internals)
-  ((backbone-dihedral-cache-deg :initarg :backbone-dihedral-cache-deg
-                                :type backbone-dihedral-cache
-                                :accessor backbone-dihedral-cache-deg)
+  ((shape-key-cache-deg :initarg :shape-key-cache-deg
+                                :type shape-key-cache
+                                :accessor shape-key-cache-deg)
    (shape-key :initarg :shape-key :accessor shape-key)))
 
-(defun make-fragment-internals-with-shape-key-from-fragment-internals (fragment-internals shape-key backbone-dihedral-cache-deg)
+(defun make-fragment-internals-with-shape-key-from-fragment-internals (fragment-internals shape-key shape-key-cache-deg)
   "Shallow copy of fragment-internals"
-  (unless backbone-dihedral-cache-deg
-    (error "You must provide the backbone-dihedral-cache-deg with shape-key ~s" shape-key))
+  (unless shape-key-cache-deg
+    (error "You must provide the shape-key-cache-deg with shape-key ~s" shape-key))
   (make-instance 'fragment-internals-with-shape-key
                  :monomer-context (monomer-context fragment-internals)
                  :trainer-index (trainer-index fragment-internals)
@@ -283,7 +285,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
                  :free-energy (free-energy fragment-internals)
                  :internals-values (copy-seq (internals-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
-                 :backbone-dihedral-cache-deg backbone-dihedral-cache-deg
+                 :shape-key-cache-deg shape-key-cache-deg
                  :shape-key shape-key))
 
 (defmethod print-object ((obj fragment-internals) stream)
@@ -336,10 +338,10 @@ changing the BACKBONE-DIHEDRAL-CACHE."
   ())
 
 (defclass backbone-with-sidechain-rotamer (backbone-rotamer-base)
-  ((backbone-dihedral-cache-deg :initform (make-backbone-dihedral-cache)
-                                :initarg :backbone-dihedral-cache-deg
-                                :type backbone-dihedral-cache
-                                :accessor backbone-dihedral-cache-deg)
+  ((shape-key-cache-deg :initform (make-shape-key-cache)
+                                :initarg :shape-key-cache-deg
+                                :type shape-key-cache
+                                :accessor shape-key-cache-deg)
    (shape-key :initarg :shape-key :accessor shape-key)))
 
 (defmethod print-object ((obj backbone-with-sidechain-rotamer) stream)
@@ -348,14 +350,14 @@ changing the BACKBONE-DIHEDRAL-CACHE."
       (print-unreadable-object (obj stream :type t)
         (format stream "~s" (shape-key obj)))))
 
-(defun make-backbone-with-sidechain-rotamer (&key internals-values free-energy probability shape-key backbone-dihedral-cache-deg)
-  (unless backbone-dihedral-cache-deg
-    (error "You must provide the backbone-dihedral-cache-deg with shape-key ~s" shape-key))
+(defun make-backbone-with-sidechain-rotamer (&key internals-values free-energy probability shape-key shape-key-cache-deg)
+  (unless shape-key-cache-deg
+    (error "You must provide the shape-key-cache-deg with shape-key ~s" shape-key))
   (make-instance 'backbone-with-sidechain-rotamer
                  :internals-values internals-values
                  :free-energy free-energy
                  :probability probability
-                 :backbone-dihedral-cache-deg backbone-dihedral-cache-deg
+                 :shape-key-cache-deg shape-key-cache-deg
                  :shape-key shape-key))
 
 (defun make-backbone-with-sidechain-rotamer-from-fragment-internals (fragment-internals)
@@ -364,7 +366,7 @@ changing the BACKBONE-DIHEDRAL-CACHE."
    :internals-values (internals-values fragment-internals)
    :free-energy (free-energy fragment-internals)
    :probability (probability fragment-internals)
-   :backbone-dihedral-cache-deg (backbone-dihedral-cache-deg fragment-internals)
+   :shape-key-cache-deg (shape-key-cache-deg fragment-internals)
    :shape-key (shape-key fragment-internals)))
 
 

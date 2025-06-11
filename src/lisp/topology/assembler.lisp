@@ -492,7 +492,7 @@ Specialize the foldamer argument to provide methods"))
      (gethash monomer (monomers monomer-subset)))
     (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
 
-(defun maybe-update-backbone-dihedral-cache (assembler)
+(defun maybe-update-shape-key-cache (assembler)
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (topology:with-orientation (gethash oligomer-shape (topology:orientations (topology:orientations assembler)))
              (do-oligomer-shape (monomer-shape monomer monomer-context monomer-shape-kind) oligomer-shape
@@ -510,7 +510,7 @@ Specialize the foldamer argument to provide methods"))
                                                   when (and (typep dihedral 'dihedral-info-atom)
                                                             (member (name dihedral) '(:phi :psi :phi-1 :psi-1)))
                                                     collect dihedral))
-                        (dihedral-cache (make-backbone-dihedral-cache)))
+                        (dihedral-cache (make-shape-key-cache)))
                    (loop for dihedral in dihedrals-to-cache
                          for dihedral-name = (name dihedral)
                          for atom-name = (atom-name dihedral)
@@ -525,7 +525,7 @@ Specialize the foldamer argument to provide methods"))
                          for dih = (geom:calculate-dihedral jpos ppos gppos ggppos)
                          for dih-deg = (bin-dihedral-deg (rad-to-deg dih))
                          do (add-to-cache dihedral-cache dihedral-name dih-deg))
-                   (setf (backbone-dihedral-cache-deg monomer-shape) dihedral-cache)
+                   (setf (shape-key-cache-deg monomer-shape) dihedral-cache)
                    ))))))
 
 (defun make-assembler (oligomer-shapes &key (orientations nil orientations-p) monomer-subset energy-function-factory (monomer-contexts nil monomer-contexts-p))
@@ -647,7 +647,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
         (loop for oligomer-shape in (oligomer-shapes assembler)
               do (update-internals assembler :oligomer-shape oligomer-shape))
         ;; update the dihedral caches
-        (maybe-update-backbone-dihedral-cache assembler))
+        (maybe-update-shape-key-cache assembler))
       assembler)))
 
 

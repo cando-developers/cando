@@ -82,8 +82,8 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
    (molecule :initarg :molecule :reader molecule)))
 
 (defclass backbone-residue-shape (residue-shape)
-  ((backbone-dihedral-cache-deg :initarg :backbone-dihedral-cache-deg
-                                :accessor backbone-dihedral-cache-deg)))
+  ((shape-key-cache-deg :initarg :shape-key-cache-deg
+                                :accessor shape-key-cache-deg)))
 
 (defmethod copy-monomer-shape ((residue-shape residue-shape))
   ;;Don't copy anything - it is immutable
@@ -612,13 +612,13 @@ If UNINITIALIZED then leave them unbound."
                     (rotamer-shape
                      (let* ((rotamer-index (rotamer-index monomer-shape))
                             (rotamer (aref rotamers rotamer-index))
-                            (dihedral-cache-deg (backbone-dihedral-cache-deg rotamer))
+                            (dihedral-cache-deg (shape-key-cache-deg rotamer))
                             (deg (find-in-cache dihedral-cache-deg dihedral-name)))
                        (unless deg
                          (error "Could not find ~s in ~s" dihedral-name dihedral-cache-deg))
                        (values deg monomer-shape)))
                     (backbone-residue-shape
-                     (let ((deg (find-in-cache (backbone-dihedral-cache-deg monomer-shape) dihedral-name)))
+                     (let ((deg (find-in-cache (shape-key-cache-deg monomer-shape) dihedral-name)))
                        (values deg monomer-shape))))))))))
       (t (error "there was no :dihedrals property in ~s" topology)))))
 

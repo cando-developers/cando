@@ -31,11 +31,12 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 //
 
 #include <boost/config/warning_disable.hpp>
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/karma.hpp>
-#include <boost/spirit/include/karma_real.hpp>
+//#include <boost/spirit/include/qi.hpp>
+//#include <boost/spirit/include/karma.hpp>
+//#include <boost/spirit/include/karma_real.hpp>
 #include <boost/array.hpp>
 
+#include <cxxabi.h>
 #include <string.h>
 #include <cando/geom/matrix.h>
 #include <cando/geom/ovector3.h>
