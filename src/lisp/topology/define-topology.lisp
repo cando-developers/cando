@@ -621,62 +621,30 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         (t (when (and residue-net-charge (not (= residue-net-charge total-atom-charge)))
              (error ":residue-net-charge was specified as ~d and it must match total-atom-charge ~d" residue-net-charge total-atom-charge)))))))
 
-(defun topologies-from-graph (graph group-names restraints
-                              &key types xyz-joints dihedrals cluster-dihedrals
-                                rings rotamer-limits
-                                residue-properties plug-names)
-  (unless (or (listp xyz-joints)
-              (eq :all xyz-joints))
-    (error "xyz-joints must be either a list of atom-names or :all"))
-  (multiple-value-bind (constitution plugs stereoisomers)
-      (parse-graph graph plug-names residue-properties)
-    (validate-constitution-vs-residue-properties constitution residue-properties)
-    (when (listp xyz-joints)
-      (loop for name in xyz-joints
-            unless (gethash name (nodes graph))
-              do (error "The name ~s in xyz-joint is not one of the names in the topology ~s"
-                        name (mapcar #'name (nodes graph)))))
-    (let* ((tops (loop for stereoisomer in stereoisomers
-                       for name = (topology:name stereoisomer)
-                       for joint-template = (build-joint-template graph xyz-joints)
-                       for topology = (make-instance 'topology:topology
-                                                     :name name
-                                                     :constitution constitution
-                                                     :plugs plugs
-                                                     :joint-template joint-template
-                                                     :stereoisomer stereoisomer
-                                                     :restraints (parse-restraints restraints)
-                                                     :rotamer-limits (parse-rotamer-limits rotamer-limits))
-                       do (loop for group-name in (list* name group-names)
-                                do (pushnew name (gethash group-name *topology-groups* nil)))
-                       do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
-                       do (if residue-properties
-                              (setf (topology:property-list topology)
-                                    (append (topology:property-list topology)
-                                            residue-properties)))
-                       do (chem:register-topology topology name)
-                       collect topology)))
-      (when types
-        (loop for name-type in types
-              for name = (first name-type)
-              for type = (second name-type)
-              for ca = (constitution-atom-named constitution name)
-              do (setf (atom-type ca) type)))
-      (let ((dihedral-info (if dihedrals
-                               (parse-dihedral-info dihedrals)
-                               (create-dihedral-info-from-constitution constitution)))
-            (ring-info (when rings
-                           (parse-ring-info rings))))
-        (setf (residue-properties constitution)
-              (list* :dihedrals dihedral-info (residue-properties constitution)))
-        (when ring-info
-          (setf (residue-properties constitution)
-                (list* :rings ring-info (residue-properties constitution))))
-        (when cluster-dihedrals
-          (validate-cluster-dihedrals :name cluster-dihedrals dihedral-info constitution)
-          (setf (residue-properties constitution)
-                (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution)))))
-      tops)))
+(defun topologies-from-graph (graph group-names restraints constitution plugs stereoisomers
+                              xyz-joints rotamer-limits residue-properties)
+  "Create multiple topology objects and one constitution object from the graph and the arguments"
+  ;; Create the topology objects
+  (loop for stereoisomer in stereoisomers
+        for name = (topology:name stereoisomer)
+        for joint-template = (build-joint-template graph xyz-joints)
+        for topology = (make-instance 'topology:topology
+                                      :name name
+                                      :constitution constitution
+                                      :plugs plugs
+                                      :joint-template joint-template
+                                      :stereoisomer stereoisomer
+                                      :restraints (parse-restraints restraints)
+                                      :rotamer-limits (parse-rotamer-limits rotamer-limits))
+        do (loop for group-name in (list* name group-names)
+                 do (pushnew name (gethash group-name *topology-groups* nil)))
+        do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
+        do (if residue-properties
+               (setf (topology:property-list topology)
+                     (append (topology:property-list topology)
+                             residue-properties)))
+        do (chem:register-topology topology name)
+        collect topology))
 
 (defun validate-properties (properties name)
   (loop for cur = properties then (cddr cur)
@@ -706,7 +674,16 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         do (setf counter (recursively-order-children-atom-nodes child counter)))
   counter)
 
-(defun do-define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings residue-properties plug-names rotamer-limits)
+(defun do-define-topology (name sexp &key
+                                       restraints
+                                       types
+                                       xyz-joints
+                                       residue-properties
+                                       plug-names
+                                       dihedrals
+                                       cluster-dihedrals
+                                       rings
+                                       rotamer-limits)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -721,16 +698,49 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
     (change-class (root-node graph) 'ordered-atom-node
                   :constitution-atom-index 0)
     (recursively-order-children-atom-nodes (root-node graph) 0)
-    (topologies-from-graph graph group-names restraints
-                           :types types
-                           :dihedrals dihedrals
-                           :cluster-dihedrals cluster-dihedrals
-                           :rings rings
-                           :residue-properties (validate-residue-properties residue-properties name)
-                           :plug-names plug-names
-                           :rotamer-limits rotamer-limits
-                           :xyz-joints xyz-joints
-                           )))
+    (unless (or (listp xyz-joints)
+                (eq :all xyz-joints))
+      (error "xyz-joints must be either a list of atom-names or :all"))
+    (multiple-value-bind (constitution plugs stereoisomers)
+        (parse-graph graph plug-names residue-properties)
+      (validate-constitution-vs-residue-properties constitution residue-properties)
+      (when (listp xyz-joints)
+        (loop for name in xyz-joints
+              unless (gethash name (nodes graph))
+                do (error "The name ~s in xyz-joint is not one of the names in the topology ~s"
+                          name (mapcar #'name (nodes graph)))))
+      ;; Create the topology objects
+      (let* ((tops (topologies-from-graph graph
+                                          group-names
+                                          restraints
+                                          constitution
+                                          plugs
+                                          stereoisomers
+                                          xyz-joints
+                                          rotamer-limits
+                                          residue-properties)))
+        (when types
+          (loop for name-type in types
+                for name = (first name-type)
+                for type = (second name-type)
+                for ca = (constitution-atom-named constitution name)
+                do (setf (atom-type ca) type)))
+        (let ((dihedral-info (if dihedrals
+                                 (parse-dihedral-info dihedrals)
+                                 (create-dihedral-info-from-constitution constitution)))
+              (ring-info (when rings
+                           (parse-ring-info rings))))
+          (setf (residue-properties constitution)
+                (list* :dihedrals dihedral-info (residue-properties constitution)))
+          (when ring-info
+            (setf (residue-properties constitution)
+                  (list* :rings ring-info (residue-properties constitution))))
+          (when cluster-dihedrals
+            (validate-cluster-dihedrals :name cluster-dihedrals dihedral-info constitution)
+            (setf (residue-properties constitution)
+                  (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution)))))
+        tops))))
+
 
 (defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings residue-properties plugs rotamer-limits)
   `(do-define-topology ',name ',sexp
