@@ -186,7 +186,7 @@ NVector_sp chem__cpring_coordinates_to_zjs( NVector_sp coordinates, core::Simple
   return zjs;
 }
 
-NVector_sp ring_5_zjs_to_cremer_pople(NVector_sp zjs, double& phi2, double& q2) {
+NVector_sp ring_5_zjs_to_cremer_pople(NVector_sp zjs, double& q2, double& phi2) {
   size_t N = zjs->length();
   double cosSum = 0.0;
   double sinSum = 0.0;
@@ -212,51 +212,80 @@ core::T_mv chem__cpring_5_coordinates_to_cremer_pople( NVector_sp coordinates, c
   double phi2;
   double q2;
   NVector_sp zjs = coordinates_to_zjs( coordinates, indexes3 );
-  ring_5_zjs_to_cremer_pople( zjs, phi2, q2 );
-  return Values( core::DoubleFloat_O::create(phi2), core::DoubleFloat_O::create(q2) );
+  ring_5_zjs_to_cremer_pople( zjs, q2, phi2 );
+  return Values( core::DoubleFloat_O::create(q2), core::DoubleFloat_O::create(phi2) );
 }
 
 CL_DEFUN
 core::T_mv chem__cpring_5_zjs_to_cremer_pople( NVector_sp zjs ) {
   double phi2;
   double q2;
-  ring_5_zjs_to_cremer_pople( zjs, phi2, q2 );
-  return Values( core::DoubleFloat_O::create(phi2), core::DoubleFloat_O::create(q2) );
+  ring_5_zjs_to_cremer_pople( zjs, q2, phi2 );
+  return Values( core::DoubleFloat_O::create(q2), core::DoubleFloat_O::create(phi2) );
 }
 
-void ring_6_zjs_to_cremer_pople(NVector_sp zjs, double& phi2, double& q2, double& qn2) {
+void q2_q3_to_Q_theta(double q2, double q3, double& QQ, double& theta) {
+  // From: A General Definition of Ring Puckering Coordinates by D. Cremer and J. A. Pople
+  // q2 = Q sin(theta)
+  // q3 = Q cos(theta)
+  // Trig identity tan(theta) = sin(theta)/cos(theta)
+  // q2/q3=tan(theta)
+  // atan2(q2,a3)=theta
+  // Q = q2/sin(theta)
+  // Q = q3/cos(theta)
+  // 0 < theta < pi
+  // Q is amplitude
+  theta = std::atan2(q2,q3);
+  double sintheta = sin(theta);
+  if ( fabs(sintheta) > 0.1 ) {
+    QQ = q2/sintheta;
+  } else {
+    QQ = q3/cos(theta);
+  }
+}
+
+void Q_theta_to_q2_q3(double QQ, double theta, double& q2, double& q3) {
+  // Inverse of q2_q3_to_Q_theta
+  q2 = QQ * std::sin(theta);
+  q3 = QQ * std::cos(theta);
+}
+
+
+void ring_6_zjs_to_cremer_pople(NVector_sp zjs, double& QQ, double& theta, double& phi2) {
   // Use the ring_5 func to calculate phi2 and q2
-  ring_5_zjs_to_cremer_pople( zjs, phi2, q2);
+  double q2;
+  ring_5_zjs_to_cremer_pople( zjs, q2, phi2 );
   double inner = 0.0;
   size_t N = zjs->length();
   for ( size_t j=0; j<N; j++ ) {
     inner += pow(-1.0,j)*(*zjs)[j];
   }
-  qn2 = 1.0/sqrt(N)*inner;
+  double q3 = 1.0/sqrt(N)*inner;
+  q2_q3_to_Q_theta(q2,q3,QQ,theta);
 }
 
 CL_DEFUN
 core::T_mv chem__cpring_6_coordinates_to_cremer_pople( NVector_sp coordinates, core::SimpleVector_byte32_t_sp indexes3 ) {
+  double QQ;
+  double theta;
   double phi2;
-  double q2;
-  double qn2;
   NVector_sp zjs = coordinates_to_zjs( coordinates, indexes3 );
-  ring_6_zjs_to_cremer_pople( zjs, phi2, q2, qn2 );
-  return Values( core::DoubleFloat_O::create(phi2), core::DoubleFloat_O::create(q2), core::DoubleFloat_O::create(qn2) );
+  ring_6_zjs_to_cremer_pople( zjs, QQ, theta, phi2 );
+  return Values( core::DoubleFloat_O::create(QQ), core::DoubleFloat_O::create(theta), core::DoubleFloat_O::create(phi2) );
 }
 
 CL_DEFUN
 core::T_mv chem__cpring_6_zjs_to_cremer_pople( NVector_sp zjs ) {
+  double QQ;
+  double theta;
   double phi2;
-  double q2;
-  double qn2;
-  ring_6_zjs_to_cremer_pople( zjs, phi2, q2, qn2 );
-  return Values( core::DoubleFloat_O::create(phi2), core::DoubleFloat_O::create(q2), core::DoubleFloat_O::create(qn2) );
+  ring_6_zjs_to_cremer_pople( zjs, QQ, theta, phi2 );
+  return Values( core::DoubleFloat_O::create(QQ), core::DoubleFloat_O::create(theta), core::DoubleFloat_O::create(phi2) );
 }
 
 
 
-NVector_sp ring_5_cremer_pople_to_zjs(double phi2, double q2) {
+NVector_sp ring_5_cremer_pople_to_zjs(double q2, double phi2) {
   size_t nn = 5;
   NVector_sp zjs = NVector_O::create(nn);
   for ( size_t j = 0; j<nn; j++ ) {
@@ -268,27 +297,30 @@ NVector_sp ring_5_cremer_pople_to_zjs(double phi2, double q2) {
   return zjs;
 }
 
-NVector_sp ring_6_cremer_pople_to_zjs(double phi2, double q2, double qn2 ) {
+NVector_sp ring_6_cremer_pople_to_zjs(double QQ, double theta, double phi2 ) {
   size_t nn = 6;
+  double q2;
+  double q3;
+  Q_theta_to_q2_q3(QQ,theta,q2,q3);
   NVector_sp zjs = NVector_O::create(nn);
   for ( size_t j = 0; j<nn; j++ ) {
     double term = phi2+2.0*M_PI*2.0*j/nn;
     double q2costerm = q2*cos(term);
-    double zj = sqrt(2.0/nn)*q2costerm + 1.0/sqrt(nn)*qn2*pow(-1.0,j);
+    double zj = sqrt(2.0/nn)*q2costerm + 1.0/sqrt(nn)*q3*pow(-1.0,j);
     (*zjs)[j] = zj;
   }
   return zjs;
 }
 
 CL_DEFUN
-NVector_sp chem__cpring_5_cremer_pople_to_zjs( double phi2, double q2 ) {
-  return ring_5_cremer_pople_to_zjs( phi2, q2 );
+NVector_sp chem__cpring_5_cremer_pople_to_zjs( double q2, double phi2 ) {
+  return ring_5_cremer_pople_to_zjs( q2, phi2 );
 }
 
 
 CL_DEFUN
-NVector_sp chem__cpring_6_cremer_pople_to_zjs( double phi2, double q2, double qn2 ) {
-  return ring_6_cremer_pople_to_zjs( phi2, q2, qn2 );
+NVector_sp chem__cpring_6_cremer_pople_to_zjs( double QQ, double theta, double phi2 ) {
+  return ring_6_cremer_pople_to_zjs( QQ, theta, phi2 );
 }
 
 CL_DEFUN

@@ -1,6 +1,6 @@
-(in-package #:clasp-tests)
+#+tests(in-package #:clasp-tests)
 
-(defparameter agg (chem:load-mol2 "sys:extensions;cando;src;lisp;regression-tests;data;hexapeptide.mol2"))
+(defparameter agg (cando:load-mol2 "sys:extensions;cando;src;lisp;regression-tests;data;hexapeptide.mol2"))
 (chem:setf-force-field-name (cando:mol agg 0)  :smirnoff)
 
 (leap:load-smirnoff-params (probe-file "sys:extensions;cando;src;lisp;regression-tests;data;force-field.offxml"))
@@ -29,7 +29,7 @@
 
 (format t "delta = ~f~%" delta)
 ;; These two tests are not yet reliable.
-(test-true energy-delta (< delta 3.0))
+#+tests(test-true energy-delta (< delta 3.0))
 
 (let ((components (chem:all-components ef))
       (ht (make-hash-table)))
@@ -39,12 +39,11 @@
         for class-name = (class-name (class-of comp))
         do (setf (gethash class-name ht) energy)
         do (format t "~s -> ~f~%" (class-name (class-of comp)) energy))
-  (test-true energy-stretch  (< (abs (print (- 14.873171 (gethash 'chem:energy-stretch ht)))) 0.01))
-  (test-true energy-angle    (< (abs (print (- 86.5912   (gethash 'chem:energy-angle ht)))) 0.01))
-  (test-true energy-dihedral (< (abs (print (- 49.70431  (gethash 'chem:energy-dihedral ht)))) 0.01))
+  #+tests(test-true energy-stretch  (< (abs (print (- 14.873171 (gethash 'chem:energy-stretch ht)))) 0.01))
+  #+tests(test-true energy-angle    (< (abs (print (- 86.5912   (gethash 'chem:energy-angle ht)))) 0.01))
+  #+tests(test-true energy-dihedral (< (abs (print (- 49.70431  (gethash 'chem:energy-dihedral ht)))) 0.01))
 ;;  (test-true energy-nonbond  (< (abs (print (- 30.878897 (gethash 'chem:energy-nonbond ht)))) 0.01)) ;; old
-  (test-true energy-nonbond  (< (abs (print (- 27.67031857189474 (gethash 'chem:energy-nonbond ht)))) 0.01))
-
+  #+tests(test-true energy-nonbond  (< (abs (print (- 27.67031857189474 (gethash 'chem:energy-nonbond ht)))) 0.01))
   )
 
 (defparameter expected-force (coerce
@@ -144,12 +143,12 @@
 
 (format t "         force-mag = ~f~%" force-mag)
 (format t "expected-force-mag = ~f~%" expected-force-mag)
-(test-true force-mag (< (abs (- expected-force-mag force-mag)) 1.0))
+#+tests(test-true force-mag (< (abs (- expected-force-mag force-mag)) 1.0))
 
 (defparameter force-acos (/ (chem:nvector-dot expected-force force) expected-force-mag force-mag))
 (format t "force-acos = ~f~%" force-acos)
 
-(test-true force-acos (< force-acos 0.01))
+#+tests(test-true force-acos (< force-acos 0.01))
 
 
 (defparameter minimizer (chem:make-minimizer ef))
@@ -221,7 +220,7 @@
   (time (energy-multiple-dihedral 100000 ef2 pos2 mask)))
 
 
-(let* ((butane (load-mol2 "data/butane.mol2")))
+(let* ((butane (cando:load-mol2 "data/butane.mol2")))
   (chem:setf-force-field-name (cando:mol butane 0)  :smirnoff)
   (leap:load-smirnoff-params (probe-file "sys:extensions;cando;src;lisp;regression-tests;data;force-field.offxml"))
   (let* ((butane-ef (chem:make-energy-function :matter butane))
@@ -230,14 +229,17 @@
          (a2 (chem:matter/first-atom-with-name butane :C2))
          (a3 (chem:matter/first-atom-with-name butane :C3))
          (a4 (chem:matter/first-atom-with-name butane :C4))
-         (ri (chem:add-dihedral-restraint dh butane-ef a1 a2 a3 a4 (* -180.0 0.0174533) 100000.0 ))
+         (ri (chem:add-dihedral-restraint dh butane-ef
+                                          100000.0 (* -180.0 0.0174533)
+                                          a1 a2 a3 a4
+                                          ))
          (minimizer (chem:make-minimizer butane-ef))
          )
     (format t "dh = ~s~%" dh)
     (with-open-file (sdf-stream "/tmp/butane.sdf" :direction :output :if-exists :supersede)
       (loop for angle from -180 by 20 below 180
             do (format t "angle = ~d~%" angle)
-            do (chem:change-dihedral-restraint dh ri (* angle 0.0174533) 100000.0)
+            do (chem:update-dihedral-restraint dh ri 100000.0 (* angle 0.0174533))
             do (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
                  (chem:minimize minimizer))
             do (sdf:write-sdf-stream butane sdf-stream))))
