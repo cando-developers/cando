@@ -186,24 +186,69 @@ NVector_sp chem__cpring_coordinates_to_zjs( NVector_sp coordinates, core::Simple
   return zjs;
 }
 
+inline void robust_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2sinphi2, double& q2, double& phi2)
+{
+  // better version
+  phi2 = atan2(q2sinphi2,q2cosphi2);
+  // small angle approximation sin(phi2) ~= phi2 for small phi2
+  // if phi2<0.2 then sin(phi2) will be too small to be in the denominator
+  // and then we use the cos(phi2) in the denominator
+  if (fabs(phi2)<0.2) { // phi2 ~= sin(phi2) for small phi2
+    q2 = q2cosphi2/cos(phi2);
+  } else {
+    q2 = q2sinphi2/sin(phi2);
+  }
+}
+
+inline void dirty_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2sinphi2, double& q2, double& phi2)
+{
+  phi2 = atan2(q2sinphi2,q2cosphi2);
+  q2 = q2cosphi2/cos(phi2);
+}
+
+
+CL_DEFUN core::DoubleFloat_mv chem__robust_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2sinphi2)
+{
+  double q2;
+  double phi2;
+  robust_q2_phi2_from_q2cosphi2_q2sinphi2(q2cosphi2,q2sinphi2,q2,phi2);
+  return Values(core::DoubleFloat_O::create(q2), core::DoubleFloat_O::create(phi2));
+}
+
+CL_DEFUN core::DoubleFloat_mv chem__dirty_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2sinphi2)
+{
+  double q2;
+  double phi2;
+  dirty_q2_phi2_from_q2cosphi2_q2sinphi2(q2cosphi2,q2sinphi2,q2,phi2);
+  return Values(core::DoubleFloat_O::create(q2), core::DoubleFloat_O::create(phi2));
+}
+
+
 NVector_sp ring_5_zjs_to_cremer_pople(NVector_sp zjs, double& q2, double& phi2) {
-  size_t N = zjs->length();
+  // From Cremer Pople paper
+  // q2*cos(phi2) =  Sqrt[2/N]*Sum_j=1..N[zj*Cos[2*Pi*M*(j-1)/N]
+  // q2*sin(phi2) = -Sqrt[2/N]*Sum_j=1..N[zj*Sin[2*Pi*M*(j-1)/N]
+  
+  size_t N = zjs->length(); // We don't hard code N to 5 because this fn
+                            // is used by ring_6 (N=6) functions because math is same
   double cosSum = 0.0;
   double sinSum = 0.0;
   size_t mm = 2;
-  for ( size_t j=0; j<N; j++ ) {
-    double zj = (*zjs)[j];
-    double term = 2.0*M_PI*mm*j/N;
+  for ( size_t jm1=0; jm1<N; jm1++ ) {
+    double zj = (*zjs)[jm1];
+    double term = 2.0*M_PI*mm*jm1/N;
     cosSum += zj*cos(term);
     sinSum += zj*sin(term);
-    //printf("%s:%d:%s  j = %lu N = %lu  j<N = %d 8<5 = %d\n", __FILE__, __LINE__, __FUNCTION__, j, N, j<N, 8<5 );
+    //printf("%s:%d:%s  j = %lu N = %lu  j<N = %d 8<5 = %d\n", __FILE__, __LINE__, __FUNCTION__, jm1+1, N, (jm1+1)<N, 8<5 );
   }
-  double coef = sqrt(2.0/N);
-  double q2cosphi2 =  coef*cosSum;
-  double q2sinphi2 = -coef*sinSum;
-  double sinphi2_over_cosphi2 = q2sinphi2/q2cosphi2;
-  phi2 = atan(sinphi2_over_cosphi2);
-  q2 = q2cosphi2/cos(phi2);
+  double sqrt2overN = sqrt(2.0/N);
+  double q2cosphi2 =  sqrt2overN*cosSum;
+  double q2sinphi2 = -sqrt2overN*sinSum;
+#if 0
+  dirty_q2_phi2_from_q2cosphi2_q2sinphi2(q2cosphi2,q2sinphi2,q2,phi2);
+#else
+  robust_q2_phi2_from_q2cosphi2_q2sinphi2(q2cosphi2,q2sinphi2,q2,phi2);
+#endif
   return zjs;
 }
 
@@ -254,6 +299,7 @@ void Q_theta_to_q2_q3(double QQ, double theta, double& q2, double& q3) {
 void ring_6_zjs_to_cremer_pople(NVector_sp zjs, double& QQ, double& theta, double& phi2) {
   // Use the ring_5 func to calculate phi2 and q2
   double q2;
+  // Use ring_5 function to calculate q2 and phi2 because math is same
   ring_5_zjs_to_cremer_pople( zjs, q2, phi2 );
   double inner = 0.0;
   size_t N = zjs->length();

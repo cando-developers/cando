@@ -7,7 +7,7 @@
 
 (defpackage #:topology
   (:use #:common-lisp)
-  (:nicknames #:ts)
+  (:nicknames #:top)
   (:shadow #:type #:debug)
   (:export
    #:monomer-shape-locus
@@ -526,7 +526,38 @@
    #:make-orientation-from-local-frame-specs
    #:adjustment-transform
    #:global-positioning-transform
-   #:root-joint))
+   #:root-joint
+   #:update-internals-from-externals
+
+   #:manipulator
+   #:focused-manipulator
+   #:range
+   #:manipulator-for-assembler
+   #:extract-cpinternals-from-coordinates
+   #:make-cpinternals-for-manipulator
+   #:dump-manipulator-cpinternals
+   #:ring5-driver
+   #:ring6-driver
+   #:fused-ring-driver
+   #:other-drivers
+   #:focus-drivers
+   #:internal-range
+   #:range
+   #:begin
+   #:end
+   #:cremer-pople-range
+   #:ring1
+   #:ring2
+   #:rings
+   #:dihedral-joint
+   #:dihedral-driver
+   #:binned-shape-key
+   #:identify-and-order-rings
+   #:calculate-rotatable-dihedrals
+   #:identify-build-joints
+   #:rings-and-exocyclic-atoms
+   #:build-rest-of-manipulator
+   #:manipulator-build-internals-from-cpinternals))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

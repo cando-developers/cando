@@ -999,6 +999,11 @@ If ROOT-MONOMER is provided, then start from that."
                  (do-fill-internals-from-oligomer-shape assembler oligomer-shape monomers :verbose verbose)
                  ))))
 
+(defun update-internals-from-externals (assembler external-coordinates)
+  "Update the internal coordinates using external coordinates"
+  (update-ataggregate-joint-tree-internal-coordinates assembler external-coordinates))
+
+
 (defun update-internals (assembler &key oligomer-shape verbose)
   "Update the internal coordinates of the assembler for the oligomer-shape
 or whatever type the second argument is.

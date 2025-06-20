@@ -23,6 +23,8 @@
 
 (defun bin-dihedral-deg (dih-deg)
   "Take a dihedral in degrees and round it to the nearest +bin-size+ degrees"
+  (when (and (floatp dih-deg) (ext:float-nan-p dih-deg))
+    (error "dih-deg is NAN"))
   (floor (degrees-limit (floor (* +bin-size+ (round dih-deg +bin-size+))))))
 
 

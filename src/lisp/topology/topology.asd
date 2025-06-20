@@ -25,6 +25,7 @@
                (:file "badgeom")
                (:file "shape")
                (:file "steppers")
+               (:file "manipulator")
                ))
 
 
