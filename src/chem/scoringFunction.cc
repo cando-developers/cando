@@ -125,12 +125,13 @@ CL_DEFMETHOD void ScoringFunction_O::setAtomTypes(core::HashTable_sp atomTypes) 
 }
 
 CL_LISPIFY_NAME("evaluateEnergy");
-CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale component-energy active-atom-mask debug-interactions);
+CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale component-energy active-atom-mask debug-interactions disable-restraints);
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos,
                                                            core::T_sp energyScale,
                                                            core::T_sp componentEnergy,
                                                            core::T_sp activeAtomMask,
-                                                           core::T_sp debugInteractions )
+                                                           core::T_sp debugInteractions,
+                                                           bool disableRestraints)
 {
   double		energy;
   energy = this->evaluateAll(pos,
@@ -143,20 +144,22 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos,
                              nil<core::T_O>(),
                              nil<core::T_O>(),
                              activeAtomMask,
-                             debugInteractions );
+                             debugInteractions,
+                             disableRestraints);
   return energy;
 }
 
 
 
 CL_LISPIFY_NAME("evaluateEnergyForce");
-CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale calc-force force active-atom-mask debug-interactions);
+CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale calc-force force active-atom-mask debug-interactions disable-restraints);
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos,
                                                                 core::T_sp energyScale,
                                                                 bool calcForce,
                                                                 NVector_sp force,
                                                                 core::T_sp activeAtomMask,
-                                                                core::T_sp debugInteractions )
+                                                                core::T_sp debugInteractions,
+                                                                bool disableRestraints )
 {
   double	energy;
   gc::Nilable<NVector_sp>	rawGrad;
@@ -176,7 +179,8 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos,
                              nil<core::T_O>(),
                              nil<core::T_O>(),
                              activeAtomMask,
-                             debugInteractions );
+                             debugInteractions,
+                             disableRestraints );
   return energy;
 }
 
@@ -188,7 +192,7 @@ CL_DEFMETHOD NVector_sp ScoringFunction_O::makeCoordinates() const
 
 
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessian");
-CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian active-atom-mask debug-interactions);
+CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian active-atom-mask debug-interactions disable-restraints);
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
                                                                           NVector_sp pos,
                                                                           core::T_sp energyScale,
@@ -197,7 +201,8 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
                                                                           bool calcOffDiagonalHessian,
                                                                           AbstractLargeSquareMatrix_sp hessian,
                                                                           core::T_sp activeAtomMask,
-                                                                          core::T_sp debugInteractions )
+                                                                          core::T_sp debugInteractions,
+                                                                          bool disableRestraints )
 {
   double	energy;
   gc::Nilable<NVector_sp> rawGrad;
@@ -213,13 +218,17 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
                               nil<core::T_O>(),
                               nil<core::T_O>(),
                               activeAtomMask,
-                              debugInteractions );
+                              debugInteractions,
+                              disableRestraints );
   return energy;
 }
 
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessianForDebugging");
-CL_LAMBDA((scoring-function chem:scoring-function) &key energy-scale active-atom-mask debug-interactions);
-CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebugging(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions )
+CL_LAMBDA((scoring-function chem:scoring-function) &key energy-scale active-atom-mask debug-interactions disable-restraints);
+CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebugging(core::T_sp energyScale,
+                                                                                      core::T_sp activeAtomMask,
+                                                                                      core::T_sp debugInteractions,
+                                                                                      bool disableRestraints )
 {
   NVector_sp	pos, force;
   AbstractLargeSquareMatrix_sp	hessian;
@@ -239,25 +248,26 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebuggin
                              nil<core::T_O>(),
                              nil<core::T_O>(),
                              activeAtomMask,
-                             debugInteractions );
+                             debugInteractions,
+                             disableRestraints );
   return energy;
 }
 
 #if 0
 CL_LISPIFY_NAME("calculateEnergy");
-CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask debug-interactions);
-CL_DEFMETHOD double	ScoringFunction_O::calculateEnergy(core::T_sp activeAtomMask, core::T_sp debugInteractions)
+CL_LAMBDA((scoring-function chem:scoring-function) &optional active-atom-mask debug-interactions disable-restraints);
+CL_DEFMETHOD double	ScoringFunction_O::calculateEnergy(core::T_sp activeAtomMask, core::T_sp debugInteractions, bool disableRestraints )
 {
   NVector_sp	pos;
   pos = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
-  return this->evaluateEnergy(pos,activeAtomMask,debugInteractions);
+  return this->evaluateEnergy(pos,activeAtomMask,debugInteractions,disableRestraints);
 }
 
 
 CL_LISPIFY_NAME("calculateEnergyAndForce");
-CL_LAMBDA((scoring-function chem:scoring-function) &key energy-scale active-atom-mask debug-interactions);
-CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions )
+CL_LAMBDA((scoring-function chem:scoring-function) &key energy-scale active-atom-mask debug-interactions disable-restraints);
+CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions, bool disableRestraints )
 {
   NVector_sp	pos;
   NVector_sp	force;
@@ -265,7 +275,7 @@ CL_DEFMETHOD core::T_mv ScoringFunction_O::calculateEnergyAndForce( core::T_sp e
   pos = NVector_O::create(this->getNVectorSize());
   force = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
-  energy = this->evaluateEnergyForce(pos,energyScale,true,force,activeAtomMask,debugInteractions);
+  energy = this->evaluateEnergyForce(pos,energyScale,true,force,activeAtomMask,debugInteractions,disableRestraints);
     	// To calculate the force magnitude use force->magnitude();
     	// To calculate the force rmsMagnitude use force->rmsMagnitude();
 //  this->writeForceToAtoms(force);

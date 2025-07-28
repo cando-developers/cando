@@ -154,6 +154,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
   
  public:
+  virtual bool restraintp() const override {return false;};
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
   

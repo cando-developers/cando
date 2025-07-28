@@ -202,6 +202,7 @@ namespace chem {
     virtual string 	description() const { stringstream ss; ss << "residue("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
     core::T_mv		atomWithName(MatterName sName,bool errorp=true );
+    core::T_sp		atomNames();
     CL_LISPIFY_NAME("hasAtomWithName");
     CL_DEFMETHOD 	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
 

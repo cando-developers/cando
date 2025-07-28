@@ -209,7 +209,8 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
                                                 gc::Nilable<NVector_sp> hdvec,
                                                 gc::Nilable<NVector_sp> dvec,
                                                 core::T_sp activeAtomMask,
-                                                core::T_sp debugInteractions )
+                                                core::T_sp debugInteractions,
+                                                bool disableRestraints )
 {
   bool	hasForce = force.notnilp();
   bool  hasHessian = hessian.notnilp();

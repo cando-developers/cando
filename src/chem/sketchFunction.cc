@@ -317,7 +317,8 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec,
                                        core::T_sp activeAtomMask,
-                                       core::T_sp debugInteractions )
+                                       core::T_sp debugInteractions,
+                                       bool disableRestraints )
 {
   double totalEnergy = 0.0;
 #ifdef DEBUG_ENERGY_FUNCTION

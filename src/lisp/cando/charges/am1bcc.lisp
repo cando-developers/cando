@@ -237,7 +237,8 @@
        ((chem:matches *cx3=norp* a) (set-am1-bcc-type a 13))
        ((chem:matches *cx3=oors* a)  (set-am1-bcc-type a 14))
        (t
-        (error "Could not assign type"))))
+        (let ((bonds (chem:bonds-as-list a)))
+        (error "Could not assign type for ~s bonds: ~s" a bonds)))))
      (t
       (cond
        ((chem:matches *cx3-ox2_cx3-nx2* a) (set-am1-bcc-type a 17))
@@ -434,7 +435,7 @@
                      "-o" output-filename)))
     (unless sqm-executable
       (error "Could not find the executable ~a" sqm-executable))
-    (when verbose (format t "About to invoke ~s~%" args)
+    (when verbose (format t "About to invoke: ~a ~s~%" (namestring sqm-executable) args)
           (format t "qm-charge: ~d~%" qm-charge))
     (multiple-value-bind (process-stream status external-process)
         (ext:run-program "/bin/bash" (list "-c" (format nil "~a ~{~a~^ ~}" (namestring sqm-executable) args)))

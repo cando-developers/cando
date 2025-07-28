@@ -57,7 +57,6 @@ __END_DOC
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyStretch.h>
-#if USE_ALL_ENERGY_COMPONENTS
 #include <cando/chem/energyAngle.h>
 #include <cando/chem/energyDihedral.h>
 #include <cando/chem/energyNonbond.h>
@@ -66,7 +65,6 @@ __END_DOC
 #include <cando/chem/energyChiralRestraint.h>
 #include <cando/chem/energyAnchorRestraint.h>
 #include <cando/chem/energyFixedNonbond.h>
-#endif
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/ffBaseDb.h>
 #include <cando/chem/ffTypesDb.h>
@@ -282,7 +280,7 @@ void	EnergyFunction_O::initialize()
   this->Base::initialize();
   this->_AtomTable = AtomTable_O::create();
   this->_Stretch = EnergyStretch_O::create();
-#if USE_ALL_ENERGY_COMPONENTS
+  //#if USE_ALL_ENERGY_COMPONENTS
   this->_Angle = EnergyAngle_O::create();
   this->_Dihedral = EnergyDihedral_O::create();
   if (this->_BoundingBox.boundp()) {
@@ -294,7 +292,7 @@ void	EnergyFunction_O::initialize()
   this->_AnchorRestraint = EnergyAnchorRestraint_O::create();
   this->_DihedralRestraint = EnergyDihedralRestraint_O::create();
   this->_FixedNonbondRestraint = EnergyFixedNonbondRestraint_O::create();
-#endif
+  //#endif
   this->setScoringFunctionName(nil<core::T_O>());
   this->_Message = nil<core::T_O>();
   this->useDefaultSettings();
@@ -306,7 +304,7 @@ void	EnergyFunction_O::useDefaultSettings()
   ASSERTNOTNULL(this->_Stretch);
   ASSERT(this->_Stretch.notnilp());
   this->_Stretch->initialize();
-#if USE_ALL_ENERGY_COMPONENTS
+  //#if USE_ALL_ENERGY_COMPONENTS
   ASSERTNOTNULL(this->_Angle);
   ASSERT(this->_Angle.notnilp());
   ASSERTNOTNULL(this->_Dihedral);
@@ -328,7 +326,7 @@ void	EnergyFunction_O::useDefaultSettings()
   this->_AnchorRestraint->initialize();
   this->_DihedralRestraint->initialize();
   this->_FixedNonbondRestraint->initialize();
-#endif
+  //#endif
   this->_RestrainSecondaryAmides = true;
 }
 
@@ -338,7 +336,7 @@ void EnergyFunction_O::fields(core::Record_sp node)
 {
   node->field_if_not_unbound(INTERN_(kw,AtomTable),this->_AtomTable);
   node->field_if_not_unbound(INTERN_(kw,Stretch),this->_Stretch);
-#if USE_ALL_ENERGY_COMPONENTS
+  //#if USE_ALL_ENERGY_COMPONENTS
   node->field_if_not_unbound(INTERN_(kw,Angle),this->_Angle);
   node->field_if_not_unbound(INTERN_(kw,Dihedral),this->_Dihedral);
   node->field_if_not_unbound(INTERN_(kw,Nonbond),this->_Nonbond);
@@ -346,7 +344,7 @@ void EnergyFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,ChiralRestraint),this->_ChiralRestraint);
   node->field_if_not_unbound(INTERN_(kw,AnchorRestraint),this->_AnchorRestraint);
   node->field_if_not_unbound(INTERN_(kw,FixedNonbondRestraint),this->_FixedNonbondRestraint);
-#endif
+  //#endif
   node->field_if_not_unbound(INTERN_(kw,BoundingBox),this->_BoundingBox);
   node->field(INTERN_(kw,OtherEnergyComponents),this->_OtherEnergyComponents);
   this->Base::fields(node);
@@ -413,18 +411,18 @@ void	EnergyFunction_O::setOption( core::Symbol_sp option, core::T_sp val)
   if ( option == _sym_nonbondTerm)
   {
     bool onval = val.isTrue();
-#if USE_ALL_ENERGY_COMPONENTS
+    //#if USE_ALL_ENERGY_COMPONENTS
     if ( onval ) this->getNonbondComponent()->enable();
     else	this->getNonbondComponent()->disable();
-#endif
+    //#endif
   }
   else if ( option == _sym_restraintAnchor )
   {
     bool onval = val.isTrue();
-#if USE_ALL_ENERGY_COMPONENTS
+    //#if USE_ALL_ENERGY_COMPONENTS
     if ( onval ) this->getAnchorRestraintComponent()->enable();
     else	this->getAnchorRestraintComponent()->disable();
-#endif
+    //#endif
   } else
   {
     SIMPLE_ERROR("Unknown EnergyFunction setOption keyword[{}]" , _rep_(option) );
@@ -571,7 +569,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec,
                                        core::T_sp activeAtomMask,
-                                       core::T_sp debugInteractions )
+                                       core::T_sp debugInteractions,
+                                       bool disableRestraints )
 {
   bool	hasForce = force.notnilp();
   bool   hasHessian = hessian.notnilp();
@@ -636,7 +635,9 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                          calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec, activeAtomMask,
                                                          debugInteractions );
   }
-  if(this->_DihedralRestraint.boundp() && this->_DihedralRestraint->isEnabled()) {
+  if ( this->_DihedralRestraint.boundp() // Why do I allow DihedralRestraint to be unbound?
+       && (this->_DihedralRestraint->restraintp() && !disableRestraints)
+       && this->_DihedralRestraint->isEnabled()) {
     totalEnergy += this->_DihedralRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                    pos,
                                                                    energyScale,
@@ -650,7 +651,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                    activeAtomMask,
                                                                    debugInteractions );
   }
-  if(this->_ChiralRestraint->isEnabled()) {
+  if ( (this->_ChiralRestraint->restraintp() && !disableRestraints)
+       && this->_ChiralRestraint->isEnabled()) {
     totalEnergy += this->_ChiralRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                  pos,
                                                                  energyScale,
@@ -665,7 +667,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                  activeAtomMask,
                                                                  debugInteractions );
   }
-  if(this->_AnchorRestraint->isEnabled()) {
+  if ( (this->_AnchorRestraint->restraintp() && !disableRestraints)
+      && this->_AnchorRestraint->isEnabled()) {
     totalEnergy += this->_AnchorRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                  pos,
                                                                  energyScale,
@@ -680,7 +683,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
                                                                  activeAtomMask,
                                                                  debugInteractions );
   }
-  if(this->_FixedNonbondRestraint->isEnabled()) {
+  if ((this->_FixedNonbondRestraint->restraintp() && !disableRestraints)
+      && this->_FixedNonbondRestraint->isEnabled()) {
     totalEnergy += this->_FixedNonbondRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                                        pos,
                                                                        energyScale,
@@ -697,7 +701,8 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
   for ( auto cur : this->_OtherEnergyComponents ) {
     core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
     EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
-    if (component->isEnabled()) {
+    if ((component->restraintp() && !disableRestraints)
+        && component->isEnabled()) {
       totalEnergy+= component->evaluateAllComponent(this->asSmartPtr(),
                                                     pos,
                                                     energyScale,
@@ -2191,6 +2196,7 @@ CL_DEFUN void chem__fill_energy_function_from_alist(EnergyFunction_sp energy, co
   energy->_Nonbond = (safe_alist_lookup<EnergyNonbond_sp>(alist,kw::_sym_nonbond));
 }
 
+CL_LAMBDA((energy-function chem:energy-function) &optional (keep-interaction-factory t));
 CL_DEFMETHOD
 EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory)
 {

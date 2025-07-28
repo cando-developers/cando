@@ -591,32 +591,28 @@ I suggest changing val to NIL and that forces the first allowed rotamer index to
           do (setf (topology:rotamer-index monomer-shape) rotamer-index)))
   oligomer-shape)
 
-#+(or)
 (defun number-of-rotamers (permissible-rotamers)
   "Return the total number of rotamer combinations"
   (let ((num 1))
-    (loop for permissible-rotamer across (allowed-rotamer-indexes-vector permissible-rotamers)
+    (loop for permissible-rotamer across (permissible-rotamer-vector permissible-rotamers)
           for allowed = (allowed-rotamer-indexes permissible-rotamer)
           do (setf num (* num (length allowed))))
     num))
 
-#+(or)
-(defun enumerated-rotamer-state (permissible-rotamers index)
+(defun rotamer-state (permissible-rotamers index)
   "Return the rotamer-state for a particular enumerated (by index) rotamers.
 This is an vector of rotamer-index values enumerated from 0...(number-of-rotamers permissible-rotamers)"
-  (error "Fix with permissible-rotamers")
-  #+(or)
   (let ((num-rotamers (number-of-rotamers permissible-rotamers)))
     (unless (< index num-rotamers)
       (error "index ~s is out of bounds ~s" index num-rotamers))
-    (let* ((num-rotamers (number-of-rotamers permissible-rotamers))
-           (max-rotamers (coerce (max-rotamers permissible-rotamers) 'list))
+    (let* ((max-rotamers (coerce (max-rotamers permissible-rotamers) 'list))
            (rotamer-indexes (core:positive-integer-to-mixed-base-digits index max-rotamers))
-           (rotamer-vec (coerce (mapcar (lambda (indexes ee) (aref indexes ee))
-                                        (coerce (allowed-rotamer-indexes-vector permissible-rotamers) 'list)
+           (rotamer-vec (coerce (mapcar (lambda (permissible-rotamer ee) (aref (allowed-rotamer-indexes permissible-rotamer) ee))
+                                        (coerce (permissible-rotamer-vector permissible-rotamers) 'list)
                                         rotamer-indexes)
                                 'vector)))
-      rotamer-vec)))
+      (make-instance 'rotamer-indexes :rotamer-indexes rotamer-vec))))
+
 
 #+(or)
 (defun goto-rotamer (permissible-rotamers index)

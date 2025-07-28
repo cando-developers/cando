@@ -534,6 +534,8 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                    :plugs plugs
                                                    :property-list residue-properties)
                      do (loop for group-name in group-names
+                              unless (symbolp group-name)
+                                do (error "The group-name ~s must be a symbol" group-name)
                               do (pushnew name (gethash group-name *topology-groups* nil)))
                      do (if residue-properties
                             (setf (topology:property-list topology)
@@ -637,6 +639,8 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                       :restraints (parse-restraints restraints)
                                       :rotamer-limits (parse-rotamer-limits rotamer-limits))
         do (loop for group-name in (list* name group-names)
+                 unless (symbolp group-name)
+                   do (error "name ~s must be a symbol" group-name)
                  do (pushnew name (gethash group-name *topology-groups* nil)))
         do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
         do (if residue-properties

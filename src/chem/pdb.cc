@@ -25,10 +25,18 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #define	DEBUG_LEVEL_NONE
 #include <iomanip>
+#include <cctype>
+#include <string>
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
 #include <cando/chem/pdb.h>
 #include <clasp/core/pathname.h>
+#include <clasp/core/hashTable.h>
+#include <clasp/core/hashTableEqual.h>
+#include <clasp/core/string.h>
 #include <cando/chem/chemPackage.fwd.h>
 #include <clasp/core/lispStream.h>
 //#include "core/archiveNode.h"
@@ -45,6 +53,138 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
+
+
+
+/**
+ * Map long residue names (case-insensitive, may contain digits) to unique
+ * three-character PDB tags using the “root + position + stereo” scheme.
+ *
+ * tag[0] = first consonant (or first letter if none)        ── root
+ * tag[1] = first digit in the name, or ‘0’ if none          ── position
+ * tag[2] = stereo code                                      ── stereo
+ *          ‘S’ if only S present, ‘R’ if only R present,
+ *          ‘M’ if both S & R, otherwise last consonant.
+ *
+ * On collision the third slot is bumped through
+ *  ‘A’…‘Z’ then ‘0’…‘9’ until a free tag is found.
+ */
+
+namespace {
+
+bool is_vowel(char c) {
+  static const std::string V = "AEIOU";
+  return V.find(c) != std::string::npos;
+}
+
+char first_consonant(const std::string& s) {
+  for (char c : s)
+    if (std::isalpha(c) && !is_vowel(c)) return c;
+  for (char c : s)
+    if (std::isalpha(c)) return c;              // fallback: first letter
+  return 'X';
+}
+
+char first_digit_or_zero(const std::string& s) {
+  for (char c : s)
+    if (std::isdigit(c)) return c;
+  return '0';
+}
+
+char stereo_letter(const std::string& s) {
+  bool hasS = false, hasR = false;
+  for (char c : s) {
+    if (c == 'S') hasS = true;
+    else if (c == 'R') hasR = true;
+  }
+  if (hasS ^ hasR)            return hasS ? 'S' : 'R';
+  if (hasS && hasR)           return 'M';
+
+  /* No S/R – use last consonant or ‘X’. */
+  for (auto it = s.rbegin(); it != s.rend(); ++it)
+    if (std::isalpha(*it) && !is_vowel(*it)) return *it;
+  return 'X';
+}
+
+char bump_char(char current, std::size_t step) {
+  static const std::string seq = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  auto idx = seq.find(current);
+  /* if current isn’t in seq treat as -1 so step 0 gives seq[0] */
+  std::size_t start = (idx == std::string::npos) ? seq.size() : idx;
+  return seq[(start + step) % seq.size()];
+}
+
+} // namespace
+
+std::vector<std::string>
+make_pdb_tags(const std::vector<std::string>& long_names)
+{
+  std::unordered_set<std::string> used;
+  std::vector<std::string> tags;
+  tags.reserve(long_names.size());
+
+  for (const auto& raw : long_names) {
+    /* upper-case copy */
+    std::string name;
+    name.reserve(raw.size());
+    std::transform(raw.begin(), raw.end(), std::back_inserter(name),
+                   [](unsigned char c){ return std::toupper(c); });
+
+    std::string tag(3, ' ');
+    tag[0] = first_consonant(name);
+    tag[1] = first_digit_or_zero(name);
+    tag[2] = stereo_letter(name);
+
+    std::size_t bump = 0;
+    while (used.count(tag))                       // resolve collisions
+      tag[2] = bump_char(tag[2], ++bump);
+
+    used.insert(tag);
+    tags.push_back(tag);
+  }
+  return tags;
+}
+
+
+CL_DEFUN core::HashTableEqual_sp chem__long_residue_names_mapped_to_pdb_residue_names(core::List_sp long_names) {
+  std::vector<string> vlong_names;
+  for (auto cur : long_names ) {
+    core::String_sp str = gc::As<core::String_sp>(CONS_CAR(cur));
+    vlong_names.push_back(str->get_std_string());
+  }
+  std::vector<string> vpdb_names = make_pdb_tags(vlong_names);
+  core::HashTableEqual_sp mapping = core::HashTableEqual_O::create_default();
+  for ( size_t ii = 0; ii<vlong_names.size(); ii++ ) {
+    std::string long_name = vlong_names[ii];
+    std::string pdb_name = vpdb_names[ii];
+    core::SimpleString_sp sslong = core::SimpleBaseString_O::make(long_name);
+    core::SimpleString_sp sspdb = core::SimpleBaseString_O::make(pdb_name);
+    //    core::lisp_write(fmt::format("{}:{}:{}  sslong = {}  sspdb = {}\n", __FILE__, __FUNCTION__, __LINE__, _rep_(sslong), _rep_(sspdb)));
+    mapping->setf_gethash(sslong,sspdb);
+  }
+  return mapping;
+}
+
+
+/* -------------------------------------------------------------------------
+      Example usage:
+
+      #include <iostream>
+      int main() {
+      std::vector<std::string> names = {
+      "PROPYL","3PR","4PR","HOBNZ","4CBD","THIOBUTYL","THIOPENT","4CBA",
+      "8QI","TZA","3CF","MRP","TMP","3BA","LEU","CPR","MPY","PRR","AAB",
+      "BME","FBN","BDC","THI","DMA","MIZ","4OF","TRP","BPI","BZF","DCB",
+      "MAA","TBB","TZB","PBA","DAA","METHYL","BNZ","ETHYL","PROR","PROS",
+      "PRO4RR","PRO","4SR","PRO4RS","PRO4SS","CGLY","CPENT"
+      };
+      auto tags = make_pdb_tags(names);
+      for (std::size_t i = 0; i < names.size(); ++i)
+      std::cout << names[i] << " -> " << tags[i] << '\n';
+      }
+---------------------------------------------------------------------------*/
+
+
 
 
 struct ConnectPdbRec
@@ -113,7 +253,7 @@ int pdb_substr_int(const string& str, int firstChar1, int lastChar1, int dflt )
 
 
 
-void AtomPdbRec::write(core::T_sp fout)
+void AtomPdbRec::write(core::T_sp fout, bool hetatms)
 {
   string name;
   if ( this->_name->symbolName()->length() > 3 )
@@ -124,8 +264,15 @@ void AtomPdbRec::write(core::T_sp fout)
   {
     name = " " + this->_name->symbolName()->get_std_string();
   }
-  core::clasp_write_string(fmt::format("ATOM  {:5d} {:<4} {:3} {:1}{:4}    {:8.3f}{:8.3f}{:8.3f}{:6.2f}{:6.2f}           {:2}\n",
-                                       this->_serial, name, /* altLoc, */ this->_resName->symbolNameAsString(), this->_chainId,
+  string header;
+  if (hetatms) {
+    header = "HETATM";
+  } else {
+    header = "ATOM  ";
+  }
+  core::clasp_write_string(fmt::format("{:6}{:5d} {:<4} {:3} {:1}{:4}    {:8.3f}{:8.3f}{:8.3f}{:6.2f}{:6.2f}          {:>2}\n",
+                                       header,
+                                       this->_serial, name, /* altLoc, */ this->_pdbResName, this->_chainId,
                                        this->_resSeq, /* iCode, */ this->_x, this->_y, this->_z, this->_occupancy,
                                        this->_tempFactor, this->_element /* charge */),
                            fout);
@@ -156,7 +303,8 @@ void	AtomPdbRec::parse(const string& line)
   string name1 = pdb_substr(line,13,13);
   this->_name = chemkw_intern(name3+name1);
   this->_altLoc = pdb_substr(line,17,17);
-  this->_resName = chemkw_intern(pdb_substr(line,18,20));
+  this->_pdbResName = pdb_substr(line,18,20);
+  this->_resName = chemkw_intern(this->_pdbResName);
   this->_chainId = pdb_substr(line,22,22);
   this->_resSeq = pdb_substr_int(line,23,26,0);
   this->_iCode = pdb_substr(line,27,27);
@@ -487,7 +635,8 @@ void	PdbWriter_O::initialize()
 size_t _setupAtomAndConnectRecordsForOneMolecule(Molecule_sp mol, 
                                                gctools::Vec0<AtomPdbRec>& pdbAtoms, 
                                                vector<ConnectPdbRec>& pdbConnects, 
-                                               char chainId, size_t serialStart )
+                                                 char chainId, size_t serialStart,
+                                                 std::map<std::string,std::string>& pdb_name_map)
 {
   pdbAtoms.clear();
   pdbConnects.clear();
@@ -510,6 +659,8 @@ size_t _setupAtomAndConnectRecordsForOneMolecule(Molecule_sp mol,
       atom._recordName = "ATOM";
       atom._serial = serial++;
       atom._resName = res->getPdbName().notnilp() ? res->getPdbName() : res->getName();
+      std::string sname = res->getName()->symbolNameAsString();
+      atom._pdbResName = pdb_name_map[sname];
       atom._chainId = chainId;
       atom._resSeq = resSeq;
       atom._x = a->getPosition().getX();
@@ -551,22 +702,20 @@ size_t _setupAtomAndConnectRecordsForOneMolecule(Molecule_sp mol,
   return serial;
 }
 
-void _writeAtomAndConnectRecords( core::T_sp fout, gctools::Vec0<AtomPdbRec>& pdbAtoms, 
+void _writeAtomAndConnectRecords( core::T_sp fout, gctools::Vec0<AtomPdbRec>& pdbAtoms,
+                                  bool hetatms,
                                   vector<ConnectPdbRec>& pdbConnects )
 {
   gctools::Vec0<AtomPdbRec>::iterator ai;
   for ( ai=pdbAtoms.begin(); ai!=pdbAtoms.end(); ai++ )
   {
-    ai->write(fout);
+    ai->write(fout,hetatms);
   }
-#if 0
-  vector<ConnectPdbRec>::iterator ci;
-  for ( ci=pdbConnects.begin(); ci!=pdbConnects.end(); ci++ )
-  {
-    ci->write(fout);
-  }
-#endif
   core::clasp_write_string("TER\n", fout );
+  if (hetatms) {
+    vector<ConnectPdbRec>::iterator ci;
+    for ( ci=pdbConnects.begin(); ci!=pdbConnects.end(); ci++ ) ci->write(fout);
+  }
 }
 
 CL_LISPIFY_NAME("pdb-open");
@@ -584,11 +733,51 @@ CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
   }
 }
 
-void	PdbWriter_O::write(Matter_sp matter)
+SYMBOL_EXPORT_SC_(KeywordPkg,cryst1);
+core::HashTableEqual_sp PdbWriter_O::write(Matter_sp matter,bool hetatms, core::List_sp metadata)
 {
+  if (metadata.consp()) {
+    core::T_sp val = gc::As_unsafe<core::Cons_sp>(metadata)->getf(kw::_sym_cryst1,nil<core::T_O>());
+    if (val.consp()) {
+      core::Cons_sp cval = gc::As_unsafe<core::Cons_sp>(val);
+      double aa = core::clasp_to_double(cval->elt(0));
+      double bb = core::clasp_to_double(cval->elt(1));
+      double cc = core::clasp_to_double(cval->elt(2));
+      double alpha = core::clasp_to_double(cval->elt(3));
+      double beta = core::clasp_to_double(cval->elt(4));
+      double gamma = core::clasp_to_double(cval->elt(5));
+      std::string spaceGroup = gc::As<core::String_sp>(cval->elt(6))->get_std_string();
+      size_t numasym;
+      if (cval->elt(7).fixnump()) {
+        numasym = cval->elt(7).unsafe_fixnum();
+      } else {
+        SIMPLE_ERROR("You must provide the number of asymmetric units as a fixnum");
+      }
+      core::clasp_write_string(fmt::format("CRYST1{:9.3f}{:9.3f}{:9.3f}{:7.2f}{:7.2f}{:7.2f} {:10} {:4d}\n",
+                                   aa, bb, cc, alpha, beta, gamma,
+                                   spaceGroup, numasym ), this->_Out);
+    }
+  }
   size_t serialStart = 1;
-  if ( matter.isA<Aggregate_O>() )
-  {
+  Loop lResidues;
+  lResidues.loopTopGoal(matter,RESIDUES);
+  std::set<std::string> long_names_set;
+  while (lResidues.advance()) {
+    Residue_sp res = lResidues.getResidue();
+    std::string long_name = res->getName()->symbolNameAsString();
+    long_names_set.insert(long_name);
+  }
+  std::vector<std::string> long_names;
+  for (auto name : long_names_set ) {
+    long_names.push_back(name);
+  }
+  std::vector<std::string> pdb_names = make_pdb_tags(long_names);
+  std::map<std::string,std::string> pdb_name_map;
+  for ( size_t ii=0; ii<long_names.size(); ii++ ) {
+    pdb_name_map[long_names[ii]] = pdb_names[ii];
+  }
+
+  if ( matter.isA<Aggregate_O>() ) {
     Loop lMolecules;
     lMolecules.loopTopGoal(matter,MOLECULES);
     char chainId = 'A';
@@ -597,8 +786,8 @@ void	PdbWriter_O::write(Matter_sp matter)
       gctools::Vec0<AtomPdbRec> pdbAtoms;
       vector<ConnectPdbRec> pdbConnects;
       Molecule_sp mol = lMolecules.getMolecule();
-      serialStart = _setupAtomAndConnectRecordsForOneMolecule(mol,pdbAtoms,pdbConnects,chainId,serialStart);
-      _writeAtomAndConnectRecords(this->_Out,pdbAtoms,pdbConnects);
+      serialStart = _setupAtomAndConnectRecordsForOneMolecule(mol,pdbAtoms,pdbConnects,chainId,serialStart,pdb_name_map);
+      _writeAtomAndConnectRecords(this->_Out,pdbAtoms,hetatms,pdbConnects);
       chainId++;
       if ( chainId > 'Z' ) chainId = 'A'; // recycle chain-ids if there are too many
     }
@@ -606,17 +795,27 @@ void	PdbWriter_O::write(Matter_sp matter)
   {
     gctools::Vec0<AtomPdbRec> pdbAtoms;
     vector<ConnectPdbRec> pdbConnects;
-    serialStart = _setupAtomAndConnectRecordsForOneMolecule(matter.as<Molecule_O>(),pdbAtoms,pdbConnects,'A',serialStart);
-    _writeAtomAndConnectRecords(this->_Out,pdbAtoms,pdbConnects);
+    serialStart = _setupAtomAndConnectRecordsForOneMolecule(matter.as<Molecule_O>(),pdbAtoms,pdbConnects,'A',serialStart,pdb_name_map);
+    _writeAtomAndConnectRecords(this->_Out,pdbAtoms,hetatms,pdbConnects);
   }
+  core::HashTableEqual_sp mapping = core::HashTableEqual_O::create_default();
+  for ( size_t ii = 0; ii<long_names.size(); ii++ ) {
+    std::string long_name = long_names[ii];
+    std::string pdb_name = pdb_names[ii];
+    core::SimpleString_sp sslong = core::SimpleBaseString_O::make(long_name);
+    core::SimpleString_sp sspdb = core::SimpleBaseString_O::make(pdb_name);
+    //    core::lisp_write(fmt::format("{}:{}:{}  sslong = {}  sspdb = {}\n", __FILE__, __FUNCTION__, __LINE__, _rep_(sslong), _rep_(sspdb)));
+    mapping->setf_gethash(sslong,sspdb);
+  }
+  return mapping;
 }
 
 
 CL_LISPIFY_NAME("writeModel");
-CL_DEFMETHOD     void PdbWriter_O::writeModel(Matter_sp matter, int model)
+CL_DEFMETHOD     void PdbWriter_O::writeModel(Matter_sp matter, int model, bool hetatms,core::List_sp metadata)
 {
   core::clasp_write_string(fmt::format("MODEL     {}\n" , model ), this->_Out);
-  this->write(matter);
+  this->write(matter,hetatms,metadata);
   core::clasp_write_string("ENDMDL\n",this->_Out);
 }
 
@@ -631,21 +830,15 @@ CL_DEFMETHOD     void PdbWriter_O::close()
 
 CL_LISPIFY_NAME(save-pdb);
 DOCGROUP(cando);
-CL_DEFUN void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
+CL_LAMBDA(matter filename &key hetatms metadata);
+CL_DEFUN core::HashTableEqual_sp PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName, bool hetatms=false, core::List_sp metadata=nil<core::T_O>() )
 {
   PdbWriter_sp writer = PdbWriter_O::create();
   writer->open(fileName);
-  writer->write(matter);
+  core::HashTableEqual_sp pdb_residue_name_map = writer->write(matter,hetatms,metadata);
   writer->close();
+  return pdb_residue_name_map;
 }
-
-
-
-
-
-
-
-
 
 
 

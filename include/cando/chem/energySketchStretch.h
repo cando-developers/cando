@@ -125,58 +125,59 @@ double	_evaluateEnergyOnly_SketchStretch (
 
 class EnergySketchStretch_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergySketchStretch_O,"EnergySketchStretch",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergySketchStretch_O,"EnergySketchStretch",EnergyComponent_O);
 public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
+  virtual bool restraintp() const override {return false;};
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
-    void	initialize();
+  void	initialize();
 public:
-    typedef EnergySketchStretch	TermType;
+  typedef EnergySketchStretch	TermType;
 public: // instance variables
-    gctools::Vec0<TermType>	_Terms;
-    gctools::Vec0<TermType>	_BeyondThresholdTerms;
+  gctools::Vec0<TermType>	_Terms;
+  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 public:	
-    typedef gctools::Vec0<TermType>::iterator iterator;
-    iterator begin() { return this->_Terms.begin(); };
-    iterator end() { return this->_Terms.end(); };
+  typedef gctools::Vec0<TermType>::iterator iterator;
+  iterator begin() { return this->_Terms.begin(); };
+  iterator end() { return this->_Terms.end(); };
 	
 public:
-    virtual size_t numberOfTerms() { return this->_Terms.size();};
-    void addTerm(const TermType& term);
+  virtual size_t numberOfTerms() { return this->_Terms.size();};
+  void addTerm(const TermType& term);
 
-    CL_DEFMETHOD core::T_mv safe_amber_energy_stretch_term(size_t index) {
-      if (index >= this->numberOfTerms() ) {
-        SIMPLE_ERROR("Illegal term index {} must be less than {}" , index , this->_Terms.size() );
-      }
-      return Values(core::DoubleFloat_O::create(this->_Terms[index].term.kb),
-                    core::DoubleFloat_O::create(this->_Terms[index].term.r0),
-                    core::make_fixnum(this->_Terms[index].term.I1),
-                    core::make_fixnum(this->_Terms[index].term.I2));
+  CL_DEFMETHOD core::T_mv safe_amber_energy_stretch_term(size_t index) {
+    if (index >= this->numberOfTerms() ) {
+      SIMPLE_ERROR("Illegal term index {} must be less than {}" , index , this->_Terms.size() );
     }
+    return Values(core::DoubleFloat_O::create(this->_Terms[index].term.kb),
+                  core::DoubleFloat_O::create(this->_Terms[index].term.r0),
+                  core::make_fixnum(this->_Terms[index].term.I1),
+                  core::make_fixnum(this->_Terms[index].term.I2));
+  }
 
-    /*! Extract the components of the energy term into a collection of parallel vectors.
-        The vectors are returned as an alist with keyword keys.
-        The keys are :kb, :r0, :i1, :i2, :atom1 :atom2 */
-    virtual core::List_sp extract_vectors_as_alist() const;
-    virtual void fill_from_vectors_in_alist(core::List_sp vectors);
+  /*! Extract the components of the energy term into a collection of parallel vectors.
+    The vectors are returned as an alist with keyword keys.
+    The keys are :kb, :r0, :i1, :i2, :atom1 :atom2 */
+  virtual core::List_sp extract_vectors_as_alist() const;
+  virtual void fill_from_vectors_in_alist(core::List_sp vectors);
     
-    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m,
-                                            core::T_sp activeAtomMask );
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+                                          AbstractLargeSquareMatrix_sp m,
+                                          core::T_sp activeAtomMask );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                                         NVector_sp 	pos,
+                                       NVector_sp 	pos,
                                        core::T_sp energyScale,
-                                         core::T_sp componentEnergy,
-                                         bool 		calcForce,
-                                         gc::Nilable<NVector_sp> 	force,
-                                         bool		calcDiagonalHessian,
-                                         bool		calcOffDiagonalHessian,
-                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                         gc::Nilable<NVector_sp>	hdvec,
-                                         gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask,
-                                         core::T_sp debugInteractions );
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec,
+                                       core::T_sp activeAtomMask,
+                                       core::T_sp debugInteractions );
 
   void addSketchStretchTerm(size_t i1, size_t i2, double kb, double r0);
   
@@ -186,9 +187,9 @@ public:
     
   void reset();
 public:
-    EnergySketchStretch_O( const EnergySketchStretch_O& ss ); //!< Copy constructor
+  EnergySketchStretch_O( const EnergySketchStretch_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergySketchStretch_O);
+  DEFAULT_CTOR_DTOR(EnergySketchStretch_O);
 };
 
 };

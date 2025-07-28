@@ -143,6 +143,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   CL_LISPIFY_NAME("make-energy-rigid-body-nonbond");
   CL_DEF_CLASS_METHOD static EnergyRigidBodyNonbond_sp make( core::Array_sp end_atoms );
 public:
+  virtual bool restraintp() const override {return false;};
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
  public: // virtual functions inherited from Object

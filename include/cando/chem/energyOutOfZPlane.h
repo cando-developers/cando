@@ -129,8 +129,9 @@ class EnergyOutOfZPlane_O : public EnergyComponent_O
 public:
 public: // virtual functions inherited from Object
   void	initialize();
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
+  virtual bool restraintp() const override {return false;};
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 public:
   typedef EnergyOutOfZPlane	TermType;
 public: // instance variables
@@ -142,7 +143,7 @@ public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
-//added by G 7.19.2011
+  //added by G 7.19.2011
 public:
   virtual size_t numberOfTerms() { return this->_Terms.size();};
 
@@ -170,9 +171,9 @@ public:
                                        core::T_sp debugInteractions );
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-                                                                               NVector_sp pos );
+      NVector_sp pos );
 
-    // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
+  // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
   virtual string	beyondThresholdInteractionsAsString();
 

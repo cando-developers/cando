@@ -821,8 +821,10 @@ in FIXED-ATOMS-LIST and apply it to MOVEABLE-MATTER"
     (chem:copy-matter-coordinates-into-fixed-coordinates selected-atoms agg-moveable)
     (format t "fixed-points ~a~%" (chem:get-number-of-fixed-points superposer))
     (format t "moveable-points ~a~%" (chem:get-number-of-moveable-points superposer))
-        (let ((transform (chem:superpose superposer)))
-           (chem:apply-transform-to-atoms agg-moveable transform))))
+    (let* ((transform (chem:superpose superposer))
+           (rms (chem:root-mean-square-difference superposer)))
+      (chem:apply-transform-to-atoms agg-moveable transform)
+      rms)))
 
 (defun gnuplot-data (data)
   (with-open-file (fout "/tmp/gnuplot_temp.xy" :direction :output)

@@ -138,26 +138,27 @@ FORWARD(EnergyDihedralRestraint);
 class EnergyDihedralRestraint_O : public EnergyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyDihedralRestraint_O,"EnergyDihedralRestraint",EnergyComponent_O);
- public: // virtual functions inherited from Object
+public: // virtual functions inherited from Object
   void	initialize();
+  virtual bool restraintp() const override {return true;};
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
- public:
+public:
   typedef EnergyDihedralRestraint	TermType;
- public: // instance variables
+public: // instance variables
   gctools::Vec0<TermType>		_Terms;
   gctools::Vec0<TermType>	_BeyondThresholdTerms;
 
- public:	// Creation class functions
+public:	// Creation class functions
 
- public:
+public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
-//added by G 7.19.2011
- public:
+  //added by G 7.19.2011
+public:
   virtual size_t numberOfTerms() { return this->_Terms.size();};
- public:
+public:
   void addTerm(const TermType& term);
   size_t addDihedralRestraint(EnergyFunction_sp energyFunction,
                               double kdh,
@@ -208,8 +209,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
 
   core::T_mv getRestraint( size_t index );
 
-  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-                                                                               NVector_sp pos );
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos );
 
   virtual int checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
@@ -219,7 +219,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
 
   virtual string __repr__() const;
 
- public:
+public:
   EnergyDihedralRestraint_O( const EnergyDihedralRestraint_O& ss ); //!< Copy constructor
 
   EnergyDihedralRestraint_O() {};

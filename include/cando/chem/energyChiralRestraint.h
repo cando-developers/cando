@@ -140,65 +140,66 @@ double	_evaluateEnergyOnly_ChiralRestraint(
 FORWARD(EnergyChiralRestraint);
 class EnergyChiralRestraint_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergyChiralRestraint_O,"EnergyChiralRestraint",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyChiralRestraint_O,"EnergyChiralRestraint",EnergyComponent_O);
 public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
+  virtual bool restraintp() const override {return true;};
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
-    void	initialize();
-//	string	__repr__() const;
+  void	initialize();
+  //	string	__repr__() const;
 
 public:
-    typedef EnergyChiralRestraint	TermType;
+  typedef EnergyChiralRestraint	TermType;
 public: // instance variables
-    gctools::Vec0<TermType>	_Terms;
-    gctools::Vec0<TermType>	_BeyondThresholdTerms;
+  gctools::Vec0<TermType>	_Terms;
+  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 
 public:	// Creation class functions
 public:	
-    typedef gctools::Vec0<TermType>::iterator iterator;
-    iterator begin() { return this->_Terms.begin(); };
-    iterator end() { return this->_Terms.end(); };
-//added by G 7.19.2011
+  typedef gctools::Vec0<TermType>::iterator iterator;
+  iterator begin() { return this->_Terms.begin(); };
+  iterator end() { return this->_Terms.end(); };
+  //added by G 7.19.2011
 public:
-    virtual size_t numberOfTerms() { return this->_Terms.size();};
+  virtual size_t numberOfTerms() { return this->_Terms.size();};
     
 
 public:
-    void addTerm(const TermType& term);
-    virtual void dumpTerms(core::HashTable_sp atomTypes);
-    virtual bool is_restraint() const { return true; };
+  void addTerm(const TermType& term);
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual bool is_restraint() const { return true; };
 
-    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m,
-                                            core::T_sp activeAtomMask );
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+                                          AbstractLargeSquareMatrix_sp m,
+                                          core::T_sp activeAtomMask );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                                         NVector_sp 	pos,
+                                       NVector_sp 	pos,
                                        core::T_sp energyScale,
-                                         core::T_sp componentEnergy,
-                                         bool 		calcForce,
-                                         gc::Nilable<NVector_sp> 	force,
-                                         bool		calcDiagonalHessian,
-                                         bool		calcOffDiagonalHessian,
-                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                         gc::Nilable<NVector_sp>	hdvec,
-                                         gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask,
-                                         core::T_sp debugInteractions );
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec,
+                                       core::T_sp activeAtomMask,
+                                       core::T_sp debugInteractions );
 
-    virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-	NVector_sp pos );
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
+      NVector_sp pos );
 
-    // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
+  // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
-    virtual string	beyondThresholdInteractionsAsString();
+  virtual string	beyondThresholdInteractionsAsString();
 
   EnergyChiralRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
 
 public:
-    EnergyChiralRestraint_O( const EnergyChiralRestraint_O& ss ); //!< Copy constructor
+  EnergyChiralRestraint_O( const EnergyChiralRestraint_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergyChiralRestraint_O);
+  DEFAULT_CTOR_DTOR(EnergyChiralRestraint_O);
 };
 
 };

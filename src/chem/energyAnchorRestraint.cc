@@ -176,6 +176,17 @@ void	EnergyAnchorRestraint_O::addTerm(const EnergyAnchorRestraint& r)
   this->_Terms.push_back(r);
 }
 
+CL_DEFMETHOD
+size_t EnergyAnchorRestraint_O::addAnchorRestraintTerm(EnergyFunction_sp energyFunction, Atom_sp a1, Vector3 position, double forceConstant ) {
+  AtomTable_sp atomTable = energyFunction->atomTable();
+  EnergyAtom* ea = atomTable->getEnergyAtomPointer(a1);
+  //EnergyAnchorRestraint restraint(a1,position,ea->coordinateIndexTimes3(),forceConstant);
+  this->_Terms.emplace_back(a1,position,ea->coordinateIndexTimes3(),forceConstant);
+  return this->_Terms.size()-1;
+}
+
+
+
 void	EnergyAnchorRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
 }
@@ -507,14 +518,23 @@ EnergyAnchorRestraint_sp EnergyAnchorRestraint_O::copyFilter(core::T_sp keepInte
   return copy;
 }
 
-
-#ifdef XML_ARCHIVE
-void EnergyAnchorRestraint_O::archiveBase(core::ArchiveP node)
-{
-  this->Base::archiveBase(node);
-  IMPLEMENT_ME();
-}
+core::T_sp test_allocate_EnergyAnchorRestraint_O() {
+#if 1
+  // succeeds
+  auto thing = EnergyAnchorRestraint_O::create();
+#elif 1
+  // succeeds ---- I got it to fail once I think but it may have been that I didn't save 
+  auto thing = gctools::GC<EnergyAnchorRestraint_O>::allocate_with_default_constructor();
+#elif 0
+  // FAILS
+  auto kind = gctools::Header_s::StampWtagMtag::make_StampWtagMtag(EnergyAnchorRestraint_O::static_ValueStampWtagMtag);
+  auto thing = gctools::GCObjectAllocator<EnergyAnchorRestraint_O>::template allocate_kind<gctools::RuntimeStage>(kind,gctools::sizeof_with_header<EnergyAnchorRestraint_O>());
+#else
+  // FAILS
+  gctools::Header_s::BadgeStampWtagMtag the_header;
+  auto thing = gctools::GCObjectAppropriatePoolAllocator<EnergyAnchorRestraint_O,gctools::normal>::allocate_in_appropriate_pool_kind<gctools::RuntimeStage>(the_header,9999);
 #endif
-
+  return thing;
+}
 
 };

@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/hashTableEqual.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/adapt/stringSet.fwd.h>
 
@@ -49,6 +50,7 @@ namespace chem
 	core::Symbol_sp _name;
 	string	_altLoc;
 	core::Symbol_sp _resName;
+      std::string _pdbResName;
 	string _chainId;
 	int	_resSeq;
 	string	_iCode;
@@ -65,7 +67,7 @@ namespace chem
 	int	_moleculeIdx;
 
         AtomPdbRec() : _atom(nil<Atom_O>()) {};
-	void write(core::T_sp stream);
+      void write(core::T_sp stream,bool hetatms);
 	virtual ~AtomPdbRec() {};
 	void parse(const string& line);
 	Atom_sp createAtom();
@@ -76,61 +78,63 @@ namespace chem
 namespace chem
 {
 
-    SMART(Aggregate);
-    SMART(Matter);
+SMART(Aggregate);
+SMART(Matter);
 
-    SMART(PdbReader );
-    class PdbReader_O : public core::CxxObject_O
-    {
-	LISP_CLASS(chem,ChemPkg,PdbReader_O,"PdbReader",core::CxxObject_O);
-    public:
-	void	initialize();
-    private:
-    public:
-	static Aggregate_sp loadPdb(core::T_sp fileName);
-	static Aggregate_sp loadPdbConnectAtoms(core::T_sp fileName);
-        static Aggregate_sp loadPdbFromStreamConnectAtoms(core::T_sp stream);
-    public:
+SMART(PdbReader );
+class PdbReader_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,PdbReader_O,"PdbReader",core::CxxObject_O);
+public:
+  void	initialize();
+private:
+public:
+  static Aggregate_sp loadPdb(core::T_sp fileName);
+  static Aggregate_sp loadPdbConnectAtoms(core::T_sp fileName);
+  static Aggregate_sp loadPdbFromStreamConnectAtoms(core::T_sp stream);
+public:
 
-	Aggregate_sp	parse(core::T_sp stream);
+  Aggregate_sp	parse(core::T_sp stream);
 
-	PdbReader_O( const PdbReader_O& ss ); //!< Copy constructor
+  PdbReader_O( const PdbReader_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(PdbReader_O);
-    };
-
-
+  DEFAULT_CTOR_DTOR(PdbReader_O);
+};
 
 
-    SMART(PdbWriter );
-    class PdbWriter_O : public core::CxxObject_O
-    {
-      LISP_CLASS(chem,ChemPkg,PdbWriter_O,"PdbWriter",core::CxxObject_O);
+
+
+SMART(PdbWriter );
+class PdbWriter_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,PdbWriter_O,"PdbWriter",core::CxxObject_O);
 #if INIT_TO_FACTORIES
-    public:
-      static PdbWriter_sp make(core::T_sp fileName);
+public:
+  static PdbWriter_sp make(core::T_sp fileName);
 #else
-      DECLARE_INIT();
+  DECLARE_INIT();
 #endif
-    public:
-      void	initialize();
-    private:
-      core::T_sp      _Out;
-    public:
-      static void savePdb(Matter_sp matter, core::T_sp fileName);
-    public:
+public:
+  void	initialize();
+private:
+  core::T_sp      _Out;
+public:
+  static core::HashTableEqual_sp savePdb(Matter_sp matter, core::T_sp fileName, bool hetatms, core::List_sp metadata);
+public:
 
-      void open(core::T_sp fileName);
-      void close();
+  void open(core::T_sp fileName);
+  void close();
 
-      void write(Matter_sp matter);
-      void writeModel(Matter_sp matter, int model);
+  core::HashTableEqual_sp write(Matter_sp matter,bool hetatms, core::List_sp metadata);
+  void writeModel(Matter_sp matter, int model, bool hetatms, core::List_sp metadata);
 
-      PdbWriter_O( const PdbWriter_O& ss ); //!< Copy constructor
+  PdbWriter_O( const PdbWriter_O& ss ); //!< Copy constructor
 
-    PdbWriter_O() :  _Out(nil<core::T_O>()) {};
-      virtual ~PdbWriter_O() {};
-    };
+  PdbWriter_O() :  _Out(nil<core::T_O>()) {};
+  virtual ~PdbWriter_O() {};
+};
+
+std::vector<std::string> make_pdb_tags(const std::vector<std::string>& long_names);
 
 };
 #endif //]

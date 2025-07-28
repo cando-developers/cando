@@ -140,6 +140,24 @@ Example of oligomer-space-dag
                used-contexts-set)
       (values t used-contexts unused-contexts))))
 
+(defgeneric topology:foldamer-topology-names (foldamer)
+  (:documentation "Return the topology-names that are part of the foldamer"))
+
+(defun downselect-foldamer-topology-names (foldamer name topology-groups)
+  "Only select names that correspond to topologys that are in the foldamer topology% slot.
+This is so we can create multiple foldamers that have different expressive power."
+  (let ((names (gethash name topology-groups)))
+    (loop for name in names
+          for name-top = (chem:find-topology name)
+          when (member name (topology:foldamer-topology-names foldamer))
+            collect name)))
+
+(define-condition missing-monomers (condition)
+  ((message :initarg :message :reader message)))
+  
+(define-condition missing-root-monomer (missing-monomers) ())
+(define-condition missing-body-monomers (missing-monomers) ())
+
 (defun oligomer-space-from-dag (foldamer dag topology-groups)
   (let ((focus-node (root dag))
         (node-to-monomer (make-hash-table))
@@ -147,12 +165,23 @@ Example of oligomer-space-dag
                                        :foldamer foldamer)))
     (loop for node across (nodes dag)
           for name = (name node)
-          for names = (gethash name topology-groups)
-          for monomer = (make-instance 'topology:monomer
-                                       :monomers names
-                                       :id name)
+          for names = (downselect-foldamer-topology-names foldamer name topology-groups)
+          for monomer = (progn
+                          (make-instance 'topology:monomer
+                                         :monomers names
+                                         :id name))
           do (setf (gethash node node-to-monomer) monomer)
           do (vector-push-extend monomer (topology:monomers oligomer-space)))
+    ;; Check that the oligomer-space has all of its monomers
+    (let ((root-monomer (gethash focus-node node-to-monomer)))
+      (unless (topology:monomers root-monomer)
+        (signal 'missing-root-monomer
+                :message (format nil "The root monomers for ~s are not part of the foldamer" root-monomer)))
+      (loop for monomer across (topology:monomers oligomer-space)
+            unless (eq monomer root-monomer)
+              do (unless (topology:monomers monomer)
+                   (signal 'missing-body-monomers
+                           :message (format nil "The body monomer ~s for root ~s is not part of the foldamer" monomer root-monomer)))))
     (loop for edge in (edges dag)
           for source-node = (from-node edge)
           for target-node = (to-node edge)

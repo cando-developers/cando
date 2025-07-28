@@ -190,10 +190,10 @@ while nesting several WITH-CPRING5 forms."
   ((begin :initarg :begin :reader begin)
    (end :initarg :end :reader end)))
 
-(defun new-range (driver size)
+(defun new-range (manipulator size)
   "Advance the internal-index of the DRIVER by SIZE entries and return the range"
-  (let ((begin (internal-index driver))
-        (end (incf (internal-index driver) size)))
+  (let ((begin (internal-index manipulator))
+        (end (incf (internal-index manipulator) size)))
     (make-instance 'range :begin begin :end end)))
 
 (defun range-size (range)
@@ -641,7 +641,8 @@ while nesting several WITH-CPRING5 forms."
                                                                       (when (null (gethash joint build-joints))
                                                                         (push joint static-dihedral-list))))
                                    static-dihedral-list))
-               (manipulator (let ((man (make-instance 'manipulator
+               (manipulator (let ((man (make-instance 'focused-manipulator
+                                                      :focus-monomer focus-monomer
                                                       :assembler assembler)))
                               (build-rest-of-manipulator man rings-and-exo-atoms rotatable-dihedrals static-dihedrals joints-to-monomers atom-joint-map :focus-monomer focus-monomer)
                               man))
@@ -856,36 +857,23 @@ while nesting several WITH-CPRING5 forms."
           (aref internals (+ 1 internals-index3)) (aref cpinternals (+ 1 cpinternals-index3))
           (aref internals (+ 2 internals-index3)) (aref cpinternals (+ 2 cpinternals-index3)))))
 
-(defun manipulator-build-internals-from-cpinternals (manipulator temp-externals cpinternals externals)
+(defgeneric manipulator-build-internals-from-cpinternals (manipulator temp-externals cpinternals &key internals))
+
+(defmethod manipulator-build-internals-from-cpinternals ((manipulator manipulator) temp-externals cpinternals &key (internals (internals (assembler manipulator))))
   "Build the INTERALS from CPINTERNALS and use TEMP-EXTERNALS as a scratch pad of coordinates."
-  (declare (ignore externals))
-  #+(or)
-  (let* ((ass (assembler manipulator))
-         (atmol (aref (topology:atmolecules (topology:ataggregate ass)) 0))
-         )
-    (topology::walk-atmolecule-joints atmol
-                                      (lambda (jnt pos)
-                                        (declare (ignore pos))
-                                        (kin:joint/update-internal-coords jnt internals externals))))
-  (let* ((assembler (assembler manipulator))
-         (internals (topology:internals assembler)))
-    (loop for driver in (focus-drivers manipulator)
-          do (build-internals-from-cpinternals (assembler manipulator) driver internals temp-externals cpinternals))
+  (let ((assembler (assembler manipulator)))
     (loop for driver in (other-drivers manipulator)
           do (build-internals-from-cpinternals (assembler manipulator) driver internals temp-externals cpinternals))
     (loop for driver in (static-drivers manipulator)
           do (build-internals-from-cpinternals (assembler manipulator) driver internals temp-externals cpinternals))
-    #+(or)
-    (let ((atmol (aref (topology:atmolecules (topology:ataggregate (assembler manipulator))) 0)))
-      (topology:walk-atmolecule-joints atmol
-                                       (lambda (jnt pos)
-                                         (let* ((idx3 (kin:joint/position-index-x3 jnt))
-                                                (dist (aref internals idx3))
-                                                (angle (aref internals (+ 1 idx3)))
-                                                (dihedral (aref internals (+ 2 idx3))))
-                                           #+(or)(format t "debug jnt = ~s  ~s ~s ~s~%" jnt dist angle dihedral)))))
     ))
 
+(defmethod manipulator-build-internals-from-cpinternals ((manipulator focused-manipulator) temp-externals cpinternals &key (internals (internals (assembler manipulator))))
+  "Build the INTERALS from CPINTERNALS and use TEMP-EXTERNALS as a scratch pad of coordinates."
+  (let ((assembler (assembler manipulator)))
+    (loop for driver in (focus-drivers manipulator)
+          do (build-internals-from-cpinternals (assembler manipulator) driver internals temp-externals cpinternals)))
+  (call-next-method))
 
 (defun fscale-frac (num &optional (bin-size 0.01))
   (floor (fround (/ num bin-size))))
@@ -941,8 +929,9 @@ while nesting several WITH-CPRING5 forms."
               (topology:rad-to-deg @6phi)))))
 
 (defmethod dump-cpinternals* ((driver fused-ring-driver) cpinternals)
-    (format nil "~a ~a" (dump-cpinternals* (ring1 (rings driver)))
-            (dump-cpinternals* (ring2 (rings driver)))))
+  (format nil "~a ~a"
+          (dump-cpinternals* (ring1 (rings driver)) cpinternals)
+          (dump-cpinternals* (ring2 (rings driver)) cpinternals)))
 
 
 (defmethod dump-cpinternals* ((driver dihedral-driver) cpinternals)
@@ -957,7 +946,7 @@ while nesting several WITH-CPRING5 forms."
   (loop for driver in (other-drivers manipulator)
         for repr = (dump-cpinternals* driver cpinternals)
         when repr
-             do (format stream "~a : ~s~%" repr driver)))
+             do (format stream "~a~%" repr)))
 
 (defmethod dump-manipulator-cpinternals ((manipulator focused-manipulator) cpinternals &optional (stream t))
   (format stream "focus-drivers---~%")
@@ -966,3 +955,105 @@ while nesting several WITH-CPRING5 forms."
         when repr
              do (format stream "~a : ~s~%" repr driver))
   (call-next-method))
+
+(defparameter *manipulate-quoted-keywords* '(:ring :dih))
+(defun process-clause (monomer
+                       &rest clause
+                       &key &allow-other-keys)
+  (list* `',monomer
+         (loop for (key value) on clause by #'cddr
+               collect key
+               when (member key *manipulate-quoted-keywords*)
+                 collect `',value
+               else
+                 collect value)))
+
+
+(defgeneric do-manipulation (driver cpinternals target target-value &key &allow-other-keys))
+
+(defmethod do-manipulation ((driver fused-ring-driver) cpinternals (target (eql :ring)) target-value &key qq theta phi theta-deg phi-deg)
+  (when (and theta theta-deg)
+    (error "Only one of :theta or :theta-deg are allowed"))
+  (when (and phi phi-deg)
+    (error "Only one of :phi or :phi-deg are allowed"))
+  (cond
+    ((string-equal "dkp" (string target-value))
+     (with-cpring6 (cpinternals (begin (cremer-pople-range (ring1 (rings driver)))))
+       (when qq (setf @6q qq))
+       (when theta (setf @6theta theta))
+       (when theta-deg (setf @6theta (deg-to-rad theta-deg)))
+       (when phi (setf @6phi phi))
+       (when phi-deg (setf @6phi (deg-to-rad phi-deg)))
+       ))
+    ((string-equal "bb" (string target-value))
+     (let ((ring (ring2 (rings driver))))
+       (etypecase ring
+         (ring5-driver
+          (with-cpring5 (cpinternals (begin (cremer-pople-range ring)))
+            (when qq (setf @5q qq))
+            (when phi (setf @5phi phi))
+            (when phi-deg (setf @5phi (deg-to-rad phi-deg)))
+            ))
+         (ring6-driver
+          (with-cpring6 (cpinternals (begin (cremer-pople-range ring)))
+            (when qq (setf @6q qq))
+            (when theta (setf @6theta theta))
+            (when theta-deg (setf @6theta (deg-to-rad theta-deg)))
+            (when phi (setf @6phi phi))
+            (when phi-deg (setf @6phi (deg-to-rad phi-deg)))
+            )))))
+    (t (error ":ring argument must be one of dkp or bb - saw ~s" target-value)))
+  )
+
+(defmethod do-manipulation (driver cpinternals (target (eql :dih)) target-value &rest args)
+  (break "Check driver and clause for dih"))
+
+
+(defun %manipulate (manipulator cpinternals monomer &rest clause &key &allow-other-keys)
+  (let* ((assembler (topology:assembler manipulator))
+         (oligomer-shape (first (topology:oligomer-shapes assembler)))
+         (oligomer (topology:oligomer oligomer-shape))
+         (monomer-string (symbol-name monomer)))
+    (loop for driver in (other-drivers manipulator)
+          for driver-monomer = (monomer driver)
+          for driver-monomer-symbol = (topology:oligomer-monomer-name oligomer driver-monomer)
+          for driver-monomer-string = (symbol-name driver-monomer-symbol)
+          when (string= driver-monomer-string monomer-string)
+            do (apply 'do-manipulation driver cpinternals clause)
+          )))
+
+
+#|
+(manipulate manipulator
+  ( pro4ss :ring dkp :qq 0.32 :phi (deg 25.0) :theta (deg 90.0))
+  ( pro4rr :ring dkp :phi (deg (+ -180.0 25.0)))
+  ( 4pr :dih c1 :angle (deg 180))
+  ( foo :dih c2 :angle (deg 180))
+)
+|#
+
+(defmacro manipulate (manipulator cpinternals &body clauses)
+  (let ((man (gensym "MANIPULATOR"))
+        (cpi (gensym "CPINTERNALS")))
+    `(let ((,man ,manipulator)
+           (,cpi ,cpinternals))
+       ,@(loop for clause in clauses
+               collect `(%manipulate ,man ,cpi ,@(apply 'process-clause clause)))))
+  )
+
+
+
+(defun externals-from-cpinternals (manipulator cpinternals &key (internals (internals (assembler manipulator)))
+                                                             (externals (make-coordinates-for-assembler (assembler manipulator)))
+                                                             (temp-externals externals))
+  (manipulator-build-internals-from-cpinternals manipulator temp-externals cpinternals :internals internals)
+  (update-externals (assembler manipulator) :coords externals :internals internals)
+  externals)
+
+(defun aggregate-from-cpinternals (manipulator cpinternals &key (externals (make-coordinates-for-assembler (assembler manipulator))))
+  (let* ((assembler (assembler manipulator))
+         (aggregate (chem:matter-copy (topology:aggregate assembler))))
+    (externals-from-cpinternals manipulator cpinternals :externals externals)
+    (chem:matter/apply-coordinates aggregate externals)
+    aggregate))
+

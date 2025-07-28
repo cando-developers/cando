@@ -62,11 +62,12 @@ double	_evaluateEnergyOnly_PointToLineRestraint(
 FORWARD(EnergyPointToLineRestraint);
 class EnergyPointToLineRestraint_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergyPointToLineRestraint_O,"EnergyPointToLineRestraint",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyPointToLineRestraint_O,"EnergyPointToLineRestraint",EnergyComponent_O);
 public: // virtual functions inherited from Object
-    void	initialize();
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
+  void	initialize();
+  virtual bool restraintp() const override {return true;};
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 public: // instance variables
   double                  _Bond_div_2;  // cutoff - if _ForceConstant is negative then less than this force is off
   EnergySketchStretch_sp  _Stretch;
@@ -76,18 +77,18 @@ public:
   static EnergyPointToLineRestraint_sp create(EnergySketchStretch_sp stretch);
 public:
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                                         NVector_sp 	pos,
+                                       NVector_sp 	pos,
                                        core::T_sp energyScale,
-                                         core::T_sp componentEnergy,
-                                         bool 		calcForce,
-                                         gc::Nilable<NVector_sp> 	force,
-                                         bool		calcDiagonalHessian,
-                                         bool		calcOffDiagonalHessian,
-                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                         gc::Nilable<NVector_sp>	hdvec,
-                                         gc::Nilable<NVector_sp> dvec,
-                                         core::T_sp activeAtomMask,
-                                         core::T_sp debugInteractions );
+                                       core::T_sp componentEnergy,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec,
+                                       core::T_sp activeAtomMask,
+                                       core::T_sp debugInteractions );
 
 public:
   EnergyPointToLineRestraint_O(EnergySketchStretch_sp stretch) : _Stretch(stretch), _ForceConstant(0.5) {};

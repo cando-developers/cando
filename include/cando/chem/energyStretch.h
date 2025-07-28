@@ -151,6 +151,7 @@ class EnergyStretch_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyStretch_O,"EnergyStretch",EnergyComponent_O);
 public:
+  virtual bool restraintp() const override {return false;};
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
 public: // virtual functions inherited from Object

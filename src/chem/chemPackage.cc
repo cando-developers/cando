@@ -76,6 +76,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/chem/monomer.h>
 #include <cando/chem/pdbMonomer.h>
 #include <cando/chem/pdb.h>
+#include <cando/chem/write_mmcif.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/properTorsion.h>
 #include <cando/chem/readAmberParameters.h>

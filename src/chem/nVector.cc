@@ -752,5 +752,173 @@ CL_DEFUN void chem__nvector_sub(NVector_sp result, NVector_sp veca, NVector_sp v
   }
 }
 
+#if 0
+#define SUPERPOSE_LOG(x) core::lisp_write(x)
+#else
+#define SUPERPOSE_LOG(x)
+#endif
+
+
+CL_DOCSTRING("Return a matrix that best aligns the moveable-coordinates with the fixed-coordinates using the indexes3 atoms if provided");
+CL_DEFUN Matrix chem__nvectors_align(NVector_sp fixedNVector, NVector_sp moveableNVector, core::SimpleVector_byte32_t_sp indexes3 ) {
+  VectorVector3s                        Sj;
+  VectorVector3s                        Si;
+  VectorVector3s::iterator        itSi,itSj;
+  Vector3                                fixedCenter,vTemp;
+  Vector3                                moveableCenter;
+  Matrix                                mat,M, MT, trM, P,evecs,em,trans,rot;
+  Vector4                                v4,evals,largestEv,quaternion;
+  int                                iLargestEv;
+  double                                X0, X1, X2, x0, x1, x2;
+  double                                l,m,n,s,ll,mm,nn,ss;
+  int                                fixedIndexesSize, moveableIndexesSize;
+
+  Sj.resize(indexes3->length());
+  if ( indexes3->length() < 3 ) {
+    SIMPLE_ERROR("Number of indexes3 must be greater than 3");
+  }
+  Si.resize(indexes3->length());
+  {
+    fixedCenter.set(0.0,0.0,0.0);
+    for ( size_t iaV(0); iaV<indexes3->length(); ++iaV) {
+      Vector3 tv;
+      tv.set((*fixedNVector)[(*indexes3)[iaV]+0],
+             (*fixedNVector)[(*indexes3)[iaV]+1],
+             (*fixedNVector)[(*indexes3)[iaV]+2]);
+      fixedCenter = fixedCenter + tv;
+    }
+    fixedCenter = fixedCenter.multiplyByScalar(1.0/(double)(indexes3->length()));
+    VectorVector3s::iterator itS = Sj.begin();
+    for ( size_t iaV(0); iaV<indexes3->length(); iaV++,itS++ ) {
+      Vector3 tv;
+      tv.set((*fixedNVector)[(*indexes3)[iaV]+0],
+             (*fixedNVector)[(*indexes3)[iaV]+1],
+             (*fixedNVector)[(*indexes3)[iaV]+2]);
+      *itS = tv - fixedCenter;
+    }
+  }
+  {
+    moveableCenter.set(0.0,0.0,0.0);
+    for ( size_t iaV(0); iaV<indexes3->length(); ++iaV) {
+      Vector3 tv;
+      tv.set((*moveableNVector)[(*indexes3)[iaV]+0],
+             (*moveableNVector)[(*indexes3)[iaV]+1],
+             (*moveableNVector)[(*indexes3)[iaV]+2]);
+      moveableCenter = moveableCenter + tv;
+    }
+    moveableCenter = moveableCenter.multiplyByScalar(1.0/(double)(indexes3->length()));
+    VectorVector3s::iterator itS = Si.begin();
+    for ( size_t iaV(0); iaV<indexes3->length(); iaV++,itS++ ) {
+      Vector3 tv;
+      tv.set((*moveableNVector)[(*indexes3)[iaV]+0],
+             (*moveableNVector)[(*indexes3)[iaV]+1],
+             (*moveableNVector)[(*indexes3)[iaV]+2]);
+      SUPERPOSE_LOG(fmt::format("fixedNVector[{}]    = {}\n" , iaV, tv.asString() ));
+      SUPERPOSE_LOG(fmt::format("moveableNVector[{}] = {}\n" , iaV, tv.asString() ));
+      *itS = tv - moveableCenter;
+    }
+  }
+  itSi = Si.begin();
+  itSj = Sj.begin();
+  M.setValue(0.0);
+  for ( uint c = 0; c< Sj.size(); c++ ) {
+    X0 = itSj->getX();
+    X1 = itSj->getY();
+    X2 = itSj->getZ();
+    x0 = itSi->getX();
+    x1 = itSi->getY();
+    x2 = itSi->getZ();
+    SUPERPOSE_LOG(fmt::format("Iterating c={}\n" , c  ));
+    SUPERPOSE_LOG(fmt::format("Iterating x0,x1,x2 ={}, {}, {}\n" , x0 , x1 , x2  ));
+    SUPERPOSE_LOG(fmt::format("Iterating X0,X1,X2 ={}, {}, {}\n" , X0 , X1 , X2  ));
+    M.at(0, 0) += x0*X0;
+    M.at(0, 1) += x0*X1;
+    M.at(0, 2) += x0*X2;
+    M.at(1, 0) += x1*X0;
+    M.at(1, 1) += x1*X1;
+    M.at(1, 2) += x1*X2;
+    M.at(2, 0) += x2*X0;
+    M.at(2, 1) += x2*X1;
+    M.at(2, 2) += x2*X2;
+    itSj++;
+    itSi++;
+  }
+  SUPERPOSE_LOG(fmt::format( "M= {}\n" , M.asString() ));
+  MT = M.transpose();
+  v4.set( 0.0, 0.0, 0.0, M.trace() );
+  trM.setFromQuaternion(v4);
+  P = M + (MT - (trM*2.0));
+  P.at(0, 3) = M.at(1, 2) - M.at(2, 1);
+  P.at(3, 0) = P.at(0, 3);
+  P.at(1, 3) = M.at(2, 0) - M.at(0, 2);
+  P.at(3, 1) = P.at(1, 3);
+  P.at(2, 3) = M.at(0, 1) -M.at(1, 0);
+  P.at(3, 2) = P.at(2, 3);
+  P.at(3, 3) = 0.0;
+  SUPERPOSE_LOG(fmt::format("P={}\n" , P.asString() ));
+
+  P.eigenSystem( evals, evecs );
+  iLargestEv = evals.indexOfLargestElement();
+  largestEv = evecs.getCol(iLargestEv);
+  SUPERPOSE_LOG(fmt::format("largestEv={}\n" , largestEv.asString() ));
+  em.setFromQuaternion(largestEv);
+
+  SUPERPOSE_LOG(fmt::format( "eigenMatrix={}\n" , em.asString() ));
+  quaternion = em.getCol(3);
+  SUPERPOSE_LOG(fmt::format( "quaternion = {}\n" , quaternion.asString() ));
+  //
+  // Convert the quaternion into a rotation matrix
+  rot.setValue(0.0);
+  l = quaternion.getW();
+  m = quaternion.getX();
+  n = quaternion.getY();
+  s = quaternion.getZ();
+  SUPERPOSE_LOG(fmt::format("quat= {:.4f}, {:.4f}, {:.4f}, {:.4f} \n" , l, m, n, s ));
+  ll = l*l;
+  mm = m*m;
+  nn = n*n;
+  ss = s*s;
+  rot.at(0, 0) = ll - mm - nn + ss;
+  rot.at(0, 1) = 2*(l*m - n*s);
+  rot.at(0, 2) = 2*(l*n + m*s);
+  rot.at(1, 0) = 2*(l*m + n*s);
+  rot.at(1, 1) = -ll + mm - nn + ss;
+  rot.at(1, 2) = 2*(m*n - l*s);
+  rot.at(2, 0) = 2*(l*n - m*s);
+  rot.at(2, 1) = 2*(m*n + l*s);
+  rot.at(2, 2) = -ll - mm + nn + ss;
+  rot.at(3, 3) = 1.0;
+  SUPERPOSE_LOG(fmt::format("rot=\n{}\n" , rot.asString()));
+  vTemp = moveableCenter*-1.0;
+  trans.translate(vTemp);
+  SUPERPOSE_LOG(fmt::format( "moveableTrans={}\n" , trans.asString() ));
+  //    mat.setFromQuaternion(quaternion);
+  mat = rot*trans;
+  SUPERPOSE_LOG(fmt::format( "mat*moveableTrans= {}\n" , mat.asString() ));
+  trans.translate(fixedCenter);
+  SUPERPOSE_LOG(fmt::format( "fixedTrans = {}\n" , trans.asString() ));
+  Matrix transform = trans*mat;
+  return transform;
+}
+
+CL_DEFUN double chem__nvector_root_mean_square_difference_transformed(NVector_sp fixedNVector, NVector_sp moveableNVector, Matrix transform, core::SimpleVector_byte32_t_sp indexes3) {
+  double sum = 0.0;
+  for ( size_t iaV(0); iaV<indexes3->length(); ++iaV) {
+    Vector3 fv;
+    fv.set((*fixedNVector)[(*indexes3)[iaV]+0],
+           (*fixedNVector)[(*indexes3)[iaV]+1],
+           (*fixedNVector)[(*indexes3)[iaV]+2]);
+    Vector3 mv;
+    mv.set((*moveableNVector)[(*indexes3)[iaV]+0],
+           (*moveableNVector)[(*indexes3)[iaV]+1],
+           (*moveableNVector)[(*indexes3)[iaV]+2]);
+    mv = transform.multiplyByVector3(mv);
+    Vector3 diff = fv-mv;
+    sum = sum + diff.dotProduct(diff);
+  }
+  double meanSumOfSquares = sum/indexes3->length();
+  return sqrt(meanSumOfSquares);
+}
+
 
 }

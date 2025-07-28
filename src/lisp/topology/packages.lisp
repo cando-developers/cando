@@ -557,7 +557,23 @@
    #:identify-build-joints
    #:rings-and-exocyclic-atoms
    #:build-rest-of-manipulator
-   #:manipulator-build-internals-from-cpinternals))
+   #:manipulator-build-internals-from-cpinternals
+   #:aggregate-from-cpinternals
+   #:externals-from-cpinternals
+   #:manipulate
+   #:find-monomer-residue
+   #:find-monomer-atom
+   #:find-specifier-index3
+   #:monomer-labels
+   #:find-monomer-atresidue
+   #:find-monomer-joint
+   #:find-monomer-joint-external
+   #:assemble-agg
+   #:ignore-shape-key-cache
+   #:foldamer-topology-names
+   #:rotamer-state
+   #:internals-twist-dihedral
+   #:labeled-monomer))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
@@ -568,7 +584,12 @@
    #:parse-oligomer-space-dag
    #:validate-dag
    #:ring-cap-node
-   #:label))
+   #:label
+   #:foldamer-topology-names
+   #:missing-monomers
+   #:missing-body-monomers
+   #:missing-root-monomer
+   #:message))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

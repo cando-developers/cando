@@ -252,6 +252,8 @@ This is for looking up parts but if the thing returned is not a part then return
               do (let ((res (gethash label labels)))
                    (when res
                      (error "There is already a monomer ~s with the label ~s" res label))
+                   (when (consp label)
+                     (break "Hit a label that is a cons ~s" label))
                    (setf (gethash label labels) new-part))))
       (values new-parts ringp))))
 

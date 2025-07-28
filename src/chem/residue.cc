@@ -36,6 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
+#include <clasp/core/ql.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/monomer.h>
@@ -708,6 +709,18 @@ core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
     return Values(nil<core::T_O>(),nil<core::T_O>());
   }
   SIMPLE_ERROR("{} ({}) does not contain name({})", this->className(), this->_Name, name);
+}
+
+CL_LAMBDA((residue chem:residue));
+CL_DEFMETHOD
+core::T_sp Residue_O::atomNames()
+{
+  contentIterator	aCur;
+  ql::list ll;
+  for ( aCur=this->_Contents.begin();aCur!=this->_Contents.end(); aCur++ ) {
+    ll << (*aCur)->getName();
+  }
+  return ll.cons();
 }
 
 Vector3 Residue_O::positionOfAtomWithName(MatterName name)

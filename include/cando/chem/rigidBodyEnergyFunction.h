@@ -159,7 +159,8 @@ public:
                             gc::Nilable<NVector_sp> hdvec,
                             gc::Nilable<NVector_sp> dvec,
                             core::T_sp activeAtomMask,
-                            core::T_sp debugInteractions );
+                            core::T_sp debugInteractions,
+                            bool disableRestraints );
 
   void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
   CL_LISPIFY_NAME("rigid-body-energy-function-set-position");

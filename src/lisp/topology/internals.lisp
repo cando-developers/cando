@@ -247,6 +247,15 @@
       (print-unreadable-object (obj stream :type t)
         (format stream "~s" (cache obj)))))
 
+(defgeneric ignore-shape-key-cache (topology foldamer)
+  (:documentation "Ignore the shape-key-cache for the topology in the foldamer"))
+
+(defmethod ignore-shape-key-cache (topology foldamer)
+  "Generally don't ignore the shape-key-cache"
+  (declare (ignore topology foldamer))
+  nil)
+
+
 (defun make-shape-key-cache ()
   "Create an empty SHAPE-KEY-CACHE"
   (make-instance 'shape-key-cache))
@@ -1192,3 +1201,21 @@ that is 1 for each heavy atom."
                        do (format t "  ~5s  ~10,3f  ~10,3f~%" name dihdeg old-dihdeg)
                        ))))
         finally (return-from internals (values temp-internals updated-internals-mask))))
+
+(defun internals-twist-dihedral (assembler dihedral-joint angle-rad &key (internals (internals assembler)))
+  "Twist around all dihedral angles shared by the DIHEDRAL-JOINT by setting the DIHEDRAL-JOINT dihedral angle to ANGLE-RAD"
+  (let* ((parent-joint (kin:joint/parent dihedral-joint))
+         (children (kin:joint/joint-children parent-joint))
+         (current-dihedral (kin:bonded-joint/get-phi dihedral-joint internals))
+         (adjustments (loop for child in children
+                            for dih = (kin:bonded-joint/get-phi child internals)
+                            for delta = (topology:radians-sub dih current-dihedral)
+                            collect (cons child delta)))
+         )
+    (loop for (joint . dih) in adjustments
+          do (kin:bonded-joint/set-phi joint internals (topology:radians-add dih angle-rad)))
+    #+(or)
+    (progn
+      (format t "Setting ~s to ~f~%" dihedral-joint (topology:rad-to-deg angle-rad))
+      (loop for child in children
+            do (format t "Adjusted child ~s -> ~f~%" child (topology:rad-to-deg (kin:bonded-joint/get-phi child internals)))))))

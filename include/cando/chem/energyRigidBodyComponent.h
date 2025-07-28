@@ -47,13 +47,14 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
 
-namespace       chem {
+namespace chem {
 
-  FORWARD(EnergyRigidBodyComponent);
+FORWARD(EnergyRigidBodyComponent);
 class EnergyRigidBodyComponent_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergyRigidBodyComponent_O,"EnergyRigidBodyComponent",EnergyComponent_O);
-    DEFAULT_CTOR_DTOR(EnergyRigidBodyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyRigidBodyComponent_O,"EnergyRigidBodyComponent",EnergyComponent_O);
+  DEFAULT_CTOR_DTOR(EnergyRigidBodyComponent_O);
+  virtual bool restraintp() const = 0;
 
   virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                              NVector_sp 	pos,

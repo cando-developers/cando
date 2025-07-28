@@ -85,6 +85,7 @@
            #~"minimizerLog.cc"
            #~"iterateRestraints.cc"
            #~"pdb.cc"
+           #~"write_mmcif.cc"
            #~"ringFinder.cc"
            #~"iterateMatter.cc"
            #~"macroModel.cc"

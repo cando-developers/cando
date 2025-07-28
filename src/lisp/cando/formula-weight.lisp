@@ -42,6 +42,11 @@
                (return-from formula-string-to-alist (nreverse formula-alist))))))
 
 
+(defun formula-string (formula)
+  (with-output-to-string (sout)
+    (loop for (element . number) in formula
+          do (format sout "~a~d" element number))))
+
 (defgeneric formula-weight (formula))
 
 (defmethod formula-weight ((formula cons))
@@ -78,5 +83,26 @@
         (if count
             (setf (gethash element element-counts) (1+ count))
             (setf (gethash element element-counts) 1))))
-    (let ((formula (alexandria:hash-table-alist element-counts)))
-      formula)))
+    (let* ((formula (alexandria:hash-table-alist element-counts))
+           (sorted-formula (sort formula (lambda (aa bb)
+                                           (let ((aa-pos (position aa #(:C :H)))
+                                                 (bb-pos (position bb #(:C :H))))
+                                             (cond
+                                               ((and aa-pos bb-pos (< aa-pos bb-pos)))
+                                               ((and (null aa-pos) (null bb-pos) (string< aa bb)))
+                                               (t aa-pos))))
+                                 :key #'car)))
+      sorted-formula)))
+
+(defun chem:formula (matter)
+  (chemical-formula matter))
+
+(defgeneric chem:formula-weight (obj))
+(defmethod chem:formula-weight ((obj cons))
+  (formula-weight obj))
+(defmethod chem:formula-weight ((obj string))
+  (formula-weight obj))
+
+(defmethod chem:formula-string (formula)
+  (formula-string formula))
+

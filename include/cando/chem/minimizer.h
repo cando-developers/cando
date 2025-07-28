@@ -228,20 +228,23 @@ struct RestartMinimizer {};
                                   core::T_sp energyScale,
 				  double rmsGradientTol,
                                   core::T_sp activeAtomMask,
-                                  core::T_sp callback );
+                                  core::T_sp callback,
+                                  bool verbose );
         /*! Return true on success */
     void	_conjugateGradient( int numSteps,
 				    NVector_sp p,
                                   core::T_sp energyScale,
 				    double rmsGradientTol,
                                     core::T_sp activeAtomMask,
-                                    core::T_sp callback );
+                                    core::T_sp callback,
+                                    bool verbose );
     void	_truncatedNewton( int numSteps,
 				  NVector_sp p,
                                   core::T_sp energyScale,
 				  double rmsGradientTol,
                                   core::T_sp activeAtomMask,
-                                  core::T_sp callback );
+                                  core::T_sp callback,
+                                  bool verbose );
 
 
     void	_evaluateEnergyAndForceManyTimes( int numSteps,
@@ -345,7 +348,7 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
     void	minimizeSteepestDescent();
     void	minimizeConjugateGradient();
     void	resetAndMinimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback );
-    core::T_mv minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback, core::T_sp coordinates=nil<core::T_O>() );
+    core::T_mv minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback, core::T_sp coordinates=nil<core::T_O>(), bool verbose = false );
         // If the minimization is aborted the intermediate results can be recovered
     void    writeIntermediateResultsToEnergyFunction();
     void	evaluateEnergyAndForceManyTimes(core::T_sp energyScale, int times,core::T_sp activeAtomMask );

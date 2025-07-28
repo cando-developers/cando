@@ -185,6 +185,7 @@ class EnergyDihedral_O : public EnergyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyDihedral_O,"EnergyDihedral",EnergyComponent_O);
 public:
+  virtual bool restraintp() const override {return false;};
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public: // virtual functions inherited from Object

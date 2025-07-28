@@ -294,8 +294,8 @@ SMART(EnergyComponent );
 class EnergyComponent_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyComponent_O,"EnergyComponent",core::CxxObject_O);
- public:
- public: // virtual functions inherited from Object
+public:
+public: // virtual functions inherited from Object
   void initialize();
 public: // instance variables
   bool		        _Enabled;
@@ -303,9 +303,10 @@ public: // instance variables
 public:
   size_t                _Evaluations;
 public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
- public:
+  virtual bool restraintp() const = 0;
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
   CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   void setScale(double s) {this->_Scale = s; };
   double getScale() { return this->_Scale ; };
@@ -317,7 +318,7 @@ public:
 
   CL_DOCSTRING("Some energy-components are restraints - and should be disabled to calculate conformational energies");
   CL_DEFMETHOD
-    virtual bool is_restraint() const { return false; };
+  virtual bool is_restraint() const { return false; };
   
   CL_LISPIFY_NAME("energy-component-evaluations");
   CL_DEFMETHOD 	size_t	evaluations() const { return this->_Evaluations; };
@@ -327,30 +328,30 @@ public:
   string enabledAsString();
   string debugLogAsString();
 
- public:	// Virtual methods
+public:	// Virtual methods
 
   CL_DEFMETHOD virtual void dumpTerms(core::HashTable_sp atomTypes) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
   virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteractionFactory);
   
   CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
-                                                       NVector_sp 	pos,
+                                                     NVector_sp 	pos,
                                                      core::T_sp energyScale,
-                                                       core::T_sp componentEnergy,
-                                                       bool 		calcForce,
-                                                       gc::Nilable<NVector_sp> 	force,
-                                                       bool		calcDiagonalHessian,
-                                                       bool		calcOffDiagonalHessian,
-                                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                       gc::Nilable<NVector_sp>	hdvec,
-                                                       gc::Nilable<NVector_sp> dvec,
-                                                       core::T_sp activeAtomMask,
-                                                       core::T_sp debugInteractions ) = 0;
+                                                     core::T_sp componentEnergy,
+                                                     bool 		calcForce,
+                                                     gc::Nilable<NVector_sp> 	force,
+                                                     bool		calcDiagonalHessian,
+                                                     bool		calcOffDiagonalHessian,
+                                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                     gc::Nilable<NVector_sp>	hdvec,
+                                                     gc::Nilable<NVector_sp> dvec,
+                                                     core::T_sp activeAtomMask,
+                                                     core::T_sp debugInteractions ) = 0;
 
   virtual core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
- public:
+public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
   EnergyComponent_O() : _Enabled(true), _Scale(1.0) {};

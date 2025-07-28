@@ -684,13 +684,13 @@ If UNINITIALIZED then leave them unbound."
     (aggregate assembler)))
 
 (defmethod aggregate ((oligomer-shape oligomer-shape))
-  "Generate an aggregate for the OLIGOMER-SHAPE"
+  "Generate a unique aggregate for the OLIGOMER-SHAPE. This can be called multiple times and each time a new, unique aggregate will be generated."
   (let* ((ass (make-assembler (list oligomer-shape)))
          (coords (make-coordinates-for-assembler ass)))
     (update-internals ass :oligomer-shape oligomer-shape)
     (build-all-atom-tree-external-coordinates-and-adjust ass coords)
     (copy-all-joint-positions-into-atoms ass coords)
-    (aggregate ass)))
+    (chem:matter-copy (aggregate ass))))
 
 (defmethod aggregate ((oligomer oligomer))
   "Generate an aggregate for the OLIGOMER"

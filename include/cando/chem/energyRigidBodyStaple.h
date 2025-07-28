@@ -113,6 +113,7 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyRigidBodyStaple_O,"EnergyRigidBodyStaple",EnergyRigidBodyComponent_O);
 public:
+  virtual bool restraintp() const override {return false;};
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
  public: // virtual functions inherited from Object

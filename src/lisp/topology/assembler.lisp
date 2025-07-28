@@ -114,6 +114,12 @@ molecule in the global frame."
 
 (defgeneric orientation-transform (orientation assembler coordinates))
 
+(defun monomer-labels (assembler)
+  "Return all the monomer labels in the ASSEMBLER"
+  (loop for oligomer in (always-oligomers assembler)
+        for oligomer-space = (oligomer-space oligomer)
+        append (alexandria:hash-table-keys (labeled-monomers oligomer-space))))
+
 (defun monomers-for-label (assembler monomer-label)
   (loop for olig in (topology:always-oligomers assembler)
         for olig-space = (topology:oligomer-space olig)
@@ -135,6 +141,48 @@ molecule in the global frame."
          (index3 (kin:joint/position-index-x3 joint))
          )
     index3))
+
+(defun find-monomer-residue (assembler monomer-label)
+  "Find the residue of the monomer indicated by MONOMER-LABEL in the ASSEMBLER"
+  (let* ((monomer (let ((maybe-monomers (monomers-for-label assembler monomer-label)))
+                    (unless (= (length maybe-monomers) 1)
+                      (error "There must be one monomer with the label ~s" monomer-label))
+                    (first maybe-monomers)))
+         (monomer-pos (gethash monomer (topology:monomer-positions assembler)))
+         (aggregate (topology:aggregate assembler))
+         (residue (topology:at-position aggregate monomer-pos))
+         )
+    residue))
+
+(defun find-monomer-atresidue (assembler monomer-label)
+  "Find the residue of the monomer indicated by MONOMER-LABEL in the ASSEMBLER"
+  (let* ((monomer (let ((maybe-monomers (monomers-for-label assembler monomer-label)))
+                    (unless (= (length maybe-monomers) 1)
+                      (error "There must be one monomer with the label ~s" monomer-label))
+                    (first maybe-monomers)))
+         (monomer-pos (gethash monomer (topology:monomer-positions assembler)))
+         (ataggregate (topology:ataggregate assembler))
+         (atresidue (topology:at-position ataggregate monomer-pos))
+         )
+    atresidue))
+
+(defun find-monomer-atom (assembler monomer-label atom-name)
+  "Find the atom with ATOM-NAME in the monomer indicated by MONOMER-LABEL in the ASSEMBLER"
+  (let* ((residue (find-monomer-residue assembler monomer-label))
+         (atom (chem:residue/atom-with-name residue atom-name)))
+    atom))
+
+(defun find-monomer-joint (assembler monomer-label atom-name)
+  "Find the atom with ATOM-NAME in the monomer indicated by MONOMER-LABEL in the ASSEMBLER"
+  (let* ((atresidue (find-monomer-atresidue assembler monomer-label))
+         (joint (topology:joint-with-name atresidue atom-name)))
+    joint))
+
+(defun find-monomer-joint-external (assembler monomer-label atom-name externals)
+  "Find the atom with ATOM-NAME in the monomer indicated by MONOMER-LABEL in the ASSEMBLER and return its coordinates"
+  (let* ((joint (find-monomer-joint assembler monomer-label atom-name))
+         (index3 (kin:joint/position-index-x3 joint)))
+    (geom:vec-array externals index3)))
 
 (defun to-origin-x-xy (origin x xy)
   (let* ((unitx (geom:vnormalized (geom:v- x origin)))
@@ -335,7 +383,12 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
     agg))
 
 (defun aggregate-with-coordinates (assembler coordinates &key (name :all))
+  (warn "Use assemble-agg")
   (aggregate* assembler coordinates :name name))
+
+(defun assemble-agg (assembler externals &key (name :all))
+  "This should be the function we use going forward to construct an aggregate from an ASSEMBLER and EXTERNALS"
+  (aggregate* assembler externals :name name))
 
 (defun joint-definedp (assembler joint)
   "Return T if JOINT in ASSEMBLER has defined internal coordinates"
@@ -494,6 +547,8 @@ Specialize the foldamer argument to provide methods"))
 
 (defun maybe-update-shape-key-cache (assembler)
   (loop for oligomer-shape in (oligomer-shapes assembler)
+        for rotamers-database = (rotamers-database oligomer-shape)
+        for foldamer-name = (foldamer-name rotamers-database)
         do (topology:with-orientation (gethash oligomer-shape (topology:orientations (topology:orientations assembler)))
              (do-oligomer-shape (monomer-shape monomer monomer-context monomer-shape-kind) oligomer-shape
                (when (typep monomer-shape 'backbone-residue-shape)
@@ -511,20 +566,21 @@ Specialize the foldamer argument to provide methods"))
                                                             (member (name dihedral) '(:phi :psi :phi-1 :psi-1)))
                                                     collect dihedral))
                         (dihedral-cache (make-shape-key-cache)))
-                   (loop for dihedral in dihedrals-to-cache
-                         for dihedral-name = (name dihedral)
-                         for atom-name = (atom-name dihedral)
-                         for joint = (joint-with-name atresidue atom-name)
-                         for parent = (kin:parent joint)
-                         for grand-parent = (kin:parent parent)
-                         for great-grand-parent = (kin:parent grand-parent)
-                         for jpos = (kin:xyz-joint/transformed-pos joint)
-                         for ppos = (kin:xyz-joint/transformed-pos parent)
-                         for gppos = (kin:xyz-joint/transformed-pos grand-parent)
-                         for ggppos = (kin:xyz-joint/transformed-pos great-grand-parent)
-                         for dih = (geom:calculate-dihedral jpos ppos gppos ggppos)
-                         for dih-deg = (bin-dihedral-deg (rad-to-deg dih))
-                         do (add-to-cache dihedral-cache dihedral-name dih-deg))
+                   (unless (ignore-shape-key-cache topology foldamer-name) ; I may want something different here - foldamer-name dispatching will be complicated by multiple spiro foldamers
+                     (loop for dihedral in dihedrals-to-cache
+                           for dihedral-name = (name dihedral)
+                           for atom-name = (atom-name dihedral)
+                           for joint = (joint-with-name atresidue atom-name)
+                           for parent = (kin:parent joint)
+                           for grand-parent = (kin:parent parent)
+                           for great-grand-parent = (kin:parent grand-parent)
+                           for jpos = (kin:xyz-joint/transformed-pos joint)
+                           for ppos = (kin:xyz-joint/transformed-pos parent)
+                           for gppos = (kin:xyz-joint/transformed-pos grand-parent)
+                           for ggppos = (kin:xyz-joint/transformed-pos great-grand-parent)
+                           for dih = (geom:calculate-dihedral jpos ppos gppos ggppos)
+                           for dih-deg = (bin-dihedral-deg (rad-to-deg dih))
+                           do (add-to-cache dihedral-cache dihedral-name dih-deg)))
                    (setf (shape-key-cache-deg monomer-shape) dihedral-cache)
                    ))))))
 
@@ -1261,7 +1317,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
 
 (defgeneric update-externals (assembler &key &allow-other-keys))
 
-(defmethod update-externals ((assembler training-assembler) &key internals coords)
+(defmethod update-externals ((assembler training-assembler) &key (internals (internals assembler)) coords)
   (let* ((one-oligomer (first (oligomers assembler)))
          (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
     (when (null joints)

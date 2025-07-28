@@ -984,7 +984,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
                                        core::T_sp energyScale,
                                        double forceTolerance,
                                        core::T_sp activeAtomMask,
-                                       core::T_sp callback )
+                                       core::T_sp callback,
+                                       bool verbose)
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int		iRestartSteps;
@@ -1057,7 +1058,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 		    // Print intermediate status
 		    //
       if ( forceRmsMag < forceTolerance ) {
-        if ( this->_PrintIntermediateResults ) {
+        if ( verbose || this->_PrintIntermediateResults ) {
           if (!printedLatestMessage) {
             printedLatestMessage = this->_displayIntermediateMessage(pos,step,fp,forceRmsMag,cosAngle,steepestDescent,true,activeAtomMask);
           }
@@ -1129,7 +1130,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         this->lineSearch( &step, &fnew, pos, energyScale, dirVec, forceVec, tv1, tv2, localSteps, stepReport, activeAtomMask );
         prevStep = step;
         printedLatestMessage = false;
-        if ( this->_PrintIntermediateResults ) {
+        if ( verbose || this->_PrintIntermediateResults ) {
           double tforceRmsMag = rmsMagnitudeWithActiveAtomMask(forceVec,activeAtomMask);
           printedLatestMessage = this->_displayIntermediateMessage(pos,step,fp,tforceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
         }
@@ -1174,7 +1175,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
     }
   }
 
-  if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
+  if ( verbose || (this->_PrintIntermediateResults && !printedLatestMessage) ) {
     this->_displayIntermediateMessage(pos,step,fnew,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
   }
   fp = dTotalEnergyForce( pos, energyScale, forceVec, activeAtomMask );
@@ -1204,7 +1205,8 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
                                         core::T_sp energyScale,
                                         double forceTolerance,
                                         core::T_sp activeAtomMask,
-                                        core::T_sp callback )
+                                        core::T_sp callback,
+                                        bool verbose )
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int		iRestartSteps;
@@ -1296,11 +1298,11 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       this->_RMSForce = forceRmsMag;
       prevStep = step;
       printedLatestMessage = false;
-      if ( this->_PrintIntermediateResults ) {
+      if ( verbose || this->_PrintIntermediateResults ) {
         printedLatestMessage = this->_displayIntermediateMessage(pos,prevStep,fp,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
       }
       if ( forceRmsMag < forceTolerance ) {
-        if ( this->_PrintIntermediateResults ) {
+        if ( verbose||this->_PrintIntermediateResults ) {
           if (!printedLatestMessage) {
             printedLatestMessage = this->_displayIntermediateMessage(pos,step,fp,forceRmsMag,cosAngle,steepestDescent,true,activeAtomMask);
           }
@@ -1483,7 +1485,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       gctools::handle_all_queued_interrupts();
     }
   }
-  if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
+  if ( verbose || (this->_PrintIntermediateResults && !printedLatestMessage) ) {
     this->_displayIntermediateMessage( pos,step,fnew,forceRmsMag,cosAngle,steepestDescent,false,activeAtomMask);
   }
   fp = dTotalEnergyForce( pos, energyScale, force, activeAtomMask );
@@ -1691,7 +1693,8 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
                                       core::T_sp energyScale,
                                       double forceTolerance,
                                       core::T_sp activeAtomMask,
-                                      core::T_sp callback )
+                                      core::T_sp callback,
+                                      bool verbose )
 {
   StepReport_sp	stepReport = StepReport_O::create();
   int	iDimensions;
@@ -1747,7 +1750,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   LOG("Evaluating initial energy and force" );
   energyXkNext = dTotalEnergyForce( pos, energyScale, forceK, activeAtomMask );
   rmsForceMag = rmsMagnitudeWithActiveAtomMask(forceK,activeAtomMask);
-  if ( this->_PrintIntermediateResults )
+  if ( verbose || this->_PrintIntermediateResults )
   {
     this->_displayIntermediateMessage(pos,prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false,false,activeAtomMask);
   }
@@ -1929,7 +1932,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
                                                << kw::_sym_number_of_steps << core::make_fixnum(kk)
                                                << kw::_sym_coordinates << pos).result());
       }
-      if ( this->_PrintIntermediateResults ) {
+      if ( verbose || this->_PrintIntermediateResults ) {
         this->_displayIntermediateMessage(pos,prevAlphaK,fp,rmsForceMag,cosAngle,false,false,activeAtomMask);
       }
 
@@ -2129,8 +2132,8 @@ CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize(core::T_sp energyScale, core
 
 
 CL_LISPIFY_NAME("minimize");
-CL_LAMBDA((minimizer chem:minimizer) &key energy-scale active-atom-mask callback coords);
-CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback, core::T_sp coords)
+CL_LAMBDA((minimizer chem:minimizer) &key energy-scale active-atom-mask callback coords verbose);
+CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp callback, core::T_sp coords, bool verbose)
 {
   NVector_sp	pos;
   int		retries;
@@ -2161,7 +2164,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp
       }
       if ( this->_NumberOfSteepestDescentSteps > 0 ) {
         this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
-                                pos, energyScale, this->_SteepestDescentTolerance, activeAtomMask, callback );
+                                pos, energyScale, this->_SteepestDescentTolerance, activeAtomMask, callback, verbose );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Steepest Descent #steps = 0");
@@ -2169,7 +2172,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp
       }
       if ( this->_NumberOfConjugateGradientSteps > 0 ) {
         this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
-                                  pos, energyScale, this->_ConjugateGradientTolerance, activeAtomMask, callback );
+                                  pos, energyScale, this->_ConjugateGradientTolerance, activeAtomMask, callback, verbose );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Conjugate Gradients #steps = 0");
@@ -2177,7 +2180,7 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp
       }
       if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
         this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
-                                pos, energyScale, this->_TruncatedNewtonTolerance, activeAtomMask, callback );
+                                pos, energyScale, this->_TruncatedNewtonTolerance, activeAtomMask, callback, verbose );
       } else {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string("======= Skipping Truncated Newton #steps = 0");

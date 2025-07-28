@@ -144,6 +144,7 @@ class EnergyFixedNonbondRestraint_O : public EnergyComponent_O
     LISP_CLASS(chem,ChemPkg,EnergyFixedNonbondRestraint_O,"EnergyFixedNonbondRestraint",EnergyComponent_O);
 public: // virtual functions inherited from Object
     void	initialize();
+  virtual bool restraintp() const override {return true;};
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
     typedef FixedNonbondRestraint TermType;

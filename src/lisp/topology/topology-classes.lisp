@@ -495,6 +495,8 @@ Examples:
                  :default :lego3
                  :default (cycle :first)))
 "
+  (unless foldamer
+    (error "You must provide a foldamer"))
   (let* ((oligomer-space (make-instance 'oligomer-space
                                         :foldamer foldamer
                                         :name name))
@@ -505,6 +507,9 @@ Examples:
     (setf (labeled-monomers oligomer-space) labels)
     (topology:verify-oligomer-space oligomer-space)
     oligomer-space))
+
+(defun labeled-monomer (label oligomer-space)
+  (gethash label (labeled-monomers oligomer-space)))
 
 (defun oligomer-space-contains-monomer (oligomer-space monomer)
   (position monomer (monomers oligomer-space)))

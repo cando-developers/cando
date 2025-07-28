@@ -114,7 +114,8 @@
   (:use #:common-lisp)
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
-  (:export #:nfx
+  (:export #:assign
+           #:nfx
            #:agg
            #:mol
            #:res
@@ -221,7 +222,10 @@
            #:align-transform
            #:heavy-atom-p
            #:align-heavy-atoms
-           #:shallow-copy))
+           #:shallow-copy
+           #:formula-string
+           #:heavy-atoms-index3
+           #:coordinates-with-rms-differences))
 
 (defpackage #:dynamics
   (:use #:common-lisp)
