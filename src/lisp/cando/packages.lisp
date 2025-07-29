@@ -25,7 +25,8 @@
 ;; -^-
 (defpackage #:geom
   (:use #:common-lisp)
-  (:export #:center-of-geometry ))
+  (:export #:center-of-geometry
+           #:calculate-transform-to-origin))
 
 (defpackage #:select
   (:use #:common-lisp)

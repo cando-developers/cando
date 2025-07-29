@@ -40,3 +40,20 @@
       (call-next-method)
       (print-unreadable-object (vec stream :type t)
         (format stream "~:I~a ~:_~a ~:_~a" (geom:vx vec) (geom:vy vec) (geom:vz vec)))))
+
+
+(defun calculate-transform-to-origin (origin-atom x-atom xy-atom)
+  " Calculate a matrix that moves the ORIGIN-ATOM to the origin, the X-ATOM along the X-axis and XY-ATOM into the XY plane"
+  (let* ((origin-pos (chem:atom/get-position origin-atom))
+         (x-pos (chem:atom/get-position x-atom))
+         (xy-pos (chem:atom/get-position xy-atom))
+         (x-unit (geom:vnormalized (geom:v- x-pos origin-pos)))
+         (xy-delta-norm (geom:vnormalized (geom:v- xy-pos origin-pos)))
+         (z-unit (geom:vnormalized (geom:vcross xy-delta-norm x-unit)))
+         (y-unit (geom:vcross z-unit x-unit))
+         (to-origin (geom:make-m4-translate (geom:v* origin-pos -1.0)))
+         (rotate (geom:make-m4-rotation-rows x-unit y-unit z-unit))
+         (transform (geom:m*m rotate to-origin))
+         )
+    transform
+    ))

@@ -376,11 +376,12 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
   (make-orientation))
 
 (defun aggregate* (assembler coordinates &key (name :all))
-  "Return a copy of the aggregate with coordinates if provided"
-  (let ((agg (chem:matter-copy (topology:aggregate assembler))))
+  "Return a copy of the aggregate with coordinates if provided and a map of new atoms to old atoms"
+  (let* ((new-to-old (make-hash-table))
+         (agg (chem:matter-copy (topology:aggregate assembler) new-to-old)))
     (when coordinates (chem:matter/apply-coordinates agg coordinates))
     (chem:set-name agg name)
-    agg))
+    (values agg new-to-old)))
 
 (defun aggregate-with-coordinates (assembler coordinates &key (name :all))
   (warn "Use assemble-agg")
