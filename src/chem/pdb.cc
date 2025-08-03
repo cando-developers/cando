@@ -631,6 +631,9 @@ void	PdbWriter_O::initialize()
 }
 
 
+SYMBOL_EXPORT_SC_(KeywordPkg,occupancy);
+SYMBOL_EXPORT_SC_(KeywordPkg,bfactor);
+
 
 size_t _setupAtomAndConnectRecordsForOneMolecule(Molecule_sp mol, 
                                                gctools::Vec0<AtomPdbRec>& pdbAtoms, 
@@ -666,8 +669,22 @@ size_t _setupAtomAndConnectRecordsForOneMolecule(Molecule_sp mol,
       atom._x = a->getPosition().getX();
       atom._y = a->getPosition().getY();
       atom._z = a->getPosition().getZ();
-      atom._occupancy = 1.0;
-      atom._tempFactor = 1.0;
+      double occupancy = 1.0;
+      double bfactor = 1.0;
+      core::List_sp props = a->getProperties();
+      if (props.consp()) {
+        core::Cons_sp cprops = gc::As_unsafe<core::Cons_sp>(props);
+        core::T_sp tocc = cprops->getf(kw::_sym_occupancy,nil<core::T_O>());
+        if (tocc.notnilp()) {
+          occupancy = core::clasp_to_double(tocc);
+        }
+        core::T_sp tbfactor = cprops->getf(kw::_sym_bfactor,nil<core::T_O>());
+        if (tbfactor.notnilp()) {
+          bfactor = core::clasp_to_double(tbfactor);
+        }
+      }
+      atom._occupancy = occupancy;
+      atom._tempFactor = bfactor;
       a->setTempInt(pdbAtoms.size());
       pdbAtoms.push_back(atom);
     }
