@@ -61,6 +61,8 @@
                                        (report-every-n-steps 10)
                                        active-atoms-mask
                                        resignal-error
+                                       coords
+                                       verbose
                                        &allow-other-keys)
   "Minimize the conformational energy for an energy-function"
   (let ((energy-function (chem:get-energy-function minimizer)))
@@ -77,7 +79,7 @@
     (if print-intermediate-results
         (chem:enable-print-intermediate-results minimizer report-every-n-steps)
         (chem:disable-print-intermediate-results minimizer))
-    (cando:minimize-no-fail minimizer :active-atoms-mask active-atoms-mask :resignal-error resignal-error)))
+    (cando:minimize-no-fail minimizer :active-atoms-mask active-atoms-mask :resignal-error resignal-error :coords coords :verbose verbose)))
 
 (defun save-minimizer-coordinates (coordinates minimizer-trajectory)
   (let ((single-float-coordinates (make-array (length coordinates) :element-type 'single-float :adjustable nil)))
@@ -99,7 +101,9 @@
                                    resignal-error
                                    (save-trajectory nil)
                                    (print-intermediate-results t)
-                                   (report-every-n-steps 10))
+                                   (report-every-n-steps 10)
+                                   verbose
+                                   coords)
   "Minimize the conformational energy for an energy-function"
   (when unfrozen
     (warn "Switch from unfrozen to active-atoms-mask"))

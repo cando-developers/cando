@@ -149,6 +149,13 @@ void EnergyDihedralRestraint_O::addTerm(const EnergyDihedralRestraint& e)
   this->_Terms.push_back(e);
 }
 
+#include <math.h>
+
+double wrap_rad(double angle) {
+  while (angle <= -M_PI) angle += 2.0 * M_PI;
+  while (angle >  M_PI)  angle -= 2.0 * M_PI;
+  return angle;
+}
 
 CL_DEFMETHOD size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction,
                                                                     double kdh,
@@ -168,7 +175,7 @@ CL_DEFMETHOD size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFuncti
   energyTerm.term.I2 = ea2->coordinateIndexTimes3();
   energyTerm.term.I3 = ea3->coordinateIndexTimes3();
   energyTerm.term.I4 = ea4->coordinateIndexTimes3();
-  energyTerm.term.phi0 = phi0;
+  energyTerm.term.phi0 = wrap_rad(phi0);
   energyTerm.term.kdh = kdh;
   size_t index = this->_Terms.size();
   this->addTerm(energyTerm);
@@ -196,7 +203,7 @@ void EnergyDihedralRestraint_O::updateDihedralRestraint( size_t index, double kd
 {
   if (index<this->_Terms.size()) {
     EnergyDihedralRestraint& energyTerm = this->_Terms[index];
-    energyTerm.term.phi0 = phi0;
+    energyTerm.term.phi0 = wrap_rad(phi0);
     energyTerm.term.kdh = kdh;
     return;
   }
