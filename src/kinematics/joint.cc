@@ -522,11 +522,12 @@ CL_DEFMETHOD void Joint_O::updateXyzCoords(chem::NVector_sp internals, chem::NVe
 
 CL_DEFMETHOD void Joint_O::applyTransformToXyzCoordsRecursively(const Matrix& transform, core::Array_sp coords) {
   if (gc::IsA<chem::NVector_sp>(coords)) {
+    auto nvcoords = gc::As_unsafe<chem::NVector_sp>(coords);
     Vector3 pos;
-    transform.transform_nvector_point( pos.getX(), pos.getY(), pos.getZ(), coords, this->_PositionIndexX3 );
-    geom::vec_put_unsafe(coords,pos,this->_PositionIndexX3);
+    transform.transform_nvector_point( pos.getX(), pos.getY(), pos.getZ(), nvcoords, this->_PositionIndexX3 );
+    geom::vec_put_unsafe(nvcoords,pos,this->_PositionIndexX3);
     for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-      this->_child(ii)->applyTransformToXyzCoordsRecursively(transform,coords);
+      this->_child(ii)->applyTransformToXyzCoordsRecursively(transform,nvcoords);
     }
     return;
   }

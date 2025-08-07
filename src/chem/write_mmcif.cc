@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <algorithm>
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
+#include <clasp/core/character.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/pathname.h>
 #include <clasp/core/hashTable.h>
@@ -513,8 +514,10 @@ MmcifWriter_O::write(Matter_sp matter, core::List_sp metadata) {
       Residue_sp res2 = gc::As<Residue_sp>(atomToResidue->gethash(a2));
       Molecule_sp mol1 = gc::As<Molecule_sp>(residueToMolecule->gethash(res1));
       Molecule_sp mol2 = gc::As<Molecule_sp>(residueToMolecule->gethash(res2));
-      char cchainId1 = unbox_character(moleculeToChainId->gethash(mol1));
-      char cchainId2 = unbox_character(moleculeToChainId->gethash(mol2));
+      core::Character_sp cid1 = (core::Character_sp)moleculeToChainId->gethash(mol1);
+      char cchainId1 = unbox_character(cid1);
+      core::Character_sp cid2 = (core::Character_sp)moleculeToChainId->gethash(mol2);
+      char cchainId2 = unbox_character(cid2);
       size_t seqId1 = residueToIndex->gethash(res1).unsafe_fixnum();
       size_t seqId2 = residueToIndex->gethash(res2).unsafe_fixnum();
       core::clasp_write_string(fmt::format("LNK{:d} {} {} {} {} {} {} {} {} {} {}\n",
