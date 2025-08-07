@@ -10,19 +10,21 @@
   (chem:align-transform moveable-atoms fixed-atoms))
 
 
-(defun heavy-atoms-index3 (aggregate)
-  "Return a vector of index3 for heavy-atoms in AGGREGATE"
+(defun heavy-atoms-index3 (aggregate &key (test t))
+  "Return a vector of index3 for heavy-atoms in AGGREGATE that pass the test"
   (let ((heavy-atoms-index3 (make-array 256 :element-type 'ext:byte32 :adjustable t :fill-pointer 0))
+        (chosen nil)
         (index3 0))
     ;; Build the indexes3
     (chem:do-molecules (mol aggregate)
       (chem:do-residues (res mol)
         (chem:do-atoms (atm res)
-          (when (chem:element-is-hydrogen (chem:atom/get-element atm))
-            (vector-push-extend index3 heavy-atoms-index3)
-            (incf index3 3)
-            ))))
-    (copy-seq heavy-atoms-index3)))
+          (unless (chem:element-is-hydrogen (chem:atom/get-element atm))
+            (when (or (eq t test) (funcall test atm))
+              (push atm chosen)
+              (vector-push-extend index3 heavy-atoms-index3)
+              (incf index3 3))))))
+    (values (copy-seq heavy-atoms-index3) (nreverse chosen))))
 
 
 (defun align-heavy-atoms (aggregate coordinates)
