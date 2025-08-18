@@ -827,18 +827,32 @@ in FIXED-ATOMS-LIST and apply it to MOVEABLE-MATTER"
       rms)))
 
 (defun gnuplot-data (data)
-  (with-open-file (fout "/tmp/gnuplot_temp.xy" :direction :output)
-    (let ((xi 0) x y)
-      (dolist (one data)
-        (if (consp one)
-            (setf x (first one)
-                  y (second one))
-            (setf x (prog1 xi (incf xi))
-                  y one))
-        (format fout "~s ~s~%" x y))))
-  (ext:system "gnuplot -e 'set terminal png; set output \"/tmp/out.png\"; plot \"/tmp/gnuplot_temp.xy\" w lp; quit'")
-  (ext:system "open /tmp/out.png")
-  #+(or)(swank::send-to-emacs (list :write-image "/tmp/out.png" "x")))
+  (let ((data-file "/tmp/gnuplot_temp.xy")
+        (output-file "/tmp/out.png"))
+    ;; Write data to temporary file
+    (with-open-file (fout data-file :direction :output :if-exists :supersede)
+      (let ((xi 0) x y)
+        (dolist (one data)
+          (if (consp one)
+              (setf x (first one)
+                    y (second one))
+              (setf x (prog1 xi (incf xi))
+                    y one))
+          (format fout "~s ~s~%" x y))))
+    
+    ;; Run gnuplot command
+    (uiop:run-program 
+     (list "gnuplot" "-e" 
+           (format nil "set terminal png; set output ~s; plot ~s w lp; quit"
+                   output-file data-file))
+     :output t :error-output t)
+    
+    ;; Open the output file (platform-specific)
+    #+darwin (uiop:run-program (list "open" output-file))
+    #+linux (uiop:run-program (list "xdg-open" output-file))
+    #+windows (uiop:run-program (list "start" output-file) :shell t)
+    
+    #+(or)(swank::send-to-emacs (list :write-image output-file "x"))))
 
 (defun find-aggregate (agg-list matcher)
   (dolist (a agg-list)
