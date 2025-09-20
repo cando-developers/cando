@@ -48,18 +48,18 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 double	dotProduct( NVector_sp x, NVector_sp y );
 double	dotProductWithActiveAtomMask( NVector_sp x, NVector_sp y, core::T_sp activeAtomMask );
-  double	squaredWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
-  double        magnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
-  double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
-  double	angleWithVector(NVector_sp me, NVector_sp other);
+double	squaredWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
+double        magnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
+double	rmsMagnitudeWithActiveAtomMask(NVector_sp me, core::T_sp activeAtomMask);
+double	angleWithVector(NVector_sp me, NVector_sp other);
 double	angleWithVectorWithActiveAtomMask(NVector_sp me, NVector_sp other, core::T_sp activeAtomMask);
-  void          XPlusYTimesScalarWithActiveAtomMask( NVector_sp nvResult, NVector_sp nvX, NVector_sp nvD, double sigma, core::T_sp activeAtomMask);
-  void	        copyVector(NVector_sp dest, NVector_sp orig);
-  void	inPlaceAddTimesScalarWithActiveAtomMask( NVector_sp nvResult, NVector_sp nvY, double x, core::T_sp activeAtomMask );	// NVectorAdd(a,x,y)
-  double	rmsDistanceFromWithActiveAtomMask(NVector_sp u, NVector_sp v, core::T_sp activeAtomMask);
-  NVector_sp  copy_nvector(NVector_sp original,size_t start = 0, core::T_sp end = nil<core::T_O>());
+void          XPlusYTimesScalarWithActiveAtomMask( NVector_sp nvResult, NVector_sp nvX, NVector_sp nvD, double sigma, core::T_sp activeAtomMask);
+void	        copyVector(NVector_sp dest, NVector_sp orig);
+void	inPlaceAddTimesScalarWithActiveAtomMask( NVector_sp nvResult, NVector_sp nvY, double x, core::T_sp activeAtomMask );	// NVectorAdd(a,x,y)
+double	rmsDistanceFromWithActiveAtomMask(NVector_sp u, NVector_sp v, core::T_sp activeAtomMask);
+NVector_sp  copy_nvector(NVector_sp original,size_t start = 0, core::T_sp end = nil<core::T_O>());
   
-  void chem__nvector_ensure_identical(NVector_sp veca, NVector_sp vecb, double tol);
+void chem__nvector_ensure_identical(NVector_sp veca, NVector_sp vecb, double tol);
 };
 
 #endif          /* ifndef NVECTOR_H */

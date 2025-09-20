@@ -753,13 +753,14 @@ If UNINITIALIZED then leave them unbound."
     (let ((ss (make-permissible-sidechain-rotamers oligomer-shape)))
       (write-rotamers oligomer-shape ss (random-rotamers ss))
       (let* ((ass (make-assembler (list oligomer-shape)))
+             (assembler-internals (make-internals-for-assembler ass))
              (coords (make-coordinates-for-assembler ass)))
         (when prepare-assembler
           (funcall prepare-assembler ass))
-        (update-internals ass :oligomer-shape oligomer-shape)
-        (update-externals ass :oligomer-shape oligomer-shape
-                              :orientation oligomer-shape
-                              :coords coords)
+        (update-internals ass assembler-internals :oligomer-shape oligomer-shape)
+        (update-externals ass assembler-internals :oligomer-shape oligomer-shape
+                                                  :orientation oligomer-shape
+                                                  :coords coords)
         (copy-all-joint-positions-into-atoms ass coords)
         (values (aggregate ass) ass)))))
 

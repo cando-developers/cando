@@ -298,6 +298,7 @@
    #:extract-bond-angle-rad-dihedral-rad
    #:fill-joint-internals
    #:make-coordinates-for-assembler
+   #:make-internals-for-assembler
    #:initialize-adjustment
    #:do-adjustment
    #:find-joint-for-atom

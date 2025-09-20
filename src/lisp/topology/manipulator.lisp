@@ -1043,11 +1043,11 @@ while nesting several WITH-CPRING5 forms."
 
 
 
-(defun externals-from-cpinternals (manipulator cpinternals &key (internals (internals (assembler manipulator)))
+(defun externals-from-cpinternals (manipulator cpinternals assembler-internals &key 
                                                              (externals (make-coordinates-for-assembler (assembler manipulator)))
                                                              (temp-externals externals))
   (manipulator-build-internals-from-cpinternals manipulator temp-externals cpinternals :internals internals)
-  (update-externals (assembler manipulator) :coords externals :internals internals)
+  (update-externals (assembler manipulator) assembler-internals :coords externals :internals internals)
   externals)
 
 (defun aggregate-from-cpinternals (manipulator cpinternals &key (externals (make-coordinates-for-assembler (assembler manipulator))))

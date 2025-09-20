@@ -46,9 +46,9 @@
   "default - don't do anything"
   nil)
 
-(defgeneric internal-adjust (adjustment assembler))
+(defgeneric internal-adjust (adjustment assembler internals))
 
-(defmethod internal-adjust ((adjustment external-adjustment) assembler)
+(defmethod internal-adjust ((adjustment external-adjustment) assembler internals)
   "default - don't do anything"
   nil)
 
@@ -66,20 +66,20 @@
     (when jother
       (setf (other adjustment) jother))))
 
-(defmethod internal-adjust ((adjustment internal-planar-adjustment) assembler)
+(defmethod internal-adjust ((adjustment internal-planar-adjustment) assembler internals)
   ;; Only when the "other" slot is bound do we make adjustment
   (when (slot-boundp adjustment 'other)
     (let* ((joint (joint adjustment))
            (other (other adjustment))
-           (phi-original (kin:bonded-joint/get-phi joint (internals assembler)))
-           (phi-other (kin:bonded-joint/get-phi other (internals assembler)))
+           (phi-original (kin:bonded-joint/get-phi joint internals))
+           (phi-other (kin:bonded-joint/get-phi other internals))
            (phi-adjust (radians-add phi-other PI)))
       #+(or)(format t "internal-adjust ~s phi-original ~8,3f  phi-adjust ~8,3f~%"
               joint
               (topology:rad-to-deg phi-original) (topology:rad-to-deg phi-adjust))
       #+(or)(kin:bonded-joint/set-distance joint 1.47)
       #+(or)(kin:bonded-joint/set-theta joint (topology:deg-to-rad 120.0))
-      (fill-joint-phi joint phi-adjust assembler)
+      (fill-joint-phi joint phi-adjust assembler internals)
       )))
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)

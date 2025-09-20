@@ -42,6 +42,22 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/aggregate.h>
 
 namespace chem {
+
+/*
+ *      nvector-type
+ *
+ * Return the type of the nvector
+ */
+CL_DEFUN core::List_sp chem__nvector_type()
+{
+#if (VECREAL == VECREAL_DOUBLE)
+  return core::Cons_O::createList(cl::_sym_simple_array,cl::_sym_DoubleFloat_O,core::Cons_O::createList(INTERN_(cl,STAR)));
+#else
+  return core::Cons_O::createList(cl::_sym_simple_array,cl::_sym_SingleFloat_O,core::Cons_O::createList(INTERN_(cl,STAR)));
+#endif
+}
+
+
 /*
  *      dotProduct
  *
