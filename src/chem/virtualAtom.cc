@@ -25,6 +25,9 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #define	DEBUG_LEVEL_NONE
 
+#include <clasp/core/foundation.h>
+#include <clasp/core/hashTable.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/virtualAtom.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
@@ -73,11 +76,14 @@ VirtualAtom_O::VirtualAtom_O(const VirtualAtom_O& ss) :Atom_O(ss)
 //	Allocate a copy of this atom and return it.
 //	Keep track of the new atom so that we can redirect pointers to the copy.
 //
-Matter_sp VirtualAtom_O::copy()
+Matter_sp	VirtualAtom_O::copy(core::T_sp new_to_old)
 {
     LOG("Copying atom @{}" , this );
     auto aNew = gctools::GC<VirtualAtom_O>::copy( *this); // VirtualAtom_sp aNew = RP_Copy<VirtualAtom_O>(this);
-    this->_CopyAtom = aNew;
+    if (gc::IsA<core::HashTableEq_sp>(new_to_old)) {
+      gc::As_unsafe<core::HashTableEq_sp>(new_to_old)->setf_gethash(this->asSmartPtr(),aNew);
+      gc::As_unsafe<core::HashTableEq_sp>(new_to_old)->setf_gethash(aNew,this->asSmartPtr());
+    }
     LOG("    copy atom== {}" , aNew->description().c_str() );
     return(aNew);
 }

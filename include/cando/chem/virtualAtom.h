@@ -65,7 +65,7 @@ public:
 
 
 			// Constructor stuff
-	virtual Matter_sp copy();
+  virtual Matter_sp	copy(core::T_sp new_to_old);
 //	virtual Atom_sp	copyDropExternalResidueBonds();
 
 

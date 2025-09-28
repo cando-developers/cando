@@ -5,6 +5,40 @@
 (defparameter *-pi-s* (- (float PI 1.0s0)))
 (defconstant +bin-size+ 10 )
 
+
+(defclass shape-key (cando.serialize:serializable)
+  ((parts :initarg :parts :reader parts)))
+
+(defmethod print-object ((shape-key shape-key) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (shape-key stream :type t)
+        (format stream "~s" (parts shape-key)))))
+
+
+(defun make-shape-key (&rest pparts)
+  (make-instance 'shape-key :parts pparts))
+
+(defun ensure-shape-key (shape-key)
+  (unless (typep shape-key 'shape-key)
+    (error "The shape-key ~s must be a shape-key" shape-key))
+  shape-key)
+
+
+(defclass shape-key-map ()
+  ((ht :initarg :ht :reader ht)))
+
+(defun shape-key-map-hash (value)
+  (sxhash (parts value)))
+
+(defun shape-key-map-test (v1 v2)
+  (equal (parts v1) (parts v2)))
+
+(defmethod make-shape-key-map ()
+  (make-hash-table :hash-function #'shape-key-map-hash :test #'shape-key-map-test))
+
+
+
 (defclass dihedral-range (cando.serialize:serializable)
   ((min-phi :initarg :min-phi :reader :min-phi)
    (max-phi :initarg :max-phi :reader :max-phi)
@@ -278,17 +312,14 @@
 changing the SHAPE-KEY-CACHE."
   (copy-seq (cache shape-key-cache)))
 
-(defclass fragment-internals-with-shape-key (fragment-internals)
+(defclass fragment-internals-with-shape-key-cache (fragment-internals)
   ((shape-key-cache-deg :initarg :shape-key-cache-deg
                                 :type shape-key-cache
-                                :accessor shape-key-cache-deg)
-   (shape-key :initarg :shape-key :accessor shape-key)))
+                                :accessor shape-key-cache-deg)))
 
-(defun make-fragment-internals-with-shape-key-from-fragment-internals (fragment-internals shape-key shape-key-cache-deg)
+(defun make-fragment-internals-with-shape-key-cache-from-fragment-internals (fragment-internals shape-key-cache-deg)
   "Shallow copy of fragment-internals"
-  (unless shape-key-cache-deg
-    (error "You must provide the shape-key-cache-deg with shape-key ~s" shape-key))
-  (make-instance 'fragment-internals-with-shape-key
+  (make-instance 'fragment-internals-with-shape-key-cache
                  :monomer-context (monomer-context fragment-internals)
                  :trainer-index (trainer-index fragment-internals)
                  :probability (probability fragment-internals)
@@ -296,8 +327,7 @@ changing the SHAPE-KEY-CACHE."
                  :free-energy (free-energy fragment-internals)
                  :internals-values (copy-seq (internals-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
-                 :shape-key-cache-deg shape-key-cache-deg
-                 :shape-key shape-key))
+                 :shape-key-cache-deg shape-key-cache-deg))
 
 (defmethod print-object ((obj fragment-internals) stream)
   (if *print-readably*
@@ -352,33 +382,28 @@ changing the SHAPE-KEY-CACHE."
   ((shape-key-cache-deg :initform (make-shape-key-cache)
                                 :initarg :shape-key-cache-deg
                                 :type shape-key-cache
-                                :accessor shape-key-cache-deg)
-   (shape-key :initarg :shape-key :accessor shape-key)))
+                                :accessor shape-key-cache-deg)))
 
 (defmethod print-object ((obj backbone-with-sidechain-rotamer) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t)
-        (format stream "~s" (shape-key obj)))))
+        (format stream ":shape-key-cache-deg ~s" (shape-key-cache-deg obj)))))
 
-(defun make-backbone-with-sidechain-rotamer (&key internals-values free-energy probability shape-key shape-key-cache-deg)
-  (unless shape-key-cache-deg
-    (error "You must provide the shape-key-cache-deg with shape-key ~s" shape-key))
+(defun make-backbone-with-sidechain-rotamer (&key internals-values free-energy probability shape-key-cache-deg)
   (make-instance 'backbone-with-sidechain-rotamer
                  :internals-values internals-values
                  :free-energy free-energy
                  :probability probability
-                 :shape-key-cache-deg shape-key-cache-deg
-                 :shape-key shape-key))
+                 :shape-key-cache-deg shape-key-cache-deg))
 
 (defun make-backbone-with-sidechain-rotamer-from-fragment-internals (fragment-internals)
-  (check-type fragment-internals fragment-internals-with-shape-key)
+  (check-type fragment-internals fragment-internals-with-shape-key-cache)
   (make-backbone-with-sidechain-rotamer
    :internals-values (internals-values fragment-internals)
    :free-energy (free-energy fragment-internals)
    :probability (probability fragment-internals)
-   :shape-key-cache-deg (shape-key-cache-deg fragment-internals)
-   :shape-key (shape-key fragment-internals)))
+   :shape-key-cache-deg (shape-key-cache-deg fragment-internals)))
 
 
 (defclass backbone-without-sidechain-rotamer (backbone-rotamer-base)
@@ -1000,7 +1025,8 @@ INDEX counts by 1 and _not_ by 3."
     (format t "  atresidue internals-defined ~d~%" internals-defined)
     ))
 
-(defun write-internals (assembler assembler-internals atresidue internals updated-internals-mask &key verbose)
+(defun write-internals (assembler assembler-internals atresidue internals-values updated-internals-mask &key verbose)
+  "Write the distance,angle,dihedral triplets in INTERNALS-VALUES into ASSEMBLER-INTERNALS"
   (loop for joint across (joints atresidue)
         for index from 0
         for index3 from 0 by 3
@@ -1009,14 +1035,12 @@ INDEX counts by 1 and _not_ by 3."
           do (typecase joint
                (kin:bonded-joint
                 (when verbose (format t "Updating bonded-joint ~s~%" joint))
-                (error "An error is about to occur - you need to pass the internals-values of internals and not internals")
-                (fill-joint-internals-from-vector assembler assembler-internals joint internals index3))
+                (fill-joint-internals-from-vector assembler assembler-internals joint internals-values index3))
                (kin:xyz-joint
                 (if (kin:xyz-joint/definedp joint assembler-internals)
                     (warn "Skipping defining xyz-joint")
                     (break "What do we do with an undefined xyz-joint?")))
-               (t (error "Add support for ~s~%" joint))
-               )
+               (t (error "Add support for ~s~%" joint)))
         else
           do (when verbose (format t "NOT updating joint ~s~%" joint))))
 

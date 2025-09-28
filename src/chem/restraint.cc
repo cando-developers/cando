@@ -49,6 +49,9 @@ This is an open source license for the CANDO software from Temple University, bu
 //
 #include <stdlib.h>
 //#include	<malloc.h>
+#include <clasp/core/foundation.h>
+#include <clasp/core/hashTable.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/matter.h>
 #include <cando/geom/ovector3.h>
 #include <cando/chem/aggregate.h>
@@ -89,9 +92,9 @@ Restraint_sp	RestraintAnchor_O::copyDontRedirectAtoms()
   return rest;
 }
 
-void	RestraintAnchor_O::redirectAtoms()
+void	RestraintAnchor_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
-  this->_Atom = this->getAtom()->getCopyAtom();
+  this->_Atom = gc::As<Atom_sp>(new_to_old->gethash(this->getAtom()));
 }
 
 
@@ -142,9 +145,9 @@ Restraint_sp	RestraintChiral_O::copyDontRedirectAtoms()
   return rest;
 }
 
-void	RestraintChiral_O::redirectAtoms()
+void	RestraintChiral_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
-  this->_A = this->getAtomA()->getCopyAtom();
+  this->_A = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomA()));
 }
 
 
@@ -195,10 +198,10 @@ Restraint_sp	RestraintDistance_O::copyDontRedirectAtoms()
   return rest;
 }
 
-void	RestraintDistance_O::redirectAtoms()
+void	RestraintDistance_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
-  this->_A = this->getAtomA()->getCopyAtom();
-  this->_B = this->getAtomB()->getCopyAtom();
+  this->_A = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomA()));
+  this->_B = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomB()));
 }
 
 
@@ -249,11 +252,11 @@ Restraint_sp	RestraintAngle_O::copyDontRedirectAtoms()
 }
 
 
-void	RestraintAngle_O::redirectAtoms()
+void	RestraintAngle_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
-  this->_A = this->getAtomA()->getCopyAtom();
-  this->_B = this->getAtomB()->getCopyAtom();
-  this->_C = this->getAtomC()->getCopyAtom();
+  this->_A = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomA()));
+  this->_B = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomB()));
+  this->_C = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomC()));
 }
 
 #ifdef XML_ARCHIVE
@@ -315,12 +318,12 @@ Restraint_sp	RestraintDihedral_O::copyDontRedirectAtoms()
   return rest;
 }
 
-void	RestraintDihedral_O::redirectAtoms()
+void	RestraintDihedral_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
-  this->_A = this->getAtomA()->getCopyAtom();
-  this->_B = this->getAtomB()->getCopyAtom();
-  this->_C = this->getAtomC()->getCopyAtom();
-  this->_D = this->getAtomD()->getCopyAtom();
+  this->_A = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomA()));
+  this->_B = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomB()));
+  this->_C = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomC()));
+  this->_D = gc::As<Atom_sp>(new_to_old->gethash(this->getAtomD()));
 }
 
 void	RestraintDihedral_O::invertStereochemistryOfRestraint()

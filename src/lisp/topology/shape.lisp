@@ -54,7 +54,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
         :no-rotamer-shape
         (make-instance 'rotamer-shape :rotamer-shape-context-rotamers context-rotamers))))
 
-(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue &key verbose)
+(defmethod apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue &key verbose)
   (when verbose
     (let ((*print-pretty* nil))
       (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   rotamer-shape ~s~%  monomer-context ~s~%"
@@ -71,9 +71,9 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
                        (error "Check rots ~a because rotamer-index ~a is out of bounds" rots rotamer-index))
                      (elt rots rotamer-index))))
     (setf (rotamer-index atresidue) rotamer-index)
-    (apply-fragment-internals-to-atresidue assembler rotamers rotamer-index atresidue)))
+    (apply-fragment-internals-to-atresidue assembler assembler-internals rotamers rotamer-index atresidue)))
 
-(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (no-rotamer-shape symbol) monomer-context atresidue &key verbose)
+(defmethod apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape (no-rotamer-shape symbol) monomer-context atresidue &key verbose)
   ;;(format t "Entered apply-monomer-shape-to-atresidue-internals with the no-rotamer-shape symbol~%")
   )
 
@@ -94,7 +94,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
     (format stream "~s" (chem:get-name (residue obj)))))
 
 
-(defmethod apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape (residue-shape residue-shape) monomer-context atresidue &key verbose)
+(defmethod apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape (residue-shape residue-shape) monomer-context atresidue &key verbose)
   (when verbose
     (let ((*print-pretty* nil))
       (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   residue-shape ~s~%  monomer-context ~s~%" oligomer-shape residue-shape monomer-context)))

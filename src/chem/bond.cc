@@ -132,17 +132,19 @@ Bond_sp Bond_O::copyDontRedirectAtoms()
   return bondNew;
 }
 
-void Bond_O::addYourselfToCopiedAtoms()
+void Bond_O::addYourselfToCopiedAtoms(core::T_sp new_to_old)
 {
 //  printf("%s:%d Redirecting bond from atoms %s@%p - %s@%p\n", __FILE__, __LINE__, _rep_(this->_Atom1).c_str(), this->_Atom1.raw_(), _rep_(this->_Atom2).c_str(), this->_Atom2.raw_() );
 //  printf("%s:%d                    to atoms %s@%p - %s@%p\n", __FILE__, __LINE__, _rep_(this->_Atom1->getCopyAtom()).c_str(), this->_Atom1->getCopyAtom().raw_(), _rep_(this->_Atom2->getCopyAtom()).c_str(), this->_Atom2->getCopyAtom().raw_());
-  ASSERTNOTNULL(this->_Atom1);
-  this->_Atom1 = this->_Atom1->getCopyAtom();
-  this->_Atom1->addBond(this->asSmartPtr());
-  ASSERTNOTNULL(this->_Atom2);
-  this->_Atom2 = this->_Atom2->getCopyAtom();
-  ASSERTNOTNULL(this->_Atom2);
-  this->_Atom2->addBond(this->asSmartPtr());
+  if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+    core::HashTableEq_sp hte = gc::As_unsafe<core::HashTableEq_sp>(new_to_old);
+    this->_Atom1 = gc::As<Atom_sp>(hte->gethash(this->_Atom1));
+    this->_Atom1->addBond(this->asSmartPtr());
+    this->_Atom2 = gc::As<Atom_sp>(hte->gethash(this->_Atom2));
+    this->_Atom2->addBond(this->asSmartPtr());
+  } else {
+    SIMPLE_ERROR("The new_to_old must be a hash-table");
+  }
 }
 
 
@@ -321,7 +323,7 @@ void	Bond_O::failIfInvalid(Atom_sp a)
 
 
 
-void Bond_O::redirectToAtomCopies()
+void Bond_O::redirectToAtomCopies(core::HashTable_sp new_to_old)
 {
   LOG("Redirecting bond@{}" , this ); //
   Atom_sp fa =  this->_Atom1;
@@ -336,10 +338,10 @@ void Bond_O::redirectToAtomCopies()
   }
   LOG("  original   to atom@{}" , ta ); //
 #endif
-  Atom_sp fc = fa->getCopyAtom();
+  Atom_sp fc = gc::As<Atom_sp>(new_to_old->gethash(fa));
   ASSERTNOTNULL(fc);
   LOG("    new from {}" , fc->description() );
-  Atom_sp tc = ta->getCopyAtom();
+  Atom_sp tc = gc::As<Atom_sp>(new_to_old->gethash(ta));
   ASSERTNOTNULL(tc);
   LOG("    new   to {}" , tc->description() );
   this->_Atom1 = fc;

@@ -72,7 +72,7 @@ class Restraint_O : public core::CxxObject_O
  public:
 
   virtual Restraint_sp	copyDontRedirectAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
-  virtual void redirectAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+  virtual void redirectAtoms(core::HashTable_sp new_to_old) {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
   virtual void invertStereochemistryOfRestraint() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
@@ -123,7 +123,7 @@ CL_DEFMETHOD 	void	setAtom(Atom_sp a) {this->_Atom=a;};
 	Vector3 getAnchorPos() { return this->_Pos; };
 
 	Restraint_sp	copyDontRedirectAtoms();
-	void redirectAtoms();
+        void redirectAtoms(core::HashTable_sp new_to_old);
 
     	void invertStereochemistryOfRestraint();
 
@@ -158,7 +158,7 @@ public:
 	void	setChirality(int c) { this->_Chirality = c; };
 
 	Restraint_sp	copyDontRedirectAtoms();
-	void redirectAtoms();
+        void redirectAtoms(core::HashTable_sp new_to_old);
 
     	void invertStereochemistryOfRestraint();
 
@@ -192,7 +192,7 @@ class RestraintDistance_O : public Restraint_O
   void	setAtomB(Atom_sp a) {this->_B=a;};
 
   Restraint_sp	copyDontRedirectAtoms();
-  void redirectAtoms();
+  void redirectAtoms(core::HashTable_sp new_to_old);
 
   void invertStereochemistryOfRestraint() { /* Nothing */ };
 };
@@ -230,7 +230,7 @@ public:
 	double	getWeight() {return this->_Weight;};
 
 	Restraint_sp	copyDontRedirectAtoms();
-	void redirectAtoms();
+        void redirectAtoms(core::HashTable_sp new_to_old);
 
     	void invertStereochemistryOfRestraint() { /* Nothing */ };
 
@@ -275,7 +275,7 @@ public:
 	double	getWeight() {return this->_Weight;};
 
 	Restraint_sp	copyDontRedirectAtoms();
-	void redirectAtoms();
+        void redirectAtoms(core::HashTable_sp new_to_old);
 
     	void invertStereochemistryOfRestraint();
 

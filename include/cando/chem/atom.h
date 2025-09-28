@@ -168,8 +168,6 @@ public:
 //    AtomType	        _Type;
   VectorBond	        _Bonds;
   double		_Charge;
-    //! Used to duplicate matter - NOT THREAD SAFE - switch to hashtable
-  Atom_sp		_CopyAtom;
     //! What uses this? - NOT THREAD SAFE - switch to hashtable
   int		        _BackCount;
     //! Used for a variety of things - NOT THREAD SAFE - switch to hashtable
@@ -202,8 +200,6 @@ public:
   
 
 //	void	duplicateFrom(Atom_O* a);
-  Atom_sp	getCopyAtom()			{return this->_CopyAtom;};
-
 
   void	_addHydrogenWithName(Residue_sp residueContainedBy, core::Symbol_sp name);
   void _addExistingBond(Bond_sp const& bond);
@@ -496,7 +492,7 @@ public:
   virtual Matter_sp	copy(core::T_sp new_to_old);
 protected:
   virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
-  virtual void redirectAtoms();
+  virtual void redirectAtoms(core::HashTable_sp new_to_old);
 
 	/*! Used by Bond to connect a copied atom to a bond */
 public:
@@ -511,7 +507,6 @@ public:
       _Flags(0),
 //      _Type(nil<core::Symbol_O>()),
       _Charge(0.0),
-      _CopyAtom(unbound<chem::Atom_O>()),
       _TempInt(0),
       _VdwRadius(0.0),
       _CovalentRadius(0.0),

@@ -229,7 +229,7 @@ public:
     virtual Matter_sp	copy(core::T_sp new_to_old);
 
     virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
-	virtual void redirectAtoms();
+  virtual void redirectAtoms(core::HashTable_sp new_to_old);
 
   core::T_sp force_field_name() const;
   void setf_force_field_name(core::T_sp name);

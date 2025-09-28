@@ -88,7 +88,7 @@ public:
   Bond_sp copyDontRedirectAtoms();
 
 	/*! Redirect atoms to their copy atoms */
-  void addYourselfToCopiedAtoms();
+  void addYourselfToCopiedAtoms(core::T_sp new_to_old);
 
  public:
   static Bond_sp create(Atom_sp a1, Atom_sp a2, BondOrder o= singleBond);
@@ -127,7 +127,7 @@ CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
  Atom_sp	getOtherAtom(Atom_sp atom ) const;
  bool	isInterResidueBond(core::HashTable_sp atomToResidue);
  bool	isIntraResidueBond(core::HashTable_sp atomToResidue ) {return !this->isInterResidueBond(atomToResidue);};
- void	redirectToAtomCopies();
+  void	redirectToAtomCopies(core::HashTable_sp new_to_old);
 
 		/*! Remove the property from this property list
 		 */

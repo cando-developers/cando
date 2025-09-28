@@ -1124,9 +1124,12 @@ its for and then create a new class for it."))
 (defun make-step-info (lam)
   (make-instance 'step-info :lam lam))
 
-(defclass heat-step (step) ())
+(defclass step-base ()
+  ())
 
-(defclass ti-step (step)
+(defclass heat-step (step-base) ())
+
+(defclass ti-step (step-base)
   ((lam :initarg :lam :accessor lam)))
 (defclass ti-step-info (step-info)
   ((lam :initarg :lam :accessor lam)))
@@ -1135,9 +1138,9 @@ its for and then create a new class for it."))
   (make-instance 'ti-step-info :lam lam))
 
 
-(defun step-name (step)
-  "This name is used to construct the directory for the step"
-  (format nil "s-~,3f-~a" (lam step) (unique-step-name step)))
+(defun step-name (step-base)
+  "This name is used to construct the directory for the step-base"
+  (format nil "s-~,3f-~a" (lam step-base) (unique-step-name step-base)))
 
 (defun connect-graph (amber-job)
   (let ((scripts (scripts amber-job))

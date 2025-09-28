@@ -299,7 +299,6 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->_RingMembershipCount = ss._RingMembershipCount;
   this->_VdwRadius = ss._VdwRadius;
   this->_CovalentRadius = ss._CovalentRadius;
-  this->_CopyAtom = Atom_sp();
   this->_TempInt = ss._TempInt;
 //  this->moeIndex = ss.moeIndex;
 //  this->moeType = ss.moeType;
@@ -1224,7 +1223,11 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   LOG("Copying atom @{}" , this );
   auto  aNew  = gctools::GC<Atom_O>::copy( *this); // = RP_Copy<Atom_O>(this);
   aNew->_Bonds.clear();
-  this->_CopyAtom = aNew;
+  // Map the old atom to the new
+  if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+    gc::As_unsafe<core::HashTable_sp>(new_to_old)->setf_gethash(aNew,this->asSmartPtr());
+    gc::As_unsafe<core::HashTable_sp>(new_to_old)->setf_gethash(this->asSmartPtr(),aNew);
+  }
   if (this->_Properties.notnilp()) {
     aNew->_Properties = core::cl__copy_seq(this->_Properties);
   }
@@ -1239,9 +1242,9 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 //	redirectAtom
 //
 //	Redirect the bonds of this atom to their copies.
-void Atom_O::redirectAtoms()
+void Atom_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
-  this->redirectRestraintAtoms();
+  this->redirectRestraintAtoms(new_to_old);
 }
 
 

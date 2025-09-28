@@ -1398,7 +1398,7 @@ Matter_sp Matter_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   SUBCLASS_MUST_IMPLEMENT();
 }
 
-void Matter_O::redirectAtoms()
+void Matter_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
   SUBCLASS_MUST_IMPLEMENT();
 }
@@ -1415,11 +1415,11 @@ void Matter_O::copyRestraintsDontRedirectAtoms(Matter_sp orig)
 }
 
 
-void Matter_O::redirectRestraintAtoms()
+void Matter_O::redirectRestraintAtoms(core::HashTable_sp new_to_old)
 {
   for ( auto cur : this->_RestraintList ) {
     Restraint_sp restraint = gc::As<Restraint_sp>(CONS_CAR(cur));
-    restraint->redirectAtoms();
+    restraint->redirectAtoms(new_to_old);
   }
 }
 

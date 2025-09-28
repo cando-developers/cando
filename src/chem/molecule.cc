@@ -237,6 +237,7 @@ Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newMol,this->asSmartPtr());
+    new_to_old_ht->setf_gethash(this->asSmartPtr(),newMol);
   }
   for ( const_contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
     res = (*a).as<Residue_O>();
@@ -246,35 +247,35 @@ Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   return newMol;
 }
 
-void	Molecule_O::redirectAtoms()
+void	Molecule_O::redirectAtoms(core::HashTable_sp new_to_old)
+{
+  LOG("Molecule_O::redirectAtoms START" );
+  for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
     {
-	LOG("Molecule_O::redirectAtoms START" );
-	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
-	{
-          Residue_sp res = (*a).as<Residue_O>();
-	    res->redirectAtoms();
-	}
-	this->redirectRestraintAtoms();
-	LOG("Molecule_O::redirectAtoms DONE" );
+      Residue_sp res = (*a).as<Residue_O>();
+      res->redirectAtoms(new_to_old);
     }
+  this->redirectRestraintAtoms(new_to_old);
+  LOG("Molecule_O::redirectAtoms DONE" );
+}
 
 
 
 CL_LISPIFY_NAME("copy");
 CL_DEFMETHOD     Matter_sp Molecule_O::copy(core::T_sp new_to_old)
-    {
-	Molecule_sp	newMol;
-	newMol = this->copyDontRedirectAtoms(new_to_old).as<Molecule_O>();
-        Loop lbonds(this->asSmartPtr(),BONDS);
-        while (lbonds.advanceLoopAndProcess()) {
-          Bond_sp b = lbonds.getBond();
-          // printf("%s:%d Molecule_O::copy copy bond %s\n", __FILE__, __LINE__, _rep_(b).c_str() );
-          Bond_sp bcopy = b->copyDontRedirectAtoms();
-          bcopy->addYourselfToCopiedAtoms();
-        }
-	newMol->redirectAtoms();
-	return newMol;
-    }
+{
+  Molecule_sp	newMol;
+  newMol = this->copyDontRedirectAtoms(new_to_old).as<Molecule_O>();
+  Loop lbonds(this->asSmartPtr(),BONDS);
+  while (lbonds.advanceLoopAndProcess()) {
+    Bond_sp b = lbonds.getBond();
+    // printf("%s:%d Molecule_O::copy copy bond %s\n", __FILE__, __LINE__, _rep_(b).c_str() );
+    Bond_sp bcopy = b->copyDontRedirectAtoms();
+    bcopy->addYourselfToCopiedAtoms(gc::As<core::HashTable_sp>(new_to_old));
+  }
+  newMol->redirectAtoms(gc::As<core::HashTable_sp>(new_to_old));
+  return newMol;
+}
 #if 0 //[
 
     void	Molecule_O::dump()

@@ -156,6 +156,7 @@ while nesting several WITH-CPRING5 forms."
 
 (defclass manipulator ()
   ((assembler :initarg :assembler :reader assembler)
+   (monomer-to-drivers-map :initform (make-hash-table) :reader monomer-to-drivers-map)
    (internal-index :initform 0 :initarg :internal-index :accessor internal-index)
    (other-drivers :initform nil :initarg :other-drivers :accessor other-drivers)
    (static-drivers :initform nil :initarg :static-drivers :accessor static-drivers)))
@@ -164,8 +165,9 @@ while nesting several WITH-CPRING5 forms."
 (defgeneric sort-drivers (manipulator))
 
 (defmethod add-to-drivers ((manipulator manipulator) driver monomer)
-  (declare (ignore monomer))
-  (push driver (other-drivers manipulator)))
+  (push driver (other-drivers manipulator))
+  (push driver (gethash monomer (monomer-to-drivers-map manipulator)))
+  )
 
 (defmethod sort-drivers ((manipulator manipulator))
   (let ((sorted-other-drivers (sort (copy-seq (other-drivers manipulator)) #'< :key #'driver-index3)))
@@ -179,7 +181,9 @@ while nesting several WITH-CPRING5 forms."
 (defmethod add-to-drivers ((manipulator focused-manipulator) driver monomer)
   (if (eq monomer (focus-monomer manipulator))
       (push driver (focus-drivers manipulator))
-      (push driver (other-drivers manipulator))))
+      (push driver (other-drivers manipulator)))
+  (push driver (gethash monomer (monomer-to-drivers-map manipulator)))
+  )
 
 (defmethod sort-drivers ((manipulator focused-manipulator))
   (call-next-method)
@@ -213,6 +217,12 @@ while nesting several WITH-CPRING5 forms."
 (defmethod print-object ((driver ring-driver) stream)
   (print-unreadable-object (driver stream :type t)
     (format stream "~s ~s" (first (ring-joints driver)) (monomer driver))))
+
+(defun ring-driver-distance-angle-arrays (driver cpinternals)
+  "Return displaced arrays into the distances and angles for the RING-DRIVER"
+    (let ((distances (make-array (range-size (lengths-range driver)) :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (lengths-range driver))))
+          (angles (make-array (range-size (angles-range driver)) :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (angles-range driver)))))
+      (values distances angles)))
 
 (defclass ring5-driver (ring-driver) ())
 
@@ -571,10 +581,10 @@ while nesting several WITH-CPRING5 forms."
         rotatable-dihedrals))))
 
 
-(defgeneric manipulator-for-assembler (assembler))
+(defgeneric make-manipulator (assembler))
 
 
-(defmethod manipulator-for-assembler ((assembler topology:assembler))
+(defmethod make-manipulator ((assembler topology:assembler))
   (let* ((oligomer-shape (first (topology:oligomer-shapes assembler)))
          (oligomer (topology:oligomer oligomer-shape))
          (atmolecule (aref (topology:atmolecules (topology:ataggregate assembler)) 0))
@@ -610,7 +620,7 @@ while nesting several WITH-CPRING5 forms."
                               man)))
           manipulator)))))
 
-(defmethod manipulator-for-assembler ((assembler topology:training-assembler))
+(defmethod make-manipulator ((assembler topology:training-assembler))
   (let* ((oligomer (first (topology:oligomers assembler)))
          (focus-monomer (topology:focus-monomer assembler))
          (atmolecule (aref (topology:atmolecules (topology:ataggregate assembler)) 0))
@@ -703,8 +713,8 @@ while nesting several WITH-CPRING5 forms."
     ;; Get the cremer-pople parameters
     (fill-cpinternals-with-cremer-pople driver cpinternals externals indexes3)
     ;; Get the bond lengths and angles
-    (let ((distances (make-array (range-size (lengths-range driver)) :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (lengths-range driver))))
-          (angles (make-array (range-size (angles-range driver)) :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (angles-range driver)))))
+    (multiple-value-bind (distances angles)
+        (ring-driver-distance-angle-arrays driver cpinternals)
       (chem:cpring-coordinates-to-distances-and-angles distances angles externals indexes3)
       (loop for exocyclic-joint in (exocyclic-joints driver)
             do (extract-exocyclic-joint exocyclic-joint driver cpinternals externals))
@@ -730,8 +740,8 @@ while nesting several WITH-CPRING5 forms."
            (chem:cpring-6-coordinates-to-cremer-pople externals indexes3))))
       (t (error "Bad ring size")))
     ;; Get the bond lengths and angles
-    (let ((distances (make-array (cdr (lengths-range driver)) :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (lengths-range driver))))
-          (angles (make-array (cdr (angles-range driver)) :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (angles-range driver)))))
+    (multiple-value-bind (distances angles)
+        (ring-driver-distance-angle-arrays driver cpinternals)
       (chem:cpring-coordinates-to-distances-and-angles distances angles externals indexes3)
       (loop for exocyclic-joint in (exocyclic-joints driver)
             do (extract-exocyclic-joint exocyclic-joint driver cpinternals externals))
@@ -821,29 +831,48 @@ while nesting several WITH-CPRING5 forms."
         do (kin:joint/update-internal-coord build-joint internals temp-externals))
   )
 
+(defgeneric build-only-ring-externals-from-cpinternals (assembler driver internals temp-externals cpinternals))
+
+(defmethod build-only-ring-externals-from-cpinternals (assembler (driver ring5-driver) internals temp-externals cpinternals)
+  (let* ((ring-joints (ring-joints driver))
+         (indexes3 (get-indexes3 ring-joints))
+         (cremer-pople-index (begin (cremer-pople-range driver)))
+         (zjs (with-cpring5 (cpinternals cremer-pople-index)
+                (chem:cpring-5-cremer-pople-to-zjs @5q @5phi))))
+    (multiple-value-bind (distances angles)
+        (ring-driver-distance-angle-arrays driver cpinternals)
+      (chem:cpring-generate-coordinates zjs distances angles temp-externals indexes3))))
+
+(defmethod build-only-ring-externals-from-cpinternals (assembler (driver ring6-driver) internals temp-externals cpinternals)
+  (let* ((ring-joints (ring-joints driver))
+         (indexes3 (get-indexes3 ring-joints))
+         (cremer-pople-index (begin (cremer-pople-range driver)))
+         (zjs (with-cpring6 (cpinternals cremer-pople-index)
+                (chem:cpring-6-cremer-pople-to-zjs @6q @6theta @6phi))))
+    (multiple-value-bind (distances angles)
+        (ring-driver-distance-angle-arrays driver cpinternals)
+      (chem:cpring-generate-coordinates zjs distances angles temp-externals indexes3))))
+
+
 (defmethod build-internals-from-cpinternals (assembler (driver ring5-driver) internals temp-externals cpinternals)
   (let* ((ring-joints (ring-joints driver))
          (indexes3 (get-indexes3 ring-joints))
          (cremer-pople-index (begin (cremer-pople-range driver)))
          (zjs (with-cpring5 (cpinternals cremer-pople-index)
-                (chem:cpring-5-cremer-pople-to-zjs @5q @5phi)))
-         (ring-size (range-size (lengths-range driver)))
-         (lengths (make-array ring-size :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (lengths-range driver))))
-         (angles (make-array ring-size :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (angles-range driver))))
-         )
-    (finish-ring-internals assembler internals zjs lengths angles temp-externals indexes3 cpinternals driver)))
+                (chem:cpring-5-cremer-pople-to-zjs @5q @5phi))))
+    (multiple-value-bind (distances angles)
+        (ring-driver-distance-angle-arrays driver cpinternals)
+    (finish-ring-internals assembler internals zjs distances angles temp-externals indexes3 cpinternals driver))))
 
 (defmethod build-internals-from-cpinternals (assembler (driver ring6-driver) internals temp-externals cpinternals)
   (let* ((ring-joints (ring-joints driver))
          (indexes3 (get-indexes3 ring-joints))
          (cremer-pople-index (begin (cremer-pople-range driver)))
          (zjs (with-cpring6 (cpinternals cremer-pople-index)
-                (chem:cpring-6-cremer-pople-to-zjs @6q @6theta @6phi)))
-         (ring-size (range-size (lengths-range driver)))
-         (lengths (make-array ring-size :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (lengths-range driver))))
-         (angles (make-array ring-size :element-type 'double-float :displaced-to cpinternals :displaced-index-offset (begin (angles-range driver))))
-         )
-    (finish-ring-internals assembler internals zjs lengths angles temp-externals indexes3 cpinternals driver)))
+                (chem:cpring-6-cremer-pople-to-zjs @6q @6theta @6phi))))
+    (multiple-value-bind (distances angles)
+        (ring-driver-distance-angle-arrays driver cpinternals)
+      (finish-ring-internals assembler internals zjs distances angles temp-externals indexes3 cpinternals driver))))
 
 (defmethod build-internals-from-cpinternals (assembler (driver fused-ring-driver) internals temp-externals cpinternals)
   (build-internals-from-cpinternals assembler (ring1 (rings driver)) internals temp-externals cpinternals)
@@ -857,9 +886,9 @@ while nesting several WITH-CPRING5 forms."
           (aref internals (+ 1 internals-index3)) (aref cpinternals (+ 1 cpinternals-index3))
           (aref internals (+ 2 internals-index3)) (aref cpinternals (+ 2 cpinternals-index3)))))
 
-(defgeneric manipulator-build-internals-from-cpinternals (manipulator temp-externals cpinternals &key internals))
+(defgeneric manipulator-build-internals-from-cpinternals (manipulator temp-externals cpinternals internals))
 
-(defmethod manipulator-build-internals-from-cpinternals ((manipulator manipulator) temp-externals cpinternals &key (internals (internals (assembler manipulator))))
+(defmethod manipulator-build-internals-from-cpinternals ((manipulator manipulator) temp-externals cpinternals internals)
   "Build the INTERALS from CPINTERNALS and use TEMP-EXTERNALS as a scratch pad of coordinates."
   (let ((assembler (assembler manipulator)))
     (loop for driver in (other-drivers manipulator)
@@ -868,7 +897,7 @@ while nesting several WITH-CPRING5 forms."
           do (build-internals-from-cpinternals (assembler manipulator) driver internals temp-externals cpinternals))
     ))
 
-(defmethod manipulator-build-internals-from-cpinternals ((manipulator focused-manipulator) temp-externals cpinternals &key (internals (internals (assembler manipulator))))
+(defmethod manipulator-build-internals-from-cpinternals ((manipulator focused-manipulator) temp-externals cpinternals internals)
   "Build the INTERALS from CPINTERNALS and use TEMP-EXTERNALS as a scratch pad of coordinates."
   (let ((assembler (assembler manipulator)))
     (loop for driver in (focus-drivers manipulator)
@@ -878,14 +907,31 @@ while nesting several WITH-CPRING5 forms."
 (defun fscale-frac (num &optional (bin-size 0.01))
   (floor (fround (/ num bin-size))))
 
+(defun fscale-frac-reverse (int &optional (bin-size 0.01))
+  (* int bin-size))
+
 (defun fscale-deg (num &optional (bin-size 1))
   (floor (fround (/ (topology:rad-to-deg num) bin-size))))
+
+(defun fscale-deg-reverse (int &optional (bin-size 1))
+  (topology:deg-to-rad (* int bin-size)))
+
+(defgeneric binned-shape-key (driver cpinternals))
+(defgeneric binned-shape-key-write (driver cpinternals shape-key))
 
 (defmethod binned-shape-key ((driver ring5-driver) cpinternals)
   (let* ((cpindex (begin (cremer-pople-range driver))))
     (with-cpring5 (cpinternals cpindex)
       (list (fscale-frac @5q)
             (fscale-deg @5phi)))))
+
+(defmethod binned-shape-key-write ((driver ring5-driver) cpinternals shape-key-part)
+  (let* ((cpindex (begin (cremer-pople-range driver))))
+    (with-cpring5 (cpinternals cpindex)
+      (let* ((5q (fscale-frac-reverse (first shape-key-part)))
+             (5phi (fscale-deg-reverse (second shape-key-part))))
+        (setf @5q 5q
+              @5phi 5phi)))))
 
 (defmethod binned-shape-key ((driver ring6-driver) cpinternals)
   (let* ((cpindex (begin (cremer-pople-range driver))))
@@ -894,9 +940,19 @@ while nesting several WITH-CPRING5 forms."
             (fscale-deg @6theta)
             (fscale-deg @6phi)))))
 
+(defmethod binned-shape-key-write ((driver ring6-driver) cpinternals shape-key-part)
+  (let* ((cpindex (begin (cremer-pople-range driver))))
+    (with-cpring6 (cpinternals cpindex)
+      (let* ((6q (fscale-frac-reverse (first shape-key-part)))
+             (6theta (fscale-deg-reverse (second shape-key-part)))
+             (6phi (fscale-deg-reverse (third shape-key-part))))
+        (setf @6q 6q
+              @6theta 6theta
+              @6phi 6phi)))))
+
 (defmethod binned-shape-key ((driver fused-ring-driver) cpinternals)
   (let ((rings (rings driver)))
-    (append (binned-shape-key (ring1 rings) cpinternals)
+    (list (binned-shape-key (ring1 rings) cpinternals)
             (binned-shape-key (ring2 rings) cpinternals))))
 
 (defmethod binned-shape-key ((drivers list) cpinternals)
@@ -1046,7 +1102,7 @@ while nesting several WITH-CPRING5 forms."
 (defun externals-from-cpinternals (manipulator cpinternals assembler-internals &key 
                                                              (externals (make-coordinates-for-assembler (assembler manipulator)))
                                                              (temp-externals externals))
-  (manipulator-build-internals-from-cpinternals manipulator temp-externals cpinternals :internals internals)
+  (manipulator-build-internals-from-cpinternals manipulator temp-externals cpinternals internals)
   (update-externals (assembler manipulator) assembler-internals :coords externals :internals internals)
   externals)
 

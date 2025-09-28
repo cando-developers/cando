@@ -249,6 +249,10 @@
    #:foldamer
    #:shape-info
    #:shape-key
+   #:parts
+   #:ensure-shape-key
+   #:validate-shape-key
+   #:make-shape-key-old-style
    #:shape-kind
    #:keys
    #:kind
@@ -427,7 +431,7 @@
    #:make-backbone-with-sidechain-rotamer-from-fragment-internals
    #:make-sidechain-rotamer-from-fragment-internals
    #:make-backbone-without-sidechain-rotamer-from-fragment-internals
-   #:make-fragment-internals-with-shape-key-from-fragment-internals
+   #:make-fragment-internals-with-shape-key-cache-from-fragment-internals
    #:lookup-backbone-shape-key
    #:rotamer-vector
    #:verify-oligomer-space
@@ -519,7 +523,7 @@
    #:driver-kind
    #:dihedrals-deg
    #:rotamer-limits
-   #:fragment-internals-with-shape-key
+   #:fragment-internals-with-shape-key-cache
    #:oligomers-or-oligomer-shapes
    #:always-oligomers
    #:local-frame-specs
@@ -533,7 +537,7 @@
    #:manipulator
    #:focused-manipulator
    #:range
-   #:manipulator-for-assembler
+   #:make-manipulator
    #:extract-cpinternals-from-coordinates
    #:make-cpinternals-for-manipulator
    #:dump-manipulator-cpinternals
@@ -574,7 +578,16 @@
    #:foldamer-topology-names
    #:rotamer-state
    #:internals-twist-dihedral
-   #:labeled-monomer))
+   #:labeled-monomer
+   #:make-shape-key-sidechain-rotamer
+   #:make-shape-key
+   #:make-shape-key-map
+   #:monomer-to-drivers-map
+   #:build-internals-from-cpinternals
+   #:binned-shape-key-write
+   #:ring-joints
+   #:ring-driver-distance-angle-arrays
+   #:build-only-ring-externals-from-cpinternals))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

@@ -174,12 +174,12 @@ protected:
 	once all the atoms have been copied.*/
   virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
 	/*! Redirect atoms to their copies */
-  virtual void redirectAtoms();
+  virtual void redirectAtoms(core::HashTable_sp new_to_old);
 
 	/*! Copy the restraints from another object but dont' redirect atoms */
   virtual void copyRestraintsDontRedirectAtoms(Matter_sp orig);
 	/*! Redirect restraint atoms */
-  virtual void redirectRestraintAtoms();
+  virtual void redirectRestraintAtoms(core::HashTable_sp new_to_old);
 
  public:
   core::T_sp extract_coordinates(core::T_sp coords) const;

@@ -985,14 +985,14 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (adjust-internals assembler internals oligomer-shape)))
 
-(defgeneric apply-monomer-shape-to-atresidue-internals (assembler oligomer-shape monomer-shape monomer-context atresidue &key verbose)
+(defgeneric apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape monomer-shape monomer-context atresidue &key verbose)
   (:documentation "Specialize this on different monomer-shape classes.
 Fill in internal coordinates into the atresidue for the monomer-shape.
 Some specialized methods will need coordinates for the assembler"))
 
 
 #+(or)
-(defun fill-internals-from-oligomer-shape (assembler oligomer-shape
+(defun fill-internals-from-oligomer-shape (assembler assembler-internals oligomer-shape
                                            &key (root-monomer (topology:root-monomer (topology:oligomer oligomer-shape)) root-monomer-p)
                                              verbose)
   "Fill internal coordinates from the monomer-shapes in OLIGOMER-SHAPE of the ASSEMBLER.
@@ -1022,10 +1022,10 @@ If ROOT-MONOMER is provided, then start from that."
                                                     (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
                                                     ms)))
                               (when verbose (format t "applying internals for monomer: ~s~%" monomer))
-                              (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres coordinates :verbose verbose)))))))
+                              (apply-monomer-shape-to-atresidue-internals assembler assembler-internals oligomer-shape monomer-shape monomer-context atres coordinates :verbose verbose)))))))
 
 
-(defun do-fill-internals-from-oligomer-shape (assembler oligomer-shape monomers &key verbose)
+(defun do-fill-internals-from-oligomer-shape (assembler assembler-internals oligomer-shape monomers &key (verbose t))
   (loop with atagg = (ataggregate assembler)
         ;;  IGNORING THE FOLLOWING
         ;; It's really important that we use the ordered-monomers so that the monomer-shapes
@@ -1041,37 +1041,39 @@ If ROOT-MONOMER is provided, then start from that."
                   (monomer-shape (let ((ms (gethash monomer (monomer-shape-map oligomer-shape))))
                                    (unless ms (error "Could not get monomer-shape for monomer ~a" monomer))
                                    ms)))
-             (when verbose (format t "applying internals for monomer: ~s~%" monomer))
-             (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres :verbose verbose))))
+             (when verbose (format t "applying internals for monomer: ~s class-of: ~s~%" monomer (class-of monomer)))
+             (apply-monomer-shape-to-atresidue-internals assembler assembler-internals oligomer-shape monomer-shape monomer-context atres :verbose verbose))))
 
 
-(defmethod fill-internals-from-oligomer-shape ((assembler assembler) oligomer-shape &key verbose)
+(defgeneric fill-internals-from-oligomer-shape (assembler assembler-internals oligomer-shape &key verbose))
+
+(defmethod fill-internals-from-oligomer-shape ((assembler assembler) assembler-internals oligomer-shape &key verbose)
   "Fill internal coordinates from the monomer-shapes in OLIGOMER-SHAPE of the ASSEMBLER."
   (when verbose (let ((*print-pretty* nil)) (format t "fill-internals-from-oligomer-shape ~s~%" oligomer-shape)))
   (loop for ass-oligomer-shape in (oligomer-shapes assembler)
         when (eq ass-oligomer-shape oligomer-shape)
           do (let* ((oligomer (oligomer ass-oligomer-shape))
                     (monomers (monomers (oligomer-space oligomer))))
-               (do-fill-internals-from-oligomer-shape assembler oligomer-shape
+               (do-fill-internals-from-oligomer-shape assembler assembler-internals oligomer-shape
                  (loop for monomer across monomers
                        when (in-monomer-subset (monomer-subset assembler) monomer)
                          collect monomer)
                  :verbose verbose)
                )))
 
-(defmethod fill-internals-from-oligomer-shape ((assembler training-assembler) oligomer-shape &key verbose)
+(defmethod fill-internals-from-oligomer-shape ((assembler training-assembler) assembler-internals oligomer-shape &key verbose)
   "Fill internal coordinates from the monomer-shapes in OLIGOMER-SHAPE of the ASSEMBLER."
   (when verbose (let ((*print-pretty* nil)) (format t "fill-internals-from-oligomer-shape ~s~%" oligomer-shape)))
   (let ((oligomer (oligomer oligomer-shape)))
     (loop for ass-oligomer in (oligomers assembler)
           when (eq ass-oligomer oligomer)
             do (let ((monomers (coerce (monomers (oligomer-space ass-oligomer)) 'list)))
-                 (do-fill-internals-from-oligomer-shape assembler oligomer-shape monomers :verbose verbose)
+                 (do-fill-internals-from-oligomer-shape assembler assembler-internals oligomer-shape monomers :verbose verbose)
                  ))))
 
-(defun update-internals-from-externals (assembler external-coordinates)
+(defun update-internals-from-externals (assembler assembler-internals external-coordinates)
   "Update the internal coordinates using external coordinates"
-  (update-ataggregate-joint-tree-internal-coordinates assembler external-coordinates))
+  (update-ataggregate-joint-tree-internal-coordinates assembler assembler-internals external-coordinates))
 
 
 (defun update-internals (assembler internals &key oligomer-shape verbose)
@@ -1091,7 +1093,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
             do (update-internals assembler internals :oligomer-shape oligomer-shape
                                                      :verbose verbose))))
 
-(defun update-internals-for-monomer-shape (assembler oligomer-shape monomer-shape &key verbose)
+(defun update-internals-for-monomer-shape (assembler assembler-internals oligomer-shape monomer-shape &key verbose)
   "Fill internal coordinates from the MONOMER-SHAPE in OLIGOMER-SHAPE of the ASSEMBLER."
   (let* ((atagg (ataggregate assembler))
          (monomer-shape-pos (or (gethash monomer-shape (monomer-shape-to-index oligomer-shape))
@@ -1105,7 +1107,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
          (atmol (elt (atmolecules atagg) molecule-index))
          (atres (elt (atresidues atmol) residue-index)))
     (when verbose (format t "applying internals for monomer: ~s~%" monomer))
-    (apply-monomer-shape-to-atresidue-internals assembler oligomer-shape monomer-shape monomer-context atres :verbose verbose))
+    (apply-monomer-shape-to-atresidue-internals assembler assembler-internals oligomer-shape monomer-shape monomer-context atres :verbose verbose))
   (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
     (adjust-internals assembler oligomer-shape)))
 

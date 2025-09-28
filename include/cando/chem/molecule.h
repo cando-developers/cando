@@ -151,7 +151,7 @@ namespace chem {
     
   protected:
     virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
-    virtual void redirectAtoms();
+    virtual void redirectAtoms(core::HashTable_sp new_to_old);
 
 
   };

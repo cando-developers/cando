@@ -406,7 +406,7 @@ Matter_sp Aggregate_O::copy(core::T_sp new_to_old)
     newAgg->addMolecule(mol_copy);
   }
   newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
-  newAgg->redirectRestraintAtoms();
+  newAgg->redirectRestraintAtoms(gc::As<core::HashTable_sp>(new_to_old));
   return newAgg;
 }
 
@@ -420,6 +420,7 @@ Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newAgg,this->asSmartPtr());
+    new_to_old_ht->setf_gethash(this->asSmartPtr(),newAgg);
   }
 //    newAgg->duplicate(this);	// *newAgg = *this;
   for ( const_contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
@@ -433,15 +434,15 @@ Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 
 
 
-    void Aggregate_O::redirectAtoms()
-    {
-	LOG("Aggregate_O::redirectAtoms START" );
-	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
-	    (*a)->redirectAtoms();
-	}
-	this->redirectRestraintAtoms();
-	LOG("Aggregate_O::redirectAtoms DONE" );
-    }
+void Aggregate_O::redirectAtoms(core::HashTable_sp new_to_old)
+{
+  LOG("Aggregate_O::redirectAtoms START" );
+  for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
+    (*a)->redirectAtoms(new_to_old);
+  }
+  this->redirectRestraintAtoms(new_to_old);
+  LOG("Aggregate_O::redirectAtoms DONE" );
+}
 
 
 

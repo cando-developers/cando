@@ -271,6 +271,7 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
     if (gc::IsA<core::HashTable_sp>(new_to_old)) {
       core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
       new_to_old_ht->setf_gethash(rPNew,this->asSmartPtr());
+      new_to_old_ht->setf_gethash(this->asSmartPtr(), rPNew);
     }
 //    rPNew = Residue_sp(n_ew Residue_O(*this));
 //    rPNew->duplicateFrom(this); //    *rPNew = *this;
@@ -279,10 +280,6 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
     {
 	aorig = (*a).as<Atom_O>();
 	acopy = aorig->copyDontRedirectAtoms(new_to_old).as<Atom_O>();
-        if (gc::IsA<core::HashTable_sp>(new_to_old)) {
-          core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
-          new_to_old_ht->setf_gethash(acopy,aorig);
-        }
 	LOG("Copying atom({}) with {} bonds" , aorig->getName().c_str() , aorig->numberOfBonds()  );
 	rPNew->addMatter((Matter_sp)(acopy));
 	LOG("Completed copy for new {}" , acopy->description().c_str()  );
@@ -292,16 +289,15 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 }
 
 
-void Residue_O::redirectAtoms()
+void Residue_O::redirectAtoms(core::HashTable_sp new_to_old)
 {
-    for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
-    {
-	Atom_sp at = (*a).as<Atom_O>();
-	LOG("Redirecting bonds for {} with {} bonds (only bonds where we are atom1)"
-	    , at->description() , at->numberOfBonds() );
-	at->redirectAtoms();
+  for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
+      Atom_sp at = (*a).as<Atom_O>();
+      LOG("Redirecting bonds for {} with {} bonds (only bonds where we are atom1)"
+          , at->description() , at->numberOfBonds() );
+      at->redirectAtoms(new_to_old);
     }
-    this->redirectRestraintAtoms();
+  this->redirectRestraintAtoms(new_to_old);
 }
 
 
@@ -318,9 +314,9 @@ CL_DEFMETHOD Matter_sp Residue_O::copy(core::T_sp new_to_old)
         core::clasp_write_string(fmt::format("    b -> {}\n" , _rep_(b)));
         core::clasp_write_string(fmt::format("bcopy -> {}\n" , _rep_(bcopy)));
       }
-      bcopy->addYourselfToCopiedAtoms();
+      bcopy->addYourselfToCopiedAtoms(gc::As<core::HashTable_sp>(new_to_old));
     }
-    newRes->redirectAtoms();
+    newRes->redirectAtoms(gc::As<core::HashTable_sp>(new_to_old));
     return newRes;
 }
 

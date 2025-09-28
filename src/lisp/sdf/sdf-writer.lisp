@@ -53,14 +53,20 @@
       (chem:map-bonds nil
                       (lambda (a1 a2 order bond)
                         (declare (ignore bond))
-                        (let ((order-num (case order
+                        (let* ((order-num (case order
                                            (:single-bond 1)
                                            (:double-bond 2)
                                            (:triple-bond 3)
-                                           (otherwise 1))))
+                                           (otherwise 1)))
+                               (index1 (gethash a1 atom-to-index))
+                               (index2 (gethash a2 atom-to-index)))
+                          (unless index1
+                            (error "Could not find index for a1 ~s in ~s" a1 atom-to-index))
+                          (unless index2
+                            (error "Could not find index for a2 ~s in ~s" a2 atom-to-index))
                           (format stream "~3d~3d~3d~3d~3d~3d~%"
-                                  (1+ (gethash a1 atom-to-index))
-                                  (1+ (gethash a2 atom-to-index))
+                                  (1+ index1)
+                                  (1+ index2)
                                   order-num
                                   0
                                   0
