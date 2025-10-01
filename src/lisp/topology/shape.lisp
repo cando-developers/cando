@@ -82,7 +82,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
    (molecule :initarg :molecule :reader molecule)))
 
 (defclass backbone-residue-shape (residue-shape)
-  ((shape-key-cache-deg :initarg :shape-key-cache-deg
+  (#+(or)(shape-key-cache-deg :initarg :shape-key-cache-deg
                                 :accessor shape-key-cache-deg)))
 
 (defmethod copy-monomer-shape ((residue-shape residue-shape))
@@ -583,6 +583,7 @@ If UNINITIALIZED then leave them unbound."
 
 
 (defun lookup-dihedral-cache-impl (oligomer-shape monomer-shape dihedral-name &key ignore-degrees)
+  (error "Don't use this - lookup the dihedral cache in the rotamer database")
   (let* ((monomer-shape-index (position monomer-shape (monomer-shape-vector oligomer-shape)))
          (monomer-shape-info (aref (monomer-shape-info-vector oligomer-shape) monomer-shape-index))
          (monomer (monomer monomer-shape-info))
@@ -664,11 +665,12 @@ If UNINITIALIZED then leave them unbound."
       (write-rotamers oligomer-shape ss (random-rotamers ss))
       (let* ((ass (make-assembler (list oligomer-shape)))
              (coords (make-coordinates-for-assembler ass))
+             (internals (make-internals-for-assembler ass))
              )
-        (update-internals ass :oligomer-shape oligomer-shape)
-        (update-externals ass :oligomer-shape oligomer-shape
-                              :orientation oligomer-shape
-                              :coords coords)
+        (update-internals ass internals :oligomer-shape oligomer-shape)
+        (update-externals ass internals :oligomer-shape oligomer-shape
+                                        :orientation oligomer-shape
+                                        :coords coords)
         (copy-all-joint-positions-into-atoms ass coords)
         (aggregate ass)))))
 
@@ -686,9 +688,10 @@ If UNINITIALIZED then leave them unbound."
 (defmethod aggregate ((oligomer-shape oligomer-shape))
   "Generate a unique aggregate for the OLIGOMER-SHAPE. This can be called multiple times and each time a new, unique aggregate will be generated."
   (let* ((ass (make-assembler (list oligomer-shape)))
-         (coords (make-coordinates-for-assembler ass)))
-    (update-internals ass :oligomer-shape oligomer-shape)
-    (build-all-atom-tree-external-coordinates-and-adjust ass coords)
+         (coords (make-coordinates-for-assembler ass))
+         (internals (make-internals-for-assembler ass)))
+    (update-internals ass internals :oligomer-shape oligomer-shape)
+    (build-all-atom-tree-external-coordinates-and-adjust ass internals coords)
     (copy-all-joint-positions-into-atoms ass coords)
     (chem:matter-copy (aggregate ass))))
 

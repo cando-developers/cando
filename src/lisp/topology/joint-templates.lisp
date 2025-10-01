@@ -41,8 +41,8 @@
 
 (defgeneric initialize-adjustment (adjustment assembler))
 
-(defgeneric external-adjust (adjustment assembler coordinates))
-(defmethod external-adjust ((adjustment internal-adjustment) assembler coordinates)
+(defgeneric external-adjust (adjustment assembler assembler-internals coordinates))
+(defmethod external-adjust ((adjustment internal-adjustment) assembler assembler-internals coordinates)
   "default - don't do anything"
   nil)
 

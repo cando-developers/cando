@@ -560,7 +560,7 @@ Specialize the foldamer argument to provide methods"))
     (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
 
 (defun maybe-update-shape-key-cache (assembler internals)
-  (error "How do I use internals")
+  (error "Don't use the shape-key-cahce in the monomer-shape")
   (loop for oligomer-shape in (oligomer-shapes assembler)
         for rotamers-database = (rotamers-database oligomer-shape)
         for foldamer-name = (foldamer-name rotamers-database)
@@ -711,6 +711,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                      when external-adjusts
                        do (loop for adjust in external-adjusts
                                 do (initialize-adjustment adjust assembler))))
+      #+(or)
       (unless monomer-subset
         (error "I don't think I want to update the internals now that there isn't built in internals")
         ;; update the internals so we can build dihedral caches
@@ -903,7 +904,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 
 
 
-(defun build-atom-tree-external-coordinates* (assembler coords oligomer-shape maybe-orientation)
+(defun build-atom-tree-external-coordinates* (assembler assembler-internals coords oligomer-shape maybe-orientation)
   (let* ((orientation (orientation maybe-orientation assembler))
          (one-oligomer (oligomer oligomer-shape))
          (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
@@ -911,10 +912,10 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
     (with-orientation orientation
       (loop for joint in joints
-            do (update-xyz-coords assembler internals joint coords)))))
+            do (update-xyz-coords assembler assembler-internals joint coords)))))
 
 
-(defun build-atom-tree-for-monomer-shape-external-coordinates* (assembler coords oligomer-shape monomer-shape maybe-orientation)
+(defun build-atom-tree-for-monomer-shape-external-coordinates* (assembler assembler-internals coords oligomer-shape monomer-shape maybe-orientation)
   (let* ((orientation (orientation maybe-orientation assembler))
          (one-oligomer (oligomer oligomer-shape))
          (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
@@ -922,28 +923,28 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
     (with-orientation orientation
       (loop for joint in joints
-            do (update-xyz-coords assembler internals joint coords)))))
+            do (update-xyz-coords assembler assembler-internals joint coords)))))
 
 
-(defun adjust-atom-tree-external-coordinates (assembler coords oligomer-shape)
+(defun adjust-atom-tree-external-coordinates (assembler assembler-internals coords oligomer-shape)
   (let* ((pos (position oligomer-shape (oligomer-shapes assembler)))
          (atmol (elt (atmolecules (ataggregate assembler)) pos)))
     (loop for atres across (atresidues atmol)
           for adjustments = (gethash atres (external-adjustments (adjustments assembler)))
           do (loop for adjustment in adjustments
-                   do (external-adjust adjustment assembler coords)))))
+                   do (external-adjust adjustment assembler assembler-internals coords)))))
 
-(defun adjust-all-atom-tree-external-coordinates (assembler coords)
+(defun adjust-all-atom-tree-external-coordinates (assembler assembler-internals coords)
   (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))
+        do (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)))
 
 (defun build-all-atom-tree-external-coordinates-and-adjust (assembler coords)
   (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (build-atom-tree-external-coordinates-and-adjust assembler coords oligomer-shape oligomer-shape)))
+        do (build-atom-tree-external-coordinates-and-adjust assembler assembler-internals coords oligomer-shape oligomer-shape)))
 
-(defun build-atom-tree-external-coordinates-and-adjust (assembler coords oligomer-shape maybe-orientation)
-  (build-atom-tree-external-coordinates* assembler coords oligomer-shape maybe-orientation)
-  (adjust-atom-tree-external-coordinates assembler coords oligomer-shape))
+(defun build-atom-tree-external-coordinates-and-adjust (assembler assembler-internals coords oligomer-shape maybe-orientation)
+  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape maybe-orientation)
+  (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
 
 #+(or)
 (defun build-atresidue-atom-tree-external-coordinates (assembler atresidue coords)
@@ -1363,8 +1364,8 @@ Return the COORDS."
       (let ((orientation (lookup-orientation assembler orientation)))
         (when (and oligomer-shape (not orientationp))
           (error "You must provide orientation when you provide oligomer-shape"))
-        (build-atom-tree-external-coordinates* assembler coords oligomer-shape orientation)
-        (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)
+        (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape orientation)
+        (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
         (when (local-frame-specs orientation)
           (transform-externals-to-global-frame assembler oligomer-shape orientation coords))
         )
@@ -1392,4 +1393,4 @@ Return the COORDS."
          (joint0 (elt joints 0)))
     (with-orientation orientation
       (update-xyz-coords assembler assembler-internals joint0 coords))
-    (adjust-atom-tree-external-coordinates assembler coords oligomer-shape)))
+    (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)))

@@ -5,38 +5,35 @@
 (defparameter *-pi-s* (- (float PI 1.0s0)))
 (defconstant +bin-size+ 10 )
 
+(defgeneric shape-key-for-sidechain-monomer (foldamer monomer-context oligomer-shape focus-monomer)
+  (:documentation "Return a shape-key for the sidechain-monomer"))
 
-(defclass shape-key (cando.serialize:serializable)
-  ((parts :initarg :parts :reader parts)))
+(defun transform-string (input)
+  "Remove parentheses and spaces; replace periods with underscores; copy other characters."
+  (with-output-to-string (out)
+    (loop for ch across input
+          if (member ch '(#\Space #\( #\) #\: #\.))
+            do (write-char #\_ out)
+          else
+            do (write-char ch out))))
 
-(defmethod print-object ((shape-key shape-key) stream)
-  (if *print-readably*
-      (call-next-method)
-      (print-unreadable-object (shape-key stream :type t)
-        (format stream "~s" (parts shape-key)))))
+(defun shape-key-as-pathname-part (shape-key)
+  (format nil "shape-key-~a" (transform-string (format nil "~a" shape-key))))
 
+(defun shape-key-parts (shape-key)
+  shape-key)
 
 (defun make-shape-key (&rest pparts)
-  (make-instance 'shape-key :parts pparts))
+  pparts)
 
 (defun ensure-shape-key (shape-key)
-  (unless (typep shape-key 'shape-key)
+  (unless (consp shape-key)
     (error "The shape-key ~s must be a shape-key" shape-key))
   shape-key)
 
 
-(defclass shape-key-map ()
-  ((ht :initarg :ht :reader ht)))
-
-(defun shape-key-map-hash (value)
-  (sxhash (parts value)))
-
-(defun shape-key-map-test (v1 v2)
-  (equal (parts v1) (parts v2)))
-
 (defmethod make-shape-key-map ()
-  (make-hash-table :hash-function #'shape-key-map-hash :test #'shape-key-map-test))
-
+  (make-hash-table :test 'equal))
 
 
 (defclass dihedral-range (cando.serialize:serializable)
@@ -453,7 +450,7 @@ changing the SHAPE-KEY-CACHE."
 
 
 (defclass sidechain-rotamers (rotamers)
-  ((shape-key-to-index :initarg :shape-key-to-index :initform (make-hash-table :test 'equal) :accessor shape-key-to-index
+  ((shape-key-to-index :initarg :shape-key-to-index :initform (make-shape-key-map) :accessor shape-key-to-index
                        :documentation "This is a cons of (phi.psi)")))
 
 (defclass backbone-rotamers-base (rotamers) ())

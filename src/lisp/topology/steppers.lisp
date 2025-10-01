@@ -27,28 +27,28 @@
 
 (defun calculate-allowed-rotamers (monomer-shape-index sidechain-monomer-shape sidechain-monomer-shape-info oligomer-shape shape-key-to-allowed-rotamers)
   (declare (ignorable monomer-shape-index))
-    #+debug-mover
-    (let ((*print-pretty* nil))
-      (format t "calculate-allowed-rotamers monomer-shape-index ~a~%" monomer-shape-index))
-    (let* ((phi-deg (topology:lookup-dihedral-cache oligomer-shape sidechain-monomer-shape :phi))
-           (psi-deg (topology:lookup-dihedral-cache oligomer-shape sidechain-monomer-shape :psi))
-           (shape-key nil)
-           (result (if (and phi-deg psi-deg)
-                       (progn
-                         (setf shape-key (make-phi-psi phi-deg psi-deg))
-                         (gethash shape-key shape-key-to-allowed-rotamers))
-                       nil)))
-      (unless result
-        (let* ((*print-pretty* nil)
-               (monomer (monomer sidechain-monomer-shape-info)))
-          (error 'no-rotamers :message (format nil "Found no allowed-rotamers for ~s - phi-deg: ~s  psi-deg: ~s - shape-key ~s -  ~s in ~s - this shouldn't be possible if a backbone-stepper was created and applied to the oligomer-shape" monomer phi-deg psi-deg shape-key sidechain-monomer-shape oligomer-shape))))
-      (when (= 0 (length result))
-        (error 'no-rotamers :message (format nil "The resulting rotamers vector is empty for shape-key ~s - available keys ~s" shape-key (alexandria:hash-table-keys shape-key-to-allowed-rotamers))))
-      #+debug-mover
-      (let ((*print-pretty* nil))
-        (format t "   calculate-allowed-rotamers  phi-deg ~d  psi-deg ~d    allowed-rotamers -> ~s~%" phi-deg psi-deg result))
-      result
-      ))
+  #+debug-mover
+  (let ((*print-pretty* nil))
+    (format t "calculate-allowed-rotamers monomer-shape-index ~a~%" monomer-shape-index))
+  (let* ((foldamer (foldamer (oligomer-space oligomer-shape))))
+    (multiple-value-bind (shape-key rotamers monomer-contexts)
+        (shape-key-for-sidechain-monomer foldamer
+                                         (monomer-context sidechain-monomer-shape-info)
+                                         oligomer-shape
+                                         (monomer sidechain-monomer-shape-info))
+      (let ((result (gethash shape-key shape-key-to-allowed-rotamers)))
+        (unless result
+          (let* ((*print-pretty* nil)
+                 (monomer (monomer sidechain-monomer-shape-info)))
+            (error 'no-rotamers :message (format nil "Found no allowed-rotamers for ~s~%- monomer-context: ~s~%- shape-key ~s -  ~s in ~s~%- this shouldn't be possible if a backbone-stepper was created and applied to the oligomer-shape~%- backbone rotamers: ~{bb ~s~%~}- monomer-contexts: ~s" monomer (monomer-context sidechain-monomer-shape-info)
+                                                 shape-key sidechain-monomer-shape oligomer-shape rotamers monomer-contexts))))
+        (when (= 0 (length result))
+          (error 'no-rotamers :message (format nil "The resulting rotamers vector is empty for shape-key ~s - available keys ~s" shape-key (alexandria:hash-table-keys shape-key-to-allowed-rotamers))))
+        #+debug-mover
+        (let ((*print-pretty* nil))
+          (format t "   calculate-allowed-rotamers  phi-deg ~d  psi-deg ~d    allowed-rotamers -> ~s~%" phi-deg psi-deg result))
+        result
+        ))))
 
 (defclass permissible-rotamer ()
   ((monomer-shape-locus :initarg :monomer-shape-locus :reader monomer-shape-locus)

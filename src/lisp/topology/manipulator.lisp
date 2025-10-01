@@ -904,17 +904,21 @@ while nesting several WITH-CPRING5 forms."
           do (build-internals-from-cpinternals (assembler manipulator) driver internals temp-externals cpinternals)))
   (call-next-method))
 
-(defun fscale-frac (num &optional (bin-size 0.01))
+(defparameter +fscale-frac-bin-size+ 0.05) ; Bin Cremer-Pople q-values in 0.05 value bin sizes - it was 0.01 but that generates too many shape-key
+(defparameter +fscale-deg-bin-size+ 5)     ; Bin angles in 5-degree bin sizes  - it was 1-degree but that generates too many shape-key
+
+(defun fscale-frac (num &optional (bin-size +fscale-frac-bin-size+))
   (floor (fround (/ num bin-size))))
 
-(defun fscale-frac-reverse (int &optional (bin-size 0.01))
+(defun fscale-frac-reverse (int &optional (bin-size +fscale-frac-bin-size+))
   (* int bin-size))
 
-(defun fscale-deg (num &optional (bin-size 1))
+(defun fscale-deg (num &optional (bin-size +fscale-deg-bin-size+))
   (floor (fround (/ (topology:rad-to-deg num) bin-size))))
 
-(defun fscale-deg-reverse (int &optional (bin-size 1))
+(defun fscale-deg-reverse (int &optional (bin-size +fscale-deg-bin-size+))
   (topology:deg-to-rad (* int bin-size)))
+
 
 (defgeneric binned-shape-key (driver cpinternals))
 (defgeneric binned-shape-key-write (driver cpinternals shape-key))

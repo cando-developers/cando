@@ -249,7 +249,7 @@
    #:foldamer
    #:shape-info
    #:shape-key
-   #:parts
+   #:shape-key-parts
    #:ensure-shape-key
    #:validate-shape-key
    #:make-shape-key-old-style
@@ -587,7 +587,11 @@
    #:binned-shape-key-write
    #:ring-joints
    #:ring-driver-distance-angle-arrays
-   #:build-only-ring-externals-from-cpinternals))
+   #:build-only-ring-externals-from-cpinternals
+   #:shape-key-as-pathname-part
+   #:shape-key-monomers-callback
+   #:make-shape-key-callback
+   #:shape-key-for-sidechain-monomer))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
