@@ -382,7 +382,6 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
     (values agg new-to-old)))
 
 (defun aggregate-with-coordinates (assembler coordinates &key (name :all))
-  (warn "Use assemble-agg")
   (aggregate* assembler coordinates :name name))
 
 (defun assemble-agg (assembler externals &key (name :all))
@@ -1110,7 +1109,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
     (when verbose (format t "applying internals for monomer: ~s~%" monomer))
     (apply-monomer-shape-to-atresidue-internals assembler assembler-internals oligomer-shape monomer-shape monomer-context atres :verbose verbose))
   (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
-    (adjust-internals assembler oligomer-shape)))
+    (adjust-internals assembler assembler-internals oligomer-shape)))
 
 #|
 ;;;Idea to make monomer-shape subclasses control how internal coordinates get generated.

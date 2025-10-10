@@ -1,5 +1,8 @@
 (in-package :topology)
 
+(defparameter +fscale-frac-bin-size+ 0.1) ; Bin Cremer-Pople q-values in 0.05 value bin sizes - it was 0.01 but that generates too many shape-key
+(defparameter +fscale-deg-bin-size+ 10)     ; Bin angles in 5-degree bin sizes  - it was 1-degree but that generates too many shape-key
+
 
 (defmacro with-cpring5 ((vec idx &optional suffix) &body body)
   "Inside BODY expose two SETF-able symbol-macros:
@@ -903,9 +906,6 @@ while nesting several WITH-CPRING5 forms."
     (loop for driver in (focus-drivers manipulator)
           do (build-internals-from-cpinternals (assembler manipulator) driver internals temp-externals cpinternals)))
   (call-next-method))
-
-(defparameter +fscale-frac-bin-size+ 0.05) ; Bin Cremer-Pople q-values in 0.05 value bin sizes - it was 0.01 but that generates too many shape-key
-(defparameter +fscale-deg-bin-size+ 5)     ; Bin angles in 5-degree bin sizes  - it was 1-degree but that generates too many shape-key
 
 (defun fscale-frac (num &optional (bin-size +fscale-frac-bin-size+))
   (floor (fround (/ num bin-size))))

@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
+#include <random>
 
 #include <clasp/core/common.h>
 #include <clasp/core/symbolTable.h>
@@ -67,20 +68,25 @@ public:
 
 SYMBOL_EXPORT_SC_( ChemPkg, backbone_energy );
 SYMBOL_EXPORT_SC_( ChemPkg, monomer_vector );
+SYMBOL_EXPORT_SC_( ChemPkg, monomer_corrections );
+SYMBOL_EXPORT_SC_( ChemPkg, mrkey_index_to_lmkey_index );
 SYMBOL_EXPORT_SC_( ChemPkg, monomer_locus_max_mrkindex );
 SYMBOL_EXPORT_SC_( ChemPkg, single_scan_energy );
 SYMBOL_EXPORT_SC_( ChemPkg, pair_scan_energy_lower_triangular_matrix );
 
+struct Energies;
 
 struct State {
   typedef std::vector<uint32_t> StateType;
   StateType _State;
 
   State() {};
-  
+
   // Use a defined state
   State(core::SimpleVector_byte32_t_sp mcstate) {
-    for ( size_t ii=0; ii<mcstate->length(); ii++ ) {
+    size_t len = mcstate->length();
+    this->resize(len);
+    for ( size_t ii=0; ii<len; ii++ ) {
       this->_State[ii] = (*mcstate)[ii];
     }
   }
@@ -89,17 +95,7 @@ struct State {
     this->_State.resize(sz);
   }
 
-  void randomState(core::SimpleVector_byte32_t_sp sv_monomerLocusMaxMrkindex ) {
-    this->_State.resize(sv_monomerLocusMaxMrkindex->length());
-    int prevMax = -1;
-    uint32_t* monomerLocusMaxMrkindex = &(*sv_monomerLocusMaxMrkindex)[0]; 
-    for ( size_t ii=0; ii<this->_State.size(); ii++ ) {
-      int max = monomerLocusMaxMrkindex[ii];
-      int range = max - prevMax;
-      this->_State[ii] = (rand() % range) + prevMax + 1;
-      prevMax = max;
-    }
-  }
+  void randomState(const Energies& energies );
 
   void verifyState(core::SimpleVector_byte32_t_sp sv_monomerLocusMaxMrkindex ) {
     int prevMax = -1;
@@ -131,6 +127,9 @@ struct Energies {
   double                         _BackboneEnergy;
   core::SimpleVector_sp          _MonomerVector;
   core::SimpleVector_byte32_t_sp _MonomerLocusMaxMrkindex;
+  core::SimpleVector_byte32_t_sp _MrkeyIndexToLmkeyIndex;
+  core::SimpleVector_double_sp   _MonomerCorrections;
+  size_t                         _MonomerCorrectionsLength;
   core::SimpleVector_double_sp   _SingleTerms;
   core::SimpleVector_double_sp   _PairTerms;
   Energies(core::T_sp energies) {
@@ -141,13 +140,17 @@ struct Energies {
     this->_MonomerVector = gc::As<core::SimpleVector_sp>(val);
     val = core::eval::funcall( _sym_monomer_locus_max_mrkindex, energies );
     this->_MonomerLocusMaxMrkindex = gc::As<core::SimpleVector_byte32_t_sp>(val);
+    val = core::eval::funcall( _sym_mrkey_index_to_lmkey_index, energies );
+    this->_MrkeyIndexToLmkeyIndex = gc::As<core::SimpleVector_byte32_t_sp>(val);
     this->_NumberOfSlots = core::cl__length(this->_MonomerLocusMaxMrkindex);
+    val = core::eval::funcall( _sym_monomer_corrections, energies );
+    this->_MonomerCorrections = gc::As<core::SimpleVector_double_sp>(val);
+    this->_MonomerCorrectionsLength = core::cl__length(this->_MonomerCorrections);
     val = core::eval::funcall( _sym_single_scan_energy, energies );
     this->_SingleTerms = gc::As<core::SimpleVector_double_sp>(val);
     val = core::eval::funcall( _sym_pair_scan_energy_lower_triangular_matrix, energies );
     this->_PairTerms = gc::As<core::SimpleVector_double_sp>(val);
   }
-
 
   int lowerTriangularIndex(int xx, int yy ) {
     if (yy < xx) {
@@ -159,35 +162,42 @@ struct Energies {
     return index;
   }
 
+  __attribute__((optnone))
   double energyFunction(State& state) {
     double* singleTerms = &(*this->_SingleTerms)[0];
     double* pairTerms = &(*this->_PairTerms)[0];
-    KahanAccumulator sum;
-    sum.Add(this->_BackboneEnergy);
+    KahanAccumulator singleSum;
     for ( int ii=0; ii<state._State.size(); ii++ ) {
       int index = state._State[ii];
       double energyTerm = singleTerms[index];
-      sum.Add(energyTerm);
+      singleSum.Add(energyTerm);
+      uint32_t lmkey_index = (*this->_MrkeyIndexToLmkeyIndex)[index];
+      double correction = this->_MonomerCorrections[lmkey_index];
+      singleSum.Add(correction);
     }
+    KahanAccumulator pairSum;
     for ( int xii=0; xii<state._State.size()-1; xii++ ) {
       int xxindex = state._State[xii];
       for ( int yii=xii+1; yii<state._State.size(); yii++ ) {
         int yyindex = state._State[yii];
         int ltmIndex = this->lowerTriangularIndex(xxindex,yyindex);
         double energyTerm = pairTerms[ltmIndex];
-        sum.Add(energyTerm);
+        pairSum.Add(energyTerm);
       }
     }
-    return sum.sum;
+    KahanAccumulator total;
+    total.Add(this->_BackboneEnergy);
+    total.Add(singleSum.sum);
+    total.Add(pairSum.sum);
+    return total.sum;
   }
 
   State randomStep(size_t slotIndex, const State& state) {
     State tempState(state);
-    int index = slotIndex;
-    int max = (*this->_MonomerLocusMaxMrkindex)[index];
-    int prevMax = (index==0) ? -1 : (*this->_MonomerLocusMaxMrkindex)[index-1];
+    int max = (*this->_MonomerLocusMaxMrkindex)[slotIndex];
+    int prevMax = (slotIndex==0) ? -1 : (*this->_MonomerLocusMaxMrkindex)[slotIndex-1];
     int range = max - prevMax;
-    tempState._State[index] = (rand() % range) + prevMax + 1;
+    tempState._State[slotIndex] = (rand() % range) + prevMax + 1;
     return tempState;
   }
 
@@ -198,7 +208,20 @@ struct Energies {
   }
 };
 
-CL_DEFUN core::DoubleFloat_sp chem__mcstate_energy(core::T_sp tenergies, core::T_sp tmcstate ) {
+void State::randomState(const Energies& energies )
+{
+  this->_State.resize(energies._MonomerLocusMaxMrkindex->length());
+  int prevMax = -1;
+  uint32_t* monomerLocusMaxMrkindex = &(*energies._MonomerLocusMaxMrkindex)[0]; 
+  for ( size_t ii=0; ii<this->_State.size(); ii++ ) {
+    int max = monomerLocusMaxMrkindex[ii];
+    int range = max - prevMax;
+    this->_State[ii] = (rand() % range) + prevMax + 1;
+    prevMax = max;
+  }
+}
+CL_DEFUN core::DoubleFloat_sp chem__mcstate_energy(core::T_sp tmcstate, core::T_sp tenergies )
+{
   Energies energies(tenergies);
   State state(gc::As<core::SimpleVector_byte32_t_sp>(tmcstate));
   double testEnergy = energies.energyFunction(state);
@@ -215,7 +238,7 @@ CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, double startT
   State initial_state ;
   initial_state.resize(energies._NumberOfSlots);
   if (tinitial_state.nilp()) {
-    initial_state.randomState(energies._MonomerLocusMaxMrkindex);
+    initial_state.randomState(energies);
   } else {
     auto passed = gc::As<core::SimpleVector_byte32_t_sp>(tinitial_state);
     for ( size_t ii=0; ii<energies._NumberOfSlots; ii++ ) {
@@ -261,7 +284,6 @@ CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, double startT
                 mk_double_float(temperature));
 }
 
-
 CL_LAMBDA(energies &key (temperature 100.0) (max-iterations 1000) initial-state accept-callback);
 CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, double temperature, size_t max_iterations, core::T_sp tinitial_state, core::T_sp acceptCallback ) {
   srand(time(NULL)); // Initialize random seed
@@ -272,7 +294,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, do
   State initial_state ;
   initial_state.resize(energies._NumberOfSlots);
   if (tinitial_state.nilp()) {
-    initial_state.randomState(energies._MonomerLocusMaxMrkindex);
+    initial_state.randomState(energies);
   } else {
     auto passed = gc::As<core::SimpleVector_byte32_t_sp>(tinitial_state);
     for ( size_t ii=0; ii<energies._NumberOfSlots; ii++ ) {
@@ -314,6 +336,127 @@ CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, do
                                                     &currentState._State[0] ), // initialContents
                 mk_double_float(currentEnergy) );
 }
+
+inline double acc_prob_from_log(double x) {
+  // x = log(prob) = -βΔE  (Metropolis)  or  (βi-βj)(Ej-Ei) (REX)
+  return (x >= 0.0) ? 1.0 : std::exp(x);   // never exp(large +)
+}
+
+CL_LAMBDA(energies betas &key (temperature-swap-steps 100) (max-iterations 1000000) accept-callback (flatness-steps 100) (wl-scaling 0.8) (wl-increment-stop 0.1) debug);
+CL_DEFUN size_t chem__optimize_monomer_corrections(core::T_sp tenergies, core::SimpleVector_double_sp betas, size_t temperature_swap_steps, size_t max_iterations, core::T_sp acceptCallback, size_t flatness_steps, double wl_scaling, double wl_increment_stop, bool debug ) {
+  size_t beta_size = core::cl__length(betas);
+  double wl_increment = 20.0;
+  double flatness = 0.7;
+  Energies energies(tenergies);
+  // Number of slots in state
+  size_t num_slots_in_state = core::cl__length(energies._MonomerLocusMaxMrkindex );
+  std::mt19937 rng(123456u);
+  std::uniform_real_distribution<double> U01(0.0,1.0);
+  std::uniform_int_distribution<size_t>  pickSlot(0, num_slots_in_state-1 );
+  std::uniform_int_distribution<size_t>  tswapPickSlot(0, beta_size-2 );
+  core::SimpleVector_byte32_t_sp saveState;
+  bool useAcceptCallback = acceptCallback.notnilp();
+  if (useAcceptCallback) saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
+  std::vector<State> currentStates(beta_size);
+  for ( size_t ii = 0; ii<currentStates.size(); ii++ ) {
+    currentStates[ii].randomState(energies);
+  }
+  State testState;
+  std::vector<size_t> histogram(energies._MonomerCorrectionsLength,0);
+  size_t flatness_iter = 0;
+  size_t iterCount = 0;
+  for (size_t iter = 0; iter < max_iterations; ++iter) {
+    if (debug) core::clasp_write_string(fmt::format("Top of loop at iter {}\n", iter));
+    for ( size_t betai = 0; betai<beta_size; betai++ ) {
+      double beta = (*betas)[betai];
+      size_t slotIndex = pickSlot(rng);
+      double currentEnergy = energies.energyFunction(currentStates[betai]);
+      testState = energies.randomStep( slotIndex, currentStates[betai] );
+      double testEnergy = energies.energyFunction(testState);
+      double x = -(*betas)[betai] * (testEnergy - currentEnergy);
+      double p = acc_prob_from_log(x);
+      double rnd = U01(rng);
+      if ( rnd <= p) {
+        uint32_t curLmkeyIndex = (*energies._MrkeyIndexToLmkeyIndex)[testState._State[slotIndex]];
+        if (debug) core::clasp_write_string(fmt::format("Accepted mc step iter {} betai {}  curLmkeyIndex {}\n", iter, betai, curLmkeyIndex ));
+        {
+          // Increment the histogram and the MonomerCorrection for the current monomer
+          histogram[curLmkeyIndex]++;
+          if (debug) {
+            core::clasp_write_string(fmt::format("          Histogram: "));
+            for ( size_t ii=0; ii<histogram.size(); ii++ ) {
+              if (ii==curLmkeyIndex) core::clasp_write_string("*");
+              core::clasp_write_string(fmt::format("{} ", histogram[ii]));
+            }
+            core::clasp_write_string(fmt::format("\n"));
+            core::clasp_write_string(fmt::format("wl_increment {}\n", wl_increment ));
+            core::clasp_write_string(fmt::format("Monomer corrections: "));
+            for ( size_t ii=0; ii<energies._MonomerCorrectionsLength; ii++ ) {
+              if (ii==curLmkeyIndex) core::clasp_write_string("*");
+              core::clasp_write_string(fmt::format("{:.4f} ", (*energies._MonomerCorrections)[ii]));
+            }
+            core::clasp_write_string(fmt::format("\n"));
+          }
+          (*energies._MonomerCorrections)[curLmkeyIndex] += wl_increment;
+          // Reset the bias
+          double bias = std::numeric_limits<double>::max();
+          for ( size_t ii = 0; ii<energies._MonomerCorrectionsLength; ii++ ) {
+            bias = std::min((*energies._MonomerCorrections)[ii],bias);
+          }
+          for ( size_t ii = 0; ii<energies._MonomerCorrectionsLength; ii++ ) {
+            (*energies._MonomerCorrections)[ii] -= bias;
+          }
+          if (debug) core::clasp_write_string(fmt::format("Updated MonomerCorrections at iter {} betai {} curLmkeyIndex {} with {}\n", iter, betai, curLmkeyIndex, wl_increment ));
+        }
+        currentStates[betai] = testState;
+        if (useAcceptCallback) {
+          memcpy(&(*saveState)[0],&currentStates[betai]._State[0],sizeof(int32_t)*energies._NumberOfSlots);
+          core::eval::funcall( acceptCallback, core::make_fixnum(iter), core::make_fixnum(betai), saveState, mk_double_float(testEnergy), energies._MonomerCorrections );
+        }
+        // Check the histogram for flatness
+        flatness_iter++;
+        if (flatness_iter%flatness_steps==0) {
+          size_t visits = 0, hmin = SIZE_MAX;
+          for (auto h : histogram) { visits += h; hmin = std::min(hmin,h); }
+          if (visits >= 50* histogram.size()) {
+            double avg = double(visits) / histogram.size();
+            if (debug) core::clasp_write_string(fmt::format("Enough visits hmin = {}  avg = {} hmin/avg={}  flatness = {}\n", hmin, avg, hmin/avg, flatness ));
+            if (double(hmin)/avg > flatness) {
+              std::fill( histogram.begin(), histogram.end(), 0 );
+              wl_increment *= wl_scaling;
+              if (debug) {
+                core::clasp_write_string(fmt::format("wl_increment updated to {}\n", wl_increment ));
+              }
+            }
+          }
+        }
+        if (wl_increment<wl_increment_stop) {
+          if (debug) core::clasp_write_string(fmt::format("wl_increment {} is < wl_increment_stop {}\n", wl_increment, wl_increment_stop ));
+          goto DONE;
+        }
+      }
+    }
+    if (temperature_swap_steps && (currentStates.size()>=2) && (iter % temperature_swap_steps)==0) {
+      // Try the temperature swap
+      size_t i = tswapPickSlot(rng), j = i+1;
+      double currentEnergy_i = energies.energyFunction(currentStates[i]);
+      double currentEnergy_j = energies.energyFunction(currentStates[j]);
+      double x = ( (*betas)[i] - (*betas)[j] ) * ( currentEnergy_j - currentEnergy_i );
+      double p = acc_prob_from_log(x);
+      double rnd = U01(rng);
+      if (rnd < p) {
+        if (debug) core::clasp_write_string(fmt::format("Swapping states {} and {}\n", i, j ));
+        std::swap(currentStates[i], currentStates[j]);
+      }
+    }
+    iterCount++;
+  }
+ DONE:
+  return iterCount;
+}
+
+
+
 
 }; // namespace chem
 
