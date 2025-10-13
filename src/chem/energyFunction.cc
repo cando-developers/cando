@@ -1294,8 +1294,10 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   core::T_sp rings = unbound<core::T_sp>();
   if (_sym_STARcurrent_ringsSTAR->boundP()) {
     rings = _sym_STARcurrent_ringsSTAR->symbolValue();
-  } else {
+  } else if (keepInteractionFactory.notnilp()) {
     rings = RingFinder_O::identifyRings(matter);
+  } else {
+    rings = nil<core::T_O>();
   }
   core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
 
@@ -1303,7 +1305,10 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   // Assign relative Cahn-Ingold-Preylog priorities
   //
   if (chem__verbose(0)) core::clasp_write_string("Assigning CIP priorities.\n");
-  core::HashTable_sp cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
+  core::HashTable_sp cip = unbound<core::HashTable_O>();
+  if (keepInteractionFactory.notnilp()) {
+    cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
+  }
 
     //
     // Assign atom types for each molecule
@@ -1369,7 +1374,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) cip-priorities atom-types);
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
 {
-  if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
+  if (keepInteractionFactory.notnilp() && !gc::IsA<core::HashTable_sp>(cip_priorities)) {
     SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
   }
   if (chem__verbose(0)) core::clasp_write_string("defineForMatterWithAtomTypes\n");
@@ -1483,7 +1488,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     this->_AtomTable->set_finalSoluteResidueIPTRES(final_solute_residue_iptres);
     this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
   }
-  {
+  if (keepInteractionFactory.notnilp()) {
     if (chem__verbose(1)) core::clasp_write_string("About to calculate nonbond and restraint terms");
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,keepInteractionFactory,atomTypes);

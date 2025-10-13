@@ -283,6 +283,7 @@ while nesting several WITH-CPRING5 forms."
   (print-unreadable-object (obj stream :type t)
     (format stream "~s" (atm obj))))
 
+
 (defun identify-and-order-rings (assembler joint-to-atom)
   "Identify the rings in the ASSEMBLER and sort the atoms in each ring in order of how atoms are built"
   (let* ((aggregate (topology:aggregate assembler))
@@ -316,6 +317,37 @@ while nesting several WITH-CPRING5 forms."
                                         for sorted = (sort (copy-seq ring) #'order-atoms)
                                         collect sorted)))
                 (values sorted-rings aromatic-rings)))))))))
+
+
+(defparameter *manip-atom-joint-map* nil)
+(defparameter *manip-rings* nil)
+(defparameter *manip-aromatic-rings* nil)
+
+(defmacro with-identified-and-ordered-rings ((rings aromatic-rings atom-joint-map assembler) &body body)
+  "Find rings and aromatic-rings and run code within their scope"
+  (let ((ht (gensym "HT-"))
+        (joint (gensym "JOINT-"))
+        (atm (gensym "ATM-"))
+        (run (gensym "RUN-"))
+        )
+    `(flet ((,run (,rings ,aromatic-rings ,atom-joint-map)
+              ,@body))
+       (if *manip-atom-joint-map*
+           (let ((,atom-joint-map *manip-atom-joint-map*)
+                 (,rings *manip-rings*)
+                 (,aromatic-rings *manip-aromatic-rings*))
+             (,run ,rings ,aromatic-rings ,atom-joint-map))
+           (let ((,atom-joint-map (let ((,ht (make-hash-table)))
+                                    (topology:do-joint-atom (,joint ,atm ,assembler)
+                                      (setf (gethash ,joint ,ht) ,atm)
+                                      (setf (gethash ,atm ,ht) ,joint))
+                                    ,ht)))
+             (multiple-value-bind (,rings ,aromatic-rings)
+                 (identify-and-order-rings ,assembler ,atom-joint-map)
+               (let ((*manip-atom-joint-map* ,atom-joint-map)
+                     (*manip-rings* ,rings)
+                     (*manip-aromatic-rings* ,aromatic-rings))
+                 (,run ,rings ,aromatic-rings ,atom-joint-map))))))))
 
 (defun rings-and-exocyclic-atoms (rings)
   (flet ((find-exo-atoms (atm prev-atom next-atom)
@@ -530,15 +562,8 @@ while nesting several WITH-CPRING5 forms."
 
 (defun calculate-rotatable-dihedrals (assembler)
   (let ((rotatable-dihedrals nil)
-        (aggregate (topology:aggregate assembler))
-        (atom-joint-map (let ((ht (make-hash-table)))
-                          (topology:do-joint-atom (joint atm assembler)
-                            (setf (gethash joint ht) atm)
-                            (setf (gethash atm ht) joint))
-                          ht))
-        )
-    (multiple-value-bind (rings aromatic-rings)
-        (identify-and-order-rings assembler atom-joint-map)
+        (aggregate (topology:aggregate assembler)))
+    (with-identified-and-ordered-rings (rings aromatic-rings atom-joint-map assembler)
       (let ((rings-ht (let ((ht (make-hash-table)))
                         (loop for ring in rings
                               do (loop for atm in ring
@@ -546,7 +571,6 @@ while nesting several WITH-CPRING5 forms."
                         (loop for ring in aromatic-rings
                               do (loop for atm in ring
                                        do (push ring (gethash atm ht))))
-
                         ht)))
         (loop for atmol across (topology:atmolecules (topology:ataggregate assembler))
               do (loop for atres across (topology:atresidues atmol)

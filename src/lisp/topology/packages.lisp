@@ -591,7 +591,8 @@
    #:shape-key-as-pathname-part
    #:shape-key-monomers-callback
    #:make-shape-key-callback
-   #:shape-key-for-sidechain-monomer))
+   #:shape-key-for-sidechain-monomer
+   #:with-identified-and-ordered-rings))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
