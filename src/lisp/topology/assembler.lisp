@@ -732,7 +732,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 #|                  :tune-energy-function tune-energy-function
                   :keep-interaction-factory-factory keep-interaction-factory-factory))|#
 
-(defun make-training-assembler (oligomers &key focus-monomer incomplete-monomer-contexts)
+(defun make-training-assembler (oligomers &key focus-monomer incomplete-monomer-contexts energy-function-factory)
   "Build a assembler for the oligomers. This is used for building training molecules."
   #+(or)
   (unless focus-monomer
@@ -753,7 +753,9 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                         (resize-atmolecules atagg (length oligomers))
                         atagg))
          (joint-tree (make-joint-tree))
-         (energy-function (chem:make-energy-function :matter aggregate))
+         (energy-function (if energy-function-factory
+                              (funcall energy-function-factory aggregate)
+                              (chem:make-energy-function :matter aggregate)))
          (assembler (loop for oligomer-molecule in oligomer-molecules
                           for oligomer = (car oligomer-molecule)
                           for molecule = (cdr oligomer-molecule)
