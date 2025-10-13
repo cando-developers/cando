@@ -84,11 +84,11 @@ public:
 
   EnergyAtom();
   EnergyAtom(Atom_sp atom, uint coordinateIndex);
-  EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes );
+  EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory );
 
 		// methods
   core::List_sp encode() const;
-  void		defineForAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes );
+  void		defineForAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory );
   string		getResidueAndName(Residue_sp res);
 //	adapt::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
 //	void		parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, chem::Matter_sp parent );

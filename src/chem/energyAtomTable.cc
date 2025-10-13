@@ -60,24 +60,28 @@ namespace chem
 {
 EnergyAtom::EnergyAtom() : _Flag(0) {};
 EnergyAtom::EnergyAtom(Atom_sp atom,uint coordinateIndex) : Base(atom,coordinateIndex), _Flag(0)  {} ;
-EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes ) : Base(atom,coordinateIndex), _Flag(0)
+EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory ) : Base(atom,coordinateIndex), _Flag(0)
 {
-  this->defineForAtom(forceField,atom,coordinateIndex,atomTypes);
+  this->defineForAtom(forceField,atom,coordinateIndex,atomTypes, keepInteractionFactory );
 }
 
 
-void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinateIndex, core::HashTable_sp atomTypes )
+void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinateIndex, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory )
 {
   this->setupBase(a1,coordinateIndex);
-  if (a1->getType(atomTypes).nilp()) {
-    ERROR(_sym_missing_atom_type_error, core::lisp_createList(INTERN_(kw,atm), a1, INTERN_(kw,atom_types_hash_table), atomTypes ));
-//    SIMPLE_ERROR("In EnergyAtom::defineForAtom - the atom type of {} is NIL!" , _rep_(a1));
+  if (keepInteractionFactory.notnilp()) {
+    if (a1->getType(atomTypes).nilp()) {
+      ERROR(_sym_missing_atom_type_error, core::lisp_createList(INTERN_(kw,atm), a1, INTERN_(kw,atom_types_hash_table), atomTypes ));
+      //    SIMPLE_ERROR("In EnergyAtom::defineForAtom - the atom type of {} is NIL!" , _rep_(a1));
+    }
+    core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType(atomTypes));
+    if (!typeIndex.fixnump()) {
+      TYPE_ERROR(typeIndex,cl::_sym_fixnum);
+    }
+    this->_TypeIndex = typeIndex.unsafe_fixnum();
+  } else {
+    this->_TypeIndex = UNDEF_UINT;
   }
-  core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType(atomTypes));
-  if (!typeIndex.fixnump()) {
-    TYPE_ERROR(typeIndex,cl::_sym_fixnum);
-  }
-  this->_TypeIndex = typeIndex.unsafe_fixnum();
   this->_Charge = a1->getCharge();
   this->_AtomicNumber = a1->getAtomicNumber();
 }
@@ -531,7 +535,7 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
         }
         LOG("Setting atom[{}] in AtomTable[{}]" , _rep_(a1) , idx );
         this->_AtomTableIndexes->setf_gethash(a1,core::clasp_make_fixnum(idx));
-        EnergyAtom ea(nonbondForceField,a1,coordinateIndex,atomTypes);
+        EnergyAtom ea(nonbondForceField,a1,coordinateIndex,atomTypes,keepInteractionFactory);
         ea._AtomName = a1->getName();
         {
           LOG("Spanning tree for atom: {}\n" , _rep_(a1->getName()));
