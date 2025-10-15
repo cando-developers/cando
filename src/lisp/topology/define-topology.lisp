@@ -561,12 +561,17 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         for kind = (first tail)
         for kind-name = (ecase kind
                           (:no-driver :no-driver)
+                          (:starting-angle-and-float :starting-angle-and-float)
                           (:basin-hopping :basin-hopping)
                           (:grid-search :grid-search))
         for values = (second tail)
         append (loop for entry in values
                      for atom-name = (first entry)
                      for dihedrals = (second entry)
+                     when (and (eq kind-name :no-driver) dihedrals)
+                       do (error "You cannot provide dihedral angles for :no-driver - you provided ~s" dihedrals)
+                     when (and (eq kind-name :starting-angle-and-float) (/= 1 (length dihedrals)))
+                       do (error "You must provide one and only one dihedral angle for :starting-angle-and-float - you provided ~s" dihedrals)
                      collect (make-instance 'rotamer-limit-data
                                             :atom-name atom-name
                                             :driver-kind kind-name
