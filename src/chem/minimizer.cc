@@ -103,7 +103,7 @@ namespace chem
 
 #define MINIMIZER_ERROR(msg) ERROR(_sym_MinimizerError,core::lisp_createList(kw::_sym_message,core::Str_O::create(msg)))
 #define MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(msg) ERROR(_sym_MinimizerExceededMaxSteps,core::lisp_createList(kw::_sym_minimizer,msg._Minimizer, kw::_sym_number_of_steps, core::make_fixnum(msg._NumberOfSteps)));
-#define MINIMIZER_STUCK_ERROR(msg,localSteps) ERROR(_sym_MinimizerStuck,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg), kw::_sym_localSteps, core::clasp_make_fixnum(localSteps)))
+#define MINIMIZER_STUCK_ERROR(msg,localSteps,coordinates) ERROR(_sym_MinimizerStuck,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg), kw::_sym_localSteps, core::clasp_make_fixnum(localSteps), kw::_sym_coordinates, coordinates))
 
 
 
@@ -1346,7 +1346,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 	//
           fp = dTotalEnergyForce( pos, energyScale, force, activeAtomMask );
           this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos,force);
-          MINIMIZER_STUCK_ERROR("Stuck in conjugate gradients",localSteps);
+          MINIMIZER_STUCK_ERROR("Stuck in conjugate gradients",localSteps,pos);
         }
       }
        
