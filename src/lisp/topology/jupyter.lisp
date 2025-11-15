@@ -161,5 +161,5 @@
     (topology:update-internals assembler assembler-internals :oligomer-shape object)
     (topology:update-externals assembler assembler-internals :coords coords
                                                    :oligomer-shape object
-                                                   :orientation :identity)
+                                                   :orientation object)
     (cando-widgets::show-on-pane pane-instance (cando:mol (topology:aggregate* assembler coords) 0))))

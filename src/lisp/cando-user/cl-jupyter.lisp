@@ -76,3 +76,13 @@
                        (close stream)))))))
       (sb-bsd-sockets:socket-close listen))))
 
+(defmacro jupyter-do (jdo &optional no-jdo)
+  "If in cando-jupyter then do JDO otherwise do the optional NO-JDO"
+  `(if (member :cando-jupyter *features*)
+       (eval '(progn ,jdo))
+       (if ',no-jdo
+           (eval '(progn ,no-jdo))
+           (format t "jupyterlab disabled - ignoring: ~s~%" ',jdo))))
+
+(defmacro jdo (jdo &optional no-jdo)
+  `(jupyter-do ,jdo ,no-jdo))

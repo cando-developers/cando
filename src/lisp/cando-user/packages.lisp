@@ -36,6 +36,8 @@
            #:force-field-viewer
            #:*slime-home*
            #:*sly-home*
+           #:jupyter-do
+           #:jdo
            )
   )
 

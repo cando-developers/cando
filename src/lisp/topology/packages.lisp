@@ -252,7 +252,6 @@
    #:shape-key-parts
    #:ensure-shape-key
    #:validate-shape-key
-   #:make-shape-key-old-style
    #:shape-kind
    #:keys
    #:kind
@@ -592,7 +591,11 @@
    #:shape-key-monomers-callback
    #:make-shape-key-callback
    #:shape-key-for-sidechain-monomer
-   #:with-identified-and-ordered-rings))
+   #:with-identified-and-ordered-rings
+   #:oligomer-monomer-names-for-permissible-monomer-indexes
+   #:calculate-global-positioning-transform
+   #:calculate-adjustment-transform
+   #:orientation-vectors))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

@@ -30,17 +30,19 @@
   #+debug-mover
   (let ((*print-pretty* nil))
     (format t "calculate-allowed-rotamers monomer-shape-index ~a~%" monomer-shape-index))
-  (let* ((foldamer (foldamer (oligomer-space oligomer-shape))))
+  (let* ((foldamer (foldamer (oligomer-space oligomer-shape)))
+         (monomer-context (monomer-context sidechain-monomer-shape-info))
+         (monomer (monomer sidechain-monomer-shape-info))
+         )
     (multiple-value-bind (shape-key rotamers monomer-contexts)
         (shape-key-for-sidechain-monomer foldamer
-                                         (monomer-context sidechain-monomer-shape-info)
+                                         monomer-context
                                          oligomer-shape
-                                         (monomer sidechain-monomer-shape-info))
+                                         monomer)
       (let ((result (gethash shape-key shape-key-to-allowed-rotamers)))
         (unless result
-          (let* ((*print-pretty* nil)
-                 (monomer (monomer sidechain-monomer-shape-info)))
-            (error 'no-rotamers :message (format nil "Found no allowed-rotamers for ~s~%- monomer-context: ~s~%- shape-key ~s -  ~s in ~s~%- this shouldn't be possible if a backbone-stepper was created and applied to the oligomer-shape~%- backbone rotamers: ~{bb ~s~%~}- monomer-contexts: ~s" monomer (monomer-context sidechain-monomer-shape-info)
+          (let* ((*print-pretty* nil))
+            (error 'no-rotamers :message (format nil "Found no allowed-rotamers for ~s~%- monomer-context: ~s~%- shape-key ~s -  ~s in ~s~%- this shouldn't be possible if a backbone-stepper was created and applied to the oligomer-shape~%- backbone rotamers: ~{bb ~s~%~}- monomer-contexts: ~s" monomer monomer-context
                                                  shape-key sidechain-monomer-shape oligomer-shape rotamers monomer-contexts))))
         (when (= 0 (length result))
           (error 'no-rotamers :message (format nil "The resulting rotamers vector is empty for shape-key ~s - available keys ~s" shape-key (alexandria:hash-table-keys shape-key-to-allowed-rotamers))))

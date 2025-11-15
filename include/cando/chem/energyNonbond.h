@@ -19,11 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
+
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -126,7 +126,7 @@ struct	to_object<chem::EnergyNonbond>
       return nonbond.encode();
     }
   };
-  
+
   template <>
     struct	from_object<chem::EnergyNonbond>
   {
@@ -143,7 +143,7 @@ struct	to_object<chem::EnergyNonbond>
 namespace chem {
 
 double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score, core::T_sp energyScale,
-                                    int I1, int I2, core::T_sp activeAtomMask, 
+                                    int I1, int I2, core::T_sp activeAtomMask,
                                     num_real x1, num_real y1, num_real z1,
                                     num_real x2, num_real y2, num_real z2,
                                     num_real dA, num_real dC, num_real dQ1Q2 );
@@ -152,12 +152,12 @@ double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score, core::T_sp energySc
 class EnergyNonbond_O : public EnergyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
-  
+
  public:
   virtual bool restraintp() const override {return false;};
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
-  
+
  public: // virtual functions inherited from Object
   void	initialize();
 //	string	__repr__() const;
@@ -194,7 +194,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
   size_t _InteractionsKept;
   size_t _InteractionsDiscarded;
- public:	
+ public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
@@ -212,13 +212,13 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
   virtual core::List_sp extract_vectors_as_alist() const;
-  
+
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m,
                                           core::T_sp activeAtomMask );
 
   void verifyExcludedAtoms(Matter_sp matter, ScoringFunction_sp score);
-  
+
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp energyScale,
@@ -270,7 +270,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void constructNonbondTermsFromAList(core::List_sp values);
   core::List_sp nonbondTermsAsAList();
-  
+
   void setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms);
   EnergyNonbond_sp copyFilter(core::T_sp keepInteractionFactory);
  public:

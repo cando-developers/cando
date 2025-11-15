@@ -200,6 +200,23 @@ molecule in the global frame."
          (transform (geom:m*m rot translate)))
     transform))
 
+(defun calculate-adjustment-transform (a0 b0 c0 a1 b1 c1)
+  "Generate an adjustment transform for a coordinate system A0 B0 C0 to A1 B1 C1"
+  (let* ((u0 (geom:vnormalized (geom:v- b0 a0)))
+         (t0 (geom:v- c0 a0))
+         (w0 (geom:vnormalized (geom:vcross u0 t0)))
+         (v0 (geom:vcross w0 u0))
+         (r0 (geom:make-m4-columns u0 v0 w0 (geom:vec 0 0 0)))
+         (u1 (geom:vnormalized (geom:v- b1 a1)))
+         (t1 (geom:v- c1 a1))
+         (w1 (geom:vnormalized (geom:vcross u1 t1)))
+         (v1 (geom:vcross w1 u1))
+         (r1 (geom:make-m4-columns u1 v1 w1 (geom:vec 1 1 1)))
+         (rr (geom:m*m r1 (geom:transpose r0)))
+         (translate (geom:v- a1 a0)))
+    (geom:set-translation rr translate)
+    rr))
+
 (defun calculate-global-positioning-transform (origin x xy)
   (let* ((unitx (geom:vnormalized (geom:v- x origin)))
          (unitxy (let ((xyo (geom:v- xy origin)))
@@ -218,18 +235,25 @@ molecule in the global frame."
     transform))
 
 
-(defmethod orientation-transform (orientation assembler coordinates)
+(defmethod orientation-vectors (orientation assembler coordinates)
+  "Calculate the vectors for the ORIENTATION ASSEMBLER and COORDINATES"
   (let* ((local-frame-specs (local-frame-specs orientation))
          (origin-index3 (find-specifier-index3 assembler (origin-spec local-frame-specs)))
          (x-index3 (find-specifier-index3 assembler (x-spec local-frame-specs)))
          (xy-index3 (find-specifier-index3 assembler (xy-spec local-frame-specs)))
          (origin-vec (geom:vec-array coordinates origin-index3))
          (x-vec (geom:vec-array coordinates x-index3))
-         (xy-vec (geom:vec-array coordinates xy-index3))
-         (to-origin (to-origin-x-xy origin-vec x-vec xy-vec))
-         (m1 (geom:m*m (adjustment-transform orientation) to-origin))
-         (m2 (geom:m*m (global-positioning-transform orientation) m1)))
-    m2))
+         (xy-vec (geom:vec-array coordinates xy-index3)))
+    (values origin-vec x-vec xy-vec)))
+
+(defmethod orientation-transform (orientation assembler coordinates)
+  "Calculate the transform for the ORIENTATION ASSEMBLER and COORDINATES"
+  (multiple-value-bind (origin-vec x-vec xy-vec)
+      (orientation-vectors orientation assembler coordinates)
+    (let* ((to-origin (to-origin-x-xy origin-vec x-vec xy-vec))
+           (m1 (geom:m*m (adjustment-transform orientation) to-origin))
+           (m2 (geom:m*m (global-positioning-transform orientation) m1)))
+      m2)))
 
 (defclass orientations ()
   ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations))
@@ -939,7 +963,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)))
 
-(defun build-all-atom-tree-external-coordinates-and-adjust (assembler coords)
+(defun build-all-atom-tree-external-coordinates-and-adjust (assembler assembler-internals coords)
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (build-atom-tree-external-coordinates-and-adjust assembler assembler-internals coords oligomer-shape oligomer-shape)))
 

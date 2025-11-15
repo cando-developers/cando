@@ -12,7 +12,7 @@
                #:smiles
                #:leap
                #:leap-commands
-               #:sdf
+               #:cando-sdf
                #:tirun
                #:sketch2d
                #:cando-build

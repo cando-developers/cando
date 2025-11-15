@@ -998,7 +998,8 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
 }
 
 void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField,
-                                                         core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory ) {
+                                                         core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
+                                                         double ) {
   if (keepInteractionFactory.nilp()) return;
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyNonbond_O::staticClass());
   bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
@@ -1030,7 +1031,10 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
               //             LOG_ENERGY(("Nonbonded interaction between {} - {} in14[{}]\n") , _rep_(iea1->atom()) ,
               //             _rep_(iea2->atom()) , in14 );
             if (hasKeepInteractionFunction) {
-              core::T_sp result = core::eval::funcall(keepInteraction,iea1->atom(),iea2->atom());
+              core::T_sp result = core::eval::funcall(keepInteraction,
+                                                      iea1->atom(),iea2->atom(),
+                                                      iea1->coordinateIndexTimes3(),
+                                                      iea2->coordinateIndexTimes3());
               if (result.notnilp()) {
                 EnergyNonbond energyNonbond;
 //                energyNonbond.defineFrom(nbForceField, in14, &(*iea1), &(*iea2), this->sharedThis<EnergyNonbond_O>(), atomTypes);
