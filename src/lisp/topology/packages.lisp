@@ -595,7 +595,8 @@
    #:oligomer-monomer-names-for-permissible-monomer-indexes
    #:calculate-global-positioning-transform
    #:calculate-adjustment-transform
-   #:orientation-vectors))
+   #:orientation-vectors
+   #:local-to-global-orientation))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
