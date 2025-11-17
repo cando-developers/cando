@@ -37,6 +37,7 @@ system."))
 
    (adjustment-transform
     :initarg :adjustment-transform
+    :initform (geom:make-m4-identity)
     :accessor adjustment-transform
     :documentation "A transform applied after aligning the local frame to the global origin, used for refinement.")
 
