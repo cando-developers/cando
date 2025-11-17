@@ -166,8 +166,8 @@ void	Residue_O::fields( core::Record_sp node )
   node->field_if_not_unbound(INTERN_(kw,type),this->_Type);
   node->field_if_not_nil( INTERN_(kw,pdbName),this->_PdbName);
   node->field( INTERN_(kw,uniqueLabel),this->_UniqueLabel);
-  node->/*pod_*/field_if_not_default( INTERN_(kw,NetCharge),this->_NetCharge,0);
-  node->/*pod_*/field_if_not_default( INTERN_(kw,fileSeqNum),this->_FileSequenceNumber,UndefinedUnsignedInt);
+  node->field( INTERN_(kw,NetCharge),this->_NetCharge);
+  node->field( INTERN_(kw,fileSeqNum),this->_FileSequenceNumber);
   node->field_if_not_nil( INTERN_(kw,monomerAliases),this->_MonomerAliases);
   LOG("Status" );
   switch (node->stage()) {
