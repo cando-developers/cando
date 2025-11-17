@@ -200,8 +200,9 @@ class EnergyNonbond_O : public EnergyComponent_O
   iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
  public:
-  //core::List_sp termAtIndex(size_t index) const;
+//  core::List_sp termAtIndex(size_t index) const;
   virtual size_t numberOfTerms() { return this->_Terms.size();};
+  void callForEachTerm(core::Function_sp callback);
  public:
 
   CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndexes;}

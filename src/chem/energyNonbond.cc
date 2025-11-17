@@ -998,8 +998,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
 }
 
 void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField,
-                                                         core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
-                                                         double ) {
+                                                         core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory ) {
   if (keepInteractionFactory.nilp()) return;
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyNonbond_O::staticClass());
   bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
@@ -1033,8 +1032,8 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
             if (hasKeepInteractionFunction) {
               core::T_sp result = core::eval::funcall(keepInteraction,
                                                       iea1->atom(),iea2->atom(),
-                                                      iea1->coordinateIndexTimes3(),
-                                                      iea2->coordinateIndexTimes3());
+                                                      core::make_fixnum(iea1->coordinateIndexTimes3()),
+                                                      core::make_fixnum(iea2->coordinateIndexTimes3()));
               if (result.notnilp()) {
                 EnergyNonbond energyNonbond;
 //                energyNonbond.defineFrom(nbForceField, in14, &(*iea1), &(*iea2), this->sharedThis<EnergyNonbond_O>(), atomTypes);
@@ -1194,6 +1193,25 @@ SYMBOL_EXPORT_SC_(KeywordPkg, excluded_atoms_list);
 SYMBOL_EXPORT_SC_(KeywordPkg, number_excluded_atoms);
 SYMBOL_EXPORT_SC_(KeywordPkg, atom_table);
 
+  CL_DOCSTRING(R"doc(For each nonbond term call the CALLBACK function.
+The CALLBACK function must accept two arguments:
+1. The first atom of the nonbond term
+2. The second atom of the nonbond term
+3. The Ix3 coordinate for the first atom
+4. The Ix3 coordinate for the second atom)doc");
+CL_DEFMETHOD void EnergyNonbond_O::callForEachTerm(core::Function_sp callback) {
+    if (this->_UsesExcludedAtoms) {
+      SIMPLE_ERROR("callForEachTerm does not support this nonbond component because it uses excluded atoms");
+    }
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback,eni->_Atom1_enb,eni->_Atom2_enb,
+                        core::make_fixnum(eni->term.I1),
+                        core::make_fixnum(eni->term.I2));
+  }
+}
+
+
+
 CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp values) {
   this->_ntypes = translate::from_object<size_t>(safe_alist_lookup<core::T_sp>(values, kw::_sym_ntypes))._v; // ntypes
   this->_atom_name_vector = safe_alist_lookup<core::SimpleVector_sp>(values, kw::_sym_atom_name_vector);     // atom-name-vector
@@ -1215,7 +1233,7 @@ CL_DEFMETHOD core::List_sp EnergyNonbond_O::nonbondTermsAsAList() {
   ql::list result;
   result << core::Cons_O::create(kw::_sym_ntypes, core::make_fixnum(this->_ntypes));          // ntypes
   result << core::Cons_O::create(kw::_sym_atom_name_vector, this->_atom_name_vector);         // atom-name-vector
-  result << core::Cons_O::create(kw::_sym_atom_type_vector, this->_atom_type_vector);         // atom-name-vector
+  result << core::Cons_O::create(kw::_sym_atom_type_vector, this->_atom_type_vector);         // atom-type-vector
   result << core::Cons_O::create(kw::_sym_charge_vector, this->_charge_vector);               // charge-vector
   result << core::Cons_O::create(kw::_sym_mass_vector, this->_mass_vector);                   // masses
   result << core::Cons_O::create(kw::_sym_atomic_number_vector, this->_atomic_number_vector); // vec
