@@ -1,6 +1,6 @@
 (in-package :asdf-user)
 
-(defsystem "sdf"
+(defsystem "cando-sdf"
     :description "Parse sdf files"
     :version "0.0.1"
     :author "Christian Schafmeisterd>"

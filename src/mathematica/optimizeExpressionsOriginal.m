@@ -882,7 +882,6 @@ packFindRuleForSymbol[rulePack_, sym_] := Select[packSelectRules[rulePack], #[[2
 (*Now combine the optimizations into a single function*)
 
 
-
 packOptimize[pack_] :=
         Module[{np,outs,rules,code,result,mathExp,fileNamePrefix, fileName,cycles,startTime,skipTimesOptimize,skipPlusOptimize},
 	       uniqueVariableIndex = 1;
@@ -1391,6 +1390,45 @@ AppendGradientForceIfCalcForceExtraRule[macroPrefix_,be_,outputs_,rawEnergyFn_,r
 	       AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_FORCE ]*/"]];
         ];
 SetAttributes[AppendGradientForceIfCalcForce,HoldAll];
+
+
+(* Convert a single Mathematica lhs -> rhs rule to Lisp *)
+toLispRule[Rule[lhs_, rhs_]] :=
+  "  (make-rule " <> toLispExpr[lhs] <> " " <> toLispExpr[rhs] <> ")"
+
+(* Convert expressions recursively *)
+toLispExpr[expr_] := Which[
+  AtomQ[expr],
+    ToString[expr, InputForm],
+
+  Head[expr] === Plus,
+    "(+ " <> StringRiffle[toLispExpr /@ List @@ expr, " "] <> ")",
+
+  Head[expr] === Times,
+    "(* " <> StringRiffle[toLispExpr /@ List @@ expr, " "] <> ")",
+
+  Head[expr] === Power,
+    "(expt " <> toLispExpr[expr[[1]]] <> " " <> toLispExpr[expr[[2]]] <> ")",
+
+  True,
+    "(" <> ToString[Head[expr]] <> " " <>
+      StringRiffle[toLispExpr /@ List @@ expr, " "] <> ")"
+]
+
+(* Convert a list of rules *)
+toLispPack[pack_] := Module[{name,outputs,rules},
+  name = Name/.pack;
+  outputs = Output/.pack;
+  rules = Rules/.pack;
+  StringJoin[
+    "(make-pack '" <> ToString[name] <> " '" <>
+      ToString[outputs, InputForm] <> "\n'(",
+    StringRiffle[toLispRule /@ rules, "\n"],
+    "))"
+]
+SetAttributes[toLispRule,HoldAll];
+SetAttributes[toLispExpr,HoldAll];
+SetAttributes[toLispPack,HoldAll];
 
 
 EndPackage[]

@@ -20,9 +20,9 @@
 (*Turn off those annoying spelling warnings*)
 
 
-BeginPackage["foo`"]
+BeginPackage["optimizeExpressions`"]
 
-Print["optimizeExpressionsTest is being loaded"];
+Print["optimizeExpressionsTest is being loaded 3"];
 
 Off[General::spell];
 Off[General::spell1];
@@ -714,6 +714,8 @@ locateBranches[term_] := Module[
 
 createBranch[height_,branch_,descr_,subBranches_,color_] := Module[{},
 	(*PrintTemporary["createBranch::"];*)
+	Print["createBranch height = ", height];
+    If[height < 1, Dialog[]];
 	tree[branch] = {
 		Height->height, 
 		TreeSpan->treeSpan[[height]], 
@@ -903,7 +905,6 @@ packFindRuleForSymbol[rulePack_, sym_] := Select[packSelectRules[rulePack], #[[2
 
 (* ::Subsection:: *)
 (*Now combine the optimizations into a single function*)
-
 
 
 packOptimize[pack_] :=
