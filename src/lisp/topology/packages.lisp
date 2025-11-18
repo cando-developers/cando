@@ -475,7 +475,7 @@
    #:build-rotamer-shape-map
    #:ligand-oligomer-shape
    #:receptor-oligomer-shape
-   #:orientations
+   #:orientations%
    #:complex-oligomer-shapes-orientations
    #:receptor-oligomer-shape-orientation
    #:ligand-oligomer-shape-orientation

@@ -147,10 +147,12 @@ to the components and evaluate the BODY in that scope."
          do (progn
               ,@body))))
 
+#+(or)
 (defmethod lookup-orientation ((orientations orientations) (oligomer-thing topology:oligomer-shape))
   (or (gethash (topology:oligomer-space oligomer-thing) (orientations orientations))
       (error "Could not find ~s as a key in ~s" oligomer-thing orientations)))
 
+#+(or)
 (defmethod lookup-orientation ((assembler assembler) (oligomer-thing topology:oligomer-shape))
   (let ((result (or (gethash oligomer-thing (orientations (orientations assembler)))
                     (error "Could not find ~s as a key in ~s" oligomer-thing assembler))))
@@ -206,9 +208,11 @@ to the components and evaluate the BODY in that scope."
   (print-unreadable-object (obj stream :type t)
     (format stream "~s" (name obj))))
 
+#+(or)
 (defmethod orientation ((oligomer-shape oligomer-shape) (orientations orientations))
   (gethash oligomer-shape (orientations orientations)))
 
+#+(or)
 (defmethod orientation ((oligomer-shape oligomer-shape) (assembler assembler))
   (gethash oligomer-shape (orientations (orientations assembler))))
 
@@ -669,7 +673,6 @@ If UNINITIALIZED then leave them unbound."
              )
         (update-internals ass internals :oligomer-shape oligomer-shape)
         (update-externals ass internals :oligomer-shape oligomer-shape
-                                        :orientation oligomer-shape
                                         :coords coords)
         (copy-all-joint-positions-into-atoms ass coords)
         (aggregate ass)))))
@@ -762,7 +765,6 @@ If UNINITIALIZED then leave them unbound."
           (funcall prepare-assembler ass))
         (update-internals ass assembler-internals :oligomer-shape oligomer-shape)
         (update-externals ass assembler-internals :oligomer-shape oligomer-shape
-                                                  :orientation oligomer-shape
                                                   :coords coords)
         (copy-all-joint-positions-into-atoms ass coords)
         (values (aggregate ass) ass)))))
