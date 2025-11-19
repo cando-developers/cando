@@ -87,7 +87,7 @@
            parser.common-rules:integer-literal/decimal)
        parser.common-rules:whitespace*
        (esrap:? (and (esrap:character-ranges (#\a #\z) (#\A #\Z))
-                     (* esrap:character))))
+                     (* character))))
   (:destructure (types blank0 opt-idivf pk blank1 phase blank2 pn blank3 comment)
                 (declare (ignore blank0 blank1 blank2 blank3))
                 (list types
@@ -123,7 +123,7 @@
        scnb
        (or (and parser.common-rules:whitespace+
                 (and (esrap:character-ranges (#\a #\z) (#\A #\Z))
-                     (* esrap:character)))
+                     (* character)))
            parser.common-rules:whitespace*))
   (:destructure (scee blank1 scnb comment)
                 (declare (ignore blank1))
@@ -134,7 +134,7 @@
     (when (or (search "scee" comment)
               (search "SCEE" comment))
       (handler-case (esrap:parse 'scee-scnb-comment comment)
-        (esrap:parse-error (err)
+        (esrap:esrap-parse-error (err)
           ;; ignore parse errors - it's a comment
           nil)))))
 
@@ -175,7 +175,7 @@
          parser.common-rules:whitespace+
          parser.common-rules:float-literal
          (esrap:? (and parser.common-rules:whitespace+
-                       (* esrap:character))))
+                       (* character))))
   (:destructure (blank0 type blank1 radius blank2 edep maybe-comment)
                 (declare (ignore blank0 blank1 blank2 maybe-comment))
                 (list (intern type :keyword) radius edep)))
