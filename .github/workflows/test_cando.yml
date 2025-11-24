@@ -35,13 +35,13 @@ jobs:
         brew install boost fmt gmp llvm ninja pkg-config sbcl ecl netcdf zeromq
 
     - name: Checkout clasp
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         repository: clasp-developers/clasp
         ref: main
 
     - name: Checkout cando
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         path: extensions/cando
 
