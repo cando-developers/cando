@@ -956,11 +956,11 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
     while (loop.advanceLoopAndProcess()) {
       Atom_sp a1 = loop.getAtom1();
       Atom_sp a4 = loop.getAtom4();
-      if (skipInteraction(keepInteraction, a1, a4)) continue;
       auto ea1 = atomTable->getEnergyAtomPointer(a1);
       auto ea4 = atomTable->getEnergyAtomPointer(a4);
       size_t ia1 = ea1->_IndexTimes3;
       size_t ia4 = ea4->_IndexTimes3;
+      if (skipInteraction_EnergyNonbond(keepInteraction, a1, a4, core::make_fixnum(ia1), core::make_fixnum(ia4))) continue;
       if (ia1 > ia4) {
         size_t ttt = ia1;
         ia1 = ia4;
@@ -1253,50 +1253,62 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
   this->_NumberOfExcludedAtomIndexes = number_excluded_atoms;
 }
 
-EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory) {
-  EnergyNonbond_sp copy = EnergyNonbond_O::create();
-  copyEnergyComponent( copy, this->asSmartPtr() );
-  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
 
-#define COPY_FIELD(xxx) { copy->xxx = this->xxx; }
-  COPY_FIELD(_EnergyElectrostatic);
-  COPY_FIELD(_UsesExcludedAtoms);
-  COPY_FIELD(_NonbondsKept);
-  COPY_FIELD(_NonbondsDiscarded);
-  COPY_FIELD(_FFNonbondDb);
-  COPY_FIELD(_AtomTable);
-  COPY_FIELD(_ntypes);
-  COPY_FIELD(_atom_name_vector);
-  COPY_FIELD(_charge_vector);
-  COPY_FIELD(_mass_vector);
-  COPY_FIELD(_atomic_number_vector);
-  COPY_FIELD(_ico_vec);
-  COPY_FIELD(_iac_vec);
-  COPY_FIELD(_atom_type_vector);
-  COPY_FIELD(_local_typej_vec);
-  COPY_FIELD(_cn1_vec);
-  COPY_FIELD(_cn2_vec);
-  COPY_FIELD(_NumberOfExcludedAtomIndexes);
-  COPY_FIELD(_ExcludedAtomIndexes);
-  COPY_FIELD(_InteractionsKept);
-  COPY_FIELD(_InteractionsDiscarded);
-
-  if (!this->_UsesExcludedAtoms) {
-    for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
-      Atom_sp a1 = edi->_Atom1_enb;
-      Atom_sp a2 = edi->_Atom2_enb;
-      if (skipInteraction(keepInteraction, a1, a2)) continue;
-      copy->_Terms.push_back(*edi);
-    }
-  } else {
-    if (keepInteraction==_lisp->_true()) {
-      // Everything was done above
-    } else {
-      SIMPLE_ERROR("EnergyNonbond uses excluded atoms and we don't support keepInteraction = {}", _rep_(keepInteraction));
+  CL_DEFMETHOD
+  void EnergyNonbond_O::checkEnergyNonbond() {
+    if (!this->_AtomTable) {
+      SIMPLE_ERROR("EnergyNonbond _AtomTable is NULL");
     }
   }
-  return copy;
+
+  __attribute__((optnone))
+  EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory) {
+    EnergyNonbond_sp copy = EnergyNonbond_O::create();
+    copyEnergyComponent( copy, this->asSmartPtr() );
+    core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
+
+#define COPY_FIELD(xxx) { copy->xxx = this->xxx; }
+COPY_FIELD(_EnergyElectrostatic);
+COPY_FIELD(_UsesExcludedAtoms);
+COPY_FIELD(_NonbondsKept);
+COPY_FIELD(_NonbondsDiscarded);
+COPY_FIELD(_FFNonbondDb);
+COPY_FIELD(_AtomTable);
+COPY_FIELD(_ntypes);
+COPY_FIELD(_atom_name_vector);
+COPY_FIELD(_charge_vector);
+COPY_FIELD(_mass_vector);
+COPY_FIELD(_atomic_number_vector);
+COPY_FIELD(_ico_vec);
+COPY_FIELD(_iac_vec);
+COPY_FIELD(_atom_type_vector);
+COPY_FIELD(_local_typej_vec);
+COPY_FIELD(_cn1_vec);
+COPY_FIELD(_cn2_vec);
+COPY_FIELD(_NumberOfExcludedAtomIndexes);
+COPY_FIELD(_ExcludedAtomIndexes);
+COPY_FIELD(_InteractionsKept);
+COPY_FIELD(_InteractionsDiscarded);
+
+if (!this->_UsesExcludedAtoms) {
+  // Pairlists don't define _AtomTable
+  for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
+    Atom_sp a1 = edi->_Atom1_enb;
+    Atom_sp a2 = edi->_Atom2_enb;
+    size_t ia1 = edi->term.I1;
+    size_t ia2 = edi->term.I2;
+    if (skipInteraction_EnergyNonbond(keepInteraction, a1, a2, core::make_fixnum(ia1), core::make_fixnum(ia2))) continue;
+    copy->_Terms.push_back(*edi);
+  }
+} else {
+  if (keepInteraction==_lisp->_true()) {
+    // Everything was done above
+  } else {
+    SIMPLE_ERROR("EnergyNonbond uses excluded atoms and we don't support keepInteraction = {}", _rep_(keepInteraction));
+  }
 }
+return copy;
+  }
 
 
 }; // namespace chem

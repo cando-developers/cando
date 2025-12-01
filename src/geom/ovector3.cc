@@ -85,6 +85,20 @@ CL_DEFUN OVector3_sp OVector3_O::make_array(chem::NVector_sp coordinates, size_t
   return ov;
 }
 
+DOCGROUP(cando);
+CL_DEFUN void geom__vec_set(OVector3_sp vec, chem::NVector_sp coordinates, size_t index3)
+{
+  (*coordinates)[index3]   = vec->getX();
+  (*coordinates)[index3+1] = vec->getY();
+  (*coordinates)[index3+2] = vec->getZ();
+}
+
+CL_NAME("V+!");
+CL_DEFUN void geom__v_PLUS__BANG__fuck(const Vector3& x, const Vector3& y, Vector3& result )
+{
+  x.addSet(result,y);
+}
+
 CL_DOCSTRING(R"dx(Return T if the vec is anything other than 0.0,0.0,0.0)dx");
 CL_NAME("VEC-P");
 DOCGROUP(cando);

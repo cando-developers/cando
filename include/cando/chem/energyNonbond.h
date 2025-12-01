@@ -273,6 +273,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::List_sp nonbondTermsAsAList();
 
   void setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms);
+  void checkEnergyNonbond();
   EnergyNonbond_sp copyFilter(core::T_sp keepInteractionFactory);
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor

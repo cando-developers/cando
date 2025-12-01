@@ -51,6 +51,42 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+void old_stretch_energy(DOUBLE kb, DOUBLE r0, SIZE_T I1, SIZE_T I2, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec);
+
+
+#define KernelGradientAcc(ii1,oo1,vv1) force[ii1+oo1] += (-vv1)
+
+
+//
+// Accumulate an off diagonal Hessian element
+//
+#define	KernelOffDiagHessAcc(i1,o1,i2,o2,v) {\
+    auto v22 = v*dvec[i2+o2];\
+    auto v11 = v*dvec[i1+o1];\
+    hdvec[i1+o1] += v22; \
+    hdvec[i2+o2] += v11; \
+  }
+
+//
+// Accumulate a diagonal Hessian element
+//
+#define	KernelDiagHessAcc(i1,o1,i2,o2,v) {\
+      auto vd = v*dvec[i1+o1];\
+      hdvec[i1+o1] += vd; \
+  }
+
+
+__attribute__((optnone))
+#include "cando/chem/energyKernels/stretch_energy.c"
+__attribute__((optnone))
+#include "cando/chem/energyKernels/stretch_gradient.c"
+__attribute__((optnone))
+#include "cando/chem/energyKernels/stretch_hessian.c"
+
+}
+
+namespace chem {
+
 #define STRETCH_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
@@ -357,6 +393,125 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
   return nil<core::T_O>();
 }
 
+
+#if 1
+__attribute__((optnone))
+double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
+                                              NVector_sp 	pos,
+                                              core::T_sp energyScale,
+                                              core::T_sp componentEnergy,
+                                              bool 		calcForce,
+                                              gc::Nilable<NVector_sp> 	force,
+                                              bool		calcDiagonalHessian,
+                                              bool		calcOffDiagonalHessian,
+                                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                              gc::Nilable<NVector_sp>	hdvec,
+                                              gc::Nilable<NVector_sp>   dvec,
+                                              core::T_sp activeAtomMask ,
+                                              core::T_sp debugInteractions )
+{
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
+  double totalEnergy = 0.0;
+  this->_Evaluations++;
+  ANN(force);
+  ANN(hessian);
+  ANN(hdvec);
+  ANN(dvec);
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  if (hasHessian) {
+    SIMPLE_ERROR("The Stretch term was passed a hessian matrix - I thought we didn't do that anymore");
+  }
+
+#define STRETCH_CALC_FORCE
+#define STRETCH_CALC_DIAGONAL_HESSIAN
+#define STRETCH_CALC_OFF_DIAGONAL_HESSIAN
+#undef	STRETCH_SET_PARAMETER
+#define	STRETCH_SET_PARAMETER(x)	{x = si->term.x;}
+#undef	STRETCH_SET_POSITION
+#define	STRETCH_SET_POSITION(x,ii,of)	{x = pos->getElement(ii+of);}
+#undef	STRETCH_ENERGY_ACCUMULATE
+#define	STRETCH_ENERGY_ACCUMULATE(e) { totalEnergy += (e); }
+#undef	STRETCH_FORCE_ACCUMULATE
+#undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
+#undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	STRETCH_FORCE_ACCUMULATE 		ForceAcc
+#define	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
+#define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
+
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
+#pragma clang diagnostic pop
+  fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+  fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+  num_real x1,y1,z1,x2,y2,z2,kb,r0;
+  int I1, I2,i;
+  gctools::Vec0<EnergyStretch>::iterator si;
+  DOUBLE* position = &(*pos)[0];
+  DOUBLE* rforce = NULL;
+  DOUBLE* rhessian = NULL; // &(*hessian)[0];
+  DOUBLE* rhdvec = NULL;
+  DOUBLE* rdvec = NULL;
+#if 0
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+#include <cando/chem/energy_functions/_Stretch_termCode.cc>
+    }
+#else
+  if (!hasForce) {
+    // energy only
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+      stretch_energy(
+          //old_stretch_energy(
+          si->term.kb,si->term.r0,
+                     si->term.I1,si->term.I2,
+                     position,
+                     &totalEnergy,
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL);
+    }
+  } else if (hasForce) {
+    rforce = &(*force)[0];
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+      //stretch_gradient(
+          old_stretch_energy(
+          si->term.kb,si->term.r0,
+          si->term.I1,si->term.I2,
+          position,
+          &totalEnergy,
+          rforce,
+          NULL,
+          NULL,
+          NULL);
+    }
+  } else if (hasHdAndD) {
+    rforce = &(*force)[0];
+    rhdvec = &(*hdvec)[0];
+    rdvec = &(*dvec)[0];
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+      stretch_hessian(
+          //old_stretch_energy(
+          si->term.kb,si->term.r0,
+                      si->term.I1,si->term.I2,
+                      position,
+                      &totalEnergy,
+                      rforce,
+                      NULL,
+                      rhdvec,
+                      rdvec);
+    }
+  }
+#endif
+  maybeSetEnergy( componentEnergy, EnergyStretch_O::static_classSymbol(), totalEnergy );
+  return totalEnergy;
+}
+#else
+
 double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                               NVector_sp 	pos,
                                               core::T_sp energyScale,
@@ -383,6 +538,10 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
+  if (hasHessian) {
+    SIMPLE_ERROR("The Stretch term was passed a hessian matrix - I thought we didn't do that anymore");
+  }
+  
 #define STRETCH_CALC_FORCE
 #define STRETCH_CALC_DIAGONAL_HESSIAN
 #define STRETCH_CALC_OFF_DIAGONAL_HESSIAN
@@ -434,6 +593,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   maybeSetEnergy( componentEnergy, EnergyStretch_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
+#endif
 
 
 SYMBOL_EXPORT_SC_(KeywordPkg,stretch);
@@ -711,5 +871,51 @@ EnergyStretch_sp EnergyStretch_O::copyFilter(core::T_sp keepInteractionFactory) 
   return copy;
 }
 
+
+};
+
+#undef STRETCH_SET_PARAMETER
+#define STRETCH_SET_PARAMETER(x)
+
+#undef STRETCH_APPLY_ATOM_MASK
+#define STRETCH_APPLY_ATOM_MASK(i1,i2)
+
+#undef STRETCH_SET_POSITION
+#define STRETCH_SET_POSITION(xx,ii,oo) xx = position[ii+oo]
+
+#undef STRETCH_ENERGY_ACCUMULATE
+#define STRETCH_ENERGY_ACCUMULATE(Energy) *energy_accumulate += Energy
+
+#define calcForce force  // if force is NULL then dont calculate force
+#define calcDiagonalHessian hdvec  // if  NULL then dont calculate hessian
+#define calcOffDiagonalHessian hdvec  // if NULL then dont calculate hessian
+
+#undef STRETCH_FORCE_ACCUMULATE
+#define STRETCH_FORCE_ACCUMULATE(ii,oo,ff) force[ii+oo] += ff
+
+#undef STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
+#undef STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
+#define STRETCH_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelOffDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
+
+#undef STRETCH_DEBUG_INTERACTIONS
+#define STRETCH_DEBUG_INTERACTIONS(ii,jj)
+
+#define doDebugInteractions false
+
+namespace chem {
+
+void old_stretch_energy(DOUBLE kb, DOUBLE r0, SIZE_T I1, SIZE_T I2, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec)
+{
+  DOUBLE x1;
+  DOUBLE y1;
+  DOUBLE z1;
+  DOUBLE x2;
+  DOUBLE y2;
+  DOUBLE z2;
+
+#include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
+#include <cando/chem/energy_functions/_Stretch_termCode.cc>
+};
 
 };

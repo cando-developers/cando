@@ -250,8 +250,10 @@ public:
                                                        core::T_sp activeAtomMask,
                                                        core::T_sp debugInteractions=nil<core::T_O>(),
                                                        bool disableRestraints=false);
+#if 0
   virtual double	evaluateEnergyForceFullHessianForDebugging(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions,
                                                                    bool disableRestraints);
+  #endif
 
   void evaluateFiniteDifferenceForce(NVector_sp pos, core::T_sp energyScale, NVector_sp force, double delta=0.00001, core::T_sp activeAtomMask=nil<core::T_O>() );
 #if 0

@@ -50,6 +50,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/scoringFunction.h>
 #include <cando/chem/residue.h>
 
+#define SIZE_T size_t
+
 		//
 		// SCALE FACTOR FOR ELECTROSTIC INTERACTIONS???
 		//

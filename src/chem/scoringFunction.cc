@@ -223,6 +223,8 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
   return energy;
 }
 
+
+#if 0
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessianForDebugging");
 CL_LAMBDA((scoring-function chem:scoring-function) &key energy-scale active-atom-mask debug-interactions disable-restraints);
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebugging(core::T_sp energyScale,
@@ -252,6 +254,9 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebuggin
                              disableRestraints );
   return energy;
 }
+#endif
+
+
 
 #if 0
 CL_LISPIFY_NAME("calculateEnergy");

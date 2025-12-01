@@ -97,6 +97,12 @@ FORWARD(BoundingBox);
 
 core::T_sp specializeKeepInteractionFactory( core::T_sp keepInteractionFactory, core::T_sp aclass );
 
+bool skipInteraction_EnergyNonbond( core::T_sp keepInteractionFunction,
+                                   Atom_sp atomA,
+                                   Atom_sp atomB,
+                                   core::T_sp ti3A,
+                                   core::T_sp ti3B );
+
 bool skipInteraction( core::T_sp keepInteractionFunction,
                       Atom_sp atomA = unbound<Atom_O>(),
                       Atom_sp atomB = unbound<Atom_O>(),

@@ -947,7 +947,9 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 
 
 (defun build-atom-tree-external-coordinates* (assembler assembler-internals coords oligomer-shape maybe-orientation)
-  (let* ((orientation (orientation maybe-orientation assembler))
+  (unless maybe-orientation
+    (error "You must provide an orientation"))
+  (let* ((orientation maybe-orientation)
          (one-oligomer (oligomer oligomer-shape))
          (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
     (when (null joints)
@@ -1396,6 +1398,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
     (kin:joint/apply-transform-to-xyz-coords-recursively (car joints) transform coords)))
 
 
+(defparameter *update-externals-depth* 0)
 (defmethod update-externals ((assembler assembler) assembler-internals &key oligomer-shape
                                                                          (ligand-orientation :identity ligand-orientation-p)
                                                                          (coords (topology:make-coordinates-for-assembler assembler)))
@@ -1409,21 +1412,26 @@ Return the COORDS."
        ((null oligomer-shape)
         (unless ligand-orientation-p
           (error "You must provide the ligand-orientation when building ligand and receptor"))
-        (update-externals assembler (ligand-oligomer-shape assembler) :ligand-orientation ligand-orientation)
-        (update-externals assembler (receptor-oligomer-shape assembler) :identity))
+        (update-externals assembler assembler-internals :oligomer-shape (ligand-oligomer-shape assembler)
+                                                        :ligand-orientation ligand-orientation
+                                                        :coords coords)
+        (update-externals assembler assembler-internals :oligomer-shape (receptor-oligomer-shape assembler)
+                                                        :coords coords))
        ((eq oligomer-shape (receptor-oligomer-shape assembler))
         (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape :identity)
         (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
        ((eq oligomer-shape (ligand-oligomer-shape assembler))
         (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape ligand-orientation)
         (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
-        (when (local-frame-specs orientation)
+        (when (local-frame-specs ligand-orientation)
           (transform-externals-to-global-frame assembler (ligand-oligomer-shape assembler) ligand-orientation coords)))
        (t (error "What do we do here"))))
     ((and (= 1 (length (oligomer-shapes assembler)))
           (or (null oligomer-shape)
               (and oligomer-shape (eq oligomer-shape (ligand-oligomer-shape assembler)))))
-     (update-externals assembler (ligand-oligomer-shape assembler) ligand-orientation))
+     (update-externals assembler assembler-internals :oligomer-shape (ligand-oligomer-shape assembler)
+                                                     :ligand-orientation ligand-orientation
+                                                     :coords coords))
     (t (error "What do I do here")))
   coords)
 
