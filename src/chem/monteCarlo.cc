@@ -970,8 +970,8 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
   for ( size_t ii = 0; ii<currentStates.size(); ii++ ) currentStates[ii].randomState(energies);
   State initialState = currentStates[numberOfLambdaWindows-1];
 
-  std::vector<size_t> swapAccepts(numberOfLambdaWindows,0);
-  std::vector<size_t> swapAttempts(numberOfLambdaWindows,0);
+  std::vector<byte64_t> swapAccepts(numberOfLambdaWindows,0);
+  std::vector<byte64_t> swapAttempts(numberOfLambdaWindows,0);
 
   size_t numSlotsInState = core::cl__length(energies._MonomerLocusMaxMrkindex );
 
