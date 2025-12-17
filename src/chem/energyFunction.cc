@@ -1785,22 +1785,12 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 #endif
         // Nonbonds here!!!!!!!!!!!!!!
   if (useExcludedAtoms) {
-// The nonbond parameters are calculated in Common Lisp
-//    printf("atom number: %d\n", this->_AtomTable->getNumberOfAtoms());
+    // The nonbond parameters are calculated in Common Lisp
 
-//    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),nonbondForceField);
-//      printf("%s:%d:%s    parts -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(parts).c_str());
-//    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     this->_Nonbond->constructNonbondTermsFromAList(parts);
-    // -----------
-//    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
-      
     this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, nonbondForceField,keepInteractionFactory);
     this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
-    LOG("Done construct14InteractionTerms");
-//    printf("%s:%d:%s    nonbond -> %d\n", __FILE__, __LINE__, __FUNCTION__, _Nonbond->numberOfTerms());
-
   } else {
     this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, nonbondForceField,atomTypes, keepInteractionFactory );
   }

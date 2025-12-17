@@ -318,6 +318,7 @@ public:
   core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::HashTable_sp atomTypes );
 
   virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
+  virtual void runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
   EnergyDihedral_sp copyFilter(core::T_sp keepInteractionFactory);
 

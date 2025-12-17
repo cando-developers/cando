@@ -233,6 +233,31 @@ inline string	atomLabel(Atom_sp a)
       hdvec[i1+o1] += vd; \
   }
 
+struct NoHessian {};
+
+template <typename HESSIAN=NoHessian>
+inline void KernelHessDiagAcc(size_t positionSize, HESSIAN hessian, double* dvec, double* hdvec, size_t i3x1, size_t of1, size_t i3x2, size_t of2, double hval) {
+  KernelDiagHessAcc( i3x1, of1, i3x2, of2, hval );
+}
+
+template <typename HESSIAN=NoHessian>
+inline void KernelHessOffDiagAcc(size_t positionSize, HESSIAN hessian, double* dvec, double* hdvec, size_t i3x1, size_t of1, size_t i3x2, size_t of2, double hval) {
+  KernelOffDiagHessAcc( i3x1, of1, i3x2, of2, hval );
+}
+
+template <>
+inline void KernelHessDiagAcc(size_t positionSize, double* hessian, double* dvec, double* hdvec, size_t i3x1, size_t of1, size_t i3x2, size_t of2, double hval) {
+  hessian[(i3x1+of1)*positionSize+(i3x2+of2)] += hval;
+  KernelDiagHessAcc( i3x1, of1, i3x2, of2, hval );
+}
+
+template <>
+inline void KernelHessOffDiagAcc(size_t positionSize, double* hessian, double* dvec, double* hdvec, size_t i3x1, size_t of1, size_t i3x2, size_t of2, double hval) {
+  hessian[(i3x1+of1)*positionSize+(i3x2+of2)] += hval;
+  hessian[(i3x2+of2)*positionSize+(i3x1+of1)] += hval;
+  KernelOffDiagHessAcc( i3x1, of1, i3x2, of2, hval );
+}
+
 
 // ----------------------------------------------------------------------
 // Old accumulators

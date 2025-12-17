@@ -98,14 +98,14 @@ void EnergyNonbond_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
     energy_new = 0.0;
     energy_ground = 0.0;
 #define POW2(xx) (xx*xx)
-#define NONBOND_DD_ARGS si->term.dA, si->term.dC, si->term.dQ1Q2, this->_Nonbond_invdd, this->_Nonbond_r_switch, POW2(this->_Nonbond_r_switch), this->_Nonbond_r_cut, POW2(this->_Nonbond_r_cut), this->_Nonbond_r_cut-this->_Nonbond_r_switch, si->term.I1, si->term.I2
+    //#define NONBOND_DD_ARGS si->term.dA, si->term.dC, si->term.dQ1Q2, this->_Nonbond_invdd, this->_Nonbond_r_switch, POW2(this->_Nonbond_r_switch), this->_Nonbond_r_cut, POW2(this->_Nonbond_r_cut), this->_Nonbond_r_cut-this->_Nonbond_r_switch, 0, 3
     test_zero( POS_SIZE,
                force_new, force_ground,
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    nonbond_dd_cutoff_gradient( NONBOND_DD_ARGS, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    nonbond_dd_cutoff_gradient_fd( NONBOND_DD_ARGS, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    nonbond_dd_cutoff_gradient( si->term.dA, si->term.dC, si->term.dQ1Q2, this->_Nonbond_invdd, this->_Nonbond_r_switch, POW2(this->_Nonbond_r_switch), this->_Nonbond_r_cut, POW2(this->_Nonbond_r_cut), this->_Nonbond_r_cut-this->_Nonbond_r_switch, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    nonbond_dd_cutoff_gradient_fd( si->term.dA, si->term.dC, si->term.dQ1Q2, this->_Nonbond_invdd, this->_Nonbond_r_switch, POW2(this->_Nonbond_r_switch), this->_Nonbond_r_cut, POW2(this->_Nonbond_r_cut), this->_Nonbond_r_cut-this->_Nonbond_r_switch, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     if (!test_match( stream, "nonbond_dd_cutoff_force", POS_SIZE,
                      force_new, force_ground,
                      0, 0,
@@ -122,8 +122,8 @@ void EnergyNonbond_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    nonbond_dd_cutoff_hessian( NONBOND_DD_ARGS, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    nonbond_dd_cutoff_hessian_fd( NONBOND_DD_ARGS, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    nonbond_dd_cutoff_hessian( si->term.dA, si->term.dC, si->term.dQ1Q2, this->_Nonbond_invdd, this->_Nonbond_r_switch, POW2(this->_Nonbond_r_switch), this->_Nonbond_r_cut, POW2(this->_Nonbond_r_cut), this->_Nonbond_r_cut-this->_Nonbond_r_switch, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    nonbond_dd_cutoff_hessian_fd( si->term.dA, si->term.dC, si->term.dQ1Q2, this->_Nonbond_invdd, this->_Nonbond_r_switch, POW2(this->_Nonbond_r_switch), this->_Nonbond_r_cut, POW2(this->_Nonbond_r_cut), this->_Nonbond_r_cut-this->_Nonbond_r_switch, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     if (!test_match( stream, "nonbond_dd_cutoff_hessian", POS_SIZE,
                      force_new, force_ground,
                      hessian_new, hessian_ground,
@@ -137,6 +137,18 @@ void EnergyNonbond_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
   }
   core::print(fmt::format("nonbond_dd_cutoff errors = {}\n", errs), stream);
 }
+
+
+
+CL_DEFMETHOD EnergyNonbond_O::rebuildPairList(NVector_sp nvPosition) {
+xxxxxx
+};
+
+
+
+
+
+
 
 }
 
@@ -609,7 +621,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
             position,
             &totalNonbondEnergy,
             NULL,
-            NULL,
+            NoHessian(),
             NULL,
             NULL);
         }
@@ -633,7 +645,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
               position,
               &totalNonbondEnergy,
               rforce,
-              NULL,
+              NoHessian(),
               rdvec,
               rhdvec);
         }
@@ -655,7 +667,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
               position,
               &totalNonbondEnergy,
               rforce,
-              NULL,
+              NoHessian(),
               NULL,
               NULL );
         }
@@ -1085,44 +1097,35 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString() {
 
 void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField,
                                                   core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes) {
-  {
-    if (keepInteractionFactory.nilp()) return;
-    core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyNonbond_O::staticClass());
-    bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
-    EnergyNonbond energyNonbond;
-    Loop loop;
-    loop.loopTopGoal(matter, PROPERS);
-    size_t terms(0);
-    // Don't add duplicate terms
-    std::set<pair<size_t, size_t>> duplicates;
-    while (loop.advanceLoopAndProcess()) {
-      Atom_sp a1 = loop.getAtom1();
-      Atom_sp a4 = loop.getAtom4();
-      auto ea1 = atomTable->getEnergyAtomPointer(a1);
-      auto ea4 = atomTable->getEnergyAtomPointer(a4);
-      size_t ia1 = ea1->_IndexTimes3;
-      size_t ia4 = ea4->_IndexTimes3;
-      if (skipInteraction_EnergyNonbond(keepInteraction, a1, a4, core::make_fixnum(ia1), core::make_fixnum(ia4))) continue;
-      if (ia1 > ia4) {
-        size_t ttt = ia1;
-        ia1 = ia4;
-        ia4 = ttt;
-      }
-      auto ia1ia4 = std::make_pair(ia1, ia4);
-      if (!duplicates.contains(ia1ia4)) {
-        duplicates.insert(ia1ia4);
-        LOG("About to addTerm");
-        if (hasKeepInteractionFunction) {
-          core::T_sp result = core::eval::funcall(keepInteraction,ea1->atom(),ea4->atom());
-          if (result.notnilp()) {
-            energyNonbond.defineForAtomPair(forceField, true,
-                                            ea1->atom(), ea4->atom(),
-                                            ea1->coordinateIndexTimes3(),
-                                            ea4->coordinateIndexTimes3(),
-                                            this->asSmartPtr(), atomTypes );
-            this->addTerm(energyNonbond);
-          }
-        } else {
+  if (keepInteractionFactory.nilp()) return;
+  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyNonbond_O::staticClass());
+  bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
+  EnergyNonbond energyNonbond;
+  Loop loop;
+  loop.loopTopGoal(matter, PROPERS);
+  size_t terms(0);
+  // Don't add duplicate terms
+  std::set<pair<size_t, size_t>> duplicates;
+  while (loop.advanceLoopAndProcess()) {
+    Atom_sp a1 = loop.getAtom1();
+    Atom_sp a4 = loop.getAtom4();
+    auto ea1 = atomTable->getEnergyAtomPointer(a1);
+    auto ea4 = atomTable->getEnergyAtomPointer(a4);
+    size_t ia1 = ea1->_IndexTimes3;
+    size_t ia4 = ea4->_IndexTimes3;
+    if (skipInteraction_EnergyNonbond(keepInteraction, a1, a4, core::make_fixnum(ia1), core::make_fixnum(ia4))) continue;
+    if (ia1 > ia4) {
+      size_t ttt = ia1;
+      ia1 = ia4;
+      ia4 = ttt;
+    }
+    auto ia1ia4 = std::make_pair(ia1, ia4);
+    if (!duplicates.contains(ia1ia4)) {
+      duplicates.insert(ia1ia4);
+      LOG("About to addTerm");
+      if (hasKeepInteractionFunction) {
+        core::T_sp result = core::eval::funcall(keepInteraction,ea1->atom(),ea4->atom());
+        if (result.notnilp()) {
           energyNonbond.defineForAtomPair(forceField, true,
                                           ea1->atom(), ea4->atom(),
                                           ea1->coordinateIndexTimes3(),
@@ -1130,13 +1133,20 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
                                           this->asSmartPtr(), atomTypes );
           this->addTerm(energyNonbond);
         }
-        LOG("Returned from addTerm");
-        ++terms;
+      } else {
+        energyNonbond.defineForAtomPair(forceField, true,
+                                        ea1->atom(), ea4->atom(),
+                                        ea1->coordinateIndexTimes3(),
+                                        ea4->coordinateIndexTimes3(),
+                                        this->asSmartPtr(), atomTypes );
+        this->addTerm(energyNonbond);
       }
+      LOG("Returned from addTerm");
+      ++terms;
     }
-    if (chem__verbose(0))
-      core::clasp_write_string(fmt::format("Built 14 interaction table with {} terms\n", terms));
   }
+  if (chem__verbose(0))
+    core::clasp_write_string(fmt::format("Built 14 interaction table with {} terms\n", terms));
 }
 
 void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField,

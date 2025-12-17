@@ -219,6 +219,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
+  void rebuildPairList(NVector_sp nvPosition);
+  
   virtual core::List_sp extract_vectors_as_alist() const;
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,

@@ -51,7 +51,103 @@ This is an open source license for the CANDO software from Temple University, bu
 #define INCLUDE_TERM_DECLARES "cando/chem/energy_functions/_DihedralHarmonicSpeedy_termDeclares.cc"
 #define INCLUDE_TERM_CODE "cando/chem/energy_functions/_DihedralHarmonicSpeedy_termCode.cc"
 
+
 namespace chem {
+
+#include "cando/chem/energyKernels/dihedral_restraint_energy.c"
+#include "cando/chem/energyKernels/dihedral_restraint_gradient.c"
+#include "cando/chem/energyKernels/dihedral_restraint_hessian.c"
+
+void EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+{
+#define POS_SIZE 12
+  double energy_new;
+  double energy_ground;
+  double position[POS_SIZE];
+  double force_new[POS_SIZE];
+  double force_ground[POS_SIZE];
+  double hessian_new[POS_SIZE*POS_SIZE];
+  double hessian_ground[POS_SIZE*POS_SIZE];
+  double dvec_new[POS_SIZE];
+  double dvec_ground[POS_SIZE];
+  double hdvec_new[POS_SIZE];
+  double hdvec_ground[POS_SIZE];
+  size_t idx = 0;
+  size_t errs = 0;
+  for (auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di, ++idx) {
+    position[0]  = coords[di->term.I1];
+    position[1]  = coords[di->term.I1+1];
+    position[2]  = coords[di->term.I1+2];
+    position[3]  = coords[di->term.I2];
+    position[4]  = coords[di->term.I2+1];
+    position[5]  = coords[di->term.I2+2];
+    position[6]  = coords[di->term.I3];
+    position[7]  = coords[di->term.I3+1];
+    position[8]  = coords[di->term.I3+2];
+    position[9]  = coords[di->term.I4];
+    position[10] = coords[di->term.I4+1];
+    position[11] = coords[di->term.I4+2];
+
+    energy_new = energy_ground = 0.0;
+    test_zero(POS_SIZE,
+        force_new, force_ground,
+        hessian_new, hessian_ground,
+        dvec_new, dvec_ground,
+        hdvec_new, hdvec_ground);
+    dihedral_restraint_gradient(di->term.kdh, di->term.phi0,
+        0, 3, 6, 9,
+        position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new);
+    dihedral_restraint_gradient_fd(di->term.kdh, di->term.phi0,
+        0, 3, 6, 9,
+        position, &energy_ground, force_ground, hessian_ground,
+        dvec_ground, hdvec_ground);
+    if (!test_match(stream, "dihedral_restraint_gradient", POS_SIZE,
+            force_new, force_ground,
+            0, 0,
+            0, 0)) {
+      ++errs;
+      test_position(stream, POS_SIZE, position);
+      core::print(fmt::format("MISMATCH dihedral_restraint_gradient #{} kdh = {} phi0 = {}\n",
+                      idx, di->term.kdh, di->term.phi0), stream);
+    }
+
+    energy_new = energy_ground = 0.0;
+    test_zero(POS_SIZE,
+        force_new, force_ground,
+        hessian_new, hessian_ground,
+        dvec_new, dvec_ground,
+        hdvec_new, hdvec_ground);
+    dihedral_restraint_hessian(di->term.kdh, di->term.phi0,
+        0, 3, 6, 9,
+        position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new);
+    dihedral_restraint_hessian_fd(di->term.kdh, di->term.phi0,
+        0, 3, 6, 9,
+        position, &energy_ground, force_ground, hessian_ground,
+        dvec_ground, hdvec_ground);
+    if (!test_match(stream, "dihedral_restraint_hessian", POS_SIZE,
+            force_new, force_ground,
+            hessian_new, hessian_ground,
+            hdvec_new, hdvec_ground)) {
+      ++errs;
+      test_position(stream, POS_SIZE, position);
+      core::print(fmt::format("MISMATCH dihedral_restraint_hessian #{} kdh = {} phi0 = {}\n",
+                      idx, di->term.kdh, di->term.phi0), stream);
+    }
+  }
+  core::print(fmt::format("dihedral_restraint errors = {}\n", errs), stream);
+}
+
+}
+
+
+
+namespace chem {
+
+
+
+
+
+
 
 // This is super important!  Mathematica uses the opposite order of arguments from atan2
 #define ArcTan(x_,y_) atan2(y_,x_)

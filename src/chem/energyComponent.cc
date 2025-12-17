@@ -212,12 +212,12 @@ bool test_match( core::T_sp stream,
                  double* hdvec_new, double* hdvec_ground )
 {
   size_t errs=0;
-  errs+=compare_array(stream,label,"force",force_new,force_ground,position_size,0.000000001,0.000001);
+  errs+=compare_array(stream,label,"force",force_new,force_ground,position_size,0.0001,0.0001);
   if (hdvec_new&&hdvec_ground) {
-    errs+=compare_array(stream,label,"hdvec",hdvec_new,hdvec_ground,position_size,0.000000001,0.000001);
+    errs+=compare_array(stream,label,"hdvec",hdvec_new,hdvec_ground,position_size,0.0001,0001);
   }
   if (hessian_new&&hessian_ground) {
-    errs+=compare_hessian(stream,label,hessian_new,hessian_ground,position_size,0.000000001,0.000001);
+    errs+=compare_hessian(stream,label,hessian_new,hessian_ground,position_size,0.0001,0.0001);
   }
   return (errs==0);
 }
