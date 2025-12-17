@@ -166,6 +166,9 @@ class EnergyNonbond_O : public EnergyComponent_O
  public: // instance variables
   double		_EnergyElectrostatic;
   bool                _UsesExcludedAtoms;
+  double              _Nonbond_r_switch;
+  double              _Nonbond_r_cut;
+  double              _Nonbond_invdd; // Distance dependent dielectric reciprocal
     size_t                              _NonbondsKept;
     size_t                              _NonbondsDiscarded;
     // Original way of defining nonbonds with list of nonbond terms
@@ -194,6 +197,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
   size_t _InteractionsKept;
   size_t _InteractionsDiscarded;
+
  public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
@@ -204,6 +208,9 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual size_t numberOfTerms() { return this->_Terms.size();};
   void callForEachTerm(core::Function_sp callback);
  public:
+
+  void runTestCalls(core::T_sp stream, chem::NVector_sp coords) const;
+  void set_nonbond_pairlist_parameters(double r_switch, double r_cut, double distance_dielectric);
 
   CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndexes;}
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndexes;}
@@ -275,11 +282,17 @@ class EnergyNonbond_O : public EnergyComponent_O
   void setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms);
   void checkEnergyNonbond();
   EnergyNonbond_sp copyFilter(core::T_sp keepInteractionFactory);
+
+  virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
+
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
 
   EnergyNonbond_O() :
       _UsesExcludedAtoms(true),
+      _Nonbond_r_switch(10.0),
+      _Nonbond_r_cut(12.0),
+      _Nonbond_invdd(1.0),
       _FFNonbondDb(nil<core::T_O>()),
       _InteractionsKept(0),
       _InteractionsDiscarded(0)

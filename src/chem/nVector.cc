@@ -958,5 +958,15 @@ CL_DEFUN double chem__nvector_root_mean_square_difference_transformed(NVector_sp
   return sqrt(meanSumOfSquares);
 }
 
+CL_DEFUN void chem__nvector_write_c(NVector_sp vec, core::T_sp stream) {
+  core::print("{ ", stream);
+  for (size_t ii=0; ii<vec->length(); ++ii ) {
+    core::print(fmt::format(" {}", (*vec)[ii]), stream);
+    if (ii<vec->length()-1) {
+      core::print(",\n",stream);
+    }
+  }
+  core::print(" }\n", stream);
+}
 
 }

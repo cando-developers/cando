@@ -1773,4 +1773,19 @@ double EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
   return energy;
 };
 
+
+void EnergyDihedral_O::emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const
+{
+  SIMPLE_ERROR("Update EnergyDihedral_O::emitTestCalls");
+  #if 0
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    core::print(fmt::format("test_dihedral( errs, {}, {}, {}, {}, {}, {}, {}, {}, position_size, position, force_new, force_old, hessian_new, hessian_old, dvec_new, dvec_old, hdvec_new, hdvec_old );\n",
+                            si->term.V, si->term.DN, si->term.sinPhase, si->term.cosPhase, si->term.I1, si->term.I2, si->term.I3, si->term.I4 ),stream);
+  }
+  #endif
+}
+
+
+
 };

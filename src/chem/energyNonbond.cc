@@ -54,6 +54,93 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
+namespace chem {
+
+#include "cando/chem/energyKernels/nonbond_dd_cutoff_energy.c"
+#include "cando/chem/energyKernels/nonbond_dd_cutoff_gradient.c"
+#include "cando/chem/energyKernels/nonbond_dd_cutoff_hessian.c"
+
+}
+
+
+
+
+namespace chem {
+
+void EnergyNonbond_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+{
+  if (this->_UsesExcludedAtoms) {
+    SIMPLE_ERROR("You cannot runTestCalls with _UseExcludedAtoms = true");
+  }
+  #define POS_SIZE 6
+  double energy_new;
+  double energy_ground;
+  double position[POS_SIZE];
+  double force_new[POS_SIZE];
+  double force_ground[POS_SIZE];
+  double hessian_new[POS_SIZE*POS_SIZE];
+  double hessian_ground[POS_SIZE*POS_SIZE];
+  double dvec_new[POS_SIZE];
+  double dvec_ground[POS_SIZE];
+  double hdvec_new[POS_SIZE];
+  double hdvec_ground[POS_SIZE];
+  size_t idx=0;
+  size_t errs = 0;
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    position[0] = coords[si->term.I1];
+    position[1] = coords[si->term.I1+1];
+    position[2] = coords[si->term.I1+2];
+    position[3] = coords[si->term.I2];
+    position[4] = coords[si->term.I2+1];
+    position[5] = coords[si->term.I2+2];
+    double invdd = this->_Nonbond_invdd;
+    energy_new = 0.0;
+    energy_ground = 0.0;
+#define POW2(xx) (xx*xx)
+#define NONBOND_DD_ARGS si->term.dA, si->term.dC, si->term.dQ1Q2, this->_Nonbond_invdd, this->_Nonbond_r_switch, POW2(this->_Nonbond_r_switch), this->_Nonbond_r_cut, POW2(this->_Nonbond_r_cut), this->_Nonbond_r_cut-this->_Nonbond_r_switch, si->term.I1, si->term.I2
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    nonbond_dd_cutoff_gradient( NONBOND_DD_ARGS, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    nonbond_dd_cutoff_gradient_fd( NONBOND_DD_ARGS, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    if (!test_match( stream, "nonbond_dd_cutoff_force", POS_SIZE,
+                     force_new, force_ground,
+                     0, 0,
+                     0, 0 )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH nonbond_dd_cutoff_gradient #{} dA = {}  dC = {}\n",
+                              idx, si->term.dA, si->term.dC ), stream );
+    }
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    nonbond_dd_cutoff_hessian( NONBOND_DD_ARGS, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    nonbond_dd_cutoff_hessian_fd( NONBOND_DD_ARGS, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    if (!test_match( stream, "nonbond_dd_cutoff_hessian", POS_SIZE,
+                     force_new, force_ground,
+                     hessian_new, hessian_ground,
+                     hdvec_new, hdvec_ground )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH nonbond_dd_cutoff_hessian #{} dA = {}  dC = {}\n",
+                              idx, si->term.dA, si->term.dC ), stream );
+    }
+    idx++;
+  }
+  core::print(fmt::format("nonbond_dd_cutoff errors = {}\n", errs), stream);
+}
+
+}
+
+
 #if 0
 int	_areValuesCloseNB( double numVal, double analVal, const char* funcName, const char* termName, int index )
 {
@@ -91,6 +178,16 @@ int	_areValuesCloseNB( double numVal, double analVal, const char* funcName, cons
 // #define LOG_ENERGY(...) core::clasp_write_string(fmt::format(__VA_ARGS__))
 
 namespace chem {
+
+CL_DEFMETHOD
+void EnergyNonbond_O::set_nonbond_pairlist_parameters( double r_switch, double r_cut, double distance_dielectric ) {
+  this->_Nonbond_r_switch = r_switch;
+  this->_Nonbond_r_cut = r_cut;
+  if (distance_dielectric<VERYSMALL) {
+    SIMPLE_ERROR("distance-dielectric must be a reasonable value - passed {}", distance_dielectric );
+  }
+  this->_Nonbond_invdd = 1.0/distance_dielectric;
+}
 
 #define PBX(_delta_) (_delta_)
 #define PBY(_delta_) (_delta_)
@@ -406,7 +503,7 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
     It as a template function so that template arguments can inline or elide testing code.
  */
 template <class MaybeFiniteDiff>
-double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp score, NVector_sp pos,
+double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp score, NVector_sp nvposition,
                                    core::T_sp energyScale, core::T_sp componentEnergy,
                                    bool calcForce, gc::Nilable<NVector_sp> force, bool calcDiagonalHessian,
                                    bool calcOffDiagonalHessian, gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
@@ -420,10 +517,6 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
 #define CUTOFF_SQUARED nonbondCutoffSquared
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
   double energyElectrostatic = 0.0;
   KahanSummation energyVdw;
   double energyVdw14 = 0.0;
@@ -434,6 +527,14 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
   bool hasForce = force.notnilp();
   bool hasHessian = hessian.notnilp();
   bool hasHdAndD = (hdvec.notnilp()) && (dvec.notnilp());
+
+  double totalNonbondEnergy = 0.0;
+  DOUBLE* position = &(*nvposition)[0];
+  DOUBLE* rforce = NULL;
+  DOUBLE* rhessian = NULL; // &(*hessian)[0];
+  DOUBLE* rhdvec = NULL;
+  DOUBLE* rdvec = NULL;
+
 #define NONBOND_CALC_FORCE
 #define NONBOND_CALC_DIAGONAL_HESSIAN
 #define NONBOND_CALC_OFF_DIAGONAL_HESSIAN
@@ -442,7 +543,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
   { x = nbi->term.x; }
 #undef NONBOND_SET_POSITION
 #define NONBOND_SET_POSITION(x, ii, of)                                                                                            \
-  { x = pos->element(ii + of); }
+  { x = position->element(ii + of); }
 #undef NONBOND_EEEL_ENERGY_ACCUMULATE
 #define NONBOND_EEEL_ENERGY_ACCUMULATE(e)                                                                                          \
   {                                                                                                                                \
@@ -487,45 +588,86 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis, ScoringFunction_sp sc
       num_real x1, y1, z1, x2, y2, z2, dA, dC, dQ1Q2;
       int I1, I2, i;
       gctools::Vec0<EnergyNonbond>::iterator nbi;
-      for (i = 0; i < nonBondTerms; i++) {
-        nbi = firstElement + i;
-        bool InteractionIs14 = nbi->_Is14;
-#ifdef DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-        if (mthis->_Debug_NumberOfNonbondTermsToCalculate > 0) {
-          if (i >= mthis->_Debug_NumberOfNonbondTermsToCalculate) {
-            break;
-          }
+
+      double r_switch2 = mthis->_Nonbond_r_switch*mthis->_Nonbond_r_switch;
+      double r_cut2 = mthis->_Nonbond_r_cut*mthis->_Nonbond_r_cut;
+      double inv_range = 1.0/(mthis->_Nonbond_r_cut-mthis->_Nonbond_r_switch); // 1.0/(r_cut - r_switch)
+      if (!hasForce) {
+        for (auto si = mthis->_Terms.begin(); si != mthis->_Terms.end(); si++ ) {
+          nonbond_dd_cutoff_energy(
+            si->term.dA,
+            si->term.dC,
+            si->term.dQ1Q2,
+            mthis->_Nonbond_invdd,         // dd for distance dependent dielectric
+            mthis->_Nonbond_r_switch,   // r_switch
+            r_switch2,                 // r_switch^2
+            mthis->_Nonbond_r_cut,      // r_cut
+            r_cut2,                    // r_cut^
+            inv_range,                 // inv_range
+            si->term.I1,
+            si->term.I2,
+            position,
+            &totalNonbondEnergy,
+            NULL,
+            NULL,
+            NULL,
+            NULL);
         }
-#endif
-#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
-#undef CUTOFF_SQUARED
-#undef DIELECTRIC
-        MaybeFiniteDiff::maybeTestFiniteDifference(score, energyScale, I1, I2, activeAtomMask, x1, y1, z1, x2, y2, z2, dA, dC, dQ1Q2, fx1, fy1,
-                                                   fz1, fx2, fy2, fz2, index, fails, debugForce);
-        index++;
-
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-        nbi->_calcForce = calcForce;
-        nbi->_calcDiagonalHessian = calcDiagonalHessian;
-        nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-#undef EVAL_SET
-
-#define EVAL_SET(var, val)                                                                                                         \
-  { nbi->eval.var = val; };
-#include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
-#endif //]
-
+      } else if (hasHdAndD) {
+        for (auto si = mthis->_Terms.begin(); si != mthis->_Terms.end(); si++ ) {
+          rforce = &(*force)[0];
+          rhdvec = &(*hdvec)[0];
+          rdvec = &(*dvec)[0];
+          nonbond_dd_cutoff_hessian(
+              si->term.dA,
+              si->term.dC,
+              si->term.dQ1Q2,
+              mthis->_Nonbond_invdd,         // dd for distance dependent dielectric
+              mthis->_Nonbond_r_switch,   // r_switch
+              r_switch2,                 // r_switch^2
+              mthis->_Nonbond_r_cut,      // r_cut
+              r_cut2,                    // r_cut^
+              inv_range,                 // inv_range
+              si->term.I1,
+              si->term.I2,
+              position,
+              &totalNonbondEnergy,
+              rforce,
+              NULL,
+              rdvec,
+              rhdvec);
+        }
+      } else { // if (hasForce)
+        for (auto si = mthis->_Terms.begin(); si != mthis->_Terms.end(); si++ ) {
+          rforce = &(*force)[0];
+          nonbond_dd_cutoff_gradient(
+              si->term.dA,
+              si->term.dC,
+              si->term.dQ1Q2,
+              mthis->_Nonbond_invdd,         // dd for distance dependent dielectric
+              mthis->_Nonbond_r_switch,   // r_switch
+              r_switch2,                 // r_switch^2
+              mthis->_Nonbond_r_cut,      // r_cut
+              r_cut2,                    // r_cut^
+              inv_range,                 // inv_range
+              si->term.I1,
+              si->term.I2,
+              position,
+              &totalNonbondEnergy,
+              rforce,
+              NULL,
+              NULL,
+              NULL );
+        }
       }
+
     }
   }
   LOG("Nonbond energy vdw({}) electrostatic({})\n", (num_real)mthis->_EnergyVdw, mthis->_EnergyElectrostatic);
   LOG("Nonbond energy }\n");
 
-  maybeSetEnergy(componentEnergy, _sym_energyElectrostatic, energyElectrostatic);
-  maybeSetEnergy(componentEnergy, _sym_energyVdw, energyVdw.getSum());
-  maybeSetEnergy(componentEnergy, _sym_energyElectrostatic14, energyElectrostatic14);
-  maybeSetEnergy(componentEnergy, _sym_energyVdw14, energyVdw14);
-  return energyElectrostatic + energyVdw.getSum() + energyElectrostatic14 + energyVdw14;
+  maybeSetEnergy(componentEnergy, _sym_energyNonbondTotal, totalNonbondEnergy );
+  return totalNonbondEnergy;
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg, find_type);
@@ -1309,6 +1451,23 @@ if (!this->_UsesExcludedAtoms) {
 }
 return copy;
   }
+
+void EnergyNonbond_O::emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const
+{
+  SIMPLE_ERROR("Update me");
+#if 0
+  if (!this->_UsesExcludedAtoms) {
+    for ( auto si=this->_Terms.begin();
+          si!=this->_Terms.end(); si++ ) {
+      core::print(fmt::format("test_nonbond( errs, {}, {}, {}, {}, {}, position_size, position, force_new, force_old, hessian_new, hessian_old, dvec_new, dvec_old, hdvec_new, hdvec_old );\n",
+                              si->term.dA, si->term.dC, si->term.dQ1Q2, si->term.I1, si->term.I2 ), stream);
+    }
+  } else {
+    SIMPLE_ERROR("You cannot emit test calls for excluded atoms");
+  }
+#endif
+}
+
 
 
 }; // namespace chem

@@ -283,7 +283,7 @@
 	 tx149 = tx143 + tx145 + tx146; 		/* rule 282 */
 	 tx150 = power2(tx67); 		/* rule 283 */
 	 tx151 = tx102 + tx142 + tx144 + tx147 + tx148 + tzz548; 		/* rule 284 */
-	 tx152 = tx151*tzz471; 		/* rule 285 */
+	 tx152 = 3.0*tx151*tzz471; 		/* rule 285 */
 	 tzz518 = tx67*tzz470; 		/* rule 286 */
 	 tx153 = tx149*tzz518; 		/* rule 287 */
 	 tx154 = tx150*tzz473; 		/* rule 288 */

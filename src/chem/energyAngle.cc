@@ -48,6 +48,29 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 namespace chem {
+// ----------------------------------------------------------------------
+// include energy functions
+// ----------------------------------------------------------------------
+
+#define VERYSMALL 1e-8
+
+class LinearAngleError {
+public:
+  LinearAngleError() {};
+};
+
+void linear_angle_error() {
+  throw LinearAngleError();
+}
+
+#include "cando/chem/energyKernels/angle_energy.c"
+#include "cando/chem/energyKernels/angle_gradient.c"
+#include "cando/chem/energyKernels/angle_hessian.c"
+
+};
+
+
+namespace chem {
 
 #define ENERGY_FUNCTION I1, I2, I3, activeAtomMask
 
@@ -434,9 +457,138 @@ bool		calcOffDiagonalHessian = true;
 }
 
 
+#if 1
+double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
+                                            chem::NVector_sp 	pos,
+                                            core::T_sp energyScale,
+                                            core::T_sp componentEnergy,
+                                            bool 		calcForce,
+                                            gc::Nilable<chem::NVector_sp> 	force,
+                                            bool		calcDiagonalHessian,
+                                            bool		calcOffDiagonalHessian,
+                                            gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                            gc::Nilable<chem::NVector_sp> hdvec,
+                                              gc::Nilable<chem::NVector_sp> dvec,
+                                              core::T_sp activeAtomMask,
+                                              core::T_sp debugInteractions )
+{
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
+  num_real termEnergy = 0.0;
+  this->_Evaluations++;
+
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  EnergyAngle* badAngle = NULL;
+
+  //
+  // Copy from implementAmberFunction::evaluateAll
+  //
+#define ANGLE_CALC_FORCE
+#define ANGLE_CALC_DIAGONAL_HESSIAN
+#define ANGLE_CALC_OFF_DIAGONAL_HESSIAN
+#undef ANGLE_SET_PARAMETER
+#define ANGLE_SET_PARAMETER(x)	{x=ai->term.x;}
+#undef ANGLE_SET_POSITION
+#define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#undef ANGLE_ENERGY_ACCUMULATE
+#define ANGLE_ENERGY_ACCUMULATE(e) { termEnergy += (e); }
+#undef	ANGLE_FORCE_ACCUMULATE
+#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
+#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	ANGLE_FORCE_ACCUMULATE 		ForceAcc
+#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
+#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
 
+  {
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
+#pragma clang diagnostic pop
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
+    //	double DotAbCb;
+    int I1, I2, I3,i;
+    DOUBLE* position = &(*pos)[0];
+    DOUBLE* rforce = NULL;
+    DOUBLE* rhessian = NULL; // &(*hessian)[0];
+    DOUBLE* rhdvec = NULL;
+    DOUBLE* rdvec = NULL;
+    gctools::Vec0<EnergyAngle>::iterator ai;
+
+    if (!hasForce) {
+      for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
+        try {
+          angle_energy(
+              ai->term.kt,ai->term.t0,
+              ai->term.I1,ai->term.I2,ai->term.I3,
+              position,
+              &termEnergy,
+              NULL,
+              NULL,
+              NULL,
+              NULL);
+        } catch (LinearAngleError(err)) {
+          badAngle = ai;
+          goto ERROR_LINEAR_ANGLE;
+        }
+      }
+    } else if (hasHdAndD) {
+      rforce = &(*force)[0];
+      rhdvec = &(*hdvec)[0];
+      rdvec = &(*dvec)[0];
+      for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
+        try {
+          angle_hessian(
+              //old_stretch_energy(
+              ai->term.kt,ai->term.t0,
+              ai->term.I1,ai->term.I2,ai->term.I3,
+              position,
+              &termEnergy,
+              rforce,
+              NULL,
+              rhdvec,
+              rdvec);
+        } catch (LinearAngleError(err)) {
+          badAngle = ai;
+          goto ERROR_LINEAR_ANGLE;
+        }
+      }
+    } else { // if (hasForce) {
+      rforce = &(*force)[0];
+      for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
+        try {
+          angle_gradient(
+              ai->term.kt,ai->term.t0,
+              ai->term.I1,ai->term.I2,ai->term.I3,
+              position,
+              &termEnergy,
+              rforce,
+              NULL,
+              NULL,
+              NULL);
+        } catch (LinearAngleError(err)) {
+          badAngle = ai;
+          goto ERROR_LINEAR_ANGLE;
+        }
+      }
+    }
+  }
+  maybeSetEnergy( componentEnergy, EnergyAngle_O::static_classSymbol(), termEnergy );
+  return termEnergy;
+ ERROR_LINEAR_ANGLE:
+  ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(badAngle->_Atom1,badAngle->_Atom2,badAngle->_Atom3),
+                                                             kw::_sym_coordinates,pos,
+                                                             kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(badAngle->term.I1), core::make_fixnum(badAngle->term.I2), core::make_fixnum(badAngle->term.I3))));
+}
+
+#else
 double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             chem::NVector_sp 	pos,
                                             core::T_sp energyScale,
@@ -498,16 +650,14 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
 //	double DotAbCb;
     int I1, I2, I3,i;
+    DOUBLE* position = &(*pos)[0];
+    DOUBLE* rforce = NULL;
+    DOUBLE* rhessian = NULL; // &(*hessian)[0];
+    DOUBLE* rhdvec = NULL;
+    DOUBLE* rdvec = NULL;
     gctools::Vec0<EnergyAngle>::iterator ai;
     for ( i=0,ai=this->_Terms.begin();
           ai!=this->_Terms.end(); ai++,i++ ) {
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfTermsToCalculate ) {
-          break;
-        }
-      }
-#endif
       bool IllegalAngle = false;
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
                 
@@ -529,7 +679,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
   maybeSetEnergy( componentEnergy, EnergyAngle_O::static_classSymbol(), termEnergy );
   return termEnergy;
 }
-
+#endif
 
 
 
@@ -754,5 +904,150 @@ EnergyAngle_sp EnergyAngle_O::copyFilter(core::T_sp keepInteractionFactory ) {
   }
   return copy;
 }
+
+void EnergyAngle_O::emitTestCalls(core::T_sp stream, chem::NVector_sp ) const
+{
+  SIMPLE_ERROR("Update me");
+#if 0
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    core::print(fmt::format("test_angle( errs, {}, {}, {}, {}, {}, position_size, position, force_new, force_old, hessian_new, hessian_old, dvec_new, dvec_old, hdvec_new, hdvec_old );\n",
+                            si->term.kt, si->term.t0, si->term.I1, si->term.I2, si->term.I3 ),stream);
+  }
+#endif
+}
+
+void EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+{
+#define POS_SIZE 9
+  double energy_new;
+  double energy_ground;
+  double position[POS_SIZE];
+  double force_new[POS_SIZE];
+  double force_ground[POS_SIZE];
+  double hessian_new[POS_SIZE*POS_SIZE];
+  double hessian_ground[POS_SIZE*POS_SIZE];
+  double dvec_new[POS_SIZE];
+  double dvec_ground[POS_SIZE];
+  double hdvec_new[POS_SIZE];
+  double hdvec_ground[POS_SIZE];
+  size_t idx=0;
+  size_t errs = 0;
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    position[0] = coords[si->term.I1];
+    position[1] = coords[si->term.I1+1];
+    position[2] = coords[si->term.I1+2];
+    position[3] = coords[si->term.I2];
+    position[4] = coords[si->term.I2+1];
+    position[5] = coords[si->term.I2+2];
+    position[6] = coords[si->term.I3];
+    position[7] = coords[si->term.I3+1];
+    position[8] = coords[si->term.I3+2];
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    try {
+      angle_gradient( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+      angle_gradient_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    } catch (LinearAngleError err) {
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("In angle_gradient hit linear-angle-error index = {}\n", idx), stream);
+      errs++;
+    }
+    if (!test_match(stream, "force", POS_SIZE,
+                    force_new, force_ground,
+                    0, 0,
+                    0, 0 )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH angle_gradient #{} kt = {}  t0 = {}\n",
+                              idx,
+                              si->term.kt, si->term.t0 ), stream );
+    }
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    try {
+      angle_hessian( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+      angle_hessian_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    } catch (LinearAngleError err) {
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("In angle_hessian hit linear-angle-error index = {}\n", idx), stream);
+      errs++;
+    }
+    if (!test_match( stream, "hessian", POS_SIZE,
+                     force_new, force_ground,
+                     hessian_new, hessian_ground,
+                     hdvec_new, hdvec_ground )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH angle_hessian #{} kt = {}  t0 = {}\n",
+                              idx,
+                              si->term.kt, si->term.t0 ), stream );
+    }
+    idx++;
+  }
+  core::print(fmt::format("angle errors = {}\n", errs), stream);
+}
+
+};
+
+#undef ANGLE_SET_PARAMETER
+#define ANGLE_SET_PARAMETER(x)
+
+#undef ANGLE_APPLY_ATOM_MASK
+#define ANGLE_APPLY_ATOM_MASK(i1,i2,i3)
+
+#undef ANGLE_SET_POSITION
+#define ANGLE_SET_POSITION(xx,ii,oo) xx = position[ii+oo]
+
+#undef ANGLE_ENERGY_ACCUMULATE
+#define ANGLE_ENERGY_ACCUMULATE(Energy) *energy_accumulate += Energy
+
+#define calcForce force  // if force is NULL then dont calculate force
+#define calcDiagonalHessian hdvec  // if  NULL then dont calculate hessian
+#define calcOffDiagonalHessian hdvec  // if NULL then dont calculate hessian
+
+#undef ANGLE_FORCE_ACCUMULATE
+#define ANGLE_FORCE_ACCUMULATE(ii,oo,ff) force[ii+oo] += ff
+
+#undef ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
+#undef ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
+#define ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelOffDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
+
+#undef ANGLE_DEBUG_INTERACTIONS
+#define ANGLE_DEBUG_INTERACTIONS(ii,jj,kk)
+
+#define doDebugInteractions false
+
+namespace chem {
+
+void old_angle_energy(DOUBLE kt, DOUBLE t0, SIZE_T I1, SIZE_T I2, SIZE_T I3, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec)
+{
+  DOUBLE x1;
+  DOUBLE y1;
+  DOUBLE z1;
+  DOUBLE x2;
+  DOUBLE y2;
+  DOUBLE z2;
+  DOUBLE x3;
+  DOUBLE y3;
+  DOUBLE z3;
+  size_t IllegalAngle;
+  
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
+#include <cando/chem/energy_functions/_Angle_termCode.cc>
+};
+
 
 };

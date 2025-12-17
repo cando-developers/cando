@@ -208,6 +208,36 @@ inline string	atomLabel(Atom_sp a)
   }
 
 
+// ----------------------------------------------------------------------
+// New kernel function accumulators
+// ----------------------------------------------------------------------
+
+
+#define KernelGradientAcc(ii1,oo1,vv1) force[ii1+oo1] += (-vv1)
+
+//
+// Accumulate an off diagonal Hessian element
+//
+#define	KernelOffDiagHessAcc(i1,o1,i2,o2,v) {\
+    auto v22 = v*dvec[i2+o2];\
+    auto v11 = v*dvec[i1+o1];\
+    hdvec[i1+o1] += v22; \
+    hdvec[i2+o2] += v11; \
+  }
+
+//
+// Accumulate a diagonal Hessian element
+//
+#define	KernelDiagHessAcc(i1,o1,i2,o2,v) {\
+      auto vd = v*dvec[i1+o1];\
+      hdvec[i1+o1] += vd; \
+  }
+
+
+// ----------------------------------------------------------------------
+// Old accumulators
+// ----------------------------------------------------------------------
+
 #define	ForceAcc(i,o,v) {\
       if ( hasForce ) {\
         force->setElement((i)+(o),(v)+force->getElement((i)+(o)));\
@@ -325,6 +355,9 @@ public:
   CL_LISPIFY_NAME("energy-component-evaluations");
   CL_DEFMETHOD 	size_t	evaluations() const { return this->_Evaluations; };
 
+  CL_DEFMETHOD virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const {SUBCLASS_MUST_IMPLEMENT(); };
+  CL_DEFMETHOD virtual void runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {SUBCLASS_MUST_IMPLEMENT(); };
+  
   CL_DEFMETHOD virtual core::List_sp extract_vectors_as_alist() const { SUBCLASS_MUST_IMPLEMENT(); };
  
   string enabledAsString();
@@ -373,5 +406,22 @@ void copyEnergyComponent(EnergyComponent_sp newComponent, EnergyComponent_sp ori
 ;
 };
 
+namespace chem {
+
+void test_zero( size_t num,
+                double* force_new, double* force_ground,
+                double* hessian_new, double* hessian_ground,
+                double* dvec_new, double* dvec_ground,
+                double* hdvec_new, double* hdvec_ground );
+
+bool test_match( core::T_sp stream, const char* label, size_t num,
+                double* force_new, double* force_ground,
+                double* hessian_new, double* hessian_ground,
+                double* hdvec_new, double* hdvec_ground );
+
+void test_position(core::T_sp stream, size_t pos_size, double* position );
+
+
+};
 
 #endif

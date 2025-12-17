@@ -206,6 +206,7 @@ Vector3				v1,v2;
 
 SYMBOL_EXPORT_SC_(ChemPkg, energyVdwExcludedAtoms);
 SYMBOL_EXPORT_SC_(ChemPkg, energyElectrostaticExcludedAtoms);
+SYMBOL_EXPORT_SC_(ChemPkg, energyNonbondTotal);
 SYMBOL_EXPORT_SC_(ChemPkg, energyVdw);
 SYMBOL_EXPORT_SC_(ChemPkg, energyElectrostatic);
 SYMBOL_EXPORT_SC_(ChemPkg, energyVdw14);

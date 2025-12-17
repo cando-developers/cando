@@ -192,6 +192,8 @@ public:
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m,
                                             core::T_sp activeAtomMask);
+  virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
+  virtual void runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                          NVector_sp 	pos,
                                        core::T_sp energyScale,
