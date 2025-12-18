@@ -175,6 +175,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
                                                                  gc::Nilable<NVector_sp> 	dvec,
                                                                  core::T_sp activeAtomMask )
 {
+  SIMPLE_ERROR("We put 14 terms in the _Terms14 - is that what we were evaluating here?");
   double dielectricConstant;
   double dQ1Q2Scale;
   double Evdw = 0.0;
@@ -261,7 +262,16 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
         }
 #endif
         num_real vljrc = nbi->term.dA*nonbondCutoffReciprocal12-nbi->term.dC*nonbondCutoffReciprocal6;
-        bool InteractionIs14 = nbi->_Is14;
+
+
+
+
+  SIMPLE_ERROR("We put 14 terms in the _Terms14 - is that what we were evaluating here?");
+        // bool InteractionIs14 = nbi->_Is14;  // FIXME FIXME FIXME
+  bool InteractionIs14 = false;
+
+
+
   double vdwScale = 1.0;
   double eelScale = 1.0;
   double DIELECTRIC = 1.0;

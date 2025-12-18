@@ -1292,103 +1292,92 @@ __END_DOC
   SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_aromaticity_informationSTAR);
 
   CL_LISPIFY_NAME("defineForMatter");
-  CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) (assign-types t));
-  CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types )
-  {
-    if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
-      {
-        SIMPLE_ERROR("You can only define energy functions for Aggregates or Molecules");
-      }
-
-    core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,nil<core::T_O>());
-    //
-    // Identify rings
-    //
-    if (chem__verbose(0)) core::clasp_write_string("Searching for rings.\n");
-
-    // If *current-rings* is bound then reuse it, otherwise, calculate rings and bind those
-    core::T_sp rings = unbound<core::T_sp>();
-    if (_sym_STARcurrent_ringsSTAR->boundP()) {
-      rings = _sym_STARcurrent_ringsSTAR->symbolValue();
-    } else if (keepInteractionFactory.notnilp()) {
-      rings = RingFinder_O::identifyRings(matter);
-    } else {
-      rings = nil<core::T_O>();
-    }
-    core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
-
-    //
-    // Assign relative Cahn-Ingold-Preylog priorities
-    //
-    if (chem__verbose(0)) core::clasp_write_string("Assigning CIP priorities.\n");
-    core::HashTable_sp cip = unbound<core::HashTable_O>();
-    if (keepInteractionFactory.notnilp()) {
-      cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
+CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) (assign-types t) (coordinates nil));
+CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types, core::T_sp coordinates )
+{
+  if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
+    {
+      SIMPLE_ERROR("You can only define energy functions for Aggregates or Molecules");
     }
 
-    //
-    // Assign atom types for each molecule
-    //
+  core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,nil<core::T_O>());
+  //
+  // Identify rings
+  //
+  if (chem__verbose(0)) core::clasp_write_string("Searching for rings.\n");
 
-    core::HashTable_sp force_fields = core::HashTable_O::createEq();
-    Loop moleculeLoop;
+  // If *current-rings* is bound then reuse it, otherwise, calculate rings and bind those
+  core::T_sp rings = unbound<core::T_sp>();
+  if (_sym_STARcurrent_ringsSTAR->boundP()) {
+    rings = _sym_STARcurrent_ringsSTAR->symbolValue();
+  } else if (keepInteractionFactory.notnilp()) {
+    rings = RingFinder_O::identifyRings(matter);
+  } else {
+    rings = nil<core::T_O>();
+  }
+  core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
+
+  //
+  // Assign relative Cahn-Ingold-Preylog priorities
+  //
+  if (chem__verbose(0)) core::clasp_write_string("Assigning CIP priorities.\n");
+  core::HashTable_sp cip = unbound<core::HashTable_O>();
+  if (keepInteractionFactory.notnilp()) {
+    cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
+  }
+
+  //
+  // Assign atom types for each molecule
+  //
+
+  core::HashTable_sp force_fields = core::HashTable_O::createEq();
+  Loop moleculeLoop;
+  moleculeLoop.loopTopGoal(matter,MOLECULES);
+  while (moleculeLoop.advanceLoopAndProcess() ) {
+    Molecule_sp molecule = moleculeLoop.getMolecule();
+    core::T_sp force_field_name = molecule->force_field_name();
+    if (force_fields->gethash(force_field_name).nilp()) {
+      core::T_sp combined_force_field = core::eval::funcall(_sym_find_force_field,force_field_name);
+      force_fields->setf_gethash(force_field_name,combined_force_field);
+    }
+  }
+  core::HashTable_sp atomTypes = core::HashTable_O::createEq();
+  // Assign given atom-types
+  Loop atom_loop;
+  atom_loop.loopTopGoal(matter,ATOMS);
+  while (atom_loop.advanceLoopAndProcess()) {
+    Atom_sp atom = atom_loop.getAtom();
+    core::T_sp type = atom->getPropertyOrDefault( kw::_sym_given_atom_type, nil<core::T_O>() );
+    if (type.notnilp()) {
+      atomTypes->setf_gethash(atom,type);
+    }
+  }
+  this->_AtomTypes = atomTypes;
+  if (assign_types) {
+    if (chem__verbose(0)) core::clasp_write_string("Assigning atom types.\n");
     moleculeLoop.loopTopGoal(matter,MOLECULES);
     while (moleculeLoop.advanceLoopAndProcess() ) {
       Molecule_sp molecule = moleculeLoop.getMolecule();
       core::T_sp force_field_name = molecule->force_field_name();
-      if (force_fields->gethash(force_field_name).nilp()) {
-        core::T_sp combined_force_field = core::eval::funcall(_sym_find_force_field,force_field_name);
-        force_fields->setf_gethash(force_field_name,combined_force_field);
-      }
+      [[maybe_unused]]core::T_sp use_given_types = molecule->force_field_use_given_types();
+      //      if (use_given_types.nilp()) {
+      core::T_sp combined_force_field = force_fields->gethash(force_field_name);
+      if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types for molecule {} using {}.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
+      //
+      // Calculate aromaticity using the rings we just calculated
+      //
+      core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
+      if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when about to assign force field types - it should not be");
+      core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
+      core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes);
     }
-    core::HashTable_sp atomTypes = core::HashTable_O::createEq();
-    // Assign given atom-types
-    Loop atom_loop;
-    atom_loop.loopTopGoal(matter,ATOMS);
-    while (atom_loop.advanceLoopAndProcess()) {
-      Atom_sp atom = atom_loop.getAtom();
-      core::T_sp type = atom->getPropertyOrDefault( kw::_sym_given_atom_type, nil<core::T_O>() );
-      if (type.notnilp()) {
-        atomTypes->setf_gethash(atom,type);
-      }
-    }
-    this->_AtomTypes = atomTypes;
-    if (assign_types) {
-      if (chem__verbose(0)) core::clasp_write_string("Assigning atom types.\n");
-      moleculeLoop.loopTopGoal(matter,MOLECULES);
-      while (moleculeLoop.advanceLoopAndProcess() ) {
-        Molecule_sp molecule = moleculeLoop.getMolecule();
-        core::T_sp force_field_name = molecule->force_field_name();
-        [[maybe_unused]]core::T_sp use_given_types = molecule->force_field_use_given_types();
-        //      if (use_given_types.nilp()) {
-        core::T_sp combined_force_field = force_fields->gethash(force_field_name);
-        if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types for molecule {} using {}.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
-        //
-        // Calculate aromaticity using the rings we just calculated
-        //
-        core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-        if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when about to assign force field types - it should not be");
-        core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-        core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes);
-#if 0
-      } else {
-        if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types for molecule {} using given-types for {}.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
-      Loop atom_loop;
-      atom_loop.loopTopGoal(molecule,ATOMS);
-      while (atom_loop.advanceLoopAndProcess()) {
-        Atom_sp atom = atom_loop.getAtom();
-        atomTypes->setf_gethash(atom,atom->atomType());
-      }
-    }
-#endif
   }
-}
-  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,keepInteractionFactory,cip,atomTypes);
+  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,keepInteractionFactory,cip,atomTypes,coordinates);
 }
 
 
-CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) cip-priorities atom-types);
-CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
+CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) cip-priorities atom-types coordinates);
+CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes, core::T_sp coordinates )
 {
   if (keepInteractionFactory.notnilp() && !gc::IsA<core::HashTable_sp>(cip_priorities)) {
     SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
@@ -1507,7 +1496,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   if (keepInteractionFactory.notnilp()) {
     if (chem__verbose(1)) core::clasp_write_string("About to calculate nonbond and restraint terms");
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
-    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,keepInteractionFactory,atomTypes);
+    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,keepInteractionFactory,atomTypes,coordinates);
     this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,keepInteractionFactory,cip_priorities,atomTypes);
   }
   core::eval::funcall(_sym_report_parameter_warnings);
@@ -1775,7 +1764,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
 CL_DOCSTRING(R"dx(Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.)dx");
-CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
+CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp coordinates )
 {
   if (keepInteractionFactory.nilp()) return;
   if (chem__verbose(0))
@@ -1792,7 +1781,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
     this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, nonbondForceField,keepInteractionFactory);
     this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
   } else {
-    this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, nonbondForceField,atomTypes, keepInteractionFactory );
+    this->_Nonbond->constructNonbondTermsFromAtomTable(this->_AtomTable, nonbondForceField,atomTypes,
+                                                       keepInteractionFactory, coordinates );
+    this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
   }
   if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built nonbond table for {} terms\n" , this->_Nonbond->numberOfTerms()));
 }

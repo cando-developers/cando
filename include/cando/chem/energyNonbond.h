@@ -74,7 +74,6 @@ public:
   Atom_sp      	_Atom1_enb;
   Atom_sp      	_Atom2_enb;
   TermNonBond	term;
-  bool		_Is14;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
   bool		_calcForce;
   bool		_calcDiagonalHessian;
@@ -171,13 +170,17 @@ class EnergyNonbond_O : public EnergyComponent_O
   double              _Nonbond_invdd; // Distance dependent dielectric reciprocal
     size_t                              _NonbondsKept;
     size_t                              _NonbondsDiscarded;
-    // Original way of defining nonbonds with list of nonbond terms
+  gctools::Vec0<TermType>	_Terms14;
+  // Pairlist
+  AtomTable_sp                  _AtomTable;
+  core::T_sp                    _NonbondForceField;
+  core::HashTable_sp            _AtomTypes;
+  core::T_sp                    _KeepInteractionFactory;
   gctools::Vec0<TermType>	_Terms;
   gctools::Vec0<TermType>	_BeyondThresholdTerms;
     // Correct way of defining nonbonds using excluded atom indexes
   // FIXME:  Get rid of _FFNonbondDb - and the old code that uses it.
   core::T_sp        _FFNonbondDb;
-  AtomTable_sp          _AtomTable;
   //  Tables for nonbonded calculation using excluded atoms and the Amber way
   size_t                     _ntypes;          // ntypes
   core::SimpleVector_sp      _atom_name_vector;  // atom-name-vector
@@ -200,12 +203,12 @@ class EnergyNonbond_O : public EnergyComponent_O
 
  public:
   typedef gctools::Vec0<TermType>::iterator iterator;
-  iterator begin() { return this->_Terms.begin(); };
-  iterator end() { return this->_Terms.end(); };
+  //  iterator begin() { return this->_Terms.begin(); };
+  //  iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
  public:
 //  core::List_sp termAtIndex(size_t index) const;
-  virtual size_t numberOfTerms() { return this->_Terms.size();};
+  virtual size_t numberOfTerms() { return this->_Terms.size(); };
   void callForEachTerm(core::Function_sp callback);
  public:
 
@@ -216,6 +219,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndexes;}
  public:
   void constructNonbondTermsBetweenResidues(Residue_sp res1, Residue_sp res2, core::T_sp nbForceField, core::HashTable_sp atomTypes );
+  void addTerm14(const TermType& term);
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
@@ -269,7 +273,8 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   core::T_sp getFFNonbondDb();
 
-  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory );
+  void updatePairList(core::T_sp tcoordinates);
+  void constructNonbondTermsFromAtomTable( AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory, core::T_sp coordinates);
   void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory );
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
   void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField, core::T_sp keepInteractionFactory );

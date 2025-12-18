@@ -263,8 +263,8 @@ namespace chem {
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
-    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true );
-    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
+    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true, core::T_sp coordinates=nil<core::T_O>() );
+    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes, core::T_sp coordinates );
     void generateStandardEnergyFunctionTables(Matter_sp mol,
                                               FFStretchDb_sp stretchDb,
                                               FFAngleDb_sp angleDb,
@@ -272,7 +272,7 @@ namespace chem {
                                               FFItorDb_sp itorDb,
                                               core::T_sp keepInteractionFactory,
                                               core::HashTable_sp atomTypes);
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp coordinates );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
 
     /*! Add the restraints to the energy function.
