@@ -54,9 +54,7 @@ namespace chem {
 void old_stretch_energy(DOUBLE kb, DOUBLE r0, SIZE_T I1, SIZE_T I2, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec);
 
 
-#include "cando/chem/energyKernels/stretch_energy.c"
-#include "cando/chem/energyKernels/stretch_gradient.c"
-#include "cando/chem/energyKernels/stretch_hessian.c"
+#include "cando/chem/energyKernels/stretch.c"
 
 }
 
@@ -94,6 +92,7 @@ void EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
   double hdvec_ground[POS_SIZE];
   size_t idx=0;
   size_t errs = 0;
+  Stretch stretch;
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
     position[0] = coords[si->term.I1];
@@ -109,8 +108,8 @@ void EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    stretch_gradient( si->term.kb, si->term.r0, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    stretch_gradient_fd( si->term.kb, si->term.r0, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    stretch.gradient( si->term.kb, si->term.r0, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    stretch.gradient_fd( si->term.kb, si->term.r0, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     if (!test_match( stream, "stretch_force", POS_SIZE,
                      force_new, force_ground,
                      0, 0,
@@ -127,8 +126,8 @@ void EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    stretch_hessian( si->term.kb, si->term.r0, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    stretch_hessian_fd( si->term.kb, si->term.r0, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    stretch.hessian( si->term.kb, si->term.r0, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    stretch.hessian_fd( si->term.kb, si->term.r0, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     if (!test_match( stream, "stretch_hessian", POS_SIZE,
                      force_new, force_ground,
                      hessian_new, hessian_ground,
@@ -514,6 +513,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   DOUBLE* rhessian = NULL; // &(*hessian)[0];
   DOUBLE* rhdvec = NULL;
   DOUBLE* rdvec = NULL;
+  Stretch stretch;
 #if 0
   for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
@@ -522,7 +522,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   if (!hasForce) {
     // energy only
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
-      stretch_energy(
+      stretch.energy(
           si->term.kb,si->term.r0,
           si->term.I1,si->term.I2,
           position,
@@ -537,7 +537,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
     rhdvec = &(*hdvec)[0];
     rdvec = &(*dvec)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
-      stretch_hessian(
+      stretch.hessian(
           //old_stretch_energy(
           si->term.kb,si->term.r0,
           si->term.I1,si->term.I2,
@@ -551,7 +551,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   } else { // if (hasForce)
     rforce = &(*force)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
-      stretch_gradient(
+      stretch.gradient(
           si->term.kb,si->term.r0,
           si->term.I1,si->term.I2,
           position,

@@ -53,9 +53,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-#include "cando/chem/energyKernels/dihedral_energy.c"
-#include "cando/chem/energyKernels/dihedral_gradient.c"
-#include "cando/chem/energyKernels/dihedral_hessian.c"
+#include "cando/chem/energyKernels/dihedral.c"
 
 
 void EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
@@ -74,6 +72,7 @@ void EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) 
   double hdvec_ground[POS_SIZE];
   size_t idx = 0;
   size_t errs = 0;
+  Dihedral dihedral;
   for ( auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di ) {
     position[0] = coords[di->term.I1];
     position[1] = coords[di->term.I1+1];
@@ -94,10 +93,10 @@ void EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) 
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    dihedral_gradient( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
+    dihedral.gradient( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
                        0, 3, 6, 9,
                        position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    dihedral_gradient_fd( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
+    dihedral.gradient_fd( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
                           0, 3, 6, 9,
                           position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     if (!test_match( stream, "dihedral_gradient", POS_SIZE,
@@ -116,10 +115,10 @@ void EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) 
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    dihedral_hessian( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
+    dihedral.hessian( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
                       0, 3, 6, 9,
                       position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    dihedral_hessian_fd( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
+    dihedral.hessian_fd( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
                          0, 3, 6, 9,
                          position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     if (!test_match( stream, "dihedral_hessian", POS_SIZE,

@@ -2228,6 +2228,4 @@ EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory
   return me;
 }
 
-
-
 };

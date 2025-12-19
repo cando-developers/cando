@@ -63,9 +63,7 @@ void linear_angle_error() {
   throw LinearAngleError();
 }
 
-#include "cando/chem/energyKernels/angle_energy.c"
-#include "cando/chem/energyKernels/angle_gradient.c"
-#include "cando/chem/energyKernels/angle_hessian.c"
+#include "cando/chem/energyKernels/angle.c"
 
 };
 
@@ -520,12 +518,13 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
     DOUBLE* rhessian = NULL; // &(*hessian)[0];
     DOUBLE* rhdvec = NULL;
     DOUBLE* rdvec = NULL;
+    Angle angle;
     gctools::Vec0<EnergyAngle>::iterator ai;
 
     if (!hasForce) {
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
         try {
-          angle_energy(
+          angle.energy(
               ai->term.kt,ai->term.t0,
               ai->term.I1,ai->term.I2,ai->term.I3,
               position,
@@ -545,7 +544,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
       rdvec = &(*dvec)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
         try {
-          angle_hessian(
+          angle.hessian(
               //old_stretch_energy(
               ai->term.kt,ai->term.t0,
               ai->term.I1,ai->term.I2,ai->term.I3,
@@ -564,7 +563,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
       rforce = &(*force)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
         try {
-          angle_gradient(
+          angle.gradient(
               ai->term.kt,ai->term.t0,
               ai->term.I1,ai->term.I2,ai->term.I3,
               position,
@@ -933,6 +932,7 @@ void EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) con
   double hdvec_ground[POS_SIZE];
   size_t idx=0;
   size_t errs = 0;
+  Angle angle;
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
     position[0] = coords[si->term.I1];
@@ -952,8 +952,8 @@ void EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) con
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
     try {
-      angle_gradient( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-      angle_gradient_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+      angle.gradient( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+      angle.gradient_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     } catch (LinearAngleError err) {
       test_position( stream, POS_SIZE, position );
       core::print(fmt::format("In angle_gradient hit linear-angle-error index = {}\n", idx), stream);
@@ -977,8 +977,8 @@ void EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) con
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
     try {
-      angle_hessian( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-      angle_hessian_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+      angle.hessian( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+      angle.hessian_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     } catch (LinearAngleError err) {
       test_position( stream, POS_SIZE, position );
       core::print(fmt::format("In angle_hessian hit linear-angle-error index = {}\n", idx), stream);

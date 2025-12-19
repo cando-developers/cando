@@ -208,8 +208,10 @@ class EnergyNonbond_O : public EnergyComponent_O
 //added by G 7.19.2011
  public:
 //  core::List_sp termAtIndex(size_t index) const;
-  virtual size_t numberOfTerms() { return this->_Terms.size(); };
+  CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
+  CL_DEFMETHOD virtual size_t numberOfTerms14() { return this->_Terms14.size(); };
   void callForEachTerm(core::Function_sp callback);
+  void callForEachTerm14(core::Function_sp callback);
  public:
 
   void runTestCalls(core::T_sp stream, chem::NVector_sp coords) const;
@@ -223,8 +225,6 @@ class EnergyNonbond_O : public EnergyComponent_O
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
-  void rebuildPairList(NVector_sp nvPosition);
-  
   virtual core::List_sp extract_vectors_as_alist() const;
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
@@ -273,7 +273,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   core::T_sp getFFNonbondDb();
 
-  void updatePairList(core::T_sp tcoordinates);
+  core::T_mv rebuildPairList(core::T_sp tcoordinates);
   void constructNonbondTermsFromAtomTable( AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory, core::T_sp coordinates);
   void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory );
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );

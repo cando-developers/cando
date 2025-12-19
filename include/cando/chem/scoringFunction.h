@@ -228,6 +228,11 @@ public:
                                                 core::T_sp activeAtomMask,
                                                 core::T_sp debugInteractions = nil<core::T_O>(),
                                                 bool disableRestraints=false) = 0;
+
+  void evaluateEnergyManyTimes( NVector_sp pos, size_t count );
+  void evaluateEnergyForceManyTimes( NVector_sp pos, size_t count );
+  void evaluateEnergyForceHdvecManyTimes( NVector_sp pos, size_t count );
+
   virtual double	evaluateEnergy( NVector_sp pos,
                                         core::T_sp energyScale,
                                         core::T_sp componentEnergy,
