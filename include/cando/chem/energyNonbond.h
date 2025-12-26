@@ -167,6 +167,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   bool                _UsesExcludedAtoms;
   double              _Nonbond_r_switch;
   double              _Nonbond_r_cut;
+  double              _Nonbond_r_pairlist;
   double              _Nonbond_invdd; // Distance dependent dielectric reciprocal
     size_t                              _NonbondsKept;
     size_t                              _NonbondsDiscarded;
@@ -202,6 +203,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   size_t _InteractionsDiscarded;
 
  public:
+  virtual std::string description() const;
   typedef gctools::Vec0<TermType>::iterator iterator;
   //  iterator begin() { return this->_Terms.begin(); };
   //  iterator end() { return this->_Terms.end(); };
@@ -214,8 +216,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   void callForEachTerm14(core::Function_sp callback);
  public:
 
-  void runTestCalls(core::T_sp stream, chem::NVector_sp coords) const;
-  void set_nonbond_pairlist_parameters(double r_switch, double r_cut, double distance_dielectric);
+  size_t runTestCalls(core::T_sp stream, chem::NVector_sp coords) const;
+  void set_nonbond_pairlist_parameters(double r_switch, double r_cut, double r_pairlist, double distance_dielectric);
 
   CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndexes;}
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndexes;}
@@ -299,6 +301,7 @@ class EnergyNonbond_O : public EnergyComponent_O
       _UsesExcludedAtoms(true),
       _Nonbond_r_switch(10.0),
       _Nonbond_r_cut(12.0),
+      _Nonbond_r_pairlist(14.0),
       _Nonbond_invdd(1.0),
       _FFNonbondDb(nil<core::T_O>()),
       _InteractionsKept(0),

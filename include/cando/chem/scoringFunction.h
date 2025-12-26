@@ -214,10 +214,10 @@ public:
 #endif
  
   CL_LISPIFY_NAME("evaluateAll");
-  CL_LAMBDA((scoring-function chem:scoring-function) pos &key energy-scale component-energy calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions disable-restraints);
+  CL_LAMBDA((scoring-function chem:scoring-function) pos &key energy-scale energy-components calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions disable-restraints);
   CL_DEFMETHOD virtual double	evaluateAll( 	NVector_sp pos,
                                                 core::T_sp energyScale,
-                                                core::T_sp componentEnergy,
+                                                core::T_sp energyComponents,
                                                 bool calcForce,
                                                 gc::Nilable<NVector_sp> force,
                                                 bool calcDiagonalHessian,

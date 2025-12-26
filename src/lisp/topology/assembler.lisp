@@ -371,13 +371,9 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
                                         (gethash receptor-oligomer-shape (orientations (orientations assembler)))
                                         nil))))
 
-#+(or)
-(defun complex-oligomer-shapes-orientations (assembler)
-  (multiple-value-bind (ligand-oligomer-shape ligand-orientation)
-      (ligand-oligomer-shape-orientation assembler)
-    (multiple-value-bind (receptor-oligomer-shape receptor-orientation)
-        (receptor-oligomer-shape-orientation assembler)
-      (values ligand-oligomer-shape ligand-orientation receptor-oligomer-shape receptor-orientation))))
+(defun complex-oligomer-shapes (assembler)
+  (values (ligand-oligomer-shape assembler)
+          (receptor-oligomer-shape assembler)))
 
 #+(or)
 (defgeneric lookup-orientation (assembler-or-orientations oligomer-thing)
@@ -1154,8 +1150,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
          (atres (elt (atresidues atmol) residue-index)))
     (when verbose (format t "applying internals for monomer: ~s~%" monomer))
     (apply-monomer-shape-to-atresidue-internals assembler assembler-internals oligomer-shape monomer-shape monomer-context atres :verbose verbose))
-  (topology:with-orientation (topology:lookup-orientation assembler oligomer-shape)
-    (adjust-internals assembler assembler-internals oligomer-shape)))
+  (adjust-internals assembler assembler-internals oligomer-shape))
 
 #|
 ;;;Idea to make monomer-shape subclasses control how internal coordinates get generated.
@@ -1398,7 +1393,15 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
     (kin:joint/apply-transform-to-xyz-coords-recursively (car joints) transform coords)))
 
 
-(defparameter *update-externals-depth* 0)
+(defun update-externals-for-receptor-oligomer-shape (assembler assembler-internals coords oligomer-shape)
+  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape :identity)
+  (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
+
+(defun update-externals-for-ligand-oligomer-shape (assembler assembler-internals coords oligomer-shape ligand-orientation)
+  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape ligand-orientation)
+  (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
+
+
 (defmethod update-externals ((assembler assembler) assembler-internals &key oligomer-shape
                                                                          (ligand-orientation :identity ligand-orientation-p)
                                                                          (coords (topology:make-coordinates-for-assembler assembler)))
@@ -1412,26 +1415,32 @@ Return the COORDS."
        ((null oligomer-shape)
         (unless ligand-orientation-p
           (error "You must provide the ligand-orientation when building ligand and receptor"))
-        (update-externals assembler assembler-internals :oligomer-shape (ligand-oligomer-shape assembler)
-                                                        :ligand-orientation ligand-orientation
-                                                        :coords coords)
-        (update-externals assembler assembler-internals :oligomer-shape (receptor-oligomer-shape assembler)
-                                                        :coords coords))
+        (update-externals-for-ligand-oligomer-shape assembler assembler-internals
+                                                    coords
+                                                    (ligand-oligomer-shape assembler)
+                                                    ligand-orientation)
+        (update-externals-for-receptor-oligomer-shape assembler assembler-internals
+                                                      coords
+                                                      (receptor-oligomer-shape assembler)))
        ((eq oligomer-shape (receptor-oligomer-shape assembler))
-        (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape :identity)
-        (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
+        (update-externals-for-receptor-oligomer-shape assembler assembler-internals
+                                                      coords
+                                                      (receptor-oligomer-shape assembler)))
        ((eq oligomer-shape (ligand-oligomer-shape assembler))
-        (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape ligand-orientation)
-        (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
+        (update-externals-for-ligand-oligomer-shape assembler assembler-internals
+                                                    coords
+                                                    (ligand-oligomer-shape assembler)
+                                                    ligand-orientation)
         (when (local-frame-specs ligand-orientation)
           (transform-externals-to-global-frame assembler (ligand-oligomer-shape assembler) ligand-orientation coords)))
        (t (error "What do we do here"))))
     ((and (= 1 (length (oligomer-shapes assembler)))
           (or (null oligomer-shape)
               (and oligomer-shape (eq oligomer-shape (ligand-oligomer-shape assembler)))))
-     (update-externals assembler assembler-internals :oligomer-shape (ligand-oligomer-shape assembler)
-                                                     :ligand-orientation ligand-orientation
-                                                     :coords coords))
+     (update-externals-for-ligand-oligomer-shape assembler assembler-internals
+                                                 coords
+                                                 (ligand-oligomer-shape assembler)
+                                                 ligand-orientation))
     (t (error "What do I do here")))
   coords)
 

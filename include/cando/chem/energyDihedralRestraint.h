@@ -160,7 +160,7 @@ public:
   virtual size_t numberOfTerms() { return this->_Terms.size();};
 public:
 
-  virtual void runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
   void addTerm(const TermType& term);
   size_t addDihedralRestraint(EnergyFunction_sp energyFunction,

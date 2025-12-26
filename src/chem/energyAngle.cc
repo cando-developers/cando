@@ -459,7 +459,7 @@ bool		calcOffDiagonalHessian = true;
 double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             chem::NVector_sp 	pos,
                                             core::T_sp energyScale,
-                                            core::T_sp componentEnergy,
+                                            core::T_sp energyComponents,
                                             bool 		calcForce,
                                             gc::Nilable<chem::NVector_sp> 	force,
                                             bool		calcDiagonalHessian,
@@ -516,9 +516,9 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
     DOUBLE* position = &(*pos)[0];
     DOUBLE* rforce = NULL;
     DOUBLE* rhessian = NULL; // &(*hessian)[0];
-    DOUBLE* rhdvec = NULL;
     DOUBLE* rdvec = NULL;
-    Angle angle;
+    DOUBLE* rhdvec = NULL;
+    Angle<NoHessian> angle;
     gctools::Vec0<EnergyAngle>::iterator ai;
 
     if (!hasForce) {
@@ -530,7 +530,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
               position,
               &termEnergy,
               NULL,
-              NULL,
+              NoHessian(),
               NULL,
               NULL);
         } catch (LinearAngleError(err)) {
@@ -538,28 +538,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
           goto ERROR_LINEAR_ANGLE;
         }
       }
-    } else if (hasHdAndD) {
-      rforce = &(*force)[0];
-      rhdvec = &(*hdvec)[0];
-      rdvec = &(*dvec)[0];
-      for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
-        try {
-          angle.hessian(
-              //old_stretch_energy(
-              ai->term.kt,ai->term.t0,
-              ai->term.I1,ai->term.I2,ai->term.I3,
-              position,
-              &termEnergy,
-              rforce,
-              NULL,
-              rhdvec,
-              rdvec);
-        } catch (LinearAngleError(err)) {
-          badAngle = ai;
-          goto ERROR_LINEAR_ANGLE;
-        }
-      }
-    } else { // if (hasForce) {
+    } else if (hasForce) {
       rforce = &(*force)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
         try {
@@ -569,7 +548,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
               position,
               &termEnergy,
               rforce,
-              NULL,
+              NoHessian(),
               NULL,
               NULL);
         } catch (LinearAngleError(err)) {
@@ -577,9 +556,30 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
           goto ERROR_LINEAR_ANGLE;
         }
       }
+    } else { // if (hasHdAndD) {
+      rforce = &(*force)[0];
+      rdvec = &(*dvec)[0];
+      rhdvec = &(*hdvec)[0];
+      for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
+        try {
+          angle.hessian(
+              //old_stretch_energy(
+              ai->term.kt,ai->term.t0,
+              ai->term.I1,ai->term.I2,ai->term.I3,
+              position,
+              &termEnergy,
+              rforce,
+              NoHessian(),
+              rdvec,
+              rhdvec);
+        } catch (LinearAngleError(err)) {
+          badAngle = ai;
+          goto ERROR_LINEAR_ANGLE;
+        }
+      }
     }
   }
-  maybeSetEnergy( componentEnergy, EnergyAngle_O::static_classSymbol(), termEnergy );
+  maybeSetEnergy( energyComponents, EnergyAngle_O::static_classSymbol(), termEnergy );
   return termEnergy;
  ERROR_LINEAR_ANGLE:
   ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(badAngle->_Atom1,badAngle->_Atom2,badAngle->_Atom3),
@@ -591,7 +591,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             chem::NVector_sp 	pos,
                                             core::T_sp energyScale,
-                                            core::T_sp componentEnergy,
+                                            core::T_sp energyComponents,
                                             bool 		calcForce,
                                             gc::Nilable<chem::NVector_sp> 	force,
                                             bool		calcDiagonalHessian,
@@ -652,8 +652,8 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
     DOUBLE* position = &(*pos)[0];
     DOUBLE* rforce = NULL;
     DOUBLE* rhessian = NULL; // &(*hessian)[0];
-    DOUBLE* rhdvec = NULL;
     DOUBLE* rdvec = NULL;
+    DOUBLE* rhdvec = NULL;
     gctools::Vec0<EnergyAngle>::iterator ai;
     for ( i=0,ai=this->_Terms.begin();
           ai!=this->_Terms.end(); ai++,i++ ) {
@@ -675,7 +675,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 #endif //]
     }
   }
-  maybeSetEnergy( componentEnergy, EnergyAngle_O::static_classSymbol(), termEnergy );
+  maybeSetEnergy( energyComponents, EnergyAngle_O::static_classSymbol(), termEnergy );
   return termEnergy;
 }
 #endif
@@ -916,7 +916,7 @@ void EnergyAngle_O::emitTestCalls(core::T_sp stream, chem::NVector_sp ) const
 #endif
 }
 
-void EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+size_t EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
 {
 #define POS_SIZE 9
   double energy_new;
@@ -932,7 +932,7 @@ void EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) con
   double hdvec_ground[POS_SIZE];
   size_t idx=0;
   size_t errs = 0;
-  Angle angle;
+  Angle<double*> angle;
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
     position[0] = coords[si->term.I1];
@@ -997,6 +997,7 @@ void EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) con
     idx++;
   }
   core::print(fmt::format("angle errors = {}\n", errs), stream);
+  return errs;
 }
 
 };

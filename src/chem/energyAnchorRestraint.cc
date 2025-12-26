@@ -265,7 +265,7 @@ void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
 double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                       NVector_sp 	pos,
                                                       core::T_sp energyScale,
-                                                      core::T_sp componentEnergy,
+                                                      core::T_sp energyComponents,
                                                       bool 		calcForce,
                                                       gc::Nilable<NVector_sp> 	force,
                                                       bool		calcDiagonalHessian,
@@ -353,7 +353,7 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
       }
     }
   }
-  maybeSetEnergy( componentEnergy, EnergyAnchorRestraint_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyAnchorRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 

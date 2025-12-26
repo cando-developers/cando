@@ -33,6 +33,7 @@
            #~"frameRecognizer.cc"
            #~"rotamer.cc"
            #~"atomReference.cc"
+           #~"atomGrid.cc"
            #~"entity.cc"
            #~"pdbMonomer.cc"
            #~"constitutionAtoms.cc"

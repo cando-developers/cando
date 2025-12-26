@@ -130,7 +130,7 @@ CL_DEFMETHOD void ScoringFunction_O::evaluateEnergyManyTimes( NVector_sp pos, si
   for (size_t ii=0; ii<num; ii++ ) {
     this->evaluateEnergy(pos,
                          nil<core::T_O>(), // energyScale
-                         nil<core::T_O>(), // componentEnergy
+                         nil<core::T_O>(), // energyComponents
                          nil<core::T_O>(), // activeAtomMask
                          nil<core::T_O>(), // debugInteractions
                          false);
@@ -158,7 +158,7 @@ CL_DEFMETHOD void ScoringFunction_O::evaluateEnergyForceHdvecManyTimes( NVector_
   for (size_t ii=0; ii<num; ii++ ) {
     this->evaluateAll(pos,
                       nil<core::T_O>(), // energyScale
-                      nil<core::T_O>(), // componentEnergy
+                      nil<core::T_O>(), // energyComponents
                       true,
                       force,
                       true,
@@ -178,7 +178,7 @@ CL_LISPIFY_NAME("evaluateEnergy");
 CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale component-energy active-atom-mask debug-interactions disable-restraints);
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos,
                                                            core::T_sp energyScale,
-                                                           core::T_sp componentEnergy,
+                                                           core::T_sp energyComponents,
                                                            core::T_sp activeAtomMask,
                                                            core::T_sp debugInteractions,
                                                            bool disableRestraints)
@@ -186,7 +186,7 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos,
   double		energy;
   energy = this->evaluateAll(pos,
                              energyScale,
-                             componentEnergy,
+                             energyComponents,
                              false,
                              nil<core::T_O>(),
                              false, false,
@@ -533,9 +533,9 @@ void EnergyComponents_O::setEnergy( core::T_sp name, double energy ) {
 }
 
 
-void maybeSetEnergy( core::T_sp componentEnergy, core::T_sp name, double energy ) {
-  if (componentEnergy.notnilp()) {
-    gc::As<EnergyComponents_sp>(componentEnergy)->setEnergy( name, energy );
+void maybeSetEnergy( core::T_sp energyComponents, core::T_sp name, double energy ) {
+  if (energyComponents.notnilp()) {
+    gc::As<EnergyComponents_sp>(energyComponents)->setEnergy( name, energy );
   }
 }
 

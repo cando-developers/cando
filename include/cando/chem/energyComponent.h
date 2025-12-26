@@ -233,6 +233,8 @@ inline string	atomLabel(Atom_sp a)
       hdvec[i1+o1] += vd; \
   }
 
+
+
 struct NoHessian {};
 
 template <typename HESSIAN=NoHessian>
@@ -364,6 +366,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
+  CL_DEFMETHOD virtual std::string description() const { return "no-details-available-subclass-me"; };
   CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   void setScale(double s) {this->_Scale = s; };
   double getScale() { return this->_Scale ; };
@@ -381,7 +384,7 @@ public:
   CL_DEFMETHOD 	size_t	evaluations() const { return this->_Evaluations; };
 
   CL_DEFMETHOD virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const {SUBCLASS_MUST_IMPLEMENT(); };
-  CL_DEFMETHOD virtual void runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {SUBCLASS_MUST_IMPLEMENT(); };
+  CL_DEFMETHOD virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {SUBCLASS_MUST_IMPLEMENT(); };
   
   CL_DEFMETHOD virtual core::List_sp extract_vectors_as_alist() const { SUBCLASS_MUST_IMPLEMENT(); };
  

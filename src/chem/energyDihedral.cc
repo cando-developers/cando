@@ -53,10 +53,22 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+#if 0
+#include "cando/chem/energyKernels/dihedral_fast.c"
+#else
 #include "cando/chem/energyKernels/dihedral.c"
+#endif
+
+std::string EnergyDihedral_O::description() const {
+  Dihedral<NoHessian> dihedral;
+
+  std::stringstream ss;
+  ss << dihedral.description();
+  return ss.str();
+}
 
 
-void EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
 {
   #define POS_SIZE 12
   double energy_new;
@@ -72,7 +84,7 @@ void EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) 
   double hdvec_ground[POS_SIZE];
   size_t idx = 0;
   size_t errs = 0;
-  Dihedral dihedral;
+  Dihedral<double*> dihedral;
   for ( auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di ) {
     position[0] = coords[di->term.I1];
     position[1] = coords[di->term.I1+1];
@@ -133,6 +145,7 @@ void EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) 
     idx++;
   }
   core::print(fmt::format("dihedral errors = {}\n", errs), stream);
+  return errs;
 }
 
 }
@@ -812,7 +825,127 @@ if (hasActiveAtomMask \
     }
   }
 }
+#if 1
+// Use the new cod
+double	EnergyDihedral_O::evaluateAllComponentSingle(
+    gctools::Vec0<EnergyDihedral>::iterator di_start,
+    gctools::Vec0<EnergyDihedral>::iterator di_end,
+    ScoringFunction_sp score,
+    NVector_sp 	pos,
+    bool 		calcForce,
+    gc::Nilable<NVector_sp> 	force,
+    bool		calcDiagonalHessian,
+    bool		calcOffDiagonalHessian,
+    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+    gc::Nilable<NVector_sp>	hdvec,
+    gc::Nilable<NVector_sp> dvec,
+    core::T_sp activeAtomMask,
+    core::T_sp debugInteractions )
+{
+#undef DIHEDRAL_APPLY_ATOM_MASK
+#define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         && bitvectorActiveAtomMask->testBit(I4/3)) \
+    ) goto SKIP_term_and_angle_test;
+  MAYBE_SETUP_ACTIVE_ATOM_MASK();
+  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
+  double totalEnergy = 0.0;
+  ANN(force);
+  ANN(hessian);
+  ANN(hdvec);
+  ANN(dvec);
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  double termEnergy = 0.0;
 
+  num_real EraseLinearDihedral;
+  int	I1, I2, I3, I4, IN;
+  num_real sinPhase, cosPhase, SinNPhi, CosNPhi;
+  gctools::Vec0<EnergyDihedral>::iterator di;
+
+  int i = 0;
+
+  DOUBLE* position = &(*pos)[0];
+  DOUBLE* rforce = NULL;
+  DOUBLE* rhessian = NULL; // &(*hessian)[0];
+  DOUBLE* rdvec = NULL;
+  DOUBLE* rhdvec = NULL;
+  Dihedral<NoHessian> dihedral;
+  if (!hasForce) {
+    for ( di=di_start; di!= di_end; di++ ) {
+      dihedral.energy(di->term.V,
+                      di->term.DN,
+                      di->term.sinPhase,
+                      di->term.cosPhase,
+                      di->term.I1,
+                      di->term.I2,
+                      di->term.I3,
+                      di->term.I4,
+                      position,
+                      &termEnergy,
+                      NULL,
+                      NoHessian(),
+                      NULL,
+                      NULL );
+    }
+  } else if (hasForce) {
+    rforce = &(*force)[0];
+    for ( di=di_start; di!= di_end; di++ ) {
+      dihedral.gradient(di->term.V,
+                      di->term.DN,
+                      di->term.sinPhase,
+                      di->term.cosPhase,
+                      di->term.I1,
+                      di->term.I2,
+                      di->term.I3,
+                      di->term.I4,
+                      position,
+                      &termEnergy,
+                      rforce,
+                      NoHessian(),
+                      NULL,
+                      NULL );
+    }
+  } else {
+      rforce = &(*force)[0];
+      rdvec = &(*dvec)[0];
+      rhdvec = &(*hdvec)[0];
+    for ( di=di_start; di!= di_end; di++ ) {
+      dihedral.gradient(di->term.V,
+                        di->term.DN,
+                        di->term.sinPhase,
+                        di->term.cosPhase,
+                        di->term.I1,
+                        di->term.I2,
+                        di->term.I3,
+                        di->term.I4,
+                        position,
+                        &termEnergy,
+                        rforce,
+                        NoHessian(),
+                        rdvec,
+                        rhdvec );
+    }
+  }
+
+#if 0
+  SIMPLE_ERROR("I need to handle linear dihedrals");
+    if ( EraseLinearDihedral == 0.0 ) {
+      ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4),
+                                                                    kw::_sym_coordinates,pos,
+                                                                    kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
+    }
+#endif
+    
+  SKIP_term_and_angle_test: (void)0;
+
+  return termEnergy;
+}
+#else
 double	EnergyDihedral_O::evaluateAllComponentSingle(
     gctools::Vec0<EnergyDihedral>::iterator di_start,
     gctools::Vec0<EnergyDihedral>::iterator di_end,
@@ -925,6 +1058,7 @@ if (hasActiveAtomMask \
 
   return totalEnergy;
 }
+#endif
 
 
 
@@ -1732,7 +1866,7 @@ double EnergyDihedral_O::evaluateAllComponentSimd2(
 double EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
                                               NVector_sp 	                pos,
                                               core::T_sp energyScale,
-                                              core::T_sp               componentEnergy,
+                                              core::T_sp               energyComponents,
                                               bool 		        calcForce,
                                               gc::Nilable<NVector_sp> 	force,
                                               bool		        calcDiagonalHessian,
@@ -1857,7 +1991,7 @@ double EnergyDihedral_O::evaluateAllComponent(ScoringFunction_sp          score,
                                                nil<core::T_O>() );
   }
 #endif
-  maybeSetEnergy( componentEnergy, EnergyDihedral_O::static_classSymbol(), energy );
+  maybeSetEnergy( energyComponents, EnergyDihedral_O::static_classSymbol(), energy );
   return energy;
 };
 

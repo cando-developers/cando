@@ -54,7 +54,7 @@ EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchS
 double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                            NVector_sp 	pos,
                                                            core::T_sp energyScale,
-                                                           core::T_sp componentEnergy,
+                                                           core::T_sp energyComponents,
                                                            bool 		calcForce,
                                                            gc::Nilable<NVector_sp> 	force,
                                                            bool		calcDiagonalHessian,
@@ -155,7 +155,7 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
       }
     }
   }
-  maybeSetEnergy( componentEnergy, EnergyPointToLineRestraint_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyPointToLineRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 

@@ -249,7 +249,7 @@ bool		calcOffDiagonalHessian = true;
 double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                       chem::NVector_sp 	pos,
                                                       core::T_sp energyScale,
-                                                      core::T_sp componentEnergy,
+                                                      core::T_sp energyComponents,
                                                       bool 		calcForce,
                                                       gc::Nilable<chem::NVector_sp> 	force,
                                                       bool		calcDiagonalHessian,
@@ -338,7 +338,7 @@ double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 
     }
   }
-  maybeSetEnergy( componentEnergy, EnergyChiralRestraint_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyChiralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 

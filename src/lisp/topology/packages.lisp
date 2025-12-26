@@ -476,9 +476,7 @@
    #:ligand-oligomer-shape
    #:receptor-oligomer-shape
    #:orientations%
-   #:complex-oligomer-shapes-orientations
-   #:receptor-oligomer-shape-orientation
-   #:ligand-oligomer-shape-orientation
+   #:complex-oligomer-shapes
    #:cache-alist-copy
    #:find-in-cache
    #:add-to-cache

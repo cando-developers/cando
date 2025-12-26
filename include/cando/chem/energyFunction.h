@@ -286,7 +286,7 @@ namespace chem {
     double	calculateNumericalSecondDerivative(NVector_sp pos, core::T_sp energyScale, double delta, uint i, uint j, core::T_sp activeAtomMask );
     double	evaluateAll(NVector_sp pos,
                             core::T_sp energyScale,
-                            core::T_sp componentEnergy,
+                            core::T_sp energyComponents,
                             bool calcForce,
                             gc::Nilable<NVector_sp> force,
                             bool calcDiagonalHessian,

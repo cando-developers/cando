@@ -54,11 +54,9 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-#include "cando/chem/energyKernels/dihedral_restraint_energy.c"
-#include "cando/chem/energyKernels/dihedral_restraint_gradient.c"
-#include "cando/chem/energyKernels/dihedral_restraint_hessian.c"
+#include "cando/chem/energyKernels/dihedral_restraint.c"
 
-void EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+size_t EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
 {
 #define POS_SIZE 12
   double energy_new;
@@ -74,6 +72,7 @@ void EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp
   double hdvec_ground[POS_SIZE];
   size_t idx = 0;
   size_t errs = 0;
+  Dihedral_Restraint<double*> dihedral_restraint;
   for (auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di, ++idx) {
     position[0]  = coords[di->term.I1];
     position[1]  = coords[di->term.I1+1];
@@ -94,10 +93,10 @@ void EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp
         hessian_new, hessian_ground,
         dvec_new, dvec_ground,
         hdvec_new, hdvec_ground);
-    dihedral_restraint_gradient(di->term.kdh, di->term.phi0,
+    dihedral_restraint.gradient(di->term.kdh, di->term.phi0,
         0, 3, 6, 9,
         position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new);
-    dihedral_restraint_gradient_fd(di->term.kdh, di->term.phi0,
+    dihedral_restraint.gradient_fd(di->term.kdh, di->term.phi0,
         0, 3, 6, 9,
         position, &energy_ground, force_ground, hessian_ground,
         dvec_ground, hdvec_ground);
@@ -117,10 +116,10 @@ void EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp
         hessian_new, hessian_ground,
         dvec_new, dvec_ground,
         hdvec_new, hdvec_ground);
-    dihedral_restraint_hessian(di->term.kdh, di->term.phi0,
+    dihedral_restraint.hessian(di->term.kdh, di->term.phi0,
         0, 3, 6, 9,
         position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new);
-    dihedral_restraint_hessian_fd(di->term.kdh, di->term.phi0,
+    dihedral_restraint.hessian_fd(di->term.kdh, di->term.phi0,
         0, 3, 6, 9,
         position, &energy_ground, force_ground, hessian_ground,
         dvec_ground, hdvec_ground);
@@ -135,6 +134,7 @@ void EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp
     }
   }
   core::print(fmt::format("dihedral_restraint errors = {}\n", errs), stream);
+  return errs;
 }
 
 }
@@ -405,7 +405,7 @@ bool		calcOffDiagonalHessian = true;
 double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         chem::NVector_sp 	pos,
                                                         core::T_sp energyScale,
-                                                        core::T_sp componentEnergy,
+                                                        core::T_sp energyComponents,
                                                         bool 		calcForce,
                                                         gc::Nilable<chem::NVector_sp> 	force,
                                                         bool		calcDiagonalHessian,
@@ -486,7 +486,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
     }
   }
   LOG_ENERGY(( "DihedralRestraint energy = %lf\n") , (double)(this->_TotalEnergy) );
-  maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 
@@ -497,7 +497,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
                                                    size_t termIndex, 
                                                    chem::NVector_sp 	pos,
                                                    core::T_sp energyScale,
-                                                   core::T_sp componentEnergy,
+                                                   core::T_sp energyComponents,
                                                    bool 		calcForce,
                                                    gc::Nilable<chem::NVector_sp> 	force,
                                                    bool		calcDiagonalHessian,
@@ -579,7 +579,7 @@ double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
     }
   }
   LOG_ENERGY(( "DihedralRestraint energy = %lf\n") , (double)(this->_TotalEnergy) );
-  maybeSetEnergy( componentEnergy, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyDihedralRestraint_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 

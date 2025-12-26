@@ -76,7 +76,7 @@ void EnergyStretch_O::emitTestCalls(core::T_sp stream, chem::NVector_sp coords) 
   }
 }
 
-void EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+size_t EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
 {
   #define POS_SIZE 6
   double energy_new;
@@ -92,7 +92,7 @@ void EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
   double hdvec_ground[POS_SIZE];
   size_t idx=0;
   size_t errs = 0;
-  Stretch stretch;
+  Stretch<double*> stretch;
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
     position[0] = coords[si->term.I1];
@@ -140,6 +140,7 @@ void EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
     idx++;
   }
   core::print(fmt::format("stretch errors = {}\n", errs), stream);
+  return errs;
 }
 
 };
@@ -456,7 +457,7 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
 double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                               NVector_sp 	pos,
                                               core::T_sp energyScale,
-                                              core::T_sp componentEnergy,
+                                              core::T_sp energyComponents,
                                               bool 		calcForce,
                                               gc::Nilable<NVector_sp> 	force,
                                               bool		calcDiagonalHessian,
@@ -511,9 +512,9 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   DOUBLE* position = &(*pos)[0];
   DOUBLE* rforce = NULL;
   DOUBLE* rhessian = NULL; // &(*hessian)[0];
-  DOUBLE* rhdvec = NULL;
   DOUBLE* rdvec = NULL;
-  Stretch stretch;
+  DOUBLE* rhdvec = NULL;
+  Stretch<NoHessian> stretch;
 #if 0
   for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
@@ -528,27 +529,11 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
           position,
           &totalEnergy,
           NULL,
-          NULL,
+          NoHessian(),
           NULL,
           NULL);
     }
-  } else if (hasHdAndD) {
-    rforce = &(*force)[0];
-    rhdvec = &(*hdvec)[0];
-    rdvec = &(*dvec)[0];
-    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
-      stretch.hessian(
-          //old_stretch_energy(
-          si->term.kb,si->term.r0,
-          si->term.I1,si->term.I2,
-          position,
-          &totalEnergy,
-          rforce,
-          NULL,
-          rhdvec,
-          rdvec);
-    }
-  } else { // if (hasForce)
+  } else if (hasForce) {
     rforce = &(*force)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
       stretch.gradient(
@@ -557,13 +542,29 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
           position,
           &totalEnergy,
           rforce,
-          NULL,
+          NoHessian(),
           NULL,
           NULL);
     }
+  } else { // if (hasHdAndD) {
+    rforce = &(*force)[0];
+    rdvec = &(*dvec)[0];
+    rhdvec = &(*hdvec)[0];
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+      stretch.hessian(
+          //old_stretch_energy(
+          si->term.kb,si->term.r0,
+          si->term.I1,si->term.I2,
+          position,
+          &totalEnergy,
+          rforce,
+          NoHessian(),
+          rdvec,
+          rhdvec);
+    }
   }
 #endif
-  maybeSetEnergy( componentEnergy, EnergyStretch_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyStretch_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 

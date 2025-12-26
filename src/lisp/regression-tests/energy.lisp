@@ -246,3 +246,55 @@
   (defparameter *butane* butane)
   )
 
+
+(ql:quickload :open-force-field/load)
+
+
+(let* ((agg (chem:sample-aggregate))
+       (ef (chem:make-energy-function :matter agg :use-excluded-atoms nil))
+       (coords (chem:matter/extract-coordinates agg))
+       (components (chem:make-energy-components))
+       (energy (chem:scoring-function/evaluate-all ef coords :energy-components components))
+       (expected-energy 834.5838566176413)
+       (expected-components '((CHEM:ENERGY-ANCHOR-RESTRAINT . 0.0d0)
+                              (CHEM:ENERGY-CHIRAL-RESTRAINT . 0.0d0)
+                              (CHEM:ENERGY-DIHEDRAL-RESTRAINT . 0.0d0)
+                              (CHEM:ENERGY-NONBOND-TOTAL . -55.43579102222518d0)
+                              (CHEM:ENERGY-NONBOND14 . 238.34374324574765d0)
+                              (CHEM:ENERGY-DIHEDRAL . 219.3372469384417d0)
+                              (CHEM:ENERGY-ANGLE . 301.01757487803803d0)
+                              (CHEM:ENERGY-STRETCH . 131.32108257763906d0)))
+       (nonbond-component (chem:get-nonbond-component ef))
+       (dihedral-component (chem:get-dihedral-component ef))
+       (angle-component (chem:get-angle-component ef))
+       (stretch-component (chem:get-stretch-component ef))
+       )
+  (format t "nonbond description ~s~%" (chem:energy-component/description nonbond-component))
+  (format t "dihedral description ~s~%" (chem:energy-component/description dihedral-component))
+  (format t "Total energy = ~f  expected energy: ~f~%" energy expected-energy)
+  #+tests(test-true energy (< (abs (- energy expected-energy)) 0.00001))
+  (loop for (comp . en) in (chem:energy-components/components components)
+        for expected-en = (cdr (assoc comp expected-components))
+        if expected-en
+          do (progn
+               (format t "~s (~a)-> energy: ~f  expected: ~f ~%" comp
+                       (if (< (abs (- expected-en en)) 0.001)
+                           "matched"
+                           "MISMATCHED")
+                       en expected-en)
+               #+tests(test-true energy-component (< (abs (- expected-en en)) 0.001)))
+        else
+          do (progn
+               (warn "There is a new energy component ~s that isn't in the regression test" comp)
+               #+tests(test-true new-energy-component t)))
+  (format t "About to run gradient and hessian finite-difference tests~%")
+  (chem:run-test-calls nonbond-component *standard-output* coords)
+  (chem:run-test-calls dihedral-component *standard-output* coords)
+  (chem:run-test-calls angle-component *standard-output* coords)
+  (chem:run-test-calls stretch-component *standard-output* coords)
+  #+tests(nonbond-fd-tests (= 0 (chem:run-test-calls nonbond-component *standard-output* coords)))
+  #+tests(dihedral-fd-tests (= 0 (chem:run-test-calls dihedral-component *standard-output* coords)))
+  #+tests(angle-fd-tests (= 0 (chem:run-test-calls angle-component *standard-output* coords)))
+  #+tests(stretch-fd-tests (= 0 (chem:run-test-calls stretch-component *standard-output* coords)))
+
+  )

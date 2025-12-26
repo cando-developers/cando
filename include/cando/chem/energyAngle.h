@@ -231,7 +231,7 @@ public:
   EnergyAngle_sp copyFilter(core::T_sp keepInteractionFactory);
 
   virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
-  virtual void runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
   EnergyAngle_O( const EnergyAngle_O& ss ); //!< Copy constructor
 
