@@ -101,7 +101,7 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
 double EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                     NVector_sp 	pos,
                                                     core::T_sp energyScale,
-                                                    core::T_sp componentEnergy,
+                                                    core::T_sp energyComponents,
                                                     bool 		calcForce,
                                                     gc::Nilable<NVector_sp> 	force,
                                                     bool		calcDiagonalHessian,
@@ -115,7 +115,7 @@ double EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 // Evaluate everything using terms
   double totalEnergy = this->evaluateTerms(pos,
                                            energyScale,
-                                           componentEnergy,
+                                           energyComponents,
                                            calcForce,force,
                                              calcDiagonalHessian, calcOffDiagonalHessian, hessian,hdvec,dvec,activeAtomMask);
   return totalEnergy;
@@ -125,7 +125,7 @@ double EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 
 double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
                                              core::T_sp energyScale,
-                                             core::T_sp         componentEnergy,
+                                             core::T_sp         energyComponents,
                                              bool 		calcForce,
                                              gc::Nilable<NVector_sp> 	force,
                                              bool		calcDiagonalHessian,
@@ -248,7 +248,7 @@ double	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
   CONTINUE:
     (void)0;
   }
-  maybeSetEnergy(componentEnergy,EnergySketchNonbond_O::static_classSymbol(),totalEnergy);
+  maybeSetEnergy(energyComponents,EnergySketchNonbond_O::static_classSymbol(),totalEnergy);
   return totalEnergy;
 }
 

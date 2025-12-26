@@ -651,6 +651,14 @@ Examples:
         for monomer across (monomers oligomer)
         collect (elt (monomers monomer) (elt (monomer-indexes oligomer) index))))
 
+(defun oligomer-monomer-names-for-permissible-monomer-indexes (oligomer permissible-monomer-indexes)
+  "Return a list of monomer names for this OLIGOMER at the loci of the PERMISSIBLE-MONOMER-INDEXES"
+  (loop for index below (length (monomer-index-loci permissible-monomer-indexes))
+        for locus across (monomer-index-loci permissible-monomer-indexes)
+        for monomer = (aref (monomers oligomer) locus)
+        for monomer-name = (oligomer-monomer-name oligomer monomer)
+        collect monomer-name))
+
 (defun make-oligomer (oligomer-space &optional (index 0))
   "Build an oligomer in the oligomer space"
   (let ((olig (make-instance 'oligomer

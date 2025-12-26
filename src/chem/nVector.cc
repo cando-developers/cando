@@ -538,6 +538,28 @@ double chem__nvector_get_element(NVector_sp vec, size_t index, double val)
   return (*vec)[index];
 }
 
+CL_LISPIFY_NAME(NVector/coordinate-distance-float);
+CL_DEFUN
+float chem__nvector_coordinate_distance_float(NVector_sp vec, size_t i31, size_t i32 )
+{
+  vecreal dx = (*vec)[i31]-(*vec)[i32];
+  vecreal dy = (*vec)[i31+1]-(*vec)[i32+1];
+  vecreal dz = (*vec)[i31+2]-(*vec)[i32+2];
+  float dist = sqrt(dx*dx+dy*dy+dz*dz);
+  return dist;
+}
+
+CL_LISPIFY_NAME(NVector/coordinate-distance-double);
+CL_DEFUN
+double chem__nvector_coordinate_distance_double(NVector_sp vec, size_t i31, size_t i32 )
+{
+  vecreal dx = (*vec)[i31]-(*vec)[i32];
+  vecreal dy = (*vec)[i31+1]-(*vec)[i32+1];
+  vecreal dz = (*vec)[i31+2]-(*vec)[i32+2];
+  double dist = sqrt(dx*dx+dy*dy+dz*dz);
+  return dist;
+}
+
 CL_LISPIFY_NAME(NVector/length);
 CL_DEFUN
 size_t chem__nvector_length(NVector_sp vec)
@@ -936,5 +958,15 @@ CL_DEFUN double chem__nvector_root_mean_square_difference_transformed(NVector_sp
   return sqrt(meanSumOfSquares);
 }
 
+CL_DEFUN void chem__nvector_write_c(NVector_sp vec, core::T_sp stream) {
+  core::print("{ ", stream);
+  for (size_t ii=0; ii<vec->length(); ++ii ) {
+    core::print(fmt::format(" {}", (*vec)[ii]), stream);
+    if (ii<vec->length()-1) {
+      core::print(",\n",stream);
+    }
+  }
+  core::print(" }\n", stream);
+}
 
 }

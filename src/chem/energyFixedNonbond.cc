@@ -206,6 +206,8 @@ Vector3				v1,v2;
 
 SYMBOL_EXPORT_SC_(ChemPkg, energyVdwExcludedAtoms);
 SYMBOL_EXPORT_SC_(ChemPkg, energyElectrostaticExcludedAtoms);
+SYMBOL_EXPORT_SC_(ChemPkg, energyNonbondTotal);
+SYMBOL_EXPORT_SC_(ChemPkg, energyNonbond14);
 SYMBOL_EXPORT_SC_(ChemPkg, energyVdw);
 SYMBOL_EXPORT_SC_(ChemPkg, energyElectrostatic);
 SYMBOL_EXPORT_SC_(ChemPkg, energyVdw14);
@@ -214,7 +216,7 @@ SYMBOL_EXPORT_SC_(ChemPkg, energyElectrostatic14);
 double EnergyFixedNonbondRestraint_O::evaluateAllComponent(ScoringFunction_sp score,
                                                            NVector_sp pos,
                                                            core::T_sp energyScale,
-                                                           core::T_sp componentEnergy,
+                                                           core::T_sp energyComponents,
                                                            bool calcForce, gc::Nilable<NVector_sp> force, bool calcDiagonalHessian,
                                                            bool calcOffDiagonalHessian,
                                                            gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
@@ -334,8 +336,8 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent(ScoringFunction_sp sc
   LOG_ENERGY(("          Vdw energy = %lf\n"), (double)this->_EnergyVdw);
   LOG_ENERGY(("Electrostatic energy = %lf\n"), (double)this->_EnergyElectrostatic);
   LOG_ENERGY(("%s }\n"), this->className());
-  maybeSetEnergy(componentEnergy, _sym_energyVdw, energyVdw);
-  maybeSetEnergy(componentEnergy, _sym_energyElectrostatic, energyElectrostatic);
+  maybeSetEnergy(energyComponents, _sym_energyVdw, energyVdw);
+  maybeSetEnergy(energyComponents, _sym_energyElectrostatic, energyElectrostatic);
   return energyVdw + energyElectrostatic;
 }
 

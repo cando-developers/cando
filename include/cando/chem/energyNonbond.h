@@ -19,11 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
+
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -74,7 +74,6 @@ public:
   Atom_sp      	_Atom1_enb;
   Atom_sp      	_Atom2_enb;
   TermNonBond	term;
-  bool		_Is14;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
   bool		_calcForce;
   bool		_calcDiagonalHessian;
@@ -126,7 +125,7 @@ struct	to_object<chem::EnergyNonbond>
       return nonbond.encode();
     }
   };
-  
+
   template <>
     struct	from_object<chem::EnergyNonbond>
   {
@@ -143,7 +142,7 @@ struct	to_object<chem::EnergyNonbond>
 namespace chem {
 
 double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score, core::T_sp energyScale,
-                                    int I1, int I2, core::T_sp activeAtomMask, 
+                                    int I1, int I2, core::T_sp activeAtomMask,
                                     num_real x1, num_real y1, num_real z1,
                                     num_real x2, num_real y2, num_real z2,
                                     num_real dA, num_real dC, num_real dQ1Q2 );
@@ -152,12 +151,12 @@ double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score, core::T_sp energySc
 class EnergyNonbond_O : public EnergyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
-  
+
  public:
   virtual bool restraintp() const override {return false;};
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
-  
+
  public: // virtual functions inherited from Object
   void	initialize();
 //	string	__repr__() const;
@@ -166,15 +165,23 @@ class EnergyNonbond_O : public EnergyComponent_O
  public: // instance variables
   double		_EnergyElectrostatic;
   bool                _UsesExcludedAtoms;
+  double              _Nonbond_r_switch;
+  double              _Nonbond_r_cut;
+  double              _Nonbond_r_pairlist;
+  double              _Nonbond_invdd; // Distance dependent dielectric reciprocal
     size_t                              _NonbondsKept;
     size_t                              _NonbondsDiscarded;
-    // Original way of defining nonbonds with list of nonbond terms
+  gctools::Vec0<TermType>	_Terms14;
+  // Pairlist
+  AtomTable_sp                  _AtomTable;
+  core::T_sp                    _NonbondForceField;
+  core::HashTable_sp            _AtomTypes;
+  core::T_sp                    _KeepInteractionFactory;
   gctools::Vec0<TermType>	_Terms;
   gctools::Vec0<TermType>	_BeyondThresholdTerms;
     // Correct way of defining nonbonds using excluded atom indexes
   // FIXME:  Get rid of _FFNonbondDb - and the old code that uses it.
   core::T_sp        _FFNonbondDb;
-  AtomTable_sp          _AtomTable;
   //  Tables for nonbonded calculation using excluded atoms and the Amber way
   size_t                     _ntypes;          // ntypes
   core::SimpleVector_sp      _atom_name_vector;  // atom-name-vector
@@ -194,31 +201,40 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
   size_t _InteractionsKept;
   size_t _InteractionsDiscarded;
- public:	
+
+ public:
+  virtual std::string description() const;
   typedef gctools::Vec0<TermType>::iterator iterator;
-  iterator begin() { return this->_Terms.begin(); };
-  iterator end() { return this->_Terms.end(); };
+  //  iterator begin() { return this->_Terms.begin(); };
+  //  iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
  public:
-  //core::List_sp termAtIndex(size_t index) const;
-  virtual size_t numberOfTerms() { return this->_Terms.size();};
+//  core::List_sp termAtIndex(size_t index) const;
+  CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
+  CL_DEFMETHOD virtual size_t numberOfTerms14() { return this->_Terms14.size(); };
+  void callForEachTerm(core::Function_sp callback);
+  void callForEachTerm14(core::Function_sp callback);
  public:
+
+  size_t runTestCalls(core::T_sp stream, chem::NVector_sp coords) const;
+  void set_nonbond_pairlist_parameters(double r_switch, double r_cut, double r_pairlist, double distance_dielectric);
 
   CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndexes;}
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndexes;}
  public:
   void constructNonbondTermsBetweenResidues(Residue_sp res1, Residue_sp res2, core::T_sp nbForceField, core::HashTable_sp atomTypes );
+  void addTerm14(const TermType& term);
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
   virtual core::List_sp extract_vectors_as_alist() const;
-  
+
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m,
                                           core::T_sp activeAtomMask );
 
   void verifyExcludedAtoms(Matter_sp matter, ScoringFunction_sp score);
-  
+
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,
                                        core::T_sp energyScale,
@@ -259,7 +275,8 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   core::T_sp getFFNonbondDb();
 
-  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory );
+  core::T_mv rebuildPairList(core::T_sp tcoordinates);
+  void constructNonbondTermsFromAtomTable( AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory, core::T_sp coordinates);
   void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory );
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
   void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField, core::T_sp keepInteractionFactory );
@@ -270,14 +287,22 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void constructNonbondTermsFromAList(core::List_sp values);
   core::List_sp nonbondTermsAsAList();
-  
+
   void setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms);
+  void checkEnergyNonbond();
   EnergyNonbond_sp copyFilter(core::T_sp keepInteractionFactory);
+
+  virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
+
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
 
   EnergyNonbond_O() :
       _UsesExcludedAtoms(true),
+      _Nonbond_r_switch(10.0),
+      _Nonbond_r_cut(12.0),
+      _Nonbond_r_pairlist(14.0),
+      _Nonbond_invdd(1.0),
       _FFNonbondDb(nil<core::T_O>()),
       _InteractionsKept(0),
       _InteractionsDiscarded(0)

@@ -151,4 +151,84 @@ void copyEnergyComponent(EnergyComponent_sp newComponent, EnergyComponent_sp ori
   newComponent->_Scale = orig->_Scale;
 }
 
+
+void test_zero( size_t num,
+                double* force_new, double* force_ground,
+                double* hessian_new, double* hessian_ground,
+                double* dvec_new, double* dvec_ground,
+                double* hdvec_new, double* hdvec_ground ) {
+  for ( size_t ii=0; ii<num; ii++ ) {
+    force_new[ii] = 0.0;
+    force_ground[ii] = 0.0;
+    dvec_new[ii] = 1.0;
+    dvec_ground[ii] = 1.0;
+    hdvec_new[ii] = 0.0;
+    hdvec_ground[ii] = 0.0;
+  }
+  for ( size_t ii=0; ii<num*num; ii++ ) {
+    hessian_new[ii] = 0.0;
+    hessian_ground[ii] = 0.0;
+  }
+}
+
+static int almost_equal(double a, double b, double atol, double rtol)
+{
+  if (fabs(a)<0.01 && fabs(b) < 0.01) return true;
+  double diff=fabs(a-b);
+  double tol=atol+rtol*fmax(fabs(a),fabs(b));
+  return diff<=tol;
+}
+
+static int compare_array(core::T_sp stream, const char* label, const char* label2,const double* nn,const double* oo,size_t n,double atol,double rtol)
+{
+  int errs=0;
+  for(size_t i=0;i<n;++i){
+    if(!almost_equal(nn[i],oo[i],atol,rtol)){
+      core::print(fmt::format("MISMATCH {}/{}[{}] {}(new) vs {}(ground)\n",label,label2,i,nn[i],oo[i]));
+      ++errs;
+    }
+  }
+  return errs;
+}
+
+static int compare_hessian(core::T_sp stream, const char* label,const double* nn,const double* oo,size_t n,double atol,double rtol )
+{
+  int errs=0;
+  for(size_t i=0;i<n;++i){
+    if(!almost_equal(nn[i],oo[i],atol,rtol))
+      {
+        core::print(fmt::format("MISMATCH {}/hessian[{} aka {},{}] {}(new) vs {}(ground)\n",label,i,i/n,i%n,nn[i],oo[i]),stream);
+        ++errs;
+      }
+  }
+  return errs;
+}
+
+
+bool test_match( core::T_sp stream,
+                 const char* label, size_t position_size,
+                 double* force_new, double* force_ground,
+                 double* hessian_new, double* hessian_ground,
+                 double* hdvec_new, double* hdvec_ground )
+{
+  size_t errs=0;
+  errs+=compare_array(stream,label,"force",force_new,force_ground,position_size,0.0001,0.0001);
+  if (hdvec_new&&hdvec_ground) {
+    errs+=compare_array(stream,label,"hdvec",hdvec_new,hdvec_ground,position_size,0.0001,0001);
+  }
+  if (hessian_new&&hessian_ground) {
+    errs+=compare_hessian(stream,label,hessian_new,hessian_ground,position_size,0.0001,0.0001);
+  }
+  return (errs==0);
+}
+
+void test_position(core::T_sp stream, size_t pos_size, double* position ) {
+  core::print(fmt::format("POSITION\n"),stream);
+  for ( size_t ii=0; ii<pos_size; ii++ ) {
+    core::print(fmt::format(" pos[{}] = {}\n", ii, position[ii] ), stream);
+  }
+};
+
+
+
 };

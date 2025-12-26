@@ -214,10 +214,10 @@ public:
 #endif
  
   CL_LISPIFY_NAME("evaluateAll");
-  CL_LAMBDA((scoring-function chem:scoring-function) pos &key energy-scale component-energy calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions disable-restraints);
+  CL_LAMBDA((scoring-function chem:scoring-function) pos &key energy-scale energy-components calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions disable-restraints);
   CL_DEFMETHOD virtual double	evaluateAll( 	NVector_sp pos,
                                                 core::T_sp energyScale,
-                                                core::T_sp componentEnergy,
+                                                core::T_sp energyComponents,
                                                 bool calcForce,
                                                 gc::Nilable<NVector_sp> force,
                                                 bool calcDiagonalHessian,
@@ -228,6 +228,11 @@ public:
                                                 core::T_sp activeAtomMask,
                                                 core::T_sp debugInteractions = nil<core::T_O>(),
                                                 bool disableRestraints=false) = 0;
+
+  void evaluateEnergyManyTimes( NVector_sp pos, size_t count );
+  void evaluateEnergyForceManyTimes( NVector_sp pos, size_t count );
+  void evaluateEnergyForceHdvecManyTimes( NVector_sp pos, size_t count );
+
   virtual double	evaluateEnergy( NVector_sp pos,
                                         core::T_sp energyScale,
                                         core::T_sp componentEnergy,
@@ -250,8 +255,10 @@ public:
                                                        core::T_sp activeAtomMask,
                                                        core::T_sp debugInteractions=nil<core::T_O>(),
                                                        bool disableRestraints=false);
+#if 0
   virtual double	evaluateEnergyForceFullHessianForDebugging(core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions,
                                                                    bool disableRestraints);
+  #endif
 
   void evaluateFiniteDifferenceForce(NVector_sp pos, core::T_sp energyScale, NVector_sp force, double delta=0.00001, core::T_sp activeAtomMask=nil<core::T_O>() );
 #if 0

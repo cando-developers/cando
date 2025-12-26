@@ -64,29 +64,34 @@ away from their bonded neighbor that has coordinates in a random direction."
     (when (> remaining-heavy 0)
       (format t "There are ~a unbuilt heavy atoms of a total of ~a~%" remaining-heavy (chem:number-of-atoms matter))
       (loop (let ((cur-remaining remaining-heavy)
-                  (built 0))
-              (chem:map-atoms
-               'nil
-               (lambda (atom)
-                 (when (and (heavy-atom-p atom) (unbuilt-vec3-p (chem:get-position atom)))
-                   (format t "Unbuilt atom ~a~%" atom)
-                   (let ((bonds (chem:bonds-as-list atom)))
-                     (if (> (length bonds) 0) ; we have at least one bond
-                         (let ((built-neighbor (loop for b in bonds
-                                                     for o = (chem:bond/get-other-atom b atom)
-                                                     when (and (heavy-atom-p o)
-                                                               (not (unbuilt-vec3-p (chem:get-position o))))
-                                                       return o)))
-                           (when built-neighbor
-                             (let ((pos (random-3d-offset 1.0 (chem:get-position built-neighbor))))
-                               (chem:set-position atom pos)
-                               (incf built)
-                               (decf cur-remaining))))
-                         (progn
-                           (warn "There is a single atom with no neighbors ~a" atom)
-                           (decf cur-remaining) ; remove this from the remaining-heavy atoms
-                           )))))
-               matter)
+                  (built 0)
+                  (molecule-index 1))
+              (chem:do-molecules (mol matter)
+                (let ((residue-index 1))
+                  (chem:do-residues (res mol)
+                    (let ((atom-index 1))
+                      (chem:do-atoms (atom res)
+                        (when (and (heavy-atom-p atom) (unbuilt-vec3-p (chem:get-position atom)))
+                          (format t "Unbuilt atom (mol: ~2d res: ~3d atm: ~3d) ~4a ~a~%" molecule-index residue-index atom-index (chem:get-name res) (chem:get-name atom))
+                          (let ((bonds (chem:bonds-as-list atom)))
+                            (if (> (length bonds) 0) ; we have at least one bond
+                                (let ((built-neighbor (loop for b in bonds
+                                                            for o = (chem:bond/get-other-atom b atom)
+                                                            when (and (heavy-atom-p o)
+                                                                      (not (unbuilt-vec3-p (chem:get-position o))))
+                                                              return o)))
+                                  (when built-neighbor
+                                    (let ((pos (random-3d-offset 1.0 (chem:get-position built-neighbor))))
+                                      (chem:set-position atom pos)
+                                      (incf built)
+                                      (decf cur-remaining))))
+                                (progn
+                                  (warn "There is a single atom with no neighbors ~a" atom)
+                                  (decf cur-remaining) ; remove this from the remaining-heavy atoms
+                                  ))))
+                        (incf atom-index)))
+                    (incf residue-index)))
+                (incf molecule-index))
               (format t "Just built ~a heavy atoms and there are ~a remaining~%" built cur-remaining)
               (when (= cur-remaining 0)
                 (return-from simple-build-unbuilt-heavy-atoms))

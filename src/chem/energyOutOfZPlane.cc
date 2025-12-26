@@ -208,7 +208,7 @@ bool		calcOffDiagonalHessian = true;
 double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
                                                   NVector_sp 	pos,
                                                   core::T_sp energyScale,
-                                                  core::T_sp componentEnergy,
+                                                  core::T_sp energyComponents,
                                                   bool 		calcForce,
                                                   gc::Nilable<NVector_sp> 	force,
                                                   bool		calcDiagonalHessian,
@@ -287,7 +287,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 #endif
     }
   }
-  maybeSetEnergy( componentEnergy, EnergyOutOfZPlane_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyOutOfZPlane_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 

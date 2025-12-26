@@ -434,7 +434,7 @@ inline num_real periodic_boundary_adjust(const num_real& delta, const num_real& 
 double EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                        NVector_sp 	pos,
                                                        core::T_sp energyScale,
-                                                       core::T_sp componentEnergy,
+                                                       core::T_sp energyComponents,
                                                        bool 		calcForce,
                                                        gc::Nilable<NVector_sp> 	force,
                                                        bool		calcDiagonalHessian,
@@ -575,7 +575,7 @@ double EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     gctools::handle_all_queued_interrupts();
     I1start = I1end;
   }
-  maybeSetEnergy( componentEnergy, EnergyRigidBodyNonbond_O::static_classSymbol(), totalEnergy );
+  maybeSetEnergy( energyComponents, EnergyRigidBodyNonbond_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
     

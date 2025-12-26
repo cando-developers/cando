@@ -23,8 +23,6 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
-       
 
 //
 // (C) 2004 Christian E. Schafmeister
@@ -231,6 +229,9 @@ public:
   core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
 
   EnergyAngle_sp copyFilter(core::T_sp keepInteractionFactory);
+
+  virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
   EnergyAngle_O( const EnergyAngle_O& ss ); //!< Copy constructor
 

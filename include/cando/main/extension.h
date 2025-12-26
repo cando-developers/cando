@@ -51,6 +51,8 @@ typedef int32_t vecint;
 #define NVECTOR_sp_TYPE core::SimpleVector_float_sp
 #endif
 
+#define DOUBLE vecreal
+
 #if NUM_REAL == VECREAL_DOUBLE
 typedef double num_real;
 typedef int64_t num_int;

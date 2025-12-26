@@ -51,6 +51,102 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+void old_stretch_energy(DOUBLE kb, DOUBLE r0, SIZE_T I1, SIZE_T I2, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec);
+
+
+#include "cando/chem/energyKernels/stretch.c"
+
+}
+
+namespace chem {
+void EnergyStretch_O::emitTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+{
+  size_t idx=0;
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    Vector3 p1(coords,si->term.I1,Safe());
+    Vector3 p2(coords,si->term.I2,Safe());
+    core::print(fmt::format("POSITION stretch 6 {} {} {} {} {} {}\n",
+                            p1.getX(), p1.getY(), p1.getZ(),
+                            p2.getX(), p2.getY(), p2.getZ() ), stream );
+    core::print(fmt::format("TEST stretch 6 {} {} {} 0 3\n",
+                            idx,
+                            si->term.kb, si->term.r0 ), stream );
+    idx++;
+  }
+}
+
+size_t EnergyStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
+{
+  #define POS_SIZE 6
+  double energy_new;
+  double energy_ground;
+  double position[POS_SIZE];
+  double force_new[POS_SIZE];
+  double force_ground[POS_SIZE];
+  double hessian_new[POS_SIZE*POS_SIZE];
+  double hessian_ground[POS_SIZE*POS_SIZE];
+  double dvec_new[POS_SIZE];
+  double dvec_ground[POS_SIZE];
+  double hdvec_new[POS_SIZE];
+  double hdvec_ground[POS_SIZE];
+  size_t idx=0;
+  size_t errs = 0;
+  Stretch<double*> stretch;
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    position[0] = coords[si->term.I1];
+    position[1] = coords[si->term.I1+1];
+    position[2] = coords[si->term.I1+2];
+    position[3] = coords[si->term.I2];
+    position[4] = coords[si->term.I2+1];
+    position[5] = coords[si->term.I2+2];
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    stretch.gradient( si->term.kb, si->term.r0, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    stretch.gradient_fd( si->term.kb, si->term.r0, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    if (!test_match( stream, "stretch_force", POS_SIZE,
+                     force_new, force_ground,
+                     0, 0,
+                     0, 0 )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH stretch_gradient #{} kb = {}  r0 = {}\n",
+                              idx, si->term.kb, si->term.r0 ), stream );
+    }
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    stretch.hessian( si->term.kb, si->term.r0, 0, 3, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
+    stretch.hessian_fd( si->term.kb, si->term.r0, 0, 3, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    if (!test_match( stream, "stretch_hessian", POS_SIZE,
+                     force_new, force_ground,
+                     hessian_new, hessian_ground,
+                     hdvec_new, hdvec_ground )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH stretch_hessian #{} kb = {}  r0 = {}\n",
+                              idx, si->term.kb, si->term.r0 ), stream );
+    }
+    idx++;
+  }
+  core::print(fmt::format("stretch errors = {}\n", errs), stream);
+  return errs;
+}
+
+};
+
+namespace chem {
+
 #define STRETCH_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
@@ -357,17 +453,18 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
   return nil<core::T_O>();
 }
 
+
 double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                               NVector_sp 	pos,
                                               core::T_sp energyScale,
-                                              core::T_sp componentEnergy,
+                                              core::T_sp energyComponents,
                                               bool 		calcForce,
                                               gc::Nilable<NVector_sp> 	force,
                                               bool		calcDiagonalHessian,
                                               bool		calcOffDiagonalHessian,
                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                               gc::Nilable<NVector_sp>	hdvec,
-                                              gc::Nilable<NVector_sp> dvec,
+                                              gc::Nilable<NVector_sp>   dvec,
                                               core::T_sp activeAtomMask ,
                                               core::T_sp debugInteractions )
 {
@@ -382,6 +479,10 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  if (hasHessian) {
+    SIMPLE_ERROR("The Stretch term was passed a hessian matrix - I thought we didn't do that anymore");
+  }
 
 #define STRETCH_CALC_FORCE
 #define STRETCH_CALC_DIAGONAL_HESSIAN
@@ -408,30 +509,62 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   num_real x1,y1,z1,x2,y2,z2,kb,r0;
   int I1, I2,i;
   gctools::Vec0<EnergyStretch>::iterator si;
-  for ( i=0,si=this->_Terms.begin();
-        si!=this->_Terms.end(); si++,i++ ) {
-#ifdef DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-    if ( this->_Debug_NumberOfTermsToCalculate > 0 ) {
-      if ( i>= this->_Debug_NumberOfTermsToCalculate ) {
-        break;
-      }
-    }
-#endif
-
-		// ************* Evaluate the stretch energy/force/hessian
-		// using code generated by Mathematica ***************
+  DOUBLE* position = &(*pos)[0];
+  DOUBLE* rforce = NULL;
+  DOUBLE* rhessian = NULL; // &(*hessian)[0];
+  DOUBLE* rdvec = NULL;
+  DOUBLE* rhdvec = NULL;
+  Stretch<NoHessian> stretch;
+#if 0
+  for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
-
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-    si->_calcForce = calcForce;
-    si->_calcDiagonalHessian = calcDiagonalHessian;
-    si->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-#undef EVAL_SET
-#define EVAL_SET(var,val) {si->eval.var=val;}
-#include <cando/chem/energy_functions/_Stretch_debugEvalSet.cc>
-#endif //]
   }
-  maybeSetEnergy( componentEnergy, EnergyStretch_O::static_classSymbol(), totalEnergy );
+#else
+  if (!hasForce) {
+    // energy only
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+      stretch.energy(
+          si->term.kb,si->term.r0,
+          si->term.I1,si->term.I2,
+          position,
+          &totalEnergy,
+          NULL,
+          NoHessian(),
+          NULL,
+          NULL);
+    }
+  } else if (hasForce) {
+    rforce = &(*force)[0];
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+      stretch.gradient(
+          si->term.kb,si->term.r0,
+          si->term.I1,si->term.I2,
+          position,
+          &totalEnergy,
+          rforce,
+          NoHessian(),
+          NULL,
+          NULL);
+    }
+  } else { // if (hasHdAndD) {
+    rforce = &(*force)[0];
+    rdvec = &(*dvec)[0];
+    rhdvec = &(*hdvec)[0];
+    for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
+      stretch.hessian(
+          //old_stretch_energy(
+          si->term.kb,si->term.r0,
+          si->term.I1,si->term.I2,
+          position,
+          &totalEnergy,
+          rforce,
+          NoHessian(),
+          rdvec,
+          rhdvec);
+    }
+  }
+#endif
+  maybeSetEnergy( energyComponents, EnergyStretch_O::static_classSymbol(), totalEnergy );
   return totalEnergy;
 }
 
@@ -711,5 +844,54 @@ EnergyStretch_sp EnergyStretch_O::copyFilter(core::T_sp keepInteractionFactory) 
   return copy;
 }
 
+
+};
+
+
+
+
+#undef STRETCH_SET_PARAMETER
+#define STRETCH_SET_PARAMETER(x)
+
+#undef STRETCH_APPLY_ATOM_MASK
+#define STRETCH_APPLY_ATOM_MASK(i1,i2)
+
+#undef STRETCH_SET_POSITION
+#define STRETCH_SET_POSITION(xx,ii,oo) xx = position[ii+oo]
+
+#undef STRETCH_ENERGY_ACCUMULATE
+#define STRETCH_ENERGY_ACCUMULATE(Energy) *energy_accumulate += Energy
+
+#define calcForce force  // if force is NULL then dont calculate force
+#define calcDiagonalHessian hdvec  // if  NULL then dont calculate hessian
+#define calcOffDiagonalHessian hdvec  // if NULL then dont calculate hessian
+
+#undef STRETCH_FORCE_ACCUMULATE
+#define STRETCH_FORCE_ACCUMULATE(ii,oo,ff) force[ii+oo] += ff
+
+#undef STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
+#undef STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
+#define STRETCH_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelOffDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
+
+#undef STRETCH_DEBUG_INTERACTIONS
+#define STRETCH_DEBUG_INTERACTIONS(ii,jj)
+
+#define doDebugInteractions false
+
+namespace chem {
+
+void old_stretch_energy(DOUBLE kb, DOUBLE r0, SIZE_T I1, SIZE_T I2, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec)
+{
+  DOUBLE x1;
+  DOUBLE y1;
+  DOUBLE z1;
+  DOUBLE x2;
+  DOUBLE y2;
+  DOUBLE z2;
+
+#include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
+#include <cando/chem/energy_functions/_Stretch_termCode.cc>
+};
 
 };

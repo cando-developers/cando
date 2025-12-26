@@ -252,7 +252,6 @@
    #:shape-key-parts
    #:ensure-shape-key
    #:validate-shape-key
-   #:make-shape-key-old-style
    #:shape-kind
    #:keys
    #:kind
@@ -476,10 +475,8 @@
    #:build-rotamer-shape-map
    #:ligand-oligomer-shape
    #:receptor-oligomer-shape
-   #:orientations
-   #:complex-oligomer-shapes-orientations
-   #:receptor-oligomer-shape-orientation
-   #:ligand-oligomer-shape-orientation
+   #:orientations%
+   #:complex-oligomer-shapes
    #:cache-alist-copy
    #:find-in-cache
    #:add-to-cache
@@ -592,7 +589,12 @@
    #:shape-key-monomers-callback
    #:make-shape-key-callback
    #:shape-key-for-sidechain-monomer
-   #:with-identified-and-ordered-rings))
+   #:with-identified-and-ordered-rings
+   #:oligomer-monomer-names-for-permissible-monomer-indexes
+   #:calculate-global-positioning-transform
+   #:calculate-adjustment-transform
+   #:orientation-vectors
+   #:local-to-global-orientation))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
