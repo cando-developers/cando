@@ -453,7 +453,7 @@
    #:rotamer-indexes
    #:indexes-into-rotamer-indexes
    #:ensure-permissible-rotamers-equal
-   #:with-orientation
+   #:with-orientation-transform
    #:ensure-complete-orientations
    #:make-monomer-indexes
    #:first-monomers
@@ -594,7 +594,8 @@
    #:calculate-global-positioning-transform
    #:calculate-adjustment-transform
    #:orientation-vectors
-   #:local-to-global-orientation))
+   #:local-to-global-orientation
+   #:orientation-transform))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

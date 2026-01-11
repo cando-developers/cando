@@ -366,6 +366,16 @@ evaluates the body in that dynamic environment."
 ||#
 
 
+(defmethod print-object ((energy-function chem:energy-function) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (energy-function stream :type t :identity t))))
+
+(defmethod print-object ((closure core::closure) stream)
+  (print-unreadable-object (closure stream :type t :identity t)
+    (format stream "(LAMBDA ~s)" (core:function-lambda-list closure))))
+
+
 (defun amber-energy-components (energy-components)
   (let* ((comps (chem:energy-components/components energy-components))
          (bond (cdr (assoc 'chem:energy-stretch comps)))

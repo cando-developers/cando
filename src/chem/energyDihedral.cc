@@ -53,14 +53,14 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-#if 0
+#if 1
 #include "cando/chem/energyKernels/dihedral_fast.c"
 #else
 #include "cando/chem/energyKernels/dihedral.c"
 #endif
 
 std::string EnergyDihedral_O::description() const {
-  Dihedral<NoHessian> dihedral;
+  Dihedral_Fast<NoHessian> dihedral;
 
   std::stringstream ss;
   ss << dihedral.description();
@@ -84,7 +84,7 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
   double hdvec_ground[POS_SIZE];
   size_t idx = 0;
   size_t errs = 0;
-  Dihedral<double*> dihedral;
+  Dihedral_Fast<double*> dihedral;
   for ( auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di ) {
     position[0] = coords[di->term.I1];
     position[1] = coords[di->term.I1+1];
@@ -863,21 +863,32 @@ if (hasActiveAtomMask \
   double termEnergy = 0.0;
 
   num_real EraseLinearDihedral;
-  int	I1, I2, I3, I4, IN;
+  int	I1, I2, I3, I4;
   num_real sinPhase, cosPhase, SinNPhi, CosNPhi;
   gctools::Vec0<EnergyDihedral>::iterator di;
 
   int i = 0;
+
+#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
 
   DOUBLE* position = &(*pos)[0];
   DOUBLE* rforce = NULL;
   DOUBLE* rhessian = NULL; // &(*hessian)[0];
   DOUBLE* rdvec = NULL;
   DOUBLE* rhdvec = NULL;
-  Dihedral<NoHessian> dihedral;
+  double  Energy;
+  Dihedral_Fast<NoHessian> dihedral;
+#define KERNEL_DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         && bitvectorActiveAtomMask->testBit(I4/3)) \
+    ) continue;
   if (!hasForce) {
     for ( di=di_start; di!= di_end; di++ ) {
-      dihedral.energy(di->term.V,
+      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
+      Energy = dihedral.energy(di->term.V,
                       di->term.DN,
                       di->term.sinPhase,
                       di->term.cosPhase,
@@ -891,11 +902,14 @@ if (hasActiveAtomMask \
                       NoHessian(),
                       NULL,
                       NULL );
+      const INT& IN = di->term.IN;
+      DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
     }
   } else if (hasForce) {
     rforce = &(*force)[0];
     for ( di=di_start; di!= di_end; di++ ) {
-      dihedral.gradient(di->term.V,
+      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
+      Energy = dihedral.gradient(di->term.V,
                       di->term.DN,
                       di->term.sinPhase,
                       di->term.cosPhase,
@@ -907,15 +921,18 @@ if (hasActiveAtomMask \
                       &termEnergy,
                       rforce,
                       NoHessian(),
-                      NULL,
+                     NULL,
                       NULL );
+      const INT& IN = di->term.IN;
+      DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
     }
   } else {
       rforce = &(*force)[0];
       rdvec = &(*dvec)[0];
       rhdvec = &(*hdvec)[0];
     for ( di=di_start; di!= di_end; di++ ) {
-      dihedral.gradient(di->term.V,
+      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
+      Energy = dihedral.gradient(di->term.V,
                         di->term.DN,
                         di->term.sinPhase,
                         di->term.cosPhase,
@@ -929,8 +946,12 @@ if (hasActiveAtomMask \
                         NoHessian(),
                         rdvec,
                         rhdvec );
+      const INT& IN = di->term.IN;
+      DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
     }
   }
+
+#undef DIHEDRAL_DEBUG_INTERACTIONS
 
 #if 0
   SIMPLE_ERROR("I need to handle linear dihedrals");

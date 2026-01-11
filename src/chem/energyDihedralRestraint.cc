@@ -491,7 +491,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 }
 
 
-CL_LAMBDA((energy-dihedral-restraint chem:energy-dihedral-restraint) energy-function term-index pos &key energy-scale component-energy calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions);
+CL_LAMBDA((energy-dihedral-restraint chem:energy-dihedral-restraint) energy-function term-index pos &key energy-scale energy-components calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec active-atom-mask debug-interactions);
 CL_DEFMETHOD
 double EnergyDihedralRestraint_O::evaluateOneTerm( ScoringFunction_sp score,
                                                    size_t termIndex, 

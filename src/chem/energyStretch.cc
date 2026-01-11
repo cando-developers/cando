@@ -523,7 +523,10 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   if (!hasForce) {
     // energy only
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
-      stretch.energy(
+      if (hasActiveAtomMask &&
+          !(bitvectorActiveAtomMask->testBit(si->term.I1/3) &&
+            bitvectorActiveAtomMask->testBit(si->term.I2/3))) continue;
+      Energy = stretch.energy(
           si->term.kb,si->term.r0,
           si->term.I1,si->term.I2,
           position,
@@ -532,11 +535,15 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
           NoHessian(),
           NULL,
           NULL);
+      STRETCH_DEBUG_INTERACTIONS(si->term.I1,si->term.I2);
     }
   } else if (hasForce) {
     rforce = &(*force)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
-      stretch.gradient(
+      if (hasActiveAtomMask &&
+          !(bitvectorActiveAtomMask->testBit(si->term.I1/3) &&
+            bitvectorActiveAtomMask->testBit(si->term.I2/3))) continue;
+      Energy = stretch.gradient(
           si->term.kb,si->term.r0,
           si->term.I1,si->term.I2,
           position,
@@ -545,13 +552,17 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
           NoHessian(),
           NULL,
           NULL);
+      STRETCH_DEBUG_INTERACTIONS(si->term.I1,si->term.I2);
     }
   } else { // if (hasHdAndD) {
     rforce = &(*force)[0];
     rdvec = &(*dvec)[0];
     rhdvec = &(*hdvec)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
-      stretch.hessian(
+      if (hasActiveAtomMask &&
+          !(bitvectorActiveAtomMask->testBit(si->term.I1/3) &&
+            bitvectorActiveAtomMask->testBit(si->term.I2/3))) continue;
+      Energy = stretch.hessian(
           //old_stretch_energy(
           si->term.kb,si->term.r0,
           si->term.I1,si->term.I2,
@@ -561,6 +572,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
           NoHessian(),
           rdvec,
           rhdvec);
+      STRETCH_DEBUG_INTERACTIONS(si->term.I1,si->term.I2);
     }
   }
 #endif

@@ -170,7 +170,7 @@ evaluates nothing) and (lambda (component-class)) returns a (lambda (&rest atoms
 that will be called for each interaction and the function returns T or NIL if
 each interaction should be added to the energy function.
 : assign-types - T (default) assign atom types as part of generating the energy function.  [I don't know what will happen if assing-types is NIL.)doc");
-  CL_LAMBDA(&key matter disable-components enable-components (use-excluded-atoms t) (keep-interaction-factory t) (assign-types t));
+  CL_LAMBDA(&key matter disable-components enable-components (use-excluded-atoms nil) (keep-interaction-factory t) (assign-types t));
   CL_LISPIFY_NAME(make_energy_function);
   CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
                                                                bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types )
@@ -553,7 +553,7 @@ __END_DOC
   }
 
 
-
+SYMBOL_EXPORT_SC_(ChemPkg,monomer_corrections);
 
 
 
@@ -593,6 +593,12 @@ __END_DOC
     }
 
     LOG("Starting evaluation of energy" );
+
+    totalEnergy += this->_MonomerCorrectionEnergy;
+    if ( this->_MonomerCorrectionEnergy != 0.0 ) {
+      maybeSetEnergy( energyComponents, chem::_sym_monomer_corrections, totalEnergy );
+    }
+
     if (this->_Stretch->isEnabled()) {
       totalEnergy += this->_Stretch->evaluateAllComponent( this->asSmartPtr(),
                                                           pos,
@@ -1773,6 +1779,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 #endif
         // Nonbonds here!!!!!!!!!!!!!!
   if (useExcludedAtoms) {
+    SIMPLE_ERROR("Don't use excluded atoms for the time being");
     // The nonbond parameters are calculated in Common Lisp
 
     core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),nonbondForceField);
@@ -2207,6 +2214,7 @@ EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory
   me->_NonbondCrossTermTable = this->_NonbondCrossTermTable;
   me->_BoundingBox = this->_BoundingBox;
   if (keepInteractionFactory.notnilp()) {
+    me->_MonomerCorrectionEnergy = this->_MonomerCorrectionEnergy;
     me->_Stretch = this->_Stretch->copyFilter(keepInteractionFactory);
     me->_Angle = this->_Angle->copyFilter(keepInteractionFactory);
     me->_Dihedral = this->_Dihedral->copyFilter(keepInteractionFactory);

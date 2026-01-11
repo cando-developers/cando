@@ -76,6 +76,7 @@ SYMBOL_EXPORT_SC_( ChemPkg, intramolecular_single_scan_energy );
 SYMBOL_EXPORT_SC_( ChemPkg, intermolecular_single_scan_energy );
 SYMBOL_EXPORT_SC_( ChemPkg, pair_scan_energy_lower_triangular_matrix );
 SYMBOL_EXPORT_SC_( ChemPkg, intermolecular_p_pair_scan_energy_lower_triangular_matrix );
+SYMBOL_EXPORT_SC_( ChemPkg, lmkey_index_to_lmkey_info );
 
 struct Energies;
 
@@ -132,6 +133,9 @@ struct Energies {
   std::uniform_int_distribution<size_t>  _Rand;
   vector<size_t>                 _SlotIndexes;
   vector<size_t>                 _MonomerIndexes;
+  vector<size_t>                 _LmkeyIndexToLocus;
+  vector<std::string>            _LmkeyIndexToMonomerName;
+  vector<size_t>                 _LocusMonomerCount;
   size_t                         _NumberOfSlots;
   double                         _TemperatureScale;
   double                         _IntramolecularBackboneEnergy;
@@ -174,6 +178,18 @@ struct Energies {
     this->_IntermolecularPPairTerms = gc::As<core::SimpleVector_byte8_t_sp>(val);
     std::uniform_int_distribution<size_t> pickSlot(0,this->_NumberOfSlots-1);
     this->_PickSlot = pickSlot;
+    this->_LocusMonomerCount.resize(this->_NumberOfSlots,0);
+    for ( size_t ii=0; ii<this->_MonomerCorrectionsLength; ii++ ) {
+      core::T_mv tinfo = core::eval::funcall(chem::_sym_lmkey_index_to_lmkey_info,energies,core::make_fixnum(ii));
+      core::MultipleValues& mvn = core::lisp_multipleValues();
+      core::T_sp tlocus = mvn.valueGet(1,tinfo.number_of_values());
+      core::Symbol_sp sym = gc::As<core::Symbol_sp>(tinfo);
+      std::string monomerName = sym->symbolNameAsString();
+      size_t locus = core::clasp_to_fixnum(tlocus);
+      this->_LocusMonomerCount[locus]++;
+      this->_LmkeyIndexToLocus.push_back(locus);
+      this->_LmkeyIndexToMonomerName.push_back(monomerName);
+    }
   }
 
   int lowerTriangularIndex(int xx, int yy ) {
@@ -255,11 +271,11 @@ void State::randomState(const Energies& energies )
     prevMax = max;
   }
 }
-CL_DEFUN core::DoubleFloat_sp chem__mcstate_energy(core::T_sp tmcstate, core::T_sp tenergies )
+CL_DEFUN core::DoubleFloat_sp chem__mcstate_energy(core::T_sp tmcstate, core::T_sp tenergies, double lambda)
 {
   Energies energies(tenergies);
   State state(gc::As<core::SimpleVector_byte32_t_sp>(tmcstate));
-  double testEnergy = energies.reducedEnergy(state);
+  double testEnergy = energies.reducedEnergy(state,lambda);
   return core::DoubleFloat_O::create(testEnergy);
 }
 
@@ -269,10 +285,15 @@ SYMBOL_EXPORT_SC_( ChemPkg, min_temperature );
 SYMBOL_EXPORT_SC_( ChemPkg, max_failed_improvements );
 SYMBOL_EXPORT_SC_( ChemPkg, max_failed_accepts );
 
-CL_LAMBDA(energies &key (start-temperature 1000.0) (max-iterations 1000000) (epoch-steps 100) (temperature-scale 0.95) initial-state accept-callback temperature-drop-callback debug (max-failed-improvements 100000) (max-failed-accepts 100000) (min-temperature 0.001) );
-CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, double startTemperature, size_t max_iterations, size_t epoch_steps, double temperatureScale, core::T_sp tinitial_state, core::T_sp acceptCallback, core::T_sp temperatureDropCallback, core::T_sp debug, size_t maxFailedImprovements, size_t maxFailedAccepts, double minTemperature ) {
-  srand(time(NULL)); // Initialize random seed
+CL_LAMBDA(energies &key seed (start-temperature 1000.0) (max-iterations 1000000) (epoch-steps 100) (temperature-scale 0.95) initial-state accept-callback temperature-drop-callback debug (max-failed-improvements 100000) (max-failed-accepts 100000) (min-temperature 0.001) );
+CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, core::T_sp seed, double startTemperature, size_t max_iterations, size_t epoch_steps, double temperatureScale, core::T_sp tinitial_state, core::T_sp acceptCallback, core::T_sp temperatureDropCallback, core::T_sp debug, size_t maxFailedImprovements, size_t maxFailedAccepts, double minTemperature ) {
+  //  srand(time(NULL)); // Initialize random seed
   Energies energies(tenergies,temperatureScale);
+  if (seed.notnilp()) {
+    uint32_t s = core::clasp_to_uint32_t(seed);
+    energies._Rng.seed(s);
+    srand(s);
+  }
   size_t num_slots_in_state = core::cl__length(energies._MonomerLocusMaxMrkindex );
   size_t failedAccepts = 0;
   size_t failedImprovements = 0;
@@ -423,20 +444,40 @@ CL_DEFUN core::T_sp chem__mcstate_energy(core::T_sp tenergies, double beta, core
   return core::DoubleFloat_O::create(energy);
 }
 
-inline bool flat_enough(core::T_sp debug, const std::vector<size_t>& histogram, size_t bi, double flatness ) {
+inline bool flat_enough(core::T_sp debug,
+                        const std::vector<size_t>& histogram,
+                        const std::vector<size_t>& rawHistogram,
+                        const std::vector<size_t>& reachable,
+                        size_t bi, double flatness ) {
   size_t hmin = SIZE_MAX;
   size_t hmax = 0.0;
   size_t visits = 0;
-  for (auto h : histogram) { visits += h; hmin = std::min(hmin,h); hmax = std::max(hmax,h); }
-  if (visits >= 1000* histogram.size()) {
-    double avg = double(visits) / histogram.size();
+  size_t rawVisits = 0;
+  size_t nonzero = 0;
+  size_t rc = 0;
+  for (size_t ii = 0; ii < histogram.size(); ++ii ) {
+    if (!reachable[ii]) continue;
+    rc++;
+    size_t h = histogram[ii];
+    visits += h;
+    size_t rh = rawHistogram[ii];
+    rawVisits += rh;
+    if (h > 0) nonzero++;
+    hmin = std::min(hmin,h);
+    hmax = std::max(hmax,h);
+  }
+  if (rc == 0 || nonzero < rc) return false; // ensure all reachable bins seen
+  size_t min_visits = 20 * rc;               // or scale with rc
+  if (rawVisits >= min_visits) {
+    double avg = double(visits) / rc;
     // SIMPLE_ERROR("Also check the hmax that hmax/avg < 1/flatness");
-    bool flat = (double(hmin)/avg > flatness && double(hmax)/avg<(1.0/flatness));
-    if (debug.notnilp()) core::clasp_write_string(fmt::format("Enough visits for bi={} hmin = {} hmax = {} avg = {} hmin/avg={:.4} hmax/avg={:.4}  flatness = {:.4} 1.0/flatness = {:.4}  {}\n",
+    bool flat = (double(hmin)/avg > flatness &&
+                 double(hmax)/avg<(1.0/flatness));
+    if (debug.notnilp()) core::clasp_write_string(fmt::format("Enough rawVisits for bi={} hmin = {} hmax = {} avg = {} hmin/avg={:.4} hmax/avg={:.4}  flatness = {:.4} 1.0/flatness = {:.4}  {}\n",
                                                               bi, hmin, hmax, avg, hmin/avg, hmax/avg, flatness, 1.0/flatness, flat ? "FLAT" : "not-flat" ),debug);
     if (flat) return true;
   } else {
-    if (debug.notnilp()) core::clasp_write_string(fmt::format("Too early for flatness test for betai={} visits={} visits needed={}\n", bi, visits, 1000*histogram.size() ),debug);
+    if (debug.notnilp()) core::clasp_write_string(fmt::format("Too early for flatness test for betai={} rawVisits={} rawVisits needed={}\n", bi, rawVisits, min_visits ),debug);
   }
   return false;
 }
@@ -519,11 +560,16 @@ inline double acc_beta_prob_from_log(core::T_sp debug, double betai,double u_i,d
   return p;
 }
 
-CL_LAMBDA(energies temperature &key (max-iterations 1000000) flatness-callback accept-callback (flatness-steps 100) (wl-scaling 0.8) (wl-increment-stop 0.1) (wl-increment-start 1.0) (flatness-threshold 0.95) debug);
-CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(core::T_sp tenergies, double temperature, size_t max_iterations, core::T_sp flatnessCallback, core::T_sp acceptCallback, size_t flatness_steps, double wl_scaling, double wl_increment_stop, double wl_increment_start, double flatness_threshold, core::T_sp debug ) {
+CL_LAMBDA(energies temperature &key seed (max-iterations 1000000) flatness-callback accept-callback (flatness-steps 100) (wl-scaling 0.8) (wl-increment-stop 0.1) (wl-increment-start 1.0) (flatness-threshold 0.95) debug);
+CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(core::T_sp tenergies, double temperature, core::T_sp seed, size_t max_iterations, core::T_sp flatnessCallback, core::T_sp acceptCallback, size_t flatness_steps, double wl_scaling, double wl_increment_stop, double wl_increment_start, double flatness_threshold, core::T_sp debug ) {
   double wl_increment = wl_increment_start;
   double beta = 1.0/(0.0019872*temperature);
   Energies energies(tenergies);
+  if (seed.notnilp()) {
+    uint32_t s = core::clasp_to_uint32_t(seed);
+    energies._Rng.seed(s);
+    srand(s);
+  }
   core::T_sp stop_reason = nil<core::T_O>();
   // Number of slots in state
   size_t num_slots_in_state = core::cl__length(energies._MonomerLocusMaxMrkindex );
@@ -535,10 +581,20 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
   currentState.randomState(energies);
   State testState;
   std::vector<size_t> histogram(energies._MonomerCorrectionsLength,0);
+  std::vector<size_t> rawHistogram(energies._MonomerCorrectionsLength,0);
   size_t flatness_iter = 0;
   size_t iterCount = 0;
   size_t accepts = 0;
   size_t flatness_reached = 0;
+
+  // In chem__voelz_optimize_monomer_corrections_single_temperature
+  std::vector<size_t> reachable(histogram.size(), 0);
+  for (size_t ii = 0; ii < energies._MrkeyIndexToLmkeyIndex->length(); ++ii) {
+    uint32_t lm = (*energies._MrkeyIndexToLmkeyIndex)[ii];
+    reachable[lm] += 1;
+  }
+  size_t reachable_count = std::count(reachable.begin(), reachable.end(), 1);
+
   for (size_t iter = 0; iter < max_iterations; ++iter) {
     if (debug.notnilp()) core::clasp_write_string(fmt::format("============== Top of loop at iter {}\n", iter),debug);
     size_t testSlotIndex;
@@ -557,39 +613,54 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
     //      double x = -(*betas)[betai] * (testEnergy - curEnergy);
     //      double p = acc_prob_from_log(debug,x);
     double rnd = energies.U01();
+    slotIndex = testSlotIndex;
     if ( rnd <= p) {
       accepts++;
       currentState = testState;
-      slotIndex = testSlotIndex;
       if (debug.notnilp()) core::clasp_write_string(fmt::format(" +++ accepted step\n"),debug);
     }
     // Update the histogram and the monomer corrections
     {
       // Increment the histogram and the MonomerCorrection for the current monomer
-      uint32_t monomerIndex;
+      uint32_t curLmkeyIndex;
 #define ALL_MONOMERS_UPDATED 0
-      // Update monomerCorrections for only monomerIndex
+      // Update monomerCorrections for only curLmkeyIndex
       {
-        monomerIndex = (*energies._MrkeyIndexToLmkeyIndex)[currentState._State[slotIndex]];
-        histogram[monomerIndex]++;
+        curLmkeyIndex = (*energies._MrkeyIndexToLmkeyIndex)[currentState._State[slotIndex]];
+        size_t numberOfMonomers = energies._LocusMonomerCount[energies._LmkeyIndexToLocus[curLmkeyIndex]];
+        histogram[curLmkeyIndex] += numberOfMonomers;
+        rawHistogram[curLmkeyIndex]++;
         // double beta_increment = wl_increment*(*betas)[betai];
         double beta_increment = wl_increment;
-        (*energies._MonomerCorrections)[monomerIndex] += beta_increment;
+        (*energies._MonomerCorrections)[curLmkeyIndex] += beta_increment;
         if (debug.notnilp())
-          core::clasp_write_string(fmt::format(" >> monomerIndex {} beta={:.4} wl_increment {:.4} beta_increment {:.4}\n",
-                                               monomerIndex, beta, wl_increment, beta_increment ),debug);
+          core::clasp_write_string(fmt::format(" >> curLmkeyIndex {} beta={:.4} wl_increment {:.4} beta_increment {:.4}\n",
+                                               curLmkeyIndex, beta, wl_increment, beta_increment ),debug);
       }
       if (debug.notnilp()) {
-        core::clasp_write_string(fmt::format("Histogram: " ),debug);
+        core::clasp_write_string(fmt::format(" Locus/monomer-name: " ),debug);
+        for ( size_t lmkey_index=0; lmkey_index<histogram.size(); lmkey_index++ ) {
+          std::string label = fmt::format("{}/{}", energies._LmkeyIndexToLocus[lmkey_index], energies._LmkeyIndexToMonomerName[lmkey_index]);
+          core::print(fmt::format("{:>12}", label), debug);
+          if (ALL_MONOMERS_UPDATED || lmkey_index==curLmkeyIndex) core::clasp_write_string("<",debug);
+        }
+        core::print("\n",debug);
+        core::clasp_write_string(fmt::format("          Histogram: " ),debug);
         for ( size_t ii=0; ii<histogram.size(); ii++ ) {
-          core::clasp_write_string(fmt::format(" {:8}", histogram[ii]),debug);
-          if (ALL_MONOMERS_UPDATED || ii==monomerIndex) core::clasp_write_string("<",debug);
+          core::clasp_write_string(fmt::format(" {:11}", histogram[ii]),debug);
+          if (ALL_MONOMERS_UPDATED || ii==curLmkeyIndex) core::clasp_write_string("<",debug);
+        }
+        core::clasp_write_string(fmt::format("\n"),debug);
+        core::clasp_write_string(fmt::format("       rawHistogram: " ),debug);
+        for ( size_t ii=0; ii<rawHistogram.size(); ii++ ) {
+          core::clasp_write_string(fmt::format(" {:11}", rawHistogram[ii]),debug);
+          if (ALL_MONOMERS_UPDATED || ii==curLmkeyIndex) core::clasp_write_string("<",debug);
         }
         core::clasp_write_string(fmt::format("\n"),debug);
         core::clasp_write_string(fmt::format("Monomer corrections: "),debug);
         for ( size_t ii=0; ii<energies._MonomerCorrectionsLength; ii++ ) {
-          core::clasp_write_string(fmt::format(" {:8.2f}", (*energies._MonomerCorrections)[ii]),debug);
-          if (ALL_MONOMERS_UPDATED || ii==monomerIndex) core::clasp_write_string("<",debug);
+          core::clasp_write_string(fmt::format("{:12.2f}", (*energies._MonomerCorrections)[ii]),debug);
+          if (ALL_MONOMERS_UPDATED || ii==curLmkeyIndex) core::clasp_write_string("<",debug);
         }
         core::clasp_write_string(fmt::format("\n"),debug);
       }
@@ -608,7 +679,7 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
         size_t visits = 0, hmin = SIZE_MAX, hmax = 0;
         size_t flat_count = 0;
         size_t bi = 0;
-        if ( flat_enough( debug,  histogram, bi, flatness_threshold ) ) flat_count++;
+        if ( flat_enough( debug,  histogram, rawHistogram, reachable, bi, flatness_threshold ) ) flat_count++;
         bi++;
         if (debug.notnilp()) core::clasp_write_string(fmt::format(" - - - - Flat_count = {}\n", flat_count ),debug);
         if (flat_count == 1) {
@@ -616,6 +687,7 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
           if (debug.notnilp()) core::clasp_write_string(fmt::format("All histograms flat enough wl_increment updated to {:.4}\n", wl_increment ),debug);
           for ( size_t ii=0; ii<histogram.size(); ii++ ) {
             histogram[ii] = 0;
+            rawHistogram[ii] = 0;
           }
           wl_increment *= wl_scaling;
           if (flatnessCallback.notnilp()) {
@@ -1020,14 +1092,14 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
         double dul1k0_ul0k0 = (ul1k0-ul0k0);
         double dul0k1_ul1k1 = (ul0k1-ul1k1);
         double deltau = dul1k0_ul0k0 +dul0k1_ul1k1;
-        double x = - deltau;
+        double x = beta*(- deltau);
         double p = (x >= 0.0) ? 1.0 : std::exp(x);
         double rnd = energies.U01();
         if (rnd <= p) {
           swapAccepts[swapi]++;
           State tempState = currentStates[swapi];
           currentStates[swapi] = currentStates[swapi+1];
-          currentStates[swapi] = tempState;
+          currentStates[swapi+1] = tempState;
         }
         swapAttempts[swapi]++;
         if (useExchangeCallback && ii>warmUpIterations) {
