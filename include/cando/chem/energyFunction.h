@@ -150,6 +150,7 @@ namespace chem {
      */
     FFNonbondCrossTermTable_sp		_NonbondCrossTermTable;
     AtomTable_sp			_AtomTable;
+    double                              _MonomerCorrectionEnergy;
     EnergyStretch_sp			_Stretch;
     EnergyAngle_sp			_Angle;
     EnergyDihedral_sp			_Dihedral;
@@ -183,6 +184,8 @@ namespace chem {
     CL_LISPIFY_NAME("atomTable");
     CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
+    CL_DEFMETHOD void setMonomerCorrectionEnergy(double en) { this->_MonomerCorrectionEnergy = en; };
+
     core::List_sp allComponents() const;
 
     string	energyTermsEnabled() ;
@@ -199,7 +202,7 @@ namespace chem {
     bool boundingBoxBoundP() const;
     void setBoundingBox(BoundingBox_sp bounding_box);
     void makUnboundBoundingBox();
-    
+
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask );
 
     CL_LISPIFY_NAME("getMatter");
@@ -233,7 +236,7 @@ namespace chem {
     CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
 
     core::List_sp allEnergyComponents() const;
-    
+
     core::List_sp otherEnergyComponents() const;
     void          pushOtherEnergyComponent(EnergyComponent_sp component);
 
@@ -321,6 +324,7 @@ namespace chem {
         _Matter(unbound<Matter_O>())
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
+        , _MonomerCorrectionEnergy(0.0)
         , _Stretch(unbound<EnergyStretch_O>())
         , _Angle(unbound<EnergyAngle_O>())
         , _Dihedral(unbound<EnergyDihedral_O>())
@@ -338,6 +342,7 @@ namespace chem {
         _Matter(unbound<Matter_O>())
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
+        , _MonomerCorrectionEnergy(0.0)
         , _Stretch(unbound<EnergyStretch_O>())
         , _Angle(unbound<EnergyAngle_O>())
         , _Dihedral(unbound<EnergyDihedral_O>())
@@ -354,6 +359,7 @@ namespace chem {
         _Matter(unbound<Matter_O>())
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
+        , _MonomerCorrectionEnergy(0.0)
         , _Stretch(unbound<EnergyStretch_O>())
         , _Angle(unbound<EnergyAngle_O>())
         , _Dihedral(unbound<EnergyDihedral_O>())

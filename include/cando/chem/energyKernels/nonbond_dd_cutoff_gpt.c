@@ -17,7 +17,7 @@ struct Nonbond_Dd_Cutoff {
     }
   }
 
-  static inline void energy(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
+  static inline double energy(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
     DOUBLE x1 = position[i3x1 + 0];
     DOUBLE y1 = position[i3x1 + 1];
     DOUBLE z1 = position[i3x1 + 2];
@@ -30,7 +30,7 @@ struct Nonbond_Dd_Cutoff {
     double dz = z1 - z2;
     double r2 = (dx * dx) + (dy * dy) + (dz * dz);
     if (r2 >= r_cut2) {
-      return;
+      return 0.0;
     }
 
     double invr = 1.0 / sqrt(r2);
@@ -42,7 +42,7 @@ struct Nonbond_Dd_Cutoff {
 
     if (r2 < r_switch2) {
       *energy_accumulate += e_base;
-      return;
+      return e_base;
     }
 
     double r = r2 * invr;
@@ -51,6 +51,7 @@ struct Nonbond_Dd_Cutoff {
     double t3 = t2 * t;
     double s = 1.0 + t3 * (-10.0 + t * (15.0 - 6.0 * t));
     *energy_accumulate += e_base * s;
+    return e_base * s;
   }
 
 
@@ -75,7 +76,7 @@ struct Nonbond_Dd_Cutoff {
     energy(a, b, qq, invdd, r_switch, r_switch2, r_cut, r_cut2, inv_range, i3x1, i3x2, position, energy_accumulate, force, hessian, dvec, hdvec);
   }
 
-  static inline void gradient(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
+  static inline double gradient(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
     DOUBLE x1 = position[i3x1 + 0];
     DOUBLE y1 = position[i3x1 + 1];
     DOUBLE z1 = position[i3x1 + 2];
@@ -88,7 +89,7 @@ struct Nonbond_Dd_Cutoff {
     double dz = z1 - z2;
     double r2 = (dx * dx) + (dy * dy) + (dz * dz);
     if (r2 >= r_cut2) {
-      return;
+      return 0.0;
     }
 
     double invr = 1.0 / sqrt(r2);
@@ -129,9 +130,10 @@ struct Nonbond_Dd_Cutoff {
     KernelGradientAcc(i3x2, 0, g_x2);
     KernelGradientAcc(i3x2, 1, g_y2);
     KernelGradientAcc(i3x2, 2, g_z2);
+    return energy;
   }
 
-  static inline void gradient_fd(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)
+  static inline void  gradient_fd(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)
   {
     const double h = 1.0e-5;
     const double inv2h = 1.0 / (2.0 * h);
@@ -160,7 +162,7 @@ struct Nonbond_Dd_Cutoff {
     }
   }
 
-  static inline void hessian(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
+  static inline double hessian(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
     DOUBLE x1 = position[i3x1 + 0];
     DOUBLE y1 = position[i3x1 + 1];
     DOUBLE z1 = position[i3x1 + 2];
@@ -173,7 +175,7 @@ struct Nonbond_Dd_Cutoff {
     double dz = z1 - z2;
     double r2 = (dx * dx) + (dy * dy) + (dz * dz);
     if (r2 >= r_cut2) {
-      return;
+      return 0.0;
     }
 
     double invr = 1.0 / sqrt(r2);
@@ -275,6 +277,7 @@ struct Nonbond_Dd_Cutoff {
     KernelHessDiagAcc(PositionSize, hessian, dvec, hdvec, i3x2, 1, i3x2, 1, h_y2_y2);
     KernelHessOffDiagAcc(PositionSize, hessian, dvec, hdvec, i3x2, 1, i3x2, 2, h_y2_z2);
     KernelHessDiagAcc(PositionSize, hessian, dvec, hdvec, i3x2, 2, i3x2, 2, h_z2_z2);
+    return energy;
   }
 
   static inline void hessian_fd(double a, double b, double qq, double invdd, double r_switch, double r_switch2, double r_cut, double r_cut2, double inv_range, size_t i3x1, size_t i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)

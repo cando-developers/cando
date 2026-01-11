@@ -222,7 +222,7 @@ molecule in the global frame."
   (let* ((unitx (geom:vnormalized (geom:v- x origin)))
          (unitxy (let ((xyo (geom:v- xy origin)))
                    (if (> (geom:vlength xyo) 0.0)
-                       (geom:vnormalized (geom:v- xy origin))
+                       (geom:vnormalized xyo)
                        (error "xy - origin will be zero length and cannot be normalized"))))
          (zcross (geom:vcross unitx unitxy))
          (unitz (progn
@@ -230,9 +230,7 @@ molecule in the global frame."
                       (geom:vnormalized zcross)
                       (error "zcross has zero length and cannot be normalized"))))
          (unity (geom:vcross unitz unitx))
-         (rot (geom:make-m4-rotation-columns unitx unity unitz))
-         (translate (geom:make-m4-translate (geom:v* origin 1.0s0)))
-         (transform (geom:m*m translate rot)))
+         (transform (geom:make-m4-columns unitx unity unitz origin)))
     transform))
 
 
@@ -249,12 +247,17 @@ molecule in the global frame."
 
 (defmethod orientation-transform (orientation assembler coordinates)
   "Calculate the transform for the ORIENTATION ASSEMBLER and COORDINATES"
-  (multiple-value-bind (origin-vec x-vec xy-vec)
-      (orientation-vectors orientation assembler coordinates)
-    (let* ((to-origin (to-origin-x-xy origin-vec x-vec xy-vec))
-           (m1 (geom:m*m (adjustment-transform orientation) to-origin))
-           (m2 (geom:m*m (global-positioning-transform orientation) m1)))
-      m2)))
+  (cond
+    ((eq orientation :identity)
+     (geom:make-matrix-identity))
+    ((null (local-frame-specs orientation))
+     (geom:make-matrix-identity))
+    (t (multiple-value-bind (origin-vec x-vec xy-vec)
+           (orientation-vectors orientation assembler coordinates)
+         (let* ((to-origin (to-origin-x-xy origin-vec x-vec xy-vec))
+                (m1 (geom:m*m (adjustment-transform orientation) to-origin))
+                (m2 (geom:m*m (global-positioning-transform orientation) m1)))
+           m2)))))
 
 #+(or)
 (defclass orientations ()
@@ -792,7 +795,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
          (joint-tree (make-joint-tree))
          (energy-function (if energy-function-factory
                               (funcall energy-function-factory aggregate)
-                              (chem:make-energy-function :matter aggregate)))
+                              (chem:make-energy-function :matter aggregate :use-excluded-atoms nil)))
          (assembler (loop for oligomer-molecule in oligomer-molecules
                           for oligomer = (car oligomer-molecule)
                           for molecule = (cdr oligomer-molecule)
@@ -942,26 +945,22 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 
 
 
-(defun build-atom-tree-external-coordinates* (assembler assembler-internals coords oligomer-shape maybe-orientation)
-  (unless maybe-orientation
-    (error "You must provide an orientation"))
-  (let* ((orientation maybe-orientation)
+(defun build-atom-tree-external-coordinates* (assembler assembler-internals coords oligomer-shape)
+  (let* ((one-oligomer (oligomer oligomer-shape))
+         (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
+    (when (null joints)
+      (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
+    (loop for joint in joints
+          do (update-xyz-coords assembler assembler-internals joint coords))))
+
+
+(defun build-atom-tree-for-monomer-shape-external-coordinates* (assembler assembler-internals coords oligomer-shape monomer-shape maybe-orientation-transform)
+  (let* ((orientation (orientation maybe-orientation-transform assembler))
          (one-oligomer (oligomer oligomer-shape))
          (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
     (when (null joints)
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
-    (with-orientation orientation
-      (loop for joint in joints
-            do (update-xyz-coords assembler assembler-internals joint coords)))))
-
-
-(defun build-atom-tree-for-monomer-shape-external-coordinates* (assembler assembler-internals coords oligomer-shape monomer-shape maybe-orientation)
-  (let* ((orientation (orientation maybe-orientation assembler))
-         (one-oligomer (oligomer oligomer-shape))
-         (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
-    (when (null joints)
-      (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
-    (with-orientation orientation
+    (with-orientation-transform orientation
       (loop for joint in joints
             do (update-xyz-coords assembler assembler-internals joint coords)))))
 
@@ -982,8 +981,8 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
   (loop for oligomer-shape in (oligomer-shapes assembler)
         do (build-atom-tree-external-coordinates-and-adjust assembler assembler-internals coords oligomer-shape oligomer-shape)))
 
-(defun build-atom-tree-external-coordinates-and-adjust (assembler assembler-internals coords oligomer-shape maybe-orientation)
-  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape maybe-orientation)
+(defun build-atom-tree-external-coordinates-and-adjust (assembler assembler-internals coords oligomer-shape)
+  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape)
   (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
 
 #+(or)
@@ -1379,73 +1378,74 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
          (joints (gethash one-oligomer (root-map (joint-tree assembler)))))
     (when (null joints)
       (error "Could not find oligomer ~s in root-map ~s" one-oligomer (root-map (joint-tree assembler))))
-    (with-orientation (make-orientation)
-      (loop for joint in joints
-            do (kin:update-xyz-coords joint assembler-internals coords))
-    )))
+    (loop for joint in joints
+          do (kin:update-xyz-coords joint assembler-internals coords)
+          )))
 
 (defun transform-externals-to-global-frame (assembler oligomer-shape orientation coords)
+  "Use the orientation to transform the externals to the global-frame and return the transform"
   (let* ((one-oligomer (oligomer oligomer-shape))
          (joints (gethash one-oligomer (root-map (joint-tree assembler))))
          (transform (orientation-transform orientation assembler coords)))
     (unless (= 1 (length joints))
       (error "There can be only one root joint"))
-    (kin:joint/apply-transform-to-xyz-coords-recursively (car joints) transform coords)))
+    (kin:joint/apply-transform-to-xyz-coords-recursively (car joints) transform coords)
+    transform))
 
 
 (defun update-externals-for-receptor-oligomer-shape (assembler assembler-internals coords oligomer-shape)
-  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape :identity)
+  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape)
   (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
 
 (defun update-externals-for-ligand-oligomer-shape (assembler assembler-internals coords oligomer-shape ligand-orientation)
-  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape ligand-orientation)
-  (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape))
+  (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape)
+  (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
+  (transform-externals-to-global-frame assembler oligomer-shape ligand-orientation coords))
 
 
 (defmethod update-externals ((assembler assembler) assembler-internals &key oligomer-shape
-                                                                         (ligand-orientation :identity ligand-orientation-p)
+                                                                         (ligand-orientation (topology:make-orientation) ligand-orientation-p)
                                                                          (coords (topology:make-coordinates-for-assembler assembler)))
   "Update the external coordinates in COORDS using the ASSEMBLER and ORIENTATION.
 IF OLIGOMER-SHAPE is provided then just build externals for that OLIGOMER-SHAPE.
 If OLIGOMER-SHAPE is not provided then build them all and use the OLIGOMER-SHAPE as the ORIENTATION key.
-Return the COORDS."
-  (cond
-    ((= 2 (length (oligomer-shapes assembler)))
-     (cond
-       ((null oligomer-shape)
-        (unless ligand-orientation-p
-          (error "You must provide the ligand-orientation when building ligand and receptor"))
-        (update-externals-for-ligand-oligomer-shape assembler assembler-internals
-                                                    coords
-                                                    (ligand-oligomer-shape assembler)
-                                                    ligand-orientation)
-        (update-externals-for-receptor-oligomer-shape assembler assembler-internals
+Return the COORDS and NIL or the ligand-transform if it was calculated."
+  (let (ligand-transform)
+    (cond
+      ((= 2 (length (oligomer-shapes assembler)))
+       (cond
+         ((null oligomer-shape)
+          (unless ligand-orientation-p
+            (error "You must provide the ligand-orientation when building ligand and receptor"))
+          (update-externals-for-ligand-oligomer-shape assembler assembler-internals
                                                       coords
-                                                      (receptor-oligomer-shape assembler)))
-       ((eq oligomer-shape (receptor-oligomer-shape assembler))
-        (update-externals-for-receptor-oligomer-shape assembler assembler-internals
-                                                      coords
-                                                      (receptor-oligomer-shape assembler)))
-       ((eq oligomer-shape (ligand-oligomer-shape assembler))
-        (update-externals-for-ligand-oligomer-shape assembler assembler-internals
-                                                    coords
-                                                    (ligand-oligomer-shape assembler)
-                                                    ligand-orientation)
-        (when (local-frame-specs ligand-orientation)
-          (transform-externals-to-global-frame assembler (ligand-oligomer-shape assembler) ligand-orientation coords)))
-       (t (error "What do we do here"))))
-    ((and (= 1 (length (oligomer-shapes assembler)))
-          (or (null oligomer-shape)
-              (and oligomer-shape (eq oligomer-shape (ligand-oligomer-shape assembler)))))
-     (update-externals-for-ligand-oligomer-shape assembler assembler-internals
-                                                 coords
-                                                 (ligand-oligomer-shape assembler)
-                                                 ligand-orientation))
-    (t (error "What do I do here")))
-  coords)
+                                                      (ligand-oligomer-shape assembler)
+                                                      ligand-orientation)
+          (update-externals-for-receptor-oligomer-shape assembler assembler-internals
+                                                        coords
+                                                        (receptor-oligomer-shape assembler)))
+         ((eq oligomer-shape (receptor-oligomer-shape assembler))
+          (update-externals-for-receptor-oligomer-shape assembler assembler-internals
+                                                        coords
+                                                        (receptor-oligomer-shape assembler)))
+         ((eq oligomer-shape (ligand-oligomer-shape assembler))
+          (setf ligand-transform (update-externals-for-ligand-oligomer-shape assembler assembler-internals
+                                                                             coords
+                                                                             (ligand-oligomer-shape assembler)
+                                                                             ligand-orientation)))
+         (t (error "What do we do here"))))
+      ((and (= 1 (length (oligomer-shapes assembler)))
+            (or (null oligomer-shape)
+                (and oligomer-shape (eq oligomer-shape (ligand-oligomer-shape assembler)))))
+       (setf ligand-transform (update-externals-for-ligand-oligomer-shape assembler assembler-internals
+                                                                          coords
+                                                                          (ligand-oligomer-shape assembler)
+                                                                          ligand-orientation)))
+      (t (error "What do I do here")))
+    (values coords ligand-transform)))
 
 
-(defun update-externals-for-monomer-shape (assembler assembler-internals oligomer-shape monomer-shape coords &key ligand-orientation)
+(defun update-externals-for-monomer-shape (assembler assembler-internals oligomer-shape monomer-shape coords &key ligand-transform)
   "Update the external coordinates for one MONOMER-SHAPE in the OLIGOMER-SHAPE in the ASSEMBLER using the ORIENTATION."
   (let* ((atagg (ataggregate assembler))
          (monomer-shape-pos (or (gethash monomer-shape (monomer-shape-to-index oligomer-shape))
@@ -1461,8 +1461,7 @@ Return the COORDS."
          (joints (joints atres))
          (joint0 (elt joints 0)))
     (if (eq oligomer-shape (ligand-oligomer-shape assembler))
-        (with-orientation ligand-orientation
+        (with-orientation-transform ligand-transform
           (update-xyz-coords assembler assembler-internals joint0 coords))
-        (with-orientation (make-orientation :identity)
-          (update-xyz-coords assembler assembler-internals joint0 coords)))
+        (update-xyz-coords assembler assembler-internals joint0 coords))
     (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)))

@@ -503,13 +503,6 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 
 
   {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
     num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
     //	double DotAbCb;
     int I1, I2, I3,i;
@@ -518,13 +511,23 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
     DOUBLE* rhessian = NULL; // &(*hessian)[0];
     DOUBLE* rdvec = NULL;
     DOUBLE* rhdvec = NULL;
+    double  Energy;
     Angle<NoHessian> angle;
     gctools::Vec0<EnergyAngle>::iterator ai;
 
+#define KERNEL_ANGLE_APPLY_ATOM_MASK(I1,I2,I3) \
+if (hasActiveAtomMask \
+    && !(bitvectorActiveAtomMask->testBit(I1/3) \
+         && bitvectorActiveAtomMask->testBit(I2/3) \
+         && bitvectorActiveAtomMask->testBit(I3/3) \
+         ) \
+    ) continue;
+
     if (!hasForce) {
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
+        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
         try {
-          angle.energy(
+          Energy = angle.energy(
               ai->term.kt,ai->term.t0,
               ai->term.I1,ai->term.I2,ai->term.I3,
               position,
@@ -533,6 +536,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
               NoHessian(),
               NULL,
               NULL);
+          ANGLE_DEBUG_INTERACTIONS(ai->term.I1, ai->term.I2, ai->term.I3);
         } catch (LinearAngleError(err)) {
           badAngle = ai;
           goto ERROR_LINEAR_ANGLE;
@@ -541,16 +545,17 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
     } else if (hasForce) {
       rforce = &(*force)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
+        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
         try {
-          angle.gradient(
-              ai->term.kt,ai->term.t0,
-              ai->term.I1,ai->term.I2,ai->term.I3,
-              position,
-              &termEnergy,
-              rforce,
-              NoHessian(),
-              NULL,
-              NULL);
+          Energy = angle.gradient(ai->term.kt,ai->term.t0,
+                                  ai->term.I1,ai->term.I2,ai->term.I3,
+                                  position,
+                                  &termEnergy,
+                                  rforce,
+                                  NoHessian(),
+                                  NULL,
+                                  NULL);
+          ANGLE_DEBUG_INTERACTIONS(ai->term.I1, ai->term.I2, ai->term.I3);
         } catch (LinearAngleError(err)) {
           badAngle = ai;
           goto ERROR_LINEAR_ANGLE;
@@ -561,8 +566,9 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
       rdvec = &(*dvec)[0];
       rhdvec = &(*hdvec)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
+        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
         try {
-          angle.hessian(
+          Energy = angle.hessian(
               //old_stretch_energy(
               ai->term.kt,ai->term.t0,
               ai->term.I1,ai->term.I2,ai->term.I3,
@@ -572,6 +578,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
               NoHessian(),
               rdvec,
               rhdvec);
+          ANGLE_DEBUG_INTERACTIONS(ai->term.I1, ai->term.I2, ai->term.I3);
         } catch (LinearAngleError(err)) {
           badAngle = ai;
           goto ERROR_LINEAR_ANGLE;

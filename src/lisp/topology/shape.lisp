@@ -218,14 +218,19 @@ to the components and evaluate the BODY in that scope."
 
 (defvar *orientation*)
 
-(defmacro with-orientation (orientation &body body)
+(defmacro with-orientation-transform (orientation &body body)
   "Set the *orientation* dynamic variable so that external coordinate building can function"
   `(progn
      (if (boundp '*orientation*)
-         (error "*orientation* is already bound - with-orientation cannot be nested")
+         (error "*orientation* is already bound - with-orientation-transform cannot be nested")
          (let ((*orientation* ,orientation))
            (progn
              ,@body)))))
+
+(defun kin:orientation-transform (dummy)
+  (if (boundp '*orientation*)
+      *orientation*
+      (geom:make-m4-identity)))
 
 (defclass receptor-shape (oligomer-shape)
   ((aggregate :initarg :aggregate :accessor aggregate)

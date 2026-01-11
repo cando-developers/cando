@@ -175,7 +175,7 @@ CL_DEFMETHOD void ScoringFunction_O::evaluateEnergyForceHdvecManyTimes( NVector_
 
 
 CL_LISPIFY_NAME("evaluateEnergy");
-CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale component-energy active-atom-mask debug-interactions disable-restraints);
+CL_LAMBDA((scoring-function chem:scoring-function) positions &key energy-scale energy-components active-atom-mask debug-interactions disable-restraints);
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos,
                                                            core::T_sp energyScale,
                                                            core::T_sp energyComponents,
