@@ -169,7 +169,9 @@ string XyzJoint_O::asString() const
 Stub XyzJoint_O::getInputStub(chem::NVector_sp coords) const
 {
   Stub stub;
-  stub._Transform.setToIdentity();
+  //core::print(fmt::format("{} calling orientation-transform\n",__FUNCTION__));
+  Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
+  stub._Transform = m;
   return stub;
 }
 
@@ -212,11 +214,11 @@ void XyzJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp co
     ERROR(kinematics::_sym_undefined_internal_coordinates,core::lisp_createList(kw::_sym_joint,this->asSmartPtr()));
   }
   ASSERT(d2.isDefined());
-  this->setPosition(coords,d2);
+  Vector3 pos = stub._Transform.multiplyByVector3(d2);
+  this->setPosition(coords,pos);
 }
 
-Vector3 XyzJoint_O::transformedPos() const
-{
+Vector3 XyzJoint_O::transformedPos() const {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   ASSERT(this->_Atom.boundp());
   Vector3 d2 = this->_Atom->getPosition();
@@ -281,22 +283,28 @@ void StubJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp c
 CL_DEFMETHOD
 Vector3 StubJoint_O::transformedParentPos() const {
   chem::Atom_sp atm = this->_ParentAtom;
+  Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
   Vector3 pos = atm->getPosition();
-  return pos;
+  Vector3 tpos = m.multiplyByVector3(pos);
+  return tpos;
 }
 
 CL_DEFMETHOD
 Vector3 StubJoint_O::transformedGrandParentPos() const {
    chem::Atom_sp atm = this->_GrandParentAtom;
    Vector3 pos = atm->getPosition();
-   return pos;
+   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
+   Vector3 tpos = m.multiplyByVector3(pos);
+   return tpos;
 }
 
 CL_DEFMETHOD
 Vector3 StubJoint_O::transformedGreatGrandParentPos() const {
-   chem::Atom_sp atm = this->_GreatGrandParentAtom;
-   Vector3 pos = atm->getPosition();
-   return pos;
+  chem::Atom_sp atm = this->_GreatGrandParentAtom;
+  Vector3 pos = atm->getPosition();
+  Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
+  Vector3 tpos = m.multiplyByVector3(pos);
+  return tpos;
 }
   
 };

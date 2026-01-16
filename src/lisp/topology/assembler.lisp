@@ -1417,10 +1417,11 @@ Return the COORDS and NIL or the ligand-transform if it was calculated."
          ((null oligomer-shape)
           (unless ligand-orientation-p
             (error "You must provide the ligand-orientation when building ligand and receptor"))
-          (update-externals-for-ligand-oligomer-shape assembler assembler-internals
+          (setf ligand-transform
+                (update-externals-for-ligand-oligomer-shape assembler assembler-internals
                                                       coords
                                                       (ligand-oligomer-shape assembler)
-                                                      ligand-orientation)
+                                                      ligand-orientation))
           (update-externals-for-receptor-oligomer-shape assembler assembler-internals
                                                         coords
                                                         (receptor-oligomer-shape assembler)))
@@ -1452,7 +1453,6 @@ Return the COORDS and NIL or the ligand-transform if it was calculated."
                                 (error "Could not find monomer-shape ~s in oligomer-shape ~s" monomer-shape oligomer-shape)))
          (monomer-info (aref (monomer-shape-info-vector oligomer-shape) monomer-shape-pos))
          (monomer (monomer monomer-info))
-         (monomer-context (gethash monomer (monomer-contexts assembler)))
          (monomer-position (gethash monomer (monomer-positions assembler)))
          (molecule-index (molecule-index monomer-position))
          (residue-index (residue-index monomer-position))
@@ -1464,4 +1464,5 @@ Return the COORDS and NIL or the ligand-transform if it was calculated."
         (with-orientation-transform ligand-transform
           (update-xyz-coords assembler assembler-internals joint0 coords))
         (update-xyz-coords assembler assembler-internals joint0 coords))
-    (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)))
+    (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
+    joint0))

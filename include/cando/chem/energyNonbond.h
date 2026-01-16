@@ -99,7 +99,9 @@ public:
                           size_t         a1CoordinateIndexTimes3,
                           size_t         a2CoordinateIndexTimes3,
                           EnergyNonbond_sp energyNonbond,
-                          core::HashTable_sp atomTypes );
+                          core::HashTable_sp atomTypes,
+                          core::T_sp     keepInteraction
+                          );
 
 public:
 public:
@@ -282,6 +284,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
   core::T_mv rebuildPairList(core::T_sp tcoordinates);
+  core::T_mv rebuildPairListBetweenMatters(core::T_sp tcoordinates);
   void constructNonbondTermsFromAtomTable( AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory, core::T_sp coordinates);
   void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory );
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
