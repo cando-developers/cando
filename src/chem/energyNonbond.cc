@@ -1187,12 +1187,6 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(AtomTable_sp atomTable,
 
 CL_DEFMETHOD
 core::T_mv EnergyNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates) {
-  // If the nonbond pairs are between two matters then don't rebuild the pair-list
-  if (this->_Matter1.notnilp()) {
-    ASSERT(this->_Matter2.notnilp());
-    return Values0<core::T_O>();
-  }
-
   auto coords = gc::As<NVector_sp>(tcoordinates);
   if (this->_DisplacementBuffer.nilp()) {
     return this->rebuildPairList(tcoordinates);
