@@ -58,11 +58,13 @@ namespace chem {
 
 #include "cando/chem/energyKernels/nonbond.c"
 
-#if 1
-#include "cando/chem/energyKernels/nonbond_dd_cutoff_gpt.c"
-#else
-#include "cando/chem/energyKernels/nonbond_dd_cutoff.c"
-#endif
+ #if 1
+ #include "cando/chem/energyKernels/nonbond_dd_cutoff_gpt.c"
+ template <typename T>
+ using Nonbond_Component = Nonbond_Dd_Cutoff<T>;
+ #else
+ #include "cando/chem/energyKernels/nonbond_dd_cutoff.c"
+ #endif
 
 }
 
@@ -71,12 +73,20 @@ namespace chem {
 
 namespace chem {
 
-std::string EnergyNonbond_O::description() const {
+std::string EnergyNonbond_O::implementation_details() const {
   Nonbond<NoHessian> nonbond;
-  Nonbond_Dd_Cutoff<NoHessian> nonbond_dd_cutoff;
+  Nonbond_Component<NoHessian> nonbond_dd_cutoff;
 
   std::stringstream ss;
   ss << nonbond.description() << " & " << nonbond_dd_cutoff.description();
+  return ss.str();
+}
+
+std::string EnergyNonbond_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  ss << " number-of-14terms " << this->_Terms14.size();
   return ss.str();
 }
 
@@ -100,7 +110,7 @@ size_t EnergyNonbond_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords)
   double hdvec_ground[POS_SIZE];
   size_t idx=0;
   size_t errs = 0;
-  Nonbond_Dd_Cutoff<double*> nonbond_dd_cutoff;
+  Nonbond_Component<double*> nonbond_dd_cutoff;
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
     position[0] = coords[si->term.I1];

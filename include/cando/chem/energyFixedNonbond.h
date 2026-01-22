@@ -162,6 +162,7 @@ public: // instance variables
 
 public:	// Creation class functions
 public:	
+  virtual std::string descriptionOfContents() const;
     typedef gctools::Vec0<TermType>::iterator iterator;
     iterator begin() { return this->_Terms.begin(); };
     iterator end() { return this->_Terms.end(); };

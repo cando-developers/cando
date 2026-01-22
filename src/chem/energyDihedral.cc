@@ -55,12 +55,25 @@ namespace chem {
 
 #if 1
 #include "cando/chem/energyKernels/dihedral_fast.c"
+template <typename T>
+using Dihedral_Component = Dihedral_Fast<T>;
 #else
 #include "cando/chem/energyKernels/dihedral.c"
+template <typename T>
+using Dihedral_Component = Dihedral<T>;
 #endif
 
-std::string EnergyDihedral_O::description() const {
-  Dihedral_Fast<NoHessian> dihedral;
+
+std::string EnergyDihedral_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
+
+
+std::string EnergyDihedral_O::implementation_details() const {
+  Dihedral_Component<NoHessian> dihedral;
 
   std::stringstream ss;
   ss << dihedral.description();
@@ -84,7 +97,7 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
   double hdvec_ground[POS_SIZE];
   size_t idx = 0;
   size_t errs = 0;
-  Dihedral_Fast<double*> dihedral;
+  Dihedral_Component<double*> dihedral;
   for ( auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di ) {
     position[0] = coords[di->term.I1];
     position[1] = coords[di->term.I1+1];
@@ -877,7 +890,7 @@ if (hasActiveAtomMask \
   DOUBLE* rdvec = NULL;
   DOUBLE* rhdvec = NULL;
   double  Energy;
-  Dihedral_Fast<NoHessian> dihedral;
+  Dihedral_Component<NoHessian> dihedral;
 #define KERNEL_DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \

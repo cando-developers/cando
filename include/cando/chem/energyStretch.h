@@ -167,6 +167,7 @@ public:
     iterator end() { return this->_Terms.end(); };
 	
 public:
+  virtual std::string descriptionOfContents() const;
     virtual size_t numberOfTerms() { return this->_Terms.size();};
     void addTerm(const TermType& term);
     virtual void dumpTerms(core::HashTable_sp atomTypes);

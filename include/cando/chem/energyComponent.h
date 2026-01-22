@@ -366,7 +366,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
-  CL_DEFMETHOD virtual std::string description() const { return "no-details-available-subclass-me"; };
+  CL_DEFMETHOD virtual std::string implementation_details() const { return "energyComponent.h: no-details-available-subclass-me"; };
   CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   void setScale(double s) {this->_Scale = s; };
   double getScale() { return this->_Scale ; };

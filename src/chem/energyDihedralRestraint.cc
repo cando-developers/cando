@@ -56,6 +56,13 @@ namespace chem {
 
 #include "cando/chem/energyKernels/dihedral_restraint.c"
 
+std::string EnergyDihedralRestraint_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
+
 size_t EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
 {
 #define POS_SIZE 12

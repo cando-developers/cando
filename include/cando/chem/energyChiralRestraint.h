@@ -146,6 +146,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
+  virtual std::string descriptionOfContents() const;
   void	initialize();
   //	string	__repr__() const;
 

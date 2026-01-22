@@ -136,6 +136,16 @@ core::List_sp EnergyChiralRestraint::encode() const {
                                   core::Cons_O::create(INTERN_(kw,atom4), this->_Atom4));
 }
 
+std::string EnergyChiralRestraint_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
+
+
+
+
 EnergyChiralRestraint_sp EnergyChiralRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyChiralRestraint_O::staticClass() );
   EnergyChiralRestraint_sp copy = EnergyChiralRestraint_O::create();

@@ -321,6 +321,13 @@ void EnergyStretch::defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAto
   this->term.r0 = stretch->getR0_Angstrom();
 }
 
+std::string EnergyStretch_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
+
 #if 0
 adapt::QDomNode_sp	EnergyStretch::asXml()
 {

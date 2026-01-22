@@ -209,7 +209,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   size_t _InteractionsDiscarded;
 
  public:
-  virtual std::string description() const;
+  virtual std::string implementation_details() const;
+  virtual std::string descriptionOfContents() const;
   typedef gctools::Vec0<TermType>::iterator iterator;
   //  iterator begin() { return this->_Terms.begin(); };
   //  iterator end() { return this->_Terms.end(); };

@@ -170,6 +170,13 @@ double	_evaluateEnergyOnly_AnchorRestraint(
   #endif
 }
 
+std::string EnergyAnchorRestraint_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
+
 
 void	EnergyAnchorRestraint_O::addTerm(const EnergyAnchorRestraint& r)
 {

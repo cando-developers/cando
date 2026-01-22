@@ -98,6 +98,12 @@ double _evaluateEnergyOnly_FixedNonbond(num_real x1, num_real y1, num_real z1, n
 #endif
 }
 
+std::string EnergyFixedNonbondRestraint_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
 void EnergyFixedNonbondRestraint_O::setupForEvaluation(AtomTable_sp atomTable, FFNonbondCrossTermTable_sp crossTerms) {
   this->_MobileAtomTable = atomTable;
   this->_NonbondCrossTermTable = crossTerms;

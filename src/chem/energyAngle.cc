@@ -134,6 +134,12 @@ double	_evaluateEnergyOnly_Angle(
     return Energy;
 }
 
+std::string EnergyAngle_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
 
 CL_LAMBDA((energy-angle chem:energy-angle) pos &optional activeAtomMask);
 CL_DEFMETHOD void	EnergyAngle_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos, core::T_sp activeAtomMask )

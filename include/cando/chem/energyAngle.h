@@ -191,6 +191,7 @@ public:	// Creation class functions
 
 
 public:
+  virtual std::string descriptionOfContents() const;
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
