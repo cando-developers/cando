@@ -329,11 +329,10 @@ molecule in the global frame."
 
 (defclass assembler (assembler-base)
   ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
-   (orientations-remove :initarg :orientations-remove :reader orientations-remove)
+   (receptor-only :initform nil :initarg :receptor-only :reader receptor-only)
    (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset)
    (adjustments :initarg :adjustments :accessor adjustments))
-  (:documentation "Te assembler class maintains a list of OLIGOMER-SHAPEs and a hash-table of
-OLIGOMER-SHAPE to ORIENTATIONs.
+  (:documentation "Te assembler class maintains a list of OLIGOMER-SHAPEs
 
 The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
  ))
@@ -354,7 +353,8 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
 
 (defun ligand-oligomer-shape (assembler)
   "Return the ligand oligomer-shape for the ASSEMBLER."
-  (first (oligomer-shapes assembler)))
+  (unless (receptor-only assembler)
+    (first (oligomer-shapes assembler))))
 
 (defun ligand-oligomer-shape-orientation (assembler)
   "Return the ligand oligomer-shape and orientation for the ASSEMBLER."
@@ -639,9 +639,10 @@ Specialize the foldamer argument to provide methods"))
                    (setf (shape-key-cache-deg monomer-shape) dihedral-cache)
                    ))))))
 
-(defun make-assembler (oligomer-shapes &key monomer-subset energy-function-factory (monomer-contexts nil monomer-contexts-p))
+(defun make-assembler (oligomer-shapes &key (receptor-only nil receptor-only-p) monomer-subset energy-function-factory (monomer-contexts nil monomer-contexts-p))
   "Build a assembler for the OLIGOMER-SHAPES.
 OLIGOMER-SHAPES - A list of OLIGOMER-SHAPEs that the ASSEMBLER will build.
+RECEPTOR-ONLY   - T if the assembler only contains a receptor
 MONOMER-CONTEXTS - A map of monomers to monomer-contexts copied from another assembler (avoids recalculating them).
 USE-EXCLUDED-ATOMS - A parameter passed to make-energy-function.
 ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the energy-function."
@@ -653,6 +654,9 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
       ((and (= (length oligomer-shapes) 1) (null orientations))
        (setf orientations (make-orientations (list (first oligomer-shapes) (make-orientation))))))
     (ensure-complete-orientations orientations oligomer-shapes))
+  (when (= (length oligomer-shapes) 1)
+    (unless receptor-only-p
+      (error "When you provide only one oligomer-shape you must pass receptor-only")))
   (unless (every (lambda (os) (typep os 'oligomer-shape)) oligomer-shapes)
     (error "You must provide a list of oligomer-shapes"))
   (let* ((aggregate (chem:make-aggregate :all))
@@ -725,6 +729,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                             finally (return (make-instance (if monomer-subset
                                                                'subset-assembler
                                                                'assembler)
+                                                           :receptor-only receptor-only
                                                            :monomer-positions monomer-positions
                                                            :monomer-contexts new-monomer-contexts
                                                            :oligomer-shapes oligomer-shapes
@@ -1446,7 +1451,7 @@ Return the COORDS and NIL or the ligand-transform if it was calculated."
     (values coords ligand-transform)))
 
 
-(defun update-externals-for-monomer-shape (assembler assembler-internals oligomer-shape monomer-shape coords &key ligand-transform)
+(defun update-externals-for-monomer-shape (assembler assembler-internals oligomer-shape monomer-shape coords &key (ligand-transform (geom:make-m4-identity)))
   "Update the external coordinates for one MONOMER-SHAPE in the OLIGOMER-SHAPE in the ASSEMBLER using the ORIENTATION."
   (let* ((atagg (ataggregate assembler))
          (monomer-shape-pos (or (gethash monomer-shape (monomer-shape-to-index oligomer-shape))

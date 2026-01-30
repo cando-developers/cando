@@ -472,18 +472,16 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             bool		calcOffDiagonalHessian,
                                             gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
                                             gc::Nilable<chem::NVector_sp> hdvec,
-                                              gc::Nilable<chem::NVector_sp> dvec,
-                                              core::T_sp activeAtomMask,
-                                              core::T_sp debugInteractions )
+                                            gc::Nilable<chem::NVector_sp> dvec,
+                                            core::T_sp activeAtomMask,
+                                            core::T_sp debugInteractions )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   num_real termEnergy = 0.0;
   this->_Evaluations++;
 
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   EnergyAngle* badAngle = NULL;
 
@@ -529,7 +527,7 @@ if (hasActiveAtomMask \
          ) \
     ) continue;
 
-    if (!hasForce) {
+    if (evalType==energyEval) {
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
         KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
         try {
@@ -548,7 +546,7 @@ if (hasActiveAtomMask \
           goto ERROR_LINEAR_ANGLE;
         }
       }
-    } else if (hasForce) {
+    } else if (evalType==gradientEval) {
       rforce = &(*force)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
         KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
@@ -620,14 +618,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
   num_real termEnergy = 0.0;
   this->_Evaluations++;
 
-//bool	fail = false;
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
 
 //

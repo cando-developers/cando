@@ -494,9 +494,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
       ++excludedAtomIndex;
     }
   }
-//  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
-  LOG( "Nonbond energy vdw({}) electrostatic({})\n" , (double)this->_EnergyVdw , this->_EnergyElectrostatic );
-  LOG( "Nonbond energy }\n");
+  LOG( "Nonbond energy({})\n" , Energy );
+  LOG( "Nonbond energy}}\n");
 }
 
 

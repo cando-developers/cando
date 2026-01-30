@@ -25,7 +25,7 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 // #undef USEBOOSTPYTHON
 
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 //#define	TURN_LINESEARCH_DETAILS_ON
 #define	TURN_LINESEARCH_DETAILS_OFF
@@ -450,7 +450,7 @@ void	Minimizer_O::minBracket(
              __FILE__, __LINE__, numSteps, xa, xb, xc, fa, fb, fc );
     }
     this->_MinBracketSteps++;
-    LOG("Loop:  xa({}) xb({}) xc({}) | fa({}) fb({}) fc({})"%xa%xb%xc%fa%fb%fc);
+    LOG("Loop:  xa({}) xb({}) xc({}) | fa({}) fb({}) fc({})",xa,xb,xc,fa,fb,fc);
     r = (xb-xa)*(fb-fc);
     q = (xb-xc)*(fb-fa);
     u = xb-((xb-xc)*q-(xb-xa)*r)/
@@ -1510,9 +1510,9 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
                                                NVector_sp			dirVec,
                                                NVector_sp			dirVecNext,
                                                NVector_sp			rj,
-                                               NVector_sp			dj,
+                                               NVector_sp			dj_dvec,
                                                NVector_sp			zj,
-                                               NVector_sp			qj,
+                                               NVector_sp			qj_hdvec,
                                                bool&                            innerLoopDeltaJ1,
                                                core::T_sp activeAtomMask )
 {
@@ -1526,7 +1526,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
 
   ASSERTNOTNULL(this->_EnergyFunction);
   LOG("Resetting dummy vector and matrix" );
-  nvDummy = nil<T_O>();
+  nvDummy = copy_nvector(dirVec);
   nmDummy = nil<T_O>();
 
   if ( this->_DebugOn )
@@ -1564,16 +1564,16 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
   backSubstituteLDLt(ldlt,zj,rj);
 
     // 2c.
-    // set dj = zj
+    // set dj_dvec = zj
     //
-  copyVector(dj,zj);
+  copyVector(dj_dvec,zj);
 
   rjDotzj = dotProductWithActiveAtomMask(rj,zj,activeAtomMask);
   while ( 1 ) { 
     // 3. Singularity test
-    // Compute the matrix-vector product qj=(H)(dj)
+    // Compute the matrix-vector product qj_hdvec=(H)(dj_dvec)
     // If either |((rj)^T).(zj)|<=delta
-    // or |((dj)^T).(qj)|<=delta (e.g., delta=10^-10)
+    // or |((dj_dvec)^T).(qj_hdvec)|<=delta (e.g., delta=10^-10)
     // exit PCG loop with pk=pj ( for j=1, set pk=force)
     //
 
@@ -1582,17 +1582,27 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
                                          nil<core::T_O>(),
                                          true, nvDummy,
                                          true, true, nmDummy,
-                                         qj, dj, activeAtomMask);
+                                         qj_hdvec, dj_dvec, activeAtomMask);
     // MOVE rjDotzj calculation above this loop because
     // 	its calculated in step 6
     // rjDotzj = rj->dotProduct(zj);
-    djDotqj = dotProductWithActiveAtomMask(dj,qj,activeAtomMask);
-//    core::clasp_writeln_string(fmt::format( "{}:{} j=={} fabs(rjDotzj)={}  fabs(djDotqj)={} delta={}",__FILE__,__LINE__, jindex, fabs(rjDotzj),fabs(djDotqj),delta));
+    djDotqj = dotProductWithActiveAtomMask(dj_dvec,qj_hdvec,activeAtomMask);
+    LOG("dotProductWithActiveAtomMask activeAtomMask = {}\n", _rep_(activeAtomMask));
+    LOG("     qj_hdvec = {}\n", _rep_(qj_hdvec));
+    LOG("     dj_dvec = {}\n", _rep_(dj_dvec));
+    if (chem__verbose(5)) {
+      core::print(fmt::format( "{}:{} j=={} fabs(rjDotzj)={}  fabs(djDotqj)={} delta={}",__FILE__,__LINE__, jindex, fabs(rjDotzj),fabs(djDotqj),delta));
+    }
     if ( fabs(rjDotzj) <= delta || fabs(djDotqj) <= delta ) {
+      LOG("fabs(rjDotzj)({}) <= delta({}) || fabs(djDotqj)({}) <= delta({})\n",
+          fabs(rjDotzj), delta, fabs(djDotqj), delta );
       if ( jindex==1 ) {
         copyVector(dirVec,force);
         innerLoopDeltaJ1 = true;
-//        core::clasp_writeln_string(fmt::format( "{}:{} dirVec set to force",__FILE__,__LINE__));
+        LOG("Setting innerLoopDeltaJ1 = true\n");
+        if (chem__verbose(5)) {
+          core::clasp_writeln_string(fmt::format( "{}:{} dirVec set to force",__FILE__,__LINE__));
+        }
       }
       if ( this->_DebugOn ) {
         stringstream ss;
@@ -1609,7 +1619,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
     // [Descent direction test]
     //    Update the quantities
     //      alphaj = rjDotzj/djDotqj;
-    //	{pj+1}->pj + alphaj*dj
+    //	{pj+1}->pj + alphaj*dj_dvec
     // If (gk.{pj+1}) >= (gk.pj) + delta then {
     //	exit inner loop with pk = pj (for j = 1, set pk = force )
     // }
@@ -1617,8 +1627,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
     //      I'm pretty sure that I need to invert the inequality test.
     //
     alphaj = rjDotzj/djDotqj;
-    XPlusYTimesScalarWithActiveAtomMask(dirVecNext,dirVec,dj,alphaj,activeAtomMask);
-    LOG("dirVecNext angle with force={}(deg)" , dirVecNext->angleWithVector(force)/0.0174533 );
+    XPlusYTimesScalarWithActiveAtomMask(dirVecNext,dirVec,dj_dvec,alphaj,activeAtomMask);
+    LOG("dirVecNext angle with force={}(deg)", angleWithVector(dirVecNext,force)/0.0174533 );
     forceDotpjNext = dotProductWithActiveAtomMask(force,dirVecNext,activeAtomMask);
     if ( forceDotpjNext <= (forceDotpj + delta) ) {
       if ( jindex == 1 ) {
@@ -1634,13 +1644,13 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
     }
 
     // 5. Truncation test
-    // Compute rjNext = rj - (alphaj)(qj)
+    // Compute rjNext = rj - (alphaj)(qj_hdvec)
     // If "Truncation test" ||rjNext||<nk||g||
     // 	or "Step Limit" j+1>ITpcg then {
     // 	exit inner loop with search direction pk = dirVecNext
     // }
     //
-    inPlaceAddTimesScalarWithActiveAtomMask(rj,qj,-alphaj,activeAtomMask);
+    inPlaceAddTimesScalarWithActiveAtomMask(rj,qj_hdvec,-alphaj,activeAtomMask);
     rmsRjMag = rmsMagnitudeWithActiveAtomMask(rj,activeAtomMask);
     if ( rmsRjMag < nkTimesRmsForceMag || (jindex+1)>ITpcg ) {
       LOG("rmsRjMag({}) < nkTimesRmsForceMag({})" , rmsRjMag , nkTimesRmsForceMag );
@@ -1652,7 +1662,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
       goto DONE;
     }
     if ( (jindex+1)>ITpcg ) {
-      LOG("j+1({})>ITpcg({})" , j+1 , ITpcg );
+      LOG("j+1({})>ITpcg({})", jindex+1 , ITpcg );
       copyVector(dirVec,dirVecNext);
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Step limit test was true\n" );
@@ -1665,19 +1675,19 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
     // Solve for zjNext as in step 2 in (M~)zjNext = rj
     // Update the quantities
     // 	betaj = (rjNext.zjNext)/(rj.zj)
-    // 	djNext = zjNext + betaj*dj
+    // 	djNext = zjNext + betaj*dj_dvec
     // j = j + 1 goto step 3
     //
     backSubstituteLDLt(ldlt,zj,rj);
     rjDotzjNext = dotProductWithActiveAtomMask(rj,zj,activeAtomMask);
     betaj = rjDotzjNext/rjDotzj;
     rjDotzj = rjDotzjNext;
-    XPlusYTimesScalarWithActiveAtomMask(dj, zj,dj,betaj,activeAtomMask);
+    XPlusYTimesScalarWithActiveAtomMask(dj_dvec, zj,dj_dvec,betaj,activeAtomMask);
     jindex = jindex + 1;
     copyVector(dirVec,dirVecNext);
   }
  DONE:
-  LOG("Exiting inner loop with j = {}" , j );
+  LOG("Exiting inner loop with jindex = {}" , jindex );
   return;
 }
 
@@ -1699,7 +1709,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   StepReport_sp	stepReport = StepReport_O::create();
   int	iDimensions;
   double			fp;
-  NVector_sp	forceK, dirVec, dirVecNext, rj, dj, zj, qj, posNext, kSum;
+  NVector_sp	forceK, dirVec, dirVecNext, rj, dj_dvec, zj, qj_hdvec, posNext, kSum;
   SparseLargeSquareMatrix_sp	mprecon;
   SparseLargeSquareMatrix_sp    opt_mprecon;
   SparseLargeSquareMatrix_sp    ldlt, opt_ldlt;
@@ -1736,11 +1746,11 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   dirVec->zero();
   LOG("Defining NVectors pjNext" );
   dirVecNext = NVector_O::create(iDimensions);
-  LOG("Defining NVectors rj,dj,zj,qj" );
+  LOG("Defining NVectors rj,dj_dvec,zj,qj_hdvec" );
   rj = NVector_O::create(iDimensions);
-  dj = NVector_O::create(iDimensions);
+  dj_dvec = NVector_O::create(iDimensions);
   zj = NVector_O::create(iDimensions);
-  qj = NVector_O::create(iDimensions);
+  qj_hdvec = NVector_O::create(iDimensions);
   kSum = NVector_O::create(iDimensions);
   mprecon = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
   ldlt = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
@@ -1796,7 +1806,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    //
       _truncatedNewtonInnerLoop( kk, pos, energyScale, opt_mprecon, opt_ldlt,
                                  forceK, rmsForceMag, dirVec,
-                                 dirVecNext, rj, dj, zj, qj,
+                                 dirVecNext, rj, dj_dvec, zj, qj_hdvec,
                                  innerLoopDeltaJ1,
                                  activeAtomMask );
 
@@ -1805,6 +1815,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
       // stall and run out the max iterations
       // So lets use this as a convergence test
       if (innerLoopDeltaJ1) {
+        LOG("Hit innerLoopDeltaJ1\n");
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string(fmt::format( "search complete step {} according to innerLoopDeltaJ1" , this->_Iteration ));
         }
@@ -1830,7 +1841,7 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
       }
 
       energyXk = energyXkNext;
-      this->lineSearch( &alphaK, &energyXkNext, pos, energyScale, dirVec, forceK, zj, qj, kk, stepReport, activeAtomMask );
+      this->lineSearch( &alphaK, &energyXkNext, pos, energyScale, dirVec, forceK, zj, qj_hdvec, kk, stepReport, activeAtomMask );
       if (this->_StepCallback.notnilp()) {
         core::DoubleFloat_sp dstep = core::DoubleFloat_O::create(alphaK);
         core::eval::funcall(this->_StepCallback, _sym_truncated_newton, pos, forceK, dstep, dirVec, opt_mprecon, opt_ldlt  );

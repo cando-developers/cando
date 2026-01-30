@@ -483,13 +483,8 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   ANN(hessian);
   ANN(hdvec);
   ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
-  if (hasHessian) {
-    SIMPLE_ERROR("The Stretch term was passed a hessian matrix - I thought we didn't do that anymore");
-  }
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
 #define STRETCH_CALC_FORCE
 #define STRETCH_CALC_DIAGONAL_HESSIAN
@@ -527,7 +522,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
   }
 #else
-  if (!hasForce) {
+  if (evalType==energyEval) {
     // energy only
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
       if (hasActiveAtomMask &&
@@ -544,7 +539,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
           NULL);
       STRETCH_DEBUG_INTERACTIONS(si->term.I1,si->term.I2);
     }
-  } else if (hasForce) {
+  } else if (evalType==gradientEval) {
     rforce = &(*force)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
       if (hasActiveAtomMask &&
@@ -561,7 +556,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
           NULL);
       STRETCH_DEBUG_INTERACTIONS(si->term.I1,si->term.I2);
     }
-  } else { // if (hasHdAndD) {
+  } else { // hessianEval
     rforce = &(*force)[0];
     rdvec = &(*dvec)[0];
     rhdvec = &(*hdvec)[0];

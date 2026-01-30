@@ -1779,7 +1779,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 #endif
         // Nonbonds here!!!!!!!!!!!!!!
   if (useExcludedAtoms) {
-    SIMPLE_ERROR("Don't use excluded atoms for the time being");
+    SIMPLE_ERROR(":use-excluded-atoms is T - Don't use excluded atoms for the time being");
     // The nonbond parameters are calculated in Common Lisp
 
     core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),nonbondForceField);

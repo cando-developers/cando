@@ -839,7 +839,7 @@ Add a random displacement to every atom in the matter."
                         (sd-tolerance 5000.0)
                         (cg-tolerance 0.5)
                         (tn-tolerance 0.00001)
-                        (use-excluded-atoms t)
+                        (use-excluded-atoms nil)
                         (assign-types t)
                         (save-trajectory nil)
                         )
@@ -850,7 +850,7 @@ Add a random displacement to every atom in the matter."
                           (sd-tolerance 5000.0)
                           (cg-tolerance 0.5)
                           (tn-tolerance 0.00001)
-                          (use-excluded-atoms t)
+                          (use-excluded-atoms nil)
                           (assign-types t)
                           (save-trajectory nil))
 
@@ -1459,7 +1459,7 @@ Currently it checks for the following possible problems:
     (distance-search matter 1.5 t)
     (format t "Checking parameters for unit ~a~%" (chem:get-name matter))
     (let* ((energy-function (chem:make-energy-function :matter matter
-                                                       :use-excluded-atoms t
+                                                       :use-excluded-atoms nil
                                                        :assign-types t))
            (atom-table (chem:atom-table energy-function))
            (energy-stretch (chem:get-stretch-component energy-function))

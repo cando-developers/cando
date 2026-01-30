@@ -187,10 +187,10 @@ bool Vector3::sameAs(const Vector3 &v) {
 
 double Vector3::angleToVectorAboutNormal(const Vector3 &toVector, const Vector3 &aboutNormal) {
   Vector3 men = this->normalizedOrZero();
-  LOG("me.normalized{{},{},{}} ", men.getX(), men.getY(), men.getZ());
+  LOG("me.normalized({},{},{}) ", men.getX(), men.getY(), men.getZ());
   Vector3 ton = toVector.normalizedOrZero();
-  LOG("to.normalized{{},{},{}} ", ton.getX(), ton.getY(), ton.getZ());
-  LOG("about_normal{{},{},{}} ", aboutNormal.getX(), aboutNormal.getY(), aboutNormal.getZ());
+  LOG("to.normalized({},{},{}) ", ton.getX(), ton.getY(), ton.getZ());
+  LOG("about_normal({},{},{}) ", aboutNormal.getX(), aboutNormal.getY(), aboutNormal.getZ());
   double cosTheta = men.dotProduct(ton);
   if (fabs(cosTheta - 1.0) < 0.00001)
     return 0.0;

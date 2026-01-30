@@ -216,16 +216,14 @@ to the components and evaluate the BODY in that scope."
 (defmethod orientation ((oligomer-shape oligomer-shape) (assembler assembler))
   (gethash oligomer-shape (orientations (orientations assembler))))
 
-(defvar *orientation*)
+(defvar *orientation* (geom:make-m4-identity))
 
 (defmacro with-orientation-transform (orientation &body body)
   "Set the *orientation* dynamic variable so that external coordinate building can function"
   `(progn
-     (if (boundp '*orientation*)
-         (error "*orientation* is already bound - with-orientation-transform cannot be nested")
-         (let ((*orientation* ,orientation))
-           (progn
-             ,@body)))))
+     (let ((*orientation* ,orientation))
+       (progn
+         ,@body))))
 
 (defun kin:orientation-transform (dummy)
   (if (boundp '*orientation*)

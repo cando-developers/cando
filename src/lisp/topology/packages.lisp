@@ -595,7 +595,8 @@
    #:calculate-adjustment-transform
    #:orientation-vectors
    #:local-to-global-orientation
-   #:orientation-transform))
+   #:orientation-transform
+   #:receptor-only))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

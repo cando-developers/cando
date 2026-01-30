@@ -40,10 +40,6 @@ namespace chem {
 
 
 
-
-
-
-
 void	EnergyComponent_O::initialize()
 {
   this->Base::initialize();

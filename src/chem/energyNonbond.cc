@@ -240,14 +240,17 @@ EnergyFunction_sp energyFunctionNonbondParameters(ScoringFunction_sp score,
 }
 
 core::T_sp debug_nonbond(double Energy, double x1, double y1, double z1, double x2, double y2, double z2, 
-                         double dQ1Q2, double dA, double dC/*, double Eeel, double Evdw, double fx1, double fy1,
+                         double dQ1Q2, double dA, double dC, double rpl2 /*, double Eeel, double Evdw, double fx1, double fy1,
                                                              double fz1, double fx2, double fy2, double fz2*/) {
+  double r2 = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2);
   ql::list ll;
   ll << INTERN_(kw, Energy) << mk_double_float(Energy) << INTERN_(kw, x1) << mk_double_float(x1) << INTERN_(kw, y1)
      << mk_double_float(y1) << INTERN_(kw, z1) << mk_double_float(z1) << INTERN_(kw, x2) << mk_double_float(x2) << INTERN_(kw, y2)
      << mk_double_float(y2) << INTERN_(kw, z2) << mk_double_float(z2)
      << INTERN_(kw, dq1q2) << mk_double_float(dQ1Q2) << INTERN_(kw, da)
      << mk_double_float(dA) << INTERN_(kw, dc) << mk_double_float(dC)
+     << INTERN_(kw, r2) << mk_double_float(r2)
+  << INTERN_(kw, rpl2) << mk_double_float(rpl2)
 #if 0
      << INTERN_(kw, eel) << mk_double_float(Eeel)
      << INTERN_(kw, evdw) << mk_double_float(Evdw) << INTERN_(kw, fx1) << mk_double_float(fx1) << INTERN_(kw, fy1)
@@ -260,8 +263,6 @@ core::T_sp debug_nonbond(double Energy, double x1, double y1, double z1, double 
 
 SYMBOL_EXPORT_SC_(ChemPkg, EnergyNonbond);
 SYMBOL_EXPORT_SC_(ChemPkg, EnergyNonbond14);
-SYMBOL_EXPORT_SC_(ChemPkg, trapEnergyNonbondDefineForAtomPair );
-SYMBOL_EXPORT_SC_(ChemPkg, trapEnergyNonbondNotDefineForAtomPair );
 
 core::T_sp nonbond_type(bool is14) {
   if (is14)
@@ -298,7 +299,7 @@ void EnergyNonbond::decode(core::List_sp alist) { SIMPLE_ERROR("Implement decode
                         debug_nonbond(Energy, \
                                       position[I1],position[I1+1],position[I1+2], \
                                       position[I2],position[I2+1],position[I2+2], \
-                                      dQ1Q2, dA, dC /*, Eeel, Evdw, fx1, fy1, fz1, fx2, fy2, fz2 */),       \
+                                      dQ1Q2, dA, dC, rpl2 /*, Eeel, Evdw, fx1, fy1, fz1, fx2, fy2, fz2 */), \
                         core::make_fixnum(I1), core::make_fixnum(I2));                                                             \
   }
 
@@ -405,9 +406,7 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
 
   //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
 
-  bool hasForce = force.notnilp();
-  bool hasHessian = hessian.notnilp();
-  bool hasHdAndD = (hdvec.notnilp()) && (dvec.notnilp());
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   double totalEnergy = 0.0;
   DOUBLE* position = &(*pos)[0];
@@ -441,7 +440,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
   bool interactionsAre14 = false;
   Nonbond<NoHessian> nonbond;
   int index1_end = endIndex - 1;
-  if (!hasForce) {
+  double rpl2 = mthis->_Nonbond_r_pairlist*
+                                           mthis->_Nonbond_r_pairlist;
+  if (evalType==energyEval) {
     for (int index1 = 0; index1 < index1_end; ++index1) {
       LOG("{} ====== top of outer loop - index1 = {}\n", __FUNCTION__, index1);
       // Skip 0 in excluded atom list that amber requires
@@ -480,7 +481,7 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
         ++excludedAtomIndex;
       }
     }
-  } else if (hasForce) {
+  } else if (evalType==gradientEval) {
     rforce = &(*force)[0];
     for (int index1 = 0; index1 < index1_end; ++index1) {
       LOG("{} ====== top of outer loop - index1 = {}\n", __FUNCTION__, index1);
@@ -599,10 +600,8 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
   double vdwScale = energyScaleVdwScale(energyScale);
   double eelScale = energyScaleElectrostaticScale(energyScale);
   double DIELECTRIC = energyScaleDielectricConstant(energyScale);
-  bool hasForce = force.notnilp();
-  bool hasHessian = hessian.notnilp();
-  bool hasHdAndD = (hdvec.notnilp()) && (dvec.notnilp());
-
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
+  double rpl2 = mthis->_Nonbond_r_pairlist*mthis->_Nonbond_r_pairlist;
   double totalNonbondEnergy = 0.0;
   DOUBLE* position = &(*nvposition)[0];
   DOUBLE* rforce = NULL;
@@ -610,7 +609,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
   DOUBLE* rdvec = NULL;
   DOUBLE* rhdvec = NULL;
   DOUBLE  Energy = 0.0;
-  Nonbond_Dd_Cutoff<NoHessian> nonbond_dd_cutoff;
+  Nonbond_Component<NoHessian> nonbond_dd_cutoff;
 
   // If you are going to use openmp here, you need to control access to the force and hessian
   // arrays so that only one thread updates each element at a time.
@@ -622,7 +621,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
 #define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                                                              \
   if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3)))  continue;
 
-    if (!hasForce) {
+    if (evalType==energyEval) {
       for (auto si = terms.begin(); si != terms.end(); si++ ) {
         KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.I1,si->term.I2);
         Energy = nonbond_dd_cutoff.energy(
@@ -648,7 +647,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
         const double& dQ1Q2 = si->term.dQ1Q2;
         NONBOND_DEBUG_INTERACTIONS(si->term.I1,si->term.I2);
       }
-    } else if (hasForce) {
+    } else if (evalType==gradientEval) {
       rforce = &(*force)[0];
       for (auto si = terms.begin(); si != terms.end(); si++ ) {
         KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.I1,si->term.I2);
@@ -717,9 +716,13 @@ double EnergyNonbond_O::evaluateAllComponent(ScoringFunction_sp score,
                                              core::T_sp energyScale,
                                              core::T_sp energyComponents,
                                              bool calcForce,
-                                             gc::Nilable<NVector_sp> force, bool calcDiagonalHessian, bool calcOffDiagonalHessian,
-                                             gc::Nilable<AbstractLargeSquareMatrix_sp> hessian, gc::Nilable<NVector_sp> hdvec,
-                                             gc::Nilable<NVector_sp> dvec, core::T_sp activeAtomMask,
+                                             gc::Nilable<NVector_sp> force,
+                                             bool calcDiagonalHessian,
+                                             bool calcOffDiagonalHessian,
+                                             gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
+                                             gc::Nilable<NVector_sp> hdvec,
+                                             gc::Nilable<NVector_sp> dvec,
+                                             core::T_sp activeAtomMask,
                                              core::T_sp debugInteractions) {
   this->_Evaluations++;
   //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
@@ -861,15 +864,6 @@ CL_DEFMETHOD void EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianT
 bool EnergyNonbond::defineForAtomPair(core::T_sp forceField, bool is14, Atom_sp a1, Atom_sp a2, size_t a1CoordinateIndexTimes3,
                                       size_t a2CoordinateIndexTimes3, EnergyNonbond_sp energyNonbond,
                                       core::HashTable_sp atomTypes, core::T_sp keepInteraction ) {
-  if (_sym_trapEnergyNonbondDefineForAtomPair->fboundp()) {
-    core::eval::funcall(_sym_trapEnergyNonbondDefineForAtomPair,
-                        a1, a2,
-                        core::make_fixnum(a1CoordinateIndexTimes3),
-                        core::make_fixnum(a2CoordinateIndexTimes3),
-                        energyNonbond,
-                        atomTypes,
-                        keepInteraction);
-  }
   double amber_charge_conversion_18dot2223 =
       core::Number_O::as_double_float(gc::As<core::Number_sp>(_sym_STARamber_charge_conversion_18_DOT_2223STAR->symbolValue()));
   double dQ1Q2Scale = amber_charge_conversion_18dot2223 * amber_charge_conversion_18dot2223;
@@ -926,7 +920,6 @@ bool EnergyNonbond::defineForAtomPair(core::T_sp forceField, bool is14, Atom_sp 
     // ,energyNonbond->getDielectricConstant());
     // (this->_Charge1*this->_Charge2)/energyNonbond->getDielectricConstant();
     LOG("Calc dQ1Q2 electrostaticScale= {}", (double)(electrostaticScale));
-    LOG("Calc dQ1Q2 Dielectric constant = {}", (double)(energyNonbond->getDielectricConstant()));
     LOG("Calc dQ1Q2 Charge1 = {}", (double)(charge1));
     LOG("Calc dQ1Q2 Charge2 = {}", (double)(charge2));
     LOG("dQ1Q2 = {}", (double)(this->term.dQ1Q2));
@@ -1090,8 +1083,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp
   }
   //  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
   //  printf( "Nonbond energy vdw({}) electrostatic({})\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
-  LOG("Nonbond energy vdw({}) electrostatic({})\n", (double)this->_EnergyVdw, this->_EnergyElectrostatic);
-  LOG("Nonbond energy }\n");
+  LOG("Nonbond energy }}\n");
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg, nonbond);
@@ -1231,15 +1223,14 @@ core::T_mv EnergyNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates) {
 CL_DEFMETHOD
 core::T_mv EnergyNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
 
+  this->_UsesExcludedAtoms = false;
+  this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
   // If the nonbond pairs are between two matters then don't rebuild the pair-list
   if (this->_Matter1.notnilp()) {
     ASSERT(this->_Matter2.notnilp());
     this->rebuildPairListBetweenMatters(tcoordinates);
     return Values0<core::T_O>();
   }
-
-  this->_UsesExcludedAtoms = false;
-  this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
   size_t interactionsKept = 0;
   size_t interactionsDiscarded = 0;
   size_t totalInteractions = 0;
@@ -1323,20 +1314,22 @@ core::T_mv EnergyNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
                 core::clasp_make_fixnum(totalInteractions));
 }
 
-core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {
-  core::print(fmt::format("DEBUG/in rebuildPairListBetweenMatters --------------\n"));
+core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) __attribute__((optnone)) {
   core::T_sp keepInteractionFactory = this->_KeepInteractionFactory;
   if (keepInteractionFactory.nilp()) return Values0<core::T_O>();
   NVector_sp coords = gc::As<NVector_sp>(tcoordinates);
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
-  Matter_sp mat1 = this->_Matter1;
-  Matter_sp mat2 = this->_Matter2;
+  Matter_sp mat1 = gc::As<Matter_sp>(this->_Matter1);
+  Matter_sp mat2 = gc::As<Matter_sp>(this->_Matter2);
   bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
   double rpairlist2 = this->_Nonbond_r_pairlist*this->_Nonbond_r_pairlist;
   auto atomTable = this->_AtomTable;
   auto nbForceField = atomTable->nonbondForceFieldForAggregate();
   auto atomTypes = this->_AtomTypes; // This was energyFunction->atomTypes() - I hope this->_AtomTypes works the same.
+  size_t interactionsKept = 0;
+  size_t interactionsDiscarded = 0;
   {
+    this->_Terms.clear();
     LOG("Defining NONBONDS");
     Loop lMat1(mat1, ATOMS);
     while (lMat1.advanceLoopAndProcess()) {
@@ -1353,7 +1346,7 @@ core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinate
         bool added = false;
         double dist2 = vdiff.dotProduct(vdiff);
 //        if ((i3x1==609&&i3x1==480) || (i3x1==480&&i3x1==609)) {
-        core::print(fmt::format("ai{}/ai{} dist2 = {}  rpairlist2 = {}\n", i3x1, i3x2, dist2, rpairlist2));
+//          core::print(fmt::format("ai{}/ai{} dist2 = {}  rpairlist2 = {}\n", i3x1, i3x2, dist2, rpairlist2));
 //        }
         if (dist2 < rpairlist2) {
           EnergyNonbond energyNonbond;
@@ -1363,11 +1356,15 @@ core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinate
                                                     core::make_fixnum(i3x1),
                                                     core::make_fixnum(i3x2));
             if (result.notnilp()) {
+              interactionsKept++;
               energyNonbond.defineForAtomPair(nbForceField, in14, a1, a2, i3x1, i3x2, this->asSmartPtr(), atomTypes, keepInteraction);
               added = true;
               this->addTerm(energyNonbond);
+            } else {
+              interactionsDiscarded++;
             }
           } else {
+            interactionsKept++;
             energyNonbond.defineForAtomPair(nbForceField, in14, a1, a2,
                                             i3x1, i3x2,
                                             this->asSmartPtr(), atomTypes, keepInteraction );
@@ -1375,21 +1372,13 @@ core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinate
             this->addTerm(energyNonbond);
           }
         }
-        if (!added) {
-          if (_sym_trapEnergyNonbondNotDefineForAtomPair->fboundp()) {
-            core::eval::funcall(_sym_trapEnergyNonbondDefineForAtomPair,
-                                a1, a2,
-                                core::make_fixnum(i3x1),
-                                core::make_fixnum(i3x2),
-                                this->asSmartPtr(),
-                                atomTypes,
-                                keepInteraction);
-          }
-        }
       }
     }
   }
-  return Values0<core::T_O>();
+  size_t totalInteractions = interactionsKept+interactionsDiscarded;
+  return Values(core::clasp_make_fixnum(interactionsKept),
+                core::clasp_make_fixnum(interactionsDiscarded),
+                core::clasp_make_fixnum(totalInteractions));
 }
 
 
@@ -1419,15 +1408,15 @@ bonded to each other.  Generate a pair-list in _Terms and that pair-list should 
 CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
                                                                        EnergyFunction_sp energyFunction,
                                                                        core::T_sp keepInteractionFactory) {
-  core::print(fmt::format("DEBUG/in constructNonbondTermsBetweenMatters -------------- {} {}\n", _rep_(mat1), _rep_(mat2)));
   this->_UsesExcludedAtoms = false;
   this->_Matter1 = mat1;
   this->_Matter2 = mat2;
   this->_KeepInteractionFactory = keepInteractionFactory;
   this->_Terms.clear();
   this->_Terms14.clear();
-
-
+  this->_AtomTable = energyFunction->_AtomTable;
+  auto atomTypes = energyFunction->atomTypes();
+  this->_AtomTypes = atomTypes;
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg, da);

@@ -74,6 +74,23 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/quickDom.fwd.h>// energyComponent.h wants QDomNode needs quickDom.fwd.h
 
 namespace chem {
+
+typedef enum { energyEval, gradientEval, hessianEval } EnergyComponentEvalType;
+
+inline EnergyComponentEvalType determineEnergyComponentEvalType(gc::Nilable<NVector_sp> force, gc::Nilable<NVector_sp> hdvec, gc::Nilable<NVector_sp> dvec ) {
+  if (hdvec.notnilp()) {
+    if (force.nilp()) {
+      SIMPLE_ERROR("You cannot have hdvec not nil but force nil");
+    } else if (dvec.nilp()) {
+      SIMPLE_ERROR("You cannot have hdvec not nil but dvec nil");
+    }
+    return hessianEval;
+  }
+  if (force.notnilp()) return gradientEval;
+  return energyEval;
+}
+
+
 class KahanSummation {
 private:
   double sum;
@@ -334,19 +351,6 @@ inline void KernelHessOffDiagAcc(size_t positionSize, double* hessian, double* d
     this->_AnchorRestraint->msg; 		\
     this->_FixedNonbondRestraint->msg; 	\
   }
-
-template <class ComponentType, class EntryType>
-  string	component_beyondThresholdInteractionsAsString(ComponentType& component) 
-{
-  int	bt;
-  stringstream	ss;
-  bt = component._BeyondThresholdTerms.end()-
-    component._BeyondThresholdTerms.begin();
-  ss << component.className() << "(#"<< bt <<") ";
-  return ss.str();
-};
-
-
 
 
 SMART(EnergyComponent );

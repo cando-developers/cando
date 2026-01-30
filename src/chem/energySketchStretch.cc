@@ -194,10 +194,6 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   this->_Evaluations++;
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());

@@ -866,13 +866,9 @@ if (hasActiveAtomMask \
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
+
   double termEnergy = 0.0;
 
   num_real EraseLinearDihedral;
@@ -898,7 +894,7 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) continue;
-  if (!hasForce) {
+  if (evalType==energyEval) {
     for ( di=di_start; di!= di_end; di++ ) {
       KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
       Energy = dihedral.energy(di->term.V,
@@ -918,7 +914,7 @@ if (hasActiveAtomMask \
       const INT& IN = di->term.IN;
       DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
     }
-  } else if (hasForce) {
+  } else if (evalType==gradientEval) {
     rforce = &(*force)[0];
     for ( di=di_start; di!= di_end; di++ ) {
       KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
@@ -1006,14 +1002,8 @@ if (hasActiveAtomMask \
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
 //
 // Copy from implementAmberFunction::evaluateAll
@@ -1269,13 +1259,8 @@ double EnergyDihedral_O::evaluateAllComponentSimd8(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   double totalEnergy = 0.0;
 //
@@ -1556,13 +1541,8 @@ double EnergyDihedral_O::evaluateAllComponentSimd4(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   double totalEnergy = 0.0;
 //
@@ -1748,13 +1728,8 @@ double EnergyDihedral_O::evaluateAllComponentSimd2(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   double totalEnergy = 0.0;
 //
