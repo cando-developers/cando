@@ -106,7 +106,7 @@ void    _defineAtomicInfoMapIfNotDefined()
   }
   AtomicInfo	invalid;
   invalid._Valid = false;
-  auto ei = gctools::GC<ElementsInfo_O>::allocate_with_default_constructor();
+  auto ei = gctools::GC<ElementsInfo_O>::allocate();
   chem::_sym__PLUS_elementsInfo_PLUS_->defparameter(ei);
   if (!chem::_sym__PLUS_elementsInfo_PLUS_.boundp()) {
     printf("%s:%d:%s It's unbound\n", __FILE__, __LINE__, __FUNCTION__ );

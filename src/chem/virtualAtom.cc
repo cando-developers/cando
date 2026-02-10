@@ -46,7 +46,7 @@ namespace chem {
     VirtualAtom_sp VirtualAtom_O::create(MatterName name, CalculatePosition_sp proc)
 {
     LOG("status" );
-    auto  va  = gctools::GC<VirtualAtom_O>::allocate_with_default_constructor();
+    auto  va  = gctools::GC<VirtualAtom_O>::allocate();
     LOG("status" );
     va->setName(name);
     LOG("status" );

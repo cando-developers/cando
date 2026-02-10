@@ -108,7 +108,7 @@ CL_LISPIFY_NAME(make-atom);
 DOCGROUP(cando);
 CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
 {
-  auto atom = gctools::GC<Atom_O>::allocate_with_default_constructor();
+  auto atom = gctools::GC<Atom_O>::allocate();
   atom->setName(name);
   atom->setElement(element);
   return atom;
@@ -1279,7 +1279,7 @@ CL_LISPIFY_NAME("getBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getBondList()
 {
   VectorBond::const_iterator	b;
-  auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
+  auto  bl  = gctools::GC<BondList_O>::allocate();
   for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )
   {
     bl->addBond(*b);
@@ -1364,7 +1364,7 @@ CL_LISPIFY_NAME("getHeavyAtomBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getHeavyAtomBondList()
 {
   VectorBond::const_iterator	b;
-  auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
+  auto  bl  = gctools::GC<BondList_O>::allocate();
   Atom_sp me = this->sharedThis<Atom_O>();
   for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )
   {

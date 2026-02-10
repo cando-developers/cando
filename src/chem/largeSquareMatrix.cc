@@ -200,7 +200,7 @@ void	AbstractLargeSquareMatrix_O::multiplyByVector(NVector_sp result, NVector_sp
 
 FullLargeSquareMatrix_sp FullLargeSquareMatrix_O::create(uint dim, TriangleType type)
 {
-  auto  res  = gctools::GC<FullLargeSquareMatrix_O>::allocate_with_default_constructor();
+  auto  res  = gctools::GC<FullLargeSquareMatrix_O>::allocate();
   res->setup(dim,type);
   return res;
 }
@@ -385,7 +385,7 @@ CL_DEFUN SparseLargeSquareMatrix_sp chem__make_sparse_large_square_matrix(size_t
 
 SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::create(uint dim, TriangleType type)
 {
-  auto  res  = gctools::GC<SparseLargeSquareMatrix_O>::allocate_with_default_constructor();
+  auto  res  = gctools::GC<SparseLargeSquareMatrix_O>::allocate();
   res->setup(dim,type);
   return res;
 }
@@ -430,7 +430,7 @@ vecreal	SparseLargeSquareMatrix_O::mostNegativeValue()
 
 SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::optimized() 
 {
-  auto  res  = gctools::GC<SparseLargeSquareMatrix_O>::allocate_with_default_constructor();
+  auto  res  = gctools::GC<SparseLargeSquareMatrix_O>::allocate();
   res->setup(this->_Columns,this->_Triangle);
   uint		x,y;
   for ( y = 0; y<this->dimension(); y++ ) {

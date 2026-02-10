@@ -2073,7 +2073,7 @@ CL_DEF_CLASS_METHOD AntechamberBondToAtomTest_sp AntechamberBondToAtomTest_O::cr
                                                                                           AtomOrBondMatchNode_sp props,
                                                                                           core::Symbol_sp tag) {
   _G();
-  auto obj = gctools::GC<AntechamberBondToAtomTest_O>::allocate_with_default_constructor();
+  auto obj = gctools::GC<AntechamberBondToAtomTest_O>::allocate();
   obj->_Element = element;
   obj->_Neighbors = neighbors;
   obj->_AtomProperties = props;
@@ -2708,7 +2708,7 @@ void MoleculeGraph_O::initialize() {
 
 DOCGROUP(cando);
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
-  auto graph = gctools::GC<MoleculeGraph_O>::allocate_with_default_constructor();
+  auto graph = gctools::GC<MoleculeGraph_O>::allocate();
   graph->_moleculeGraph = new MoleculeGraphType();
   return graph;
 }

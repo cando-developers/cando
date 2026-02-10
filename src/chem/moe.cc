@@ -942,7 +942,7 @@ void	MoeReadFile::readNextLine()
 	tir=0;
 	for ( im=0; im<ptMolecules.getVector(0).size(); im++ ) {
 	    LOG("Creating molecule #{}" , im  );
-	    auto  mol  = gctools::GC<Molecule_O>::allocate_with_default_constructor();
+	    auto  mol  = gctools::GC<Molecule_O>::allocate();
 	    LOG(" created" );
 	    agg->addMolecule(mol);
             mol->setId(agg->contentSize());
@@ -951,7 +951,7 @@ void	MoeReadFile::readNextLine()
 	    LOG("  It has {} residues" , numResidues  );
 	    for ( ir=0; ir<numResidues; ir++ ) {
 		LOG("     Creating residue: {}" , ir  );
-		auto  res  = gctools::GC<Residue_O>::allocate_with_default_constructor();
+		auto  res  = gctools::GC<Residue_O>::allocate();
 		//res->setTempInt(ir+1);
 		mol->addMatter(res);
 		LOG("     Added residue to mol" );
@@ -966,7 +966,7 @@ void	MoeReadFile::readNextLine()
 		LOG("        it has {} atoms" , numAtoms  );
 		tir++;
 		for ( it=0; it<numAtoms; it++ ) {
-                  auto  a  = gctools::GC<Atom_O>::allocate_with_default_constructor();
+                  auto  a  = gctools::GC<Atom_O>::allocate();
                     //a->setMoeIndex( dynamic_cast<ParaInteger*>(ptAtoms.getVector(index_ID)[ia])->getValue() );
 		    a->setName( chemkw_intern(dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aName)[ia])->getValue() ));
 		    a->setElementFromString( dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aElement)[ia])->getValue() );
@@ -1246,7 +1246,7 @@ void	MoeReadFile::readNextLine()
 
     Aggregate_sp	moeReadAggregateWithAtomTypes(const string& nm)
     {
-      auto  agg  = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
+      auto  agg  = gctools::GC<Aggregate_O>::allocate();
 	moeReadAggregateWithAtomTypesFromFileName(agg,nm.c_str());
 	return agg;
     }
@@ -1314,7 +1314,7 @@ CL_DEFUN  Aggregate_sp chem__moeReadAggregate(const string& name )
 	LOG("About to open moe file: {}" , name.c_str() );
 	f.openFileName(name.c_str());
 	LOG("Opened moe file: {}" , name.c_str() );
-	auto  agg  = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
+	auto  agg  = gctools::GC<Aggregate_O>::allocate();
 	moeReadAggregateMoeFile( agg, f, gotMMTypes );
 	return agg;
     }

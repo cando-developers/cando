@@ -104,7 +104,7 @@ __END_DOC
 CL_LISPIFY_NAME(make_stereo_configuration);
 CL_DEF_CLASS_METHOD StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, core::Symbol_sp config)
 {
-  auto  me  = gctools::GC<StereoConfiguration_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<StereoConfiguration_O>::allocate();
   me->_AtomName = atomName;
   me->_Configuration = config;
   return me;
@@ -150,7 +150,7 @@ core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, co
     core::List_sp curConfig = configurations;
     while ( curName.notnilp() )
     {
-      auto  one  = gctools::GC<StereoConfiguration_O>::allocate_with_default_constructor();
+      auto  one  = gctools::GC<StereoConfiguration_O>::allocate();
 	one->setAtomName(oCar(curName).as<core::Symbol_O>());
 	one->setConfiguration(oCar(curConfig).as<core::Symbol_O>());
 	list = core::Cons_O::create(one,list);
@@ -344,7 +344,7 @@ public:
 };
 
 StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints) {
-  auto me = gctools::GC<StereoInformation_O>::allocate_with_default_constructor();
+  auto me = gctools::GC<StereoInformation_O>::allocate();
   core::fillVec0(stereoisomers, me->_Stereoisomers);
   // sort the stereoisomers by index
   OrderByStereoisomerIndex byStereoisomerIndex;

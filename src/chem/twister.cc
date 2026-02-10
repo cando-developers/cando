@@ -55,7 +55,7 @@ CL_DOCSTRING(R"dx(Create a new twister instance.)dx");
 DOCGROUP(cando);
 CL_DEFUN Twister_sp chem__make_twister()
 {
-  auto td = gctools::GC<Twister_O>::allocate_with_default_constructor();
+  auto td = gctools::GC<Twister_O>::allocate();
   return td;
 }
 

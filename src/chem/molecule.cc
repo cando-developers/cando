@@ -395,7 +395,7 @@ CL_LISPIFY_NAME(make-molecule);
 DOCGROUP(cando);
 CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name, core::List_sp residues)
 {
-  auto me = gctools::GC<Molecule_O>::allocate_with_default_constructor();
+  auto me = gctools::GC<Molecule_O>::allocate();
   me->setName(name);
   for ( auto cur : residues ) {
     auto res = gc::As<Residue_sp>(CONS_CAR(cur));

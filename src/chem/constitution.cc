@@ -55,7 +55,7 @@ namespace chem {
 
 Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comment, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
   {
-    auto  me  = gctools::GC<Constitution_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<Constitution_O>::allocate();
       me->_Name = name;
       me->_Comment = comment;
       me->_ConstitutionAtoms = constitutionAtoms;

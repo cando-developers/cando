@@ -89,7 +89,7 @@ void AtomIdMap_O::fields(core::Record_sp node)
 
 
 CL_DEFUN chem::AtomIdMap_sp make_AtomIdMap() {
-  return gctools::GC<AtomIdMap_O>::allocate_with_default_constructor();
+  return gctools::GC<AtomIdMap_O>::allocate();
 }
 
 

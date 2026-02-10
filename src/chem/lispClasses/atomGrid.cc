@@ -74,7 +74,7 @@ __END_DOC
 #define DECL_AtomGrid_O_make ""
 #define DOCS_AtomGrid_O_make "make AtomId args: matter grid_resolution add_radius bounding_box"
 AtomGrid_sp AtomGrid_O::make(Matter_sp matter, double gridResolution, double addRadius, geom::BoundingCuboid_sp boundingBox) {
-  auto me = gctools::GC<AtomGrid_O>::allocate_with_default_constructor();
+  auto me = gctools::GC<AtomGrid_O>::allocate();
   if (boundingBox.notnilp()) {
     me->buildGridWithinBoundingBox(matter, addRadius, gridResolution, boundingBox);
   } else {

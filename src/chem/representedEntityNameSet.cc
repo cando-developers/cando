@@ -149,7 +149,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 #define DOCS_RepresentedEntityNameSet_O_make "make RepresentedEntityNameSet"
   RepresentedEntityNameSet_sp RepresentedEntityNameSet_O::make(core::Symbol_sp representativeName)
   {
-    auto  me  = gctools::GC<RepresentedEntityNameSet_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<RepresentedEntityNameSet_O>::allocate();
     me->_Representative = representativeName;
     return me;
   };

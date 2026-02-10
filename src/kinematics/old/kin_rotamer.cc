@@ -44,7 +44,7 @@ namespace kinematics
 CL_LISPIFY_NAME(make-Rotamer);
 Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indexes, const double probability, const int count)
     {
-      auto  me  = gctools::GC<Rotamer_O>::allocate_with_default_constructor();
+      auto  me  = gctools::GC<Rotamer_O>::allocate();
       me->_Count = count;
       me->_Probability = probability;
       for ( ; dihedrals.notnilp(); dihedrals = oCdr(dihedrals),
@@ -273,7 +273,7 @@ RotamerSet_sp RotamerSet_O::make()
 CL_LISPIFY_NAME(make-BackboneDependentRotamerSet);
 BackboneDependentRotamerSet_sp BackboneDependentRotamerSet_O::make(const int phi, const int psi)
     {
-      auto  me  = gctools::GC<BackboneDependentRotamerSet_O>::allocate_with_default_constructor();
+      auto  me  = gctools::GC<BackboneDependentRotamerSet_O>::allocate();
 	me->_Phi = phi;
 	me->_Psi = psi;
 	return me;
@@ -310,7 +310,7 @@ BackboneDependentRotamerSet_sp BackboneDependentRotamerSet_O::make(const int phi
 CL_LISPIFY_NAME(make-BackboneDependentRotamerLibrary);
 BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const int phiStep, const int phiStart, const int phiCount, const int psiStep, const int psiStart, const int psiCount)
     {
-      auto  me  = gctools::GC<BackboneDependentRotamerLibrary_O>::allocate_with_default_constructor();
+      auto  me  = gctools::GC<BackboneDependentRotamerLibrary_O>::allocate();
       me->_PhiStep = phiStep;
       me->_PhiStart = phiStart;
       me->_PhiCount = phiCount;

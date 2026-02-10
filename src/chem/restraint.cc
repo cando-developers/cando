@@ -341,7 +341,7 @@ void	RestraintDihedral_O::invertStereochemistryOfRestraint()
 
 RestraintFixedNonbond_sp RestraintFixedNonbond_O::create(Matter_sp matter)
 {
-  auto  nb  = gctools::GC<RestraintFixedNonbond_O>::allocate_with_default_constructor();
+  auto  nb  = gctools::GC<RestraintFixedNonbond_O>::allocate();
   nb->setMatter(matter);
   return nb;
 }

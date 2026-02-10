@@ -1067,7 +1067,7 @@ CL_DEFMETHOD core::T_sp Oligomer_O::deepCopyOligomer() const
 #define DOCS_Oligomer_O_make "make Oligomer"
 Oligomer_sp Oligomer_O::make(core::List_sp parts)
   {
-    auto  me  = gctools::GC<Oligomer_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<Oligomer_O>::allocate();
     if ( parts.notnilp() )
       {
 	CandoDatabase_sp bdb = getCandoDatabase();

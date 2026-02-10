@@ -82,7 +82,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 #define DOCS_Alias_O_make "make AtomId args: monomer_sym atom_sym"
     Alias_sp Alias_O::make(core::Symbol_sp monomerSym, core::Symbol_sp atomSym)
     {
-      auto  me  = gctools::GC<Alias_O>::allocate_with_default_constructor();
+      auto  me  = gctools::GC<Alias_O>::allocate();
 	me->_MonomerAlias = monomerSym;
 	me->_AtomAlias = atomSym;
 	return me;

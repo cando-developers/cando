@@ -56,7 +56,7 @@ namespace geom {
     Range_sp Range_O::create(core::LispPtr lisp,core::LongLongInt b, core::LongLongInt e)
 {
     LOG("Range_O::create with begin=%d, end=%d" , b , e  );
-    auto r = gctools::GC<Range_O>::allocate_with_default_constructor();
+    auto r = gctools::GC<Range_O>::allocate();
     r->_Begin = b;
     r->_End = e;
     r->_Step = 1;
@@ -65,7 +65,7 @@ namespace geom {
     Range_sp Range_O::create3(core::LispPtr lisp, core::LongLongInt b, core::LongLongInt e, core::LongLongInt step)
 {
     LOG("Range_O::create with begin=%d, end=%d, step=%d" , b , e , step  );
-    auto r = gctools::GC<Range_O>::allocate_with_default_constructor();
+    auto r = gctools::GC<Range_O>::allocate();
     r->_Begin = b;
     r->_End = e;
     r->_Step = step;

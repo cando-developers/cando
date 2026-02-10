@@ -55,7 +55,7 @@ namespace chem
     /*! factory */
     static MmcifWriter_sp make(core::T_sp pathDesignator)
     {
-      auto me = gctools::GC<MmcifWriter_O>::allocate_with_default_constructor();
+      auto me = gctools::GC<MmcifWriter_O>::allocate();
       me->open(pathDesignator);
       return me;
     }

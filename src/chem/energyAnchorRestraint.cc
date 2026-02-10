@@ -457,7 +457,7 @@ core::T_sp test_allocate_EnergyAnchorRestraint_O() {
   auto thing = EnergyAnchorRestraint_O::create();
 #elif 1
   // succeeds ---- I got it to fail once I think but it may have been that I didn't save 
-  auto thing = gctools::GC<EnergyAnchorRestraint_O>::allocate_with_default_constructor();
+  auto thing = gctools::GC<EnergyAnchorRestraint_O>::allocate();
 #elif 0
   // FAILS
   auto kind = gctools::Header_s::StampWtagMtag::make_StampWtagMtag(EnergyAnchorRestraint_O::static_ValueStampWtagMtag);

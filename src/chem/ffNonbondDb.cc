@@ -178,7 +178,7 @@ FFNonbond_sp FFNonbond_O::make_FFNonbond(core::Symbol_sp type,
                                          double fcadj,
                                          double pbci,
                                          DonorAcceptorEnum donor_acceptor) {
-  auto  res = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
+  auto  res = gctools::GC<FFNonbond_O>::allocate();
   res->_Type = type;
   res->_Radius_Nanometers = radius_nanometers;
   res->_Epsilon_kj = epsilon_kj;

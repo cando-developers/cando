@@ -696,7 +696,7 @@ CL_LAMBDA(&optional topology-list);
 CL_DEF_CLASS_METHOD 
 Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 {
-  auto  me  = gctools::GC<Monomer_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<Monomer_O>::allocate();
   for ( auto cur : topology_list ) {
     core::Symbol_sp top = gc::As<core::Symbol_sp>(CONS_CAR(cur));
     me->addTopologyName(top);

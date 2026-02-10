@@ -45,7 +45,7 @@ namespace chem
 
     ImproperTorsion_sp ImproperTorsion_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3central, Atom_sp a4)
     {
-      auto  obj  = gctools::GC<ImproperTorsion_O>::allocate_with_default_constructor();
+      auto  obj  = gctools::GC<ImproperTorsion_O>::allocate();
 	obj->setup(a1,a2,a3central,a4);
 	return obj;
     }

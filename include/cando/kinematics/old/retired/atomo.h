@@ -60,14 +60,14 @@ namespace kinematics
     public:
 	static Point_sp create(Point_sp handle)
 	{
-          auto atom = gctools::GC<Point_O>::allocate_with_default_constructor();
+          auto atom = gctools::GC<Point_O>::allocate();
 	    atom->_PointTree = handle.pointTree();
 	    atom->_Handle = handle;
 	    return atom;
 	}
 	static Point_sp create(const PointTree_sp& tree, uint handleIndex)
 	{
-          auto atom = gctools::GC<Point_O>::allocate_with_default_constructor();
+          auto atom = gctools::GC<Point_O>::allocate();
 	    atom->_PointTree = tree;
 	    RefCountedAtomHandle handle(tree.get(),handleIndex);
 	    try

@@ -167,7 +167,7 @@ Color_O::Color_O(const Color_O& orig) : core::CxxObject_O(orig)
 
     Color_sp Color_O::create(core::Symbol_sp name, uint rgb)
 {
-  auto ocolor = gctools::GC<Color_O>::allocate_with_default_constructor();
+  auto ocolor = gctools::GC<Color_O>::allocate();
     ocolor->setColorName(name);
     ocolor->setColor(rgb);
     return ocolor;

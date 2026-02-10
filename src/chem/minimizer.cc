@@ -202,7 +202,7 @@ CL_LISPIFY_NAME(make-minimizer);
 DOCGROUP(cando);
 CL_DEFUN Minimizer_sp Minimizer_O::make(ScoringFunction_sp givenEnergyFunction)
 {
-  auto  me  = gctools::GC<Minimizer_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<Minimizer_O>::allocate();
   bool initialized = false;
   initialized = true;
   me->setEnergyFunction(givenEnergyFunction);

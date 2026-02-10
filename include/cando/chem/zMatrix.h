@@ -120,7 +120,7 @@ CL_DEFMETHOD 	int	getBondAtomIndex() const { return this->_AtomBond;};
     inline ZMatrixBondInternal_sp ZMatrixBondInternal_O::create(Atom_sp newAtom, Atom_sp bondToAtom,
 								ZMatrixInternal_O::atomMap atomIndexes, ZMatrix_sp zMatrix )
     {_G();
-      auto  zz  = gctools::GC<ZMatrixBondInternal_O>::allocate_with_default_constructor();
+      auto  zz  = gctools::GC<ZMatrixBondInternal_O>::allocate();
 	zz->setZMatrix(zMatrix);
 	zz->setup(newAtom,bondToAtom,atomIndexes);
 	return zz;
@@ -169,7 +169,7 @@ CL_DEFMETHOD 	int getAngleAtomIndex() const { return this->_AtomAngle;}
 								  Atom_sp angleToAtom,
 								  ZMatrixInternal_O::atomMap atomIndexes, ZMatrix_sp zMatrix)
     {_G();
-      auto  zz  = gctools::GC<ZMatrixAngleInternal_O>::allocate_with_default_constructor();
+      auto  zz  = gctools::GC<ZMatrixAngleInternal_O>::allocate();
 	zz->setZMatrix(zMatrix);
 	zz->setup(newAtom,bondToAtom,angleToAtom,atomIndexes);
 	return zz;
@@ -221,7 +221,7 @@ CL_DEFMETHOD 	int getDihedralAtomIndex() const { return this->_AtomDihedral;}
 									Atom_sp angleToAtom, Atom_sp dihedralToAtom,
 									ZMatrixInternal_O::atomMap atomIndexes, ZMatrix_sp zMatrix)
     {_G();
-      auto  zz  = gctools::GC<ZMatrixDihedralInternal_O>::allocate_with_default_constructor();
+      auto  zz  = gctools::GC<ZMatrixDihedralInternal_O>::allocate();
 	zz->setZMatrix(zMatrix);
 	zz->setup(newAtom,bondToAtom,angleToAtom,dihedralToAtom,atomIndexes);
 	return zz;

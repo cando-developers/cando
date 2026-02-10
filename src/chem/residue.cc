@@ -176,7 +176,7 @@ void	Residue_O::fields( core::Record_sp node )
 #if 1
     core::HashTable_sp atomToResidue = this->atomToResidueMap();
 //    BondList_sp bondList = BondList_O::create();
-    auto bondList  = gctools::GC<BondList_O>::allocate_with_default_constructor();
+    auto bondList  = gctools::GC<BondList_O>::allocate();
     { 
       for ( auto aa = this->begin_atoms(); aa != this->end_atoms(); ++aa ) {
         Atom_sp a = gc::As_unsafe<Atom_sp>(*aa);
@@ -785,7 +785,7 @@ DOCGROUP(cando);
 CL_LAMBDA(&optional (name nil) atoms)
 CL_DEFUN Residue_sp Residue_O::make(core::Symbol_sp name, core::List_sp atoms)
 {
-  auto me = gctools::GC<Residue_O>::allocate_with_default_constructor();
+  auto me = gctools::GC<Residue_O>::allocate();
   me->setName(name);
   for ( auto cur : atoms ) {
     auto atm = gc::As<Atom_sp>(CONS_CAR(cur));

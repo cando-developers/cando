@@ -135,7 +135,7 @@ CL_LISPIFY_NAME(make-quantity);
 DOCGROUP(cando);
 CL_DEFUN Quantity_sp Quantity_O::make(core::T_sp val, Unit_sp unit) {
   // If val is a Number_sp then coerce it to a DoubleFloat_sp
-  auto quant = gctools::GC<Quantity_O>::allocate_with_default_constructor();
+  auto quant = gctools::GC<Quantity_O>::allocate();
   if (gc::IsA<core::DoubleFloat_sp>(val)) {
     quant->_Value = gc::As_unsafe<core::DoubleFloat_sp>(val);
   } else if (gc::IsA<core::Number_sp>(val)) {

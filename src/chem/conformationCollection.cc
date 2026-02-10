@@ -362,7 +362,7 @@ CL_DEFMETHOD ConformationCollectionEntry_sp	ConformationCollection_O::firstEntry
 
 CL_DEFMETHOD ConformationCollectionEntry_sp	ConformationCollection_O::createEntry()
 {
-  auto  entry  = gctools::GC<ConformationCollectionEntry_O>::allocate_with_default_constructor();
+  auto  entry  = gctools::GC<ConformationCollectionEntry_O>::allocate();
     entry->setConformationCollection(this->sharedThis<ConformationCollection_O>());
     return entry;
 }

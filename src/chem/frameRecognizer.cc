@@ -100,7 +100,7 @@ string FrameRecognizer_O::description() const
 #define DOCS_FrameRecognizer_O_make "make FrameRecognizer"
   FrameRecognizer_sp FrameRecognizer_O::make(core::Symbol_sp name, const string& smarts, core::Symbol_sp groupName)
   {
-    auto  me  = gctools::GC<FrameRecognizer_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<FrameRecognizer_O>::allocate();
     me->_Name = name;
     me->_Smarts = smarts;
     me->_GroupName = groupName;
