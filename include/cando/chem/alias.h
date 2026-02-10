@@ -63,7 +63,7 @@ namespace chem
     public:
 	static Alias_sp create(core::Symbol_sp monomerAlias, core::Symbol_sp atomAlias )
 	{
-          auto  a  = gctools::GC<Alias_O>::allocate_with_default_constructor();
+          auto  a  = gctools::GC<Alias_O>::allocate();
 	    a->setMonomerAlias(monomerAlias);
 	    a->setAtomAlias(atomAlias);
 	    return a;

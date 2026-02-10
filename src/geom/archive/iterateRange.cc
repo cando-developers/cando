@@ -34,7 +34,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 namespace geom {
 
 IterateRange_sp IterateRange_O::create(core::LispPtr e, int ibegin, int iend) {
-  auto r = gctools::GC<IterateRange_O>::allocate_with_default_constructor();
+  auto r = gctools::GC<IterateRange_O>::allocate();
   r->_Begin = ibegin;
   r->_Step = 1;
   r->_End = iend;
@@ -42,7 +42,7 @@ IterateRange_sp IterateRange_O::create(core::LispPtr e, int ibegin, int iend) {
 };
 
 IterateRange_sp IterateRange_O::create(core::LispPtr e, int ibegin, int iend, int istep) {
-  auto r = gctools::GC<IterateRange_O>::allocate_with_default_constructor();
+  auto r = gctools::GC<IterateRange_O>::allocate();
   r->_Begin = ibegin;
   r->_Step = istep;
   r->_End = iend;

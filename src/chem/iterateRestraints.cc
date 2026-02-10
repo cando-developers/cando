@@ -37,7 +37,7 @@ namespace chem {
 
 IterateRestraints_sp IterateRestraints_O::create(Matter_sp matter)
 {
-  auto  m  = gctools::GC<IterateRestraints_O>::allocate_with_default_constructor();
+  auto  m  = gctools::GC<IterateRestraints_O>::allocate();
     m->initTop(matter);
     return m;
 };

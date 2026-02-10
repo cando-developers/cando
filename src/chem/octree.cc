@@ -130,7 +130,7 @@ CL_DEF_CLASS_METHOD
 AddIonOctree_sp AddIonOctree_O::make(Aggregate_sp aggregate, AddIonOctreeEnum iType, double dGridSpace, 
                                      double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose)
 {
-  auto octtree = gctools::GC<AddIonOctree_O>::allocate_with_default_constructor();
+  auto octtree = gctools::GC<AddIonOctree_O>::allocate();
   octtree->OctreeCreate(aggregate,iType,dGridSpace,dAddExtent,dShellExtent,nonbondDb,iIncludeSolvent,bVerbose);
   return octtree;
 }
@@ -327,7 +327,7 @@ void AddIonOctree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus
 	 *  Make nodes & set simple stuff by initializing 1st node
 	 *	and copying it.
 	 */
-  [[maybe_unused]]auto  PonChildren = gctools::GC<OctNode_O>::allocate_with_default_constructor();
+  [[maybe_unused]]auto  PonChildren = gctools::GC<OctNode_O>::allocate();
 	//memset(PonChildren, 0, sizeof(OctNode_sp));
 	//ponNode->PonChildren->iStatus = iStatus;
 	//ponNode->PonChildren->iDepth = iDepth;
@@ -906,7 +906,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
 	/*
 	 *  Create the octree "object" and initialize
 	 */
-//  auto  octTree = gctools::GC<AddIonOctree_O>::allocate_with_default_constructor();
+//  auto  octTree = gctools::GC<AddIonOctree_O>::allocate();
   core::MultipleValues &values = core::lisp_multipleValues();
  // octTree->iType = iType;
   //octTree->dGridSize = dGridSpace;

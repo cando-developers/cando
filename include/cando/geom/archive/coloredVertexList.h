@@ -91,7 +91,7 @@ namespace geom
     public:
 	static ColoredVertexList_sp create(uint size)
 	{
-          auto a = gctools::GC<ColoredVertexList_O>::allocate_with_default_constructor();
+          auto a = gctools::GC<ColoredVertexList_O>::allocate();
 	    a->resize(size);
 	    return a;
 	}

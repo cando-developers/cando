@@ -56,7 +56,7 @@ void	CalculatePosition_O::initialize()
   CalculatePositionUsingInternals_sp CalculatePositionUsingInternals_O::make(MatterName distanceAtomName, MatterName angleAtomName, MatterName dihedralAtomName,
 									     double distance, double angleDegrees, double dihedralDegrees)
   {
-    auto  me  = gctools::GC<CalculatePositionUsingInternals_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<CalculatePositionUsingInternals_O>::allocate();
     me->_DistanceAtomName = distanceAtomName;
     me->_AngleAtomName = angleAtomName;
     me->_DihedralAtomName = dihedralAtomName;
@@ -146,7 +146,7 @@ void	CalculatePositionUsingInternals_O::initialize()
 #define DOCS_CalculatePositionAlongBond_O_make "make CalculatePositionAlongBond"
   CalculatePositionAlongBond_sp CalculatePositionAlongBond_O::make(MatterName fromAtomName, MatterName toAtomName, double extendDistance)
   {
-    auto  me  = gctools::GC<CalculatePositionAlongBond_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<CalculatePositionAlongBond_O>::allocate();
     me->_FromAtomName = fromAtomName;
     me->_ToAtomName = toAtomName;
     me->_ExtendDistance = extendDistance;
@@ -236,7 +236,7 @@ void	CalculatePositionAlongBond_O::initialize()
 #define DOCS_CalculatePositionRelativeToOrigin_O_make "make CalculatePositionRelativeToOrigin"
   CalculatePositionRelativeToOrigin_sp CalculatePositionRelativeToOrigin_O::make(MatterName originAtomName, MatterName toAtomName, double extendDistance)
   {
-    auto  me  = gctools::GC<CalculatePositionRelativeToOrigin_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<CalculatePositionRelativeToOrigin_O>::allocate();
     me->_OriginAtomName = originAtomName;
     me->_ToAtomName = toAtomName;
     me->_ExtendDistance = extendDistance;

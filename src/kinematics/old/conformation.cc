@@ -58,7 +58,7 @@ void Conformation_O::fields(core::Record_sp node) {
 CL_LISPIFY_NAME(make-conformation);
 CL_DEF_CLASS_METHOD Conformation_sp Conformation_O::make(core::List_sp oligomers)
 {
-  auto  me  = gctools::GC<Conformation_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<Conformation_O>::allocate();
   me->resizeMolecules(core::cl__length(oligomers));
   int moleculeId = 0;
   for ( auto cur : oligomers ) {
@@ -71,7 +71,7 @@ CL_DEF_CLASS_METHOD Conformation_sp Conformation_O::make(core::List_sp oligomers
 
 Conformation_sp Conformation_O::create(chem::Oligomer_sp oligomer)
 {
-  auto  conf  = gctools::GC<Conformation_O>::allocate_with_default_constructor();
+  auto  conf  = gctools::GC<Conformation_O>::allocate();
   conf->resizeMolecules(1);
   conf->buildMoleculeUsingOligomer(0,oligomer);
   return conf;

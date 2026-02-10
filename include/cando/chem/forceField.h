@@ -121,7 +121,7 @@ public:
 //	static ForceField_sp	open_ForceField(const string& fn);
   CL_LISPIFY_NAME("ForceField/make");
   CL_DEF_CLASS_METHOD static ForceField_sp make() {
-    auto ff = gctools::GC<ForceField_O>::allocate_with_default_constructor();
+    auto ff = gctools::GC<ForceField_O>::allocate();
     return ff;
   };
 public:

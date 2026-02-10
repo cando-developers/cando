@@ -74,7 +74,7 @@ CL_LISPIFY_NAME("getForceField");
 CL_DEFMETHOD ForceField_sp ReadAmberParameters_O::getForceField()
 {
   if ( this->_ForceField.unboundp() ) {
-    auto  temp  = gctools::GC<ForceField_O>::allocate_with_default_constructor();
+    auto  temp  = gctools::GC<ForceField_O>::allocate();
     this->_ForceField = temp;
   }
   if (!this->_Types.unboundp()) this->_ForceField->setFFTypeDb(this->_Types);
@@ -145,8 +145,8 @@ core::T_mv ReadAmberParameters_O::determineParmSetFrcModType(core::T_sp fin)
 
 FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
 {
-  auto  wildCardElementDictionary  = gctools::GC<WildElementDict_O>::allocate_with_default_constructor();
-  auto  ffTypesDb  = gctools::GC<FFTypesDb_O>::allocate_with_default_constructor();
+  auto  wildCardElementDictionary  = gctools::GC<WildElementDict_O>::allocate();
+  auto  ffTypesDb  = gctools::GC<FFTypesDb_O>::allocate();
   uint lineno = 1;
   vector< pair< uint, string> > entries;
   while ( true ) {
@@ -239,7 +239,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
         core::T_sp nonbond = chem__FFNonbond_findType(ffNonbondDb,typeSymbol);
         bool newp = false;
         if (nonbond.nilp()) {
-          ffNonbond = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
+          ffNonbond = gctools::GC<FFNonbond_O>::allocate();
           newp = true;
         } else if (gc::IsA<FFNonbond_sp>(nonbond)) {
           ffNonbond = gc::As_unsafe<FFNonbond_sp>(nonbond);
@@ -261,7 +261,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
 FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
 {
   // read stretch terms 
-      auto  ffStretchDb  = gctools::GC<FFStretchDb_O>::allocate_with_default_constructor();
+      auto  ffStretchDb  = gctools::GC<FFStretchDb_O>::allocate();
   bool done = false;
   while ( not done )
     {
@@ -282,7 +282,7 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
         }
         string type1Name = core::trimWhiteSpace(typeParts[0]);
         string type2Name = core::trimWhiteSpace(typeParts[1]);
-        auto  ffStretch  = gctools::GC<FFStretch_O>::allocate_with_default_constructor();
+        auto  ffStretch  = gctools::GC<FFStretch_O>::allocate();
         ffStretch->_Type1 = chemkw_intern(type1Name);
         ffStretch->_Type2 = chemkw_intern(type2Name);
         string parms = line.substr(6,23); // get r0 kb
@@ -311,7 +311,7 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
   //
   // read angle terms 
       //
-      auto  ffAngleDb  = gctools::GC<FFAngleDb_O>::allocate_with_default_constructor();
+      auto  ffAngleDb  = gctools::GC<FFAngleDb_O>::allocate();
   bool done = false;
   while ( not done )
     {
@@ -334,7 +334,7 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
           string t1 = core::trimWhiteSpace(typeParts[0]);
           string t2 = core::trimWhiteSpace(typeParts[1]);
           string t3 = core::trimWhiteSpace(typeParts[2]);
-          auto  ffAngle  = gctools::GC<FFAngle_O>::allocate_with_default_constructor();
+          auto  ffAngle  = gctools::GC<FFAngle_O>::allocate();
           ffAngle->_Type1 = chemkw_intern(t1);
           ffAngle->_Type2 = chemkw_intern(t2);
           ffAngle->_Type3 = chemkw_intern(t3);
@@ -366,7 +366,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
   //
   // read Ptor terms 
          //
-         auto  ffPtorDb  = gctools::GC<FFPtorDb_O>::allocate_with_default_constructor();
+         auto  ffPtorDb  = gctools::GC<FFPtorDb_O>::allocate();
   bool done = false;
   while (not done )
     {
@@ -388,7 +388,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
           string t2 = core::trimWhiteSpace(typeParts[1]);
           string t3 = core::trimWhiteSpace(typeParts[2]);
           string t4 = core::trimWhiteSpace(typeParts[3]);
-          auto  ffPtor  = gctools::GC<FFPtor_O>::allocate_with_default_constructor();
+          auto  ffPtor  = gctools::GC<FFPtor_O>::allocate();
           core::Symbol_sp st1;
           if ( t1 != "X" ) {
             st1 = chemkw_intern(t1);
@@ -432,7 +432,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
   //
   // read Itor terms 
       //
-      auto  ffItorDb  = gctools::GC<FFItorDb_O>::allocate_with_default_constructor();
+      auto  ffItorDb  = gctools::GC<FFItorDb_O>::allocate();
   bool done = false;
   while (not done )
     {
@@ -456,7 +456,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
           string t2 = core::trimWhiteSpace(typeParts[1]);
           string t3 = core::trimWhiteSpace(typeParts[2]);
           string t4 = core::trimWhiteSpace(typeParts[3]);
-          auto  ffItor  = gctools::GC<FFItor_O>::allocate_with_default_constructor();
+          auto  ffItor  = gctools::GC<FFItor_O>::allocate();
           core::Symbol_sp st1;
           if ( t1 != "X" ) {
             st1 = chemkw_intern(t1);
@@ -618,7 +618,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,parse_nonbond_line);
 ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin, core::T_sp system)
 {_OF();
   string line = core::cl__read_line(fin).as<core::String_O>()->get_std_string();
-  auto  ffNonbondsDb  = gctools::GC<FFNonbondDb_O>::allocate_with_default_constructor();
+  auto  ffNonbondsDb  = gctools::GC<FFNonbondDb_O>::allocate();
   ffNonbondsDb = this->parseMasses(fin,ffNonbondsDb);
   core::cl__read_line(fin); // skp hydrophilic entries
   FFStretchDb_sp ffStretchesDb = this->parseStretchDb(fin);
@@ -633,7 +633,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
   this->parseNonbondDb(fin,ffNonbondsDb);
   //    printf("%s:%d Returned from this->parseNonbondDb\n", __FILE__, __LINE__ );
   LOG("All parameters read fine" );
-  auto  ff  = gctools::GC<ForceField_O>::allocate_with_default_constructor();
+  auto  ff  = gctools::GC<ForceField_O>::allocate();
   ff->setTitle(line);
   ff->setFFStretchDb(ffStretchesDb);
   //    ff->setFFTypeDb( _Nil<FFTypesDb_O>());
@@ -719,8 +719,8 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
 }
 
 ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp system) {
-  auto  ff = gctools::GC<ForceField_O>::allocate_with_default_constructor();
-  auto  nonbondDb = gctools::GC<FFNonbondDb_O>::allocate_with_default_constructor();
+  auto  ff = gctools::GC<ForceField_O>::allocate();
+  auto  nonbondDb = gctools::GC<FFNonbondDb_O>::allocate();
   int lastSegment = 0;
   bool readMasses = false;
   bool readNonbond = false;

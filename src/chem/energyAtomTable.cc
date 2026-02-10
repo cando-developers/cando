@@ -150,7 +150,7 @@ CL_LISPIFY_NAME(make-atom-table);
 CL_DEF_CLASS_METHOD
 AtomTable_sp AtomTable_O::make()
 {
-  auto eat = gctools::GC<AtomTable_O>::allocate_with_default_constructor();
+  auto eat = gctools::GC<AtomTable_O>::allocate();
   return eat;
 }
 

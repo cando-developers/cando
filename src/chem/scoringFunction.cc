@@ -522,7 +522,7 @@ CL_DEFUN core::List_sp chem__all_components(ScoringFunction_sp scoring_function)
 }
 
 CL_DEFUN EnergyComponents_sp chem__make_energy_components() {
-  auto obj = gctools::GC<EnergyComponents_O>::allocate_with_default_constructor();
+  auto obj = gctools::GC<EnergyComponents_O>::allocate();
   return obj;
 }
 

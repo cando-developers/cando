@@ -56,7 +56,7 @@ private:
 public:
     static IterateCons_sp create(core::List_sp beg)
     {
-      auto  r  = gctools::GC<IterateCons_O>::allocate_with_default_constructor();
+      auto  r  = gctools::GC<IterateCons_O>::allocate();
 	r->init(beg);
 	return r;
     };

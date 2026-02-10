@@ -606,7 +606,7 @@ Aggregate_sp PdbReader_O::parse(core::T_sp stream)
 #define DOCS_PdbWriter_O_make "make PdbWriter"
 PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
 {
-  auto  me  = gctools::GC<PdbWriter_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<PdbWriter_O>::allocate();
   me->open(fileName);
   return me;
 };

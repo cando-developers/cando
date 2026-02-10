@@ -93,7 +93,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 #define DOCS_EntityNameSetBase_O_make "make EntityNameSetBase"
   EntityNameSetBase_sp EntityNameSetBase_O::make(core::List_sp entityNamesCons)
   {
-    auto  me  = gctools::GC<EntityNameSetBase_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<EntityNameSetBase_O>::allocate();
     if ( entityNamesCons.notnilp() )
       {
 	  adapt::SymbolSet_sp entityNames = adapt::SymbolSet_O::create();
@@ -527,7 +527,7 @@ CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
 #define DOCS_EntityNameSet_O_make "make EntityNameSet"
   EntityNameSet_sp EntityNameSet_O::make(core::Symbol_sp name)
   {
-    auto  me  = gctools::GC<EntityNameSet_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<EntityNameSet_O>::allocate();
     me->_Name = name;
     return me;
   };

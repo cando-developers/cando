@@ -41,7 +41,7 @@ namespace chem {
 
 CandoDatabaseReference_sp CandoDatabaseReference_O::create(core::LispPtr e,CandoDatabase_sp bdb, const string& link)
 {
-  auto ref = gctools::GC<CandoDatabaseReference_O>::allocate_with_default_constructor();
+  auto ref = gctools::GC<CandoDatabaseReference_O>::allocate();
     ASSERTNOTNULLP(bdb,"The alchemist database is NULL");
     ref->_Reference = core::ObjRef_O::create(e,link);
     return ref;

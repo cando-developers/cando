@@ -80,7 +80,7 @@ namespace chem
 #define DOCS_AtomReference_O_make "make AtomReference args: alias"
 AtomReference_sp AtomReference_O::make(core::T_sp alias)
 {
-  auto  me  = gctools::GC<AtomReference_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<AtomReference_O>::allocate();
   me->_AtomAlias = alias;
   return me;
 };

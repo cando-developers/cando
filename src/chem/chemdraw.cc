@@ -336,14 +336,14 @@ void CDFragment_O::createImplicitHydrogen(CDNode_sp fromNode, const std::string&
   a->setElement(element_H);
   LOG("Created implicit hydrogen ({})" , name  );
   fromAtom->bondTo(a,singleBond);
-  auto  toNode  = gctools::GC<CDNode_O>::allocate_with_default_constructor();
+  auto  toNode  = gctools::GC<CDNode_O>::allocate();
   toNode->setAtom(a);
   toNode->_Label = name;
   toNode->setId(this->_LargestId+1);
   this->_LargestId++;
   this->_Nodes[toNode->getId()] = toNode;
   this->_AtomsToNodes[a] = toNode;
-  auto  bond  = gctools::GC<CDBond_O>::allocate_with_default_constructor();
+  auto  bond  = gctools::GC<CDBond_O>::allocate();
   bond->setIdBegin(fromNode->getId());
   bond->setIdEnd(toNode->getId());
   bond->setBeginNode(fromNode);
@@ -363,7 +363,7 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool verbose)
   for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ ) {
     adapt::QDomNode_sp child = (*it);
     if ( child->getLocalName() == "n" ) {
-      auto  node  = gctools::GC<CDNode_O>::allocate_with_default_constructor();
+      auto  node  = gctools::GC<CDNode_O>::allocate();
       node->parseFromXml(child, verbose);
       int id = node->getId();
       if ( id > this->_LargestId )
@@ -375,7 +375,7 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool verbose)
   for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ ) {
     adapt::QDomNode_sp child = (*it);
     if ( child->getLocalName() == "b" ) {
-      auto  bond  = gctools::GC<CDBond_O>::allocate_with_default_constructor();
+      auto  bond  = gctools::GC<CDBond_O>::allocate();
       bond->parseFromXml(child,verbose);
       uint idBegin = bond->getIdBegin();
       uint idEnd = bond->getIdEnd();
@@ -1102,7 +1102,7 @@ CL_DOCSTRING(R"dx(Make a chem:chem-draw object from a string.  If verbose is T t
 DOCGROUP(cando);
 CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool verbose, bool addHydrogens)
 {
-  auto  me  = gctools::GC<ChemDraw_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<ChemDraw_O>::allocate();
   me->parse(stream,verbose,addHydrogens); // me->parse(stream);
   return me;
 };
@@ -1168,7 +1168,7 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose, bool addHyd
 {
   if (verbose) core::clasp_write_string(fmt::format("ChemDraw_O::parse child of page with name({})\n" , child->getLocalName()));
   if ( child->getLocalName() == "fragment" ) {
-    auto  fragment  = gctools::GC<CDFragment_O>::allocate_with_default_constructor();
+    auto  fragment  = gctools::GC<CDFragment_O>::allocate();
     fragment->parseFromXml(child,verbose);
     if ( fragment->interpret(verbose, addHydrogens) ) {
 #if 0
@@ -1186,7 +1186,7 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose, bool addHyd
       SIMPLE_ERROR("Could not interpret a ChemDraw CDFragment");
     }
   } else if ( child->getLocalName() == "t" ) {
-    auto  text  = gctools::GC<CDText_O>::allocate_with_default_constructor();
+    auto  text  = gctools::GC<CDText_O>::allocate();
     if (text->parseFromXml(child,verbose)) {
       this->_Code = core::Cons_O::create(text->_Code,this->_Code);
     }

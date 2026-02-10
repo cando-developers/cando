@@ -64,7 +64,7 @@ namespace chem
 #endif
     IterateMatter_sp IterateMatter_O::create(Matter_sp top, int goal)
     {
-      auto  m  = gctools::GC<IterateMatter_O>::allocate_with_default_constructor();
+      auto  m  = gctools::GC<IterateMatter_O>::allocate();
 	m->_Top = top;
 	m->_Goal = goal;
 	return m;
@@ -148,7 +148,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 
     IterateAtoms_sp IterateAtoms_O::create(Matter_sp top)
     {
-      auto  ia  = gctools::GC<IterateAtoms_O>::allocate_with_default_constructor();
+      auto  ia  = gctools::GC<IterateAtoms_O>::allocate();
 	ia->initTopAndGoal(top,ATOMS);
 	return ia;
     }
@@ -163,7 +163,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
     {
-      auto  ia  = gctools::GC<IterateAtoms_O>::allocate_with_default_constructor();
+      auto  ia  = gctools::GC<IterateAtoms_O>::allocate();
 	ia->initTopAndGoal(matter,ATOMS);
 	return ia;
     }
@@ -175,7 +175,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 #define DOCS_IterateAtoms_O_make "make IterateAtoms"
   IterateAtoms_sp IterateAtoms_O::make(Matter_sp matter)
   {
-    auto  me  = gctools::GC<IterateAtoms_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<IterateAtoms_O>::allocate();
     me->initTopAndGoal(matter,ATOMS);
     return me;
   };
@@ -204,7 +204,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 
     IterateResidues_sp IterateResidues_O::create(Matter_sp top)
     {
-      auto  ia  = gctools::GC<IterateResidues_O>::allocate_with_default_constructor();
+      auto  ia  = gctools::GC<IterateResidues_O>::allocate();
 	ia->initTopAndGoal(top,RESIDUES);
 	return ia;
     }
@@ -236,7 +236,7 @@ CL_LISPIFY_NAME(bonds);
 DOCGROUP(cando);
 CL_DEFUN IterateBonds_sp IterateBonds_O::make(Matter_sp top)
 {
-  auto  ia  = gctools::GC<IterateBonds_O>::allocate_with_default_constructor();
+  auto  ia  = gctools::GC<IterateBonds_O>::allocate();
   ia->initTopAndGoal(top,BONDS);
   return ia;
 }

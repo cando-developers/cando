@@ -79,7 +79,7 @@ string ObjRef_O::asString() {
  */
 ObjRef_sp ObjRef_O::create(LispPtr e, const string &asString) {
   string head, tail, orSelector, orName;
-  auto  ref = gctools::GC<ObjRef_O>::allocate_with_default_constructor();
+  auto  ref = gctools::GC<ObjRef_O>::allocate();
   VectorStrings parts;
   size_t split = asString.find("/");
   if (split != string::npos) {

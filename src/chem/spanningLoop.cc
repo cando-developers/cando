@@ -64,7 +64,7 @@ std::string SpanningInfo_O::__repr__() const {
 
 DOCGROUP(cando);
 CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root) {
-  auto me = gctools::GC<SpanningLoop_O>::allocate_with_default_constructor();
+  auto me = gctools::GC<SpanningLoop_O>::allocate();
   me->setTop(root);
   return me;
 };

@@ -892,7 +892,7 @@ CL_LISPIFY_NAME(make-aggregate);
 DOCGROUP(cando);
 CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name, core::List_sp molecules)
 {
-  auto me = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
+  auto me = gctools::GC<Aggregate_O>::allocate();
   me->setName(name);
   if (molecules.notnilp()) {
     for ( auto cur : molecules ) {

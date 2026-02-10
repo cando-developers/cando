@@ -41,7 +41,7 @@ namespace kinematics
 
 BondId_sp BondId_O::create(Joint_sp parent, Joint_sp child)
 {
-  auto  bondId  = gctools::GC<BondId_O>::allocate_with_default_constructor();
+  auto  bondId  = gctools::GC<BondId_O>::allocate();
   bondId->_Parent = parent;
   bondId->_Child = child;
   return bondId;

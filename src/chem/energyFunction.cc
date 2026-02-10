@@ -153,7 +153,7 @@ namespace chem
   CL_LISPIFY_NAME(make_energy_scale);
   CL_DEF_CLASS_METHOD EnergyScale_sp EnergyScale_O::make()
   {
-    auto energyScale = gctools::GC<EnergyScale_O>::allocate_with_default_constructor();
+    auto energyScale = gctools::GC<EnergyScale_O>::allocate();
     return energyScale;
   }
 
@@ -175,7 +175,7 @@ each interaction should be added to the energy function.
   CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
                                                                bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types )
   {
-    auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
+    auto  me  = gctools::GC<EnergyFunction_O>::allocate();
     //
     // Disable and then enable components
     //
@@ -1552,7 +1552,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   // FIXME: Why are we using the forcefield->getNonbondDb()?  We should be using the aggregate nonbond force-field
 #if 0  
   if (chem__verbose(0)) core::clasp_write_string("Starting to build standard energy function tables\n");
-  auto  temp  = gctools::GC<FFNonbondCrossTermTable_O>::allocate_with_default_constructor();
+  auto  temp  = gctools::GC<FFNonbondCrossTermTable_O>::allocate();
   this->_NonbondCrossTermTable = temp;
   this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
 #endif
@@ -2208,7 +2208,7 @@ CL_LAMBDA((energy-function chem:energy-function) &optional (keep-interaction-fac
 CL_DEFMETHOD
 EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory)
 {
-  auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
+  auto  me  = gctools::GC<EnergyFunction_O>::allocate();
   me->_Matter = this->_Matter;
   me->_AtomTable = this->_AtomTable;
   me->_NonbondCrossTermTable = this->_NonbondCrossTermTable;

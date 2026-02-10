@@ -44,7 +44,7 @@ namespace kinematics
 CL_LISPIFY_NAME(make-ChiDihedral);
   ChiDihedral_sp ChiDihedral_O::make(const int atom1Index, const int atom2Index, const int atom3Index, const int atom4Index)
     {
-      auto  me  = gctools::GC<ChiDihedral_O>::allocate_with_default_constructor();
+      auto  me  = gctools::GC<ChiDihedral_O>::allocate();
       me->_Atom1 = atom1Index;
       me->_Atom2 = atom2Index;
       me->_Atom3 = atom3Index;

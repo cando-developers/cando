@@ -66,7 +66,7 @@ CL_DEF_CLASS_METHOD AtomGrid_sp AtomGrid_O::makeAtomGrid(NVector_sp positions,
                                      double cellSize,
                                      double padding )
 {
-  auto me = gctools::GC<AtomGrid_O>::allocate_with_default_constructor();
+  auto me = gctools::GC<AtomGrid_O>::allocate();
   me->buildAtomGrid( positions, effRadii, cellSize, padding );
   return me;
 }

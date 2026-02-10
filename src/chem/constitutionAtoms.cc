@@ -134,7 +134,7 @@ DOCGROUP(cando);
 CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose)
 {
   residue->ensureAllAtomNamesAreUnique();
-  auto  catoms  = gctools::GC<ConstitutionAtoms_O>::allocate_with_default_constructor();
+  auto  catoms  = gctools::GC<ConstitutionAtoms_O>::allocate();
   Matter_O::contentIterator it;
   ConstitutionAtomIndex0N index = 0;
   MapAtomsToConstitutionAtomIndex0N atomToIndexMap;
