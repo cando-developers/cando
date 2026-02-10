@@ -130,17 +130,6 @@ void EnergyOutOfZPlane_O::fields(core::Record_sp node)
 }
 
 
-string EnergyOutOfZPlane_O::beyondThresholdInteractionsAsString()
-{
-    return component_beyondThresholdInteractionsAsString<EnergyOutOfZPlane_O,EnergyOutOfZPlane>(*this);
-}
-
-
-
-
-
-
-
 void	EnergyOutOfZPlane_O::setupHessianPreconditioner(
 					NVector_sp nvPosition,
 					AbstractLargeSquareMatrix_sp m,
@@ -367,70 +356,6 @@ bool	calcOffDiagonalHessian = true;
     IMPLEMENT_ME(); // must return some sort of integer value
 #endif
 }
-
-#if 0
-int	EnergyOutOfZPlane_O::checkForBeyondThresholdInteractions(
-			stringstream& info, NVector_sp pos )
-{
-int	fails = 0;
-
-    this->_BeyondThresholdTerms.clear();
-
-//
-// Copy from implementAmberFunction::checkForBeyondThresholdInteractions
-//
-//------------------
-
-#undef OOZP_CALC_FORCE
-#undef OOZP_CALC_DIAGONAL_HESSIAN
-#undef OOZP_CALC_OFF_DIAGONAL_HESSIAN
-#undef	OOZP_SET_PARAMETER
-#define	OOZP_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	OOZP_SET_POSITION
-#define	OOZP_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	OOZP_PHI_SET
-#define	OOZP_PHI_SET(x) {}
-#undef	OOZP_ENERGY_ACCUMULATE
-#define	OOZP_ENERGY_ACCUMULATE(e) {}
-#undef	OOZP_FORCE_ACCUMULATE
-#define	OOZP_FORCE_ACCUMULATE(i,o,v) {}
-#undef	OOZP_DIAGONAL_HESSIAN_ACCUMULATE
-#define	OOZP_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	OOZP_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	OOZP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-
-    {
-      
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
-#pragma clang diagnostic pop
-      num_real x1,y1,z1,za,kb;
-      int	I1, i;
-      gctools::Vec0<EnergyOutOfZPlane>::iterator cri;
-      for ( i=0,cri=this->_Terms.begin();
-            cri!=this->_Terms.end(); cri++,i++ ) {
-			  /* Obtain all the parameters necessary to calculate */
-			  /* the amber and forces */
-#include <cando/chem/energy_functions/_Oozp_termCode.cc>
-        if ( AnchorDeviation>this->_ErrorThreshold ) {
-          Atom_sp a1;
-          a1 = (*cri)._Atom1;
-          info<< "OutOfZPlaneDeviation ";
-//		    info<< a1->getAbsoluteIdPath() << " ";
-          info<< "value " << AnchorDeviation << " ";
-          info << a1->getName() << " ";
-          info << std::endl;
-          this->_BeyondThresholdTerms.push_back(*cri);
-          fails++;
-        }
-      }
-    }
-
-    return fails;
-}
-#endif
 
 void EnergyOutOfZPlane_O::initialize()
 {

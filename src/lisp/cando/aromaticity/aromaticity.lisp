@@ -117,6 +117,41 @@
 
 (defparameter *rule5* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[<aby>:1]1-[<abx>&!<ar67>:2]=[<abx>&!<ar67>:3]-[<abx>&!<ar67>:4]=[<abx>&!<ar67>:5]1" :tests *ar67test*)))
 
+(defparameter *rule6* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[<aby>:1]1-[<abx>&!<ar67>:2]=[<abx>&!<ar67>:3]-[<abx>&!<ar67>:4]=[<abx>&!<ar67>:5]1" :tests *ar67test*)))
+
+(defun ring-bonds-aromatic-p (ring)
+  (let ((ring-set (make-hash-table :test 'eq))
+        (ok t))
+    (dolist (a ring) (setf (gethash a ring-set) t))
+    (dolist (a ring)
+      (let* ((ring-neighbors
+               (remove-if-not (lambda (b) (gethash b ring-set))
+                              (chem:atom/bonded-atoms-as-list a))))
+        (when (/= (length ring-neighbors) 2)
+          (setf ok nil))
+        (dolist (b ring-neighbors)
+          (unless (eq :aromatic-bond (chem:bond-order-to a b))
+            (setf ok nil)))))
+    ok))
+
+(defun ring-aromaticity-type (ring)
+  (case (length ring)
+    (5 :ar5)
+    (6 :ar6)
+    (7 :ar7)
+    (t :ar6)))
+
+(defun mark-aromatic-rings-from-bonds (aromaticity-info rings)
+  (let ((aromatic-atoms nil))
+    (dolist (ring rings)
+      (when (ring-bonds-aromatic-p ring)
+        (let ((arom (ring-aromaticity-type ring)))
+          (dolist (atom ring)
+            (setf aromatic-atoms
+                  (set-aromaticity-type aromaticity-info atom arom :rosetta-bonds aromatic-atoms))))))
+    aromatic-atoms))
+
+
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 
 (defun is-ring-aromatic (aromaticity-info ring)
@@ -155,6 +190,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
     (error "chem:*current-rings* must be bound to a list of rings in the molecule identified using chem:identify-rings"))
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
+    (mark-aromatic-rings-from-bonds aromaticity-info chem:*current-rings*)
     (chem:do-molecules (molecule matter)
       (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
@@ -174,14 +210,17 @@ associating the atom with its aromaticity info in a hash-table and return the ha
     (error "chem:*current-rings* must be bound to a list of rings in the molecule identified using chem:identify-rings"))
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
-    (unless chem:*current-rings*
-      (chem:do-molecules (molecule matter)
-        (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
-          (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
-          (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
-          (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)))
-      (setf *save-aromatic-info* aromaticity-info))
-    aromaticity-info))
+    (mark-aromatic-rings-from-bonds aromaticity-info chem:*current-rings*)
+    (chem:do-molecules (molecule matter)
+      (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)))
+    (setf *save-aromatic-info* aromaticity-info)
+  aromaticity-info))
+
+(defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :default)))
+  (chem:identify-aromatic-rings matter :mdl))
 
 (defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :smirnoff)))
   (chem:identify-aromatic-rings matter :mdl))

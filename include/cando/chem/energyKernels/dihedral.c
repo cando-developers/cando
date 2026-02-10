@@ -2,7 +2,7 @@ template <typename HESSIAN>
 struct Dihedral {
   static constexpr size_t PositionSize = 12;
   static std::string description() { return "mathkernel-dihedral"; };
-void energy(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
+double energy(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
   /* !BASE */
   double c1x;
   double c1y;
@@ -79,6 +79,7 @@ void energy(double v, double n, double sinphase, double cosphase, size_t i3x1, s
     sin_angle = ((cosphase * sin_nphi) + (-((cos_nphi * sinphase))));
     energy = (v * (1.0000000000000000     + cos_angle));
     *energy_accumulate += energy;
+    return energy;
   }
 }
 void energy_fd(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)
@@ -86,7 +87,7 @@ void energy_fd(double v, double n, double sinphase, double cosphase, size_t i3x1
   energy(v, n, sinphase, cosphase, i3x1, i3x2, i3x3, i3x4, position, energy_accumulate, force, hessian, dvec, hdvec);
 }
 
-void gradient(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
+double gradient(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
   /* !BASE */
   double c1x;
   double c1y;
@@ -270,6 +271,7 @@ void gradient(double v, double n, double sinphase, double cosphase, size_t i3x1,
     g_z4 = (cse_p1_t1_g45425 * ((cse_p1_t19_g45411 * ((c1x * v2y) + (c1y * cse_p1_t23_g45415))) + (cse_p1_t1_g45427 * (cse_p1_t6_g45398 + (cse_p1_t23_g45415 * v1y)))));
     KernelGradientAcc(i3x4, 2, g_z4);
   }
+  return energy;
 }
 void gradient_fd(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)
 {
@@ -425,7 +427,7 @@ void gradient_fd(double v, double n, double sinphase, double cosphase, size_t i3
   }
 }
 
-void hessian(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
+double hessian(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
   /* !BASE */
   double c1x;
   double c1y;
@@ -1459,7 +1461,9 @@ void hessian(double v, double n, double sinphase, double cosphase, size_t i3x1, 
     h_z4_z4 = (cse_p513_t1_g45794 * ((cse_p511_t176_g45702 * cse_p563_t1_g45858) + (sin_angle * ((cse_p511_t176_g45702 * cse_p511_t234_g45760) + (cse_p511_t211_g45737 * cse_p615_t1_g45871) + (cse_p511_t246_g45772 * cse_p518_t1_g45849)))));
     KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x4, 2, i3x4, 2, h_z4_z4);
   }
+  return energy;
 }
+
 void hessian_fd(double v, double n, double sinphase, double cosphase, size_t i3x1, size_t i3x2, size_t i3x3, size_t i3x4, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)
 {
   constexpr size_t PositionSize = 12;

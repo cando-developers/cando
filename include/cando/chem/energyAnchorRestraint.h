@@ -141,7 +141,6 @@ public:
   typedef EnergyAnchorRestraint	TermType;
 public: // instance variables
   gctools::Vec0<TermType>		_Terms;
-  gctools::Vec0<TermType>		_BeyondThresholdTerms;
 
 public:	// Creation class functions
 public:	
@@ -150,6 +149,7 @@ public:
   iterator end() { return this->_Terms.end(); };
   //added by G 7.19.2011
 public:
+  virtual std::string descriptionOfContents() const;
   virtual size_t numberOfTerms() { return this->_Terms.size();};
 
 
@@ -180,11 +180,7 @@ public:
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos,
                                                                                core::T_sp activeAtomMask );
 
-  // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-
-  virtual string	beyondThresholdInteractionsAsString();
-
-  EnergyAnchorRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
 public:
   EnergyAnchorRestraint_O( const EnergyAnchorRestraint_O& ss ); //!< Copy constructor

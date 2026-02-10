@@ -397,7 +397,7 @@
 
 (defun add-ions-rand (aggregate ion1 ion1-number &key ion2 ion2-number (separation 0.0))
   (let* ((energy-function (chem:make-energy-function :matter aggregate
-                                                     :use-excluded-atoms t
+                                                     :use-excluded-atoms nil
                                                      :assign-types t))
          (atom-table (chem:atom-table energy-function))
          (nonbond-db (chem:nonbond-force-field-for-aggregate atom-table))

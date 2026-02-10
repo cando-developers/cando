@@ -55,12 +55,25 @@ namespace chem {
 
 #if 1
 #include "cando/chem/energyKernels/dihedral_fast.c"
+template <typename T>
+using Dihedral_Component = Dihedral_Fast<T>;
 #else
 #include "cando/chem/energyKernels/dihedral.c"
+template <typename T>
+using Dihedral_Component = Dihedral<T>;
 #endif
 
-std::string EnergyDihedral_O::description() const {
-  Dihedral_Fast<NoHessian> dihedral;
+
+std::string EnergyDihedral_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
+
+
+std::string EnergyDihedral_O::implementation_details() const {
+  Dihedral_Component<NoHessian> dihedral;
 
   std::stringstream ss;
   ss << dihedral.description();
@@ -84,7 +97,7 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
   double hdvec_ground[POS_SIZE];
   size_t idx = 0;
   size_t errs = 0;
-  Dihedral_Fast<double*> dihedral;
+  Dihedral_Component<double*> dihedral;
   for ( auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di ) {
     position[0] = coords[di->term.I1];
     position[1] = coords[di->term.I1+1];
@@ -658,13 +671,6 @@ void EnergyDihedral_O::addTerm(const EnergyDihedral& term)
 }
 
 
-string EnergyDihedral_O::beyondThresholdInteractionsAsString()
-{
-  return component_beyondThresholdInteractionsAsString<EnergyDihedral_O,EnergyDihedral>(*this);
-}
-
-
-
 void	EnergyDihedral_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyDihedral>::iterator	edi;
@@ -853,13 +859,9 @@ if (hasActiveAtomMask \
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
+
   double termEnergy = 0.0;
 
   num_real EraseLinearDihedral;
@@ -877,7 +879,7 @@ if (hasActiveAtomMask \
   DOUBLE* rdvec = NULL;
   DOUBLE* rhdvec = NULL;
   double  Energy;
-  Dihedral_Fast<NoHessian> dihedral;
+  Dihedral_Component<NoHessian> dihedral;
 #define KERNEL_DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
     && !(bitvectorActiveAtomMask->testBit(I1/3) \
@@ -885,7 +887,7 @@ if (hasActiveAtomMask \
          && bitvectorActiveAtomMask->testBit(I3/3) \
          && bitvectorActiveAtomMask->testBit(I4/3)) \
     ) continue;
-  if (!hasForce) {
+  if (evalType==energyEval) {
     for ( di=di_start; di!= di_end; di++ ) {
       KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
       Energy = dihedral.energy(di->term.V,
@@ -905,7 +907,7 @@ if (hasActiveAtomMask \
       const INT& IN = di->term.IN;
       DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
     }
-  } else if (hasForce) {
+  } else if (evalType==gradientEval) {
     rforce = &(*force)[0];
     for ( di=di_start; di!= di_end; di++ ) {
       KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
@@ -993,14 +995,8 @@ if (hasActiveAtomMask \
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
 //
 // Copy from implementAmberFunction::evaluateAll
@@ -1217,7 +1213,7 @@ CL_DEFMETHOD void EnergyDihedral_O::addDihedralTerm(AtomTable_sp atomTable, Atom
   this->addTerm(energyDihedral);
 }
 
-EnergyDihedral_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyDihedral_O::staticClass());
   EnergyDihedral_sp copy = EnergyDihedral_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );
@@ -1256,13 +1252,8 @@ double EnergyDihedral_O::evaluateAllComponentSimd8(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   double totalEnergy = 0.0;
 //
@@ -1543,13 +1534,8 @@ double EnergyDihedral_O::evaluateAllComponentSimd4(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   double totalEnergy = 0.0;
 //
@@ -1735,13 +1721,8 @@ double EnergyDihedral_O::evaluateAllComponentSimd2(
   IMPLEMENT_ME();
 #if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  ANN(force);
-  ANN(hessian);
-  ANN(hdvec);
-  ANN(dvec);
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
   double totalEnergy = 0.0;
 //

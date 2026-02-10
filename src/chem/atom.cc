@@ -948,7 +948,7 @@ void	Atom_O::fields(core::Record_sp node)
   node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
   node->/*pod_*/field_if_not_default( INTERN_(kw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
   node->/*pod_*/field_if_not_default( INTERN_(kw,pos), this->_Position, Vector3());
-//  node->field_if_not_empty(INTERN_(kw,bonds),this->_Bonds);
+  node->field_if_not_empty(INTERN_(kw,bonds),this->_Bonds);
   this->Base::fields(node);
 }
 
@@ -1331,9 +1331,8 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
     else if (bo == dashedDoubleBond ) twice += 4;
     else twice += 2;
   }
-  if ( (twice & 1) != 0 )
-  {
-    SIMPLE_ERROR("The total bond order for {} will not be a whole number", this->description());
+  if ( (twice & 1) != 0 ) {
+    //  SIMPLE_ERROR("The total bond order for {} will not be a whole number", this->description());
   }
   int bondOrder = twice/2;
   if ( bondOrder < 0 || bondOrder > 10 ) {

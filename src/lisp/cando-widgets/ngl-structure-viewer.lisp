@@ -428,7 +428,7 @@
     (tirun::pose-one-molecule-using-similarity aggregate template))
   (bordeaux-threads:make-thread
     (lambda ()
-      (let* ((energy-func (chem:make-energy-function :matter aggregate :use-excluded-atoms t :assign-types t))
+      (let* ((energy-func (chem:make-energy-function :matter aggregate :use-excluded-atoms nil :assign-types t))
              (minimizer (chem:make-minimizer energy-func))
              (frame-period (floor internal-time-units-per-second +pose-frame-rate+))
              (next-frame-time (get-internal-real-time)))

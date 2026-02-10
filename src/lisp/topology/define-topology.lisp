@@ -229,7 +229,7 @@ Keep the heavy atoms and hydrogens in the order they were found."
 (defun bond-symbol (name)
   (when (symbolp name)
     (let ((kw-name (intern (symbol-name name) :keyword)))
-      (when (member kw-name '(:- := :# :~))
+      (when (member kw-name '(:- := :# :|:|))
         kw-name))))
 
 (defun atom-sexp (sexp)
@@ -300,6 +300,7 @@ Keep the heavy atoms and hydrogens in the order they were found."
     (:- :single-bond)
     (:= :double-bond)
     (:# :triple-bond)
+    (:|:| :aromatic-bond)
     (otherwise (error "Handle edge-type ~a" edge-type))))
 
 

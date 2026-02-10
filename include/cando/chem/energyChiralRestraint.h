@@ -146,6 +146,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
+  virtual std::string descriptionOfContents() const;
   void	initialize();
   //	string	__repr__() const;
 
@@ -153,7 +154,6 @@ public:
   typedef EnergyChiralRestraint	TermType;
 public: // instance variables
   gctools::Vec0<TermType>	_Terms;
-  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 
 public:	// Creation class functions
 public:	
@@ -190,11 +190,7 @@ public:
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
       NVector_sp pos );
 
-  // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-
-  virtual string	beyondThresholdInteractionsAsString();
-
-  EnergyChiralRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
 public:
   EnergyChiralRestraint_O( const EnergyChiralRestraint_O& ss ); //!< Copy constructor

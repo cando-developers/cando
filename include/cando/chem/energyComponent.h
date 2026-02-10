@@ -74,6 +74,24 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/quickDom.fwd.h>// energyComponent.h wants QDomNode needs quickDom.fwd.h
 
 namespace chem {
+
+
+typedef enum { energyEval, gradientEval, hessianEval } EnergyComponentEvalType;
+
+inline EnergyComponentEvalType determineEnergyComponentEvalType(gc::Nilable<NVector_sp> force, gc::Nilable<NVector_sp> hdvec, gc::Nilable<NVector_sp> dvec ) {
+  if (hdvec.notnilp()) {
+    if (force.nilp()) {
+      SIMPLE_ERROR("You cannot have hdvec not nil but force nil");
+    } else if (dvec.nilp()) {
+      SIMPLE_ERROR("You cannot have hdvec not nil but dvec nil");
+    }
+    return hessianEval;
+  }
+  if (force.notnilp()) return gradientEval;
+  return energyEval;
+}
+
+
 class KahanSummation {
 private:
   double sum;
@@ -126,13 +144,6 @@ class EnergyTerm
 
   EnergyTerm() {};
 };
-
-
-class BeyondThresholdEnergyTerm
-{
- public:
-};
-
 
 
 inline string	atomLabel(Atom_sp a)
@@ -335,19 +346,6 @@ inline void KernelHessOffDiagAcc(size_t positionSize, double* hessian, double* d
     this->_FixedNonbondRestraint->msg; 	\
   }
 
-template <class ComponentType, class EntryType>
-  string	component_beyondThresholdInteractionsAsString(ComponentType& component) 
-{
-  int	bt;
-  stringstream	ss;
-  bt = component._BeyondThresholdTerms.end()-
-    component._BeyondThresholdTerms.begin();
-  ss << component.className() << "(#"<< bt <<") ";
-  return ss.str();
-};
-
-
-
 
 SMART(EnergyComponent );
 class EnergyComponent_O : public core::CxxObject_O
@@ -366,7 +364,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
-  CL_DEFMETHOD virtual std::string description() const { return "no-details-available-subclass-me"; };
+  CL_DEFMETHOD virtual std::string implementation_details() const { return "energyComponent.h: no-details-available-subclass-me"; };
   CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   void setScale(double s) {this->_Scale = s; };
   double getScale() { return this->_Scale ; };
@@ -395,7 +393,7 @@ public:	// Virtual methods
 
   CL_DEFMETHOD virtual void dumpTerms(core::HashTable_sp atomTypes) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteractionFactory);
+  virtual EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc ) {SUBCLASS_MUST_IMPLEMENT();};
   
   CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                                      NVector_sp 	pos,
@@ -411,13 +409,15 @@ public:	// Virtual methods
                                                      core::T_sp activeAtomMask,
                                                      core::T_sp debugInteractions ) = 0;
 
-  virtual core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
   EnergyComponent_O() : _Enabled(true), _Scale(1.0) {};
+
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) = 0;
+
 };
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
@@ -448,7 +448,6 @@ bool test_match( core::T_sp stream, const char* label, size_t num,
                 double* hdvec_new, double* hdvec_ground );
 
 void test_position(core::T_sp stream, size_t pos_size, double* position );
-
 
 };
 

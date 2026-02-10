@@ -136,7 +136,6 @@ public:
   typedef EnergyOutOfZPlane	TermType;
 public: // instance variables
   gctools::Vec0<TermType>		_Terms;
-  gctools::Vec0<TermType>		_BeyondThresholdTerms;
 
 public:	// Creation class functions
 public:	
@@ -172,10 +171,6 @@ public:
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
       NVector_sp pos );
-
-  // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-
-  virtual string	beyondThresholdInteractionsAsString();
 
   void reset();
   

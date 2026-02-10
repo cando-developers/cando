@@ -35,14 +35,49 @@ This is an open source license for the CANDO software from Temple University, bu
 // last include is wrappers.h
 #include <clasp/core/wrappers.h>
 
+SetupAccumulator::SetupAccumulator(core::T_sp className, core::T_sp setup ) {
+  if (setup.consp()) {
+    core::List_sp rest = oCdr(setup);
+    for ( auto cur : rest ) {
+      core::T_sp pair = CONS_CAR(cur);
+      if (oCar(pair) == className) {
+        this->_Plist = oCdr(pair);
+        return;
+      }
+    }
+  }
+  this->_Plist = nil<core::T_O>();
+}
+
+#if 0
+template <>
+void SetupAccumulator::maybe_apply(core::Symbol_sp name, double* value) {
+  core::T_sp tvalue = cl__getf(this->_Plist,name,nil<core::T_O>());
+  if (gc::IsA<core::DoubleFloat_sp>(tvalue)) {
+    double dval = core::clasp_to_double(tvalue);
+    *value = dval;
+  }
+  this->_ValidSymbols = core::Cons_O::create(name,this->_ValidSymbols);
+}
+#endif
+
+
+SetupAccumulator::~SetupAccumulator()
+{
+  core::T_sp cur = this->_Plist;
+  while (cur.notnilp()) {
+    core::T_sp sym = oCar(cur);
+    if (gc::As<core::Cons_sp>(this->_ValidSymbols)->memberEq(sym).nilp()) {
+      SIMPLE_ERROR("Illegal parameter {} in plist({}) - valid symbols({})", _rep_(sym), _rep_(this->_Plist), _rep_(this->_ValidSymbols));
+    }
+    cur = oCdr(cur);
+    cur = oCdr(cur);
+  }
+}
+
+
+
 namespace chem {
-
-
-
-
-
-
-
 
 void	EnergyComponent_O::initialize()
 {
@@ -141,9 +176,6 @@ num_real chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_f
   return val;
 };
 
-EnergyComponent_sp EnergyComponent_O::filterCopyComponent(core::T_sp keepInteractionFactory) {
-  IMPLEMENT_ME();
-}
 
 void copyEnergyComponent(EnergyComponent_sp newComponent, EnergyComponent_sp orig )
 {

@@ -92,6 +92,7 @@ void	ForceField_O::initialize()
   this->_Ptors = FFPtorDb_O::create();
   LOG("Initializing ForceField nonbonded" );
   this->_Nonbonds = FFNonbondDb_O::create();
+  this->_LKSolvation = FFLKSolvationDb_O::create();
   LOG("Initializing ForceField vdw" );
   this->_Vdws = FFVdwDb_O::create();
 };
@@ -108,6 +109,7 @@ void	ForceField_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,Itors), this->_Itors );
   node->field( INTERN_(kw,Ptors), this->_Ptors );
   node->field( INTERN_(kw,Nonbonds), this->_Nonbonds );
+  node->field( INTERN_(kw,LKSolvation), this->_LKSolvation );
   node->field( INTERN_(kw,Vdws), this->_Vdws );
 }
 
@@ -136,7 +138,6 @@ CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter, core::HashTable_sp
 string ForceField_O::__repr__() const {
   stringstream ss;
   ss << "#<FORCE-FIELD ";
-  ss << _rep_(this->_title);
   ss << ">";
   return ss.str();
 }
@@ -200,6 +201,11 @@ void	ForceField_O::setFFPtorDb( FFPtorDb_sp Ptors)
 void	ForceField_O::setFFNonbondDb(FFNonbondDb_sp Nonbonds )
 {
   this->_Nonbonds = Nonbonds;
+}
+
+void	ForceField_O::setFFLKSolvationDb(FFLKSolvationDb_sp LKSolvation )
+{
+  this->_LKSolvation = LKSolvation;
 }
 
 CL_DEFMETHOD

@@ -279,6 +279,14 @@ for the node in the table."))
 (export 'chem::register-topology :chem)
 
 
+(defun chem::register-foldamer-monomer-context-info (foldamer-monomer-context-info)
+  "Register a foldamer-monomer-context-info object with cando "
+  (let ((foldamer (chem:foldamer-monomer-context-info-foldamer foldamer-monomer-context-info))
+        (monomer-context (chem:foldamer-monomer-context-info-monomer-context foldamer-monomer-context-info)))
+    (chem:setf-find-foldamer-monomer-context chem:*cando-database* foldamer monomer-context foldamer-monomer-context-info)))
+
+(export 'chem::register-foldamer-monomer-context-info :chem)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

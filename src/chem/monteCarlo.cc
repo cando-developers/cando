@@ -1015,6 +1015,10 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections(core::T_sp tenergie
 #endif
 
 #if 1
+CL_DOCSTRING(R"doc(Perform a constant temperature Hamiltonian replica exchange monte carlo on the
+ENERGIES object using the LAMBDA-WINDOWS at TEMPERATURE taking LAMBDA-STEPS with each set of lambdas
+before attempting to swap windows.
+Return (values lowest-energy-state accepts swap-accepts-for-each-lambda-window swap-attempts-for-each-lambda-window max-iterations lowest-energy initial-state initial-energy))doc");
 CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (max-iterations 1000) (warm-up-iterations 100) step-callback exchange-callback debug);
 CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarlo(core::T_sp tenergies,
                                                                                   core::T_sp tlambdaWindows,
@@ -1036,6 +1040,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
   Energies energies(tenergies);
   core::SimpleVector_byte32_t_sp saveState;
   bool useStepCallback = stepCallback.notnilp();
+  if (useStepCallback) saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
   bool useExchangeCallback = exchangeCallback.notnilp();
 
   std::vector<State> currentStates(numberOfLambdaWindows);

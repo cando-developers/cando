@@ -144,7 +144,6 @@ public:
   size_t	getNVectorSize() const;
   double	evaluateRaw( NVector_sp pos, NVector_sp force );
 //    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
-  adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
   ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale,NVector_sp force, core::T_sp activeAtomMask );
@@ -204,13 +203,8 @@ public:
                             core::T_sp debugInteractions,
                             bool disableRestraints );
 
-  string	summarizeBeyondThresholdInteractionsAsString();
   string	summarizeEnergyAsString();
 
-
-//		adapt::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
-//		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
-  uint		countTermsBeyondThreshold();
 
   void	evaluateNumericalForce(NVector_sp pos, core::T_sp energyScale, NVector_sp numForce, double delta, core::T_sp activeAtomMask );
   void	evaluateNumericalHessian(NVector_sp pos, core::T_sp energyScale, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta, core::T_sp activeAtomMask );

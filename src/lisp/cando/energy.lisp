@@ -133,7 +133,7 @@
                           (cg-tolerance *cg-tolerance*)
                           (max-tn-steps *max-tn-steps*)
                           (tn-tolerance *tn-tolerance*)
-                          (use-excluded-atoms t)
+                          (use-excluded-atoms nil)
                           (assign-types t)
                           (resignal-error nil)
                           (print-intermediate-results t)
@@ -180,7 +180,7 @@
                                      (cg-tolerance *cg-tolerance*)
                                      (max-tn-steps *max-tn-steps*)
                                      (tn-tolerance *tn-tolerance*)
-                                     (use-excluded-atoms t)
+                                     (use-excluded-atoms nil)
                                      (assign-types t))
   "Minimize the conformational energy for an aggregate"
   (let ((energy-func (chem:make-energy-function :matter agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))

@@ -56,6 +56,13 @@ namespace chem {
 
 #include "cando/chem/energyKernels/dihedral_restraint.c"
 
+std::string EnergyDihedralRestraint_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
+
 size_t EnergyDihedralRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const
 {
 #define POS_SIZE 12
@@ -329,14 +336,6 @@ void EnergyDihedralRestraint_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,terms), this->_Terms );
   this->Base::fields(node);
 }
-
-
-string EnergyDihedralRestraint_O::beyondThresholdInteractionsAsString()
-{
-    return component_beyondThresholdInteractionsAsString<EnergyDihedralRestraint_O,EnergyDihedralRestraint>(*this);
-}
-
-
 
 
 void	EnergyDihedralRestraint_O::setupHessianPreconditioner(
@@ -643,78 +642,7 @@ void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 
 
 
-int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
-			stringstream& info, chem::NVector_sp pos )
-{
-  IMPLEMENT_ME();
-  #if 0
-  int	fails = 0;
-
-  this->_BeyondThresholdTerms.clear();
-
-//
-// Copy from implementAmberFunction::checkForBeyondThresholdInteractions
-//
-//------------------
-#undef DIHEDRAL_HARMONIC_CALC_FORCE
-#undef DIHEDRAL_HARMONIC_CALC_DIAGONAL_HESSIAN
-#undef DIHEDRAL_HARMONIC_CALC_OFF_DIAGONAL_HESSIAN
-#undef	DIHEDRAL_HARMONIC_SET_PARAMETER
-#define	DIHEDRAL_HARMONIC_SET_PARAMETER(x)	{x = iri->term.x;}
-#undef	DIHEDRAL_HARMONIC_SET_POSITION
-#define	DIHEDRAL_HARMONIC_SET_POSITION(x,ii,of) {x = pos->element(ii+of);}
-#undef	DIHEDRAL_HARMONIC_PHI_SET
-#define	DIHEDRAL_HARMONIC_PHI_SET(x) {}
-#undef	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE
-#define	DIHEDRAL_HARMONIC_ENERGY_ACCUMULATE(e) {}
-#undef	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE
-#define	DIHEDRAL_HARMONIC_FORCE_ACCUMULATE(i,o,v) {}
-#undef	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_HARMONIC_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_HARMONIC_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include INCLUDE_TERM_DECLARES
-#pragma clang diagnostic pop
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-    num_real kdh, phi0;
-    bool RestraintActive;
-    int	I1, I2, I3, I4,i;
-    gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
-    for ( i=0,iri =this->_Terms.begin();
-          iri!=this->_Terms.end(); iri++,i++ ) {
-#define DEBUG_IMPROPER_RESTRAINT 1
-#include INCLUDE_TERM_CODE
-#undef DEBUG_IMPROPER_RESTRAINT
-      if ( RestraintActive ) {
-        chem::Atom_sp a1, a2, a3, a4;
-        a1 = (*iri)._Atom1;
-        a2 = (*iri)._Atom2;
-        a3 = (*iri)._Atom3;
-        a4 = (*iri)._Atom4;
-        info<< "DihedralRestraintDeviation ";
-        info<< "Phi[degrees](" << Phi/0.0174533 << ") ";
-        info<< "U[degrees](" << U/0.0174533 << ") ";
-        info<< "L[degrees](" << L/0.0174533 << ") ";
-        info << a1->description() << " ";
-        info << a2->description() << " ";
-        info << a3->description() << " ";
-        info << a4->description() << " ";
-        info << std::endl;
-        this->_BeyondThresholdTerms.push_back(*iri);
-        fails++;
-      }
-    }
-  }
-  return fails;
-  #endif
-}
-
-EnergyDihedralRestraint_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyDihedralRestraint_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedralRestraint_O::staticClass() );
   EnergyDihedralRestraint_sp copy = EnergyDihedralRestraint_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );

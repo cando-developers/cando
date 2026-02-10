@@ -195,10 +195,10 @@ public:
   typedef EnergyDihedral	TermType;
 public: // instance variables
   gctools::Vec0<TermType>	_Terms;
-  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 
 public:	// Creation class functions
-  virtual std::string description() const;
+  virtual std::string implementation_details() const;
+  virtual std::string descriptionOfContents() const;
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
@@ -309,11 +309,6 @@ public:
   
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos, core::T_sp activeAtomMask );
 
-    // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-
-  virtual string	beyondThresholdInteractionsAsString();
-
-
   void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, double v, int multiplicity);
 
   core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::HashTable_sp atomTypes );
@@ -321,7 +316,7 @@ public:
   virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
   virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
-  EnergyDihedral_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
 public:
   EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor

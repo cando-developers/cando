@@ -166,7 +166,6 @@ public:
   typedef EnergyAngle	TermType;
 public: // instance variables
   gctools::Vec0<TermType>	_Terms;
-  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
@@ -191,6 +190,7 @@ public:	// Creation class functions
 
 
 public:
+  virtual std::string descriptionOfContents() const;
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
 
@@ -219,16 +219,12 @@ public:
       NVector_sp pos,
       core::T_sp activeAtomMask );
 
-  virtual	core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
-
-  virtual string	beyondThresholdInteractionsAsString();
-
   void addAngleTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt, double t0);
 
 
   core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
 
-  EnergyAngle_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
   virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
   virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;

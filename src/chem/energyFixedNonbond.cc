@@ -98,14 +98,17 @@ double _evaluateEnergyOnly_FixedNonbond(num_real x1, num_real y1, num_real z1, n
 #endif
 }
 
+std::string EnergyFixedNonbondRestraint_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
+  ss << " number-of-terms " << this->_Terms.size();
+  return ss.str();
+}
 void EnergyFixedNonbondRestraint_O::setupForEvaluation(AtomTable_sp atomTable, FFNonbondCrossTermTable_sp crossTerms) {
   this->_MobileAtomTable = atomTable;
   this->_NonbondCrossTermTable = crossTerms;
 }
 
-string EnergyFixedNonbondRestraint_O::beyondThresholdInteractionsAsString() {
-  return component_beyondThresholdInteractionsAsString<EnergyFixedNonbondRestraint_O, FixedNonbondRestraint>(*this);
-}
 
 SYMBOL_EXPORT_SC_(ChemPkg, find_atom_type_position)
 
@@ -402,104 +405,6 @@ bool	calcOffDiagonalHessian = true;
 #endif
 }
 
-#if 0
-int	EnergyFixedNonbondRestraint_O::checkForBeyondThresholdInteractions(
-			stringstream& info, NVector_sp pos )
-{
-int	fails = 0;
-
-    this->_BeyondThresholdTerms.clear();
-
-//
-// Copy from implementAmberFunction::checkForBeyondThresholdInteractions
-//
-//------------------
-#undef FNONBOND_CALC_FORCE
-#undef FNONBOND_CALC_DIAGONAL_HESSIAN
-#undef FNONBOND_CALC_OFF_DIAGONAL_HESSIAN
-#undef FNONBOND_SET_PARAMETER
-#define FNONBOND_SET_PARAMETER(x)                                                                                                  \
-  { x = nbi->x; }
-#undef FNONBOND_SET_POSITION
-#define FNONBOND_SET_POSITION(x, ii, of)                                                                                           \
-  { x = pos->element(ii + of); }
-#undef FNONBOND_EFEEL_ENERGY_ACCUMULATE
-#define FNONBOND_EFEEL_ENERGY_ACCUMULATE(e)                                                                                        \
-  {}
-#undef FNONBOND_EFVDW_ENERGY_ACCUMULATE
-#define FNONBOND_EFVDW_ENERGY_ACCUMULATE(e)                                                                                        \
-  {}
-#undef FNONBOND_ENERGY_ACCUMULATE
-#define FNONBOND_ENERGY_ACCUMULATE(e) {};
-#undef FNONBOND_FORCE_ACCUMULATE
-#define FNONBOND_FORCE_ACCUMULATE(i, o, v)                                                                                         \
-  {}
-#undef FNONBOND_DIAGONAL_HESSIAN_ACCUMULATE
-#define FNONBOND_DIAGONAL_HESSIAN_ACCUMULATE(i1, o1, i2, o2, v)                                                                    \
-  {}
-#undef FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1, o1, i2, o2, v)                                                                \
-  {}
-
-    {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
-#pragma clang diagnostic pop
-	num_real x1,y1,z1,xf,yf,zf,dQ1Q2;
-	int	I1;
-	{
-	    //
-	    // From here to termCode is the fixedNonbond interaction loop
-	    //
-	    uint ifixed, imobile;
-	    uint fixedNonbondAtoms = this->_Terms.size();
-	    uint mobileNonbondAtoms = this->_MobileAtomTable->getNumberOfAtoms();
-	    for ( ifixed = 0; ifixed < fixedNonbondAtoms; ifixed++ )
-	    {
-		FixedNonbondRestraint& fixedAtomEntry = this->_Terms[ifixed];
-		xf = fixedAtomEntry._FixedPosition.getX();
-		yf = fixedAtomEntry._FixedPosition.getY();
-		zf = fixedAtomEntry._FixedPosition.getZ();
-		num_real fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
-		uint fixedTypeMajorIndex = this->_NonbondCrossTermTable->typeMajorIndex(fixedAtomEntry._FixedType);
-		for ( imobile=0; imobile< mobileNonbondAtoms; imobile++ )
-		{
-		    EnergyAtom& mobileAtomEntry = this->_MobileAtomTable->energyAtomEntry(imobile);
-		    I1 = mobileAtomEntry.coordinateIndexTimes3();
-		    dQ1Q2 = mobileAtomEntry._Charge * fixedChargeMultiplier;
-		    uint crossTermIndex = fixedTypeMajorIndex + mobileAtomEntry._TypeIndex;
-		    FFNonbondCrossTerm crossTerm = this->_NonbondCrossTermTable->nonbondCrossTerm(crossTermIndex);
-		    num_real dA = crossTerm._A*this->getVdwScale();
-		    num_real  dC = crossTerm._C*this->getVdwScale();
-#include <cando/chem/energy_functions/_FixedNonbond_termCode.cc>
-		    if ( NonbondDistance < this->_ErrorThreshold ) 
-		    {
-			Atom_sp a1, af;
-			a1 = mobileAtomEntry.atom();
-			af = fixedAtomEntry._FixedAtom;
-			info<< "FixedNonbondDeviation";
-	//		info<< a1->getAbsoluteIdPath() << " ";
-	//		info<< af->getAbsoluteIdPath() << " ";
-			info<< "value " << NonbondDistance << " ";
-			info<<"threshold " << this->_ErrorThreshold;
-			info << a1->getName() << " ";
-			info << af->getName() << " ";
-			info << std::endl;
-			EnergyFixedNonbondRestraint_O::BeyondThresholdTermType bt;
-			bt._MobileAtom = a1;
-			bt._FixedAtom = af;
-			bt._NonbondDistance = NonbondDistance;
-			this->_BeyondThresholdTerms.push_back(bt);
-			fails++;
-		    }
-		}
-	    }
-	}
-    }
-    return fails;
-}
-#endif
 
 void EnergyFixedNonbondRestraint_O::initialize() {
   this->Base::initialize();
@@ -510,7 +415,7 @@ void EnergyFixedNonbondRestraint_O::initialize() {
   this->_NonbondCrossTermTable = nil<FFNonbondCrossTermTable_O>();
 }
 
-EnergyFixedNonbondRestraint_sp EnergyFixedNonbondRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyFixedNonbondRestraint_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   EnergyFixedNonbondRestraint_sp copy = EnergyFixedNonbondRestraint_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyFixedNonbondRestraint_O::staticClass() );

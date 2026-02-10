@@ -269,12 +269,15 @@
        (angle-component (chem:get-angle-component ef))
        (stretch-component (chem:get-stretch-component ef))
        )
-  (format t "nonbond description ~s~%" (chem:energy-component/description nonbond-component))
-  (format t "dihedral description ~s~%" (chem:energy-component/description dihedral-component))
+  (format t "nonbond description ~s~%" (chem:energy-component/implementation-details nonbond-component))
+  (format t "dihedral description ~s~%" (chem:energy-component/implementation-details dihedral-component))
   (format t "Total energy = ~f  expected energy: ~f~%" energy expected-energy)
   #+tests(test-true energy (< (abs (- energy expected-energy)) 0.00001))
   (loop for (comp . en) in (chem:energy-components/components components)
         for expected-en = (cdr (assoc comp expected-components))
+        for index from 0
+        for name = (intern (format nil "energy-rosetta-nonbond-~d" index))
+        for new-name = (intern (format nil "new-energy-rosetta-nonbond-~d" index))
         if expected-en
           do (progn
                (format t "~s (~a)-> energy: ~f  expected: ~f ~%" comp
@@ -282,11 +285,11 @@
                            "matched"
                            "MISMATCHED")
                        en expected-en)
-               #+tests(test-true energy-component (< (abs (- expected-en en)) 0.001)))
+               #+tests(test-true name (< (abs (- expected-en en)) 0.001)))
         else
           do (progn
                (warn "There is a new energy component ~s that isn't in the regression test" comp)
-               #+tests(test-true new-energy-component t)))
+               #+tests(test-true new-name t)))
   (format t "About to run gradient and hessian finite-difference tests~%")
   (chem:run-test-calls nonbond-component *standard-output* coords)
   (chem:run-test-calls dihedral-component *standard-output* coords)

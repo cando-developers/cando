@@ -63,7 +63,7 @@ SYMBOL_EXPORT_SC_(ChemPkg, parse_smarts);
 SYMBOL_EXPORT_SC_(ChemPkg, parse_smirks);
 SYMBOL_EXPORT_SC_(ChemPkg, compile_antechamber_type_rule);
 
-#if 0
+#if 1
 #define CI_LOG(...) { __VA_ARGS__ }
 #else
 #define CI_LOG(...)
@@ -1358,7 +1358,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
     CI_LOG(if (chem__verbose(2)) core::clasp_write_string("AtomTest_O::SAPWildCard\n"););
     goto SUCCESS;
   case SAPAromaticElement:
-    LOG("SAPAromaticElement({}) == expecting({})", _rep_(atom->getElementAsSymbol()), _rep_(this->_SymbolArg));
+    CI_LOG(if(chem__verbose(2)) core::print(fmt::format("AtomTest_O::SAPAromaticElement SAPAromaticElement({}) == expecting({})", _rep_(atom->getElementAsSymbol()), _rep_(this->_SymbolArg))););
     if (this->_SymbolArg == atom->getElementAsSymbol() && is_aromatic(atom))
       goto SUCCESS;
     break;
@@ -1436,16 +1436,17 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
     } else {
       CI_LOG(if (chem__verbose(2)) core::clasp_write_string(fmt::format("SAPRingMembershipCount atom = {}\n", _rep_(atom))););
       core::List_sp rings = _sym_STARcurrent_ringsSTAR->symbolValue();
+      CI_LOG(if (chem__verbose(2)) core::clasp_write_string(fmt::format("SAPRingMembershipCount chem:*current-rings* = {}\n", _rep_(rings))););
       for (auto ring_cur : rings) {
         core::List_sp ring = CONS_CAR(ring_cur);
         for (auto ring_atom_cur : ring) {
           core::T_sp ring_atom = CONS_CAR(ring_atom_cur);
-          if (ring_atom == atom)
-            count++;
+          if (ring_atom == atom) count++;
         }
       }
     }
     if (count == this->_IntArg) {
+      // This atom is in (this->_IntArg) rings
       goto SUCCESS;
     }
   } break;
@@ -1528,6 +1529,11 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
     if (!atom->isInRing())
       goto SUCCESS;
     break;
+  case SAPInRing:
+    LOG("SAPInRing");
+    if (atom->isInRing())
+      goto SUCCESS;
+    break;
   case SAPElectronegativeElement: // ( O, N, F, Cl, Br )
     LOG("SAPElectronegativeElement");
     if (atom->getElement() == element_O)
@@ -1604,6 +1610,9 @@ string AtomTest_O::asSmarts() const {
   case SAPRingSize:
     ss << "r" << this->_IntArg;
     break;
+  case SAPInRing:
+    ss << "R";
+    break;
   case SAPValence:
     ss << "v" << this->_IntArg;
     break;
@@ -1675,6 +1684,7 @@ core::NullTerminatedEnumAssociation testEnum[] = {{"SAPNone", SAPNone},
                                                   {"SAPInBond", SAPInBond},
                                                   {"SAPArLevel", SAPArLevel},
                                                   {"SAPNoRing", SAPNoRing},
+                                                  {"SAPInRing", SAPInRing},
                                                   {"SAPResidueTest", SAPResidueTest},
                                                   {"SAPPredicateName", SAPPredicateName},
                                                   {"SAPAtomMap", SAPAtomMap},
@@ -2497,6 +2507,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg, SABDirectionalSingleDownOrUnspecified);
 SYMBOL_EXPORT_SC_(KeywordPkg, SABDirectionalSingleUp);
 SYMBOL_EXPORT_SC_(KeywordPkg, SABDirectionalSingleDown);
 SYMBOL_EXPORT_SC_(KeywordPkg, SABSameRingBond);
+SYMBOL_EXPORT_SC_(KeywordPkg, SABInRing);
 SYMBOL_EXPORT_SC_(ChemPkg, STARSabBondEnumConverterSTAR);
 CL_BEGIN_ENUM(BondEnum, _sym_STARSabBondEnumConverterSTAR, "SABBondEnum");
 CL_VALUE_ENUM(kw::_sym_SABUseBondMatcher, SABUseBondMatcher);
@@ -2567,6 +2578,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg, SAPNotBondedToPrevious);
 SYMBOL_EXPORT_SC_(KeywordPkg, SAPInBond);
 SYMBOL_EXPORT_SC_(KeywordPkg, SAPArLevel);
 SYMBOL_EXPORT_SC_(KeywordPkg, SAPNoRing);
+SYMBOL_EXPORT_SC_(KeywordPkg, SAPInRing);
 SYMBOL_EXPORT_SC_(KeywordPkg, SAPResidueTest);
 SYMBOL_EXPORT_SC_(KeywordPkg, SAPPredicateName);
 SYMBOL_EXPORT_SC_(KeywordPkg, SAPAromaticElement);
@@ -2610,6 +2622,7 @@ CL_VALUE_ENUM(kw::_sym_SAPNotBondedToPrevious, SAPNotBondedToPrevious);
 CL_VALUE_ENUM(kw::_sym_SAPInBond, SAPInBond);
 CL_VALUE_ENUM(kw::_sym_SAPArLevel, SAPArLevel);
 CL_VALUE_ENUM(kw::_sym_SAPNoRing, SAPNoRing);
+CL_VALUE_ENUM(kw::_sym_SAPInRing, SAPInRing);
 CL_VALUE_ENUM(kw::_sym_SAPResidueTest, SAPResidueTest);
 CL_VALUE_ENUM(kw::_sym_SAPPredicateName, SAPPredicateName);
 CL_VALUE_ENUM(kw::_sym_SAPAromaticElement, SAPAromaticElement);

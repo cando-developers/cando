@@ -361,14 +361,6 @@ CL_DEFMETHOD void ScoringFunction_O::evaluateFiniteDifferenceForce(NVector_sp co
   
 }
 
-CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
-CL_DEFMETHOD core::List_sp	ScoringFunction_O::checkForBeyondThresholdInteractions(double threshold)
-{
-  SUBIMP();
-}
-
-
-
 CL_DOCSTRING(R"dx(Velocity-verlet-step moves the atoms one velocity-verlet-step.
 If tunfrozen is a simple-bit-vector then it is used to determine unfrozen atoms.)dx")
 CL_LISPIFY_NAME("velocity-verlet-step");

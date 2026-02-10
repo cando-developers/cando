@@ -367,6 +367,8 @@ double        SuperposeEngine_O::sumOfSquaresOfDifferences()
 #ifdef        DEBUG_ON
     LOG("There are {} moveable indexes" , this->_MoveableIndexes->length()  );
     LOG("There are {} fixed indexes" , this->_FixedIndexes->length()  );
+    size_t ititMoved;
+    size_t itFixed;
     for ( ititMoved=0, itFixed=0;
           itFixed < this->_FixedIndexes->length();
           ititMoved++, itFixed++ )

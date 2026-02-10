@@ -93,13 +93,13 @@ public:
 public:
   typedef gc::SmallMap<core::Symbol_sp,FrameRecognizer_sp>	FrameRecognizers;
   typedef gc::SmallMap<core::Symbol_sp, Entity_sp>		Entities;
-private: // archive
+public: // archive
   core::Symbol_sp				_Name;
   string				_DateCreated;
   string				_DateUpdated;
-  core::HashTable_sp          _Topologys;
-  
-private:
+  core::HashTable_sp                    _Topologys;
+  core::HashTableEqual_sp               _FoldamerMonomerContexts;
+public:
 	/*! Return true if the entity with the name (name) is recognized and is a subclass of classId
 	 */
   bool recognizesEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc);
@@ -162,8 +162,13 @@ public:
   core::T_mv findTopology(core::T_sp name,bool errorp) const;
   void setf_findTopology(core::T_sp name, core::T_sp topology);
 
+  /*! Return (values monomer-context-info t/nil) */
+  core::T_mv findFoldamerMonomerContext(core::T_sp foldamer, core::T_sp monomerContext, bool errorp) const;
+  void setf_findFoldamerMonomerContext(core::T_sp foldamer, core::T_sp monomerContext, core::T_sp monomerContextInfo);
+
   void walk_topologys(core::Function_sp func);
-  
+  void walk_foldamer_monomer_contexts(core::Function_sp func);
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -204,11 +209,11 @@ public:
   void		testConsistency(std::ostream& out);
 public:
 
-  DEFAULT_CTOR_DTOR(CandoDatabase_O);
 };
 
 
 core::T_mv chem__findTopology(core::T_sp name, bool errorp = true);
+core::T_mv chem__findFoldamerMonomerContext(core::T_sp foldamer, core::T_sp monomerContext, bool errorp = true);
 }; // _Namespace chem
 
 #endif
