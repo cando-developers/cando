@@ -3,11 +3,12 @@
 (defun safe-atom-with-name (residue name)
   (chem:atom-with-name residue name))
 
-(defun build-residue-for-monomer-name (topology monomer-name)
+(defun build-residue-for-monomer-name (topology monomer-name &key atom-info)
   (let* ((residue (chem:make-residue monomer-name))
          (constitution (topology:constitution topology))
          (constitution-atoms (topology:constitution-atoms constitution))
-         (stereoisomer-atoms (topology:stereoisomer-atoms (topology:stereoisomer topology)))
+         (stereoisomer-atoms (or atom-info
+                                 (topology:stereoisomer-atoms (topology:stereoisomer topology))))
          (atoms (make-array (length constitution-atoms)))
          (named-atoms (make-hash-table)))
     ;; Add atoms to the residue
@@ -22,8 +23,10 @@
           for atm-charge = (if (slot-boundp stereoisomer-atom 'topology:atom-charge)
                                (topology:atom-charge stereoisomer-atom)
                                0.0)
+          for atm-lk-solvation-type = (topology:lk-solvation-atom-type stereoisomer-atom)
           do (chem:atom/set-atom-type atm atm-type)
           do (chem:atom/set-charge atm atm-charge)
+          do (chem:matter/set-property atm :lk-solvation-atom-type atm-lk-solvation-type)
           do (chem:add-matter residue atm)
           do (setf (elt atoms index) atm
                    (gethash atm-name named-atoms) atm))
@@ -188,6 +191,13 @@
             do (pushnew coupling unique-ring-couplings))
     (ordered-sequence-monomers oligomer nil root-monomer monomer-out-couplings unique-ring-couplings)))
 
+(defun monomer-context-info (monomer oligomer &optional (errorp nil))
+  (let* ((foldamer (foldamer (oligomer-space oligomer)))
+         (monomer-context (foldamer-monomer-context monomer oligomer foldamer errorp :missing-monomer-context)))
+    (when monomer-context
+      (multiple-value-bind (info found)
+          (chem:find-foldamer-monomer-context foldamer monomer-context nil)
+                  (when found info)))))
 
 (defun build-residue (oligomer
                       monomers-to-residues
@@ -199,12 +209,17 @@
                       prev-residue
                       next-monomer
                       &optional out-coupling)
-  (let* ((topology (let ((next-top (monomer-topology next-monomer oligomer)))
-                     (unless (typep next-top 'topology:topology)
-                       (error "Unexpected object - expected a topology - got ~s" next-top))
-                     next-top))
+  (let* ((context-info (monomer-context-info next-monomer oligomer))
+         (topology (if context-info
+                       (topology:foldamer-monomer-context-info-topology context-info)
+                       (let ((next-top (monomer-topology next-monomer oligomer)))
+                         (unless (typep next-top 'topology:topology)
+                           (error "Unexpected object - expected a topology - got ~s" next-top))
+                         next-top)))
+         (atom-info (and context-info
+                         (topology:foldamer-monomer-context-info-atom-info context-info)))
          (stereoisomer-name (current-stereoisomer-name next-monomer oligomer))
-         (residue (build-residue-for-monomer-name topology stereoisomer-name)))
+         (residue (build-residue-for-monomer-name topology stereoisomer-name :atom-info atom-info)))
     (setf (gethash next-monomer monomers-to-residues) residue
           (gethash next-monomer monomers-to-topologys) topology)
     (let ((residue-index (chem:content-size molecule)))

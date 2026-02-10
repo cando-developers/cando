@@ -155,10 +155,6 @@ public:
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos ) {IMPLEMENT_ME();};
 
-//  virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos ) {IMPLEMENT_ME();};
-
-  virtual string	beyondThresholdInteractionsAsString() {IMPLEMENT_ME();};
-
   core::List_sp parts_as_list(NVector_sp pos);
   size_t partsCoordinates(NVector_sp pos, size_t idx, core::SimpleVector_float_sp coords);
 

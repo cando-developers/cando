@@ -710,6 +710,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg, find_type);
+SYMBOL_EXPORT_SC_(ChemPkg, find_lksolvation_type);
 
 double EnergyNonbond_O::evaluateAllComponent(ScoringFunction_sp score,
                                              NVector_sp pos,
@@ -962,8 +963,7 @@ void EnergyNonbond_O::dumpTerms(core::HashTable_sp atomTypes) {
 }
 
 void EnergyNonbond_O::setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) {
-  SIMPLE_ERROR("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!! only the bonded "
-               "components of energy are used for the precondition to keep it sparse");
+  return; // not used for preconditioner
 }
 
 CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms(ScoringFunction_sp score, core::T_sp energyScale ) {
@@ -1123,10 +1123,6 @@ void EnergyNonbond_O::fields(core::Record_sp node) {
   node->field_if_not_nil(INTERN_(kw, Matter2), this->_Matter2);
   node->field(INTERN_(kw, KeepInteractionFactory), this->_KeepInteractionFactory);
   this->Base::fields(node);
-}
-
-string EnergyNonbond_O::beyondThresholdInteractionsAsString() {
-  return component_beyondThresholdInteractionsAsString<EnergyNonbond_O, EnergyNonbond>(*this);
 }
 
 void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField,
@@ -1561,7 +1557,7 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
     }
   }
 
-EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   EnergyNonbond_sp copy = EnergyNonbond_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond_O::staticClass() );
@@ -1627,6 +1623,9 @@ EnergyNonbond_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory) 
       SIMPLE_ERROR("EnergyNonbond uses excluded atoms and we don't support keepInteraction = {}", _rep_(keepInteraction));
     }
   }
+  // copy->_Parameters.do_apply(setupAcc);
+  // copy->_DisplacementBuffer = nil<core::T_O>();
+  // copy->_Terms.clear();
   return copy;
 }
 

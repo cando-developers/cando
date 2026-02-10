@@ -59,7 +59,8 @@
                                                     &rest args
                                                     &key kind symbol
                                                       atomic-number
-                                                      ring-bond-count
+                                                      (ring-bond-count nil
+                                                                       ring-bond-count-supplied-p)
                                                       ring-connectivity
                                                       (total-hydrogen-count nil 
                                                                             total-hydrogen-count-supplied-p)
@@ -83,7 +84,12 @@
            #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :sapelement)
            )
           (:aromatic
-           (setf result (chem:create-saparomatic-element (string sym)))
+           ;; Both a (generic aromatic) and c/n/o/... (aromatic element) generate atom tests here.
+           ;;    If a then we want a SAPAromatic test
+           ;;    If c/n/o/... then the element should be in the SYM and we want an SAPAromaticElement test
+           (setf result (if symbol
+                            (chem:create-saparomatic-element (string sym))
+                            (chem:create-saparomatic)))
            #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :saparomatic-element))
           (:inorganic
            (setf result (chem:create-sapelement (string sym))))
@@ -99,8 +105,10 @@
       (setf result (chem:create-saptotal-hcount total-hydrogen-count)))
     (when implicit-hydrogen-count
       (setf result (chem:create-sapimplicit-hcount implicit-hydrogen-count)))
-    (when ring-bond-count
-      (setf result (chem:create-sapring-membership-count ring-bond-count)))
+    (when ring-bond-count-supplied-p
+      (if ring-bond-count
+          (setf result (chem:create-sapring-membership-count ring-bond-count))
+          (setf result (chem:make-atom-test-ring-membership))))
     (when ring-connectivity
       (setf result (chem:create-sapring-connectivity ring-connectivity)))
     (when smallest-ring-size-p
@@ -529,7 +537,7 @@
                                                  (left chem:logical)
                                                  (right t)
                                                  &key key)
-;;;  (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
+;; (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
   (if (chem:get-left left)
       (progn
 ;;;        (format t "left ~a~%" (chem:get-left left))
@@ -640,7 +648,12 @@
            (:organic
             (core:make-cxx-object 'chem:atom-test :sym symbol :test :sapelement))
            (:aromatic
-            (core:make-cxx-object 'chem:atom-test :sym symbol :test :saparomatic-element))
+            ;; Both a (generic aromatic) and c/n/o/... (aromatic element) generate atom tests here.
+            ;;    If a then we want a SAPAromatic test
+            ;;    If c/n/o/... then the element should be in the SYM and we want an SAPAromaticElement test
+            (if symbol
+                (chem:create-saparomatic-element (string symbol))
+                (chem:create-saparomatic)))
            )))))
 
 (defmethod build ((head (eql :atom)) (tree cons) &rest args)
@@ -656,7 +669,12 @@
       (:organic
        (core:make-cxx-object 'chem:atom-test :sym symbol :test :sapelement))
       (:aromatic
-       (core:make-cxx-object 'chem:atom-test :sym symbol :test :saparomatic-element))
+       ;; Both a (generic aromatic) and c/n/o/... (aromatic element) generate atom tests here.
+       ;;    If a then we want a SAPAromatic test
+       ;;    If c/n/o/... then the element should be in the SYM and we want an SAPAromaticElement test
+       (if symbol
+           (chem:create-saparomatic-element (string symbol))
+           (chem:create-saparomatic)))
       )))
 
 
@@ -785,4 +803,3 @@ results of calling chem:identify-rings.  This macro wraps that code."
 
 
                      
-

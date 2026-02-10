@@ -380,8 +380,8 @@ public:
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   CL_DEFMETHOD core::T_sp getLeft() const { return this->_Left; };
   CL_DEFMETHOD core::T_sp getRight() const { return this->_Right; };
-  CL_DEFMETHOD void setLeft(ChemInfoNode_sp val) { this->_Left = val; };
-  CL_DEFMETHOD void setRight(ChemInfoNode_sp val) { this->_Right = val; };
+  CL_DEFMETHOD void setLeft(gctools::Nilable<ChemInfoNode_sp> val) { this->_Left = val; };
+  CL_DEFMETHOD void setRight(gctools::Nilable<ChemInfoNode_sp> val) { this->_Right = val; };
   virtual uint depth() const;
   virtual string asSmarts() const;
   virtual string __repr__() const;
@@ -630,6 +630,7 @@ typedef	enum	{
     SAPInBond		,
     SAPArLevel		,
     SAPNoRing		,
+    SAPInRing		,
     SAPResidueTest		,
     SAPPredicateName		,
     SAPAromaticElement	,
@@ -768,6 +769,11 @@ public:
   CL_DEF_CLASS_METHOD static AtomTest_sp create_no_ring_membership()
   {
     return create( SAPNoRing);
+  }
+  CL_LISPIFY_NAME(make-atom-test-ring-membership);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_membership()
+  {
+    return create( SAPInRing);
   }
 public:
   CL_DEFMETHOD AtomTestEnum	atomTestType() { return this->_Test; };

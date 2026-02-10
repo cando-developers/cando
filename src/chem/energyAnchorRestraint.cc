@@ -200,17 +200,6 @@ void	EnergyAnchorRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 
 
 
-string EnergyAnchorRestraint_O::beyondThresholdInteractionsAsString()
-{
-  return component_beyondThresholdInteractionsAsString<EnergyAnchorRestraint_O,EnergyAnchorRestraint>(*this);
-}
-
-
-
-
-
-
-
 void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
                                                             AbstractLargeSquareMatrix_sp m,
                                                             core::T_sp activeAtomMask )
@@ -444,76 +433,13 @@ void	EnergyAnchorRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermBy
 }
 
 
-#if 0
-int	EnergyAnchorRestraint_O::checkForBeyondThresholdInteractions(
-                                                                     stringstream& info, NVector_sp pos )
-{
-  int	fails = 0;
-
-  this->_BeyondThresholdTerms.clear();
-
-//
-// Copy from implementAmberFunction::checkForBeyondThresholdInteractions
-//
-//------------------
-
-#undef ANCHOR_RESTRAINT_CALC_FORCE
-#undef ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#undef ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-
-  {
-		
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-    num_real x1,y1,z1,xa,ya,za,ka;
-    int	I1, i;
-    gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
-    for ( i=0,cri=this->_Terms.begin();
-          cri!=this->_Terms.end(); cri++,i++ ) {
-			  /* Obtain all the parameters necessary to calculate */
-			  /* the amber and forces */
-#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
-      if ( AnchorDeviation>this->_ErrorThreshold ) {
-        Atom_sp a1, a2, a3, a4;
-        a1 = (*cri)._Atom1;
-        info<< "AnchorRestraintDeviation ";
-//		    info<< a1->getAbsoluteIdPath() << " ";
-        info<< "value " << AnchorDeviation << " ";
-        info << a1->getName() << " ";
-        info << std::endl;
-        this->_BeyondThresholdTerms.push_back(*cri);
-        fails++;
-      }
-    }
-  }
-
-  return fails;
-}
-#endif
 
 void EnergyAnchorRestraint_O::initialize()
 {
   this->Base::initialize();
 }
 
-EnergyAnchorRestraint_sp EnergyAnchorRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyAnchorRestraint_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   EnergyAnchorRestraint_sp copy = EnergyAnchorRestraint_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyAnchorRestraint_O::staticClass());

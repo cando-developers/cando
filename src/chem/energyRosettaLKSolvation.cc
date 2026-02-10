@@ -1,5 +1,5 @@
 /*
-    File: energyRosettaNonbond.cc
+    File: energyRosettaLKSolvation.cc
 */
 /*
 Open Source License
@@ -28,7 +28,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
-#include <cando/chem/energyRosettaNonbond.h>
+#include <cando/chem/energyRosettaLKSolvation.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/lispStream.h>
@@ -56,13 +56,13 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 
 namespace chem {
 
-#include <cando/chem/energyKernels/rosetta_nonbond_dd_cutoff.c>
+#include <cando/chem/energyKernels/rosetta_lk_solvation.c>
 
-EnergyRosettaNonbond_sp EnergyRosettaNonbond_O::make(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                  core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
-                                  SetupAccumulator& acc ,
-                                  core::T_sp tcoordinates) {
-  auto obj = EnergyRosettaNonbond_O::create();
+EnergyRosettaLKSolvation_sp EnergyRosettaLKSolvation_O::make(AtomTable_sp atomTable, core::T_sp nbForceField,
+                                                             core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
+                                                             SetupAccumulator& acc,
+                                                             core::T_sp tcoordinates) {
+  auto obj = EnergyRosettaLKSolvation_O::create();
   obj->_Parameters.do_apply(acc);
   if (keepInteractionFactory.nilp()) return obj;
   obj->_AtomTable = atomTable;
@@ -75,14 +75,14 @@ EnergyRosettaNonbond_sp EnergyRosettaNonbond_O::make(AtomTable_sp atomTable, cor
   return obj;
 }
 
-std::string EnergyRosettaNonbond_O::implementation_details() const {
-  Rosetta_Nonbond_Dd_Cutoff<NoHessian> nonbond;
+std::string EnergyRosettaLKSolvation_O::implementation_details() const {
+  Rosetta_Lk_Solvation<NoHessian> lk;
   std::stringstream ss;
-  ss << nonbond.description();
+  ss << lk.description();
   return ss.str();
 }
 
-std::string EnergyRosettaNonbond_O::descriptionOfContents() const {
+std::string EnergyRosettaLKSolvation_O::descriptionOfContents() const {
   stringstream ss;
   ss << ":enabled " << ((this->_Enabled) ? "T" : "NIL");
   ss << " number-of-terms " << this->_Terms.size();
@@ -91,16 +91,16 @@ std::string EnergyRosettaNonbond_O::descriptionOfContents() const {
 
 }
 
-// #define DEBUG_NONBOND_TERM 1
+// #define DEBUG_LK_SOLVATION_TERM 1
 #define LOG_ENERGY(...)
 // #define LOG_ENERGY(...) core::clasp_write_string(fmt::format(__VA_ARGS__))
 
 namespace chem {
 
-SYMBOL_EXPORT_SC_(ChemPkg, EnergyRosettaNonbond);
-SYMBOL_EXPORT_SC_(ChemPkg, energyRosettaNonbond);
+SYMBOL_EXPORT_SC_(ChemPkg, EnergyRosettaLKSolvation);
+SYMBOL_EXPORT_SC_(ChemPkg, energyRosettaLKSolvation);
 
-core::List_sp EnergyRosettaNonbond::encode() const {
+core::List_sp EnergyRosettaLKSolvation::encode() const {
   ql::list ll;
   this->term.encode(ll);
   ll << INTERN_(kw, atom1) << this->_Atom1_enb
@@ -108,27 +108,29 @@ core::List_sp EnergyRosettaNonbond::encode() const {
   return ll.cons();
 }
 
-void EnergyRosettaNonbond::decode(core::List_sp alist) { SIMPLE_ERROR("Implement decode of EnergyRosettaNonbond"); }
+void EnergyRosettaLKSolvation::decode(core::List_sp alist) { SIMPLE_ERROR("Implement decode of EnergyRosettaLKSolvation"); }
 
-core::T_sp debug_rosetta_nonbond(double Energy, double x1, double y1, double z1, double x2, double y2, double z2,
-                                 const rosetta_nonbond_term& term) {
+core::T_sp debug_rosetta_lk_solvation(double Energy, double x1, double y1, double z1, double x2, double y2, double z2,
+                                      const rosetta_lk_solvation_term& term) {
   double r2 = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
   ql::list ll;
   ll << INTERN_(kw, Energy) << mk_double_float(Energy) << INTERN_(kw, x1) << mk_double_float(x1) << INTERN_(kw, y1)
      << mk_double_float(y1) << INTERN_(kw, z1) << mk_double_float(z1) << INTERN_(kw, x2) << mk_double_float(x2)
      << INTERN_(kw, y2) << mk_double_float(y2) << INTERN_(kw, z2) << mk_double_float(z2)
-     << INTERN_(kw, sigma) << mk_double_float(term.sigma) << INTERN_(kw, epsilon) << mk_double_float(term.epsilon)
+     << INTERN_(kw, sigmaij) << mk_double_float(term.sigmaij)
+     << INTERN_(kw, pref_i_j) << mk_double_float(term.pref_i_j)
+     << INTERN_(kw, pref_j_i) << mk_double_float(term.pref_j_i)
      << INTERN_(kw, r2) << mk_double_float(r2);
   return ll.cons();
 }
 
-#define NONBOND_DEBUG_INTERACTIONS(term)                                                                                         \
+#define LK_SOLVATION_DEBUG_INTERACTIONS(term)                                                                                     \
   if (doDebugInteractions) {                                                                                                      \
-    core::eval::funcall(debugInteractions, chem::_sym_EnergyRosettaNonbond,                                                       \
-                        debug_rosetta_nonbond(Energy,                                                                            \
-                                              position[term.i3x1], position[term.i3x1 + 1], position[term.i3x1 + 2],             \
-                                              position[term.i3x2], position[term.i3x2 + 1], position[term.i3x2 + 2],             \
-                                              term),                                                                             \
+    core::eval::funcall(debugInteractions, chem::_sym_EnergyRosettaLKSolvation,                                                  \
+                        debug_rosetta_lk_solvation(Energy,                                                                       \
+                                                   position[term.i3x1], position[term.i3x1 + 1], position[term.i3x1 + 2],       \
+                                                   position[term.i3x2], position[term.i3x2 + 1], position[term.i3x2 + 2],       \
+                                                   term),                                                                        \
                         core::make_fixnum(term.i3x1), core::make_fixnum(term.i3x2));                                              \
   }
 
@@ -139,13 +141,9 @@ struct NoFiniteDifference {
                                         bool debugForce) {}
 };
 
-inline double calculate_dQ1Q2(double electrostaticScale, double electrostaticModifier, double charge1, double charge2) {
-  return electrostaticScale * electrostaticModifier * charge1 * charge2;
-}
-
 template <class MaybeFiniteDiff>
-double template_evaluateUsingTerms(EnergyRosettaNonbond_O* mthis,
-                                   const gctools::Vec0<EnergyRosettaNonbond>& terms,
+double template_evaluateUsingTerms(EnergyRosettaLKSolvation_O* mthis,
+                                   const gctools::Vec0<EnergyRosettaLKSolvation>& terms,
                                    core::T_sp termSymbol,
                                    ScoringFunction_sp score, NVector_sp nvposition,
                                    core::T_sp energyScale, core::T_sp energyComponents,
@@ -153,80 +151,103 @@ double template_evaluateUsingTerms(EnergyRosettaNonbond_O* mthis,
                                    bool calcOffDiagonalHessian, gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
                                    gc::Nilable<NVector_sp> hdvec, gc::Nilable<NVector_sp> dvec, core::T_sp activeAtomMask,
                                    core::T_sp debugInteractions, size_t& fails, size_t& index, bool debugForce = false) {
-  const rosetta_nonbond_parameters& params = mthis->_Parameters;
+  const rosetta_lk_solvation_parameters& params = mthis->_Parameters;
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   auto evalType = determineEnergyComponentEvalType(force, hdvec, dvec);
-  double totalNonbondEnergy = 0.0;
+  double totalEnergy = 0.0;
   DOUBLE* position = &(*nvposition)[0];
   DOUBLE* rforce = NULL;
   DOUBLE* rdvec = NULL;
   DOUBLE* rhdvec = NULL;
   DOUBLE Energy = 0.0;
-  Rosetta_Nonbond_Dd_Cutoff<NoHessian> nonbond;
+  Rosetta_Lk_Solvation<NoHessian> lk;
 
-#define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                                                            \
+#define KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(I1, I2)                                                          \
   if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3))) continue;
 
   if (evalType == energyEval) {
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.energy(params, si->term, position, &totalNonbondEnergy);
-      NONBOND_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
+      Energy = lk.energy(params, si->term, position, &totalEnergy);
+      LK_SOLVATION_DEBUG_INTERACTIONS(si->term);
     }
   } else if (evalType == gradientEval) {
     rforce = &(*force)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.gradient(params, si->term, position, &totalNonbondEnergy, rforce);
-      NONBOND_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
+      Energy = lk.gradient(params, si->term, position, &totalEnergy, rforce);
+      LK_SOLVATION_DEBUG_INTERACTIONS(si->term);
     }
   } else {
     rforce = &(*force)[0];
     rdvec = &(*dvec)[0];
     rhdvec = &(*hdvec)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.hessian(params, si->term, position, &totalNonbondEnergy, rforce, NoHessian(), rdvec, rhdvec);
-      NONBOND_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
+      Energy = lk.hessian(params, si->term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
+      LK_SOLVATION_DEBUG_INTERACTIONS(si->term);
     }
   }
-  maybeSetEnergy(energyComponents, termSymbol, totalNonbondEnergy);
-  return totalNonbondEnergy;
+  maybeSetEnergy(energyComponents, termSymbol, totalEnergy);
+  return totalEnergy;
 }
 
-bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Atom_sp a2,
-                                             size_t i3x1, size_t i3x2,
-                                             EnergyRosettaNonbond_sp energyRosettaNonbond,
-                                             core::HashTable_sp atomTypes, core::T_sp keepInteraction,
-                                             const rosetta_nonbond_parameters& params) {
-  this->_Atom1_enb = a1;
-  this->_Atom2_enb = a2;
-  core::Symbol_sp t1 = a1->getType(atomTypes);
-  core::Symbol_sp t2 = a2->getType(atomTypes);
-  ASSERT(forceField && forceField.notnilp());
-  core::T_sp tffNonbond1 = core::eval::funcall(_sym_find_type, forceField, t1);
-  core::T_sp tffNonbond2 = core::eval::funcall(_sym_find_type, forceField, t2);
-  if (tffNonbond1.nilp() || tffNonbond2.nilp()) return false;
-  FFNonbond_sp ffNonbond1 = gc::As<FFNonbond_sp>(tffNonbond1);
-  FFNonbond_sp ffNonbond2 = gc::As<FFNonbond_sp>(tffNonbond2);
-
-  double rstar = ffNonbond1->getRadius_Angstroms() + ffNonbond2->getRadius_Angstroms();
-  double epsilonij = sqrt(ffNonbond1->getEpsilon_kcal() * ffNonbond2->getEpsilon_kcal());
-  double rtothe6th = rstar * rstar * rstar * rstar * rstar * rstar;
-  double rtothe12th = rtothe6th * rtothe6th;
-  double parmA = epsilonij * rtothe12th;
-  double parmC = 2.0 * epsilonij * rtothe6th;
-
-  this->term = rosetta_nonbond_term(params, parmA, parmC, i3x1, i3x2);
+static bool lookup_lk_solvation_parameters(FFLKSolvation_sp ffLKSolvation,
+                                           double& lk_dgfree,
+                                           double& lk_lambda,
+                                           double& lj_radius,
+                                           double& lk_volume) {
+  // TODO: Wire real LK solvation per-atom parameters when available.
+  lk_dgfree = ffLKSolvation->getLK_dgfree();
+  lk_lambda = ffLKSolvation->getLK_lambda();
+  lk_volume = ffLKSolvation->getLK_volume();
+  lj_radius = ffLKSolvation->getLJ_radius();
   return true;
 }
 
-void EnergyRosettaNonbond_O::initialize() { this->Base::initialize(); }
+bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Atom_sp a2,
+                                                 size_t i3x1, size_t i3x2,
+                                                 EnergyRosettaLKSolvation_sp energyRosettaLKSolvation,
+                                                 core::HashTable_sp atomTypes, core::T_sp keepInteraction,
+                                                 const rosetta_lk_solvation_parameters& params) {
+  this->_Atom1_enb = a1;
+  this->_Atom2_enb = a2;
+  core::Symbol_sp t1 = a1->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>());
+  core::Symbol_sp t2 = a2->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>());
+  ASSERT(forceField && forceField.notnilp());
+  core::T_sp tffLKSolvation1 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t1);
+  core::T_sp tffLKSolvation2 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t2);
+  if (tffLKSolvation1.nilp() || tffLKSolvation2.nilp()) {
+    SIMPLE_ERROR("Could not find one of the LKSolvation parameters");
+  }
+  auto ffLKSolvation1 = gc::As<FFLKSolvation_sp>(tffLKSolvation1);
+  auto ffLKSolvation2 = gc::As<FFLKSolvation_sp>(tffLKSolvation2);
 
-void EnergyRosettaNonbond_O::addTerm(const EnergyRosettaNonbond& term) { this->_Terms.push_back(term); }
+  double lk_dgfree_i = 0.0;
+  double lk_lambda_i = 1.0;
+  double lj_radius_i = 0.0;
+  double lk_volume_i = 0.0;
+  bool ok1 = lookup_lk_solvation_parameters(ffLKSolvation1, lk_dgfree_i, lk_lambda_i, lj_radius_i, lk_volume_i);
 
-void EnergyRosettaNonbond_O::fields(core::Record_sp node) {
+  double lk_dgfree_j = 0.0;
+  double lk_lambda_j = 1.0;
+  double lj_radius_j = 0.0;
+  double lk_volume_j = 0.0;
+  bool ok2 = lookup_lk_solvation_parameters(ffLKSolvation2, lk_dgfree_j, lk_lambda_j, lj_radius_j, lk_volume_j);
+
+  this->term = rosetta_lk_solvation_term(params,
+                                         lk_dgfree_i, lk_lambda_i, lj_radius_i, lk_volume_i,
+                                         lk_dgfree_j, lk_lambda_j, lj_radius_j, lk_volume_j,
+                                         i3x1, i3x2);
+  return (ok1 && ok2);
+}
+
+void EnergyRosettaLKSolvation_O::initialize() { this->Base::initialize(); }
+
+void EnergyRosettaLKSolvation_O::addTerm(const EnergyRosettaLKSolvation& term) { this->_Terms.push_back(term); }
+
+void EnergyRosettaLKSolvation_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, terms), this->_Terms);
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
   node->field(INTERN_(kw, KeepInteractionFactory), this->_KeepInteractionFactory);
@@ -234,8 +255,8 @@ void EnergyRosettaNonbond_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-void EnergyRosettaNonbond_O::dumpTerms(core::HashTable_sp atomTypes) {
-  gctools::Vec0<EnergyRosettaNonbond>::iterator eni;
+void EnergyRosettaLKSolvation_O::dumpTerms(core::HashTable_sp atomTypes) {
+  gctools::Vec0<EnergyRosettaLKSolvation>::iterator eni;
   string as1, as2;
   string str1, str2;
   core::clasp_write_string(fmt::format("Dumping {} terms\n", this->_Terms.size()));
@@ -249,11 +270,11 @@ void EnergyRosettaNonbond_O::dumpTerms(core::HashTable_sp atomTypes) {
       str2 = as1;
       str1 = as2;
     }
-    core::clasp_write_string(fmt::format("TERM ROSETTA_NONBOND {:<9} - {:<9}\n", str1, str2));
+    core::clasp_write_string(fmt::format("TERM ROSETTA_LK_SOLVATION {:<9} - {:<9}\n", str1, str2));
   }
 }
 
-void EnergyRosettaNonbond_O::callForEachTerm(core::Function_sp callback) {
+void EnergyRosettaLKSolvation_O::callForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
     core::eval::funcall(callback, eni->_Atom1_enb, eni->_Atom2_enb,
                         core::make_fixnum(eni->term.i3x1),
@@ -261,9 +282,8 @@ void EnergyRosettaNonbond_O::callForEachTerm(core::Function_sp callback) {
   }
 }
 
-
-EnergyComponent_sp EnergyRosettaNonbond_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
-  EnergyRosettaNonbond_sp copy = EnergyRosettaNonbond_O::create();
+EnergyComponent_sp EnergyRosettaLKSolvation_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
+  EnergyRosettaLKSolvation_sp copy = EnergyRosettaLKSolvation_O::create();
   copyEnergyComponent(copy, this->asSmartPtr());
 
   copy->_Parameters = this->_Parameters;
@@ -276,7 +296,7 @@ EnergyComponent_sp EnergyRosettaNonbond_O::copyFilter(core::T_sp keepInteraction
     copy->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(this->_DisplacementBuffer));
   }
 
-  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory, EnergyRosettaNonbond_O::staticClass());
+  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory, EnergyRosettaLKSolvation_O::staticClass());
   if (keepInteraction == _lisp->_true()) {
     for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
       copy->_Terms.push_back(*edi);
@@ -297,7 +317,7 @@ EnergyComponent_sp EnergyRosettaNonbond_O::copyFilter(core::T_sp keepInteraction
   return copy;
 }
 
-core::T_mv EnergyRosettaNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates) {
+core::T_mv EnergyRosettaLKSolvation_O::maybeRebuildPairList(core::T_sp tcoordinates) {
   auto coords = gc::As<NVector_sp>(tcoordinates);
   if (this->_DisplacementBuffer.nilp()) {
     return this->rebuildPairList(tcoordinates);
@@ -307,7 +327,9 @@ core::T_mv EnergyRosettaNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates)
       SIMPLE_ERROR("The size of the _DispacementBuffer({}) MUST match the size of the coordinatess({})",
                    nvDisplacementBuffer->size(), coords->size());
     }
-    double skinThickness = this->_Parameters.rpairlist - this->_Parameters.rcut;
+    double r_pairlist = this->_Parameters.rpairlist;
+    double r_cut = this->_Parameters.r_solv_high;
+    double skinThickness = r_pairlist - r_cut;
     double movedTrigger = 0.5 * skinThickness;
     double movedTrigger2 = movedTrigger * movedTrigger;
     vecreal* raw_db = &(*nvDisplacementBuffer)[0];
@@ -330,17 +352,18 @@ core::T_mv EnergyRosettaNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates)
   SIMPLE_ERROR("{}: We should never get here", __FUNCTION__);
 }
 
-core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
+core::T_mv EnergyRosettaLKSolvation_O::rebuildPairList(core::T_sp tcoordinates) {
   this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
   size_t interactionsKept = 0;
   size_t interactionsDiscarded = 0;
   size_t totalInteractions = 0;
   this->_Terms.clear();
   if (this->_KeepInteractionFactory.notnilp()) {
-    core::T_sp keepInteraction = specializeKeepInteractionFactory(this->_KeepInteractionFactory, EnergyRosettaNonbond_O::staticClass());
+    core::T_sp keepInteraction = specializeKeepInteractionFactory(this->_KeepInteractionFactory, EnergyRosettaLKSolvation_O::staticClass());
     bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
-    double r_pairlist2 = this->_Parameters.rpairlist * this->_Parameters.rpairlist;
-    const rosetta_nonbond_parameters& params = this->_Parameters;
+    double r_pairlist = this->_Parameters.rpairlist;
+    double r_pairlist2 = r_pairlist * r_pairlist;
+    const rosetta_lk_solvation_parameters& params = this->_Parameters;
     if (this->_AtomTable->getNumberOfAtoms() >= 2) {
       vecreal* coords = NULL;
       if (gc::IsA<NVector_sp>(tcoordinates)) {
@@ -380,7 +403,7 @@ core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
                 keep = result.notnilp();
               }
               if (keep) {
-                EnergyRosettaNonbond term;
+                EnergyRosettaLKSolvation term;
                 term.defineForAtomPair(this->_NonbondForceField,
                                        iea1->atom(), iea2->atom(),
                                        iea1->coordinateIndexTimes3(),
@@ -407,44 +430,44 @@ core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
 
 // Evaluate
 
-double EnergyRosettaNonbond_O::evaluateAllComponent(ScoringFunction_sp score,
-                                                    NVector_sp pos,
-                                                    core::T_sp energyScale,
-                                                    core::T_sp energyComponents,
-                                                    bool calcForce,
-                                                    gc::Nilable<NVector_sp> force,
-                                                    bool calcDiagonalHessian,
-                                                    bool calcOffDiagonalHessian,
-                                                    gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
-                                                    gc::Nilable<NVector_sp> hdvec,
-                                                    gc::Nilable<NVector_sp> dvec,
-                                                    core::T_sp activeAtomMask,
-                                                    core::T_sp debugInteractions) {
+double EnergyRosettaLKSolvation_O::evaluateAllComponent(ScoringFunction_sp score,
+                                                        NVector_sp pos,
+                                                        core::T_sp energyScale,
+                                                        core::T_sp energyComponents,
+                                                        bool calcForce,
+                                                        gc::Nilable<NVector_sp> force,
+                                                        bool calcDiagonalHessian,
+                                                        bool calcOffDiagonalHessian,
+                                                        gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
+                                                        gc::Nilable<NVector_sp> hdvec,
+                                                        gc::Nilable<NVector_sp> dvec,
+                                                        core::T_sp activeAtomMask,
+                                                        core::T_sp debugInteractions) {
   this->_Evaluations++;
   double energy = 0.0;
   size_t fails = 0;
   size_t index = 0;
   this->maybeRebuildPairList(pos);
-  energy += template_evaluateUsingTerms<NoFiniteDifference>(this, this->_Terms, _sym_energyRosettaNonbond,
+  energy += template_evaluateUsingTerms<NoFiniteDifference>(this, this->_Terms, _sym_energyRosettaLKSolvation,
                                                             score, pos, energyScale, energyComponents, calcForce, force,
                                                             calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec,
                                                             activeAtomMask, debugInteractions, fails, index);
   return energy;
 }
 
-double EnergyRosettaNonbond_O::debugAllComponent(ScoringFunction_sp score,
-                                                 NVector_sp pos,
-                                                 core::T_sp energyScale,
-                                                 core::T_sp energyComponents,
-                                                 bool calcForce,
-                                                 gc::Nilable<NVector_sp> force,
-                                                 bool calcDiagonalHessian,
-                                                 bool calcOffDiagonalHessian,
-                                                 gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
-                                                 gc::Nilable<NVector_sp> hdvec,
-                                                 gc::Nilable<NVector_sp> dvec,
-                                                 core::T_sp activeAtomMask,
-                                                 core::T_sp debugInteractions) {
+double EnergyRosettaLKSolvation_O::debugAllComponent(ScoringFunction_sp score,
+                                                     NVector_sp pos,
+                                                     core::T_sp energyScale,
+                                                     core::T_sp energyComponents,
+                                                     bool calcForce,
+                                                     gc::Nilable<NVector_sp> force,
+                                                     bool calcDiagonalHessian,
+                                                     bool calcOffDiagonalHessian,
+                                                     gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
+                                                     gc::Nilable<NVector_sp> hdvec,
+                                                     gc::Nilable<NVector_sp> dvec,
+                                                     core::T_sp activeAtomMask,
+                                                     core::T_sp debugInteractions) {
   return this->evaluateAllComponent(score, pos, energyScale, energyComponents, calcForce, force,
                                     calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec,
                                     activeAtomMask, debugInteractions);

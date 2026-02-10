@@ -3,13 +3,7 @@ struct Anchor {
   static constexpr size_t PositionSize = 3;
   static std::string description() { return "mathkernel-anchor"; };
 double energy(double ka, double xa, double ya, double za, size_t i3x1, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
-  double dx;
-  double dy;
-  double dz;
-  double energy;
-  double energy_added;
-  double r2;
-  energy_added = 0.0000000000000000    ;
+  double energy_added = 0.0000000000000000    ;
   {
     /* !BASE */
     DOUBLE x1 = position[i3x1 + 0];
@@ -17,11 +11,11 @@ double energy(double ka, double xa, double ya, double za, size_t i3x1, double* p
     DOUBLE z1 = position[i3x1 + 2];
     {
       /* !BASE */
-      dx = (x1 + (-(xa)));
-      dy = (y1 + (-(ya)));
-      dz = (z1 + (-(za)));
-      r2 = ((dx * dx) + (dy * dy) + (dz * dz));
-      energy = (ka * r2);
+      double dx = (x1 + (-(xa)));
+      double dy = (y1 + (-(ya)));
+      double dz = (z1 + (-(za)));
+      double r2 = ((dx * dx) + (dy * dy) + (dz * dz));
+      double energy = (ka * r2);
       energy_added += energy;
       *energy_accumulate += energy;
     }
@@ -34,17 +28,7 @@ void energy_fd(double ka, double xa, double ya, double za, size_t i3x1, double* 
 }
 
 double gradient(double ka, double xa, double ya, double za, size_t i3x1, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
-  double cse_p1_t1_g51360;
-  double dx;
-  double dy;
-  double dz;
-  double energy;
-  double energy_added;
-  double g_x1;
-  double g_y1;
-  double g_z1;
-  double r2;
-  energy_added = 0.0000000000000000    ;
+  double energy_added = 0.0000000000000000    ;
   {
     /* !BASE */
     DOUBLE x1 = position[i3x1 + 0];
@@ -52,19 +36,19 @@ double gradient(double ka, double xa, double ya, double za, size_t i3x1, double*
     DOUBLE z1 = position[i3x1 + 2];
     {
       /* !BASE */
-      dx = (x1 + (-(xa)));
-      dy = (y1 + (-(ya)));
-      dz = (z1 + (-(za)));
-      r2 = ((dx * dx) + (dy * dy) + (dz * dz));
-      energy = (ka * r2);
+      double dx = (x1 + (-(xa)));
+      double dy = (y1 + (-(ya)));
+      double dz = (z1 + (-(za)));
+      double r2 = ((dx * dx) + (dy * dy) + (dz * dz));
+      double energy = (ka * r2);
       energy_added += energy;
       *energy_accumulate += energy;
-      cse_p1_t1_g51360 = (2.0000000000000000     * ka);
-      g_x1 = (cse_p1_t1_g51360 * dx);
+      double cse_p1_t1_g44163 = (2.0000000000000000     * ka);
+      double g_x1 = (cse_p1_t1_g44163 * dx);
       KernelGradientAcc(i3x1, 0, g_x1);
-      g_y1 = (cse_p1_t1_g51360 * dy);
+      double g_y1 = (cse_p1_t1_g44163 * dy);
       KernelGradientAcc(i3x1, 1, g_y1);
-      g_z1 = (cse_p1_t1_g51360 * dz);
+      double g_z1 = (cse_p1_t1_g44163 * dz);
       KernelGradientAcc(i3x1, 2, g_z1);
     }
   }
@@ -117,17 +101,7 @@ void gradient_fd(double ka, double xa, double ya, double za, size_t i3x1, double
 }
 
 double hessian(double ka, double xa, double ya, double za, size_t i3x1, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
-  double cse_p1_t1_g51361;
-  double dx;
-  double dy;
-  double dz;
-  double energy;
-  double energy_added;
-  double g_x1;
-  double g_y1;
-  double g_z1;
-  double r2;
-  energy_added = 0.0000000000000000    ;
+  double energy_added = 0.0000000000000000    ;
   {
     /* !BASE */
     DOUBLE x1 = position[i3x1 + 0];
@@ -135,19 +109,19 @@ double hessian(double ka, double xa, double ya, double za, size_t i3x1, double* 
     DOUBLE z1 = position[i3x1 + 2];
     {
       /* !BASE */
-      dx = (x1 + (-(xa)));
-      dy = (y1 + (-(ya)));
-      dz = (z1 + (-(za)));
-      r2 = ((dx * dx) + (dy * dy) + (dz * dz));
-      energy = (ka * r2);
+      double dx = (x1 + (-(xa)));
+      double dy = (y1 + (-(ya)));
+      double dz = (z1 + (-(za)));
+      double r2 = ((dx * dx) + (dy * dy) + (dz * dz));
+      double energy = (ka * r2);
       energy_added += energy;
       *energy_accumulate += energy;
-      cse_p1_t1_g51361 = (2.0000000000000000     * ka);
-      g_x1 = (cse_p1_t1_g51361 * dx);
+      double cse_p1_t1_g44164 = (2.0000000000000000     * ka);
+      double g_x1 = (cse_p1_t1_g44164 * dx);
       KernelGradientAcc(i3x1, 0, g_x1);
-      g_y1 = (cse_p1_t1_g51361 * dy);
+      double g_y1 = (cse_p1_t1_g44164 * dy);
       KernelGradientAcc(i3x1, 1, g_y1);
-      g_z1 = (cse_p1_t1_g51361 * dz);
+      double g_z1 = (cse_p1_t1_g44164 * dz);
       KernelGradientAcc(i3x1, 2, g_z1);
     }
   }

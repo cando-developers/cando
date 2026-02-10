@@ -29,6 +29,7 @@ namespace  chem
 {
 FORWARD(FFNonbondCrossTermTable);
 FORWARD(FFNonbond);
+FORWARD(FFLKSolvation);
 FORWARD(FFNonbondDb);
 }
 #endif

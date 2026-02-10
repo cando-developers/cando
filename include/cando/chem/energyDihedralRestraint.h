@@ -147,7 +147,6 @@ public:
   typedef EnergyDihedralRestraint	TermType;
 public: // instance variables
   gctools::Vec0<TermType>		_Terms;
-  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 
 public:	// Creation class functions
 
@@ -215,11 +214,7 @@ public:
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos );
 
-  virtual int checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-
-  virtual string	beyondThresholdInteractionsAsString();
- 
-  EnergyDihedralRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
   virtual string __repr__() const;
 

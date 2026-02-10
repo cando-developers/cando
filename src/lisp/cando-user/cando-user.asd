@@ -18,6 +18,7 @@
                #:cando-build
                #:lparallel
                #:chem-info
+               #:rosetta-params
                )
   :serial t
   :components ((:file "packages")

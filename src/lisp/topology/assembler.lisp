@@ -142,29 +142,40 @@ molecule in the global frame."
          )
     index3))
 
-(defun find-monomer-residue (assembler monomer-label)
+(defgeneric find-monomer-residue (assembler thing)
+  (:documentation "Find the residue that corresponds to the thing"))
+
+(defmethod find-monomer-residue (assembler (monomer monomer))
   "Find the residue of the monomer indicated by MONOMER-LABEL in the ASSEMBLER"
-  (let* ((monomer (let ((maybe-monomers (monomers-for-label assembler monomer-label)))
-                    (unless (= (length maybe-monomers) 1)
-                      (error "There must be one monomer with the label ~s" monomer-label))
-                    (first maybe-monomers)))
-         (monomer-pos (gethash monomer (topology:monomer-positions assembler)))
+  (let* ((monomer-pos (gethash monomer (topology:monomer-positions assembler)))
          (aggregate (topology:aggregate assembler))
-         (residue (topology:at-position aggregate monomer-pos))
-         )
+         (residue (topology:at-position aggregate monomer-pos)))
     residue))
 
-(defun find-monomer-atresidue (assembler monomer-label)
+(defmethod find-monomer-residue (assembler (monomer-label symbol))
   "Find the residue of the monomer indicated by MONOMER-LABEL in the ASSEMBLER"
   (let* ((monomer (let ((maybe-monomers (monomers-for-label assembler monomer-label)))
                     (unless (= (length maybe-monomers) 1)
                       (error "There must be one monomer with the label ~s" monomer-label))
-                    (first maybe-monomers)))
-         (monomer-pos (gethash monomer (topology:monomer-positions assembler)))
+                    (first maybe-monomers))))
+    (find-monomer-residue assembler monomer)))
+
+(defgeneric find-monomer-atresidue (assembler monomer-thing)
+  (:documentation "Find the residue that corresponds to the thing"))
+
+(defmethod find-monomer-atresidue (assembler (monomer monomer))
+  (let* ((monomer-pos (gethash monomer (topology:monomer-positions assembler)))
          (ataggregate (topology:ataggregate assembler))
-         (atresidue (topology:at-position ataggregate monomer-pos))
-         )
+         (atresidue (topology:at-position ataggregate monomer-pos)))
     atresidue))
+
+(defmethod find-monomer-atresidue (assembler (monomer-label symbol))
+  "Find the residue of the monomer indicated by MONOMER-LABEL in the ASSEMBLER"
+  (let* ((monomer (let ((maybe-monomers (monomers-for-label assembler monomer-label)))
+                    (unless (= (length maybe-monomers) 1)
+                      (error "There must be one monomer with the label ~s" monomer-label))
+                    (first maybe-monomers))))
+    (find-monomer-atresidue assembler monomer)))
 
 (defun find-monomer-atom (assembler monomer-label atom-name)
   "Find the atom with ATOM-NAME in the monomer indicated by MONOMER-LABEL in the ASSEMBLER"

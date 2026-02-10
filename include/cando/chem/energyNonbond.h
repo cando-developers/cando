@@ -53,13 +53,26 @@ namespace       chem {
   FORWARD(FFNonbondDb);
   FORWARD(AtomTable);
 
+
 struct TermNonBond
 {
-	double dQ1Q2;
-	double dA;
-	double dC;
-	INT  I1; //!< i*3 index into coordinate vector, must match Mathematica code!
-	INT  I2; //!< i*3 index into coordinate vector, must match Mathematica code!
+  INT  I1; //!< i*3 index into coordinate vector, must match Mathematica code!
+  INT  I2; //!< i*3 index into coordinate vector, must match Mathematica code!
+  double dQ1Q2;
+  // Anonymous union/struct keeps term.dA/term.dC access while allowing
+  // alternate parameterization.
+  union {
+    struct { // These are Amber parameters
+      double dA;
+      double dC;
+    };
+    struct { // These are Rosetta parameters
+      double dEpsilon;
+      double dSigma;
+      double dM;
+      double dB;
+    };
+  };
 };
 
 
@@ -183,11 +196,12 @@ class EnergyNonbond_O : public EnergyComponent_O
   // If _Matter1 and _Matter2 is defined then _Matter1,_Matter2 are used to build the pair-list - otherwise the _AtomTable is used
   core::T_sp                    _Matter1;
   core::T_sp                    _Matter2;
+  core::T_sp                    _NonbondForm; // :AMBER or :ROSETTA form for _Terms
   gctools::Vec0<TermType>	_Terms;
-  gctools::Vec0<TermType>	_BeyondThresholdTerms;
+  double                        _RepulsionWeight; // 0.0 - 1.0 weight for ROSETTA NonbondForm
     // Correct way of defining nonbonds using excluded atom indexes
   // FIXME:  Get rid of _FFNonbondDb - and the old code that uses it.
-  core::T_sp        _FFNonbondDb;
+  core::T_sp                      _FFNonbondDb;
   //  Tables for nonbonded calculation using excluded atoms and the Amber way
   size_t                          _ntypes;          // ntypes
   core::SimpleVector_sp           _atom_name_vector;  // atom-name-vector
@@ -200,13 +214,13 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::SimpleVector_int32_t_sp   _iac_vec;             // iac-vec
   core::SimpleVector_sp      _atom_type_vector;    // Amber atom type names
   core::SimpleVector_int32_t_sp   _local_typej_vec;      // local-typej-vec
-  NVector_sp     _cn1_vec;
-  NVector_sp     _cn2_vec;
+  NVector_sp                      _cn1_vec;
+  NVector_sp                      _cn2_vec;
   // Excluded atom table
   core::SimpleVector_int32_t_sp   _NumberOfExcludedAtomIndexes;
   core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
-  size_t _InteractionsKept;
-  size_t _InteractionsDiscarded;
+  size_t                          _InteractionsKept;
+  size_t                          _InteractionsDiscarded;
 
  public:
   virtual std::string implementation_details() const;
@@ -277,8 +291,6 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void expandExcludedAtomsToTerms(ScoringFunction_sp score, core::T_sp energyScale );
 
-  virtual string	beyondThresholdInteractionsAsString();
-
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::LispPtr );
 
   core::T_sp getFFNonbondDb();
@@ -300,7 +312,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms);
   void checkEnergyNonbond();
-  EnergyNonbond_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc );
 
   virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 

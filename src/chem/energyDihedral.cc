@@ -671,13 +671,6 @@ void EnergyDihedral_O::addTerm(const EnergyDihedral& term)
 }
 
 
-string EnergyDihedral_O::beyondThresholdInteractionsAsString()
-{
-  return component_beyondThresholdInteractionsAsString<EnergyDihedral_O,EnergyDihedral>(*this);
-}
-
-
-
 void	EnergyDihedral_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyDihedral>::iterator	edi;
@@ -1220,7 +1213,7 @@ CL_DEFMETHOD void EnergyDihedral_O::addDihedralTerm(AtomTable_sp atomTable, Atom
   this->addTerm(energyDihedral);
 }
 
-EnergyDihedral_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyDihedral_O::staticClass());
   EnergyDihedral_sp copy = EnergyDihedral_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );

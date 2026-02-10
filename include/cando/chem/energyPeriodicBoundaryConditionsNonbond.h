@@ -89,8 +89,6 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
   
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score, NVector_sp pos );
 
-  // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-  virtual core::List_sp	checkForBeyondThresholdInteractionsWithPosition(ScoringFunction_sp score, NVector_sp pos, double threshold );
 
 };
 

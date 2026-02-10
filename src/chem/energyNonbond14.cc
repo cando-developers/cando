@@ -59,6 +59,12 @@ namespace chem {
 
 #include <cando/chem/energyKernels/amber_nonbond14.c>
 
+
+EnergyNonbond14_sp EnergyNonbond14_O::make(SetupAccumulator& acc) {
+  auto obj = EnergyNonbond14_O::create();
+  return obj;
+}
+
 std::string EnergyNonbond14_O::implementation_details() const {
   Amber_Nonbond14<NoHessian> nonbond;
 
@@ -211,15 +217,14 @@ core::T_sp nonbond14_type(bool is14) {
    See energyPeriodicBoundaryConditionsNonbond.cc for counter-example.
 */
 core::List_sp EnergyNonbond14::encode() const {
-  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw, a), core::clasp_make_double_float(this->term.a)),
-                                  core::Cons_O::create(INTERN_(kw, c), core::clasp_make_double_float(this->term.c)),
-                                  core::Cons_O::create(INTERN_(kw, i1), core::make_fixnum(this->term.i3x1)),
-                                  core::Cons_O::create(INTERN_(kw, i2), core::make_fixnum(this->term.i3x2)),
-                                  core::Cons_O::create(INTERN_(kw, charge1), core::clasp_make_double_float(this->_Atom1_enb->getCharge())),
-                                  core::Cons_O::create(INTERN_(kw, charge2), core::clasp_make_double_float(this->_Atom2_enb->getCharge())),
-                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1_enb),
-                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2_enb)
-                                  );
+  ql::list ll;
+  this->term.encode(ll);
+  ll << INTERN_(kw, charge1) << core::clasp_make_double_float(this->_Atom1_enb->getCharge())
+     << INTERN_(kw, charge2) << core::clasp_make_double_float(this->_Atom2_enb->getCharge())
+     << INTERN_(kw,atom1) << this->_Atom1_enb
+     << INTERN_(kw,atom2) << this->_Atom2_enb
+    ;
+  return ll.cons();
 }
 
 void EnergyNonbond14::decode(core::List_sp alist) { SIMPLE_ERROR("Implement decode of EnergyNonbond"); }
@@ -606,7 +611,7 @@ CL_DEFMETHOD void EnergyNonbond14_O::callForEachTerm(core::Function_sp callback)
 
 
 
-EnergyNonbond14_sp EnergyNonbond14_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyNonbond14_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   EnergyNonbond14_sp copy = EnergyNonbond14_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyNonbond14_O::staticClass() );

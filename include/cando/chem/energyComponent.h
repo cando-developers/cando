@@ -75,6 +75,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+
 typedef enum { energyEval, gradientEval, hessianEval } EnergyComponentEvalType;
 
 inline EnergyComponentEvalType determineEnergyComponentEvalType(gc::Nilable<NVector_sp> force, gc::Nilable<NVector_sp> hdvec, gc::Nilable<NVector_sp> dvec ) {
@@ -143,13 +144,6 @@ class EnergyTerm
 
   EnergyTerm() {};
 };
-
-
-class BeyondThresholdEnergyTerm
-{
- public:
-};
-
 
 
 inline string	atomLabel(Atom_sp a)
@@ -399,7 +393,7 @@ public:	// Virtual methods
 
   CL_DEFMETHOD virtual void dumpTerms(core::HashTable_sp atomTypes) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  virtual EnergyComponent_sp filterCopyComponent(core::T_sp keepInteractionFactory);
+  virtual EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc ) {SUBCLASS_MUST_IMPLEMENT();};
   
   CL_DEFMETHOD virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                                      NVector_sp 	pos,
@@ -415,13 +409,15 @@ public:	// Virtual methods
                                                      core::T_sp activeAtomMask,
                                                      core::T_sp debugInteractions ) = 0;
 
-  virtual core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
   EnergyComponent_O() : _Enabled(true), _Scale(1.0) {};
+
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) = 0;
+
 };
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
@@ -452,7 +448,6 @@ bool test_match( core::T_sp stream, const char* label, size_t num,
                 double* hdvec_new, double* hdvec_ground );
 
 void test_position(core::T_sp stream, size_t pos_size, double* position );
-
 
 };
 

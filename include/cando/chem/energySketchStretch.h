@@ -136,7 +136,6 @@ public:
   typedef EnergySketchStretch	TermType;
 public: // instance variables
   gctools::Vec0<TermType>	_Terms;
-  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };

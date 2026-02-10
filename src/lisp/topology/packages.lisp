@@ -596,7 +596,13 @@
    #:orientation-vectors
    #:local-to-global-orientation
    #:orientation-transform
-   #:receptor-only))
+   #:receptor-only
+   #:foldamer-monomer-context-info
+   #:foldamer-monomer-context-info-foldamer
+   #:foldamer-monomer-context-info-monomer-context
+   #:foldamer-monomer-context-info-atom-info
+   #:lk-solvation-atom-type
+   #:foldamer-monomer-context-info-topology))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

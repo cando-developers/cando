@@ -160,7 +160,6 @@ public:
     typedef EnergyStretch	TermType;
 public: // instance variables
     gctools::Vec0<TermType>	_Terms;
-    gctools::Vec0<TermType>	_BeyondThresholdTerms;
 public:	
     typedef gctools::Vec0<TermType>::iterator iterator;
     iterator begin() { return this->_Terms.begin(); };
@@ -211,10 +210,6 @@ public:
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos, core::T_sp activeAtomMask );
 
-  virtual	core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
-
-    virtual string	beyondThresholdInteractionsAsString();
-
   void addStretchTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, double kb, double r0);
 
   void walkStretchTerms(core::T_sp callback);
@@ -223,7 +218,7 @@ public:
 
   core::List_sp lookupStretchTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, core::HashTable_sp atomTypes );
 
-  EnergyStretch_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
   void reset();
 public:

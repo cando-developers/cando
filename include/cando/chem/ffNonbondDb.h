@@ -199,6 +199,78 @@ namespace chem {
   };
 
 
+  SMART(FFLKSolvation);
+  class FFLKSolvation_O : public FFParameter_O {
+    LISP_CLASS(chem,ChemPkg,FFLKSolvation_O,"FFLKSolvation",FFParameter_O);
+  public:
+    void initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    core::Symbol_sp 	_Type;
+    core::T_sp          _TypeComment;
+    // Rosetta LK-solvation information
+    double              _LJ_radius;
+    double              _LJ_wdepth;
+    double              _LK_dgfree;
+    double              _LK_lambda;
+    double              _LK_volume;
+  public:
+    static FFLKSolvation_sp make_FFLKSolvation(core::Symbol_sp     type,
+                                                core::T_sp          typeComment,
+                                                double              LJ_radius,
+                                                double              LJ_wdepth,
+                                                double              LK_dgfree,
+                                                double              LK_lambda,
+                                                double              LK_volume );
+
+  public:
+    string __repr__() const;
+
+    CL_LISPIFY_NAME(FFLKSolvation/setType);
+    CL_DEFMETHOD void setType(core::Symbol_sp s) {this->_Type=s;};
+    CL_LISPIFY_NAME(FFLKSolvation/getType);
+    CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
+
+    CL_LISPIFY_NAME(FFLKSolvation/setLJ_radius);
+    CL_DEFMETHOD void setLJ_radius(double d) { this->_LJ_radius = d;};
+    CL_LISPIFY_NAME(FFLKSolvation/getLJ_radius);
+    CL_DEFMETHOD double getLJ_radius() { return this->_LJ_radius;};
+
+    CL_LISPIFY_NAME(FFLKSolvation/setLJ_wdepth);
+    CL_DEFMETHOD void setLJ_wdepth(double d) { this->_LJ_wdepth = d;};
+    CL_LISPIFY_NAME(FFLKSolvation/getLJ_wdepth);
+    CL_DEFMETHOD double getLJ_wdepth() { return this->_LJ_wdepth;};
+
+    CL_LISPIFY_NAME(FFLKSolvation/setLK_dgfree);
+    CL_DEFMETHOD void setLK_dgfree(double d) { this->_LK_dgfree = d;};
+    CL_LISPIFY_NAME(FFLKSolvation/getLK_dgfree);
+    CL_DEFMETHOD double getLK_dgfree() { return this->_LK_dgfree;};
+
+    CL_LISPIFY_NAME(FFLKSolvation/setLK_lambda);
+    CL_DEFMETHOD void setLK_lambda(double d) { this->_LK_lambda = d;};
+    CL_LISPIFY_NAME(FFLKSolvation/getLK_lambda);
+    CL_DEFMETHOD double getLK_lambda() { return this->_LK_lambda;};
+
+    CL_LISPIFY_NAME(FFLKSolvation/setLK_volume);
+    CL_DEFMETHOD void setLK_volume(double d) { this->_LK_volume = d;};
+    CL_LISPIFY_NAME(FFLKSolvation/getLK_volume);
+    CL_DEFMETHOD double getLK_volume() { return this->_LK_volume;};
+
+    core::T_sp getTypeComment() const {return this->_TypeComment;};
+    void setTypeComment(core::T_sp comment) { this->_TypeComment = comment; };
+
+    FFLKSolvation_O() :
+        _TypeComment(nil<core::T_O>()),
+        _LJ_radius(0.0),
+        _LJ_wdepth(0.0),
+        _LK_dgfree(0.0),
+        _LK_lambda(0.0),
+        _LK_volume(0.0)
+    {};
+  };
+
+
 
 
 ////////////////////////////////////////////////////////////////////
@@ -282,7 +354,9 @@ namespace chem {
     void forceFieldMerge(FFBaseDb_sp other);
     
     void add( FFNonbond_sp nonbonded );
+
     bool hasType( core::Symbol_sp type);
+
     FFNonbond_sp getFFNonbondUsingTypeIndex( uint typeIdx );
     uint findTypeIndex( core::Symbol_sp type );
     size_t ffnonbond_find_atom_type_position( core::Symbol_sp type );
@@ -296,21 +370,40 @@ namespace chem {
      */
     size_t  numberOfTypes() const;
 
-    FFNonbondDb_O() : _Name(nil<core::T_O>()),
-                      EleChargeFcn(nil<core::T_O>()),
-                      EleDielectricValueDefined(false),
-                      EleBufferDefined(false),
-                      EleScale14Defined(false),
-                      VdwScale14Defined(false),
-                      VdwScaleBufferADefined(false),
-                      VdwScaleBufferBDefined(false),
-                      EleDielectricCodeDefined(false),
-                      VdwMixRadiusDefined(false),
-                      VdwMixWellDefined(false) {};
+    FFNonbondDb_O() : _Name(nil<core::T_O>())
+    {};
   };
 
 
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+  SMART(FFLKSolvationDb);
+  class FFLKSolvationDb_O : public FFParameterBaseDb_O
+  {
+    LISP_CLASS(chem,ChemPkg,FFLKSolvationDb_O,"FFLKSolvationDb",FFParameterBaseDb_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    core::T_sp                  _Name;
+    gctools::Vec0<FFLKSolvation_sp>	_LKTerms;
+  public:
+
+
+  public:
+    
+    void add( FFLKSolvation_sp param );
+
+    bool hasType( core::Symbol_sp type);
+    FFLKSolvation_sp getLKSolvation(core::Symbol_sp type);
+
+    FFLKSolvationDb_O() : _Name(nil<core::T_O>())
+    {};
+  };
+
 core::T_sp chem__FFNonbond_findType( FFNonbondDb_sp ffNonbondDb, core::Symbol_sp type );
+core::T_sp chem__FFLKSolvation_findType( FFLKSolvationDb_sp ffLKSolvationDb, core::Symbol_sp type );
 
 };
 #endif

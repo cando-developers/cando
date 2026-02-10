@@ -281,17 +281,6 @@ void SketchFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
 
 
 
-uint	SketchFunction_O::countTermsBeyondThreshold()
-{
-  int		terms;
-  terms = 0;
-  SIMPLE_ERROR("Should there be something here?");
-//    node = rawAccumulateTermsBeyondThresholdAsXml(terms);
-  return terms;
-}
-
-
-
 void maybe_dump_force(const string& msg, NVector_sp force)
 {
   if (chem__verbose(2)) {

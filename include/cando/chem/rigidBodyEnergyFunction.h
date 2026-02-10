@@ -133,9 +133,6 @@ public:
     /*! Save the coordinates in the pos vector and forces in force into the ScoringFunction */
   virtual void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
   virtual double	evaluateRaw( NVector_sp pos, NVector_sp force ) ;
-//    virtual double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce ) ;
-  adapt::QDomNode_sp	identifyTermsBeyondThreshold();
-//    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
   ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask );
 
@@ -166,7 +163,6 @@ public:
   CL_LISPIFY_NAME("rigid-body-energy-function-set-position");
   CL_DEFMETHOD void setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z);
 
-    // uint checkForBeyondThresholdInteractions();
   string	energyComponentsAsString();
 
   CL_LISPIFY_NAME("rigid-body-energy-function-get-position");

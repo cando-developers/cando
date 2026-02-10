@@ -47,7 +47,8 @@
   ((atom-name :initarg :atom-name :accessor atom-name)
    (constitution-atom-index :initarg :constitution-atom-index :accessor constitution-atom-index)
    (atom-charge :initarg :atom-charge :accessor atom-charge)
-   (atom-type :initarg :atom-type :accessor atom-type)))
+   (atom-type :initarg :atom-type :accessor atom-type)
+   (lk-solvation-atom-type :initarg :lk-solvation-atom-type :accessor lk-solvation-atom-type)))
 
 (cando.serialize:make-class-save-load
  stereoisomer-atom
@@ -55,6 +56,27 @@
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t)
      (format stream "~s ~a" (atom-name obj) (constitution-atom-index obj)))))
+
+
+(defclass foldamer-monomer-context-info (cando.serialize:serializable)
+  ((foldamer :initarg :foldamer :reader foldamer-monomer-context-info-foldamer)
+   (monomer-context :initarg :monomer-context :reader foldamer-monomer-context-info-monomer-context)
+   (topology :initarg :topology :reader foldamer-monomer-context-info-topology)
+   (atom-info :initarg :atom-info :reader foldamer-monomer-context-info-atom-info)))
+
+(defmethod print-object ((obj foldamer-monomer-context-info) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream ":foldamer ~s :monomer-context ~s"
+            (foldamer-monomer-context-info-foldamer obj)
+            (foldamer-monomer-context-info-monomer-context obj))))
+
+(defun chem:foldamer-monomer-context-info-foldamer (ff)
+  "Glue function so that earlier code can access folddamer-monomer-context-info"
+  (foldamer-monomer-context-info-foldamer ff))
+
+(defun chem:foldamer-monomer-context-info-monomer-context (ff)
+  "Glue function so that earlier code can access folddamer-monomer-context-info"
+  (foldamer-monomer-context-info-monomer-context ff))
 
 (defclass stereoisomer-virtual-atom (stereoisomer-atom)
   ())

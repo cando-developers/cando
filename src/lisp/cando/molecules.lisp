@@ -311,7 +311,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                     (tn-tolerance 0.0001)
                                     (max-sd-steps 1000)
                                     (max-cg-steps 2000)
-                                    (max-tn-steps 500)
+                                    (max-tn-steps 5000)
                                     verbose)
   "Minimize energy of a structure with lots of control.
 : matter - The matter to optimize.
@@ -455,11 +455,13 @@ Disabling happens before enabling - so you can disable all with T and then selec
       (ext:system cmd))))
 
 (defun bad-geometry-p (agg)
+  (error "I removed check-for-beyond-threshold-interactions from the C++ code and so I'll need to add something back to take its place - I only did this for stretch and angle terms and the code has been broken for a long time.  I may not even use this calling function bad-geometry-p - I do still use topology:bad-geometry-p - take a look at that.")
   (let ((coords (chem:matter/extract-coordinates agg)))
     (when (not (ext:array-no-nans-p coords))
       (return-from bad-geometry-p t))
     (let* ((energy-function (chem:make-energy-function :matter agg))
-           (fails (chem:check-for-beyond-threshold-interactions energy-function 0.2)))
+           (fails (progn
+                    #+(or)(chem:check-for-beyond-threshold-interactions energy-function 0.2))))
       (if (> (length fails) 0)
           fails
           nil))))

@@ -370,12 +370,6 @@ void EnergyAngle_O::addTerm(const EnergyAngle& term)
 }
 
 
-string EnergyAngle_O::beyondThresholdInteractionsAsString()
-{
-    return component_beyondThresholdInteractionsAsString<EnergyAngle_O,EnergyAngle>(*this);
-}
-
-
 
 void	EnergyAngle_O::dumpTerms(core::HashTable_sp atomTypes)
 {
@@ -695,83 +689,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg,t0);
 SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
 
 
-core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
-{
-  IMPLEMENT_ME();
-#if 0
-  ql::list result;
-#if 0
-  bool	calcForce = false;
-  bool	calcDiagonalHessian = false;
-  bool	calcOffDiagonalHessian = false;
-#endif
-  this->_BeyondThresholdTerms.clear();
-
-//
-// Copy from implementAmberFunction::checkForBeyondThresholdInteractions
-//
-
-#undef ANGLE_CALC_FORCE
-#undef ANGLE_CALC_DIAGONAL_HESSIAN
-#undef ANGLE_CALC_OFF_DIAGONAL_HESSIAN
-#undef ANGLE_SET_PARAMETER
-#define ANGLE_SET_PARAMETER(x)	{x=ai->term.x;}
-#undef ANGLE_SET_POSITION
-#define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(e) {}
-#undef ANGLE_FORCE_ACCUMULATE
-#define ANGLE_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-  {
-    
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
-//	    double DotAbCb;
-    int I1, I2, I3,i;
-    gctools::Vec0<EnergyAngle>::iterator ai;
-    for ( i=0,ai=this->_Terms.begin();
-          ai!=this->_Terms.end(); ai++,i++ ) {
-      bool IllegalAngle = false;
-#include	<cando/chem/energy_functions/_Angle_termCode.cc>
-      if ( fabs(AngleDeviation)/t0 > threshold ) {
-        chem::Atom_sp a1, a2, a3;
-        a1 = (*ai)._Atom1;
-        a2 = (*ai)._Atom2;
-        a3 = (*ai)._Atom3;
-        ql::list one_deviation;
-        one_deviation << kw::_sym_angle
-                      << kw::_sym_atoms << core::Cons_O::createList(a1,a2,a3)
-                      << kw::_sym_r0 << core::clasp_make_double_float(t0)
-                      << kw::_sym_angle_deviation << core::clasp_make_double_float(AngleDeviation);
-        result << one_deviation.result();
-      }
-    }
-  }
-  return result.cons();
-#endif
-}
-
-
-
-
-
-
-
-
-
-
-
 void EnergyAngle_O::initialize()
 {
     this->Base::initialize();
@@ -894,7 +811,7 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
   return result.result();
 }
 
-EnergyAngle_sp EnergyAngle_O::copyFilter(core::T_sp keepInteractionFactory ) {
+EnergyComponent_sp EnergyAngle_O::copyFilter(core::T_sp keepInteractionFactory , SetupAccumulator& setupAcc) {
   EnergyAngle_sp copy = EnergyAngle_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyAngle_O::staticClass() );

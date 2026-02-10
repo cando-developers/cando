@@ -88,17 +88,6 @@ class FixedNonbondRestraint : public EnergyTerm {
 
 };
 
-class BeyondThresholdFixedNonbondRestraint : public BeyondThresholdEnergyTerm 
-{
- public:
-  Atom_sp	_MobileAtom;
-  Atom_sp	_FixedAtom;
-  double	_NonbondDistance;
-};
-
-
-
-
 }
 ;
 
@@ -148,7 +137,6 @@ public: // virtual functions inherited from Object
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
     typedef FixedNonbondRestraint TermType;
-    typedef BeyondThresholdFixedNonbondRestraint BeyondThresholdTermType;
 public: // instance variables
     AtomTable_sp			_MobileAtomTable;
     FFNonbondCrossTermTable_sp	_NonbondCrossTermTable;
@@ -158,7 +146,6 @@ public: // instance variables
     double				_EnergyVdw;
     double				_EnergyElectrostatic;
     gctools::Vec0<TermType>		_Terms;
-    gctools::Vec0<BeyondThresholdTermType>	_BeyondThresholdTerms;
 
 public:	// Creation class functions
 public:	
@@ -216,18 +203,11 @@ public:
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );
 
-    //virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-
-    virtual string	beyondThresholdInteractionsAsString();
-
-//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn );
-
-
 public:
 
     EnergyFixedNonbondRestraint_O( const EnergyFixedNonbondRestraint_O& ss ); //!< Copy constructor
 
-  EnergyFixedNonbondRestraint_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
     DEFAULT_CTOR_DTOR(EnergyFixedNonbondRestraint_O);
 };

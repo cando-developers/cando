@@ -30,8 +30,33 @@ This is an open source license for the CANDO software from Temple University, bu
 typedef float REAL;
 typedef int   INT;
 
+struct SetupAccumulator {
+
+  core::List_sp _Plist;
+  core::List_sp _ValidSymbols = nil<core::T_O>();
+
+  SetupAccumulator(core::T_sp className, core::T_sp setup );
+  ~SetupAccumulator();
+
+
+  template <typename SlotType>
+  void maybe_apply(core::Symbol_sp name, SlotType& value) __attribute__((optnone)) {
+    core::T_sp tvalue = cl__getf(this->_Plist,name,nil<core::T_O>());
+    printf("%s:%d:%s %s\n", __FILE__, __LINE__, __FUNCTION__, fmt::format("Searched for {} in {} found: {}\n", _rep_(name), _rep_(this->_Plist), _rep_(tvalue)).c_str());
+    if (gc::IsA<core::Number_sp>(tvalue)) {
+      double dval = translate::make_from_object<SlotType>(tvalue);
+      printf("%s\n", fmt::format("Assigning parameter {} with value {}\n", _rep_(name), dval ).c_str());
+      value = dval;
+    }
+    this->_ValidSymbols = core::Cons_O::create(name,this->_ValidSymbols);
+  }
+};
+
+
 namespace  chem
 {
 FORWARD(EnergyComponent);
+
+
 }
 #endif

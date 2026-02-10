@@ -146,7 +146,7 @@ std::string EnergyChiralRestraint_O::descriptionOfContents() const {
 
 
 
-EnergyChiralRestraint_sp EnergyChiralRestraint_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyChiralRestraint_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyChiralRestraint_O::staticClass() );
   EnergyChiralRestraint_sp copy = EnergyChiralRestraint_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );
@@ -190,13 +190,6 @@ void EnergyChiralRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 }
 
 
-string EnergyChiralRestraint_O::beyondThresholdInteractionsAsString()
-{
-    return component_beyondThresholdInteractionsAsString<EnergyChiralRestraint_O,EnergyChiralRestraint>(*this);
-}
-
-
-
 
 void	EnergyChiralRestraint_O::setupHessianPreconditioner(chem::NVector_sp nvPosition,
                                                             chem::AbstractLargeSquareMatrix_sp m,
@@ -205,7 +198,7 @@ void	EnergyChiralRestraint_O::setupHessianPreconditioner(chem::NVector_sp nvPosi
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   core::T_sp debugInteractions = nil<core::T_O>();
   MAYBE_SETUP_DEBUG_INTERACTIONS(false);
-  
+
 bool		calcForce = true;
 bool		calcDiagonalHessian = true;
 bool		calcOffDiagonalHessian = true;
@@ -429,106 +422,12 @@ void	EnergyChiralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermBy
 
 
 
-#if 0
-int	EnergyChiralRestraint_O::checkForBeyondThresholdInteractions(
-			stringstream& info, chem::NVector_sp pos )
-{
-int	fails = 0;
-
-    this->_BeyondThresholdTerms.clear();
-
-//
-// Copy from implementAmberFunction::checkForBeyondThresholdInteractions
-//
-//------------------
-
-
-#undef CHIRAL_RESTRAINT_CALC_FORCE
-#undef CHIRAL_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#undef CHIRAL_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	CHIRAL_RESTRAINT_SET_PARAMETER
-#define	CHIRAL_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	CHIRAL_RESTRAINT_SET_POSITION
-#define	CHIRAL_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	CHIRAL_RESTRAINT_PHI_SET
-#define	CHIRAL_RESTRAINT_PHI_SET(x) {}
-#undef	CHIRAL_RESTRAINT_ENERGY_ACCUMULATE
-#define	CHIRAL_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	CHIRAL_RESTRAINT_FORCE_ACCUMULATE
-#define	CHIRAL_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	CHIRAL_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	CHIRAL_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	CHIRAL_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	CHIRAL_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-
-    {
-	    
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-	num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
-	int	I1, I2, I3, I4, i;
-        gctools::Vec0<EnergyChiralRestraint>::iterator cri;
-	LOG("Entering checking loop, there are {} terms" , this->_Terms.end()-this->_Terms.begin() );
-	for ( i=0,cri=this->_Terms.begin();
-		    cri!=this->_Terms.end(); cri++,i++ ) {
-		      /* Obtain all the parameters necessary to calculate */
-		      /* the amber and forces */
-	    LOG("Checking term# {}" , i  );
-#include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
-	    LOG("Status" );
-	    if ( ChiralTest>0.0 ) {
-		chem::Atom_sp a1, a2, a3, a4;
-		a1 = (*cri)._Atom1;
-		a2 = (*cri)._Atom2;
-		a3 = (*cri)._Atom3;
-		a4 = (*cri)._Atom4;
-	        LOG("Status" );
-		info<< "ChiralRestraintDeviation ";
-		info << "value " << ChiralTest << " Atoms(";
-		info << a1->getName() << " ";
-		info << a2->getName() << " ";
-		info << a3->getName() << " ";
-		info << a4->getName() << ")";
-		info << std::endl;
-	        LOG("Info: {}" , info.str().c_str()  );
-		this->_BeyondThresholdTerms.push_back(*cri);
-	        LOG("Status" );
-		fails++;
-	    }
-	    LOG("Status" );
-	}
-	LOG("Status" );
-    }
-
-    return fails;
-}
-
-#endif
-
-
-
-
-
-
-
 
 
 void EnergyChiralRestraint_O::initialize()
 {
     this->Base::initialize();
 }
-
-
-#ifdef XML_ARCHIVE
-void EnergyChiralRestraint_O::archiveBase(core::ArchiveP node)
-{
-    this->Base::archiveBase(node);
-    IMPLEMENT_ME();
-}
-#endif
 
 
 };

@@ -58,6 +58,23 @@ namespace chem {
 
 #include <cando/chem/energyKernels/rosetta_elec_cutoff.c>
 
+EnergyRosettaElec_sp EnergyRosettaElec_O::make(AtomTable_sp atomTable, core::T_sp nbForceField,
+                                               core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
+                                               SetupAccumulator& acc,
+                                               core::T_sp tcoordinates) {
+  auto obj = EnergyRosettaElec_O::create();
+  obj->_Parameters.do_apply(acc);
+  if (keepInteractionFactory.nilp()) return obj;
+  obj->_AtomTable = atomTable;
+  obj->_NonbondForceField = nbForceField;
+  obj->_AtomTypes = atomTypes;
+  obj->_KeepInteractionFactory = keepInteractionFactory;
+  if (tcoordinates.notnilp()) {
+    obj->rebuildPairList(tcoordinates);
+  }
+  return obj;
+}
+
 std::string EnergyRosettaElec_O::implementation_details() const {
   Rosetta_Elec_Cutoff<NoHessian> elec;
   std::stringstream ss;
@@ -86,19 +103,8 @@ SYMBOL_EXPORT_SC_(ChemPkg, energyRosettaElec);
 core::List_sp EnergyRosettaElec::encode() const
 {
   ql::list ll;
-  ll << INTERN_(kw, kqq) << core::clasp_make_double_float(this->term.kqq)
-     << INTERN_(kw, e_rmin) << core::clasp_make_double_float(this->term.e_rmin)
-     << INTERN_(kw, aa_low) << core::clasp_make_double_float(this->term.aa_low)
-     << INTERN_(kw, bb_low) << core::clasp_make_double_float(this->term.bb_low)
-     << INTERN_(kw, cc_low) << core::clasp_make_double_float(this->term.cc_low)
-     << INTERN_(kw, dd_low) << core::clasp_make_double_float(this->term.dd_low)
-     << INTERN_(kw, aa_high) << core::clasp_make_double_float(this->term.aa_high)
-     << INTERN_(kw, bb_high) << core::clasp_make_double_float(this->term.bb_high)
-     << INTERN_(kw, cc_high) << core::clasp_make_double_float(this->term.cc_high)
-     << INTERN_(kw, dd_high) << core::clasp_make_double_float(this->term.dd_high)
-     << INTERN_(kw, i1) << core::make_fixnum(this->term.i3x1)
-     << INTERN_(kw, i2) << core::make_fixnum(this->term.i3x2)
-     << INTERN_(kw, atom1) << this->_Atom1_enb
+  this->term.encode(ll);
+  ll << INTERN_(kw, atom1) << this->_Atom1_enb
      << INTERN_(kw, atom2) << this->_Atom2_enb;
   return ll.cons();
 }
@@ -226,8 +232,6 @@ void EnergyRosettaElec_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, rhi), this->_Parameters.rhi);
   node->field(INTERN_(kw, rcut), this->_Parameters.rcut);
   node->field(INTERN_(kw, rpairlist), this->_Parameters.rpairlist);
-  node->field(INTERN_(kw, InteractionsKept), this->_InteractionsKept);
-  node->field(INTERN_(kw, InteractionsDiscarded), this->_InteractionsDiscarded);
   this->Base::fields(node);
 }
 
@@ -258,20 +262,7 @@ void EnergyRosettaElec_O::callForEachTerm(core::Function_sp callback) {
   }
 }
 
-void EnergyRosettaElec_O::constructNonbondTermsFromAtomTable(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                                             core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
-                                                             core::T_sp tcoordinates) {
-  if (keepInteractionFactory.nilp()) return;
-  this->_AtomTable = atomTable;
-  this->_NonbondForceField = nbForceField;
-  this->_AtomTypes = atomTypes;
-  this->_KeepInteractionFactory = keepInteractionFactory;
-  if (tcoordinates.notnilp()) {
-    this->rebuildPairList(tcoordinates);
-  }
-}
-
-EnergyRosettaElec_sp EnergyRosettaElec_O::copyFilter(core::T_sp keepInteractionFactory) {
+EnergyComponent_sp EnergyRosettaElec_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   EnergyRosettaElec_sp copy = EnergyRosettaElec_O::create();
   copyEnergyComponent(copy, this->asSmartPtr());
 
@@ -280,9 +271,6 @@ EnergyRosettaElec_sp EnergyRosettaElec_O::copyFilter(core::T_sp keepInteractionF
   copy->_NonbondForceField = this->_NonbondForceField;
   copy->_AtomTypes = this->_AtomTypes;
   copy->_KeepInteractionFactory = keepInteractionFactory;
-  copy->_Nonbond_r_pairlist = this->_Nonbond_r_pairlist;
-  copy->_InteractionsKept = this->_InteractionsKept;
-  copy->_InteractionsDiscarded = this->_InteractionsDiscarded;
   if (this->_DisplacementBuffer.notnilp()) {
     copy->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(this->_DisplacementBuffer));
   }
@@ -302,6 +290,9 @@ EnergyRosettaElec_sp EnergyRosettaElec_O::copyFilter(core::T_sp keepInteractionF
       copy->_Terms.push_back(*edi);
     }
   }
+  copy->_Parameters.do_apply(setupAcc);
+  copy->_DisplacementBuffer = nil<core::T_O>();
+  copy->_Terms.clear();
   return copy;
 }
 
@@ -408,8 +399,6 @@ core::T_mv EnergyRosettaElec_O::rebuildPairList(core::T_sp tcoordinates) {
       }
     }
   }
-  this->_InteractionsKept = interactionsKept;
-  this->_InteractionsDiscarded = interactionsDiscarded;
   return Values(core::clasp_make_fixnum(interactionsKept),
                 core::clasp_make_fixnum(interactionsDiscarded),
                 core::clasp_make_fixnum(totalInteractions));

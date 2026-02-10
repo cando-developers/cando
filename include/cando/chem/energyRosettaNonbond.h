@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/array.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include "clasp/core/ql.h"
 // #include "geom/render.fwd.h" // energyRosettaNonbond.h wants DisplayList needs render.fwd.h
 
 // Kernel parameter/term definitions
@@ -111,10 +112,6 @@ namespace translate {
 };
 
 namespace chem {
-#include <cando/chem/energyKernels/rosetta_nonbond_dd_cutoff-params.h>
-};
-
-namespace chem {
 
   class EnergyRosettaNonbond_O : public EnergyComponent_O
   {
@@ -141,14 +138,15 @@ namespace chem {
 
     // Rosetta parameters (used to construct terms)
     rosetta_nonbond_parameters      _Parameters;
-    size_t                  _InteractionsKept;
-    size_t                  _InteractionsDiscarded;
 
   public:
     virtual std::string implementation_details() const;
     virtual std::string descriptionOfContents() const;
     typedef gctools::Vec0<TermType>::iterator iterator;
-
+    static EnergyRosettaNonbond_sp make(AtomTable_sp atomTable, core::T_sp nbForceField,
+                                        core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
+                                        SetupAccumulator& setupAcc,
+                                        core::T_sp tcoordinates = nil<core::T_O>());
   public:
     CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
     void callForEachTerm(core::Function_sp callback);
@@ -188,25 +186,17 @@ namespace chem {
                              core::T_sp activeAtomMask,
                              core::T_sp debugInteractions);
 
-    void constructNonbondTermsFromAtomTable(AtomTable_sp atomTable,
-                                            core::T_sp nbforceField,
-                                            core::HashTable_sp atomTypes,
-                                            core::T_sp keepInteractionFactory,
-                                            core::T_sp tcoordinates = nil<core::T_O>());
-
     core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
     core::T_mv rebuildPairList(core::T_sp tcoordinates);
 
-    EnergyRosettaNonbond_sp copyFilter(core::T_sp keepInteractionFactory);
+    EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
   public:
     EnergyRosettaNonbond_O(const EnergyRosettaNonbond_O& ss); //!< Copy constructor
 
     EnergyRosettaNonbond_O() :
         _KeepInteractionFactory(nil<core::T_O>()),
-        _DisplacementBuffer(nil<core::T_O>()),
-        _InteractionsKept(0),
-        _InteractionsDiscarded(0)
+        _DisplacementBuffer(nil<core::T_O>())
     {};
   };
 

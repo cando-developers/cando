@@ -555,4 +555,107 @@ CL_DEFUN FFNonbondDb_sp chem__make_ffnonbond_db() {
   return FFNonbondDb_O::create();
 }
 
+
+
+///////////////////////////////////////////////////
+//
+//
+void FFLKSolvation_O::initialize() {
+  this->Base::initialize();
+  this->_Type = nil<core::Symbol_O>();
+  this->_TypeComment = nil<core::T_O>();
+  this->_LJ_radius = 0.0;
+  this->_LJ_wdepth = 0.0;
+  this->_LK_dgfree = 0.0;
+  this->_LK_lambda = 1.0;
+  this->_LK_volume = 0.0;
+}
+
+string FFLKSolvation_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << cl__class_of(this->asSmartPtr())->_classNameAsString()
+     << " :type " << _rep_(this->_Type) << ">";
+  return ss.str();
+}
+
+void FFLKSolvation_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,type), this->_Type);
+  node->field_if_not_nil(INTERN_(kw,type_comment), this->_TypeComment);
+  node->field(INTERN_(kw,lj_radius), this->_LJ_radius);
+  node->field(INTERN_(kw,lj_wdepth), this->_LJ_wdepth);
+  node->field(INTERN_(kw,lk_dgfree), this->_LK_dgfree);
+  node->field(INTERN_(kw,lk_lambda), this->_LK_lambda);
+  node->field(INTERN_(kw,lk_volume), this->_LK_volume);
+  this->Base::fields(node);
+}
+
+CL_LAMBDA(type &key (type-comment nil) (lj-radius 0.0) (lj-wdepth 0.0)
+          (lk-dgfree 0.0) (lk-lambda 1.0) (lk-volume 0.0));
+  CL_DEF_CLASS_METHOD
+  FFLKSolvation_sp FFLKSolvation_O::make_FFLKSolvation(core::Symbol_sp type,
+                                                        core::T_sp typeComment,
+                                                        double LJ_radius,
+                                                        double LJ_wdepth,
+                                                        double LK_dgfree,
+                                                        double LK_lambda,
+                                                        double LK_volume)
+  {
+    auto res = gctools::GC<FFLKSolvation_O>::allocate_with_default_constructor();
+    res->_Type = type;
+    res->_TypeComment = typeComment;
+    res->_LJ_radius = LJ_radius;
+    res->_LJ_wdepth = LJ_wdepth;
+    res->_LK_dgfree = LK_dgfree;
+    res->_LK_lambda = LK_lambda;
+    res->_LK_volume = LK_volume;
+    return res;
+  }
+
+
+
+
+
+
+
+void FFLKSolvationDb_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,lk_terms),this->_LKTerms);
+  this->Base::fields(node);
+}
+
+CL_LISPIFY_NAME(FFLKSolvationDb_add);
+CL_DEFMETHOD void FFLKSolvationDb_O::add(FFLKSolvation_sp param)
+{
+  uint index = this->_LKTerms.size();
+  this->_LKTerms.push_back(param);
+  this->_Parameters->setf_gethash(param->getType(), core::clasp_make_fixnum(index));
+}
+
+CL_DEFMETHOD bool FFLKSolvationDb_O::hasType(core::Symbol_sp type)
+{
+  return this->_Parameters->gethash(type).notnilp();
+}
+
+CL_DEFMETHOD FFLKSolvation_sp FFLKSolvationDb_O::getLKSolvation(core::Symbol_sp type)
+{
+  core::T_sp val = this->_Parameters->gethash(type);
+  if (val.fixnump()) {
+    uint index = static_cast<uint>(val.unsafe_fixnum());
+    return this->_LKTerms[index];
+  }
+  return nil<FFLKSolvation_O>();
+}
+
+CL_DEFUN core::T_sp chem__FFLKSolvation_findType(FFLKSolvationDb_sp ffLKSolvationDb, core::Symbol_sp type)
+{
+  core::T_sp val = ffLKSolvationDb->_Parameters->gethash(type);
+  if (val.fixnump()) {
+    uint index = static_cast<uint>(val.unsafe_fixnum());
+    return ffLKSolvationDb->_LKTerms[index];
+  }
+  return nil<core::T_O>();
+}
+
+
 };

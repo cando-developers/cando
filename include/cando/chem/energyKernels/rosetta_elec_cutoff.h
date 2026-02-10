@@ -68,4 +68,21 @@ struct rosetta_elec_term {
     double dd_high = (dd_high_shifted + (bb_high_shifted * params.rhi * params.rhi) + (-((aa_high_shifted * params.rhi * params.rhi * params.rhi))) + (-((cc_high_shifted * params.rhi))));
     this->dd_high = dd_high;
   }
+
+  void encode(ql::list& ll) const {
+    ll
+        << INTERN_(kw, kqq) << core::clasp_make_double_float(this->kqq)
+        << INTERN_(kw, e_rmin) << core::clasp_make_double_float(this->e_rmin)
+        << INTERN_(kw, aa_low) << core::clasp_make_double_float(this->aa_low)
+        << INTERN_(kw, bb_low) << core::clasp_make_double_float(this->bb_low)
+        << INTERN_(kw, cc_low) << core::clasp_make_double_float(this->cc_low)
+        << INTERN_(kw, dd_low) << core::clasp_make_double_float(this->dd_low)
+        << INTERN_(kw, aa_high) << core::clasp_make_double_float(this->aa_high)
+        << INTERN_(kw, bb_high) << core::clasp_make_double_float(this->bb_high)
+        << INTERN_(kw, cc_high) << core::clasp_make_double_float(this->cc_high)
+        << INTERN_(kw, dd_high) << core::clasp_make_double_float(this->dd_high)
+        << INTERN_(kw, i1) << core::make_fixnum(this->i3x1)
+        << INTERN_(kw, i2) << core::make_fixnum(this->i3x2)
+        ;
+  }
 };

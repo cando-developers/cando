@@ -138,7 +138,8 @@ namespace chem {
                                   core::List_sp enableComponents=nil<core::T_O>(),
                                   bool useExcludedAtoms=false,
                                   core::T_sp keepInteractionFactory=nil<core::T_O>(),
-                                  bool assign_types=false );
+                                  bool assign_types=false,
+                                  core::T_sp setup = nil<core::T_O>());
   public:
     void initialize();
   public:
@@ -151,15 +152,7 @@ namespace chem {
     FFNonbondCrossTermTable_sp		_NonbondCrossTermTable;
     AtomTable_sp			_AtomTable;
     double                              _MonomerCorrectionEnergy;
-    EnergyStretch_sp			_Stretch;
-    EnergyAngle_sp			_Angle;
-    EnergyDihedral_sp			_Dihedral;
-    EnergyNonbond_sp			_Nonbond;
-    EnergyDihedralRestraint_sp		_DihedralRestraint;
-    EnergyChiralRestraint_sp		_ChiralRestraint;
-    EnergyAnchorRestraint_sp		_AnchorRestraint;
-    EnergyFixedNonbondRestraint_sp	_FixedNonbondRestraint;
-    core::List_sp                       _OtherEnergyComponents; // alist of additional (name . energy-function) pairs
+    core::List_sp                       _EnergyComponents; // list of EnergyComponent_sp objects
     BoundingBox_sp                      _BoundingBox;
     /*! If true then secondary amides are
      * automatically restrainted to be trans
@@ -177,7 +170,7 @@ namespace chem {
     core::T_mv enabledDisabled() const;
   private:
     int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
-    void _addDihedralRestraintDegrees(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0_degrees, double kdh, core::T_sp keepInteractionFactory );
+    void _addDihedralRestraintDegrees(EnergyDihedralRestraint_sp rest, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phi0_degrees, double kdh, core::T_sp keepInteractionFactory );
 
   public:
 
@@ -194,9 +187,6 @@ namespace chem {
     void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
     size_t	getNVectorSize() const;
     double	evaluateRaw( NVector_sp pos, NVector_sp force );
-//    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
-    adapt::QDomNode_sp	identifyTermsBeyondThreshold();
-//    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
     BoundingBox_sp boundingBox() const;
     bool boundingBoxBoundP() const;
@@ -218,27 +208,33 @@ namespace chem {
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
     void	setOptions( core::List_sp options );
 
+    CL_DEFMETHOD core::T_sp findComponentOrNil(core::Symbol_sp className);
+    CL_DEFMETHOD EnergyComponent_sp findComponent(core::Symbol_sp className);
+
+    void addComponentIfMissing(EnergyComponent_sp comp);
+    void ensureBaseComponents();
+
     CL_LISPIFY_NAME("getStretchComponent");
-    CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
+    CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent();
     CL_LISPIFY_NAME("getAngleComponent");
-    CL_DEFMETHOD     EnergyAngle_sp	getAngleComponent() { return this->_Angle; };
+    CL_DEFMETHOD     EnergyAngle_sp	getAngleComponent();
     CL_LISPIFY_NAME("getDihedralComponent");
-    CL_DEFMETHOD     EnergyDihedral_sp	getDihedralComponent() { return this->_Dihedral; };
+    CL_DEFMETHOD EnergyDihedral_sp getDihedralComponent();
     CL_LISPIFY_NAME("getNonbondComponent");
-    CL_DEFMETHOD     EnergyNonbond_sp	getNonbondComponent() { return this->_Nonbond; };
+    CL_DEFMETHOD EnergyNonbond_sp getNonbondComponent();
     CL_LISPIFY_NAME("getChiralRestraintComponent");
-    CL_DEFMETHOD     EnergyChiralRestraint_sp	getChiralRestraintComponent() { return this->_ChiralRestraint; };
+    CL_DEFMETHOD EnergyChiralRestraint_sp getChiralRestraintComponent();
     CL_LISPIFY_NAME("getAnchorRestraintComponent");
-    CL_DEFMETHOD     EnergyAnchorRestraint_sp	getAnchorRestraintComponent() { return this->_AnchorRestraint; };
+    CL_DEFMETHOD EnergyAnchorRestraint_sp getAnchorRestraintComponent();
     CL_LISPIFY_NAME("getDihedralRestraintComponent");
-    CL_DEFMETHOD     EnergyDihedralRestraint_sp	getDihedralRestraintComponent() { return this->_DihedralRestraint; };
+    CL_DEFMETHOD EnergyDihedralRestraint_sp getDihedralRestraintComponent();
     CL_LISPIFY_NAME("getFixedNonbondRestraintComponent");
-    CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
+    CL_DEFMETHOD EnergyFixedNonbondRestraint_sp getFixedNonbondRestraintComponent();
 
     core::List_sp allEnergyComponents() const;
-
-    core::List_sp otherEnergyComponents() const;
-    void          pushOtherEnergyComponent(EnergyComponent_sp component);
+    void          pushEnergyComponent(EnergyComponent_sp component) {
+      this->_EnergyComponents = core::Cons_O::create(component,this->_EnergyComponents);
+    }
 
 
     CL_DEFMETHOD bool hasMissingParameters();
@@ -266,8 +262,8 @@ namespace chem {
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
-    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true, core::T_sp coordinates=nil<core::T_O>() );
-    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes, core::T_sp coordinates );
+    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true, core::T_sp coordinates=nil<core::T_O>(), core::T_sp setup=nil<core::T_O>() );
+    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes, core::T_sp coordinates, core::T_sp setup );
     void generateStandardEnergyFunctionTables(Matter_sp mol,
                                               FFStretchDb_sp stretchDb,
                                               FFAngleDb_sp angleDb,
@@ -275,7 +271,7 @@ namespace chem {
                                               FFItorDb_sp itorDb,
                                               core::T_sp keepInteractionFactory,
                                               core::HashTable_sp atomTypes);
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp coordinates );
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp coordinates, core::T_sp setup );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
 
     /*! Add the restraints to the energy function.
@@ -301,39 +297,24 @@ namespace chem {
                             core::T_sp debugInteractions,
                             bool disableRestraints );
 
-    string	summarizeBeyondThresholdInteractionsAsString();
     string	summarizeEnergyAsString();
 
 
-//		adapt::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
-//		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
-    uint		countTermsBeyondThreshold();
-
     void	evaluateNumericalForce(NVector_sp pos, core::T_sp energyScale, NVector_sp numForce, double delta, core::T_sp activeAtomMask );
     void	evaluateNumericalHessian(NVector_sp pos, core::T_sp energyScale, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta, core::T_sp activeAtomMask);
-
-    core::List_sp checkForBeyondThresholdInteractions(double threshold);
 
     string	debugLogAsString();
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
 
-    EnergyFunction_sp copyFilter(core::T_sp keepInteractionFactory);
+    EnergyFunction_sp copyFilter(core::T_sp keepInteractionFactory, core::List_sp setup );
 
     EnergyFunction_O(BoundingBox_sp bounding_box) :
         _Matter(unbound<Matter_O>())
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
         , _MonomerCorrectionEnergy(0.0)
-        , _Stretch(unbound<EnergyStretch_O>())
-        , _Angle(unbound<EnergyAngle_O>())
-        , _Dihedral(unbound<EnergyDihedral_O>())
-        , _Nonbond(unbound<EnergyNonbond_O>())
-        , _DihedralRestraint(unbound<EnergyDihedralRestraint_O>())
-        , _ChiralRestraint(unbound<EnergyChiralRestraint_O>())
-        , _AnchorRestraint(unbound<EnergyAnchorRestraint_O>())
-        , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
-        ,_OtherEnergyComponents(nil<core::T_O>())
+        ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(bounding_box)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
@@ -343,15 +324,7 @@ namespace chem {
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
         , _MonomerCorrectionEnergy(0.0)
-        , _Stretch(unbound<EnergyStretch_O>())
-        , _Angle(unbound<EnergyAngle_O>())
-        , _Dihedral(unbound<EnergyDihedral_O>())
-        , _Nonbond(unbound<EnergyNonbond_O>())
-        , _DihedralRestraint(unbound<EnergyDihedralRestraint_O>())
-        , _ChiralRestraint(unbound<EnergyChiralRestraint_O>())
-        , _AnchorRestraint(unbound<EnergyAnchorRestraint_O>())
-        , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
-        ,_OtherEnergyComponents(nil<core::T_O>())
+        ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
 //      , _MissingParameters(unbound<core::List_O>())
     {};
@@ -360,15 +333,7 @@ namespace chem {
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
         , _MonomerCorrectionEnergy(0.0)
-        , _Stretch(unbound<EnergyStretch_O>())
-        , _Angle(unbound<EnergyAngle_O>())
-        , _Dihedral(unbound<EnergyDihedral_O>())
-        , _Nonbond(unbound<EnergyNonbond_O>())
-        , _DihedralRestraint(unbound<EnergyDihedralRestraint_O>())
-        , _ChiralRestraint(unbound<EnergyChiralRestraint_O>())
-        , _AnchorRestraint(unbound<EnergyAnchorRestraint_O>())
-        , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
-        ,_OtherEnergyComponents(nil<core::T_O>())
+        ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
 //      , _MissingParameters(unbound<core::List_O>())
     {};

@@ -14,4 +14,6 @@
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;leap.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;spanning-tree.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;energy.lisp")
+(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-nonbond.lisp")
+(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-elec.lisp")
 (ext:quit (if (show-test-summary) 0 1))

@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/array.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include "clasp/core/ql.h"
 //#include "geom/render.fwd.h"// energyNonbond14.h wants DisplayList needs render.fwd.h
 
 namespace       chem {
@@ -152,6 +153,7 @@ class EnergyNonbond14_O : public EnergyComponent_O
   virtual std::string implementation_details() const;
   virtual std::string descriptionOfContents() const;
   typedef gctools::Vec0<TermType>::iterator iterator;
+   static EnergyNonbond14_sp make(SetupAccumulator& setupAcc);
  public:
   virtual size_t numberOfTerms() { return this->_Terms14.size(); };
   void callForEachTerm(core::Function_sp callback);
@@ -196,7 +198,7 @@ class EnergyNonbond14_O : public EnergyComponent_O
 
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
 
-  EnergyNonbond14_sp copyFilter(core::T_sp keepInteractionFactory);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
  public:
   EnergyNonbond14_O( const EnergyNonbond14_O& ss ); //!< Copy constructor

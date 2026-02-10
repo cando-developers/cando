@@ -261,28 +261,6 @@ public:
   #endif
 
   void evaluateFiniteDifferenceForce(NVector_sp pos, core::T_sp energyScale, NVector_sp force, double delta=0.00001, core::T_sp activeAtomMask=nil<core::T_O>() );
-#if 0
-
-  string	summarizeBeyondThresholdInteractionsAsString();
-  string	summarizeEnergyAsString();
-
-
-//		adapt::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
-//		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
-  CL_LISPIFY_NAME("countTermsBeyondThreshold");
-  CL_DEFMETHOD uint		countTermsBeyondThreshold();
-
-  CL_LISPIFY_NAME("evaluateNumericalForce");
-  CL_DEFMETHOD void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
-  CL_LISPIFY_NAME("evaluateNumericalHessian");
-  CL_DEFMETHOD void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta);
-
-  string	debugLogAsString();
-#endif
-
-  CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
-  CL_DEFMETHOD virtual core::List_sp	checkForBeyondThresholdInteractions(double threshold);
-
 
   virtual core::List_sp allComponents() const = 0;
 

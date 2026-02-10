@@ -46,6 +46,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <clasp/core/symbolTable.h>
+#include <clasp/core/hashTableEqual.h>
 #include <cando/chem/specificContext.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
@@ -76,12 +77,15 @@ void CandoDatabase_O::initialize() {
   this->Base::initialize();
   this->_Topologys = core::HashTable_O::createEq();
   this->_Topologys->setupThreadSafeHashTable();
+  this->_FoldamerMonomerContexts = core::HashTableEqual_O::create_default();
+  this->_FoldamerMonomerContexts->setupThreadSafeHashTable();
   //    AllCandoDatabases.append(this->sharedThis<CandoDatabase_O>());
 }
 
 void CandoDatabase_O::fields(core::Record_sp node) {
   node->field_if_not_nil(INTERN_(kw, Name), this->_Name);
   node->field(INTERN_(kw, Topologys), this->_Topologys);
+  node->field(INTERN_(kw, FoldamerMonomerContexts), this->_FoldamerMonomerContexts);
 }
 
 
@@ -668,6 +672,12 @@ CL_DEFMETHOD void CandoDatabase_O::walk_topologys(core::Function_sp func) {
   this->_Topologys->maphash([&func](core::T_sp key, core::T_sp value) { core::eval::funcall(func, value); });
 }
 
+CL_DEFMETHOD void CandoDatabase_O::walk_foldamer_monomer_contexts(core::Function_sp func) {
+  this->_FoldamerMonomerContexts->maphash([&func](core::T_sp key, core::T_sp value) {
+    core::eval::funcall(func, value);
+  });
+}
+
 CL_DEFMETHOD void CandoDatabase_O::setf_findTopology(core::T_sp name, core::T_sp topology) {
   this->_Topologys->setf_gethash(name, topology);
 }
@@ -688,4 +698,35 @@ CL_DEFUN core::T_mv chem__findTopology(core::T_sp name, bool errorp) {
   return cdb->findTopology(name, errorp);
 };
 
+CL_DEFMETHOD void CandoDatabase_O::setf_findFoldamerMonomerContext(core::T_sp foldamer, core::T_sp monomerContext, core::T_sp monomerContextInfo ) {
+  core::Cons_sp key = core::Cons_O::create(foldamer,monomerContext);
+  this->_FoldamerMonomerContexts->setf_gethash(key, monomerContextInfo );
+}
+
+core::T_mv CandoDatabase_O::findFoldamerMonomerContext(core::T_sp foldamer, core::T_sp monomerContext, bool errorp) const {
+  core::Cons_sp key = core::Cons_O::create(foldamer,monomerContext);
+  core::T_mv result_mv = this->_FoldamerMonomerContexts->gethash(key);
+  core::MultipleValues &values = core::lisp_multipleValues();
+  if (errorp && values.second(result_mv.number_of_values()).nilp()) {
+    SIMPLE_ERROR("Could not find foldamer/monomer-context {}/{}", core::_rep_(foldamer), core::_rep_(monomerContext));
+  }
+  return result_mv;
+}
+
+SYMBOL_EXPORT_SC_(ChemPkg,foldamer_monomer_context_info_foldamer);
+SYMBOL_EXPORT_SC_(ChemPkg,foldamer_monomer_context_info_monomer_context);
+
+DOCGROUP(cando);
+CL_LAMBDA(foldamer monomer-context &optional (errorp t));
+CL_DEFUN core::T_mv chem__findFoldamerMonomerContext(core::T_sp foldamer, core::T_sp monomerContext, bool errorp) {
+  CandoDatabase_sp cdb = chem::getCandoDatabase();
+  return cdb->findFoldamerMonomerContext(foldamer, monomerContext, errorp);
+};
+
+DOCGROUP(cando);
+CL_LAMBDA();
+CL_DEFUN core::T_sp chem__foldamerMonomerContextHashTable() {
+  CandoDatabase_sp cdb = chem::getCandoDatabase();
+  return cdb->_FoldamerMonomerContexts;
+};
 }; // namespace chem

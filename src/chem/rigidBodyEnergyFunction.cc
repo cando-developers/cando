@@ -166,10 +166,6 @@ double	RigidBodyEnergyFunction_O::evaluateRaw( NVector_sp pos, NVector_sp force 
   IMPLEMENT_ME();
 }
 
-//    virtual double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce ) ;
-  adapt::QDomNode_sp	identifyTermsBeyondThreshold();
-//    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
-
 ForceMatchReport_sp RigidBodyEnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask ) {
   IMPLEMENT_ME();
 }
@@ -566,12 +562,5 @@ CL_DEFMETHOD size_t RigidBodyEnergyFunction_O::numberOfPoints() const {
 }
   
 
-
-#if 0
-uint RigidBodyEnergyFunction_O::checkForBeyondThresholdInteractions()
-{
-  return 0;
-}
-#endif
 
 };

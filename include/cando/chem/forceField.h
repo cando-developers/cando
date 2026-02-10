@@ -134,6 +134,7 @@ public:
   FFItorDb_sp	                 _Itors;
   FFPtorDb_sp	                 _Ptors;
   FFNonbondDb_sp	         _Nonbonds;
+  FFLKSolvationDb_sp	         _LKSolvation;
   FFVdwDb_sp		         _Vdws;
 public:
   ForceField_O() :
@@ -144,6 +145,7 @@ public:
     _Itors(unbound<FFItorDb_O>()),
     _Ptors(unbound<FFPtorDb_O>()),
     _Nonbonds(unbound<FFNonbondDb_O>()),
+    _LKSolvation(unbound<FFLKSolvationDb_O>()),
     _Vdws(unbound<FFVdwDb_O>())
   {};
           
@@ -166,6 +168,8 @@ public:
   CL_DEFMETHOD 	FFPtorDb_sp getPtorDb() { return this->_Ptors;};
   CL_LISPIFY_NAME("getNonbondDb");
   CL_DEFMETHOD 	FFNonbondDb_sp	getNonbondDb() { return this->_Nonbonds; };
+  CL_LISPIFY_NAME("getLKSolvationDb");
+  CL_DEFMETHOD 	FFLKSolvationDb_sp	getLKSolvationDb() { return this->_LKSolvation; };
   CL_LISPIFY_NAME("getVdwDb");
   CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 
@@ -179,6 +183,7 @@ public:
    void	setFFItorDb( FFItorDb_sp Itors);
    void	setFFPtorDb( FFPtorDb_sp Ptors);
    void	setFFNonbondDb(FFNonbondDb_sp Nonbonds );
+   void	setFFLKSolvationDb(FFLKSolvationDb_sp Nonbonds );
    void	setFFVdwDb(FFVdwDb_sp Vdws );
 
 //	void		parseFromMoeStream(istream in);
