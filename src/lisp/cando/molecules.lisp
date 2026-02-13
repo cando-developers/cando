@@ -369,7 +369,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                                   energy-function
                                                   (max-sd-steps 5000)
                                                   (max-cg-steps 5000)
-                                                  (max-tn-steps 500)
+                                                  (max-tn-steps 5000)
                                                   (sd-tolerance 100.0)
                                                   (cg-tolerance 0.5)
                                                   (tn-tolerance 0.0001)
@@ -402,7 +402,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
     (multiple-value-bind (pos total-energy)
         (minimize-with-restarts min :verbose verbose)
       (finish-output t)
-      (values matter energy-function total-energy))))
+      (values matter energy-function total-energy pos))))
 
 (defun indexed-pathname (template index)
   (let* ((filename (format nil "~a~3,'0d" (pathname-name template) index)))
