@@ -139,14 +139,6 @@ namespace chem
 
 
 #define NOTFOUND                        -1
-#define MAXSTEEPESTDESCENTSTEPS         200           /* Should be 200 */
-#define MAXCONJUGATEGRADIENTSTEPS       10000           /* Should be 200 */
-#define MAXTRUNCATEDNEWTONSTEPS		500           /* Should be 200 */
-#define MAXLINESEARCHSTEPS              10
-#define STARTSTEPSIZE                   0.0001
-#define MIN_GRADIENT_MEAN		0.000001
-
-
 
 
 
@@ -2044,40 +2036,11 @@ void	Minimizer_O::initialize()
   this->bFCallback   = NULL;
 #endif
   this->_DebugOn = false;
-  this->useDefaultSettings();
   this->restart();
   this->_Position = nil<core::T_O>();
   this->_Force = nil<core::T_O>();
 //	this->_StepCallback = _Nil<core::LispCallback_O>();
 }
-
-
-
-CL_LISPIFY_NAME("useDefaultSettings");
-CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
-{
-  this->_InitialLineSearchStep = 0.01;
-  this->_NumberOfSteepestDescentSteps = MAXSTEEPESTDESCENTSTEPS;
-  this->_SteepestDescentTolerance = 2000.0;
-  this->_NumberOfConjugateGradientSteps = MAXCONJUGATEGRADIENTSTEPS;
-  this->_ConjugateGradientTolerance = 10.0;		//	Use this for now, later add TN minimizer and switch to that when this is <10.0
-  this->_NumberOfTruncatedNewtonSteps = MAXTRUNCATEDNEWTONSTEPS;
-  this->_TruncatedNewtonTolerance = 0.00000001;
-  this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
-  this->_PrintIntermediateResults = 0;
-  LOG("_PrintIntermediateResults = {}" , this->_PrintIntermediateResults  );
-  this->_ReportEveryNSteps = 100;
-  this->_Status = minimizerIdle;
-  this->_ShowElapsedTime = true;
-#ifdef	USE_CALLBACKS
-#ifdef	USEBOOSTPYTHON
-  this->iPythonCallbackEverySteps = 1;
-  this->POPythonCallback = NULL;
-#endif
-#endif
-  this->_MinGradientMean = MIN_GRADIENT_MEAN;
-}
-
 
 
 CL_LISPIFY_NAME(minimizer-set-debug-on);

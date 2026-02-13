@@ -300,7 +300,6 @@ struct RestartMinimizer {};
 
     CL_LISPIFY_NAME("getEnergyFunction");
     CL_DEFMETHOD 	ScoringFunction_sp	getEnergyFunction() {_OF(); ASSERTNOTNULL(this->_ScoringFunction); return this->_ScoringFunction; };
-    void	useDefaultSettings();
 
     void	changeOptions(core::List_sp options);
 
@@ -356,8 +355,20 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
     adapt::QDomNode_sp	asXml();
 
     Minimizer_O() :
+        _InitialLineSearchStep(0.01),
+        _SteepestDescentTolerance(100.0),
+        _ConjugateGradientTolerance(0.5),
+        _TruncatedNewtonTolerance(0.0001),
+        _NumberOfSteepestDescentSteps(5000),
+        _NumberOfConjugateGradientSteps(5000),
+        _NumberOfTruncatedNewtonSteps(5000),
         _PrintIntermediateResults(1),
-        _StepCallback(nil<core::T_O>())
+        _StepCallback(nil<core::T_O>()),
+        _ReportEveryNSteps(100),
+        _Status(minimizerIdle),
+        _ShowElapsedTime(true),
+        _MinGradientMean(0.000001),
+        _TruncatedNewtonPreconditioner(hessianPreconditioner)
     {};
   };
 
