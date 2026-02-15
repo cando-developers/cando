@@ -24,19 +24,25 @@ charge."
           (chem:atom/set-charge atm (- (chem:atom/get-charge atm) adjust)))))))
 
 
-(defclass name-charge ()
+(defclass name-charge (cando.serialize:serializable)
   ((name :initarg :name :reader name)
    (charge :initarg :charge :reader charge)))
 
 (defmethod print-object ((obj name-charge) stream)
-  (format stream "(~s . ~,4f) " (name obj) (charge obj)))
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "(~s . ~,4f) " (name obj) (charge obj)))))
 
-(defclass residue-charge ()
+(defclass residue-charge (cando.serialize:serializable)
   ((residue-name :initarg :residue-name :accessor residue-name)
    (name-charges :initarg :name-charges :accessor name-charges)))
 
 (defmethod print-object ((obj residue-charge) stream)
-  (format stream "(~a ~s)" (residue-name obj) (name-charges obj)))
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "(~a ~s)" (residue-name obj) (name-charges obj)))))
 
 (defun residue-charges (residue)
   (let ((atom-charges nil))

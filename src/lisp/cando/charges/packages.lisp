@@ -38,4 +38,8 @@
    #:read-mopac-am1-charges
    #:calculate-charge-trainers
    #:dump-residue-charges
-   #:residue-charges))
+   #:residue-charges
+   #:residue-name
+   #:name-charges
+   #:name
+   #:charge))
