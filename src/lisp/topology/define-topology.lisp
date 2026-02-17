@@ -198,6 +198,23 @@ Keep the heavy atoms and hydrogens in the order they were found."
 (defun ensure-keyword (name)
   (intern (symbol-name name) :keyword))
 
+(defparameter *legal-constitution-atom-properties*
+  '(:plugs :ring :stereochemistry-type :adjust :charge :build-order
+    :aromatic))
+
+(defun validate-constitution-atom-properties (properties atom-name)
+  (unless (and (listp properties) (evenp (length properties)))
+    (error "Atom ~s properties must be a proper plist: ~s" atom-name properties))
+  (loop for (property value) on properties by #'cddr
+        do (unless (keywordp property)
+             (error "Atom ~s has non-keyword property name ~s in ~s"
+                    atom-name property properties))
+           (unless (member property *legal-constitution-atom-properties* :test #'eq)
+             (error "Illegal property ~s (~s) for atom ~s. Allowed properties: ~s"
+                    property value atom-name *legal-constitution-atom-properties*)))
+  properties)
+
+
 (defun parse-atom (atm graph)
   (cond
     ((symbolp atm)
@@ -223,6 +240,7 @@ Keep the heavy atoms and hydrogens in the order they were found."
                              pl)))
        (when (bond-symbol keyword-atm)
          (error "Don't create atoms with name ~a" keyword-atm))
+       (validate-constitution-atom-properties property-list keyword-atm)
        (node-from-symbol-entry keyword-atm graph property-list element)))
     (t (error "Illegal atm ~s" atm))))
 

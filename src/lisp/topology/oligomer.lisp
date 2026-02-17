@@ -17,6 +17,7 @@
           for stereoisomer-atom = (elt stereoisomer-atoms index)
           for atm-name = (topology:atom-name constitution-atom)
           for atm-element = (topology:element constitution-atom)
+          for atm-aromatic = (getf (properties constitution-atom) :aromatic)
           for atm = (chem:make-atom atm-name atm-element)
           for atm-type = (when (slot-boundp stereoisomer-atom 'topology:atom-type)
                            (topology:atom-type stereoisomer-atom))
@@ -28,6 +29,8 @@
           do (chem:atom/set-atom-type atm atm-type)
           do (chem:atom/set-charge atm atm-charge)
           do (chem:matter/set-property atm :lk-solvation-atom-type atm-lk-solvation-type)
+          do (when atm-aromatic
+               (chem:matter/set-property atm :aromatic atm-aromatic))
           do (chem:add-matter residue atm)
           do (setf (elt atoms index) atm
                    (gethash atm-name named-atoms) atm))

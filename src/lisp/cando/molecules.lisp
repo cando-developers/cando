@@ -224,9 +224,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 
 
 (defun configure-minimizer (minimizer
-                            &key (max-sd-steps 50)
-                              (max-cg-steps 100)
-                              (max-tn-steps 100)
+                            &key (max-sd-steps 10000)
+                              (max-cg-steps 10000)
+                              (max-tn-steps 10000)
                               (sd-tolerance 2000.0)
                               (cg-tolerance 0.5)
                               (tn-tolerance 0.0001)
@@ -659,9 +659,9 @@ Disabling happens before enabling - so you can disable all with T and then selec
     rapid-starting-geometry))
 
 (defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose energy-function
-                                              (max-sd-steps 5000)
-                                              (max-cg-steps 5000)
-                                              (max-tn-steps 500)
+                                              (max-sd-steps 10000)
+                                              (max-cg-steps 10000)
+                                              (max-tn-steps 10000)
                                               (sd-tolerance 10.0)
                                               (cg-tolerance 1.0)
                                               (tn-tolerance 0.001)
@@ -758,11 +758,12 @@ Disabling happens before enabling - so you can disable all with T and then selec
                    (chem:matter/all-atoms-as-list agg))))
     (chem:make-simple-vector-coordinate-from-atom-sequence atoms)))
 
+
 (defun superpose-one (&key fixed-atoms-list moveable-matter moveable-atoms-list)
   "Calculate the transform to align the atoms in MOVEABLE-ATOMS-LIST to match the positions
 in FIXED-ATOMS-LIST and apply it to MOVEABLE-MATTER"
-  (let ((coords-fixed (chem:make-simple-vector-coordinate-from-atom-sequence fixed-atoms))
-        (coords-moveable (chem:make-simple-vector-coordinate-from-atom-sequence moveable-atoms))
+  (let ((coords-fixed (chem:make-simple-vector-coordinate-from-atom-sequence fixed-atoms-list))
+        (coords-moveable (chem:make-simple-vector-coordinate-from-atom-sequence moveable-atoms-list))
         (superposer (core:make-cxx-object 'chem:superpose-engine)))
     (chem:set-fixed-all-points superposer coords-fixed)
     (chem:set-moveable-all-points superposer coords-moveable)

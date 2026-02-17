@@ -152,6 +152,15 @@
     aromatic-atoms))
 
 
+(defun mark-aromatic-atoms-from-properties (aromaticity-info matter)
+  (let ((aromatic-atoms nil))
+    (chem:do-atoms (atom matter)
+      (let ((ar-type (getf (chem:properties atom) :aromatic)))
+        (when ar-type
+          (setf aromatic-atoms
+                (set-aromaticity-type aromaticity-info atom ar-type :property-list aromatic-atoms))))
+      aromatic-atoms)))
+
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 
 (defun is-ring-aromatic (aromaticity-info ring)
@@ -191,6 +200,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
     (mark-aromatic-rings-from-bonds aromaticity-info chem:*current-rings*)
+    (mark-aromatic-atoms-from-properties aromaticity-info matter)
     (chem:do-molecules (molecule matter)
       (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
@@ -211,6 +221,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
     (mark-aromatic-rings-from-bonds aromaticity-info chem:*current-rings*)
+    (mark-aromatic-atoms-from-properties aromaticity-info matter)
     (chem:do-molecules (molecule matter)
       (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
