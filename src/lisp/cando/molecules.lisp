@@ -194,8 +194,6 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
         (multiple-value-bind (pos total-energy)
             (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
               (chem:minimize minimizer))
-          (unless total-energy
-            (break "total-energy was NIL"))
           (values pos total-energy)
           ))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
@@ -367,9 +365,9 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                                   (turn-off-nonbond t)
                                                   verbose
                                                   energy-function
-                                                  (max-sd-steps 5000)
-                                                  (max-cg-steps 5000)
-                                                  (max-tn-steps 5000)
+                                                  (max-sd-steps 10000)
+                                                  (max-cg-steps 10000)
+                                                  (max-tn-steps 10000)
                                                   (sd-tolerance 100.0)
                                                   (cg-tolerance 0.5)
                                                   (tn-tolerance 0.0001)
