@@ -146,11 +146,14 @@ Example of oligomer-space-dag
 (defun downselect-foldamer-topology-names (foldamer name topology-groups)
   "Only select names that correspond to topologys that are in the foldamer topology% slot.
 This is so we can create multiple foldamers that have different expressive power."
-  (let ((names (gethash name topology-groups)))
-    (loop for name in names
-          for name-top = (chem:find-topology name)
-          when (member name (topology:foldamer-topology-names foldamer))
-            collect name)))
+  (let* ((names (gethash name topology-groups))
+         (result (loop for name in names
+                       for name-top = (chem:find-topology name)
+                       when (member name (topology:foldamer-topology-names foldamer))
+                         collect name)))
+    #+(or)(unless result
+      (error "There are no names for ~s" names))
+    result))
 
 (define-condition missing-monomers (condition)
   ((message :initarg :message :reader message)))

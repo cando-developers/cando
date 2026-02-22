@@ -405,3 +405,185 @@ evaluates the body in that dynamic environment."
       (format sout "VDWAALS  = ~12,4f  EEL     = ~12,4f   HBOND     = ~12,4f~%" vdwaals eel 0.0)
       (format sout "1-4 VDW  = ~12,4f  1-4 EEL = ~12,4f   RESTRAINT = ~12,4f~%" vdw1-4 eel1-4 restraint)
     )))
+
+(define-condition chem:parameterization-error (error) ()
+  (:documentation "Base condition for parameterization errors"))
+
+(define-condition chem:missing-type (chem:parameterization-error)
+  ((molecule :initarg :molecule :accessor molecule)
+   (a1-name :initarg :a1-name :accessor a1-name)
+   (a1-element :initarg :a1-element :accessor a1-element))
+  (:report (lambda (obj stream)
+             (let* ((name (chem:get-name (molecule obj)))
+                    (properties (chem:matter/properties (molecule obj)))
+                    (maybe-description (getf properties :description)))
+               (format stream "Molecule name: ~s cannot identify OpenFF nonbond parameter for atom(element)s: (~a(~a)); ~a"
+                       (chem:get-name (molecule obj))
+                       (a1-name obj)
+                       (a1-element obj)
+                       (if maybe-description
+                           (format nil "description: ~a" maybe-description)
+                           "")
+                       )))))
+
+(defun chem:missing-type-error (a1 molecule)
+  (let* ((a1-name (chem:get-name a1))
+         (a1-element (chem:get-element a1)))
+    (error 'chem:missing-type
+           :molecule molecule
+           :a1-name a1-name
+           :a1-element a1-element
+           )))
+
+(define-condition chem:missing-stretch (chem:parameterization-error)
+  ((molecule :initarg :molecule :accessor molecule)
+   (a1-name :initarg :a1-name :accessor a1-name)
+   (a2-name :initarg :a2-name :accessor a2-name)
+   (a1-element :initarg :a1-element :accessor a1-element)
+   (a2-element :initarg :a2-element :accessor a2-element)
+   (a1-a2-bond-order :initarg :a1-a2-bond-order :accessor a1-a2-bond-order))
+  (:report (lambda (obj stream)
+             (let* ((name (chem:get-name (molecule obj)))
+                    (properties (chem:matter/properties (molecule obj)))
+                    (maybe-description (getf properties :description)))
+               (format stream "Molecule name: ~s cannot identify OpenFF stretch parameter for list of two atom(element)s: (~a(~a) ~a(~a)); ~a"
+                       (chem:get-name (molecule obj))
+                       (a1-name obj)
+                       (a1-element obj)
+                       (a2-name obj)
+                       (a2-element obj)
+                       (if maybe-description
+                           (format nil "description: ~a" maybe-description)
+                           "")
+                       )))))
+
+(defun chem:missing-stretch-error (key molecule)
+  (let* ((a1 (first key))
+         (a2 (second key))
+         (a1-name (chem:get-name a1))
+         (a2-name (chem:get-name a2))
+         (a1-element (chem:get-element a1))
+         (a2-element (chem:get-element a2))
+         (a1-a2-bond-order (chem:bond-order-to a1 a2))
+         )
+    (error 'chem:missing-stretch
+           :molecule molecule
+           :a1-name a1-name
+           :a2-name a2-name
+           :a1-element a1-element
+           :a2-element a2-element
+           :a1-a2-bond-order a1-a2-bond-order
+           )))
+
+(define-condition chem:missing-angle (chem:parameterization-error)
+  ((molecule :initarg :molecule :accessor molecule)
+   (a1-name :initarg :a1-name :accessor a1-name)
+   (a2-name :initarg :a2-name :accessor a2-name)
+   (a3-name :initarg :a3-name :accessor a3-name)
+   (a1-element :initarg :a1-element :accessor a1-element)
+   (a2-element :initarg :a2-element :accessor a2-element)
+   (a3-element :initarg :a3-element :accessor a3-element)
+   (a1-a2-bond-order :initarg :a1-a2-bond-order :accessor a1-a2-bond-order)
+   (a2-a3-bond-order :initarg :a2-a3-bond-order :accessor a2-a3-bond-order))
+  (:report (lambda (obj stream)
+             (let* ((name (chem:get-name (molecule obj)))
+                    (properties (chem:matter/properties (molecule obj)))
+                    (maybe-description (getf properties :description)))
+               (format stream "Molecule name: ~s cannot identify OpenFF angle parameter for list of three atom(element)s: (~a(~a) ~a(~a) ~a(~a)); ~a"
+                       (chem:get-name (molecule obj))
+                       (a1-name obj)
+                       (a1-element obj)
+                       (a2-name obj)
+                       (a2-element obj)
+                       (a3-name obj)
+                       (a3-element obj)
+                       (if maybe-description
+                           (format nil "description: ~a" maybe-description)
+                           "")
+                       )))))
+
+(defun chem:missing-angle-error (key molecule)
+  (let* ((a1 (first key))
+         (a2 (second key))
+         (a3 (third key))
+         (a1-name (chem:get-name a1))
+         (a2-name (chem:get-name a2))
+         (a3-name (chem:get-name a3))
+         (a1-element (chem:get-element a1))
+         (a2-element (chem:get-element a2))
+         (a3-element (chem:get-element a3))
+         (a1-a2-bond-order (chem:bond-order-to a1 a2))
+         (a2-a3-bond-order (chem:bond-order-to a2 a3))
+         )
+    (error 'chem:missing-angle
+           :molecule molecule
+           :a1-name a1-name
+           :a2-name a2-name
+           :a3-name a3-name
+           :a1-element a1-element
+           :a2-element a2-element
+           :a3-element a3-element
+           :a1-a2-bond-order a1-a2-bond-order
+           :a2-a3-bond-order a2-a3-bond-order
+           )))
+
+(define-condition chem:missing-dihedral (chem:parameterization-error)
+  ((molecule :initarg :molecule :accessor molecule)
+   (a1-name :initarg :a1-name :accessor a1-name)
+   (a2-name :initarg :a2-name :accessor a2-name)
+   (a3-name :initarg :a3-name :accessor a3-name)
+   (a4-name :initarg :a4-name :accessor a4-name)
+   (a1-element :initarg :a1-element :accessor a1-element)
+   (a2-element :initarg :a2-element :accessor a2-element)
+   (a3-element :initarg :a3-element :accessor a3-element)
+   (a4-element :initarg :a4-element :accessor a4-element)
+   (a1-a2-bond-order :initarg :a1-a2-bond-order :accessor a1-a2-bond-order)
+   (a2-a3-bond-order :initarg :a2-a3-bond-order :accessor a2-a3-bond-order)
+   (a3-a4-bond-order :initarg :a3-a4-bond-order :accessor a3-a4-bond-order))
+  (:report (lambda (obj stream)
+             (let* ((name (chem:get-name (molecule obj)))
+                    (properties (chem:matter/properties (molecule obj)))
+                    (maybe-description (getf properties :description)))
+               (format stream "Molecule name: ~s cannot identify OpenFF dihedral parameter for list of four atom(element)s: (~a(~a) ~a(~a) ~a(~a) ~a(~a)); ~a"
+                       (chem:get-name (molecule obj))
+                       (a1-name obj)
+                       (a1-element obj)
+                       (a2-name obj)
+                       (a2-element obj)
+                       (a3-name obj)
+                       (a3-element obj)
+                       (a4-name obj)
+                       (a4-element obj)
+                       (if maybe-description
+                           (format nil "description: ~a" maybe-description)
+                           "")
+                       )))))
+
+(defun chem:missing-dihedral-error (a1 a2 a3 a4 molecule)
+  (let ((a1-name (chem:get-name a1))
+        (a2-name (chem:get-name a2))
+        (a3-name (chem:get-name a3))
+        (a4-name (chem:get-name a4))
+        (a1-element (chem:get-element a1))
+        (a2-element (chem:get-element a2))
+        (a3-element (chem:get-element a3))
+        (a4-element (chem:get-element a4))
+        (a1-a2-bond-order (chem:bond-order-to a1 a2))
+        (a2-a3-bond-order (chem:bond-order-to a2 a3))
+        (a3-a4-bond-order (chem:bond-order-to a3 a4))
+        )
+    (error 'chem:missing-dihedral
+           :molecule molecule
+           :a1-name a1-name
+           :a2-name a2-name
+           :a3-name a3-name
+           :a4-name a4-name
+           :a1-element a1-element
+           :a2-element a2-element
+           :a3-element a3-element
+           :a4-element a4-element
+           :a1-a2-bond-order a1-a2-bond-order
+           :a2-a3-bond-order a2-a3-bond-order
+           :a3-a4-bond-order a3-a4-bond-order
+           )))
+

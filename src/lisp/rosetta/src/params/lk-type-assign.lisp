@@ -69,30 +69,62 @@
                  lk-type-assignments)
         found)))
 
-(defun assign-lk-types (name molecule lk-type-assignments &key (error-on-missing t) verbose)
+(define-condition missing-lk-type (chem:parameterization-error)
+  ((molecule :initarg :molecule :accessor molecule)
+   (residue :initarg :residue :accessor residue)
+   (a1-name :initarg :a1-name :accessor a1-name)
+   (a1-element :initarg :a1-element :accessor a1-element))
+  (:report (lambda (obj stream)
+             (let* ((name (chem:get-name (molecule obj)))
+                    (properties (chem:matter/properties (molecule obj)))
+                    (maybe-description (getf properties :description)))
+               (format stream "Molecule(res) name: ~s(~s) cannot identify lk-solvation type for atom(element)s: (~a(~a)); ~a"
+                       (chem:get-name (molecule obj))
+                       (chem:get-name (residue obj))
+                       (a1-name obj)
+                       (a1-element obj)
+                       (if maybe-description
+                           (format nil "description: ~a" maybe-description)
+                           "")
+                       )))))
+
+(defun missing-lk-type-error (a1 residue molecule)
+  (let* ((a1-name (chem:get-name a1))
+         (a1-element (chem:get-element a1)))
+    (error 'missing-lk-type
+           :molecule molecule
+           :residue residue
+           :a1-name a1-name
+           :a1-element a1-element
+           )))
+
+(defun assign-lk-types (molecule lk-type-assignments &key (error-on-missing t) verbose)
   "Return a hash-table mapping atoms to LK type symbols."
   (let ((results (make-hash-table :test #'eq)))
-    (flet ((missing-assignment (res atom element)
-             (format t "    MISSING LK type - for atom (~s/~s/~s)~%" (chem:get-name res) (chem:get-name atom) element)))
-      (chem:do-residues (res molecule)
-        (chem:do-atoms (atom res)
-          (let* ((element (chem:get-element atom))
-                 (assignments (lookup-lk-type-assignments element lk-type-assignments)))
-            (if (not assignments)
-                (if error-on-missing
-                    (error "No LK type assignments for element ~s" element)
-                    (setf (gethash atom results) nil))
-                (let ((assigned nil))
-                  (dolist (assignment assignments)
-                    ;;(format t "Looking at assignment: ~s~%" assignment)
-                    (let* ((compiled (rosetta-lk-type-assignment-compiled-smarts assignment)))
-                      (when (chem:matches compiled atom)
-                        (setf assigned (rosetta-lk-type-assignment-type assignment)))))
-                  (if assigned
-                      (progn
-                        (when verbose (format t "Assigned ~s(~s) -> ~s~%" (chem:get-name res) (chem:get-name atom) assigned))
-                        (setf (gethash atom results) assigned))
-                      (if error-on-missing
-                          (missing-assignment res atom element)
-                          (setf (gethash atom results) nil)))))))))
+    (chem:do-residues (res molecule)
+      (chem:do-atoms (atom res)
+        (let* ((element (chem:get-element atom))
+               (assignments (lookup-lk-type-assignments element lk-type-assignments)))
+          (if (not assignments)
+              (if error-on-missing
+                  (error "No LK type assignments for element ~s" element)
+                  (setf (gethash atom results) nil))
+              (let ((assigned nil))
+                (dolist (assignment assignments)
+                  ;;(format t "Looking at assignment: ~s~%" assignment)
+                  (let* ((compiled (rosetta-lk-type-assignment-compiled-smarts assignment)))
+                    (when (chem:matches compiled atom)
+                      (setf assigned (rosetta-lk-type-assignment-type assignment)))))
+                (if assigned
+                    (progn
+                      (when verbose (format t "Assigned ~s(~s) -> ~s~%" (chem:get-name res) (chem:get-name atom) assigned))
+                      (setf (gethash atom results) assigned))
+                    (if error-on-missing
+                        (progn
+                          (restart-case
+                              (missing-lk-type-error atom res molecule)
+                            (chem:skip-missing-parameters ()
+                              :report "skip this missing type and continue"
+                              nil)))
+                        (setf (gethash atom results) nil))))))))
     results))

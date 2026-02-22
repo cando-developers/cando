@@ -96,6 +96,17 @@ namespace chem
 
   SYMBOL_EXPORT_SC_(ChemPkg,nonbondTerm);
   SYMBOL_EXPORT_SC_(ChemPkg,restraintAnchor);
+  SYMBOL_EXPORT_SC_(ChemPkg,parameterizationError);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingType);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingStretch);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingAngle);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingDihedral);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingTypeError);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingStretchError);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingAngleError);
+  SYMBOL_EXPORT_SC_(ChemPkg,missingDihedralError);
+  SYMBOL_EXPORT_SC_(ChemPkg,skipMissingParameters);
+
 
   //Maybe use this in place of InteractionError?
   SYMBOL_EXPORT_SC_(ChemPkg,InteractionError);
