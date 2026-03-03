@@ -160,6 +160,8 @@ namespace chem {
     void addTerm(const TermType& term);
     virtual void dumpTerms(core::HashTable_sp atomTypes);
 
+    virtual void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask );
+
     virtual double evaluateAllComponent(ScoringFunction_sp scorer,
                                         NVector_sp pos,
                                         core::T_sp energyScale,

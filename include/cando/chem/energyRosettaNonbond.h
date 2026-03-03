@@ -144,12 +144,12 @@ namespace chem {
     virtual std::string descriptionOfContents() const;
     typedef gctools::Vec0<TermType>::iterator iterator;
     static EnergyRosettaNonbond_sp make(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                        core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
+                                        core::HashTable_sp atomTypes,
+                                        core::T_sp keepInteractionFactory,
                                         SetupAccumulator& setupAcc,
                                         core::T_sp tcoordinates = nil<core::T_O>());
   public:
     CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
-    void callForEachTerm(core::Function_sp callback);
 
   public:
     CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
@@ -188,6 +188,12 @@ namespace chem {
 
     core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
     core::T_mv rebuildPairList(core::T_sp tcoordinates);
+
+    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+                                          AbstractLargeSquareMatrix_sp m,
+                                          core::T_sp activeAtomMask );
+
+    virtual void atomsForEachTerm(core::Function_sp callback);
 
     EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 

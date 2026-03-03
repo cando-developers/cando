@@ -232,10 +232,7 @@ namespace chem {
     CL_DEFMETHOD EnergyFixedNonbondRestraint_sp getFixedNonbondRestraintComponent();
 
     core::List_sp allEnergyComponents() const;
-    void          pushEnergyComponent(EnergyComponent_sp component) {
-      this->_EnergyComponents = core::Cons_O::create(component,this->_EnergyComponents);
-    }
-
+    void          pushEnergyComponent(EnergyComponent_sp component);
 
     CL_DEFMETHOD bool hasMissingParameters();
     CL_DEFMETHOD core::List_sp getMissingParameters();

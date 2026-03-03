@@ -431,6 +431,10 @@ double EnergyRosettaElec_O::evaluateAllComponent(ScoringFunction_sp score,
   return energy;
 }
 
+void EnergyRosettaElec_O::setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) {
+  return; // not used for preconditioner
+}
+
 double EnergyRosettaElec_O::debugAllComponent(ScoringFunction_sp score,
                                               NVector_sp pos,
                                               core::T_sp energyScale,

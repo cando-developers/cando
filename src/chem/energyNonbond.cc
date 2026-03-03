@@ -1310,7 +1310,7 @@ core::T_mv EnergyNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
                 core::clasp_make_fixnum(totalInteractions));
 }
 
-core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) __attribute__((optnone)) {
+core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {
   core::T_sp keepInteractionFactory = this->_KeepInteractionFactory;
   if (keepInteractionFactory.nilp()) return Values0<core::T_O>();
   NVector_sp coords = gc::As<NVector_sp>(tcoordinates);

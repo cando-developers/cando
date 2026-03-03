@@ -567,11 +567,10 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
           if ( ffNonbondDb->hasType(ssameParmtype) ) {
             ffNonbondSameParmType = gc::As_unsafe<FFNonbond_sp>(chem__FFNonbond_findType(ffNonbondDb,ssameParmtype));
             ffNonbondSameParmType->setRadius_Angstroms(radius);
-            ffNonbondSameParmType->setEpsilon_kcal(edep);             
+            ffNonbondSameParmType->setEpsilon_kcal(edep);
           } else {
             SIMPLE_ERROR("Could not find nonbond2 type: {}" , _rep_(stype));
           }
-            
         }
       }
 

@@ -132,6 +132,17 @@ gc::smart_ptr<Type> ensureComponent(EnergyFunction_sp mthis) {
   return gc::As<gc::smart_ptr<Type>>(comp);
 }
 
+void          EnergyFunction_O::pushEnergyComponent(EnergyComponent_sp component) {
+  auto componentClass = component->_instanceClass();
+  for ( auto cur : this->_EnergyComponents ) {
+    EnergyComponent_sp existing = gc::As<EnergyComponent_sp>(oCar(cur));
+    if (existing->_instanceClass() == componentClass) {
+      SIMPLE_ERROR("Attempted to add a duplicate EnergyComponent of class {}", _rep_(componentClass->_className()));
+    }
+  }
+  this->_EnergyComponents = core::Cons_O::create(component,this->_EnergyComponents);
+}
+
   int	_areValuesClose( double numVal, double analVal, const char* funcName, const char* termName, int index )
   {
     double	rel = 0.0;
@@ -1121,6 +1132,7 @@ void EnergyFunction_O::ensureBaseComponents() {
     EnergyNonbond_sp maybe =
         gc::As<EnergyNonbond_sp>(this->findComponentOrNil(EnergyNonbond_O::static_classSymbol()));
     if (maybe.nilp()) {
+      if (
       maybe = gc::As<EnergyNonbond_sp>(ensureComponent<EnergyNonbond_O>(this->asSmartPtr()));
     }
     return maybe;
@@ -1497,7 +1509,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   // Search the ptor terms
   {
     auto dihedralComponent = this->getDihedralComponent();
-    this->pushEnergyComponent(dihedralComponent);
     core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedral_O::staticClass() );
     size_t terms = 0;
     size_t missing_terms = 0;
@@ -1703,7 +1714,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 	//
   {
     auto chiralRestraintComponent = this->getChiralRestraintComponent();
-    this->pushEnergyComponent(chiralRestraintComponent);
     if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
       SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
     }

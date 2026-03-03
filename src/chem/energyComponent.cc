@@ -103,6 +103,12 @@ void EnergyComponent_O::fields(core::Record_sp node)
 }
 
 
+CL_DOCSTRING(R"doc(Call the CALLBACK for each term and pass the atoms and other information.  Exactly what is passed depends on the energy-component.
+The CALLBACK either needs to accept all the arguments as required arguments or a single &rest parameter.)doc");
+CL_DEFMETHOD void EnergyComponent_O::atomsForEachTerm(core::Function_sp callback) {
+  SUBCLASS_MUST_IMPLEMENT();
+}
+
 string	EnergyComponent_O::enabledAsString() 
 {
   stringstream	ss;

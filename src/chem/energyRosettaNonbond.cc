@@ -199,7 +199,7 @@ bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, 
                                              size_t i3x1, size_t i3x2,
                                              EnergyRosettaNonbond_sp energyRosettaNonbond,
                                              core::HashTable_sp atomTypes, core::T_sp keepInteraction,
-                                             const rosetta_nonbond_parameters& params) {
+                                             const rosetta_nonbond_parameters& params) __attribute__((optnone)){
   this->_Atom1_enb = a1;
   this->_Atom2_enb = a2;
   core::Symbol_sp t1 = a1->getType(atomTypes);
@@ -213,11 +213,13 @@ bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, 
 
   double rstar = ffNonbond1->getRadius_Angstroms() + ffNonbond2->getRadius_Angstroms();
   double epsilonij = sqrt(ffNonbond1->getEpsilon_kcal() * ffNonbond2->getEpsilon_kcal());
+  // Polar hydrogen types (HO, HW, HS, etc.) intentionally have zero epsilon
+  // in AMBER force fields - skip the vdW term for these pairs
+  if (epsilonij==0.0) return false;
   double rtothe6th = rstar * rstar * rstar * rstar * rstar * rstar;
   double rtothe12th = rtothe6th * rtothe6th;
   double parmA = epsilonij * rtothe12th;
   double parmC = 2.0 * epsilonij * rtothe6th;
-
   this->term = rosetta_nonbond_term(params, parmA, parmC, i3x1, i3x2);
   return true;
 }
@@ -253,7 +255,7 @@ void EnergyRosettaNonbond_O::dumpTerms(core::HashTable_sp atomTypes) {
   }
 }
 
-void EnergyRosettaNonbond_O::callForEachTerm(core::Function_sp callback) {
+void EnergyRosettaNonbond_O::atomsForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
     core::eval::funcall(callback, eni->_Atom1_enb, eni->_Atom2_enb,
                         core::make_fixnum(eni->term.i3x1),
@@ -381,16 +383,17 @@ core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
               }
               if (keep) {
                 EnergyRosettaNonbond term;
-                term.defineForAtomPair(this->_NonbondForceField,
+                if (term.defineForAtomPair(this->_NonbondForceField,
                                        iea1->atom(), iea2->atom(),
                                        iea1->coordinateIndexTimes3(),
                                        iea2->coordinateIndexTimes3(),
                                        this->asSmartPtr(),
                                        this->_AtomTypes,
                                        keepInteraction,
-                                       params);
-                this->addTerm(term);
-                ++interactionsKept;
+                                       params)) {
+                  this->addTerm(term);
+                  ++interactionsKept;
+                }
               } else {
                 ++interactionsDiscarded;
               }
@@ -430,6 +433,10 @@ double EnergyRosettaNonbond_O::evaluateAllComponent(ScoringFunction_sp score,
                                                             calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec,
                                                             activeAtomMask, debugInteractions, fails, index);
   return energy;
+}
+
+void EnergyRosettaNonbond_O::setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) {
+  return; // not used for preconditioner
 }
 
 double EnergyRosettaNonbond_O::debugAllComponent(ScoringFunction_sp score,

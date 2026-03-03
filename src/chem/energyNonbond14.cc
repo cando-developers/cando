@@ -526,6 +526,13 @@ void EnergyNonbond14_O::dumpTerms(core::HashTable_sp atomTypes) {
 }
 
 
+void EnergyNonbond14_O::setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) {
+  return; // not used for preconditioner
+}
+
+
+
+
 SYMBOL_EXPORT_SC_(KeywordPkg, nonbond);
 SYMBOL_EXPORT_SC_(KeywordPkg, vdwRadii);
 SYMBOL_EXPORT_SC_(KeywordPkg, distance);

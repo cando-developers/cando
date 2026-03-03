@@ -381,6 +381,8 @@ public:
   CL_LISPIFY_NAME("energy-component-evaluations");
   CL_DEFMETHOD 	size_t	evaluations() const { return this->_Evaluations; };
 
+  virtual void atomsForEachTerm(core::Function_sp callback);
+
   CL_DEFMETHOD virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const {SUBCLASS_MUST_IMPLEMENT(); };
   CL_DEFMETHOD virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {SUBCLASS_MUST_IMPLEMENT(); };
   

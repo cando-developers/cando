@@ -274,6 +274,10 @@ void EnergyRosettaLKSolvation_O::dumpTerms(core::HashTable_sp atomTypes) {
   }
 }
 
+void EnergyRosettaLKSolvation_O::setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) {
+  return; // not used for preconditioner
+}
+
 void EnergyRosettaLKSolvation_O::callForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
     core::eval::funcall(callback, eni->_Atom1_enb, eni->_Atom2_enb,
