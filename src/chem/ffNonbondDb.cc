@@ -601,7 +601,7 @@ CL_LAMBDA(type &key (type-comment nil) (lj-radius 0.0) (lj-wdepth 0.0)
                                                         double LK_lambda,
                                                         double LK_volume)
   {
-    auto res = gctools::GC<FFLKSolvation_O>::allocate_with_default_constructor();
+    auto res = gctools::GC<FFLKSolvation_O>::allocate();
     res->_Type = type;
     res->_TypeComment = typeComment;
     res->_LJ_radius = LJ_radius;
