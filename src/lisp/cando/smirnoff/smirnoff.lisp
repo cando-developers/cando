@@ -131,192 +131,195 @@ The chem:force-field-type-rules-merged generic function was used to organize the
            (ptors (make-hash-table :test #'equal))
            (itors (make-hash-table :test #'equal))
            (*print-pretty* nil))
-      (when (chem:verbose 2) (format t "Generating stretch terms~%"))
-      (let ((bond-energy (chem:get-stretch-component energy-function))
-            (keep-interaction-stretch-test (or (eq keep-interaction-factory t)
+      (let ((keep-interaction-stretch-test (or (eq keep-interaction-factory t)
                                                (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-stretch))))))
-        ;; Work through the force-fields backwards so that more recent terms will shadow older ones
-        (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
-              for bonds-force = (bonds-force force-field)
-              do (loop for term across (terms bonds-force)
-                       for smirks-graph = (maybe-cached-smirnoff-term term)
-                       for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
-                       do (loop for hit in hits
-                                for a1 = (aref hit 1)
-                                for a2 = (aref hit 2)
-                                do (let ((key12 (list a1 a2)))
-                                     ;; The vf2 algorithm will find the bond in both directions
-                                     ;; one of them will match - so we won't worry about the other one
-                                     (multiple-value-bind (val found)
-                                         (gethash key12 bonds)
-                                       (if found
-                                           (progn
-                                             (push term (gethash key12 bonds)))
-                                           (let ((key21 (reverse key12)))
-                                             (multiple-value-bind (val found)
-                                                 (gethash key21 bonds)
-                                               (if found
-                                                   (progn
-                                                     (push term (gethash key21 bonds)))
-                                                   (error "Could not find keys ~s or ~s in bonds" key12 key21))))))))))
-        (maphash (lambda (key terms)
-                   (if terms
-                       (let* ((a1 (first key))
-                              (a2 (second key)))
-                         (when (or (eq keep-interaction-stretch-test t)
-                                   (funcall keep-interaction-stretch-test a1 a2))
-                           (let* ((term (first terms))
-                                  (k (k term))
-                                  (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
-                                  (len (len term)))
-                             (chem:add-stretch-term bond-energy atom-table a1 a2 k-amber len))))
-                       (restart-case
-                           (chem:missing-stretch-error key molecule)
-                         (chem:skip-missing-parameters ()
-                           :report "skip this missing parameter and continue"
-                           nil))))
-                 bonds))
-      (when (chem:verbose 2) (format t "Generating angle terms~%"))
-      (let ((angle-energy (chem:get-angle-component energy-function))
-            (keep-interaction-angle-test (or (eq keep-interaction-factory t)
+        (when keep-interaction-stretch-test
+          (when (chem:verbose 2) (format t "Generating stretch terms~%"))
+          (let ((bond-energy (chem:make-energy-stretch energy-function)))
+            ;; Work through the force-fields backwards so that more recent terms will shadow older ones
+            (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
+                  for bonds-force = (bonds-force force-field)
+                  do (loop for term across (terms bonds-force)
+                           for smirks-graph = (maybe-cached-smirnoff-term term)
+                           for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
+                           do (loop for hit in hits
+                                    for a1 = (aref hit 1)
+                                    for a2 = (aref hit 2)
+                                    do (let ((key12 (list a1 a2)))
+                                         ;; The vf2 algorithm will find the bond in both directions
+                                         ;; one of them will match - so we won't worry about the other one
+                                         (multiple-value-bind (val found)
+                                             (gethash key12 bonds)
+                                           (if found
+                                               (progn
+                                                 (push term (gethash key12 bonds)))
+                                               (let ((key21 (reverse key12)))
+                                                 (multiple-value-bind (val found)
+                                                     (gethash key21 bonds)
+                                                   (if found
+                                                       (progn
+                                                         (push term (gethash key21 bonds)))
+                                                       (error "Could not find keys ~s or ~s in bonds" key12 key21))))))))))
+            (maphash (lambda (key terms)
+                       (if terms
+                           (let* ((a1 (first key))
+                                  (a2 (second key)))
+                             (when (or (eq keep-interaction-stretch-test t)
+                                       (funcall keep-interaction-stretch-test a1 a2))
+                               (let* ((term (first terms))
+                                      (k (k term))
+                                      (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
+                                      (len (len term)))
+                                 (chem:add-stretch-term bond-energy atom-table a1 a2 k-amber len))))
+                           (restart-case
+                               (chem:missing-stretch-error key molecule)
+                             (chem:skip-missing-parameters ()
+                               :report "skip this missing parameter and continue"
+                               nil))))
+                     bonds))))
+      (let ((keep-interaction-angle-test (or (eq keep-interaction-factory t)
                                              (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-angle))))))
-        (chem:map-angles nil (lambda (a1 a2 a3)
-                               (setf (gethash (list a1 a2 a3) angles) nil))
-                         molecule)
-        ;; Work through the force-fields backwards so that more recent terms will shadow older ones
-        (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
-              for angles-force = (angles-force force-field)
-              do (loop for term across (terms angles-force)
-                       for smirks = (progn
-                                      (smirks term))
-                       for smirks-graph = (maybe-cached-smirnoff-term term)
-                       for hits = (progn
-                                    (chem:boost-graph-vf2 smirks-graph molecule-graph))
-                       do (loop for hit in hits
-                                for a1 = (aref hit 1)
-                                for a2 = (aref hit 2)
-                                for a3 = (aref hit 3)
-                                do (let ((key123 (list a1 a2 a3)))
-                                     ;; The vf2 algorithm will find the angle in both directions
-                                     ;; one of them will match - so we won't worry about the other one
-                                     (multiple-value-bind (val found)
-                                         (gethash key123 angles)
-                                       (if found
-                                           (progn
-                                             (push term (gethash key123 angles)))
-                                           (let ((key321 (nreverse key123)))
-                                             (multiple-value-bind (val found)
-                                                 (gethash key321 angles)
-                                               (if found
-                                                   (progn
-                                                     (push term (gethash key321 angles)))
-                                                   (error "Could not find keys ~s or ~s in angles" key123 key321))))))))))
-        (maphash (lambda (key terms)
-                   (if terms
+        (when keep-interaction-angle-test
+          (when (chem:verbose 2) (format t "Generating angle terms~%"))
+          (let ((angle-energy (chem:make-energy-angle energy-function)))
+            (chem:map-angles nil (lambda (a1 a2 a3)
+                                   (setf (gethash (list a1 a2 a3) angles) nil))
+                             molecule)
+            ;; Work through the force-fields backwards so that more recent terms will shadow older ones
+            (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
+                  for angles-force = (angles-force force-field)
+                  do (loop for term across (terms angles-force)
+                           for smirks = (progn
+                                          (smirks term))
+                           for smirks-graph = (maybe-cached-smirnoff-term term)
+                           for hits = (progn
+                                        (chem:boost-graph-vf2 smirks-graph molecule-graph))
+                           do (loop for hit in hits
+                                    for a1 = (aref hit 1)
+                                    for a2 = (aref hit 2)
+                                    for a3 = (aref hit 3)
+                                    do (let ((key123 (list a1 a2 a3)))
+                                         ;; The vf2 algorithm will find the angle in both directions
+                                         ;; one of them will match - so we won't worry about the other one
+                                         (multiple-value-bind (val found)
+                                             (gethash key123 angles)
+                                           (if found
+                                               (progn
+                                                 (push term (gethash key123 angles)))
+                                               (let ((key321 (nreverse key123)))
+                                                 (multiple-value-bind (val found)
+                                                     (gethash key321 angles)
+                                                   (if found
+                                                       (progn
+                                                         (push term (gethash key321 angles)))
+                                                       (error "Could not find keys ~s or ~s in angles" key123 key321))))))))))
+            (maphash (lambda (key terms)
+                       (if terms
+                           (let* ((a1 (first key))
+                                  (a2 (second key))
+                                  (a3 (third key)))
+                             (when (or (eq keep-interaction-angle-test t)
+                                       (funcall keep-interaction-angle-test a1 a2 a3))
+                               (let* ((term (first terms))
+                                      (k (k term))
+                                      (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
+                                      (angle (angle term)))
+                                 (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle))))
+                           (restart-case
+                               (chem:missing-angle-error key molecule)
+                             (chem:skip-missing-parameters ()
+                               :report "skip this missing parameter and continue"
+                               nil))))
+                     angles))))
+      (let ((keep-interaction-dihedral-test (or (eq keep-interaction-factory t)
+                                                (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-dihedral))))))
+        (when keep-interaction-dihedral-test
+          (when (chem:verbose 2) (format t "Generating dihedral terms~%"))
+          (let ((dihedral-energy (chem:make-energy-dihedral energy-function)))
+            (chem:map-dihedrals nil (lambda (a1 a2 a3 a4)
+                                      (setf (gethash (list a1 a2 a3 a4) ptors) nil))
+                                molecule)
+            ;; Work through the force-fields backwards so that more recent terms will shadow older ones
+            (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
+                  for proper-torsion-force = (if (slot-boundp force-field 'proper-torsion-force)
+                                                 (proper-torsion-force force-field)
+                                                 nil)
+                  do (when proper-torsion-force
+                       (loop for term across (terms proper-torsion-force)
+                             for smirks-graph = (maybe-cached-smirnoff-term term)
+                             for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
+                             do (loop for hit in hits
+                                      for a1 = (aref hit 1)
+                                      for a2 = (aref hit 2)
+                                      for a3 = (aref hit 3)
+                                      for a4 = (aref hit 4)
+                                      for key1234 = (list a1 a2 a3 a4)
+                                      ;; The vf2 algorithm will find the dihedral in both directions
+                                      ;; one of them will match - so we won't worry about the other one
+                                      do (multiple-value-bind (val found)
+                                             (gethash key1234 ptors)
+                                           (if found
+                                               (progn
+                                                 (push term (gethash key1234 ptors)))
+                                               (let ((key4321 (nreverse key1234)))
+                                                 (multiple-value-bind (val found)
+                                                     (gethash key4321 ptors)
+                                                   (if found
+                                                       (progn
+                                                         (push term (gethash key4321 ptors)))
+                                                       (error "Could not find keys ~s or ~s in ptors" key1234 key4321))))))))))
+            (maphash (lambda (key terms)
                        (let* ((a1 (first key))
                               (a2 (second key))
-                              (a3 (third key)))
-                         (when (or (eq keep-interaction-angle-test t)
-                                   (funcall keep-interaction-angle-test a1 a2 a3))
-                           (let* ((term (first terms))
-                                  (k (k term))
-                                  (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
-                                  (angle (angle term)))
-                             (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle))))
-                       (restart-case
-                           (chem:missing-angle-error key molecule)
-                         (chem:skip-missing-parameters ()
-                           :report "skip this missing parameter and continue"
-                           nil))))
-                 angles))
-      (when (chem:verbose 2) (format t "Generating dihedral terms~%"))
-      (let ((dihedral-energy (chem:get-dihedral-component energy-function))
-            (keep-interaction-dihedral-test (or (eq keep-interaction-factory t)
-                                                (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-dihedral))))))
-        (chem:map-dihedrals nil (lambda (a1 a2 a3 a4)
-                                  (setf (gethash (list a1 a2 a3 a4) ptors) nil))
-                            molecule)
-        ;; Work through the force-fields backwards so that more recent terms will shadow older ones
-        (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
-              for proper-torsion-force = (if (slot-boundp force-field 'proper-torsion-force)
-                                             (proper-torsion-force force-field)
-                                             nil)
-              do (when proper-torsion-force
-                   (loop for term across (terms proper-torsion-force)
-                         for smirks-graph = (maybe-cached-smirnoff-term term)
-                         for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
-                         do (loop for hit in hits
-                                  for a1 = (aref hit 1)
-                                  for a2 = (aref hit 2)
-                                  for a3 = (aref hit 3)
-                                  for a4 = (aref hit 4)
-                                  for key1234 = (list a1 a2 a3 a4)
-                                  ;; The vf2 algorithm will find the dihedral in both directions
-                                  ;; one of them will match - so we won't worry about the other one
-                                  do (multiple-value-bind (val found)
-                                         (gethash key1234 ptors)
-                                       (if found
-                                           (progn
-                                             (push term (gethash key1234 ptors)))
-                                           (let ((key4321 (nreverse key1234)))
-                                             (multiple-value-bind (val found)
-                                                 (gethash key4321 ptors)
-                                               (if found
-                                                   (progn
-                                                     (push term (gethash key4321 ptors)))
-                                                   (error "Could not find keys ~s or ~s in ptors" key1234 key4321))))))))))
-        (maphash (lambda (key terms)
-                   (let* ((a1 (first key))
-                          (a2 (second key))
-                          (a3 (third key))
-                          (a4 (fourth key))
-                          (term (first terms)))
-                     (when (or (eq keep-interaction-dihedral-test t)
-                               (funcall keep-interaction-dihedral-test a1 a2 a3 a4))
-                       (if term
+                              (a3 (third key))
+                              (a4 (fourth key))
+                              (term (first terms)))
+                         (when (or (eq keep-interaction-dihedral-test t)
+                                   (funcall keep-interaction-dihedral-test a1 a2 a3 a4))
+                           (if term
+                               (loop for part in (parts term)
+                                     for phase = (phase-angle part)
+                                     for periodicity = (periodicity part)
+                                     for k = (k part)
+                                     for idivf = (idivf part)
+                                     for v = (/ k idivf)
+                                     do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase t v periodicity))
+                               (restart-case
+                                   (chem:missing-dihedral-error a1 a2 a3 a4 molecule)
+                                 (chem:skip-missing-parameters ()
+                                   :report "skip this missing parameter and continue"
+                                   nil))))))
+                     ptors)
+            (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
+                  for improper-torsion-force = (if (slot-boundp force-field 'improper-torsion-force)
+                                                   (improper-torsion-force force-field)
+                                                   nil)
+                  do (when improper-torsion-force
+                       (loop for term across (terms improper-torsion-force)
+                             for smirks-graph = (maybe-cached-smirnoff-term term)
+                             for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
+                             do (loop for hit in hits
+                                      for a1 = (aref hit 1)
+                                      for a2 = (aref hit 2)
+                                      for a3 = (aref hit 3)
+                                      for a4 = (aref hit 4)
+                                      for key1234 = (list a1 a2 a3 a4)
+                                      ;; The vf2 algorithm will find the angle in both directions
+                                      ;; one of them will match - so we won't worry about the other one
+                                      do (push term (gethash key1234 itors))))))
+            (maphash (lambda (key terms)
+                       (let* ((a1 (first key))
+                              (a2 (second key))
+                              (a3 (third key))
+                              (a4 (fourth key))
+                              (term (first terms)))
+                         (when (or (eq keep-interaction-dihedral-test t)
+                                   (funcall keep-interaction-dihedral-test a1 a2 a3 a4))
                            (loop for part in (parts term)
                                  for phase = (phase-angle part)
                                  for periodicity = (periodicity part)
                                  for k = (k part)
                                  for idivf = (idivf part)
                                  for v = (/ k idivf)
-                                 do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase t v periodicity))
-                           (restart-case
-                               (chem:missing-dihedral-error a1 a2 a3 a4 molecule)
-                             (chem:skip-missing-parameters ()
-                               :report "skip this missing parameter and continue"
-                               nil))))))
-                 ptors)
-        (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
-              for improper-torsion-force = (if (slot-boundp force-field 'improper-torsion-force)
-                                               (improper-torsion-force force-field)
-                                               nil)
-              do (when improper-torsion-force
-                   (loop for term across (terms improper-torsion-force)
-                         for smirks-graph = (maybe-cached-smirnoff-term term)
-                         for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
-                         do (loop for hit in hits
-                                  for a1 = (aref hit 1)
-                                  for a2 = (aref hit 2)
-                                  for a3 = (aref hit 3)
-                                  for a4 = (aref hit 4)
-                                  for key1234 = (list a1 a2 a3 a4)
-                                  ;; The vf2 algorithm will find the angle in both directions
-                                  ;; one of them will match - so we won't worry about the other one
-                                  do (push term (gethash key1234 itors))))))
-        (maphash (lambda (key terms)
-                   (let* ((a1 (first key))
-                          (a2 (second key))
-                          (a3 (third key))
-                          (a4 (fourth key))
-                          (term (first terms)))
-                     (when (or (eq keep-interaction-dihedral-test t)
-                               (funcall keep-interaction-dihedral-test a1 a2 a3 a4))
-                       (loop for part in (parts term)
-                             for phase = (phase-angle part)
-                             for periodicity = (periodicity part)
-                             for k = (k part)
-                             for idivf = (idivf part)
-                             for v = (/ k idivf)
-                             do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase nil v periodicity)))))
-                 itors)))))
+                                 do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase nil v periodicity)))))
+                     itors)))))))

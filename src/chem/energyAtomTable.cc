@@ -454,6 +454,25 @@ CL_DEFMETHOD void AtomTable_O::makUnboundNonbondForceFieldForAggregate() {
   this->_NonbondForceFieldForAggregate = unbound<FFNonbondDb_O>();
 }
 
+CL_DEFMETHOD core::T_sp AtomTable_O::lksolvationForceFieldForAggregate() const {
+  if (this->_LKSolvationForceFieldForAggregate.unboundp()) {
+    SIMPLE_ERROR("The lksolvation-forcefield-for-aggregate is unbound");
+  }
+  return this->_LKSolvationForceFieldForAggregate;
+}
+
+CL_DEFMETHOD bool AtomTable_O::lksolvationForceFieldForAggregateBoundP() const {
+  return !this->_LKSolvationForceFieldForAggregate.unboundp();
+}
+
+CL_DEFMETHOD void AtomTable_O::setLKSolvationForceFieldForAggregate(core::T_sp forceField) {
+  this->_LKSolvationForceFieldForAggregate = forceField;
+}
+
+CL_DEFMETHOD void AtomTable_O::makUnboundLKSolvationForceFieldForAggregate() {
+  this->_LKSolvationForceFieldForAggregate = unbound<FFLKSolvationDb_O>();
+}
+
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {
   if (this->_ResiduePointers.unboundp()) {
     SIMPLE_ERROR("Residue pointers table is not bound");
@@ -709,6 +728,12 @@ CL_DEFUN core::List_sp chem__atoms_at_remove(AtomTable_sp table, size_t index, s
     SIMPLE_ERROR("The remove is out of bounds - {} must be <=3" , remove);
   }
   SIMPLE_ERROR("Atom index {} is out of bounds - must be < {}" , index , table->_Atoms.size());
+}
+
+CL_DEFUN bool chem__in_bond_or_angle_or_dihedral(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2) {
+  EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(a1);
+  if (!ea1) return false;
+  return ea1->inBondOrAngle(a2) || ea1->relatedBy14(a2);
 }
 
 

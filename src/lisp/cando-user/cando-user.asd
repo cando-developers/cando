@@ -12,13 +12,13 @@
                #:smiles
                #:leap
                #:leap-commands
+               #:rosetta-params
                #:cando-sdf
                #:tirun
                #:sketch2d
                #:cando-build
                #:lparallel
                #:chem-info
-               #:rosetta-params
                )
   :serial t
   :components ((:file "packages")

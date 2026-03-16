@@ -94,6 +94,7 @@ public:
 #include <cando/chem/energy_functions/_Nonbond_debugEvalDeclares.cc>
 #endif
 public:
+
   string	className()	{ return "EnergyNonbond"; };
   Atom_sp	getAtom1() { return this->_Atom1_enb; };
   Atom_sp	getAtom2() { return this->_Atom2_enb; };
@@ -243,6 +244,26 @@ class EnergyNonbond_O : public EnergyComponent_O
   CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
   CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndexes;}
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndexes;}
+public:
+  double rpairlist() const { return _Nonbond_r_pairlist; }
+  double rcut() const { return _Nonbond_r_cut; }
+  AtomTable_sp atomTable() const { return _AtomTable; }
+  // keepInteractionFactory() already exists (line 243)
+  core::T_sp matter1() const { return _Matter1; }
+  core::T_sp matter2() const { return _Matter2; }
+  void clearTerms() { _Terms.clear(); }
+  void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
+  core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
+
+  bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
+                  core::T_sp keepInteraction) {
+    EnergyNonbond term;
+    term.defineForAtomPair(_NonbondForceField, false /*is14*/, a1, a2,
+                           i3x1, i3x2, this->asSmartPtr(),
+                           _AtomTypes, keepInteraction);
+    addTerm(term);
+    return true;  // always adds, unlike Rosetta which checks return
+  }
  public:
   void constructNonbondTermsBetweenResidues(Residue_sp res1, Residue_sp res2, core::T_sp nbForceField, core::HashTable_sp atomTypes );
   void addTerm14(const TermType& term);
@@ -296,7 +317,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
   core::T_mv rebuildPairList(core::T_sp tcoordinates);
   core::T_mv rebuildPairListBetweenMatters(core::T_sp tcoordinates);
-  void constructNonbondTermsFromAtomTable( AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory, core::T_sp coordinates);
+  void constructNonbondTermsFromAtomTable( AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory );
   void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory );
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
   void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField, core::T_sp keepInteractionFactory );

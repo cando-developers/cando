@@ -52,6 +52,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
 #include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/pairList.h>
 #include <clasp/core/wrappers.h>
 
 namespace chem {
@@ -1170,17 +1171,11 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
 
 
 void EnergyNonbond_O::constructNonbondTermsFromAtomTable(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                                         core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
-                                                         core::T_sp tcoordinates ) {
+                                                         core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory ) {
   this->_AtomTable = atomTable;
   this->_NonbondForceField = nbForceField;
   this->_AtomTypes = atomTypes;
   this->_KeepInteractionFactory = keepInteractionFactory;
-  if (tcoordinates.notnilp()) {
-    this->rebuildPairList(tcoordinates);
-  } else {
-    // Don't calculate the pair-list if we don't have coordinates
-  }
 };
 
 CL_DEFMETHOD
@@ -1218,7 +1213,15 @@ core::T_mv EnergyNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates) {
 
 CL_DEFMETHOD
 core::T_mv EnergyNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
-
+#if 1
+  _UsesExcludedAtoms = false;
+  core::T_mv result = rebuildPairListImpl(this, tcoordinates);
+  // Save counts to member variables (EnergyNonbond-specific)
+  _InteractionsKept = core::clasp_to_fixnum(result);
+  _InteractionsDiscarded = core::clasp_to_fixnum(
+      core::lisp_multipleValues().valueGet(1, result.number_of_values()));
+  return result;
+#else
   this->_UsesExcludedAtoms = false;
   this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
   // If the nonbond pairs are between two matters then don't rebuild the pair-list
@@ -1308,6 +1311,7 @@ core::T_mv EnergyNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
   return Values(core::clasp_make_fixnum(interactionsKept),
                 core::clasp_make_fixnum(interactionsDiscarded),
                 core::clasp_make_fixnum(totalInteractions));
+#endif
 }
 
 core::T_mv EnergyNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {

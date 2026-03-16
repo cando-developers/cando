@@ -52,6 +52,17 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+CL_LISPIFY_NAME(make-energy-dihedral);
+CL_DEF_CLASS_METHOD
+EnergyDihedral_sp EnergyDihedral_O::make(EnergyFunction_sp energyFunction) {
+  auto component = ensureComponent<EnergyDihedral_O>(energyFunction);
+  return component;
+}
+
+};
+
+namespace chem {
+
 
 #if 1
 #include "cando/chem/energyKernels/dihedral_fast.c"

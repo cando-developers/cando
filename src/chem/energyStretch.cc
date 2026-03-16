@@ -50,6 +50,14 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 namespace chem {
+CL_LISPIFY_NAME(make-energy-stretch);
+CL_DEF_CLASS_METHOD
+EnergyStretch_sp EnergyStretch_O::make(EnergyFunction_sp energyFunction) {
+  auto component = ensureComponent<EnergyStretch_O>(energyFunction);
+  return component;
+}
+
+
 
 void old_stretch_energy(DOUBLE kb, DOUBLE r0, SIZE_T I1, SIZE_T I2, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec);
 

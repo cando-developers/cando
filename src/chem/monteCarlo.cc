@@ -1019,7 +1019,7 @@ CL_DOCSTRING(R"doc(Perform a constant temperature Hamiltonian replica exchange m
 ENERGIES object using the LAMBDA-WINDOWS at TEMPERATURE taking LAMBDA-STEPS with each set of lambdas
 before attempting to swap windows.
 Return (values lowest-energy-state accepts swap-accepts-for-each-lambda-window swap-attempts-for-each-lambda-window max-iterations lowest-energy initial-state initial-energy))doc");
-CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (max-iterations 1000) (warm-up-iterations 100) step-callback exchange-callback debug);
+CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (max-iterations 1000) (warm-up-iterations 100) step-callback (step-callback-period 1000) exchange-callback debug);
 CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarlo(core::T_sp tenergies,
                                                                                   core::T_sp tlambdaWindows,
                                                                                   double temperature,
@@ -1027,6 +1027,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
                                                                                   size_t maxIterations,
                                                                                   size_t warmUpIterations,
                                                                                   core::T_sp stepCallback,
+                                                                                  size_t stepCallbackPeriod,
                                                                                   core::T_sp exchangeCallback,
                                                                                   core::T_sp debug ) {
 
@@ -1040,6 +1041,8 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
   Energies energies(tenergies);
   core::SimpleVector_byte32_t_sp saveState;
   bool useStepCallback = stepCallback.notnilp();
+  if (stepCallbackPeriod < 1) stepCallbackPeriod = 1;
+  size_t stepCallbackCounter = stepCallbackPeriod;
   if (useStepCallback) saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
   bool useExchangeCallback = exchangeCallback.notnilp();
 
@@ -1074,7 +1077,8 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
           curEnergy = testEnergy;
           if (debug.notnilp()) core::clasp_write_string(fmt::format(" +++ accepted step\n"),debug);
         }
-        if (useStepCallback) {
+        if (useStepCallback && --stepCallbackCounter == 0) {
+          stepCallbackCounter = stepCallbackPeriod;
           memcpy(&(*saveState)[0],&currentStates[lambdaWindowIdx]._State[0],sizeof(int32_t)*energies._NumberOfSlots);
           core::eval::funcall( stepCallback, saveState, core::make_fixnum(testSlotIndex), mk_double_float(curEnergy) );
         }

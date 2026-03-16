@@ -1477,8 +1477,11 @@ Return the COORDS and NIL or the ligand-transform if it was calculated."
          (joints (joints atres))
          (joint0 (elt joints 0)))
     (if (eq oligomer-shape (ligand-oligomer-shape assembler))
-        (with-orientation-transform ligand-transform
-          (update-xyz-coords assembler assembler-internals joint0 coords))
+        (progn
+          (let ((*orientation* ligand-transform))
+            (progn (update-xyz-coords assembler assembler-internals joint0 coords))))
+        #+(or)(with-orientation-transform ligand-transform
+                (update-xyz-coords assembler assembler-internals joint0 coords))
         (update-xyz-coords assembler assembler-internals joint0 coords))
     (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
     joint0))

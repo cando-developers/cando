@@ -133,22 +133,50 @@ namespace chem {
   public: // instance variables
     gctools::Vec0<TermType>     _Terms;
     AtomTable_sp                _AtomTable;
-    core::T_sp                  _NonbondForceField;
+    core::T_sp                  _LKSolvationForceField;
     core::HashTable_sp          _AtomTypes;
     core::T_sp                  _KeepInteractionFactory;
     core::T_sp                  _DisplacementBuffer;
-
+    core::T_sp                  _Matter1;
+    core::T_sp                  _Matter2;
     // Rosetta parameters (used to construct terms)
     rosetta_lk_solvation_parameters _Parameters;
 
   public:
+    // pairList.h duck-typed interface
+    double rpairlist() const { return _Parameters.rpairlist; }
+    double rcut() const { return _Parameters.r_solv_high; }  // <-- note: r_solv_high, not rcut
+    AtomTable_sp atomTable() const { return _AtomTable; }
+    CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
+    CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
+    CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
+    CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
+    CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
+      this->_Matter1 = matter1;
+      this->_Matter2 = matter2;
+    }
+    void clearTerms() { _Terms.clear(); }
+    void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
+    core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
+
+    bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
+                    core::T_sp keepInteraction) {
+      EnergyRosettaLKSolvation term;
+      if (term.defineForAtomPair(_LKSolvationForceField, a1, a2, i3x1, i3x2,
+                                 this->asSmartPtr(), _AtomTypes,
+                                 keepInteraction, _Parameters)) {
+        addTerm(term);
+        return true;
+      }
+      return false;
+    }
+  public:
     virtual std::string implementation_details() const;
     virtual std::string descriptionOfContents() const;
     typedef gctools::Vec0<TermType>::iterator iterator;
-    static EnergyRosettaLKSolvation_sp make(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                            core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
-                                            SetupAccumulator& setupAcc,
-                                            core::T_sp tcoordinates = nil<core::T_O>());
+    static EnergyRosettaLKSolvation_sp make(EnergyFunction_sp energyFunction,
+                                            core::T_sp keepInteractionFactory,
+                                            SetupAccumulator& setupAcc );
   public:
     CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
     void callForEachTerm(core::Function_sp callback);
@@ -200,6 +228,8 @@ namespace chem {
 
     EnergyRosettaLKSolvation_O() :
         _KeepInteractionFactory(nil<core::T_O>()),
+        _Matter1(nil<core::T_O>()),
+        _Matter2(nil<core::T_O>()),
         _DisplacementBuffer(nil<core::T_O>())
     {};
   };

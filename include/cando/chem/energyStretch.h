@@ -164,7 +164,7 @@ public:
     typedef gctools::Vec0<TermType>::iterator iterator;
     iterator begin() { return this->_Terms.begin(); };
     iterator end() { return this->_Terms.end(); };
-	
+  static EnergyStretch_sp make(EnergyFunction_sp energyFunction);
 public:
   virtual std::string descriptionOfContents() const;
     virtual size_t numberOfTerms() { return this->_Terms.size();};

@@ -3,5 +3,4 @@
 (defpackage #:rosetta.params.load
   (:use #:common-lisp)
   (:export
-   #:load-rosetta-params
    ))

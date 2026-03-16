@@ -57,6 +57,7 @@ namespace chem {
   FORWARD(EnergyRosettaNonbond);
   FORWARD(FFNonbondDb);
   FORWARD(AtomTable);
+  FORWARD(Matter);
 
   /*! A Rosetta nonbond term
    */
@@ -135,6 +136,9 @@ namespace chem {
     core::HashTable_sp      _AtomTypes;
     core::T_sp              _KeepInteractionFactory;
     core::T_sp              _DisplacementBuffer;
+    // If _Matter1 and _Matter2 are defined, build pair-list between them instead of using _AtomTable
+    core::T_sp              _Matter1;
+    core::T_sp              _Matter2;
 
     // Rosetta parameters (used to construct terms)
     rosetta_nonbond_parameters      _Parameters;
@@ -143,16 +147,43 @@ namespace chem {
     virtual std::string implementation_details() const;
     virtual std::string descriptionOfContents() const;
     typedef gctools::Vec0<TermType>::iterator iterator;
-    static EnergyRosettaNonbond_sp make(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                        core::HashTable_sp atomTypes,
-                                        core::T_sp keepInteractionFactory,
-                                        SetupAccumulator& setupAcc,
-                                        core::T_sp tcoordinates = nil<core::T_O>());
+    static EnergyRosettaNonbond_sp make(EnergyFunction_sp energyFunction,
+                                           core::T_sp keepInteractionFactory,
+                                           SetupAccumulator& setupAcc);
   public:
     CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
 
   public:
+
+  public: // for building the pairList
+    // In energyRosettaNonbond.h:
+    double rpairlist() const { return _Parameters.rpairlist; }
+    double rcut() const { return _Parameters.rcut; }
+    AtomTable_sp atomTable() const { return _AtomTable; }
     CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
+    CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
+    CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
+    CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
+    CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
+    CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
+      this->_Matter1 = matter1;
+      this->_Matter2 = matter2;
+    }
+    void clearTerms() { _Terms.clear(); }
+    void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
+    core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
+
+    bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
+                    core::T_sp keepInteraction) {
+      EnergyRosettaNonbond term;
+      if (term.defineForAtomPair(_NonbondForceField, a1, a2, i3x1, i3x2,
+                                 this->asSmartPtr(), _AtomTypes,
+                                 keepInteraction, _Parameters)) {
+        addTerm(term);
+        return true;
+      }
+      return false;
+    }
 
   public:
     void addTerm(const TermType& term);
@@ -186,8 +217,13 @@ namespace chem {
                              core::T_sp activeAtomMask,
                              core::T_sp debugInteractions);
 
+    CL_DEFMETHOD void constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
+                                                           EnergyFunction_sp energyFunction,
+                                                           core::T_sp keepInteractionFactory);
+
     core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
     core::T_mv rebuildPairList(core::T_sp tcoordinates);
+    core::T_mv rebuildPairListBetweenMatters(core::T_sp tcoordinates);
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m,
@@ -202,7 +238,9 @@ namespace chem {
 
     EnergyRosettaNonbond_O() :
         _KeepInteractionFactory(nil<core::T_O>()),
-        _DisplacementBuffer(nil<core::T_O>())
+        _DisplacementBuffer(nil<core::T_O>()),
+        _Matter1(nil<core::T_O>()),
+        _Matter2(nil<core::T_O>())
     {};
   };
 

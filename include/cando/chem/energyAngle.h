@@ -170,7 +170,7 @@ public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
-	
+  static EnergyAngle_sp make(EnergyFunction_sp energyFunction);
 public:
   virtual size_t numberOfTerms() { return this->_Terms.size();};
   CL_DEFMETHOD core::T_mv safe_amber_energy_angle_term(size_t index) {

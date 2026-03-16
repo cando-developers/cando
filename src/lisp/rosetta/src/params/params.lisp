@@ -440,3 +440,27 @@
                          collect (build-capped-residue file
                                                        :ace-params-path ace-params-path
                                                        :nme-params-path nme-params-path)))))
+
+
+(defun load-rosetta-params ()
+  (format t "rosetta-params-load loading and registering :rosetta force field~%")
+  (let* ((ff (rosetta.params:load-lk-solvation-force-field))
+         (cff (core:make-cxx-object 'chem:combined-force-field)))
+    (chem:add-shadowing-force-field cff ff nil)
+    (setf (gethash :rosetta leap.core:*force-fields*) cff)))
+
+
+(defun lazy-load-rosetta-params ()
+  (let* ((combined-force-field (chem:find-force-field :rosetta nil)))
+    (if combined-force-field
+        combined-force-field
+        (load-rosetta-params))))
+
+
+
+(defmethod chem:compute-merged-lksolvation-force-field-for-aggregate (aggregate)
+  (declare (ignore aggregate))
+  (let* ((combined-force-field (lazy-load-rosetta-params))
+         (force-field-parts (chem:force-fields-as-list combined-force-field))
+         (rosetta-db (first force-field-parts)))
+    (chem:get-lksolvation-db rosetta-db)))

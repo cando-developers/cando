@@ -50,4 +50,6 @@
    #:lookup-lk-type-assignments
    #:assign-lk-types
    #:parse-lk-type-assignments-form
-   #:load-lk-solvation-force-field))
+   #:load-lk-solvation-force-field
+   #:load-rosetta-params
+   #:lazy-load-rosetta-params))

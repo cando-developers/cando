@@ -157,10 +157,10 @@ namespace chem {
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
-    bool					_RestrainSecondaryAmides;
-    core::T_sp                   _Message;
+    bool				_RestrainSecondaryAmides;
+    core::T_sp                          _Message;
+    core::Symbol_sp                     _ForceFieldName; // :amber or :rosetta
     core::List_sp			_MissingParameters;
-  public:
   public:
     void	_eraseMissingParameters() { this->_MissingParameters = nil<core::T_O>();};
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
@@ -207,6 +207,8 @@ namespace chem {
 
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
     void	setOptions( core::List_sp options );
+
+    CL_DEFMETHOD core::Symbol_sp forceFieldName() { return this->_ForceFieldName; };
 
     CL_DEFMETHOD core::T_sp findComponentOrNil(core::Symbol_sp className);
     CL_DEFMETHOD EnergyComponent_sp findComponent(core::Symbol_sp className);
@@ -259,8 +261,8 @@ namespace chem {
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
-    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true, core::T_sp coordinates=nil<core::T_O>(), core::T_sp setup=nil<core::T_O>() );
-    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes, core::T_sp coordinates, core::T_sp setup );
+    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true, core::T_sp setup=nil<core::T_O>() );
+    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes, core::T_sp setup );
     void generateStandardEnergyFunctionTables(Matter_sp mol,
                                               FFStretchDb_sp stretchDb,
                                               FFAngleDb_sp angleDb,
@@ -268,7 +270,7 @@ namespace chem {
                                               FFItorDb_sp itorDb,
                                               core::T_sp keepInteractionFactory,
                                               core::HashTable_sp atomTypes);
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp coordinates, core::T_sp setup );
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp setup );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
 
     /*! Add the restraints to the energy function.
@@ -313,6 +315,7 @@ namespace chem {
         , _MonomerCorrectionEnergy(0.0)
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(bounding_box)
+        ,_ForceFieldName(nil<core::Symbol_O>())
 //      , _MissingParameters(unbound<core::List_O>())
     {};
 
@@ -323,6 +326,7 @@ namespace chem {
         , _MonomerCorrectionEnergy(0.0)
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
+        ,_ForceFieldName(nil<core::Symbol_O>())
 //      , _MissingParameters(unbound<core::List_O>())
     {};
     EnergyFunction_O( const EnergyFunction_O& ef ) :
@@ -332,6 +336,7 @@ namespace chem {
         , _MonomerCorrectionEnergy(0.0)
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
+        ,_ForceFieldName(nil<core::Symbol_O>())
 //      , _MissingParameters(unbound<core::List_O>())
     {};
   };
@@ -343,6 +348,16 @@ namespace chem {
 
   void energyFunction_initializeSmarts();
 
+template <typename Type>
+gc::smart_ptr<Type> ensureComponent(EnergyFunction_sp mthis) {
+  auto comp = mthis->findComponentOrNil(Type::static_classSymbol());
+  if (comp.nilp()) {
+    auto new_comp = Type::create();
+    mthis->pushEnergyComponent(new_comp);
+    return new_comp;
+  }
+  return gc::As<gc::smart_ptr<Type>>(comp);
+}
 
 };
 

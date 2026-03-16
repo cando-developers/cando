@@ -55,6 +55,7 @@
            #~"energyPeriodicBoundaryConditionsNonbond.cc"
            #~"energyChiralRestraint.cc"
            #~"energyAnchorRestraint.cc"
+           #~"energyFlatBottomAnchorRestraint.cc"
            #~"energyPointToLineRestraint.cc"
            #~"energyOutOfZPlane.cc"
            #~"energyDihedralRestraint.cc"

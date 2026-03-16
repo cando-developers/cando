@@ -46,6 +46,17 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
+namespace chem {
+
+CL_LISPIFY_NAME(make-energy-angle);
+CL_DEF_CLASS_METHOD
+EnergyAngle_sp EnergyAngle_O::make(EnergyFunction_sp energyFunction) {
+  auto component = ensureComponent<EnergyAngle_O>(energyFunction);
+  return component;
+}
+
+};
+
 
 namespace chem {
 // ----------------------------------------------------------------------

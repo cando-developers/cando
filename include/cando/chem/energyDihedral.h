@@ -204,8 +204,8 @@ public:	// Creation class functions
   iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
 public:
+  static EnergyDihedral_sp make(EnergyFunction_sp energyFunction);
   virtual size_t numberOfTerms() { return this->_Terms.size();};
-    
 
 public:
   void addTerm(const TermType& term);

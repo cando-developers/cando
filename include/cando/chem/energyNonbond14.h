@@ -153,7 +153,7 @@ class EnergyNonbond14_O : public EnergyComponent_O
   virtual std::string implementation_details() const;
   virtual std::string descriptionOfContents() const;
   typedef gctools::Vec0<TermType>::iterator iterator;
-   static EnergyNonbond14_sp make(SetupAccumulator& setupAcc);
+  static EnergyNonbond14_sp make(EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
  public:
   virtual size_t numberOfTerms() { return this->_Terms14.size(); };
   void callForEachTerm(core::Function_sp callback);

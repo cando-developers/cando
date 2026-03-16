@@ -5,6 +5,7 @@
 (defparameter chem:*save-positions* nil)
 
 (defgeneric chem:compute-merged-nonbond-force-field-for-aggregate (aggregate atom-types))
+(defgeneric chem:compute-merged-lksolvation-force-field-for-aggregate (aggregate))
 
 ;;(defmethod chem:lookup-atom-properties-radius (atom &optional (force-field-name :default))
   ;; "Return (values atom-radius radius-is-default-t-nil)"
@@ -586,4 +587,14 @@ evaluates the body in that dynamic environment."
            :a2-a3-bond-order a2-a3-bond-order
            :a3-a4-bond-order a3-a4-bond-order
            )))
+
+
+(defun chem:find-lksolvation-type (lksolvation-db type &key (errorp t))
+  "Used by energyRosettaLKSolvation.cc"
+  (let ((ff (chem:fflksolvation-find-type lksolvation-db type)))
+    (if ff
+        ff
+        (when errorp
+          (error "Could not find LKSolvation parameters for :lk-solvation-atom-type ~s" type)))))
+
 

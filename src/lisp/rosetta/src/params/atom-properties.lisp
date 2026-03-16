@@ -35,11 +35,13 @@
       (format stream " ~a" (rosetta-atom-type-table-source-path obj)))))
 
 (defun default-fa-standard-atom-properties-path ()
-  (let ((home (probe-file #P"rosetta:")))
-    (when home
-      (merge-pathnames
-       "database/chemical/atom_type_sets/fa_standard/atom_properties.txt"
-       home))))
+  (let* ((rosetta (probe-file "rosetta:"))
+         (pp (if rosetta 
+                 (merge-pathnames
+                  "database/chemical/atom_type_sets/fa_standard/atom_properties.txt"
+                  rosetta)
+                 (error "rosetta: host path name is not available hosts: ~s" (core:list-all-logical-hosts)))))
+    pp))
 
 (defun scan-floats-in-token (token)
   (let ((len (length token))
@@ -83,8 +85,8 @@
     (when (> (length clean) 0)
       (let ((fields (split-fields clean)))
         (when (and fields (not (string= (string-upcase (first fields)) "NAME")))
-          (let* ((name (make-keyword (first fields)))
-                 (element (make-keyword (second fields)))
+          (let* ((name (make-case-sensitive-keyword (first fields)))
+                 (element (make-case-sensitive-keyword (second fields)))
                  (numbers nil)
                  (num-count 0)
                  (flags nil))

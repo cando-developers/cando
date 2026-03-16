@@ -415,6 +415,10 @@ void EnergyFixedNonbondRestraint_O::initialize() {
   this->_NonbondCrossTermTable = nil<FFNonbondCrossTermTable_O>();
 }
 
+void EnergyFixedNonbondRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) {
+  return; // not used for preconditioner
+}
+
 EnergyComponent_sp EnergyFixedNonbondRestraint_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   EnergyFixedNonbondRestraint_sp copy = EnergyFixedNonbondRestraint_O::create();
   copyEnergyComponent( copy, this->asSmartPtr() );

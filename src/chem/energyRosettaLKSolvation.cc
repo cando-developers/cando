@@ -52,27 +52,27 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
 #include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/pairList.h>
 #include <clasp/core/wrappers.h>
 
 namespace chem {
 
 #include <cando/chem/energyKernels/rosetta_lk_solvation.c>
 
-EnergyRosettaLKSolvation_sp EnergyRosettaLKSolvation_O::make(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                                             core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
-                                                             SetupAccumulator& acc,
-                                                             core::T_sp tcoordinates) {
-  auto obj = EnergyRosettaLKSolvation_O::create();
-  obj->_Parameters.do_apply(acc);
-  if (keepInteractionFactory.nilp()) return obj;
-  obj->_AtomTable = atomTable;
-  obj->_NonbondForceField = nbForceField;
-  obj->_AtomTypes = atomTypes;
-  obj->_KeepInteractionFactory = keepInteractionFactory;
-  if (tcoordinates.notnilp()) {
-    obj->rebuildPairList(tcoordinates);
+EnergyRosettaLKSolvation_sp EnergyRosettaLKSolvation_O::make(EnergyFunction_sp energyFunction,
+                                                             core::T_sp keepInteractionFactory,
+                                                             SetupAccumulator& acc ) {
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyRosettaLKSolvation_O::staticClass() );
+  if (keepInteraction.notnilp()) {
+    auto obj = EnergyRosettaLKSolvation_O::create();
+    obj->_Parameters.do_apply(acc);
+    obj->_AtomTable = energyFunction->_AtomTable;
+    obj->_LKSolvationForceField = energyFunction->_AtomTable->lksolvationForceFieldForAggregate();
+    obj->_AtomTypes = energyFunction->_AtomTypes;
+    obj->_KeepInteractionFactory = keepInteractionFactory;
+    return obj;
   }
-  return obj;
+  SIMPLE_ERROR("Mismatch between keepInteractionFactory (says don't create EnergyRosettaLKSolvation_O) and EnergyRosettaLKSolvation_O::make which says make it");
 }
 
 std::string EnergyRosettaLKSolvation_O::implementation_details() const {
@@ -217,10 +217,9 @@ bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp 
   core::Symbol_sp t2 = a2->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>());
   ASSERT(forceField && forceField.notnilp());
   core::T_sp tffLKSolvation1 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t1);
+  if (tffLKSolvation1.nilp()) SIMPLE_ERROR("Could not find the LKSolvation1 parameter {} for atom {} - property-list {}", _rep_(t1), _rep_(a1), _rep_(a1->getProperties()));
   core::T_sp tffLKSolvation2 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t2);
-  if (tffLKSolvation1.nilp() || tffLKSolvation2.nilp()) {
-    SIMPLE_ERROR("Could not find one of the LKSolvation parameters");
-  }
+  if (tffLKSolvation2.nilp()) SIMPLE_ERROR("Could not find the LKSolvation2 parameter {} for atom {} - property-list {}", _rep_(t2), _rep_(a2), _rep_(a2->getProperties()));
   auto ffLKSolvation1 = gc::As<FFLKSolvation_sp>(tffLKSolvation1);
   auto ffLKSolvation2 = gc::As<FFLKSolvation_sp>(tffLKSolvation2);
 
@@ -250,7 +249,12 @@ void EnergyRosettaLKSolvation_O::addTerm(const EnergyRosettaLKSolvation& term) {
 void EnergyRosettaLKSolvation_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, terms), this->_Terms);
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
+  node->field(INTERN_(kw, LKSolvationForceField), this->_LKSolvationForceField );
+  node->field(INTERN_(kw, AtomTypes), this->_AtomTypes );
   node->field(INTERN_(kw, KeepInteractionFactory), this->_KeepInteractionFactory);
+  node->field(INTERN_(kw, DisplacementBuffer), this->_DisplacementBuffer );
+  node->field(INTERN_(kw, Matter1), this->_Matter1);
+  node->field(INTERN_(kw, Matter2), this->_Matter2);
   this->_Parameters.fields(node);
   this->Base::fields(node);
 }
@@ -291,30 +295,12 @@ EnergyComponent_sp EnergyRosettaLKSolvation_O::copyFilter(core::T_sp keepInterac
   copyEnergyComponent(copy, this->asSmartPtr());
 
   copy->_Parameters = this->_Parameters;
-
   copy->_AtomTable = this->_AtomTable;
-  copy->_NonbondForceField = this->_NonbondForceField;
+  copy->_LKSolvationForceField = this->_LKSolvationForceField;
   copy->_AtomTypes = this->_AtomTypes;
+  copy->_Matter1 = this->_Matter1;
+  copy->_Matter2 = this->_Matter2;
   copy->_KeepInteractionFactory = keepInteractionFactory;
-  if (this->_DisplacementBuffer.notnilp()) {
-    copy->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(this->_DisplacementBuffer));
-  }
-
-  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory, EnergyRosettaLKSolvation_O::staticClass());
-  if (keepInteraction == _lisp->_true()) {
-    for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
-      copy->_Terms.push_back(*edi);
-    }
-  } else {
-    for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
-      Atom_sp a1 = edi->_Atom1_enb;
-      Atom_sp a2 = edi->_Atom2_enb;
-      size_t ia1 = edi->term.i3x1;
-      size_t ia2 = edi->term.i3x2;
-      if (skipInteraction_EnergyNonbond(keepInteraction, a1, a2, core::make_fixnum(ia1), core::make_fixnum(ia2))) continue;
-      copy->_Terms.push_back(*edi);
-    }
-  }
   copy->_Parameters.do_apply(setupAcc);
   copy->_DisplacementBuffer = nil<core::T_O>();
   copy->_Terms.clear();
@@ -322,6 +308,9 @@ EnergyComponent_sp EnergyRosettaLKSolvation_O::copyFilter(core::T_sp keepInterac
 }
 
 core::T_mv EnergyRosettaLKSolvation_O::maybeRebuildPairList(core::T_sp tcoordinates) {
+#if 1
+  return maybeRebuildPairListImpl(this,tcoordinates);
+#else
   auto coords = gc::As<NVector_sp>(tcoordinates);
   if (this->_DisplacementBuffer.nilp()) {
     return this->rebuildPairList(tcoordinates);
@@ -354,9 +343,13 @@ core::T_mv EnergyRosettaLKSolvation_O::maybeRebuildPairList(core::T_sp tcoordina
     return Values0<core::T_O>();
   }
   SIMPLE_ERROR("{}: We should never get here", __FUNCTION__);
+#endif
 }
 
 core::T_mv EnergyRosettaLKSolvation_O::rebuildPairList(core::T_sp tcoordinates) {
+#if 1
+  return rebuildPairListImpl(this,tcoordinates);
+#else
   this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
   size_t interactionsKept = 0;
   size_t interactionsDiscarded = 0;
@@ -408,7 +401,7 @@ core::T_mv EnergyRosettaLKSolvation_O::rebuildPairList(core::T_sp tcoordinates) 
               }
               if (keep) {
                 EnergyRosettaLKSolvation term;
-                term.defineForAtomPair(this->_NonbondForceField,
+                term.defineForAtomPair(this->_LKSolvationForceField,
                                        iea1->atom(), iea2->atom(),
                                        iea1->coordinateIndexTimes3(),
                                        iea2->coordinateIndexTimes3(),
@@ -430,6 +423,7 @@ core::T_mv EnergyRosettaLKSolvation_O::rebuildPairList(core::T_sp tcoordinates) 
   return Values(core::clasp_make_fixnum(interactionsKept),
                 core::clasp_make_fixnum(interactionsDiscarded),
                 core::clasp_make_fixnum(totalInteractions));
+#endif
 }
 
 // Evaluate

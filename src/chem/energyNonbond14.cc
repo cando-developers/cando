@@ -51,6 +51,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
+#include <cando/chem/energyDihedral.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
@@ -60,9 +61,15 @@ namespace chem {
 #include <cando/chem/energyKernels/amber_nonbond14.c>
 
 
-EnergyNonbond14_sp EnergyNonbond14_O::make(SetupAccumulator& acc) {
-  auto obj = EnergyNonbond14_O::create();
-  return obj;
+EnergyNonbond14_sp EnergyNonbond14_O::make(EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory, SetupAccumulator& acc)
+{
+  // Only build EnergyNonbond14_O if EnergyDihedral_O::staticClass() is to be built
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedral_O::staticClass() );
+  if (keepInteraction.notnilp()) {
+    auto obj = EnergyNonbond14_O::create();
+    return obj;
+  }
+  SIMPLE_ERROR("Mismatch between keepInteractionFactory (says don't create EnergyNonbond14_O) and EnergyNonbond14_O::make which says make it");
 }
 
 std::string EnergyNonbond14_O::implementation_details() const {
@@ -644,8 +651,18 @@ EnergyComponent_sp EnergyNonbond14_O::copyFilter(core::T_sp keepInteractionFacto
     for (auto edi = this->_Terms14.begin(); edi != this->_Terms14.end(); edi++) {
       copy->_Terms14.push_back(*edi);
     }
+  } else if (gc::IsA<core::Function_sp>(keepInteraction)) {
+    // Copy the 1-4 interactions
+    for (auto edi = this->_Terms14.begin(); edi != this->_Terms14.end(); edi++) {
+      Atom_sp a1 = edi->_Atom1_enb;
+      Atom_sp a2 = edi->_Atom2_enb;
+      size_t ia1 = edi->term.i3x1;
+      size_t ia2 = edi->term.i3x2;
+      if (skipInteraction_EnergyNonbond(keepInteraction, a1, a2, core::make_fixnum(ia1), core::make_fixnum(ia2))) continue;
+      copy->_Terms14.push_back(*edi);
+    }
   } else {
-    SIMPLE_ERROR("EnergyNonbond uses excluded atoms and we don't support keepInteraction = {}", _rep_(keepInteraction));
+    this->_Terms14.clear();
   }
   return copy;
 }

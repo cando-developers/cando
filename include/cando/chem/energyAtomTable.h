@@ -153,6 +153,7 @@ public:
   core::T_sp                     _AggregateName;
   core::T_sp                     _BoundingBox;
   core::T_sp                     _NonbondForceFieldForAggregate;
+  core::T_sp                     _LKSolvationForceFieldForAggregate;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
 public:
@@ -194,6 +195,11 @@ public:
   bool nonbondForceFieldForAggregateBoundP() const;
   void setNonbondForceFieldForAggregate(core::T_sp forceField);
   void makUnboundNonbondForceFieldForAggregate();
+
+  core::T_sp   lksolvationForceFieldForAggregate() const;
+  bool lksolvationForceFieldForAggregateBoundP() const;
+  void setLKSolvationForceFieldForAggregate(core::T_sp forceField);
+  void makUnboundLKSolvationForceFieldForAggregate();
 
   uint	getNVectorSize() const { return this->_Atoms.size()*3;};
   // Read coordinates from atoms into an NVector of coordinates
@@ -264,7 +270,9 @@ public:
                  _Molecules(unbound<core::Vector_O>()),
                  _AggregateName(unbound<core::T_O>()),
                  _BoundingBox(unbound<core::T_O>()),
-                 _NonbondForceFieldForAggregate(unbound<core::T_O>()) {};
+                 _NonbondForceFieldForAggregate(unbound<core::T_O>()),
+                 _LKSolvationForceFieldForAggregate(unbound<core::T_O>())
+  {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);

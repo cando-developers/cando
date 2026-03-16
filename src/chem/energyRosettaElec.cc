@@ -52,27 +52,27 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
 #include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/pairList.h>
 #include <clasp/core/wrappers.h>
 
 namespace chem {
 
 #include <cando/chem/energyKernels/rosetta_elec_cutoff.c>
 
-EnergyRosettaElec_sp EnergyRosettaElec_O::make(AtomTable_sp atomTable, core::T_sp nbForceField,
-                                               core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory,
-                                               SetupAccumulator& acc,
-                                               core::T_sp tcoordinates) {
-  auto obj = EnergyRosettaElec_O::create();
-  obj->_Parameters.do_apply(acc);
-  if (keepInteractionFactory.nilp()) return obj;
-  obj->_AtomTable = atomTable;
-  obj->_NonbondForceField = nbForceField;
-  obj->_AtomTypes = atomTypes;
-  obj->_KeepInteractionFactory = keepInteractionFactory;
-  if (tcoordinates.notnilp()) {
-    obj->rebuildPairList(tcoordinates);
+EnergyRosettaElec_sp EnergyRosettaElec_O::make(EnergyFunction_sp energyFunction,
+                                               core::T_sp keepInteractionFactory,
+                                               SetupAccumulator& acc) {
+  core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyRosettaElec_O::staticClass() );
+  if (keepInteraction.notnilp()) {
+    auto obj = EnergyRosettaElec_O::create();
+    obj->_Parameters.do_apply(acc);
+    obj->_AtomTable = energyFunction->_AtomTable;
+    obj->_NonbondForceField = energyFunction->_AtomTable->nonbondForceFieldForAggregate();
+    obj->_AtomTypes = energyFunction->_AtomTypes;
+    obj->_KeepInteractionFactory = keepInteractionFactory;
+    return obj;
   }
-  return obj;
+  SIMPLE_ERROR("Mismatch between keepInteractionFactory (says don't create EnergyRosettaElec_O) and EnergyRosettaElec_O::make which says make it");
 }
 
 std::string EnergyRosettaElec_O::implementation_details() const {
@@ -224,14 +224,12 @@ void EnergyRosettaElec_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, terms), this->_Terms);
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
   node->field(INTERN_(kw, KeepInteractionFactory), this->_KeepInteractionFactory);
-  node->field(INTERN_(kw, elec_weight), this->_Parameters.elec_weight);
-  node->field(INTERN_(kw, eps_core), this->_Parameters.eps_core);
-  node->field(INTERN_(kw, eps_solvent), this->_Parameters.eps_solvent);
-  node->field(INTERN_(kw, rmin), this->_Parameters.rmin);
-  node->field(INTERN_(kw, rlow), this->_Parameters.rlow);
-  node->field(INTERN_(kw, rhi), this->_Parameters.rhi);
-  node->field(INTERN_(kw, rcut), this->_Parameters.rcut);
-  node->field(INTERN_(kw, rpairlist), this->_Parameters.rpairlist);
+  node->field(INTERN_(kw, Matter1), this->_Matter1);
+  node->field(INTERN_(kw, Matter2), this->_Matter2);
+  node->field(INTERN_(kw, NonbondForceField), this->_NonbondForceField);
+  node->field(INTERN_(kw, AtomTypes), this->_AtomTypes);
+  node->field(INTERN_(kw, DisplacementBuffer), this->_DisplacementBuffer);
+  this->_Parameters.fields(node);
   this->Base::fields(node);
 }
 
@@ -270,30 +268,93 @@ EnergyComponent_sp EnergyRosettaElec_O::copyFilter(core::T_sp keepInteractionFac
   copy->_AtomTable = this->_AtomTable;
   copy->_NonbondForceField = this->_NonbondForceField;
   copy->_AtomTypes = this->_AtomTypes;
+  copy->_Matter1 = this->_Matter1;
+  copy->_Matter2 = this->_Matter2;
   copy->_KeepInteractionFactory = keepInteractionFactory;
-  if (this->_DisplacementBuffer.notnilp()) {
-    copy->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(this->_DisplacementBuffer));
-  }
-
-  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory, EnergyRosettaElec_O::staticClass());
-  if (keepInteraction == _lisp->_true()) {
-    for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
-      copy->_Terms.push_back(*edi);
-    }
-  } else {
-    for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
-      Atom_sp a1 = edi->_Atom1_enb;
-      Atom_sp a2 = edi->_Atom2_enb;
-      size_t ia1 = edi->term.i3x1;
-      size_t ia2 = edi->term.i3x2;
-      if (skipInteraction_EnergyNonbond(keepInteraction, a1, a2, core::make_fixnum(ia1), core::make_fixnum(ia2))) continue;
-      copy->_Terms.push_back(*edi);
-    }
-  }
   copy->_Parameters.do_apply(setupAcc);
   copy->_DisplacementBuffer = nil<core::T_O>();
   copy->_Terms.clear();
   return copy;
+}
+
+CL_LAMBDA((self chem:energy-rosetta-elec) mat1 mat2 energy-function keep-interaction-factory);
+CL_DEFMETHOD void EnergyRosettaElec_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
+                                                                            EnergyFunction_sp energyFunction,
+                                                                            core::T_sp keepInteractionFactory) {
+  this->_Matter1 = mat1;
+  this->_Matter2 = mat2;
+  this->_KeepInteractionFactory = keepInteractionFactory;
+  this->_Terms.clear();
+  this->_AtomTable = energyFunction->_AtomTable;
+  this->_AtomTypes = energyFunction->atomTypes();
+  this->_NonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
+  this->_DisplacementBuffer = nil<core::T_O>();
+}
+
+core::T_mv EnergyRosettaElec_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {
+  core::T_sp keepInteractionFactory = this->_KeepInteractionFactory;
+  if (keepInteractionFactory.nilp()) return Values0<core::T_O>();
+  NVector_sp coords = gc::As<NVector_sp>(tcoordinates);
+  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory, EnergyRosettaElec_O::staticClass());
+  Matter_sp mat1 = gc::As<Matter_sp>(this->_Matter1);
+  Matter_sp mat2 = gc::As<Matter_sp>(this->_Matter2);
+  bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
+  rosetta_elec_parameters& params = this->_Parameters;
+  double rpairlist2 = params.rpairlist * params.rpairlist;
+  auto atomTable = this->_AtomTable;
+  size_t interactionsKept = 0;
+  size_t interactionsDiscarded = 0;
+  {
+    this->_Terms.clear();
+    Loop lMat1(mat1, ATOMS);
+    while (lMat1.advanceLoopAndProcess()) {
+      Atom_sp a1 = lMat1.getAtom();
+      size_t i3x1 = atomTable->getCoordinateIndexTimes3(a1);
+      Vector3 v1(coords, i3x1, Safe());
+      Loop lMat2(mat2, ATOMS);
+      while (lMat2.advanceLoopAndProcess()) {
+        Atom_sp a2 = lMat2.getAtom();
+        size_t i3x2 = atomTable->getCoordinateIndexTimes3(a2);
+        Vector3 v2(coords, i3x2, Safe());
+        Vector3 vdiff = v1 - v2;
+        double dist2 = vdiff.dotProduct(vdiff);
+        if (dist2 < rpairlist2) {
+          if (hasKeepInteractionFunction) {
+            core::T_sp result = core::eval::funcall(keepInteraction, a1, a2,
+                                                    core::make_fixnum(i3x1),
+                                                    core::make_fixnum(i3x2));
+            if (result.notnilp()) {
+              EnergyRosettaElec term;
+              term.defineForAtomPair(this->_NonbondForceField, a1, a2,
+                                     i3x1, i3x2,
+                                     this->asSmartPtr(),
+                                     this->_AtomTypes,
+                                     keepInteraction,
+                                     params);
+              this->addTerm(term);
+              ++interactionsKept;
+            } else {
+              ++interactionsDiscarded;
+            }
+          } else {
+            EnergyRosettaElec term;
+            term.defineForAtomPair(this->_NonbondForceField, a1, a2,
+                                   i3x1, i3x2,
+                                   this->asSmartPtr(),
+                                   this->_AtomTypes,
+                                   keepInteraction,
+                                   params);
+            this->addTerm(term);
+            ++interactionsKept;
+          }
+        }
+      }
+    }
+  }
+  size_t totalInteractions = interactionsKept + interactionsDiscarded;
+  return Values(core::clasp_make_fixnum(interactionsKept),
+                core::clasp_make_fixnum(interactionsDiscarded),
+                core::clasp_make_fixnum(totalInteractions));
 }
 
 core::T_mv EnergyRosettaElec_O::maybeRebuildPairList(core::T_sp tcoordinates) {
@@ -330,7 +391,14 @@ core::T_mv EnergyRosettaElec_O::maybeRebuildPairList(core::T_sp tcoordinates) {
 }
 
 core::T_mv EnergyRosettaElec_O::rebuildPairList(core::T_sp tcoordinates) {
+#if 1
+  return rebuildPairListImpl(this, tcoordinates);
+#else
   this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
+  if (this->_Matter1.notnilp()) {
+    ASSERT(this->_Matter2.notnilp());
+    return this->rebuildPairListBetweenMatters(tcoordinates);
+  }
   size_t interactionsKept = 0;
   size_t interactionsDiscarded = 0;
   size_t totalInteractions = 0;
@@ -402,6 +470,7 @@ core::T_mv EnergyRosettaElec_O::rebuildPairList(core::T_sp tcoordinates) {
   return Values(core::clasp_make_fixnum(interactionsKept),
                 core::clasp_make_fixnum(interactionsDiscarded),
                 core::clasp_make_fixnum(totalInteractions));
+#endif
 }
 
 // Evaluate
