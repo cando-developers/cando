@@ -44,7 +44,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/primitives.h>
 #include <clasp/core/iterator.h>
 #include <clasp/core/lambdaListHandler.h>
-#include <clasp/core/loadTimeValues.h>
 #include <clasp/core/numbers.h>
 #include <clasp/core/package.h>
 #include <clasp/core/pathname.h>
