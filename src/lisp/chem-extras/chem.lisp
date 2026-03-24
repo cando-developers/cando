@@ -589,6 +589,242 @@ evaluates the body in that dynamic environment."
            )))
 
 
+;;; ---------------------------------------------------------------------------
+;;; Energy spec: a unified s-expression for configuring energy functions.
+;;;
+;;; A spec can be:
+;;;   :amber or :rosetta     — PRESET, all components, all interactions
+;;;   T                      — keep all (for copy-filter)
+;;;   NIL                    — keep none (for copy-filter)
+;;;   (PRESET . clauses)     — preset with customization
+;;;
+;;; Clauses in a spec list:
+;;;   :default T/NIL/fn      — behavior for components not explicitly listed
+;;;   :add (class ...)       — add components beyond the preset
+;;;   :remove (class ...)    — remove components from the preset
+;;;   (class-name ...)       — per-component entry: T, :filter fn, :param val
+;;;
+;;; A per-component entry is (class-name . options) where options can be:
+;;;   T                      — keep all interactions for this component
+;;;   :filter fn             — filter interactions with this closure
+;;;   :key value ...         — set parameters (passed through to setup)
+;;;
+;;; chem:parse-energy-spec returns three values:
+;;;   1. keep-interaction-factory — T, NIL, or a function of (aclass)
+;;;   2. setup — list suitable for the C++ setup parameter (:rosetta ...)
+;;;   3. add-components — list of class names to add (for copy-filter)
+;;; ---------------------------------------------------------------------------
+
+(defun chem::%%parse-spec-clauses (clauses)
+  "Parse the clauses of an energy spec list.
+Returns (values default add remove component-entries).
+component-entries is a list of (class-name . options) entries."
+  (let ((default t)
+        (add nil)
+        (remove nil)
+        (component-entries nil))
+    (loop with rest = clauses
+          while rest
+          do (let ((item (car rest)))
+               (cond
+                 ((eq item :default)
+                  (setf default (cadr rest))
+                  (setf rest (cddr rest)))
+                 ((eq item :add)
+                  (setf add (cadr rest))
+                  (setf rest (cddr rest)))
+                 ((eq item :remove)
+                  (setf remove (cadr rest))
+                  (setf rest (cddr rest)))
+                 ((consp item)
+                  ;; Per-component entry: (class-name . options)
+                  (push item component-entries)
+                  (setf rest (cdr rest)))
+                 (t
+                  (error "Unexpected item in energy spec: ~s" item)))))
+    (values default add remove (nreverse component-entries))))
+
+(defun chem::%%build-component-filter-map (component-entries)
+  "Build a hash table mapping component class to its filter value.
+The filter value is T (keep all) or a closure.
+Also returns a list of (class-name . param-plist) for setup."
+  (let ((filter-map (make-hash-table :test 'eq))
+        (setup-params nil))
+    (dolist (entry component-entries)
+      (let* ((class-name (car entry))
+             (options (cdr entry))
+             (class (if (symbolp class-name)
+                        (find-class class-name)
+                        class-name)))
+        ;; Parse the options for this component
+        (cond
+          ;; (class-name t) or (class-name) — keep all
+          ((or (null options) (eq (car options) t))
+           (setf (gethash class filter-map) t))
+          ;; (class-name :filter fn :param val ...)
+          (t
+           (let ((filter t)
+                 (params nil))
+             (loop with rest = options
+                   while rest
+                   do (cond
+                        ((eq (car rest) :filter)
+                         (setf filter (cadr rest))
+                         (setf rest (cddr rest)))
+                        (t
+                         ;; It's a parameter key-value pair
+                         (push (cadr rest) params)
+                         (push (car rest) params)
+                         (setf rest (cddr rest)))))
+             (setf (gethash class filter-map) filter)
+             (when params
+               (push (cons class-name (nreverse params)) setup-params)))))))
+    (values filter-map (nreverse setup-params))))
+
+(defun chem::%%build-keep-interaction-factory (default add remove filter-map)
+  "Build a keep-interaction-factory function from parsed spec components.
+Returns T, NIL, or a closure of (aclass).
+The returned function, when called with a component class, returns:
+  NIL      — skip this component entirely
+  T        — keep all interactions
+  closure  — filter interactions with this closure"
+  (let ((remove-set (when remove
+                      (let ((ht (make-hash-table :test 'eq)))
+                        (dolist (class-name remove)
+                          (setf (gethash (find-class class-name) ht) t))
+                        ht)))
+        (add-set (when add
+                   (let ((ht (make-hash-table :test 'eq)))
+                     (dolist (class-name add)
+                       (setf (gethash (find-class class-name) ht) t))
+                     ht)))
+        (has-entries (plusp (hash-table-count filter-map))))
+    ;; If no customization at all, just return the default
+    (when (and (eq default t) (null remove) (null add) (not has-entries))
+      (return-from chem::%%build-keep-interaction-factory t))
+    (when (and (null default) (null add) (not has-entries))
+      (return-from chem::%%build-keep-interaction-factory nil))
+    ;; Build a factory function
+    (lambda (aclass)
+      (block result
+        ;; Check removal first
+        (when (and remove-set (gethash aclass remove-set))
+          (return-from result nil))
+        ;; Check explicit component entry
+        (multiple-value-bind (filter found)
+            (gethash aclass filter-map)
+          (when found
+            (return-from result filter)))
+        ;; Check if it's an added component (not in filter-map)
+        (when (and add-set (gethash aclass add-set))
+          (return-from result default))
+        ;; Fall through to default
+        default))))
+
+(defun chem:parse-energy-spec (spec)
+  "Parse an energy spec into values for the existing C++ API.
+Returns (values keep-interaction-factory setup add-components).
+
+SPEC can be:
+  :amber            — default AMBER energy function
+  :rosetta          — Rosetta energy function, all components
+  T                 — keep all (for copy-filter)
+  NIL               — keep none (for copy-filter)
+  (:rosetta ...)    — Rosetta with customization
+  (:amber ...)      — AMBER with customization"
+  (cond
+    ;; T and NIL pass through directly
+    ((eq spec t)
+     (values t nil nil))
+    ((null spec)
+     (values nil nil nil))
+    ;; Bare keyword preset
+    ((keywordp spec)
+     (values t (list spec) nil))
+    ;; Function — treat as a raw keep-interaction-factory (backward compat)
+    ((functionp spec)
+     (values spec nil nil))
+    ;; Full spec list
+    ((consp spec)
+     (let ((preset (car spec))
+           (clauses (cdr spec)))
+       (unless (keywordp preset)
+         (error "Energy spec must start with a preset keyword (:amber or :rosetta), got ~s" preset))
+       (multiple-value-bind (default add remove component-entries)
+           (chem::%%parse-spec-clauses clauses)
+         (multiple-value-bind (filter-map setup-params)
+             (chem::%%build-component-filter-map component-entries)
+           (let ((keep-interaction-factory
+                   (chem::%%build-keep-interaction-factory default add remove filter-map))
+                 (setup (cons preset setup-params)))
+             (values keep-interaction-factory setup add))))))
+    (t
+     (error "Invalid energy spec: ~s — expected T, NIL, a keyword, a function, or a list" spec))))
+
+;;; ---------------------------------------------------------------------------
+;;; Wrappers that accept :spec and delegate to the C++ API
+;;; ---------------------------------------------------------------------------
+
+(defun chem:make-energy-function (&rest args &key matter spec
+                                    use-excluded-atoms keep-interaction-factory
+                                    assign-types setup
+                                    disable-components enable-components)
+  "Create an energy function for MATTER.
+If :spec is provided, it is parsed to derive :keep-interaction-factory and :setup.
+Otherwise, :keep-interaction-factory and :setup are used directly (backward compatible).
+It is an error to provide :spec together with :keep-interaction-factory or :setup.
+
+See chem:parse-energy-spec for the spec syntax.
+
+Examples:
+  (chem:make-energy-function :matter agg)                      ; default AMBER
+  (chem:make-energy-function :matter agg :spec :rosetta)       ; Rosetta preset
+  (chem:make-energy-function :matter agg
+    :spec '(:rosetta
+            (chem:energy-rosetta-nonbond :rep-weight 0.5)))"
+  (declare (ignore matter use-excluded-atoms assign-types
+                   disable-components enable-components))
+  (if spec
+      (progn
+        (when keep-interaction-factory
+          (error "Cannot provide both :spec and :keep-interaction-factory to make-energy-function"))
+        (when setup
+          (error "Cannot provide both :spec and :setup to make-energy-function"))
+        (multiple-value-bind (parsed-factory parsed-setup)
+            (chem:parse-energy-spec spec)
+          (let ((cleaned-args (loop for (key val) on args by #'cddr
+                                    unless (member key '(:spec :keep-interaction-factory :setup))
+                                      nconc (list key val))))
+            (apply #'chem:%make-energy-function
+                   :keep-interaction-factory parsed-factory
+                   :setup parsed-setup
+                   cleaned-args))))
+      ;; Legacy path: pass through directly
+      (apply #'chem:%make-energy-function
+             (loop for (key val) on args by #'cddr
+                   unless (eq key :spec)
+                     nconc (list key val)))))
+
+(defun chem:copy-energy-function (energy-function spec)
+  "Copy an energy function, applying the given energy spec.
+SPEC controls which components are included, how interactions are filtered,
+and what parameters are set. See chem:parse-energy-spec for spec syntax.
+
+Examples:
+  (chem:copy-energy-function ef t)              ; full copy
+  (chem:copy-energy-function ef nil)            ; empty copy
+  (chem:copy-energy-function ef :rosetta)       ; copy all rosetta components
+  (chem:copy-energy-function ef
+    '(:rosetta
+      :add (chem:energy-anchor-restraint)
+      (chem:energy-rosetta-nonbond :rep-weight 0.2
+                                   :filter #'my-filter)))"
+  (multiple-value-bind (keep-interaction-factory setup add-components)
+      (chem:parse-energy-spec spec)
+    (chem:copy-filter energy-function keep-interaction-factory setup add-components)))
+
+;;; ---------------------------------------------------------------------------
+
 (defun chem:find-lksolvation-type (lksolvation-db type &key (errorp t))
   "Used by energyRosettaLKSolvation.cc"
   (let ((ff (chem:fflksolvation-find-type lksolvation-db type)))

@@ -97,6 +97,21 @@ molecule in the global frame."
   (let ((coords (chem:matter/extract-coordinates aggregate)))
     (make-orientation-from-local-frame-specs local-frame-specs assembler coords :adjustment-transform adjustment-transform)))
 
+
+(defvar *orientation* (geom:make-m4-identity))
+
+(defmacro with-orientation-transform (orientation &body body)
+  "Set the *orientation* dynamic variable so that external coordinate building can function"
+  `(progn
+     (let ((*orientation* ,orientation))
+       (progn
+         ,@body))))
+
+(defun kin:orientation-transform (dummy)
+  (if (boundp '*orientation*)
+      *orientation*
+      (geom:make-m4-identity)))
+
 (defun copy-orientation (orientation)
   "Copy an ORIENTATION."
   (make-instance 'local-to-global-orientation
@@ -879,12 +894,6 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                            for atom = (chem:content-at residue atom-index)
                            for joint = (aref (joints atresidue) atom-index)
                            do (funcall callback atom joint (list molecule-index residue-index atom-index)))))))
-#+(or)
-(defun copy-atom-positions-into-joints (assembler)
-  (walk-atoms-joints assembler
-                     (lambda (atm jnt atomid)
-                       (declare (ignore atomid))
-                       (kin:set-position jnt (chem:get-position atm)))))
 
 (defun find-joint-for-atom (assembler atom)
   (let ((ataggregate (ataggregate assembler))
@@ -1478,10 +1487,10 @@ Return the COORDS and NIL or the ligand-transform if it was calculated."
          (joint0 (elt joints 0)))
     (if (eq oligomer-shape (ligand-oligomer-shape assembler))
         (progn
-          (let ((*orientation* ligand-transform))
-            (progn (update-xyz-coords assembler assembler-internals joint0 coords))))
-        #+(or)(with-orientation-transform ligand-transform
-                (update-xyz-coords assembler assembler-internals joint0 coords))
+          #+(or)(let ((*orientation* ligand-transform))
+                  (progn (update-xyz-coords assembler assembler-internals joint0 coords)))
+          (with-orientation-transform ligand-transform
+            (update-xyz-coords assembler assembler-internals joint0 coords)))
         (update-xyz-coords assembler assembler-internals joint0 coords))
     (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
     joint0))

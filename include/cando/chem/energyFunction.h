@@ -306,7 +306,7 @@ namespace chem {
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
 
-    EnergyFunction_sp copyFilter(core::T_sp keepInteractionFactory, core::List_sp setup );
+    EnergyFunction_sp copyFilter(core::T_sp keepInteractionFactory, core::List_sp setup, core::List_sp addComponents );
 
     EnergyFunction_O(BoundingBox_sp bounding_box) :
         _Matter(unbound<Matter_O>())

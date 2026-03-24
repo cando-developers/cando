@@ -340,6 +340,9 @@
    #:internal-planar-adjustment
    #:read-rotamers
    #:write-rotamers
+   #:write-backbone-rotamers
+   #:write-sidechain-rotamers
+   #:build-oligomer-shape
    #:read-oligomer-shape-rotamers
    #:write-oligomer-shape-rotamers
    #:labeled-monomers

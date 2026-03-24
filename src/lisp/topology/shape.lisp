@@ -216,20 +216,6 @@ to the components and evaluate the BODY in that scope."
 (defmethod orientation ((oligomer-shape oligomer-shape) (assembler assembler))
   (gethash oligomer-shape (orientations (orientations assembler))))
 
-(defvar *orientation* (geom:make-m4-identity))
-
-(defmacro with-orientation-transform (orientation &body body)
-  "Set the *orientation* dynamic variable so that external coordinate building can function"
-  `(progn
-     (let ((*orientation* ,orientation))
-       (progn
-         ,@body))))
-
-(defun kin:orientation-transform (dummy)
-  (if (boundp '*orientation*)
-      *orientation*
-      (geom:make-m4-identity)))
-
 (defclass receptor-shape (oligomer-shape)
   ((aggregate :initarg :aggregate :accessor aggregate)
     ))

@@ -192,7 +192,7 @@ that will be called for each interaction and the function returns T or NIL if
 each interaction should be added to the energy function.
 : assign-types - T (default) assign atom types as part of generating the energy function.  [I don't know what will happen if assing-types is NIL.)doc");
 CL_LAMBDA(&key matter disable-components enable-components (use-excluded-atoms nil) (keep-interaction-factory t) (assign-types t) setup);
-CL_LISPIFY_NAME(make_energy_function);
+CL_LISPIFY_NAME("chem:%make-energy-function");
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
                                                              bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types, core::T_sp setup )
 {
@@ -511,6 +511,9 @@ public:
 
 
 SYMBOL_EXPORT_SC_(ChemPkg,monomer_corrections);
+SYMBOL_EXPORT_SC_(ChemPkg,parse_energy_spec);
+SYMBOL_EXPORT_SC_(ChemPkg,copy_energy_function);
+SYMBOL_EXPORT_SC_(ChemPkg,make_energy_function);
 
 
 
@@ -2137,9 +2140,9 @@ CL_DEFUN void chem__fill_energy_function_from_alist(EnergyFunction_sp energy, co
   energy->pushEnergyComponent(safe_alist_lookup<EnergyNonbond_sp>(alist,kw::_sym_nonbond));
 }
 
-CL_LAMBDA((energy-function chem:energy-function) &optional (keep-interaction-factory t) setup);
+CL_LAMBDA((energy-function chem:energy-function) &optional (keep-interaction-factory t) setup add-components);
 CL_DEFMETHOD
-EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory, core::List_sp setup )
+EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory, core::List_sp setup, core::List_sp addComponents )
 {
   auto  me  = gctools::GC<EnergyFunction_O>::allocate();
   me->_Matter = this->_Matter;
@@ -2155,6 +2158,17 @@ EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory
       ll << component->copyFilter(keepInteractionFactory,setupAcc);
     }
     me->_EnergyComponents = ll.cons();
+  }
+  // Add empty components for classes listed in addComponents
+  // that are not already present in the result.
+  for ( auto cur : addComponents ) {
+    core::Symbol_sp className = gc::As<core::Symbol_sp>(CONS_CAR(cur));
+    if (me->findComponentOrNil(className).nilp()) {
+      // Use the class's make_instance() to create an empty C++ object.
+      core::Instance_sp theClass = gc::As<core::Instance_sp>(cl__find_class(className, true, nil<core::T_O>()));
+      core::T_sp newComp = theClass->make_instance();
+      me->pushEnergyComponent(gc::As<EnergyComponent_sp>(newComp));
+    }
   }
   return me;
 }
