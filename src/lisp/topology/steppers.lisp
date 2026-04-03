@@ -404,14 +404,16 @@ Returns an instance of permissible-sidechain-rotamers."
     vec))
 
 
-(defclass rotamer-indexes (cl:sequence standard-object)
+(defclass rotamer-indexes (cl:sequence cando.serialize:serializable)
   ((rotamer-indexes :initarg :rotamer-indexes :accessor rotamer-indexes))
   (:documentation "A class to index into a vector of rotamers"))
 
 (defmethod print-object ((object rotamer-indexes) stream)
-  (let ((*print-pretty* nil))
-    (print-unreadable-object (object stream :type t)
-      (format stream "~s" (rotamer-indexes object)))))
+  (if *print-readably*
+      (call-next-method)
+      (let ((*print-pretty* nil))
+        (print-unreadable-object (object stream :type t)
+          (format stream "~s" (rotamer-indexes object))))))
 
 (defun rotamer-indexes-length (rotamer-indexes)
   (length (rotamer-indexes rotamer-indexes)))

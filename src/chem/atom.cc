@@ -837,6 +837,15 @@ float chem__distance_squared_between_two_atoms(Atom_sp atom1, Atom_sp atom2)
   return atom1->distanceSquaredToAtom(atom2);
 }
 
+CL_DEFUN
+void chem__do_atom_bonds(Atom_sp atom1, core::T_sp func)
+{
+  for (auto bb : atom1->_Bonds ) {
+    auto neighbor = bb->getOtherAtom(atom1);
+    auto order = bb->getOrderFromAtom(atom1);
+    core::eval::funcall( func, neighbor, translate::to_object<BondOrder>::convert(order) );
+  }
+}
 
 void Atom_O::makeAllAtomNamesInEachResidueUnique()
 {
@@ -1206,6 +1215,11 @@ Matter_sp Atom_O::copy(core::T_sp new_to_old)
 {
   auto atm = gc::GC<Atom_O>::copy(*this);
   atm->_Bonds.clear();
+  if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+    auto ht = gc::As<core::HashTable_sp>(new_to_old);
+    ht->setf_gethash(atm,this->asSmartPtr());
+    ht->setf_gethash(this->asSmartPtr(),atm);
+  };
   return atm;
 }
 

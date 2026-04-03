@@ -37,6 +37,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/array_int32.h>
 #include <clasp/core/lispStream.h>
+#include <clasp/core/hashTable.h>
+#include <clasp/core/hashTableEqualp.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/llvmo/intrinsics.h>
 #include <cando/chem/largeSquareMatrix.h>
@@ -1019,17 +1021,23 @@ CL_DOCSTRING(R"doc(Perform a constant temperature Hamiltonian replica exchange m
 ENERGIES object using the LAMBDA-WINDOWS at TEMPERATURE taking LAMBDA-STEPS with each set of lambdas
 before attempting to swap windows.
 Return (values lowest-energy-state accepts swap-accepts-for-each-lambda-window swap-attempts-for-each-lambda-window max-iterations lowest-energy initial-state initial-energy))doc");
-CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (max-iterations 1000) (warm-up-iterations 100) step-callback (step-callback-period 1000) exchange-callback debug);
+CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (kk-start 0) (max-iterations 1000) (warm-up-iterations 100) step-callback (step-callback-period 1000) exchange-callback physical-state-callback (physical-state-callback-period 100) initial-state seen-states debug energy-trace);
 CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarlo(core::T_sp tenergies,
                                                                                   core::T_sp tlambdaWindows,
                                                                                   double temperature,
                                                                                   size_t lambdaSteps,
+                                                                                  size_t kkStart,
                                                                                   size_t maxIterations,
                                                                                   size_t warmUpIterations,
                                                                                   core::T_sp stepCallback,
                                                                                   size_t stepCallbackPeriod,
                                                                                   core::T_sp exchangeCallback,
-                                                                                  core::T_sp debug ) {
+                                                                                  core::T_sp physicalStateCallback,
+                                                                                  size_t physicalStateCallbackPeriod,
+                                                                                  core::T_sp tInitialState,
+                                                                                  core::T_sp tSeenStates,
+                                                                                  core::T_sp debug,
+                                                                                  core::T_sp tEnergyTrace) {
 
   size_t accepts = 0;
 
@@ -1037,17 +1045,37 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
 
   core::SimpleVector_double_sp lambdaWindows = gc::As<core::SimpleVector_double_sp>(tlambdaWindows);
   size_t numberOfLambdaWindows = core::cl__length(lambdaWindows);
-
+  core::ComplexVector_T_sp energyTrace;
+  bool hasEnergyTrace = false;
+  if (gc::IsA<core::ComplexVector_T_sp>(tEnergyTrace)) {
+    energyTrace = gc::As_unsafe<core::ComplexVector_T_sp>(tEnergyTrace);
+    hasEnergyTrace = true;
+  }
   Energies energies(tenergies);
   core::SimpleVector_byte32_t_sp saveState;
   bool useStepCallback = stepCallback.notnilp();
+  bool usePhysicalStateCallback = physicalStateCallback.notnilp();
   if (stepCallbackPeriod < 1) stepCallbackPeriod = 1;
   size_t stepCallbackCounter = stepCallbackPeriod;
-  if (useStepCallback) saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
+  if (useStepCallback || usePhysicalStateCallback)
+    saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
   bool useExchangeCallback = exchangeCallback.notnilp();
+  core::HashTableEqualp_sp seenStates;
+  bool hasSeenStates = false;
+  core::SimpleVector_byte32_t_sp seenStatesProbeKey;
+  if (tSeenStates.notnilp()) {
+    seenStates = gc::As<core::HashTableEqualp_sp>(tSeenStates);
+    hasSeenStates = true;
+    seenStatesProbeKey = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
+  }
 
   std::vector<State> currentStates(numberOfLambdaWindows);
   for ( size_t ii = 0; ii<currentStates.size(); ii++ ) currentStates[ii].randomState(energies);
+  if (tInitialState.notnilp()) {
+    core::SimpleVector_byte32_t_sp initState = gc::As<core::SimpleVector_byte32_t_sp>(tInitialState);
+    memcpy(&currentStates[numberOfLambdaWindows-1]._State[0], &(*initState)[0],
+           sizeof(int32_t)*energies._NumberOfSlots);
+  }
   State initialState = currentStates[numberOfLambdaWindows-1];
 
   std::vector<byte64_t> swapAccepts(numberOfLambdaWindows,0);
@@ -1055,6 +1083,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
 
   size_t numSlotsInState = core::cl__length(energies._MonomerLocusMaxMrkindex );
 
+  size_t kk = kkStart;
   State testState;
   State lowestState;
   double lowestEnergy = std::numeric_limits<double>::max();
@@ -1071,8 +1100,11 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
         double p = (x >= 0.0) ? 1.0 : std::exp(x);   // never exp(large +)
         if (debug.notnilp()) core::clasp_write_string(fmt::format("acc_prob test: testE={:.6} prevE={:.6} beta={:.3} delta={:.6} p={:.3}\n", testEnergy, curEnergy, beta, delta, p ),debug);
         double rnd = energies.U01();
+        bool accepted = false;
+        double eCur = curEnergy;
         if ( rnd <= p) {
           accepts++;
+          accepted = true;
           currentStates[lambdaWindowIdx] = testState;
           curEnergy = testEnergy;
           if (debug.notnilp()) core::clasp_write_string(fmt::format(" +++ accepted step\n"),debug);
@@ -1082,8 +1114,41 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
           memcpy(&(*saveState)[0],&currentStates[lambdaWindowIdx]._State[0],sizeof(int32_t)*energies._NumberOfSlots);
           core::eval::funcall( stepCallback, saveState, core::make_fixnum(testSlotIndex), mk_double_float(curEnergy) );
         }
+        if (hasEnergyTrace && (lambdaWindowIdx == numberOfLambdaWindows-1) ) {
+          core::T_sp data = core::Cons_O::createList(core::make_fixnum(kk), mk_double_float(eCur),
+                                                     mk_double_float(curEnergy), (accepted ? _lisp->_true() : nil<core::T_O>()));
+          energyTrace->vectorPushExtend(data);
+          kk++;
+        }
       }
       // In lambdaWindowIdx loop
+    }
+    // Call physical state callback every N outer iterations
+    if (usePhysicalStateCallback && (ii % physicalStateCallbackPeriod == 0)) {
+      memcpy(&(*saveState)[0], &currentStates[numberOfLambdaWindows-1]._State[0],
+             sizeof(int32_t)*energies._NumberOfSlots);
+      core::eval::funcall(physicalStateCallback, saveState, core::make_fixnum(kk));
+    }
+    // Track unique physical states in C++ (no callback overhead)
+    if (hasSeenStates && (ii % physicalStateCallbackPeriod == 0)) {
+      // Copy state into reusable probe key (no allocation)
+      memcpy(&(*seenStatesProbeKey)[0], &currentStates[numberOfLambdaWindows-1]._State[0],
+             sizeof(int32_t)*energies._NumberOfSlots);
+      core::T_mv found = seenStates->gethash(seenStatesProbeKey);
+      if (found.nilp()) {
+        // New state — allocate a fresh key for insertion
+        auto insertKey = core::SimpleVector_byte32_t_O::make(
+          energies._NumberOfSlots, 0, false,
+          energies._NumberOfSlots,
+          &currentStates[numberOfLambdaWindows-1]._State[0]);
+        seenStates->setf_gethash(insertKey, _lisp->_true());
+        if (hasEnergyTrace) {
+          core::T_sp data = core::Cons_O::createList(
+            INTERN_(kw,unique_states), core::make_fixnum(kk),
+            INTERN_(kw,count), core::make_fixnum(core::cl__hash_table_count(seenStates)));
+          energyTrace->vectorPushExtend(data);
+        }
+      }
     }
     // Here I would swap windows
     if (debug.notnilp()) core::clasp_write_string(fmt::format("Try to swap lambda windows now\n"),debug);
@@ -1109,6 +1174,14 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
           State tempState = currentStates[swapi];
           currentStates[swapi] = currentStates[swapi+1];
           currentStates[swapi+1] = tempState;
+          if (hasEnergyTrace) {
+            bool physicalSwap = (swapi+1 >= numberOfLambdaWindows-1);
+            core::T_sp swapData = core::Cons_O::createList(
+              INTERN_(kw,swap), core::make_fixnum(kk),
+              INTERN_(kw,window), core::make_fixnum(swapi),
+              INTERN_(kw,physical), (physicalSwap ? _lisp->_true() : nil<core::T_O>()));
+            energyTrace->vectorPushExtend(swapData);
+          }
         }
         swapAttempts[swapi]++;
         if (useExchangeCallback && ii>warmUpIterations) {
@@ -1149,8 +1222,8 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
                                                     0, false,
                                                     energies._NumberOfSlots,   // initialContentsSize
                                                     &initialState._State[0] ),  // initialContents
-                mk_double_float(initialEnergy)
-
+                mk_double_float(initialEnergy),
+                core::make_fixnum(kk)
                 );
 }
 #endif

@@ -87,13 +87,22 @@ Save the object to the file PATHNAME as an s-expression."
     ;; Do the construction.
     (apply 'make-instance l)))
 
-(defparameter *cando-reader* (copy-readtable nil))
-(set-dispatch-macro-character #\# #\$ 'sharp-$-reader *cando-reader*)
+(defparameter *cando-readtable* (copy-readtable nil))
+(set-dispatch-macro-character #\# #\$ 'sharp-$-reader *cando-readtable*)
 
-(defun load-cando (pathname)
+(defparameter *native-readtable* (copy-readtable core::*native-readtable*))
+(set-dispatch-macro-character #\# #\$ 'sharp-$-reader *native-readtable*)
+
+(defun load-cando (pathname &key (use-native-reader t))
+  "Read the cando file.  With use-native-reader it uses the native reader that is 15x faster than
+when using the eclector reader."
   (with-open-file (fin pathname :direction :input)
-    (let ((*readtable* *cando-reader*))
-      (read fin))))
+    (if use-native-reader
+        (let ((*readtable* *native-readtable*)
+              (core:*read-hook* #'core:read-with-native-reader))
+          (read fin))
+        (let ((*readtable* *cando-readtable*))
+          (read fin)))))
 
 (defmacro make-class-save-load (class-name &key skip-slot-names
                                              (print-unreadably

@@ -21,6 +21,7 @@
                (:file "internals")
                (:file "design")
                (:file "oligomer-space-dag")
+               (:file "oligomer-to-sexp")
                (:file "context")
                (:file "badgeom")
                (:file "shape")

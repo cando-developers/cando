@@ -605,7 +605,12 @@
    #:foldamer-monomer-context-info-monomer-context
    #:foldamer-monomer-context-info-atom-info
    #:lk-solvation-atom-type
-   #:foldamer-monomer-context-info-topology))
+   #:foldamer-monomer-context-info-topology
+   #:copy-rotamer-shape
+   #:make-oligomer-shape-with-mutated-sidechains
+   #:oligomer-to-sexp
+   #:oligomer-to-string
+   ))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

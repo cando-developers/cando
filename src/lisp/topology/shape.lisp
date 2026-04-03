@@ -47,7 +47,8 @@
   "Convenience function to make a rotamer-shape for a MONOMER in an OLIGOMER.
 If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy its ROTAMER-INDEX."
   (let* ((foldamer (foldamer (oligomer-space oligomer)))
-         (monomer-context (foldamer-monomer-context monomer oligomer foldamer))
+         (monomer-context (let ((mc (foldamer-monomer-context monomer oligomer foldamer)))
+                            mc))
          (rotamers-database (foldamer-rotamers-database foldamer))
          (context-rotamers (topology:lookup-rotamers-for-context rotamers-database monomer-context :ignore-sidechains ignore-sidechains :errorp nil :error-value :no-context-rotamers)))
     (if (eq context-rotamers :no-context-rotamers)
@@ -779,14 +780,14 @@ The ROTAMER-INDEX slots of the ROTAMER-SHAPEs will be unbound on return."
   (let ((original-monomer-to-monomer-shape-map (topology:monomer-shape-map original-oligomer-shape))
         (new-monomer-shape-map (make-hash-table)))
     (maphash (lambda (monomer original-monomer-shape)
-               (let ((monomer-shape (etypecase original-monomer-shape
-                                      (topology:residue-shape original-monomer-shape)
-                                      (topology:rotamer-shape (topology:make-rotamer-shape monomer oligomer)))))
-                 (setf (gethash monomer new-monomer-shape-map) monomer-shape)))
+               (let ((new-monomer-shape (etypecase original-monomer-shape
+                                          (topology:residue-shape original-monomer-shape)
+                                          (topology:rotamer-shape (topology:copy-monomer-shape original-monomer-shape)))))
+                 (setf (gethash monomer new-monomer-shape-map) new-monomer-shape)))
              original-monomer-to-monomer-shape-map)
     new-monomer-shape-map))
 
-(defun mutate-oligomer-shape (original-oligomer-shape ligand-oligomer &key name sidechain-rotamer-indexes)
+(defun mutate-oligomer-shape (original-oligomer-shape ligand-oligomer &key do-not-mutate-backbone-rotamers name sidechain-rotamer-indexes)
   "Generate a new oligomer-shape based on ORIGINAL-OLIGOMER-SHAPE with the sequence LIGAND-OLIGOMER.
 If the LIGAND-OLIGOMER mutates any residues in the backbone then random rotamers are chosen for the new oligomer-shape.
 Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
@@ -806,8 +807,54 @@ Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
                     for monomer-shape-info = (aref (topology:monomer-shape-info-vector original-oligomer-shape) monomer-shape-locus)
                     for monomer = (topology:monomer monomer-shape-info)
                     for new-monomer-shape = (gethash monomer new-monomer-shape-map)
-                    for new-index = (if (eq (topology:rotamer-shape-context-rotamers new-monomer-shape)
-                                            (topology:rotamer-shape-context-rotamers monomer-shape))
+                    for new-monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers new-monomer-shape)
+                    for monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers monomer-shape)
+                    for same = (eq new-monomer-shape-rotamers monomer-shape-rotamers)
+                    for new-index = (if same
+                                        (topology:rotamer-index monomer-shape)
+                                        (progn
+                                          (when do-not-mutate-backbone-rotamers
+                                            (error "We are about to mutate a backbone rotamer when the caller said we shouldn't" ))
+                                          (let ((len (length allowed-rotamer-indexes)))
+                                            (aref allowed-rotamer-indexes (random len)))))
+                    do (vector-push-extend new-index result-vec)
+                    finally (return (make-instance 'topology:rotamer-indexes :rotamer-indexes result-vec)))))
+          (callback-sidechain-rotamer-indexes
+            (lambda (permissible-sidechain-rotamers)
+              sidechain-rotamer-indexes)))
+      (topology:make-oligomer-shape ligand-oligomer
+                                    :monomer-to-monomer-shape-map new-monomer-shape-map
+                                    :name name
+                                    :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
+                                    :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes))))
+
+
+(defun make-oligomer-shape-with-mutated-sidechains (original-oligomer-shape ligand-oligomer &key name sidechain-rotamer-indexes)
+  "Generate a new oligomer-shape based on ORIGINAL-OLIGOMER-SHAPE with the sequence LIGAND-OLIGOMER.
+Only mutations in the sidechains are allowed - there can be no changes to the backbone monomers or rotamers.
+Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
+  (check-type original-oligomer-shape topology:oligomer-shape)
+  (let ((new-monomer-shape-map (build-mutant-monomer-shape-map original-oligomer-shape ligand-oligomer)))
+    ;; Now we have a new-monomer-shape-map with residue-shape and rotamer-shapes
+    ;; but the rotamer-shapes have unbound rotamer-index
+    ;; Fix up the backbones by copying rotamer-index if the rotamer-shape-context-rotamers is unchanged
+    ;;   or assigning a random one if it has changed
+    (let ((original-monomer-shape-map (topology:monomer-shape-map original-oligomer-shape)))
+      (break "Check the new-monomer-shape-map and compare it to the one in the original-oligomer-shape"))
+    (let ((callback-backbone-rotamer-indexes
+            (lambda (permissible-backbone-rotamers)
+              (loop with result-vec = (make-array 16 :adjustable t :fill-pointer 0)
+                    for permissible-rotamer across (topology:permissible-rotamer-vector permissible-backbone-rotamers)
+                    for monomer-shape-locus = (topology:monomer-shape-locus permissible-rotamer)
+                    for allowed-rotamer-indexes = (topology:allowed-rotamer-indexes permissible-rotamer)
+                    for monomer-shape = (aref (topology:monomer-shape-vector original-oligomer-shape) monomer-shape-locus)
+                    for monomer-shape-info = (aref (topology:monomer-shape-info-vector original-oligomer-shape) monomer-shape-locus)
+                    for monomer = (topology:monomer monomer-shape-info)
+                    for new-monomer-shape = (gethash monomer new-monomer-shape-map)
+                    for new-monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers new-monomer-shape)
+                    for monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers monomer-shape)
+                    for same = (eq new-monomer-shape-rotamers monomer-shape-rotamers)
+                    for new-index = (if same
                                         (topology:rotamer-index monomer-shape)
                                         (progn
                                           (let ((len (length allowed-rotamer-indexes)))
