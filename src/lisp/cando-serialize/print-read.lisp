@@ -90,15 +90,16 @@ Save the object to the file PATHNAME as an s-expression."
 (defparameter *cando-readtable* (copy-readtable nil))
 (set-dispatch-macro-character #\# #\$ 'sharp-$-reader *cando-readtable*)
 
-(defparameter *native-readtable* (copy-readtable core::*native-readtable*))
-(set-dispatch-macro-character #\# #\$ 'sharp-$-reader *native-readtable*)
+(defparameter +native-readtable+ (copy-readtable core::+native-readtable+))
+(set-dispatch-macro-character #\# #\$ 'sharp-$-reader +native-readtable+)
+(export '+native-readtable+ :cando.serialize)
 
 (defun load-cando (pathname &key (use-native-reader t))
   "Read the cando file.  With use-native-reader it uses the native reader that is 15x faster than
 when using the eclector reader."
   (with-open-file (fin pathname :direction :input)
     (if use-native-reader
-        (let ((*readtable* *native-readtable*)
+        (let ((*readtable* +native-readtable+)
               (core:*read-hook* #'core:read-with-native-reader))
           (read fin))
         (let ((*readtable* *cando-readtable*))
