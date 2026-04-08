@@ -294,6 +294,62 @@ to the components and evaluate the BODY in that scope."
          (cons in-plug-monomer-shape other-monomer-shape)))
       (t (error "Unrecognized shape-kind ~a" shape-kind)))))
 
+(defun make-monomer-shape-parts (oligomer &key monomer-to-monomer-shape-map ignore-sidechains)
+  (let ((foldamer (topology:foldamer (topology:oligomer-space oligomer))))
+    (loop with monomer-shape-vector = (make-array (length (monomers oligomer)))
+          with monomer-shape-info-vector = (make-array (length (monomers oligomer)))
+          with monomer-shape-to-index = (make-hash-table)
+          with in-monomers = (make-hash-table)
+          with out-monomers = (make-hash-table)
+          with the-root-monomer = nil
+          with monomer-shape-map = (make-hash-table)
+          for index from 0
+          for monomer across (monomers (oligomer-space oligomer)) ; (ordered-monomers oligomer)
+          for monomer-context = (topology:foldamer-monomer-context monomer oligomer foldamer)
+          ;; The following is not good - to not define a slot when rotamers-database is NIL
+          ;; for context-rotamers = (topology:lookup-rotamers-for-context rotamers-database monomer-context)
+          for shape-kind = (topology:shape-kind foldamer monomer oligomer)
+          for couplings = (couplings monomer)
+          for in-monomer = (let (in-monomer)
+                             (maphash (lambda (key coupling)
+                                        (when (in-plug-name-p key)
+                                          (setf in-monomer (topology:source-monomer coupling))
+                                          (setf (gethash monomer in-monomers) (topology:source-monomer coupling))))
+                                      couplings)
+                             in-monomer)
+          for out-mons = (let (out-monomers)
+                           (maphash (lambda (key coupling)
+                                      (cond
+                                        ((in-plug-name-p key)
+                                         )
+                                        ((typep coupling 'topology::ring-coupling)
+                                         (push (topology:other-monomer coupling monomer) out-monomers))
+                                        (t 
+                                         (push (topology:target-monomer coupling) out-monomers)
+                                         #+(or)(format t "Out plug coupling ~a ~a~%" key coupling))))
+                                    couplings)
+                           out-monomers)
+          for in-monomer-context = (if in-monomer
+                                       (topology:foldamer-monomer-context in-monomer oligomer foldamer)
+                                       nil)
+          for monomer-shape-info = (make-instance 'monomer-shape-info
+                                                  :monomer-context monomer-context
+                                                  :monomer-shape-kind shape-kind
+                                                  :monomer monomer
+                                                  )
+          for monomer-shape = (if monomer-to-monomer-shape-map
+                                  (gethash monomer monomer-to-monomer-shape-map)
+                                  (make-rotamer-shape monomer oligomer :ignore-sidechains ignore-sidechains))
+          do (setf (gethash monomer monomer-shape-map) monomer-shape)
+          do (unless in-monomer (setf the-root-monomer monomer))
+          do (setf (gethash monomer out-monomers) out-mons)
+          do (setf (aref monomer-shape-vector index) monomer-shape)
+          do (setf (gethash monomer-shape monomer-shape-to-index) index)
+          do (setf (aref monomer-shape-info-vector index) monomer-shape-info)
+             ;;            do (format t "monomer-context ~a~%" monomer-context)
+          finally (return (values monomer-shape-vector monomer-shape-info-vector monomer-shape-to-index the-root-monomer in-monomers out-monomers monomer-shape-map)))))
+
+
 (defgeneric make-oligomer-shape (oligomer-or-space &key &allow-other-keys))
 
 (defmethod make-oligomer-shape ((oligomer oligomer)
@@ -316,59 +372,10 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
          #+(or)(kind-order (loop for kind-keys in (kind-keys shape-info)
                                  collect (kind kind-keys))))
     (multiple-value-bind (monomer-shape-vector monomer-shape-info-vector monomer-shape-to-index
-                                               the-root-monomer in-monomers out-monomers monomer-shape-map)
-        (loop with monomer-shape-vector = (make-array (length (monomers oligomer)))
-              with monomer-shape-info-vector = (make-array (length (monomers oligomer)))
-              with monomer-shape-to-index = (make-hash-table)
-              with in-monomers = (make-hash-table)
-              with out-monomers = (make-hash-table)
-              with the-root-monomer = nil
-              with monomer-shape-map = (make-hash-table)
-              for index from 0
-              for monomer across (monomers (oligomer-space oligomer)) ; (ordered-monomers oligomer)
-              for monomer-context = (topology:foldamer-monomer-context monomer oligomer foldamer)
-              ;; The following is not good - to not define a slot when rotamers-database is NIL
-              ;; for context-rotamers = (topology:lookup-rotamers-for-context rotamers-database monomer-context)
-              for shape-kind = (topology:shape-kind foldamer monomer oligomer)
-              for couplings = (couplings monomer)
-              for in-monomer = (let (in-monomer)
-                                 (maphash (lambda (key coupling)
-                                            (when (in-plug-name-p key)
-                                              (setf in-monomer (topology:source-monomer coupling))
-                                              (setf (gethash monomer in-monomers) (topology:source-monomer coupling))))
-                                          couplings)
-                                 in-monomer)
-              for out-mons = (let (out-monomers)
-                               (maphash (lambda (key coupling)
-                                          (cond
-                                            ((in-plug-name-p key)
-                                             )
-                                            ((typep coupling 'topology::ring-coupling)
-                                             (push (topology:other-monomer coupling monomer) out-monomers))
-                                            (t 
-                                             (push (topology:target-monomer coupling) out-monomers)
-                                             #+(or)(format t "Out plug coupling ~a ~a~%" key coupling))))
-                                        couplings)
-                               out-monomers)
-              for in-monomer-context = (if in-monomer
-                                           (topology:foldamer-monomer-context in-monomer oligomer foldamer)
-                                           nil)
-              for monomer-shape-info = (make-instance 'monomer-shape-info
-                                                      :monomer-context monomer-context
-                                                      :monomer-shape-kind shape-kind
-                                                      :monomer monomer
-                                                      )
-              for monomer-shape = (if monomer-to-monomer-shape-map
-                                      (gethash monomer monomer-to-monomer-shape-map)
-                                      (make-rotamer-shape monomer oligomer :ignore-sidechains ignore-sidechains))
-              do (setf (gethash monomer monomer-shape-map) monomer-shape)
-              do (unless in-monomer (setf the-root-monomer monomer))
-              do (setf (gethash monomer out-monomers) out-mons)
-              do (setf (aref monomer-shape-vector index) monomer-shape)
-              do (setf (gethash monomer-shape monomer-shape-to-index) index)
-              do (setf (aref monomer-shape-info-vector index) monomer-shape-info)
-                 ;;            do (format t "monomer-context ~a~%" monomer-context)
-              finally (return (values monomer-shape-vector monomer-shape-info-vector monomer-shape-to-index the-root-monomer in-monomers out-monomers monomer-shape-map)))
+                          the-root-monomer in-monomers out-monomers monomer-shape-map)
+        (make-monomer-shape-parts oligomer :monomer-to-monomer-shape-map
+                                  monomer-to-monomer-shape-map
+                                  :ignore-sidechains ignore-sidechains)
       (let* ((os (apply 'make-instance
                         oligomer-shape-class-name
                         :oligomer oligomer
