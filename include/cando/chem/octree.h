@@ -285,10 +285,11 @@ public:
 
   bool isLeafNode() const;
 
-  void insert_impl(const Vector3 &point, core::T_sp data) {
+  void insert_impl(const Vector3 &point, core::T_sp data, bool ignore_too_close) {
     // If this node doesn't have a data point yet assigned
     // and it is a leaf, then we're done!
     if (this->_depth > 20) {
+      if (ignore_too_close) return; // silently drop the duplicate
       SIMPLE_ERROR("The octree is too deep - 20 levels");
     }
     if (isLeafNode()) {
@@ -310,40 +311,42 @@ public:
         double dy = fabs(point.getY() - oldPosition.getY());
         double dz = fabs(point.getZ() - oldPosition.getZ());
         double dist_squared = dx * dx + dy * dy + dz * dz;
-        if (dist_squared < 0.1) {
-          SIMPLE_ERROR("oldPosition {} and point {} are too close to add to octree", oldPosition.asString(), point.asString());
+        if (dist_squared < 0.1 && !ignore_too_close) {
+          SIMPLE_ERROR("oldPosition {} and point {} are too close ({}) to add to octree", oldPosition.asString(), point.asString(), std::sqrt(dist_squared));
         }
+        {
+          // Split the current node and create new empty trees for each
+          // child octant.
+          for (int i = 0; i < 8; ++i) {
+            // Compute new bounding box for this child
+            Vector3 new_Origin = this->_origin;
+            new_Origin.getX() += _halfDimension.getX() * (i & 4 ? .5f : -.5f);
+            new_Origin.getY() += _halfDimension.getY() * (i & 2 ? .5f : -.5f);
+            new_Origin.getZ() += _halfDimension.getZ() * (i & 1 ? .5f : -.5f);
+            auto child = gctools::GC<GenericOctree_O>::allocate(new_Origin, this->_halfDimension * .5f);
+            child->_depth = this->_depth + 1;
+            this->_children[i] = child;
+          }
 
-        // Split the current node and create new empty trees for each
-        // child octant.
-        for (int i = 0; i < 8; ++i) {
-          // Compute new bounding box for this child
-          Vector3 new_Origin = this->_origin;
-          new_Origin.getX() += _halfDimension.getX() * (i & 4 ? .5f : -.5f);
-          new_Origin.getY() += _halfDimension.getY() * (i & 2 ? .5f : -.5f);
-          new_Origin.getZ() += _halfDimension.getZ() * (i & 1 ? .5f : -.5f);
-          auto child = gctools::GC<GenericOctree_O>::allocate(new_Origin, this->_halfDimension * .5f);
-          child->_depth = this->_depth + 1;
-          this->_children[i] = child;
+          // Re-insert the old point, and insert this new point
+          // (We wouldn't need to insert from the root, because we already
+          // know it's guaranteed to be in this section of the tree)
+          this->_children[getOctantContainingPoint(oldPosition)]->insert_impl(oldPosition, oldData, ignore_too_close);
+          this->_children[getOctantContainingPoint(point)]->insert_impl(point, data, ignore_too_close);
         }
-
-        // Re-insert the old point, and insert this new point
-        // (We wouldn't need to insert from the root, because we already
-        // know it's guaranteed to be in this section of the tree)
-        this->_children[getOctantContainingPoint(oldPosition)]->insert_impl(oldPosition, oldData);
-        this->_children[getOctantContainingPoint(point)]->insert_impl(point, data);
       }
     } else {
       // We are at an interior node. Insert recursively into the
       // appropriate child octant
       int octant = getOctantContainingPoint(point);
-      this->_children[octant]->insert_impl(point, data);
+      this->_children[octant]->insert_impl(point, data, ignore_too_close);
     }
   }
 
   CL_LISPIFY_NAME(generic-octree-insert);
+  CL_LAMBDA((self chem:generic-octree) point data &key (ignore-too-close nil))
   CL_DEFMETHOD
-  void insert(const Vector3 &point, core::T_sp data) {
+  void insert(const Vector3 &point, core::T_sp data, bool ignore_too_close=false) {
     // If this node doesn't have a data point yet assigned
     // and it is a leaf, then we're done!
     if (this->_depth == 0 && ((point.getX() < (this->_origin.getX() - this->_halfDimension.getX())) ||
@@ -358,7 +361,7 @@ public:
                    (this->_origin.getX() + this->_halfDimension.getX()), (this->_origin.getY() + this->_halfDimension.getY()),
                    (this->_origin.getZ() + this->_halfDimension.getZ()));
     }
-    this->insert_impl(point, data);
+    this->insert_impl(point, data, ignore_too_close);
   }
 
   // This is a really simple routine for querying the tree for points
