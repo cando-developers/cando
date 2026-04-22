@@ -118,3 +118,14 @@ Within emacs use M-x sly-connect to connect."
                 (error "cl-ipywidgets isn't loaded - can't save cell state"))
             (start-slynk-server port))
           (start-slynk-server port))))
+
+
+(ext:register-command-line-option
+ :handler (lambda (port-string) (start-swank (parse-integer port-string)))
+ :help "Start a swank server on the given port for SLIME.")
+
+(ext:register-command-line-option
+ "--slynk"
+ :takes-arg t
+ :handler (lambda (port-string) (start-slynk (parse-integer port-string)))
+ :help "Start a slynk server on the given port for SLY.")
