@@ -711,7 +711,8 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                        dihedrals
                                        cluster-dihedrals
                                        rings
-                                       rotamer-limits)
+                                       rotamer-limits
+                                       code)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -767,10 +768,15 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
             (validate-cluster-dihedrals :name cluster-dihedrals dihedral-info constitution)
             (setf (residue-properties constitution)
                   (list* :cluster-dihedrals cluster-dihedrals (residue-properties constitution)))))
+        (let ((code-value (or code (if (consp name) (first name) name))))
+          (unless (symbolp code-value)
+            (error ":code must be a symbol, got ~s" code-value))
+          (setf (residue-properties constitution)
+                (list* :code code-value (residue-properties constitution))))
         tops))))
 
 
-(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings residue-properties plugs rotamer-limits)
+(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings residue-properties plugs rotamer-limits code)
   `(do-define-topology ',name ',sexp
      :restraints ',restraints
      :dihedrals ',dihedrals
@@ -780,6 +786,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
      :rings ',rings
      :xyz-joints ',xyz-joints
      :rotamer-limits ',rotamer-limits
+     :code ',code
      ))
 
 (defun do-define-abstract-topology (name &key residue-properties plug-names)
