@@ -713,6 +713,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                        rings
                                        rotamer-limits
                                        code)
+  "code represents the short code used for synthesis"
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
