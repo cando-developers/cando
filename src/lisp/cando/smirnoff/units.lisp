@@ -25,6 +25,8 @@
      ("mole" (units:make-quantity 1d0 units:moles))
      ("kilocalories_per_mole"
       (units:make-quantity 1d0 units:kilocalories-per-mole))
+     ("kilocalorie_per_mole"
+      (units:make-quantity 1d0 units:kilocalories-per-mole))
      ("degree" (units:make-quantity 1d0 units:degrees))
      ("radian" (units:make-quantity 1d0 units:radians)))))
 
@@ -35,10 +37,10 @@
 (defrule power (and #\* #\*) (:constant nil))
 (defrule mult #\* (:constant nil))
 
-(defrule unit (and primitive (? whitespace+) (? (and power integer-literal/decimal)))
-  (:destructure (prim ws maybe-exp)
-    (declare (ignore ws))
-    (let ((exp (if maybe-exp (second maybe-exp) 1)))
+(defrule unit (and primitive
+                   (? (and (? whitespace+) power (? whitespace+) integer-literal/decimal)))
+  (:destructure (prim maybe-exp)
+    (let ((exp (if maybe-exp (fourth maybe-exp) 1)))
       (units:power prim exp))))
 
 (defrule quantity-unit-part

@@ -261,9 +261,7 @@
            (scale14 (fortran:parse-vecreal (safe-gethash "scale14" attrs)))
            (scale15 (fortran:parse-vecreal (safe-gethash "scale15" attrs)))
            (switch-width (canonical-length (parse-quantity (safe-gethash "switch_width" attrs))))
-           (cutoff (canonical-length (parse-quantity (safe-gethash "cutoff" attrs))))
-           (method (safe-gethash "method" attrs))
-           )
+           (cutoff (canonical-length (parse-quantity (safe-gethash "cutoff" attrs)))))
       (setf (vdw-force *smirnoff*)
             (make-instance 'vdw-force
                            :potential potential
@@ -301,6 +299,7 @@
     ("vdW" . parse-vdw-force)
     ("Electrostatics" . ignore-handler)
     ("ToolkitAM1BCC" . ignore-handler)
+    ("NAGLCharges" . ignore-handler)
     ("Date" . ignore-handler)
     ("Author" . ignore-handler)
     ("Smirnoff" . parse-dispatcher )))

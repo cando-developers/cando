@@ -78,7 +78,7 @@
              (let* ((name (chem:get-name (molecule obj)))
                     (properties (chem:matter/properties (molecule obj)))
                     (maybe-description (getf properties :description)))
-               (format stream "Molecule(res) name: ~s(~s) cannot identify lk-solvation type for atom(element)s: (~a(~a)); ~a"
+               (format stream "Molecule(res) name: ~s(~s) cannot identify lk-solvation type for atom(element) ~a(~a) - you need to add new lk type rules ; ~a"
                        (chem:get-name (molecule obj))
                        (chem:get-name (residue obj))
                        (a1-name obj)

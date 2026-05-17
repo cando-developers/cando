@@ -46,7 +46,7 @@
       (1 :atom atom))))
 
 (defrule bond-smarts
-    (or language.smiles.parser:bond #\@))
+    (or bond-pattern/non-literal language.smiles.parser:bond))
 
 (defrule ring-close-label-one-digit
     (or #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)

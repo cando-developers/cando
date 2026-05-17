@@ -19,6 +19,7 @@
   (:CH0 "[#6;r5;H0]") ; His
   (:CH0 "[#6;a](-[#6;X4;H2])~[#6;a]~[#6;a]~[#6;a]") ; Phe/Tyr uses CH0 for the para (from OH) aromatic carbon????
   (:CH0 "[#6;a]-[#8]") ; Tyr uses CH0 for the ipso (from OH) aromatic carbon????
+  (:CH0 "[#6;X2]#[#7]")
   (:CH1 "[#6;H1;X4]")
   (:CH2 "[#6;H2;X4]")
   (:CH3 "[#6;H3;X4]")
@@ -30,8 +31,9 @@
  (:N
   (:|Narg| "[#7]~[#6](~[#7])~[#7]")
   (:NH2O "[#7](~[#16])")
-  (:NHIS "[#7](~[#7])")
-  (:NTRP "[#7;a;H1]")
+  (:|Nhis| "[#7](~[#7])")
+  (:|Nhis| "[#7;X1]#[#6]")
+  (:|Ntrp| "[#7;a;H1]")
   (:|Nlys| "[#7;H3]-[#6;X4]")
   (:|NtrR| "[#7;!R;H1;X3]")
   (:|Nbb| "[#7;X3;H1](-[#6;X4])-[#6;X3]=[#8]") ; Amide nitrogen backbone

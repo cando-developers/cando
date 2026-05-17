@@ -213,7 +213,8 @@ associating the atom with its aromaticity info in a hash-table and return the ha
 
 
 (defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :mdl)))
-  "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
+  "Smirnoff uses this.
+Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
 aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
 associating the atom with its aromaticity info in a hash-table and return the hash-table."
   (unless (boundp 'chem:*current-rings*)
@@ -226,7 +227,9 @@ associating the atom with its aromaticity info in a hash-table and return the ha
       (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)))
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule5* :ar5 :rule5)
+        ))
     (setf *save-aromatic-info* aromaticity-info)
   aromaticity-info))
 
@@ -235,6 +238,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
 
 (defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :smirnoff)))
   (chem:identify-aromatic-rings matter :mdl))
+
 
 
 

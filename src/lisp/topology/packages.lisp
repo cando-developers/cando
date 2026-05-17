@@ -610,7 +610,8 @@
    #:make-oligomer-shape-with-mutated-sidechains
    #:oligomer-to-sexp
    #:oligomer-to-string
-   #:monomer-subset))
+   #:monomer-subset
+   #:oligomer-monomer-names))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
