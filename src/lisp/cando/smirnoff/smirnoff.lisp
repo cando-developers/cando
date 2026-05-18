@@ -124,6 +124,12 @@ The chem:force-field-type-rules-merged generic function was used to organize the
 
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-smirnoff-force-field combined-smirnoff-force-field) keep-interaction-factory)
   (when keep-interaction-factory
+    ;; OpenFF SMIRNOFF SMIRKS are written assuming kekulized bond matching:
+    ;; `-`, `=`, and `#` are expected to match kekule single/double/triple
+    ;; bonds *between aromatic atoms*. Cando's matcher defaults to the
+    ;; Daylight-strict reading (which antechamber depends on); bind the
+    ;; override for this parameterization pass only.
+   (let ((chem:*smirks-kekulized-bond-matching* t))
     (let* ((molecule-graph (chem:make-molecule-graph-from-molecule molecule))
            (atom-table (chem:atom-table energy-function))
            (bonds (bonds-hash-table molecule))
@@ -322,4 +328,4 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                  for idivf = (idivf part)
                                  for v = (/ k idivf)
                                  do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase nil v periodicity)))))
-                     itors)))))))
+                     itors))))))))

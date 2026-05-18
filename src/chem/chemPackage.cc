@@ -159,6 +159,7 @@ void ChemExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const {
       _sym_STARcurrent_matchSTAR->defparameter(nil<core::T_O>());
       _sym_STARcurrent_aromaticity_informationSTAR->defparameter(unbound<core::T_O>());
       _sym_STARcurrent_ringsSTAR->defparameter(unbound<core::T_O>());
+      _sym_STARsmirks_kekulized_bond_matchingSTAR->defparameter(nil<core::T_O>());
       break;
   case candoFunctions:
       //setupCandoPrimitives(_lisp);

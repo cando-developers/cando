@@ -870,6 +870,18 @@ CL_DEFUN bool chem__in_aromatic_bond(Atom_sp a1, Atom_sp a2) {
   return _matchInAromaticBond(a1, a2);
 }
 
+// When non-NIL, SMIRKS bond characters `-`, `=`, and `#` are interpreted
+// in kekulized form: a kekule single/double/triple bond between two
+// aromatic ring atoms still matches. This is the convention used by
+// OpenFF SMIRNOFF force fields. The default (NIL/unbound) keeps the
+// Daylight-strict reading that antechamber atom typing relies on.
+SYMBOL_EXPORT_SC_(ChemPkg, STARsmirks_kekulized_bond_matchingSTAR);
+
+static inline bool kekulizedBondMatching() {
+  return chem::_sym_STARsmirks_kekulized_bond_matchingSTAR->boundP()
+      && chem::_sym_STARsmirks_kekulized_bond_matchingSTAR->symbolValue().notnilp();
+}
+
 bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
   LOG("bondOrder = {}", bondOrderToString(bo).c_str());
   switch (be) {
@@ -877,7 +889,7 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
     LOG("SMARTS BondEnum = SABSingleBond");
     if (!Bond_O::singleBondP(bo))
       goto nomatch;
-    if (_matchInAromaticBond(a1, a2))
+    if (!kekulizedBondMatching() && _matchInAromaticBond(a1, a2))
       goto nomatch;
     break;
   case SABSingleOrAromaticBond:
@@ -899,14 +911,14 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
     LOG("SMARTS BondEnum = SABDoubleBond");
     if (bo != chem::doubleBond)
       goto nomatch;
-    if (_matchInAromaticBond(a1, a2))
+    if (!kekulizedBondMatching() && _matchInAromaticBond(a1, a2))
       goto nomatch;
     break;
   case SABTripleBond:
     LOG("SMARTS BondEnum = SABTriple");
     if (bo != chem::tripleBond)
       goto nomatch;
-    if (_matchInAromaticBond(a1, a2))
+    if (!kekulizedBondMatching() && _matchInAromaticBond(a1, a2))
       goto nomatch;
     break;
   case SABAromaticBond:
