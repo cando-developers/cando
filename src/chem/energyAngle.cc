@@ -74,6 +74,10 @@ void linear_angle_error() {
   throw LinearAngleError();
 }
 
+inline double linear_angle_clamp(double cos_theta) {
+  return copysign(1.0-VERYSMALL,cos_theta);
+}
+
 #include "cando/chem/energyKernels/angle.c"
 
 };

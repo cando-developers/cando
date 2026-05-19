@@ -980,7 +980,7 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
           (=. n2    "sqrt(n2_sq)")
 
           (=. cos_theta "dot / (n1*n2)")
-          (raw-c "if (fabs(cos_theta)>(1.0-VERYSMALL)) linear_angle_error();")
+          (raw-c "if (fabs(cos_theta)>(1.0-VERYSMALL)) cos_theta = linear_angle_clamp(cos_theta);")
           (=. sin_theta "sqrt(1 - cos_theta^2)")
           (=. theta     "acos(cos_theta)")
           (=. dtheta    "theta - t0")

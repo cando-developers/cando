@@ -32,7 +32,7 @@ double energy(double kt, double t0, size_t i3x1, size_t i3x2, size_t i3x3, doubl
       double n1 = sqrt(n1_sq);
       double n2 = sqrt(n2_sq);
       double cos_theta = (dot * (1.0 / ((n1 * n2))));
-      if (fabs(cos_theta)>(1.0-VERYSMALL)) linear_angle_error();
+      if (fabs(cos_theta)>(1.0-VERYSMALL)) cos_theta = linear_angle_clamp(cos_theta);
       double sin_theta = sqrt((1.0000000000000000     + (-(((cos_theta) * (cos_theta))))));
       double theta = acos(cos_theta);
       double dtheta = (theta + (-(t0)));
@@ -83,7 +83,7 @@ double gradient(double kt, double t0, size_t i3x1, size_t i3x2, size_t i3x3, dou
       double cse_p1_t6_invr227580 = (cse_p1_t5_invr27579 * cse_p1_t5_invr27579);
       double cse_p113_t1_g27594 = (cse_p1_t6_invr227580 * dot);
       double cos_theta = (cse_p1_t5_invr27579 * dot);
-      if (fabs(cos_theta)>(1.0-VERYSMALL)) linear_angle_error();
+      if (fabs(cos_theta)>(1.0-VERYSMALL)) cos_theta = linear_angle_clamp(cos_theta);
       double cse_p1_t7_sqrt27581 = sqrt((1.0000000000000000     + (-(((cos_theta) * (cos_theta))))));
       double cse_p1_t8_invsqrt27582 = (1.0 / (cse_p1_t7_sqrt27581));
       double theta = acos(cos_theta);
@@ -508,7 +508,7 @@ double hessian(double kt, double t0, size_t i3x1, size_t i3x2, size_t i3x3, doub
       double cse_p529_t5_sqrt27965 = sqrt(cse_p11_t141_g27743);
       double cse_p529_t6_invr27966 = (1.0 / (cse_p11_t141_g27743));
       double cse_p11_t193_g27795 = ((cos_theta) * (cos_theta));
-      if (fabs(cos_theta)>(1.0-VERYSMALL)) linear_angle_error();
+      if (fabs(cos_theta)>(1.0-VERYSMALL)) cos_theta = linear_angle_clamp(cos_theta);
       double cse_p1_t8_invsqrt27602 = (1.0 / (cse_p529_t5_sqrt27965));
       double theta = acos(cos_theta);
       double dtheta = (theta + (-(t0)));
