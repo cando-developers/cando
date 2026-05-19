@@ -29,9 +29,9 @@
                                      :output '(:string :stripped t)
                                      :error-output '(:string :stripped t))))
        #+quicklisp (some (lambda (dist)
-                           (and (ql:subscribedp dist)
-                                (ql:available-update dist)))
-                         (ql:all-dists))))
+                           (and (ql-dist:subscribedp dist)
+                                (ql-dist:available-update dist)))
+                         (ql-dist:all-dists))))
 
 (defun update ()
   (when (and *snapshot-timestamp* (updatep))
