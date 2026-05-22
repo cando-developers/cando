@@ -29,6 +29,15 @@
           ((not (or (sys:noinform-p) (sys:noprint-p)))
            (format t "No ROSETTA_HOME environment variable found!~%   Consider cloning the https://github.com/RosettaCommons/rosetta.git into /opt/rosetta/~%")))))
 
+(defun rename-lparallel-workers (kernel)
+  "Give each lparallel worker a unique name like \"worker000\" so they
+can be told apart in the SLIME thread browser and other tools.  By
+default lparallel names all worker threads after the kernel."
+  (loop for worker across (lparallel.kernel::workers kernel)
+        for i from 0
+        do (mp:set-process-name (lparallel.kernel::thread worker)
+                 (format nil "lparallel~3,'0d" i))))
+
 (defun initialize-threading ()
   (let ((threads (if (ext:getenv "CANDO_THREADS")
                      (parse-integer (ext:getenv "CANDO_THREADS"))
@@ -36,7 +45,8 @@
     (unless (member :no-auto-lparallel *features*)
       (unless (or (sys:noinform-p) (sys:noprint-p))
         (format t "Creating LPARALLEL kernel with ~a threads.~%" threads))
-      (setf lparallel:*kernel* (lparallel:make-kernel threads)))))
+      (setf lparallel:*kernel* (lparallel:make-kernel threads))
+      (rename-lparallel-workers lparallel:*kernel*))))
 
 (defun initialize-cando-user-package ()
   (sys:symbol-global-value-set '*package* (find-package :cando-user))
