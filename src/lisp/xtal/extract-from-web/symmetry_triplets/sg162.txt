@@ -1,0 +1,3 @@
+<h3>Full set of general position</h3><hr><br><big>1 x,y,z</big><br><big>2 -y,x-y,z</big><br><big>3 -x+y,-x,z</big><br><big>4 -y,-x,-z</big><br><big>5 -x+y,y,-z</big><br><big>6 x,x-y,-z</big><br><big>7 -x,-y,-z</big><br><big>8 y,-x+y,-z</big><br><big>9 x-y,x,-z</big><br><big>10 y,x,z</big><br><big>11 x-y,-y,z</big><br><big>12 -x,-x+y,z</big><br>
+</body>
+</html>

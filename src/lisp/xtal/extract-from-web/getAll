@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Create output directory
+mkdir -p symmetry_triplets
+
+# Loop through space group numbers 1–230
+for sgnum in $(seq 1 230); do
+  echo "Downloading space group $sgnum..."
+  curl -s -A "Mozilla/5.0" \
+    "https://www.cryst.ehu.es/cgi-bin/cryst/programs/nph-getgen?what=text&gnum=${sgnum}" \
+    -o "symmetry_triplets/sg${sgnum}.txt"
+done
+
+echo "All symmetry triplet files downloaded to ./symmetry_triplets/"
