@@ -6,6 +6,31 @@
 (defvar *slime-home* nil
   "You can set cando-user:*slime-home* in your .clasprc to the pathname where slime is installed to start swank")
 
+(defun assign-swank-port ()
+  "Ask the kernel for an unused TCP port, record it in /tmp/swank-<pid>-<port>
+(file contents: \"<pid> <port>\"), and return the port. The probe socket is
+closed before returning, so there is a small race window before swank binds it."
+  (let ((listen (make-instance 'sb-bsd-sockets:inet-socket
+                               :type :stream
+                               :protocol :tcp)))
+    (unwind-protect
+         (progn
+           (sb-bsd-sockets:socket-bind listen
+                                       (sb-bsd-sockets:make-inet-address "0.0.0.0")
+                                       0)
+           (multiple-value-bind (address port)
+               (sb-bsd-sockets:socket-name listen)
+             (declare (ignore address))
+             (let* ((pid (clasp-posix:getpid))
+                    (filename (format nil "/tmp/swank-~d-~d" pid port)))
+               (with-open-file (fout filename
+                                     :direction :output
+                                     :if-exists :supersede
+                                     :if-does-not-exist :create)
+                 (format fout "~d ~d~%" pid port))
+               port)))
+      (sb-bsd-sockets:socket-close listen))))
+
 (defun start-swank-server (&optional (port 4005))
   (format t "Checking SLIME_HOME and cando-user:*slime-home*~%")
   (let ((slime-home (or (and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME"))))
@@ -47,8 +72,12 @@
 
 (defun start-swank (&optional (port 4005))
   "Start a swank server to connect slime.
-Within emacs use M-x slime-connect to connect."
+Within emacs use M-x slime-connect to connect.
+If PORT is 0, an unused port is auto-assigned via ASSIGN-SWANK-PORT, which
+also records the pid/port in /tmp/swank-<pid>-<port>."
   ;; Bad!  This is hard-coded to work with docker
+  (when (zerop port)
+    (setf port (assign-swank-port)))
   (if *started-swank*
       (format t "Swank is already running on port ~a~%" *swank-port*)
       (if (find-package :cl-ipywidgets)
