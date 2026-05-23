@@ -80,12 +80,12 @@ std::string residue_molecule_name(const AtomInfo& ai) {
 
 void	Mol2File::advanceLine() {
   bool ignoreNextCr;
-  char c;
+  claspCharacter c;
   this->mLine.str("");
   ignoreNextCr = false;
   while (1) {
     c = core::stream_read_char(this->fIn);
-    if ( c == EOF ) {
+    if ( c == static_cast<claspCharacter>(EOF) ) {
       this->_eof = true;
       break;
     }

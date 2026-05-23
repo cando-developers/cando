@@ -229,24 +229,24 @@ namespace adapt {
     int	xml_fread( char* buffer, int numBytes, core::T_sp fIn )
     {
 	char* cp;
-	int	c, c2;
+	claspCharacter	c, c2;
 	cp = buffer;
 	int sz;
 	sz = 0;
 	int limBytes = numBytes;
-	while ( (core::stream_peek_char(fIn)!=EOF) && sz < limBytes )
+	while ( (core::stream_peek_char(fIn)!=static_cast<claspCharacter>(EOF)) && sz < limBytes )
 	{
 	    c = core::stream_read_char(fIn);
 	    if ( c == '&' )
 	    {
                 c = core::stream_read_char(fIn);
-                if ( c == EOF ) break;
+                if ( c == static_cast<claspCharacter>(EOF) ) break;
 		if ( c == '&' )
 		{
 		    *cp = '&';
 		} else {
 		    c2 = core::stream_read_char(fIn);
-                    if ( c2 == EOF ) break;
+                    if ( c2 == static_cast<claspCharacter>(EOF) ) break;
 		    if ( c == 'g' && c2 == 't' )
 		    {
 			*cp = '>';
@@ -287,7 +287,7 @@ namespace adapt {
 //    this->_Progress.setMax(fileSize);
 //    this->_Progress.setSteps(fileSize/10000);
 	filePos = 0;
-	while ( core::stream_peek_char(fIn) != EOF )
+	while ( core::stream_peek_char(fIn) != static_cast<claspCharacter>(EOF) )
 	{
 	    LOG("MySaxParser::expat:: reading/parsing block of data asking for buffer with up to {} bytes" , sizeof(buffer) );
             sz = core::stream_read_byte8(fIn,buffer,sizeof(buffer));

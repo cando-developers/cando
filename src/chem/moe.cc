@@ -476,7 +476,7 @@ DONE:
 void	MoeReadFile::readNextLine()
 {
     char	*cPPut;
-    char	c;
+    int	c;
     int	iSize;
     if ( this->fMoe->eof() ) {
 	this->done = true;
