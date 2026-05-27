@@ -82,6 +82,8 @@ namespace       chem
 
   typedef	enum	{ unknownPreconditioner, noPreconditioner, hessianPreconditioner } PreconditionerType;
 
+  enum class TNInnerExitReason { singularity, descent, truncation, stepLimit };
+
   extern	string	stringForPreconditionerType(PreconditionerType t);
   extern	string	shortStringForPreconditionerType(PreconditionerType t);
   extern	PreconditionerType	preconditionerTypeFromString(const string& t );
@@ -162,6 +164,8 @@ struct RestartMinimizer {};
         // Save coordinates and forces so that if we interrupt the minimization we can recover them
     gc::Nilable<NVector_sp> _Position;
     gc::Nilable<NVector_sp> _Force;
+
+    bool		_DebugPreconditioner;
 
   private:	// Do not serialize
     core::T_sp          _StepCallback;
@@ -287,6 +291,8 @@ struct RestartMinimizer {};
                                    NVector_sp			zj,
                                    NVector_sp			qj,
                                    bool& failedInnerLoop,
+                                   TNInnerExitReason& exitReason,
+                                   int& innerIterations,
                                    core::T_sp activeAtomMask );
 
 
@@ -318,6 +324,11 @@ struct RestartMinimizer {};
     CL_DOCSTRING(R"dx(Set a callback that is called at every minimization step. The callback function
 takes a single argument, the NVECTOR position of the atoms.)dx");
     CL_DEFMETHOD void	setStepCallback(core::T_sp stepCallback) { this->_StepCallback = stepCallback;};
+
+    CL_LISPIFY_NAME("setDebugPreconditioner");
+    CL_DEFMETHOD void	setDebugPreconditioner(bool v) { this->_DebugPreconditioner = v; };
+    CL_LISPIFY_NAME("getDebugPreconditioner");
+    CL_DEFMETHOD bool	getDebugPreconditioner() { return this->_DebugPreconditioner; };
 
     CL_LISPIFY_NAME("setMaximumNumberOfSteepestDescentSteps");
     CL_DEFMETHOD 	void	setMaximumNumberOfSteepestDescentSteps(int m) {this->_NumberOfSteepestDescentSteps = m;};
@@ -368,7 +379,8 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
         _Status(minimizerIdle),
         _ShowElapsedTime(true),
         _MinGradientMean(0.000001),
-        _TruncatedNewtonPreconditioner(hessianPreconditioner)
+        _TruncatedNewtonPreconditioner(hessianPreconditioner),
+        _DebugPreconditioner(false)
     {};
   };
 

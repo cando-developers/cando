@@ -97,9 +97,34 @@ SYMBOL_EXPORT_SC_(ChemPkg,MinimizerStuck);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerError);
 
 SYMBOL_EXPORT_SC_(ChemPkg,STARsave_positionsSTAR);
+SYMBOL_EXPORT_SC_(ChemPkg,truncated_newton_inner);
+SYMBOL_EXPORT_SC_(KeywordPkg,singularity);
+SYMBOL_EXPORT_SC_(KeywordPkg,descent);
+SYMBOL_EXPORT_SC_(KeywordPkg,tn_truncation);
+SYMBOL_EXPORT_SC_(KeywordPkg,step_limit);
 namespace chem
 {
 
+
+static core::T_sp tnInnerExitReasonKeyword(TNInnerExitReason reason) {
+  switch (reason) {
+  case TNInnerExitReason::singularity: return kw::_sym_singularity;
+  case TNInnerExitReason::descent:     return kw::_sym_descent;
+  case TNInnerExitReason::truncation:  return kw::_sym_tn_truncation;
+  case TNInnerExitReason::stepLimit:   return kw::_sym_step_limit;
+  }
+  return nil<core::T_O>();
+}
+
+static const char* tnInnerExitReasonName(TNInnerExitReason reason) {
+  switch (reason) {
+  case TNInnerExitReason::singularity: return "singularity";
+  case TNInnerExitReason::descent:     return "descent";
+  case TNInnerExitReason::truncation:  return "truncation";
+  case TNInnerExitReason::stepLimit:   return "step-limit";
+  }
+  return "unknown";
+}
 
 #define MINIMIZER_ERROR(msg) ERROR(_sym_MinimizerError,core::lisp_createList(kw::_sym_message,core::Str_O::create(msg)))
 #define MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(msg) ERROR(_sym_MinimizerExceededMaxSteps,core::lisp_createList(kw::_sym_minimizer,msg._Minimizer, kw::_sym_number_of_steps, core::make_fixnum(msg._NumberOfSteps)));
@@ -1506,6 +1531,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
                                                NVector_sp			zj,
                                                NVector_sp			qj_hdvec,
                                                bool&                            innerLoopDeltaJ1,
+                                               TNInnerExitReason&               exitReason,
+                                               int&                             innerIterations,
                                                core::T_sp activeAtomMask )
 {
   int	jindex, ITpcg;
@@ -1603,6 +1630,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Singularity test was true\n" );
       }
       LOG("Singularity test was true" );
+      exitReason = TNInnerExitReason::singularity;
+      innerIterations = jindex;
       goto DONE;
     }
 
@@ -1632,6 +1661,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Descent direction test was true\n" );
       }
       LOG("Descent direction test was true" );
+      exitReason = TNInnerExitReason::descent;
+      innerIterations = jindex;
       goto DONE;
     }
 
@@ -1651,6 +1682,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Truncation test was true\n" );
       }
       LOG("Truncation test was true" );
+      exitReason = TNInnerExitReason::truncation;
+      innerIterations = jindex;
       goto DONE;
     }
     if ( (jindex+1)>ITpcg ) {
@@ -1660,6 +1693,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Step limit test was true\n" );
       }
       LOG("Step limit test was true" );
+      exitReason = TNInnerExitReason::stepLimit;
+      innerIterations = jindex;
       goto DONE;
     }
 
@@ -1714,6 +1749,8 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   double                dirMag, forceMag;
   double                cosAngle = 0.0;
   bool                  innerLoopDeltaJ1 = false;
+  TNInnerExitReason     innerExitReason = TNInnerExitReason::singularity;
+  int                   innerIterations = 0;
 #define	TENEMINUS8	10.0e-8
 
   if ( this->_PrintIntermediateResults ) {
@@ -1769,19 +1806,27 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
   unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt,kSum);
   opt_ldlt = ldlt->optimized();
 
-#ifdef DEBUG_FACTORIZATION
-  core::clasp_writeln_string(fmt::format( "======= Debug ldlt at start"));
-  auto ldlt_debug = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
-  chem_old::unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt_debug);
-  auto kSum_debug = NVector_O::create(iDimensions);
-  unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt_debug,kSum_debug);
-  ldlt->ensureIdentical(ldlt_debug);
-  chem__nvector_ensure_identical(kSum,kSum_debug, 0.01);
-  if (this->_StepCallback.notnilp()) {
-    core::eval::funcall(this->_StepCallback,_sym_truncated_newton_debug,opt_mprecon,ldlt,opt_ldlt);
+  if (this->_DebugPreconditioner) {
+    double preconEpsilon = opt_mprecon->maxAbsValue();
+    double ldltMinDiag = opt_ldlt->element(0,0);
+    double ldltMaxDiag = ldltMinDiag;
+    for (int di = 1; di < iDimensions; di++) {
+      double dv = opt_ldlt->element(di,di);
+      if (dv < ldltMinDiag) ldltMinDiag = dv;
+      if (dv > ldltMaxDiag) ldltMaxDiag = dv;
+    }
+    core::clasp_writeln_string(fmt::format( "  precon(init): dim={} epsilon={:.4e} ldlt_diag=[{:.4e},{:.4e}]",
+                                            iDimensions, preconEpsilon, ldltMinDiag, ldltMaxDiag ));
+    auto ldlt_debug = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
+    chem_old::unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt_debug);
+    auto kSum_debug = NVector_O::create(iDimensions);
+    unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt_debug,kSum_debug);
+    ldlt->ensureIdentical(ldlt_debug);
+    chem__nvector_ensure_identical(kSum,kSum_debug, 0.01);
+    if (this->_StepCallback.notnilp()) {
+      core::eval::funcall(this->_StepCallback,_sym_truncated_newton_debug,opt_mprecon,ldlt,opt_ldlt);
+    }
   }
-  if (callback.notnilp()) core::eval::funcall( callback, _sym_truncated_newton_debug, this->_ScoringFunction, x, activeAtomMask )
-#endif
 
 
   {
@@ -1800,36 +1845,35 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
                                  forceK, rmsForceMag, dirVec,
                                  dirVecNext, rj, dj_dvec, zj, qj_hdvec,
                                  innerLoopDeltaJ1,
+                                 innerExitReason, innerIterations,
                                  activeAtomMask );
 
-      // Added Feb 5, 2024 - if the inner loop fails to find a direction
-      // and sets it to the gradient then truncated Newton will
-      // stall and run out the max iterations
-      // So lets use this as a convergence test
       if (innerLoopDeltaJ1) {
         LOG("Hit innerLoopDeltaJ1\n");
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string(fmt::format( "search complete step {} according to innerLoopDeltaJ1" , this->_Iteration ));
+          core::clasp_writeln_string(fmt::format( "TN kk={} inner={}({}) -- inner loop failed at j=1, breaking" , kk, tnInnerExitReasonName(innerExitReason), innerIterations ));
         }
         break;
+      }
+
+      if (this->_StepCallback.notnilp()) {
+        core::eval::funcall(this->_StepCallback, _sym_truncated_newton_inner,
+                            pos, forceK, dirVec,
+                            tnInnerExitReasonKeyword(innerExitReason),
+                            core::make_fixnum(innerIterations),
+                            opt_mprecon, opt_ldlt);
       }
 
 	    //
 	    // Line Search
 
       prevAlphaK = alphaK;
-      if ( this->_PrintIntermediateResults ) {
-        dirMag = magnitudeWithActiveAtomMask(dirVec,activeAtomMask);
-        forceMag = magnitudeWithActiveAtomMask(forceK,activeAtomMask);
-//        core::clasp_writeln_string(fmt::format( "  dirMag = {}   forceMag = {} \n", dirMag, forceMag ));
-        LOG("Starting descent test" );
-        if ( forceMag != 0.0 && dirMag != 0.0 ) {
-          LOG("forceMag = {}" , forceMag  );
-          LOG("dirMag = {}" , dirMag  );
-          cosAngle = dotProductWithActiveAtomMask(forceK,dirVec,activeAtomMask)/(forceMag*dirMag);
-        } else {
-          cosAngle = 0.0;
-        }
+      dirMag = magnitudeWithActiveAtomMask(dirVec,activeAtomMask);
+      forceMag = magnitudeWithActiveAtomMask(forceK,activeAtomMask);
+      if ( forceMag != 0.0 && dirMag != 0.0 ) {
+        cosAngle = dotProductWithActiveAtomMask(forceK,dirVec,activeAtomMask)/(forceMag*dirMag);
+      } else {
+        cosAngle = 0.0;
       }
 
       energyXk = energyXkNext;
@@ -1879,6 +1923,11 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
       }
 
       rmsForceMag = rmsMagnitudeWithActiveAtomMask(forceK,activeAtomMask);
+      if ( this->_PrintIntermediateResults ) {
+        core::clasp_writeln_string(fmt::format( "TN kk={} inner={}({}) alpha={:.4e} dE={:.4e} E={:.6f} rmsF={:.6f} cos={:.4f}",
+                                                kk, tnInnerExitReasonName(innerExitReason), innerIterations,
+                                                alphaK, energyXkNext - energyXk, energyXkNext, rmsForceMag, cosAngle ));
+      }
       if ( rmsForceMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string(fmt::format( "search complete [{}] according to absolute force test rmsForceMag({}) < forceTolerance({})"  , this->_Iteration , rmsForceMag , forceTolerance ));
@@ -1890,22 +1939,31 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    //
 	    // Compute the preconditioner M at X{k+1}
 	    //
-      this->_ScoringFunction->setupHessianPreconditioner(pos,mprecon,activeAtomMask);
+      this->_ScoringFunction->setupHessianPreconditioner(posNext,mprecon,activeAtomMask);
       opt_mprecon = mprecon->optimized();
       unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt,kSum);
       opt_ldlt = ldlt->optimized();
-#ifdef DEBUG_FACTORIZATION
-  core::clasp_writeln_string(fmt::format( "======= Debug ldlt in iteration"));
-  auto ldlt_debug = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
-  chem_old::unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt_debug);
-  auto kSum_debug = NVector_O::create(iDimensions);
-  unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt_debug,kSum_debug);
-  if (this->_StepCallback.notnilp()) {
-    core::eval::funcall(this->_StepCallback,_sym_truncated_newton_debug,opt_mprecon,ldlt,opt_ldlt);
-  }
-  ldlt->ensureIdentical(ldlt_debug);
-  chem__nvector_ensure_identical(kSum,kSum_debug, 0.01);
-#endif
+      if (this->_DebugPreconditioner) {
+        double preconEpsilon = opt_mprecon->maxAbsValue();
+        double ldltMinDiag = opt_ldlt->element(0,0);
+        double ldltMaxDiag = ldltMinDiag;
+        for (int di = 1; di < iDimensions; di++) {
+          double dv = opt_ldlt->element(di,di);
+          if (dv < ldltMinDiag) ldltMinDiag = dv;
+          if (dv > ldltMaxDiag) ldltMaxDiag = dv;
+        }
+        core::clasp_writeln_string(fmt::format( "  precon: dim={} epsilon={:.4e} ldlt_diag=[{:.4e},{:.4e}]",
+                                                iDimensions, preconEpsilon, ldltMinDiag, ldltMaxDiag ));
+        auto ldlt_debug = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
+        chem_old::unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt_debug);
+        auto kSum_debug = NVector_O::create(iDimensions);
+        unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt_debug,kSum_debug);
+        ldlt->ensureIdentical(ldlt_debug);
+        chem__nvector_ensure_identical(kSum,kSum_debug, 0.01);
+        if (this->_StepCallback.notnilp()) {
+          core::eval::funcall(this->_StepCallback,_sym_truncated_newton_debug,opt_mprecon,ldlt,opt_ldlt);
+        }
+      }
 
       copyVector(pos,posNext);
       kk++;

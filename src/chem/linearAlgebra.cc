@@ -456,7 +456,7 @@ void	backSubstituteLDLtDiag(SparseLargeSquareMatrix_sp slsm, NVector_sp s1, NVec
 
 __attribute__((noinline))
 void	backSubstituteLDLtColumn(SparseLargeSquareMatrix_sp slsm, NVector_sp s1, NVector_sp b, NVector_sp tx ) {
-  float sum;
+  double sum;
   for ( int y=b->size()-1; y>=0; y-- ) {
     sum = 0.0;
     slsm->loopOverColumnLowerDiagonal(y,y+1,b->size(),[&s1,&sum](uint col, uint row, double value) {
