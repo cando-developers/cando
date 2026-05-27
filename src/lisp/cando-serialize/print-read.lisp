@@ -73,8 +73,13 @@ Save the object to the file PATHNAME as an s-expression."
             (sys:*print-dense* t)
             (*print-circle* t)
             (*package* (find-package :keyword)))
-        (cl:prin1 obj fout)))
-    (rename-file temp-pathname new-pathname :if-exists :supersede)))
+        (cl:prin1 obj fout))
+      (finish-output fout)
+      (core:fsync (ext:file-stream-file-descriptor fout)))
+    (rename-file temp-pathname new-pathname :if-exists :supersede)
+    ;; fsync the parent directory so the rename is visible on NFS
+    (core:fsync-directory (namestring (make-pathname :name nil :type nil
+                                                     :defaults new-pathname)))))
 
 
 (defun sharp-$-reader (stream subchar arg)
