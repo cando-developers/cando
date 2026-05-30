@@ -463,3 +463,48 @@
   (format t "chiral FD test:~%")
   #+tests(test-true chiral-restraint-fd
                     (= 0 (chem:run-test-calls cc *standard-output* coords))))
+
+
+;;; ======================================================================
+;;; SMIRNOFF routing: a 180-degree (sp/linear) angle parameter must be
+;;; assigned to the singularity-free linear-bend term (energy-linear-angle,
+;;; E = kt*(1+cos theta)) rather than the standard harmonic energy-angle term.
+;;;
+;;; Acetylene (H-C#C-H) has two H-C#C angles, both matching SMIRNOFF a16
+;;; ([*:1]~[#6X2:2]~[*:3], angle = 180 deg).  The reduced test force field has
+;;; no triple-bond stretch / sp torsion parameters, so those are skipped
+;;; (chem:skip-missing-parameters) while the (covered) angle is still assigned.
+;;; Geometry is slightly trans-bent (~175 deg) so the finite-difference check
+;;; is not evaluated exactly at the degenerate 180-degree point.
+;;; ======================================================================
+
+(leap:load-smirnoff-params (probe-file "sys:extensions;cando;src;lisp;regression-tests;data;force-field.offxml"))
+
+(let* ((acetylene (cando:load-mol2 (merge-pathnames "data/acetylene.mol2" *load-truename*))))
+  (chem:setf-force-field-name (cando:mol acetylene 0) :smirnoff)
+  (let ((ef (handler-bind ((chem:parameterization-error
+                             (lambda (c)
+                               ;; skip the sp bond/torsion params the reduced FF lacks
+                               (let ((r (find-restart 'chem:skip-missing-parameters c)))
+                                 (when r (invoke-restart r))))))
+              (chem:make-energy-function :matter acetylene))))
+    (let* ((coords (chem:make-nvector (chem:get-nvector-size ef)))
+           (angle-comp (chem:get-angle-component ef))
+           ;; ensureComponent: returns the linear-angle component built during assignment
+           (linear-comp (chem:make-energy-linear-angle ef))
+           (n-harmonic (if angle-comp (chem:number-of-terms angle-comp) 0))
+           (n-linear (chem:number-of-terms linear-comp)))
+      (chem:load-coordinates-into-vector ef coords)
+      (format t "acetylene: harmonic-angle terms = ~d  linear-angle terms = ~d~%"
+              n-harmonic n-linear)
+      ;; Both H-C#C angles (SMIRNOFF a16, theta0 = 180) route to the linear term ...
+      #+tests(test-true linear-angle-routing-count (= n-linear 2))
+      ;; ... and none stayed in the singular harmonic angle term.
+      #+tests(test-true linear-angle-routing-harmonic-empty (= n-harmonic 0))
+      (let ((e (chem:energy-component-evaluate-energy ef linear-comp coords)))
+        (format t "acetylene linear-angle energy = ~f~%" e)
+        ;; E = kt*(1+cos theta) >= 0, finite at/near linearity
+        #+tests(test-true linear-angle-routing-energy (>= e 0.0d0)))
+      (format t "linear-angle FD test:~%")
+      #+tests(test-true linear-angle-routing-fd
+                        (= 0 (chem:run-test-calls linear-comp *standard-output* coords))))))

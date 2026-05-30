@@ -45,12 +45,12 @@ double gradient(const anchor_term& term, double* position, double* energy_accumu
       double energy = (term.ka * r2);
       energy_added += energy;
       *energy_accumulate += energy;
-      double cse_p1_t1_g373345 = (2.00000000000000000e+0 * term.ka);
-      double g_x1 = (cse_p1_t1_g373345 * dx);
+      double cse_p1_t1_g560360 = (2.00000000000000000e+0 * term.ka);
+      double g_x1 = (cse_p1_t1_g560360 * dx);
       KernelGradientAcc(term.i3x1, 0, g_x1);
-      double g_y1 = (cse_p1_t1_g373345 * dy);
+      double g_y1 = (cse_p1_t1_g560360 * dy);
       KernelGradientAcc(term.i3x1, 1, g_y1);
-      double g_z1 = (cse_p1_t1_g373345 * dz);
+      double g_z1 = (cse_p1_t1_g560360 * dz);
       KernelGradientAcc(term.i3x1, 2, g_z1);
     }
   }
@@ -111,7 +111,7 @@ double hessian(const anchor_term& term, double* position, double* energy_accumul
     DOUBLE z1 = position[term.i3x1 + 2];
     {
       /* !BASE */
-      double cse_p51_t1_g373346 = (2.00000000000000000e+0 * term.ka);
+      double cse_p51_t1_g560361 = (2.00000000000000000e+0 * term.ka);
       double dx = (x1 + (-(term.xa)));
       double dy = (y1 + (-(term.ya)));
       double dz = (z1 + (-(term.za)));
@@ -119,17 +119,17 @@ double hessian(const anchor_term& term, double* position, double* energy_accumul
       double energy = (term.ka * r2);
       energy_added += energy;
       *energy_accumulate += energy;
-      double g_x1 = (cse_p51_t1_g373346 * dx);
+      double g_x1 = (cse_p51_t1_g560361 * dx);
       KernelGradientAcc(term.i3x1, 0, g_x1);
-      double g_y1 = (cse_p51_t1_g373346 * dy);
+      double g_y1 = (cse_p51_t1_g560361 * dy);
       KernelGradientAcc(term.i3x1, 1, g_y1);
-      double g_z1 = (cse_p51_t1_g373346 * dz);
+      double g_z1 = (cse_p51_t1_g560361 * dz);
       KernelGradientAcc(term.i3x1, 2, g_z1);
-      double h_x1_x1 = cse_p51_t1_g373346;
+      double h_x1_x1 = cse_p51_t1_g560361;
       KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 0, h_x1_x1);
-      double h_y1_y1 = cse_p51_t1_g373346;
+      double h_y1_y1 = cse_p51_t1_g560361;
       KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 1, h_y1_y1);
-      double h_z1_z1 = cse_p51_t1_g373346;
+      double h_z1_z1 = cse_p51_t1_g560361;
       KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x1, 2, h_z1_z1);
     }
   }
