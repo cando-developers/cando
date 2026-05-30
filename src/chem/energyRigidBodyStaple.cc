@@ -377,4 +377,9 @@ void EnergyRigidBodyStaple_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,terms) ,this->_Terms);
 };
 
+size_t EnergyRigidBodyStaple_O::runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {
+  core::print(fmt::format("implement {}:{}:{}\n", __FILE__, __LINE__, __FUNCTION__ ));
+  return 0;
+}
+
 };

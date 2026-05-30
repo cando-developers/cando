@@ -367,4 +367,9 @@ void EnergySketchStretch_O::reset()
   this->_Terms.clear();
 }
 
+size_t EnergySketchStretch_O::runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {
+  core::print(fmt::format("implement {}:{}:{}\n", __FILE__, __LINE__, __FUNCTION__ ));
+  return 0;
+}
+
 }

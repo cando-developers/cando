@@ -110,18 +110,18 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
   size_t errs = 0;
   Dihedral_Component<double*> dihedral;
   for ( auto di=this->_Terms.begin(); di!=this->_Terms.end(); ++di ) {
-    position[0] = coords[di->term.I1];
-    position[1] = coords[di->term.I1+1];
-    position[2] = coords[di->term.I1+2];
-    position[3] = coords[di->term.I2];
-    position[4] = coords[di->term.I2+1];
-    position[5] = coords[di->term.I2+2];
-    position[6] = coords[di->term.I3];
-    position[7] = coords[di->term.I3+1];
-    position[8] = coords[di->term.I3+2];
-    position[9] = coords[di->term.I4];
-    position[10] = coords[di->term.I4+1];
-    position[11] = coords[di->term.I4+2];
+    position[0] = coords[di->term.i3x1];
+    position[1] = coords[di->term.i3x1+1];
+    position[2] = coords[di->term.i3x1+2];
+    position[3] = coords[di->term.i3x2];
+    position[4] = coords[di->term.i3x2+1];
+    position[5] = coords[di->term.i3x2+2];
+    position[6] = coords[di->term.i3x3];
+    position[7] = coords[di->term.i3x3+1];
+    position[8] = coords[di->term.i3x3+2];
+    position[9] = coords[di->term.i3x4];
+    position[10] = coords[di->term.i3x4+1];
+    position[11] = coords[di->term.i3x4+2];
     energy_new = 0.0;
     energy_ground = 0.0;
     test_zero( POS_SIZE,
@@ -129,12 +129,9 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    dihedral.gradient( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
-                       0, 3, 6, 9,
-                       position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    dihedral.gradient_fd( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
-                          0, 3, 6, 9,
-                          position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    dihedral_term lt(di->term.v, di->term.n, di->term.sinphase, di->term.cosphase, 0, 3, 6, 9);
+    dihedral.gradient(    lt, position, &energy_new,    force_new );
+    dihedral.gradient_fd( lt, position, &energy_ground, force_ground );
     if (!test_match( stream, "dihedral_gradient", POS_SIZE,
                      force_new, force_ground,
                      0, 0,
@@ -142,7 +139,7 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
       errs++;
       test_position( stream, POS_SIZE, position );
       core::print(fmt::format("MISMATCH dihedral_gradient #{} V = {}  DN = {}  sinPhase = {}  cosPhase = {}\n",
-                              idx, di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase ), stream );
+                              idx, di->term.v, di->term.n, di->term.sinphase, di->term.cosphase ), stream );
     }
     energy_new = 0.0;
     energy_ground = 0.0;
@@ -151,12 +148,9 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
                hessian_new, hessian_ground,
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
-    dihedral.hessian( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
-                      0, 3, 6, 9,
-                      position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-    dihedral.hessian_fd( di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase,
-                         0, 3, 6, 9,
-                         position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    dihedral_term lt2(di->term.v, di->term.n, di->term.sinphase, di->term.cosphase, 0, 3, 6, 9);
+    dihedral.hessian(    lt2, position, &energy_new,    force_new,    hessian_new,    dvec_new,    hdvec_new );
+    dihedral.hessian_fd( lt2, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     if (!test_match( stream, "dihedral_hessian", POS_SIZE,
                      force_new, force_ground,
                      hessian_new, hessian_ground,
@@ -164,7 +158,7 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
       errs++;
       test_position( stream, POS_SIZE, position );
       core::print(fmt::format("MISMATCH dihedral_hessian #{} V = {}  DN = {}  sinPhase = {}  cosPhase = {}\n",
-                              idx, di->term.V, di->term.DN, di->term.sinPhase, di->term.cosPhase ), stream );
+                              idx, di->term.v, di->term.n, di->term.sinphase, di->term.cosphase ), stream );
     }
     idx++;
   }
@@ -267,11 +261,8 @@ if (hasActiveAtomMask \
 
 
 
-//
-// Copy this from implementAmberFunction.cc
-//
 double	_evaluateEnergyOnly_Dihedral( int I1, int I2, int I3, int I4,
-                                      core::T_sp activeAtomMask, 
+                                      core::T_sp activeAtomMask,
                                      num_real x1, num_real y1, num_real z1,
                                      num_real x2, num_real y2, num_real z2,
                                      num_real x3, num_real y3, num_real z3,
@@ -279,45 +270,18 @@ double	_evaluateEnergyOnly_Dihedral( int I1, int I2, int I3, int I4,
                                      num_real V, num_real DN, int IN,
                                      num_real cosPhase, num_real sinPhase )
 {
-  MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  num_real	EraseLinearDihedral;
-  num_real	SinNPhi, CosNPhi;
-
-#undef	DIHEDRAL_SET_PARAMETER
-#define	DIHEDRAL_SET_PARAMETER(x)	{}
-#undef	DIHEDRAL_SET_POSITION
-#define	DIHEDRAL_SET_POSITION(x,ii,of)	{}
-#undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {}
-#undef	DIHEDRAL_FORCE_ACCUMULATE
-#define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
-#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	DIHEDRAL_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
-#pragma clang diagnostic pop
-  fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-  fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-  fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-  fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-#undef VEC_CONST
-#define VEC_CONST(x) (x)
-#undef ZERO_SMALL_LEN
-#define ZERO_SMALL_LEN(RL,L) {double fabs_ = fabs(L); int cmp = (fabs_ < TENM3); RL = cmp ? 0.0 : RL; }
-#undef DO_sinNPhiCosNPhi
-#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
-#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
-#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-#undef DIHEDRAL_DEBUG_INTERACTIONS
-#undef DIHEDRAL_APPLY_ATOM_MASK
-
-  return Energy;
+  // I1..I4, IN, and activeAtomMask are part of the public API for symmetry with
+  // the gradient/hessian forms; they have no effect on a single-term energy
+  // calculation, so suppress unused-parameter warnings.
+  (void)I1; (void)I2; (void)I3; (void)I4; (void)activeAtomMask; (void)IN;
+  double localPos[12] = { (double)x1, (double)y1, (double)z1,
+                          (double)x2, (double)y2, (double)z2,
+                          (double)x3, (double)y3, (double)z3,
+                          (double)x4, (double)y4, (double)z4 };
+  double energy_accum = 0.0;
+  Dihedral_Component<NoHessian> dihedral;
+  dihedral_term lt((double)V, (double)DN, (double)sinPhase, (double)cosPhase, 0, 3, 6, 9);
+  return dihedral.energy(lt, localPos, &energy_accum);
 }
 
 CL_LAMBDA((energy-dihedral chem:energy-dihedral) pos &optional active-atom-mask);
@@ -325,146 +289,89 @@ CL_DEFMETHOD void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessian
                                                                                                  core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  int	fails = 0;
-  bool	calcForce = true;
-  bool	calcDiagonalHessian = true;
-  bool	calcOffDiagonalHessian = true;
-
-//
-// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm
-//
-//------------------
-#define DIHEDRAL_CALC_FORCE
-#define DIHEDRAL_CALC_DIAGONAL_HESSIAN
-#define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
-#undef	DIHEDRAL_SET_PARAMETER
-#define	DIHEDRAL_SET_PARAMETER(x)	{x=di->term.x;}
-#undef	DIHEDRAL_SET_POSITION
-#define	DIHEDRAL_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {}
-#undef	DIHEDRAL_FORCE_ACCUMULATE
-#define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
-#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-#if !USE_EXPLICIT_DECLARES
-    num_real dhx1x1 = 0.0;
-    num_real ohx1y1 = 0.0;
-    num_real ohx1z1 = 0.0;
-    num_real ohx1x2 = 0.0;
-    num_real ohx1y2 = 0.0;
-    num_real ohx1z2 = 0.0;
-    num_real ohx1x3 = 0.0;
-    num_real ohx1y3 = 0.0;
-    num_real ohx1z3 = 0.0;
-    num_real ohx1x4 = 0.0;
-    num_real ohx1y4 = 0.0;
-    num_real ohx1z4 = 0.0;
-    num_real dhy1y1 = 0.0;
-    num_real ohy1z1 = 0.0;
-    num_real ohy1x2 = 0.0;
-    num_real ohy1y2 = 0.0;
-    num_real ohy1z2 = 0.0;
-    num_real ohy1x3 = 0.0;
-    num_real ohy1y3 = 0.0;
-    num_real ohy1z3 = 0.0;
-    num_real ohy1x4 = 0.0;
-    num_real ohy1y4 = 0.0;
-    num_real ohy1z4 = 0.0;
-    num_real dhz1z1 = 0.0;
-    num_real ohz1x2 = 0.0;
-    num_real ohz1y2 = 0.0;
-    num_real ohz1z2 = 0.0;
-    num_real ohz1x3 = 0.0;
-    num_real ohz1y3 = 0.0;
-    num_real ohz1z3 = 0.0;
-    num_real ohz1x4 = 0.0;
-    num_real ohz1y4 = 0.0;
-    num_real ohz1z4 = 0.0;
-    num_real dhx2x2 = 0.0;
-    num_real ohx2y2 = 0.0;
-    num_real ohx2z2 = 0.0;
-    num_real ohx2x3 = 0.0;
-    num_real ohx2y3 = 0.0;
-    num_real ohx2z3 = 0.0;
-    num_real ohx2x4 = 0.0;
-    num_real ohx2y4 = 0.0;
-    num_real ohx2z4 = 0.0;
-    num_real dhy2y2 = 0.0;
-    num_real ohy2z2 = 0.0;
-    num_real ohy2x3 = 0.0;
-    num_real ohy2y3 = 0.0;
-    num_real ohy2z3 = 0.0;
-    num_real ohy2x4 = 0.0;
-    num_real ohy2y4 = 0.0;
-    num_real ohy2z4 = 0.0;
-    num_real dhz2z2 = 0.0;
-    num_real ohz2x3 = 0.0;
-    num_real ohz2y3 = 0.0;
-    num_real ohz2z3 = 0.0;
-    num_real ohz2x4 = 0.0;
-    num_real ohz2y4 = 0.0;
-    num_real ohz2z4 = 0.0;
-    num_real dhx3x3 = 0.0;
-    num_real ohx3y3 = 0.0;
-    num_real ohx3z3 = 0.0;
-    num_real ohx3x4 = 0.0;
-    num_real ohx3y4 = 0.0;
-    num_real ohx3z4 = 0.0;
-    num_real dhy3y3 = 0.0;
-    num_real ohy3z3 = 0.0;
-    num_real ohy3x4 = 0.0;
-    num_real ohy3y4 = 0.0;
-    num_real ohy3z4 = 0.0;
-    num_real dhz3z3 = 0.0;
-    num_real ohz3x4 = 0.0;
-    num_real ohz3y4 = 0.0;
-    num_real ohz3z4 = 0.0;
-    num_real dhx4x4 = 0.0;
-    num_real ohx4y4 = 0.0;
-    num_real ohx4z4 = 0.0;
-    num_real dhy4y4 = 0.0;
-    num_real ohy4z4 = 0.0;
-    num_real dhz4z4 = 0.0;
-#endif
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-    num_real EraseLinearDihedral;
-    int	I1, I2, I3, I4, IN, i;
-#undef DO_sinNPhiCosNPhi
-#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
-    num_real sinPhase, cosPhase, SinNPhi, CosNPhi;
-    gctools::Vec0<EnergyDihedral>::iterator di;
-    for ( i=0,di=this->_Terms.begin(); di!=this->_Terms.end(); di++,i++ ) {
-#undef DO_sinNPhiCosNPhi
-#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
-#define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
-if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         && bitvectorActiveAtomMask->testBit(I4/3)) \
-    ) goto SKIP_term;
-#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
-#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-#undef DIHEDRAL_DEBUG_INTERACTIONS
-#undef DIHEDRAL_APPLY_ATOM_MASK
-      int index = i;
-#include <cando/chem/energy_functions/_Dihedral_debugFiniteDifference.cc>
+  constexpr size_t PS = Dihedral_Component<double*>::PositionSize;  // 12
+  const double energyTol = 1.0e-7;
+  const double forceTol  = 1.0e-5;
+  const double hessTol   = 1.0e-3;
+  double localPos[PS];
+  double force_a[PS], force_fd[PS];
+  double hess_a[PS*PS], hess_fd[PS*PS];
+  double dvec_a[PS], dvec_fd[PS];
+  double hdvec_a[PS], hdvec_fd[PS];
+  Dihedral_Component<double*> dihedral;
+  int fails = 0;
+  int idx = 0;
+  for ( auto di=this->_Terms.begin(); di!=this->_Terms.end(); di++, idx++ ) {
+    int I1 = di->term.i3x1;
+    int I2 = di->term.i3x2;
+    int I3 = di->term.i3x3;
+    int I4 = di->term.i3x4;
+    if (hasActiveAtomMask &&
+        !(bitvectorActiveAtomMask->testBit(I1/3) &&
+          bitvectorActiveAtomMask->testBit(I2/3) &&
+          bitvectorActiveAtomMask->testBit(I3/3) &&
+          bitvectorActiveAtomMask->testBit(I4/3))) continue;
+    localPos[0]  = pos->getElement(I1+0);
+    localPos[1]  = pos->getElement(I1+1);
+    localPos[2]  = pos->getElement(I1+2);
+    localPos[3]  = pos->getElement(I2+0);
+    localPos[4]  = pos->getElement(I2+1);
+    localPos[5]  = pos->getElement(I2+2);
+    localPos[6]  = pos->getElement(I3+0);
+    localPos[7]  = pos->getElement(I3+1);
+    localPos[8]  = pos->getElement(I3+2);
+    localPos[9]  = pos->getElement(I4+0);
+    localPos[10] = pos->getElement(I4+1);
+    localPos[11] = pos->getElement(I4+2);
+    for (size_t k = 0; k < PS; ++k) {
+      force_a[k]=0.0; force_fd[k]=0.0;
+      dvec_a[k]=0.0;  dvec_fd[k]=0.0;
+      hdvec_a[k]=0.0; hdvec_fd[k]=0.0;
     }
-    core::lisp_write(fmt::format("There are {} fails out of {} terms\n", fails, i ));
+    for (size_t k = 0; k < PS*PS; ++k) {
+      hess_a[k]=0.0; hess_fd[k]=0.0;
+    }
+    double e_a = 0.0, e_fd = 0.0;
+    dihedral_term lt(di->term.v, di->term.n, di->term.sinphase, di->term.cosphase, 0, 3, 6, 9);
+    dihedral.hessian(   lt, localPos, &e_a,  force_a,  hess_a,  dvec_a,  hdvec_a);
+    dihedral.hessian_fd(lt, localPos, &e_fd, force_fd, hess_fd, dvec_fd, hdvec_fd);
+    bool termFails = false;
+    if (std::fabs(e_a - e_fd) > energyTol) {
+      termFails = true;
+      core::lisp_write(fmt::format(
+        "  energy mismatch term {}: ana={} fd={} diff={}\n",
+        idx, e_a, e_fd, e_a - e_fd));
+    }
+    for (size_t k = 0; k < PS; ++k) {
+      if (std::fabs(force_a[k] - force_fd[k]) > forceTol) {
+        termFails = true;
+        core::lisp_write(fmt::format(
+          "  force mismatch term {} dof {}: ana={} fd={} diff={}\n",
+          idx, k, force_a[k], force_fd[k], force_a[k] - force_fd[k]));
+      }
+    }
+    for (size_t r = 0; r < PS; ++r) {
+      for (size_t c = 0; c < PS; ++c) {
+        double a = hess_a[r*PS+c];
+        double f = hess_fd[r*PS+c];
+        if (std::fabs(a - f) > hessTol) {
+          termFails = true;
+          core::lisp_write(fmt::format(
+            "  hessian mismatch term {} ({},{}): ana={} fd={} diff={}\n",
+            idx, r, c, a, f, a - f));
+        }
+      }
+    }
+    if (termFails) {
+      fails++;
+      core::lisp_write(fmt::format(
+        "  -> term {} I1={} I2={} I3={} I4={} V={} DN={}\n",
+        idx, I1, I2, I3, I4, di->term.v, di->term.n));
+    }
   }
+  core::lisp_write(fmt::format(
+    "compareAnalyticalAndNumericalForceAndHessianTermByTerm: {} fails out of {} terms\n",
+    fails, idx));
 }
 
 
@@ -480,13 +387,13 @@ if (hasActiveAtomMask \
 
 core::List_sp EnergyDihedral::encode() const {
   ql::list result;
-  result << core::Cons_O::create(INTERN_(kw,v), core::clasp_make_double_float(this->term.V))
-         << core::Cons_O::create(INTERN_(kw,in), core::make_fixnum(this->term.IN))
+  result << core::Cons_O::create(INTERN_(kw,v), core::clasp_make_double_float(this->term.v))
+         << core::Cons_O::create(INTERN_(kw,in), core::make_fixnum((int)this->term.n))
          << core::Cons_O::create(INTERN_(kw,phase), core::clasp_make_double_float(this->_PhaseRad))
-         << core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1))
-         << core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2))
-         << core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.I3))
-         << core::Cons_O::create(INTERN_(kw,i4), core::make_fixnum(this->term.I4))
+         << core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.i3x1))
+         << core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.i3x2))
+         << core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.i3x3))
+         << core::Cons_O::create(INTERN_(kw,i4), core::make_fixnum(this->term.i3x4))
          << core::Cons_O::create(INTERN_(kw,proper), _lisp->_boolean(this->_Proper))
          << core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1)
          << core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2)
@@ -509,15 +416,15 @@ void	EnergyDihedral::archive(core::ArchiveP node)
 //    node->attribute("_Type4",this->_Type4);
   node->attribute("_Proper",this->_Proper);
   node->attribute("_PhaseRad",this->_PhaseRad);
-  node->attribute("sinPhase",this->term.sinPhase);
-  node->attribute("cosPhase",this->term.cosPhase);
-  node->attribute("V",this->term.V);
-  node->attribute("DN",this->term.DN);
-  node->attribute("IN",this->term.IN);
-  node->attribute("I1",this->term.I1);
-  node->attribute("I2",this->term.I2);
-  node->attribute("I3",this->term.I3);
-  node->attribute("I4",this->term.I4);
+  node->attribute("sinPhase",this->term.sinphase);
+  node->attribute("cosPhase",this->term.cosphase);
+  node->attribute("V",this->term.v);
+  node->attribute("DN",this->term.n);
+  node->attribute("IN",(int)this->term.n);
+  node->attribute("I1",this->term.i3x1);
+  node->attribute("I2",this->term.i3x2);
+  node->attribute("I3",this->term.i3x3);
+  node->attribute("I4",this->term.i3x4);
   node->attribute("a1",this->_Atom1);
   node->attribute("a2",this->_Atom2);
   node->attribute("a3",this->_Atom3);
@@ -545,15 +452,14 @@ void EnergyDihedral::defineFrom( int n, FFPtor_sp ffterm , EnergyAtom *ea1, Ener
   this->_Atom3 = ea3->atom();
   this->_Atom4 = ea4->atom();
   this->_PhaseRad = ffterm->getPhaseRadians(n);
-  this->term.sinPhase = sin(this->_PhaseRad);
-  this->term.cosPhase = cos(this->_PhaseRad);
-  this->term.V = ffterm->getV_kcal(n)*scale;
-  this->term.DN = n;
-  this->term.IN = n;
-  this->term.I1 = ea1->coordinateIndexTimes3();
-  this->term.I2 = ea2->coordinateIndexTimes3();
-  this->term.I3 = ea3->coordinateIndexTimes3();
-  this->term.I4 = ea4->coordinateIndexTimes3();
+  this->term.sinphase = sin(this->_PhaseRad);
+  this->term.cosphase = cos(this->_PhaseRad);
+  this->term.v = ffterm->getV_kcal(n)*scale;
+  this->term.n = n;
+  this->term.i3x1 = ea1->coordinateIndexTimes3();
+  this->term.i3x2 = ea2->coordinateIndexTimes3();
+  this->term.i3x3 = ea3->coordinateIndexTimes3();
+  this->term.i3x4 = ea4->coordinateIndexTimes3();
 }
 
 double	EnergyDihedral::getDihedral()
@@ -577,7 +483,7 @@ double	EnergyDihedral::getDihedralDeviation()
   pos3 = this->_Atom3->getPosition();
   pos4 = this->_Atom4->getPosition();
   phi = geom::calculateDihedral( pos1, pos2, pos3, pos4);
-  dev = 1.0+cos(this->term.DN*phi-this->_PhaseRad);
+  dev = 1.0+cos(this->term.n*phi-this->_PhaseRad);
   return dev;
 }
 
@@ -594,16 +500,15 @@ void EnergyDihedral::defineFrom( int n, FFItor_sp term , EnergyAtom *ea1, Energy
   this->_Atom2 = ea2->atom();
   this->_Atom3 = ea3->atom();
   this->_Atom4 = ea4->atom();
-  this->term.DN = n;
-  this->term.IN = n;
-  this->term.V = term->getV_kcal(n)*scale;
+  this->term.n = n;
+  this->term.v = term->getV_kcal(n)*scale;
   this->_PhaseRad = term->getPhaseRadians(n);
-  this->term.cosPhase = cos(this->_PhaseRad);
-  this->term.sinPhase = sin(this->_PhaseRad);
-  this->term.I1 = ea1->coordinateIndexTimes3();
-  this->term.I2 = ea2->coordinateIndexTimes3();
-  this->term.I3 = ea3->coordinateIndexTimes3();
-  this->term.I4 = ea4->coordinateIndexTimes3();
+  this->term.cosphase = cos(this->_PhaseRad);
+  this->term.sinphase = sin(this->_PhaseRad);
+  this->term.i3x1 = ea1->coordinateIndexTimes3();
+  this->term.i3x2 = ea2->coordinateIndexTimes3();
+  this->term.i3x3 = ea3->coordinateIndexTimes3();
+  this->term.i3x4 = ea4->coordinateIndexTimes3();
 }
 
 #if 0 //[
@@ -634,13 +539,13 @@ adapt::QDomNode_sp	EnergyDihedral::asXml()
 //    node->addAttributeString("atom2Type",this->_Type2 );
 //    node->addAttributeString("atom3Type",this->_Type3 );
 //    node->addAttributeString("atom4Type",this->_Type4 );
-  node->addAttributeInt("I1",this->term.I1);
-  node->addAttributeInt("I2",this->term.I2);
-  node->addAttributeInt("I3",this->term.I3);
-  node->addAttributeInt("I4",this->term.I4);
-  node->addAttributeDoubleScientific("DN",this->term.DN);
-  node->addAttributeInt("IN",this->term.IN);
-  node->addAttributeDoubleScientific("V",this->term.V);
+  node->addAttributeInt("I1",this->term.i3x1);
+  node->addAttributeInt("I2",this->term.i3x2);
+  node->addAttributeInt("I3",this->term.i3x3);
+  node->addAttributeInt("I4",this->term.i3x4);
+  node->addAttributeDoubleScientific("DN",this->term.n);
+  node->addAttributeInt("IN",(int)this->term.n);
+  node->addAttributeDoubleScientific("V",this->term.v);
   node->addAttributeDoubleScientific("PhaseRad",this->_PhaseRad);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
   adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
@@ -656,17 +561,16 @@ adapt::QDomNode_sp	EnergyDihedral::asXml()
 void	EnergyDihedral::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
                                                    AtomTable_sp at )
 {
-  this->term.I1 = xml->getAttributeInt("I1");
-  this->term.I2 = xml->getAttributeInt("I2");
-  this->term.I3 = xml->getAttributeInt("I3");
-  this->term.I4 = xml->getAttributeInt("I4");
-  this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
-  this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.I2)->atom();
-  this->_Atom3 = at->findEnergyAtomWithCoordinateIndex(this->term.I3)->atom();
-  this->_Atom4 = at->findEnergyAtomWithCoordinateIndex(this->term.I4)->atom();
-  this->term.DN = xml->getAttributeDouble("DN");
-  this->term.IN = xml->getAttributeInt("IN");
-  this->term.V = xml->getAttributeDouble("V");
+  this->term.i3x1 = xml->getAttributeInt("I1");
+  this->term.i3x2 = xml->getAttributeInt("I2");
+  this->term.i3x3 = xml->getAttributeInt("I3");
+  this->term.i3x4 = xml->getAttributeInt("I4");
+  this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.i3x1)->atom();
+  this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.i3x2)->atom();
+  this->_Atom3 = at->findEnergyAtomWithCoordinateIndex(this->term.i3x3)->atom();
+  this->_Atom4 = at->findEnergyAtomWithCoordinateIndex(this->term.i3x4)->atom();
+  this->term.n = xml->getAttributeDouble("DN");
+  this->term.v = xml->getAttributeDouble("V");
   this->_PhaseRad = xml->getAttributeDouble("PhaseRad");
   this->_Proper = xml->getAttributeBool("proper");
 }
@@ -689,7 +593,7 @@ void	EnergyDihedral_O::dumpTerms(core::HashTable_sp atomTypes)
   string				str1, str2, str3, str4, type;
   for (edi=this->_Terms.begin();edi!=this->_Terms.end();edi++)
   {
-    if ( edi->term.V == 0.0 ) continue;
+    if ( edi->term.v == 0.0 ) continue;
     if ( edi->_Proper ) {
       type = "1PROPER  ";
     } else {
@@ -726,7 +630,7 @@ void	EnergyDihedral_O::dumpTerms(core::HashTable_sp atomTypes)
       ss << as4 << "#A4";
       str4 = ss.str();
     }
-    core::clasp_write_string(fmt::format("TERM 3DIH {} {:<9} - {:<9} - {:<9} - {:<9} {:8.2f} {:8.2f} {:2.0f}\n" , type , str1 , str2 , str3 , str4 , edi->term.V , edi->_PhaseRad , edi->term.DN));
+    core::clasp_write_string(fmt::format("TERM 3DIH {} {:<9} - {:<9} - {:<9} - {:<9} {:8.2f} {:8.2f} {:2.0f}\n" , type , str1 , str2 , str3 , str4 , edi->term.v , edi->_PhaseRad , edi->term.n));
   }
 }
 
@@ -761,9 +665,9 @@ core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom
                 << INTERN_(kw,type3) << edi->_Atom3->getType(atomTypes)
                 << INTERN_(kw,type4) << edi->_Atom4->getType(atomTypes)
                 << INTERN_(kw,proper) << _lisp->_boolean(edi->_Proper)
-                << INTERN_(kw,multiplicity) << core::clasp_make_fixnum(edi->term.IN)
+                << INTERN_(kw,multiplicity) << core::clasp_make_fixnum((int)edi->term.n)
                 << INTERN_(kw,phase_degrees) << core::clasp_make_double_float(edi->_PhaseRad)
-                << INTERN_(kw,v) << core::clasp_make_double_float(edi->term.V);
+                << INTERN_(kw,v) << core::clasp_make_double_float(edi->term.v);
       result << oneResult.result();
     }
   }
@@ -778,67 +682,59 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
                                                      core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  core::T_sp debugInteractions = nil<core::T_O>();
-  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
-  bool		calcForce = true;
-  bool		calcDiagonalHessian = true;
-  bool		calcOffDiagonalHessian = true;
-
-//
-// Copy from implementAmberFunction::setupHessianPreconditioner
-//
-// -----------------------
-
-#undef ZERO_SMALL_LEN
-#define ZERO_SMALL_LEN(RL,L) {double fabs_ = fabs(L); int cmp = (fabs_ < TENM3); RL = cmp ? 0.0 : RL; }
-#undef	DIHEDRAL_SET_PARAMETER
-#define	DIHEDRAL_SET_PARAMETER(x)	{x=di->term.x;}
-#undef	DIHEDRAL_SET_POSITION
-#define	DIHEDRAL_SET_POSITION(x,ii,of)	{x=nvPosition->element(ii+of);}
-#undef	DIHEDRAL_ENERGY_ACCUMULATE
-#define	DIHEDRAL_ENERGY_ACCUMULATE(e) {}
-#undef	DIHEDRAL_FORCE_ACCUMULATE
-#define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
-#undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    m->addToElement((i1)+(o1),(i2)+(o2),v);\
-  }
-#undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    m->addToElement((i1)+(o1),(i2)+(o2),v);\
-  }
-#define DIHEDRAL_CALC_FORCE
-#define DIHEDRAL_CALC_DIAGONAL_HESSIAN
-#define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include	<cando/chem/energy_functions/_Dihedral_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-    num_real EraseLinearDihedral;
-    int	I1, I2, I3, I4, IN;
-#define VEC_CONST(v) v
-#undef DO_sinNPhiCosNPhi
-#define DO_sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi) sinNPhiCosNPhi(IN,SinNPhi,CosNPhi,SinPhi,CosPhi)
-    num_real sinPhase, cosPhase, SinNPhi, CosNPhi;
-    for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
-          di!=this->_Terms.end(); di++ ) {
-#define DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4) USE_DIHEDRAL_DEBUG_INTERACTIONS(I1,I2,I3,I4)
-#define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
-if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         && bitvectorActiveAtomMask->testBit(I4/3)) \
-    ) goto SKIP_term;
-#include	<cando/chem/energy_functions/_Dihedral_termCode.cc>
-#undef DIHEDRAL_DEBUG_INTERACTIONS
-#undef DIHEDRAL_APPLY_ATOM_MASK
+  Dihedral_Component<double*> dihedral;
+  constexpr size_t PS = Dihedral_Component<double*>::PositionSize;  // 12
+  double localPos[PS];
+  double localForce[PS];
+  double localHess[PS*PS];
+  double localDvec[PS];
+  double localHdvec[PS];
+  for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
+        di!=this->_Terms.end(); di++ ) {
+    int I1 = di->term.i3x1;
+    int I2 = di->term.i3x2;
+    int I3 = di->term.i3x3;
+    int I4 = di->term.i3x4;
+    if (hasActiveAtomMask &&
+        !(bitvectorActiveAtomMask->testBit(I1/3) &&
+          bitvectorActiveAtomMask->testBit(I2/3) &&
+          bitvectorActiveAtomMask->testBit(I3/3) &&
+          bitvectorActiveAtomMask->testBit(I4/3))) continue;
+    localPos[0]  = (*nvPosition)[I1+0];
+    localPos[1]  = (*nvPosition)[I1+1];
+    localPos[2]  = (*nvPosition)[I1+2];
+    localPos[3]  = (*nvPosition)[I2+0];
+    localPos[4]  = (*nvPosition)[I2+1];
+    localPos[5]  = (*nvPosition)[I2+2];
+    localPos[6]  = (*nvPosition)[I3+0];
+    localPos[7]  = (*nvPosition)[I3+1];
+    localPos[8]  = (*nvPosition)[I3+2];
+    localPos[9]  = (*nvPosition)[I4+0];
+    localPos[10] = (*nvPosition)[I4+1];
+    localPos[11] = (*nvPosition)[I4+2];
+    // Pack the four atoms' 3 coords into a contiguous 12-vector at offsets 0, 3, 6 and 9.
+    // Zero local accumulator buffers (kernel uses += into them).
+    for (size_t k = 0; k < PS; ++k) {
+      localForce[k] = 0.0; localDvec[k] = 0.0; localHdvec[k] = 0.0;
+    }
+    for (size_t k = 0; k < PS*PS; ++k) localHess[k] = 0.0;
+    double energyAccum = 0.0;
+    dihedral_term lt(di->term.v, di->term.n, di->term.sinphase, di->term.cosphase, 0, 3, 6, 9);
+    dihedral.hessian(lt, localPos, &energyAccum, localForce, localHess,
+                     localDvec, localHdvec);
+    // Scatter the 12x12 local Hessian into the global sparse matrix.
+    // Local offsets 0..2 map to global I1+0..I1+2, 3..5 to I2, 6..8 to I3 and 9..11 to I4.
+    // The kernel writes BOTH (r,c) and (c,r) for off-diagonal entries
+    // (energyComponent.h:269-270), so accumulate only the lower triangle here.
+    int globalIdx[PS] = { I1+0, I1+1, I1+2, I2+0, I2+1, I2+2,
+                          I3+0, I3+1, I3+2, I4+0, I4+1, I4+2 };
+    for (size_t r = 0; r < PS; ++r) {
+      for (size_t c = 0; c <= r; ++c) {
+        double v = localHess[r*PS + c];
+        if (v != 0.0) {
+          m->addToElement(globalIdx[r], globalIdx[c], v);
+        }
+      }
     }
   }
 }
@@ -900,67 +796,28 @@ if (hasActiveAtomMask \
     ) continue;
   if (evalType==energyEval) {
     for ( di=di_start; di!= di_end; di++ ) {
-      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
-      Energy = dihedral.energy(di->term.V,
-                      di->term.DN,
-                      di->term.sinPhase,
-                      di->term.cosPhase,
-                      di->term.I1,
-                      di->term.I2,
-                      di->term.I3,
-                      di->term.I4,
-                      position,
-                      &termEnergy,
-                      NULL,
-                      NoHessian(),
-                      NULL,
-                      NULL );
-      const INT& IN = di->term.IN;
-      DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
+      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.i3x1, di->term.i3x2, di->term.i3x3, di->term.i3x4);
+      Energy = dihedral.energy(di->term, position, &termEnergy);
+      const INT IN = (int)di->term.n;
+      DIHEDRAL_DEBUG_INTERACTIONS(di->term.i3x1, di->term.i3x2, di->term.i3x3, di->term.i3x4);
     }
   } else if (evalType==gradientEval) {
     rforce = &(*force)[0];
     for ( di=di_start; di!= di_end; di++ ) {
-      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
-      Energy = dihedral.gradient(di->term.V,
-                      di->term.DN,
-                      di->term.sinPhase,
-                      di->term.cosPhase,
-                      di->term.I1,
-                      di->term.I2,
-                      di->term.I3,
-                      di->term.I4,
-                      position,
-                      &termEnergy,
-                      rforce,
-                      NoHessian(),
-                     NULL,
-                      NULL );
-      const INT& IN = di->term.IN;
-      DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
+      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.i3x1, di->term.i3x2, di->term.i3x3, di->term.i3x4);
+      Energy = dihedral.gradient(di->term, position, &termEnergy, rforce);
+      const INT IN = (int)di->term.n;
+      DIHEDRAL_DEBUG_INTERACTIONS(di->term.i3x1, di->term.i3x2, di->term.i3x3, di->term.i3x4);
     }
   } else {
       rforce = &(*force)[0];
       rdvec = &(*dvec)[0];
       rhdvec = &(*hdvec)[0];
     for ( di=di_start; di!= di_end; di++ ) {
-      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
-      Energy = dihedral.gradient(di->term.V,
-                        di->term.DN,
-                        di->term.sinPhase,
-                        di->term.cosPhase,
-                        di->term.I1,
-                        di->term.I2,
-                        di->term.I3,
-                        di->term.I4,
-                        position,
-                        &termEnergy,
-                        rforce,
-                        NoHessian(),
-                        rdvec,
-                        rhdvec );
-      const INT& IN = di->term.IN;
-      DIHEDRAL_DEBUG_INTERACTIONS(di->term.I1, di->term.I2, di->term.I3, di->term.I4);
+      KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.i3x1, di->term.i3x2, di->term.i3x3, di->term.i3x4);
+      Energy = dihedral.hessian(di->term, position, &termEnergy, rforce, NoHessian(), rdvec, rhdvec);
+      const INT IN = (int)di->term.n;
+      DIHEDRAL_DEBUG_INTERACTIONS(di->term.i3x1, di->term.i3x2, di->term.i3x3, di->term.i3x4);
     }
   }
 
@@ -1138,13 +995,13 @@ CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
   core::SimpleVector_sp atom4_vec = core::SimpleVector_O::make(size);
   for (size_t i=0;i<size;++i){
     const EnergyDihedral& entry = this->_Terms[i];
-    (*v_vec)[i] = entry.term.V;
-    (*in_vec)[i] = entry.term.IN;
+    (*v_vec)[i] = entry.term.v;
+    (*in_vec)[i] = (int)entry.term.n;
     (*phase_vec)[i] = entry._PhaseRad;
-    (*i1_vec)[i] = entry.term.I1;
-    (*i2_vec)[i] = entry.term.I2;
-    (*i3_vec)[i] = entry.term.I3;
-    (*i4_vec)[i] = entry.term.I4;
+    (*i1_vec)[i] = entry.term.i3x1;
+    (*i2_vec)[i] = entry.term.i3x2;
+    (*i3_vec)[i] = entry.term.i3x3;
+    (*i4_vec)[i] = entry.term.i3x4;
     (*proper_vec)[i] = _lisp->_boolean(entry._Proper);
     (*atom1_vec)[i] = entry._Atom1;
     (*atom2_vec)[i] = entry._Atom2;
@@ -1171,7 +1028,6 @@ CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
 CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
   NVector_sp v_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_v));
-  core::SimpleVector_int32_t_sp in_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_in));
   NVector_sp dn_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_dn));
   NVector_sp phase_vec = (safe_alist_lookup<NVector_sp>(vectors,kw::_sym_phase));
   core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
@@ -1186,16 +1042,15 @@ CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vec
   this->_Terms.resize(v_vec->length());
   for (size_t i=0, iEnd(v_vec->length());i<iEnd;++i){
     EnergyDihedral& entry = this->_Terms[i];
-    entry.term.V = (*v_vec)[i];
-    entry.term.IN = (*in_vec)[i];
-    entry.term.DN = (*dn_vec)[i];
+    entry.term.v = (*v_vec)[i];
+    entry.term.n = (*dn_vec)[i];
     entry._PhaseRad = (*phase_vec)[i];
-    entry.term.cosPhase = cos((*phase_vec)[i]);
-    entry.term.sinPhase = sin((*phase_vec)[i]);
-    entry.term.I1 = (*i1_vec)[i];
-    entry.term.I2 = (*i2_vec)[i];
-    entry.term.I3 = (*i3_vec)[i];
-    entry.term.I4 = (*i4_vec)[i];
+    entry.term.cosphase = cos((*phase_vec)[i]);
+    entry.term.sinphase = sin((*phase_vec)[i]);
+    entry.term.i3x1 = (*i1_vec)[i];
+    entry.term.i3x2 = (*i2_vec)[i];
+    entry.term.i3x3 = (*i3_vec)[i];
+    entry.term.i3x4 = (*i4_vec)[i];
     entry._Proper =  ((*proper_vec)[i]).isTrue();
     entry._Atom1 = gc::As_unsafe<Atom_sp>((*atom1_vec)[i]);
     entry._Atom2 = gc::As_unsafe<Atom_sp>((*atom2_vec)[i]);
@@ -2016,7 +1871,7 @@ void EnergyDihedral_O::emitTestCalls(core::T_sp stream, chem::NVector_sp pos) co
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
     core::print(fmt::format("test_dihedral( errs, {}, {}, {}, {}, {}, {}, {}, {}, position_size, position, force_new, force_old, hessian_new, hessian_old, dvec_new, dvec_old, hdvec_new, hdvec_old );\n",
-                            si->term.V, si->term.DN, si->term.sinPhase, si->term.cosPhase, si->term.I1, si->term.I2, si->term.I3, si->term.I4 ),stream);
+                            si->term.v, si->term.n, si->term.sinphase, si->term.cosphase, si->term.i3x1, si->term.i3x2, si->term.i3x3, si->term.i3x4 ),stream);
   }
   #endif
 }

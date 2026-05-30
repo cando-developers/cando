@@ -95,6 +95,7 @@ public:
   void reset();
 
   void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) {return;}
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
 
 };

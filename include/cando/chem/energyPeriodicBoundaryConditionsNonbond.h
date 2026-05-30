@@ -88,6 +88,7 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
                               core::T_sp activeAtomMask );
   
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score, NVector_sp pos );
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
 
 };

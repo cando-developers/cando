@@ -366,5 +366,9 @@ void EnergyOutOfZPlane_O::reset()
 {
 }
 
+size_t EnergyOutOfZPlane_O::runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {
+  core::print(fmt::format("implement {}:{}:{}\n", __FILE__, __LINE__, __FUNCTION__ ));
+  return 0;
+}
 
 };

@@ -199,7 +199,7 @@ bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, 
                                              size_t i3x1, size_t i3x2,
                                              EnergyRosettaNonbond_sp energyRosettaNonbond,
                                              core::HashTable_sp atomTypes, core::T_sp keepInteraction,
-                                             const rosetta_nonbond_parameters& params) __attribute__((optnone)){
+                                             const rosetta_nonbond_parameters& params) {
   this->_Atom1_enb = a1;
   this->_Atom2_enb = a2;
   core::Symbol_sp t1 = a1->getType(atomTypes);

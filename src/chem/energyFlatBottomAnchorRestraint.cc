@@ -72,6 +72,12 @@ std::string EnergyFlatBottomAnchorRestraint_O::descriptionOfContents() const {
   return ss.str();
 }
 
+CL_LISPIFY_NAME(make-energy-flat-bottom-anchor-restraint);
+CL_DEF_CLASS_METHOD
+EnergyFlatBottomAnchorRestraint_sp EnergyFlatBottomAnchorRestraint_O::make(EnergyFunction_sp energyFunction) {
+  return ensureComponent<EnergyFlatBottomAnchorRestraint_O>(energyFunction);
+}
+
 void EnergyFlatBottomAnchorRestraint_O::addTerm(const EnergyFlatBottomAnchorRestraint& r) {
   this->_Terms.push_back(r);
 }
@@ -156,6 +162,74 @@ EnergyComponent_sp EnergyFlatBottomAnchorRestraint_O::copyFilter(
     copy->_Terms.push_back(*edi);
   }
   return copy;
+}
+
+size_t EnergyFlatBottomAnchorRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const {
+#define POS_SIZE 3
+  double energy_new;
+  double energy_ground;
+  double position[POS_SIZE];
+  double force_new[POS_SIZE];
+  double force_ground[POS_SIZE];
+  double hessian_new[POS_SIZE*POS_SIZE];
+  double hessian_ground[POS_SIZE*POS_SIZE];
+  double dvec_new[POS_SIZE];
+  double dvec_ground[POS_SIZE];
+  double hdvec_new[POS_SIZE];
+  double hdvec_ground[POS_SIZE];
+  size_t idx=0;
+  size_t errs = 0;
+  Flat_Bottom_Anchor_Restraint<double*> kernel;
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    position[0] = coords[si->term.i3x1];
+    position[1] = coords[si->term.i3x1+1];
+    position[2] = coords[si->term.i3x1+2];
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    flat_bottom_anchor_restraint_term lt(si->term.ka, si->term.r0, si->term.r02,
+                                         si->term.xa, si->term.ya, si->term.za, 0);
+    kernel.gradient(    lt, position, &energy_new,    force_new );
+    kernel.gradient_fd( lt, position, &energy_ground, force_ground );
+    if (!test_match( stream, "flat_bottom_anchor_gradient", POS_SIZE,
+                     force_new, force_ground,
+                     0, 0,
+                     0, 0 )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH flat_bottom_anchor_gradient #{} ka = {}  R0 = {}\n",
+                              idx, si->term.ka, si->term.r0 ), stream );
+    }
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    flat_bottom_anchor_restraint_term lt2(si->term.ka, si->term.r0, si->term.r02,
+                                          si->term.xa, si->term.ya, si->term.za, 0);
+    kernel.hessian(    lt2, position, &energy_new,    force_new,    hessian_new,    dvec_new,    hdvec_new );
+    kernel.hessian_fd( lt2, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    if (!test_match( stream, "flat_bottom_anchor_hessian", POS_SIZE,
+                     force_new, force_ground,
+                     hessian_new, hessian_ground,
+                     hdvec_new, hdvec_ground )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH flat_bottom_anchor_hessian #{} ka = {}  R0 = {}\n",
+                              idx, si->term.ka, si->term.r0 ), stream );
+    }
+    idx++;
+  }
+  core::print(fmt::format("flat_bottom_anchor errors = {}\n", errs), stream);
+  return errs;
+#undef POS_SIZE
 }
 
 } // namespace chem

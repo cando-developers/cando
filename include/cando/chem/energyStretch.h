@@ -46,20 +46,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
-
+#include <clasp/core/ql.h>
+#include <cando/chem/energyKernels/stretch.h>
 namespace       chem {
 
 class EnergyAtom;
 SMART(FFStretch);
 
-struct TermStretch {
-  REAL	kb;	//!< Stretch force constant, this must match Mathematica code!
-  REAL	r0;	//!< Stretch equilibrium distance, this must match Mathematica code!
-  INT	I1;	//!< i*3 index into coordinate vector for atom1, this must match Mathematica code!
-  INT	I2;	//!< i*3 index into coordinate vector for atom2, this must match Mathematica code!
-  TermStretch(REAL k,REAL r, INT i1, INT i2) : kb(k), r0(r),I1(i1),I2(i2) {};
-  TermStretch() {};
-};
 
 
 /*! Store a Stretch energy term
@@ -177,8 +170,8 @@ public:
       }
       return Values(core::DoubleFloat_O::create(this->_Terms[index].term.kb),
                     core::DoubleFloat_O::create(this->_Terms[index].term.r0),
-                    core::make_fixnum(this->_Terms[index].term.I1),
-                    core::make_fixnum(this->_Terms[index].term.I2));
+                    core::make_fixnum(this->_Terms[index].term.i3x1),
+                    core::make_fixnum(this->_Terms[index].term.i3x2));
     }
 
     /*! Extract the components of the energy term into a collection of parallel vectors.

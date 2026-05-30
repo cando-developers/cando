@@ -579,6 +579,10 @@ SYMBOL_EXPORT_SC_(KeywordPkg,vdwRadii);
 SYMBOL_EXPORT_SC_(KeywordPkg,distance);
 SYMBOL_EXPORT_SC_(KeywordPkg,force);
 
+size_t EnergyPeriodicBoundaryConditionsNonbond_O::runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {
+  core::print(fmt::format("implement {}:{}:{}\n", __FILE__, __LINE__, __FUNCTION__ ));
+  return 0;
+}
 
 };
 

@@ -528,9 +528,9 @@ void chem__nvector_set_element(NVector_sp vec, size_t index, double val)
   (*vec)[index] = val;
 }
 
-CL_LISPIFY_NAME(NVector/set_element);
+CL_LISPIFY_NAME(NVector/get_element);
 CL_DEFUN
-double chem__nvector_get_element(NVector_sp vec, size_t index, double val)
+double chem__nvector_get_element(NVector_sp vec, size_t index)
 {
   if (vec->length()<=index) {
     SIMPLE_ERROR("Index {} is of bounds - length is {}", index, vec->length() );
@@ -744,7 +744,7 @@ CL_DEFUN vecreal chem__nvector_dot(NVector_sp veca, NVector_sp vecb) {
     val = vala*valb;
     sum2 += val;
   }
-  return sqrt(sum2);
+  return sum2;
 }
 
 

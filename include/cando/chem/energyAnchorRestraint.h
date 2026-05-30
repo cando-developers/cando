@@ -43,6 +43,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include <clasp/core/ql.h>
+#include <cando/chem/energyKernels/anchor_restraint.h>
 
 
 
@@ -50,21 +52,13 @@ namespace chem
 {
 
 
-struct TermAnchorRestraint {
-  REAL		ka;
-  INT           I1;
-  REAL		xa;
-  REAL		ya;
-  REAL		za;
-};
-
 /*! Store a AnchorRestraint energy term
  */
 class	EnergyAnchorRestraint : public EnergyTerm {
 public:
   string	className()	{ return "EnergyAnchorRestraint"; };
 public:
-  TermAnchorRestraint	term;
+  anchor_term	term;
 		// Variables
   Atom_sp      _Atom1;
 		// Threshold
@@ -81,7 +75,7 @@ public:
 public:
   core::List_sp encode() const;
   EnergyAnchorRestraint();
-  EnergyAnchorRestraint(Atom_sp atom, Vector3 pos, size_t I3, double ka ) : _Atom1(atom), term(ka,I3,pos.getX(), pos.getY(), pos.getZ()) {};
+  EnergyAnchorRestraint(Atom_sp atom, Vector3 pos, size_t I3, double ka ) : _Atom1(atom), term(ka,pos.getX(), pos.getY(), pos.getZ(), I3) {};
   ;
   virtual ~EnergyAnchorRestraint();
 
@@ -154,6 +148,7 @@ public:
 
 
 public:
+  static EnergyAnchorRestraint_sp make(EnergyFunction_sp energyFunction);
   void addTerm(const TermType& term);
   size_t addAnchorRestraintTerm(EnergyFunction_sp energyFunction, Atom_sp a1, Vector3 position, double forceConstant );
   virtual void dumpTerms(core::HashTable_sp atomTypes);
@@ -186,6 +181,7 @@ public:
   EnergyAnchorRestraint_O( const EnergyAnchorRestraint_O& ss ); //!< Copy constructor
 
   DEFAULT_CTOR_DTOR(EnergyAnchorRestraint_O);
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 };
 
 

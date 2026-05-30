@@ -178,6 +178,7 @@ public:
   EnergyOutOfZPlane_O( const EnergyOutOfZPlane_O& ss ); //!< Copy constructor
 
   DEFAULT_CTOR_DTOR(EnergyOutOfZPlane_O);
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 };
 
 

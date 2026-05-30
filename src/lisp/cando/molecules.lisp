@@ -157,7 +157,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 (defun minimize-no-fail (minimizer &key resignal-error verbose active-atoms-mask coords)
   (if verbose
       (progn
-        (chem:enable-print-intermediate-results minimizer)
+        (chem:enable-print-intermediate-results minimizer 1 1)
         (format t "enable-print-intermediate-results ~%"))
       (chem:disable-print-intermediate-results minimizer))
   (restart-case
@@ -186,7 +186,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 (defun minimize-with-restarts (minimizer &key resignal-error verbose)
   (if verbose
       (progn
-        (chem:enable-print-intermediate-results minimizer)
+        (chem:enable-print-intermediate-results minimizer 1 1)
         (format t "enable-print-intermediate-results ~%"))
       (chem:disable-print-intermediate-results minimizer))
   (restart-case
@@ -293,7 +293,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                          :max-sd-steps max-sd-steps
                          :max-cg-steps max-cg-steps
                          :max-tn-steps max-tn-steps)
-    (when verbose (chem:enable-print-intermediate-results min))
+    (when verbose (chem:enable-print-intermediate-results min 1 1))
     (minimize-no-fail min :verbose verbose)
     (finish-output t)
     (values matter energy-function)))
@@ -350,7 +350,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                          :max-sd-steps max-sd-steps
                          :max-cg-steps max-cg-steps
                          :max-tn-steps max-tn-steps)
-    (when verbose (chem:enable-print-intermediate-results min))
+    (when verbose (chem:enable-print-intermediate-results min 1 1))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
       (finish-output t)
@@ -386,7 +386,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                          :max-cg-steps max-cg-steps
                          :max-tn-steps max-tn-steps
                          )
-    (when verbose (chem:enable-print-intermediate-results min))
+    (when verbose (chem:enable-print-intermediate-results min 1 1))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
       (when verbose

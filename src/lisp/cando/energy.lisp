@@ -77,7 +77,7 @@
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
     (if print-intermediate-results
-        (chem:enable-print-intermediate-results minimizer report-every-n-steps)
+        (chem:enable-print-intermediate-results minimizer report-every-n-steps 1)
         (chem:disable-print-intermediate-results minimizer))
     (cando:minimize-no-fail minimizer :active-atoms-mask active-atoms-mask :resignal-error resignal-error :coords coords :verbose verbose)))
 
@@ -111,7 +111,9 @@
          (minimizer (chem:make-minimizer energy-function)))
     (if save-trajectory
         (let ((minimizer-trajectory (make-array 16 :adjustable t :fill-pointer 0)))
-          (chem:set-step-callback minimizer (lambda (coords) (save-minimizer-coordinates coords minimizer-trajectory)))
+          (chem:set-step-callback minimizer
+                                  (lambda (stage coords force-vec dstep dir-vec &rest rest)
+                                    (save-minimizer-coordinates coords minimizer-trajectory)))
           (apply #'minimize-minimizer minimizer args)
           (let ((matter (chem:get-matter energy-function)))
             (format t "matter ~a~%" matter)
@@ -164,7 +166,7 @@
                                :sd-tolerance sd-tolerance
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
-    (chem:enable-print-intermediate-results minimizer report-every-n-steps)
+    (chem:enable-print-intermediate-results minimizer report-every-n-steps 1)
     (format t "Minimizing with nonbond terms disabled~%")
     (chem:set-option energy-function 'chem:nonbond-term nil)
     (cando:minimize-no-fail minimizer)

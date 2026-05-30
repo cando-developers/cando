@@ -185,6 +185,8 @@ public:
     virtual bool is_restraint() const { return true; };
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask );
+  
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                                        NVector_sp 	pos,

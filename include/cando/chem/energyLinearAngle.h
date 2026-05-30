@@ -1,5 +1,5 @@
 /*
-    File: energyAngle.h
+    File: energyLinearAngle.h
 */
 /*
 Open Source License
@@ -19,7 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
@@ -30,13 +30,17 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 /*
- *	energyAngle.h
+ *	energyLinearAngle.h
  *
- *	Maintains a database of stretch types
+ *	A one-sided linear-bend angle energy term for near-linear (sp) centers.
+ *	E = kt*(1 + cos(theta)) (UFF linear bend) -- minimized at theta = 180 deg,
+ *	harmonic in the deviation there, and singularity-free at linearity
+ *	(written purely in cos(theta): no acos / no 1/sin(theta) factor), unlike
+ *	the standard harmonic angle term in energyAngle.h.
  */
 
-#ifndef EnergyAngle_H  //[
-#define	EnergyAngle_H
+#ifndef EnergyLinearAngle_H  //[
+#define	EnergyLinearAngle_H
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -45,7 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
 #include <clasp/core/ql.h>
-#include <cando/chem/energyKernels/angle.h>
+#include <cando/chem/energyKernels/linear_angle.h>
 
 
 #include <cando/chem/chemPackage.h>
@@ -54,53 +58,36 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 class EnergyAtom;
 
-SMART(FFAngle);
+inline	string	XmlTag_LinearAngle() { return "LinearAngle"; };
+inline	string	XmlTag_EnergyLinearAngle() { return "EnergyLinearAngle"; };
 
-inline	string	XmlTag_Angle() { return "Angle"; };
-inline	string	XmlTag_EnergyAngle() { return "EnergyAngle"; };
-
-/*! Store an Angle energy term.
+/*! Store a linear-bend angle energy term.
  *
  */
-class EnergyAngle : public EnergyTerm 
+class EnergyLinearAngle : public EnergyTerm
 {
 public:
-	string	className()	{ return "EnergyAngle"; };
+	string	className()	{ return "EnergyLinearAngle"; };
 public:
                 // Parameters
-	angle_term	term;
+	linear_angle_term	term;
                 // Variables
         Atom_sp      	_Atom1;
         Atom_sp    	_Atom2;
         Atom_sp		_Atom3;
-#if TURN_ENERGY_FUNCTION_DEBUG_ON
-	bool		_calcForce;
-	bool		_calcDiagonalHessian;
-	bool		_calcOffDiagonalHessian;
-#include <cando/chem/energy_functions/_Angle_debugEvalDeclares.cc>
-#endif
 public:
-  EnergyAngle(Atom_sp a1, Atom_sp a2, Atom_sp a3, size_t i1, size_t i2, size_t i3, double kt, double t0) : term(kt,t0,i1,i2,i3),_Atom1(a1),_Atom2(a2),_Atom3(a3) {};
-  EnergyAngle() {};
+  EnergyLinearAngle(Atom_sp a1, Atom_sp a2, Atom_sp a3, size_t i1, size_t i2, size_t i3, double kt) : term(kt,i1,i2,i3),_Atom1(a1),_Atom2(a2),_Atom3(a3) {};
+  EnergyLinearAngle() {};
 
 public:
         Atom_sp	getAtom1() { return this->_Atom1; };
         Atom_sp	getAtom2() { return this->_Atom2; };
         Atom_sp	getAtom3() { return this->_Atom3; };
-	double	getT0()	{return this->term.t0;};
+	double	getKt()	{return this->term.kt;};
 	double	getT();
 	double	getTheta() {return this->getT();};
+	double	getThetaDegrees(){return this->getT()/0.0174533;};
 
-	double	getT0Degrees()	{return this->getT0()/0.0174533;};
-	double	getTDegrees()	{return this->getT()/0.0174533;};
-	double	getThetaDegrees(){return this->getTDegrees();};
-
-
-	adapt::QDomNode_sp	asXml();
-	void		parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml,
-					AtomTable_sp	atomTable );
-        void defineFrom( FFAngle_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, double scale);
-	void defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3);
         core::List_sp encode() const;
         void decode(core::List_sp alist);
 };
@@ -109,20 +96,20 @@ public:
 namespace translate {
 
 template <>
-struct	to_object<chem::EnergyAngle >
+struct	to_object<chem::EnergyLinearAngle >
 {
   typedef	core::Cons_sp ExpectedType;
   typedef	core::Cons_sp DeclareType;
-  static core::T_sp convert(const chem::EnergyAngle& angle)
+  static core::T_sp convert(const chem::EnergyLinearAngle& angle)
   {
     return angle.encode();
   }
 };
 
 template <>
-struct	from_object<chem::EnergyAngle>
+struct	from_object<chem::EnergyLinearAngle>
 {
-  typedef	chem::EnergyAngle	ExpectedType;
+  typedef	chem::EnergyLinearAngle	ExpectedType;
   typedef	ExpectedType 		DeclareType;
 	DeclareType _v;
 	from_object(core::T_sp o)
@@ -134,19 +121,19 @@ struct	from_object<chem::EnergyAngle>
 
 namespace chem {
 
-double	_evaluateEnergyOnly_Angle(
+double	_evaluateEnergyOnly_LinearAngle(
     int I1, int I2, int I3, core::T_sp activeAtomMask,
     num_real x1, num_real y1, num_real z1,
     num_real x2, num_real y2, num_real z2,
     num_real x3, num_real y3, num_real z3,
-    num_real kt, num_real t0 );
+    num_real kt );
 
 
-FORWARD(EnergyAngle);
+FORWARD(EnergyLinearAngle);
 
-class EnergyAngle_O : public EnergyComponent_O
+class EnergyLinearAngle_O : public EnergyComponent_O
 {
-  LISP_CLASS(chem,ChemPkg,EnergyAngle_O,"EnergyAngle",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyLinearAngle_O,"EnergyLinearAngle",EnergyComponent_O);
 public:
   virtual bool restraintp() const override {return false;};
   bool fieldsp() const { return true; };
@@ -154,31 +141,26 @@ public:
 public: // virtual functions inherited from Object
   void	initialize();
 public:
-  typedef EnergyAngle	TermType;
+  typedef EnergyLinearAngle	TermType;
 public: // instance variables
   gctools::Vec0<TermType>	_Terms;
-public:	
+public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
-  static EnergyAngle_sp make(EnergyFunction_sp energyFunction);
+  static EnergyLinearAngle_sp make(EnergyFunction_sp energyFunction);
 public:
   virtual size_t numberOfTerms() { return this->_Terms.size();};
-  CL_DEFMETHOD core::T_mv safe_amber_energy_angle_term(size_t index) {
+  CL_DEFMETHOD core::T_mv safe_amber_energy_linear_angle_term(size_t index) {
     if (index >= this->numberOfTerms() ) {
       SIMPLE_ERROR("Illegal term index {} must be less than {}" , index , this->_Terms.size() );
     }
     return Values(core::DoubleFloat_O::create(this->_Terms[index].term.kt),
-                  core::DoubleFloat_O::create(this->_Terms[index].term.t0),
                   core::make_fixnum(this->_Terms[index].term.i3x1),
                   core::make_fixnum(this->_Terms[index].term.i3x2),
                   core::make_fixnum(this->_Terms[index].term.i3x3)
                   );
   }
-
-public:	// Creation class functions
-
-
 
 public:
   virtual std::string descriptionOfContents() const;
@@ -210,21 +192,20 @@ public:
       NVector_sp pos,
       core::T_sp activeAtomMask );
 
-  void addAngleTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt, double t0);
+  void addLinearAngleTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt);
 
 
-  core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
+  core::List_sp lookupLinearAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
 
   EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
   virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
   virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 
-  EnergyAngle_O( const EnergyAngle_O& ss ); //!< Copy constructor
+  EnergyLinearAngle_O( const EnergyLinearAngle_O& ss ); //!< Copy constructor
 
-  EnergyAngle_O() : EnergyComponent_O() {};
+  EnergyLinearAngle_O() : EnergyComponent_O() {};
 };
-
 
 
 

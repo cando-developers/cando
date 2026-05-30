@@ -46,6 +46,7 @@
            #~"energyStretch.cc"
            #~"energySketchStretch.cc"
            #~"energyAngle.cc"
+           #~"energyLinearAngle.cc"
            #~"energyDihedral.cc"
            #~"energyNonbond.cc"
            #~"energyNonbond14.cc"

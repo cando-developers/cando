@@ -214,6 +214,7 @@ public:
  EnergyRigidBodyNonbond_O(core::SimpleVector_byte32_t_sp end_atoms) : _RigidBodyEndAtom(end_atoms) {
     this->resizeNonbondAtomInfoTable((*end_atoms)[end_atoms->length()-1]);
   }
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 };
 
 };

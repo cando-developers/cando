@@ -111,6 +111,7 @@ public:
   virtual size_t numberOfTerms() { return this->_Terms.size(); };
 
 public:
+  static EnergyFlatBottomAnchorRestraint_sp make(EnergyFunction_sp energyFunction);
   void addTerm(const TermType& term);
 
   CL_DEFMETHOD
@@ -140,6 +141,7 @@ public:
 public:
   EnergyFlatBottomAnchorRestraint_O(const EnergyFlatBottomAnchorRestraint_O& ss);
   DEFAULT_CTOR_DTOR(EnergyFlatBottomAnchorRestraint_O);
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 };
 
 } // namespace chem

@@ -433,7 +433,7 @@
              (frame-period (floor internal-time-units-per-second +pose-frame-rate+))
              (next-frame-time (get-internal-real-time)))
         (chem:set-step-callback minimizer
-                                (lambda (pos)
+                                (lambda (stage pos force-vec dstep dir-vec &rest rest)
                                   (sleep (max 0 (/ (- next-frame-time (get-internal-real-time)) internal-time-units-per-second)))
                                   (ngl:update-position component
                                                        (map '(vector single-float *)

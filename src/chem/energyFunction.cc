@@ -577,7 +577,24 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
   return totalEnergy;
 }
 
-
+CL_DEFMETHOD
+size_t	EnergyFunction_O::runTestCalls( core::T_sp stream, NVector_sp 	pos) {
+  size_t badCount = 0;
+  for ( auto cur : this->_EnergyComponents ) {
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(CONS_CAR(cur));
+    if (component->isEnabled()) {
+      size_t oneBadCount = component->runTestCalls( stream, pos );
+      if (stream.notnilp() && oneBadCount!=0) {
+        core::print(fmt::format("EnergyFunction_O::runTestCalls found {} mismatches between analytical and finite difference for {}\n", oneBadCount, component->_instanceClass()->_classNameAsString() ), stream );
+      }
+      badCount += oneBadCount;
+    }
+  }
+  if (stream.notnilp()) {
+    core::print(fmt::format("EnergyFunction_O::runTestCalls found {} mismatches between analytical and finite difference terms\n", badCount ), stream );
+  }
+  return badCount;
+}
 
 /*!
  * Compare the analytical force and hessian components term by term with
@@ -963,7 +980,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       iterm.term.ya = anchorPos.getY();
       iterm.term.za = anchorPos.getZ();
       iterm.term.ka = DefaultAnchorRestraintWeight;
-      iterm.term.I1 = ea1->coordinateIndexTimes3();
+      iterm.term.i3x1 = ea1->coordinateIndexTimes3();
       auto anchorRestraint = ensureComponent<EnergyAnchorRestraint_O>(this->asSmartPtr());
       anchorRestraint->addTerm(iterm);
       ++terms;
@@ -1860,12 +1877,12 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             ichiral._Atom3 = eaCenter->atom();
             ichiral._Atom4 = ea3->atom();
             if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
-              ichiral.term.I1 = ea1->coordinateIndexTimes3();
-              ichiral.term.I2 = ea2->coordinateIndexTimes3();
-              ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
-              ichiral.term.I4 = ea3->coordinateIndexTimes3();
-              ichiral.term.K = DefaultChiralRestraintWeight * side;
-              ichiral.term.CO = DefaultChiralRestraintOffset;
+              ichiral.term.i3x1 =ea1->coordinateIndexTimes3();
+              ichiral.term.i3x2 =ea2->coordinateIndexTimes3();
+              ichiral.term.i3x3 =eaCenter->coordinateIndexTimes3();
+              ichiral.term.i3x4 =ea3->coordinateIndexTimes3();
+              ichiral.term.k =DefaultChiralRestraintWeight * side;
+              ichiral.term.co =DefaultChiralRestraintOffset;
               chiralRestraintComponent->addTerm(ichiral);
               // Now apply it to the other atom
               // on the chiral center, just flip the sign
@@ -1874,10 +1891,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           
             ichiral._Atom4 = ea4->atom();
             if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
-              ichiral.term.I4 = ea4->coordinateIndexTimes3();
+              ichiral.term.i3x4 =ea4->coordinateIndexTimes3();
               // flip the sign of the chiral restraint
-              ichiral.term.K = DefaultChiralRestraintWeight * side * -1.0;
-              ichiral.term.CO = DefaultChiralRestraintOffset;
+              ichiral.term.k =DefaultChiralRestraintWeight * side * -1.0;
+              ichiral.term.co =DefaultChiralRestraintOffset;
               chiralRestraintComponent->addTerm(ichiral);
             }
             // To try and increase the number of molecules that
@@ -1892,12 +1909,12 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             ichiral._Atom3 = eaCenter->atom();
             ichiral._Atom4 = ea3->atom();
             if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
-              ichiral.term.I1 = ea2->coordinateIndexTimes3();
-              ichiral.term.I2 = ea4->coordinateIndexTimes3();
-              ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
-              ichiral.term.I4 = ea3->coordinateIndexTimes3();
-              ichiral.term.K = DefaultChiralRestraintWeight * side;
-              ichiral.term.CO = DefaultChiralRestraintOffset;
+              ichiral.term.i3x1 =ea2->coordinateIndexTimes3();
+              ichiral.term.i3x2 =ea4->coordinateIndexTimes3();
+              ichiral.term.i3x3 =eaCenter->coordinateIndexTimes3();
+              ichiral.term.i3x4 =ea3->coordinateIndexTimes3();
+              ichiral.term.k =DefaultChiralRestraintWeight * side;
+              ichiral.term.co =DefaultChiralRestraintOffset;
               chiralRestraintComponent->addTerm(ichiral);
             }
             // Now apply it to the other atom
@@ -1905,10 +1922,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             // of K
             ichiral._Atom4 = ea1->atom();
             if ( !skipInteraction( keepInteraction, ichiral._Atom1, ichiral._Atom2, ichiral._Atom3, ichiral._Atom4 ) ) {
-              ichiral.term.I4 = ea1->coordinateIndexTimes3();
+              ichiral.term.i3x4 =ea1->coordinateIndexTimes3();
               // flip the sign of the chiral restraint
-              ichiral.term.K = DefaultChiralRestraintWeight * side * -1.0;
-              ichiral.term.CO = DefaultChiralRestraintOffset;
+              ichiral.term.k =DefaultChiralRestraintWeight * side * -1.0;
+              ichiral.term.co =DefaultChiralRestraintOffset;
               chiralRestraintComponent->addTerm(ichiral);
             }
           } else {

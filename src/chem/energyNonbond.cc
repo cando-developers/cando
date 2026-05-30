@@ -59,13 +59,13 @@ namespace chem {
 
 #include "cando/chem/energyKernels/nonbond.c"
 
- #if 1
- #include "cando/chem/energyKernels/nonbond_dd_cutoff_gpt.c"
+#if 1
+# include "cando/chem/energyKernels/nonbond_dd_cutoff_gpt.c"
  template <typename T>
  using Nonbond_Component = Nonbond_Dd_Cutoff<T>;
- #else
- #include "cando/chem/energyKernels/nonbond_dd_cutoff.c"
- #endif
+#else
+# include "cando/chem/energyKernels/nonbond_dd_cutoff.c"
+#endif
 
 }
 

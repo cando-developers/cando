@@ -47,21 +47,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include <clasp/core/ql.h>
+#include <cando/chem/energyKernels/chiral_restraint.h>
 
 
 namespace chem
 {
 
-
-struct TermChiralRestraint
-{
-	REAL		K;
-	REAL		CO;
-	INT		I1;
-	INT		I2;
-	INT		I3;
-	INT		I4;
-};
 
 inline	string	XmlTag_ChiralRestraint() { return "ChiralRestraint"; };
 
@@ -77,7 +69,7 @@ public:
         Atom_sp      _Atom3;
         Atom_sp      _Atom4;
 		// Threshold
-	TermChiralRestraint	term;
+	chiral_term	term;
 
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
@@ -166,6 +158,8 @@ public:
     
 
 public:
+  static EnergyChiralRestraint_sp make(EnergyFunction_sp energyFunction);
+  size_t addChiralRestraintTerm(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double k, double co);
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
   virtual bool is_restraint() const { return true; };
@@ -196,6 +190,7 @@ public:
   EnergyChiralRestraint_O( const EnergyChiralRestraint_O& ss ); //!< Copy constructor
 
   DEFAULT_CTOR_DTOR(EnergyChiralRestraint_O);
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 };
 
 };

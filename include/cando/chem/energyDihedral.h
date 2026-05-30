@@ -42,7 +42,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
-
+#include <clasp/core/ql.h>
+#include <cando/chem/energyKernels/dihedral_fast.h>
 
 
 #include <cando/chem/chemPackage.h>
@@ -57,27 +58,6 @@ SMART(FFItor);
 
 inline	string	XmlTag_Dihedral() { return "Dihedral"; };
 inline	string	XmlTag_EnergyDihedral() { return "EnergyDihedral"; };
-
-struct TermDihedral
-{
-	REAL		sinPhase;	//!< Sine of phase, this must match Mathematica code!
-	REAL		cosPhase;	//!< Cosine of phase, this must match Mathematica code!
-	REAL		V;	//!< Dihedral force constant, this must match Mathematica code!
-        REAL          	DN;	//!< Dihedral multiplicity as double, this must match Mathematica code!
-        INT		IN;	//!< Dihedral multiplicity as int, this must match Mathematica code!
-	INT		I1;	//!< i*3 index into coordinate array, this must match Mathematica code!
-	INT		I2;	//!< i*3 index into coordinate array, this must match Mathematica code!
-	INT		I3;	//!< i*3 index into coordinate array, this must match Mathematica code!
-	INT		I4;	//!< i*3 index into coordinate array, this must match Mathematica code!
-  TermDihedral(REAL sinp, REAL cosp, REAL v, REAL dn, INT in, INT i1, INT i2, INT i3, INT i4)
-    : sinPhase(sinp),
-      cosPhase(cosp),
-      V(v),
-      DN(dn),
-      IN(in),
-      I1(i1), I2(i2), I3(i3), I4(i4) {};
-  TermDihedral() {};
-};
 
 /*! Dihedral energy term
  */
@@ -98,7 +78,7 @@ public:
         Atom_sp      _Atom3;
         Atom_sp      _Atom4;
 	REAL		_PhaseRad;
-	TermDihedral	term;
+	dihedral_term	term;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
@@ -123,8 +103,8 @@ public:
      _Atom3(a3),
      _Atom4(a4),
      _PhaseRad(phase),
-     term(sinp,cosp,v,dn,in,i1,i2,i3,i4)
-  {};
+     term(v,dn,sinp,cosp,i1,i2,i3,i4)
+  { (void)in; };
   EnergyDihedral() {};
 public:
 	adapt::QDomNode_sp	asXml();
@@ -215,14 +195,14 @@ public:
     if (index >= this->numberOfTerms() ) {
       SIMPLE_ERROR("Illegal term index {} must be less than {}", index, this->_Terms.size() );
     }
-    return Values(core::DoubleFloat_O::create(this->_Terms[index].term.cosPhase), // Note switched order
-                  core::DoubleFloat_O::create(this->_Terms[index].term.sinPhase),
-                  core::DoubleFloat_O::create(this->_Terms[index].term.V),
-                  core::DoubleFloat_O::create(this->_Terms[index].term.DN),
-                  core::make_fixnum(this->_Terms[index].term.I1),
-                  core::make_fixnum(this->_Terms[index].term.I2),
-                  core::make_fixnum(this->_Terms[index].term.I3),
-                  core::make_fixnum(this->_Terms[index].term.I4)
+    return Values(core::DoubleFloat_O::create(this->_Terms[index].term.cosphase), // Note switched order
+                  core::DoubleFloat_O::create(this->_Terms[index].term.sinphase),
+                  core::DoubleFloat_O::create(this->_Terms[index].term.v),
+                  core::DoubleFloat_O::create(this->_Terms[index].term.n),
+                  core::make_fixnum(this->_Terms[index].term.i3x1),
+                  core::make_fixnum(this->_Terms[index].term.i3x2),
+                  core::make_fixnum(this->_Terms[index].term.i3x3),
+                  core::make_fixnum(this->_Terms[index].term.i3x4)
                   );
   }
 

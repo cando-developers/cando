@@ -663,4 +663,9 @@ void EnergyRigidBodyNonbond_O::fields(core::Record_sp node)
   node->Base::fields(node);
 }
 
+size_t EnergyRigidBodyNonbond_O::runTestCalls(core::T_sp stream, chem::NVector_sp pos) const {
+  core::print(fmt::format("implement {}:{}:{}\n", __FILE__, __LINE__, __FUNCTION__ ));
+  return 0;
+}
+
 };

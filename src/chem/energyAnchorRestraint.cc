@@ -38,20 +38,18 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/nVector.h>
 #include <cando/chem/ffBaseDb.h>
 #include <cando/chem/ffTypesDb.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/wrappers.h>
 
 namespace chem {
 
-#define ANCHOR_RESTRAINT_APPLY_ATOM_MASK(I1) \
-if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         ) \
-    ) goto SKIP_term;
-#define ANCHOR_RESTRAINT_APPLY_DEBUG_INTERACTIONS(I1) \
+#include "cando/chem/energyKernels/anchor_restraint.c"
+
+#define ANCHOR_RESTRAINT_DEBUG_INTERACTIONS(I1) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,EnergyAnchorRestraint_O::static_classSymbol(), \
                           mk_double_float(Energy), \
-                          core::make_fixnum(I1); \
+                          core::make_fixnum(I1)); \
     }
 
 EnergyAnchorRestraint::EnergyAnchorRestraint()
@@ -65,7 +63,7 @@ EnergyAnchorRestraint::~EnergyAnchorRestraint()
 
 core::List_sp EnergyAnchorRestraint::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,ka),core::clasp_make_double_float(this->term.ka)),
-                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.i3x1)),
                                   core::Cons_O::create(INTERN_(kw,xa), core::clasp_make_double_float(this->term.xa)),
                                   core::Cons_O::create(INTERN_(kw,ya), core::clasp_make_double_float(this->term.ya)),
                                   core::Cons_O::create(INTERN_(kw,za), core::clasp_make_double_float(this->term.za)),
@@ -86,7 +84,7 @@ void	EnergyAnchorRestraint::archive(core::ArchiveP node)
   node->attribute("xa",this->term.xa);
   node->attribute("ya",this->term.ya);
   node->attribute("za",this->term.za);
-  node->attribute("I1",this->term.I1);
+  node->attribute("I1",this->term.i3x1);
   node->attribute("a1",this->_Atom1);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
   node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
@@ -105,7 +103,7 @@ adapt::QDomNode_sp	EnergyAnchorRestraint::asXml()
 
   node = adapt::QDomNode_O::create(env,"EnergyAnchorRestraint");
   node->addAttributeString("atomName",this->_Atom1->getName());
-  node->addAttributeInt("I1",this->term.I1);
+  node->addAttributeInt("I1",this->term.i3x1);
   node->addAttributeDoubleScientific("ka",this->term.ka);
   node->addAttributeDoubleScientific("xa",this->term.xa);
   node->addAttributeDoubleScientific("ya",this->term.ya);
@@ -125,49 +123,29 @@ void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
                                                           AtomTable_sp at )
 {
   this->term.ka = xml->getAttributeDouble("ka");
-  this->term.I1 = xml->getAttributeInt("I1");
+  this->term.i3x1 = xml->getAttributeInt("I1");
   this->term.xa = xml->getAttributeDouble("xa");
   this->term.ya = xml->getAttributeDouble("ya");
   this->term.za = xml->getAttributeDouble("za");
-  this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
+  this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.i3x1)->atom();
 }
 #endif
 
 
-//
-// Copy this from implementAmberFunction.cc
-//
 double	_evaluateEnergyOnly_AnchorRestraint(
                                                     num_real x1, num_real y1, num_real z1,
                                                     num_real xa, num_real ya, num_real za,
                                                     num_real ka, core::T_sp activeAtomMask )
 {
-  IMPLEMENT_ME();
-  #if 0
-  MAYBE_SETUP_ACTIVE_ATOM_MASK();
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
-
-  return Energy;
-  #endif
+  // activeAtomMask is part of the public API for symmetry with the
+  // gradient/hessian forms; it has no effect on a single-term energy
+  // calculation, so suppress unused-parameter warnings.
+  (void)activeAtomMask;
+  double localPos[3] = { (double)x1, (double)y1, (double)z1 };
+  double energy_accum = 0.0;
+  Anchor_Restraint<NoHessian> anchor;
+  anchor_term lt((double)ka, (double)xa, (double)ya, (double)za, 0);
+  return anchor.energy(lt, localPos, &energy_accum);
 }
 
 std::string EnergyAnchorRestraint_O::descriptionOfContents() const {
@@ -177,6 +155,12 @@ std::string EnergyAnchorRestraint_O::descriptionOfContents() const {
   return ss.str();
 }
 
+
+CL_LISPIFY_NAME(make-energy-anchor-restraint);
+CL_DEF_CLASS_METHOD
+EnergyAnchorRestraint_sp EnergyAnchorRestraint_O::make(EnergyFunction_sp energyFunction) {
+  return ensureComponent<EnergyAnchorRestraint_O>(energyFunction);
+}
 
 void	EnergyAnchorRestraint_O::addTerm(const EnergyAnchorRestraint& r)
 {
@@ -205,53 +189,44 @@ void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
                                                             core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  core::T_sp debugInteractions = nil<core::T_O>();
-  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
-  bool		calcForce = true;
-  bool		calcDiagonalHessian = true;
-  bool		calcOffDiagonalHessian = true;
-
-//
-// Copy from implementAmberFunction::setupHessianPreconditioner
-//
-// -----------------------
-
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x=cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of) {x=nvPosition->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    m->addToElement((i1)+(o1),(i2)+(o2),v);\
-  }
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    m->addToElement((i1)+(o1),(i2)+(o2),v);\
-  }
-#define ANCHOR_RESTRAINT_CALC_FORCE
-#define ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-    ;
-    num_real x1,y1,z1,xa,ya,za,ka;
-    int	I1;
-    for ( gctools::Vec0<EnergyAnchorRestraint>::iterator cri=this->_Terms.begin();
-          cri!=this->_Terms.end(); cri++ ) {
-#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
+  Anchor_Restraint<double*> anchor;
+  constexpr size_t PS = Anchor_Restraint<double*>::PositionSize;  // 3
+  double localPos[PS];
+  double localForce[PS];
+  double localHess[PS*PS];
+  double localDvec[PS];
+  double localHdvec[PS];
+  for ( gctools::Vec0<EnergyAnchorRestraint>::iterator cri=this->_Terms.begin();
+        cri!=this->_Terms.end(); cri++ ) {
+    int I1 = cri->term.i3x1;
+    if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(I1/3)) continue;
+    localPos[0] = (*nvPosition)[I1+0];
+    localPos[1] = (*nvPosition)[I1+1];
+    localPos[2] = (*nvPosition)[I1+2];
+    // The single anchored atom's 3 coords occupy a contiguous 3-vector at offset 0.
+    // Zero local accumulator buffers (kernel uses += into them).
+    for (size_t k = 0; k < PS; ++k) {
+      localForce[k] = 0.0; localDvec[k] = 0.0; localHdvec[k] = 0.0;
+    }
+    for (size_t k = 0; k < PS*PS; ++k) localHess[k] = 0.0;
+    double energyAccum = 0.0;
+    anchor_term lt(cri->term.ka, cri->term.xa, cri->term.ya, cri->term.za, 0);
+    anchor.hessian(lt, localPos, &energyAccum, localForce, localHess,
+                   localDvec, localHdvec);
+    // Scatter the 3x3 local Hessian into the global sparse matrix.
+    // Local offsets 0..2 map to global I1+0..I1+2.
+    // The kernel writes BOTH (r,c) and (c,r) for off-diagonal entries
+    // (energyComponent.h:269-270), so accumulate only the lower triangle here.
+    int globalIdx[PS] = { I1+0, I1+1, I1+2 };
+    for (size_t r = 0; r < PS; ++r) {
+      for (size_t c = 0; c <= r; ++c) {
+        double v = localHess[r*PS + c];
+        if (v != 0.0) {
+          m->addToElement(globalIdx[r], globalIdx[c], v);
+        }
+      }
     }
   }
-
 }
 
 
@@ -276,77 +251,36 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
   this->_Evaluations++;
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-//
-// Copy from implementAmberFunction::evaluateAll
-//
-// -----------------------
+  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
 
-#define ANCHOR_RESTRAINT_CALC_FORCE
-#define ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) totalEnergy += (e);
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE 		ForceAcc
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-    num_real x1,y1,z1,xa,ya,za,ka;
-    int	I1, i;
-    gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
-    for ( i=0,cri=this->_Terms.begin();
-          cri!=this->_Terms.end(); cri++,i++ ) {
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfAnchorRestraintTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfAnchorRestraintTermsToCalculate ) {
-          break;
-        }
-      }
-#endif
-
-			    /* Obtain all the parameters necessary to calculate */
-			    /* the amber and forces */
-#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
-
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-      cri->_calcForce = calcForce;
-      cri->_calcDiagonalHessian = calcDiagonalHessian;
-      cri ->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-			// Now write all of the calculated values into the eval structure
-#undef EVAL_SET
-#define	EVAL_SET(var,val)	{ cri->eval.var=val;};
-#include <cando/chem/energy_functions/_AnchorRestraint_debugEvalSet.cc>
-#endif //]
-
-			    /* Add the forces */
-
-      if ( calcForce ) {
-#if !USE_EXPLICIT_DECLARES
-        num_real fx1 = 0.0;
-        num_real fy1 = 0.0;
-        num_real fz1 = 0.0;
-#endif
-//		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
-//		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
-//		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-      }
+  double Energy = 0.0;  // referenced by ANCHOR_RESTRAINT_DEBUG_INTERACTIONS macro
+  double* position = &(*pos)[0];
+  double* rforce = NULL;
+  double* rdvec = NULL;
+  double* rhdvec = NULL;
+  Anchor_Restraint<NoHessian> anchor;
+  gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
+  if (evalType==energyEval) {
+    for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
+      if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(cri->term.i3x1/3)) continue;
+      Energy = anchor.energy(cri->term, position, &totalEnergy);
+      ANCHOR_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1);
+    }
+  } else if (evalType==gradientEval) {
+    rforce = &(*force)[0];
+    for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
+      if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(cri->term.i3x1/3)) continue;
+      Energy = anchor.gradient(cri->term, position, &totalEnergy, rforce);
+      ANCHOR_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1);
+    }
+  } else { // hessianEval
+    rforce = &(*force)[0];
+    rdvec = &(*dvec)[0];
+    rhdvec = &(*hdvec)[0];
+    for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
+      if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(cri->term.i3x1/3)) continue;
+      Energy = anchor.hessian(cri->term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
+      ANCHOR_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1);
     }
   }
   maybeSetEnergy( energyComponents, EnergyAnchorRestraint_O::static_classSymbol(), totalEnergy );
@@ -362,74 +296,74 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 void	EnergyAnchorRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp 	pos,
                                                                                         core::T_sp activeAtomMask )
 {
-#if 0
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  core::T_sp debugInteractions = nil<core::T_O>();
-  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
-  int	fails = 0;
-  bool	calcForce = true;
-  bool	calcDiagonalHessian = true;
-  bool	calcOffDiagonalHessian = true;
-
-//
-// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-//
-//------------------
-
-#define ANCHOR_RESTRAINT_CALC_FORCE
-#define ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-
-  {
-   
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-    num_real x1,y1,z1,xa,ya,za,ka;
-    int	I1, i;
-    gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
-    for ( i=0,cri=this->_Terms.begin();
-          cri!=this->_Terms.end(); cri++,i++ ) {
-			  /* Obtain all the parameters necessary to calculate */
-			  /* the amber and forces */
-#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
-      LOG("fx1 = {}" , fx1 );
-      LOG("fy1 = {}" , fy1 );
-      LOG("fz1 = {}" , fz1 );
-      int index = i;
-#if !USE_EXPLICIT_DECLARES
-      num_real fx1 = 0.0;
-      num_real fy1 = 0.0;
-      num_real fz1 = 0.0;
-      num_real dhx1x1 = 0.0;
-      num_real ohx1y1 = 0.0;
-      num_real dhy1y1 = 0.0;
-      num_real ohy1z1 = 0.0;
-      num_real dhz1z1 = 0.0;
-      num_real ohx1z1 = 0.0;
-#endif
-#include <cando/chem/energy_functions/_AnchorRestraint_debugFiniteDifference.cc>
-
+  constexpr size_t PS = Anchor_Restraint<double*>::PositionSize;  // 3
+  const double energyTol = 1.0e-7;
+  const double forceTol  = 1.0e-5;
+  const double hessTol   = 1.0e-3;
+  double localPos[PS];
+  double force_a[PS], force_fd[PS];
+  double hess_a[PS*PS], hess_fd[PS*PS];
+  double dvec_a[PS], dvec_fd[PS];
+  double hdvec_a[PS], hdvec_fd[PS];
+  Anchor_Restraint<double*> anchor;
+  int fails = 0;
+  int idx = 0;
+  for ( auto cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++, idx++ ) {
+    int I1 = cri->term.i3x1;
+    if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(I1/3)) continue;
+    localPos[0] = pos->getElement(I1+0);
+    localPos[1] = pos->getElement(I1+1);
+    localPos[2] = pos->getElement(I1+2);
+    for (size_t k = 0; k < PS; ++k) {
+      force_a[k]=0.0; force_fd[k]=0.0;
+      dvec_a[k]=0.0;  dvec_fd[k]=0.0;
+      hdvec_a[k]=0.0; hdvec_fd[k]=0.0;
+    }
+    for (size_t k = 0; k < PS*PS; ++k) {
+      hess_a[k]=0.0; hess_fd[k]=0.0;
+    }
+    double e_a = 0.0, e_fd = 0.0;
+    anchor_term lt(cri->term.ka, cri->term.xa, cri->term.ya, cri->term.za, 0);
+    anchor.hessian(   lt, localPos, &e_a,  force_a,  hess_a,  dvec_a,  hdvec_a);
+    anchor.hessian_fd(lt, localPos, &e_fd, force_fd, hess_fd, dvec_fd, hdvec_fd);
+    bool termFails = false;
+    if (std::fabs(e_a - e_fd) > energyTol) {
+      termFails = true;
+      core::lisp_write(fmt::format(
+        "  energy mismatch term {}: ana={} fd={} diff={}\n",
+        idx, e_a, e_fd, e_a - e_fd));
+    }
+    for (size_t k = 0; k < PS; ++k) {
+      if (std::fabs(force_a[k] - force_fd[k]) > forceTol) {
+        termFails = true;
+        core::lisp_write(fmt::format(
+          "  force mismatch term {} dof {}: ana={} fd={} diff={}\n",
+          idx, k, force_a[k], force_fd[k], force_a[k] - force_fd[k]));
+      }
+    }
+    for (size_t r = 0; r < PS; ++r) {
+      for (size_t c = 0; c < PS; ++c) {
+        double a = hess_a[r*PS+c];
+        double f = hess_fd[r*PS+c];
+        if (std::fabs(a - f) > hessTol) {
+          termFails = true;
+          core::lisp_write(fmt::format(
+            "  hessian mismatch term {} ({},{}): ana={} fd={} diff={}\n",
+            idx, r, c, a, f, a - f));
+        }
+      }
+    }
+    if (termFails) {
+      fails++;
+      core::lisp_write(fmt::format(
+        "  -> term {} I1={} ka={} xa={} ya={} za={}\n",
+        idx, I1, cri->term.ka, cri->term.xa, cri->term.ya, cri->term.za));
     }
   }
-  #endif
-  IMPLEMENT_ME(); // must return some sort of integer value
+  core::lisp_write(fmt::format(
+    "compareAnalyticalAndNumericalForceAndHessianTermByTerm: {} fails out of {} terms\n",
+    fails, idx));
 }
 
 
@@ -468,6 +402,70 @@ core::T_sp test_allocate_EnergyAnchorRestraint_O() {
   auto thing = gctools::GCObjectAppropriatePoolAllocator<EnergyAnchorRestraint_O,gctools::normal>::allocate_in_appropriate_pool_kind<gctools::RuntimeStage>(the_header,9999);
 #endif
   return thing;
+}
+
+size_t EnergyAnchorRestraint_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) const {
+#define POS_SIZE 3
+  double energy_new;
+  double energy_ground;
+  double position[POS_SIZE];
+  double force_new[POS_SIZE];
+  double force_ground[POS_SIZE];
+  double hessian_new[POS_SIZE*POS_SIZE];
+  double hessian_ground[POS_SIZE*POS_SIZE];
+  double dvec_new[POS_SIZE];
+  double dvec_ground[POS_SIZE];
+  double hdvec_new[POS_SIZE];
+  double hdvec_ground[POS_SIZE];
+  size_t idx=0;
+  size_t errs = 0;
+  Anchor_Restraint<double*> anchor;
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    position[0] = coords[si->term.i3x1];
+    position[1] = coords[si->term.i3x1+1];
+    position[2] = coords[si->term.i3x1+2];
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    anchor_term lt(si->term.ka, si->term.xa, si->term.ya, si->term.za, 0);
+    anchor.gradient(    lt, position, &energy_new,    force_new );
+    anchor.gradient_fd( lt, position, &energy_ground, force_ground );
+    if (!test_match( stream, "anchor_gradient", POS_SIZE,
+                     force_new, force_ground,
+                     0, 0,
+                     0, 0 )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH anchor_gradient #{} ka = {}\n", idx, si->term.ka ), stream );
+    }
+    energy_new = 0.0;
+    energy_ground = 0.0;
+    test_zero( POS_SIZE,
+               force_new, force_ground,
+               hessian_new, hessian_ground,
+               dvec_new, dvec_ground,
+               hdvec_new, hdvec_ground );
+    anchor_term lt2(si->term.ka, si->term.xa, si->term.ya, si->term.za, 0);
+    anchor.hessian(    lt2, position, &energy_new,    force_new,    hessian_new,    dvec_new,    hdvec_new );
+    anchor.hessian_fd( lt2, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+    if (!test_match( stream, "anchor_hessian", POS_SIZE,
+                     force_new, force_ground,
+                     hessian_new, hessian_ground,
+                     hdvec_new, hdvec_ground )) {
+      errs++;
+      test_position( stream, POS_SIZE, position );
+      core::print(fmt::format("MISMATCH anchor_hessian #{} ka = {}\n", idx, si->term.ka ), stream );
+    }
+    idx++;
+  }
+  core::print(fmt::format("anchor errors = {}\n", errs), stream);
+  return errs;
+#undef POS_SIZE
 }
 
 };

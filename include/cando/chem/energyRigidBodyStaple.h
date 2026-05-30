@@ -162,6 +162,7 @@ public:
   EnergyRigidBodyStaple_O( const EnergyRigidBodyStaple_O& ss ); //!< Copy constructor
 
   DEFAULT_CTOR_DTOR(EnergyRigidBodyStaple_O);
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 };
 
 };

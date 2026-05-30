@@ -189,6 +189,7 @@ public:
   EnergySketchStretch_O( const EnergySketchStretch_O& ss ); //!< Copy constructor
 
   DEFAULT_CTOR_DTOR(EnergySketchStretch_O);
+  virtual size_t runTestCalls(core::T_sp stream, chem::NVector_sp pos) const;
 };
 
 };

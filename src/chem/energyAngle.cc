@@ -96,9 +96,6 @@ if (hasActiveAtomMask \
     ) goto SKIP_term;
 
 
-//
-// Copy this from implementAmberFunction.cc
-//
 double	_evaluateEnergyOnly_Angle(
     int I1, int I2, int I3, core::T_sp activeAtomMask,
 		num_real x1, num_real y1, num_real z1,
@@ -106,47 +103,17 @@ double	_evaluateEnergyOnly_Angle(
 		num_real x3, num_real y3, num_real z3,
 		num_real t0, num_real kt )
 {
-  MAYBE_SETUP_ACTIVE_ATOM_MASK();
-
-#undef	ANGLE_SET_PARAMETER
-#define	ANGLE_SET_PARAMETER(x)	{}
-#undef	ANGLE_SET_POSITION
-#define	ANGLE_SET_POSITION(x,ii,of)	{}
-#undef	ANGLE_ENERGY_ACCUMULATE
-#define	ANGLE_ENERGY_ACCUMULATE(e) {}
-#undef	ANGLE_FORCE_ACCUMULATE
-#define	ANGLE_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANGLE_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-#if !USE_EXPLICIT_DECLARES
-	num_real fx1;
-	num_real fy1;
-	num_real fz1;
-	num_real fx2;
-	num_real fy2;
-	num_real fz2;
-	num_real fx3;
-	num_real fy3;
-	num_real fz3;
-#endif
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    bool IllegalAngle = false;
-#define ANGLE_DEBUG_INTERACTIONS(I1,I2,I3)
-#include <cando/chem/energy_functions/_Angle_termCode.cc>
-#undef ANGLE_DEBUG_INTERACTIONS
-
-    return Energy;
+  // I1, I2, I3, and activeAtomMask are part of the public API for symmetry with
+  // the gradient/hessian forms; they have no effect on a single-term energy
+  // calculation, so suppress unused-parameter warnings.
+  (void)I1; (void)I2; (void)I3; (void)activeAtomMask;
+  double localPos[9] = { (double)x1, (double)y1, (double)z1,
+                         (double)x2, (double)y2, (double)z2,
+                         (double)x3, (double)y3, (double)z3 };
+  double energy_accum = 0.0;
+  Angle<NoHessian> angle;
+  angle_term lt((double)kt, (double)t0, 0, 3, 6);
+  return angle.energy(lt, localPos, &energy_accum);
 }
 
 std::string EnergyAngle_O::descriptionOfContents() const {
@@ -160,76 +127,84 @@ CL_LAMBDA((energy-angle chem:energy-angle) pos &optional activeAtomMask);
 CL_DEFMETHOD void	EnergyAngle_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos, core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  int	fails = 0;
-  bool	calcForce = true;
-  bool	calcDiagonalHessian = true;
-  bool	calcOffDiagonalHessian = true;
-
-
-//
-// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-//
-//
-#define ANGLE_CALC_FORCE
-#define ANGLE_CALC_DIAGONAL_HESSIAN
-#define ANGLE_CALC_OFF_DIAGONAL_HESSIAN
-#undef ANGLE_SET_PARAMETER
-#define ANGLE_SET_PARAMETER(x)	{x=ai->term.x;}
-#undef ANGLE_SET_POSITION
-#define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(e) {}
-#undef ANGLE_FORCE_ACCUMULATE
-#define ANGLE_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
-    int I1, I2, I3,i;
-    gctools::Vec0<EnergyAngle>::iterator ai;
-    for ( i=0,ai=this->_Terms.begin();
-          ai!=this->_Terms.end(); ai++,i++ ) {
-      LOG("ai->term.kt = {}" , ai->term.kt  );
-      LOG("ai->term.t0 = {}" , ai->term.t0  );
-      LOG("angleScale = {}" , angleScale  );
-      LOG("ai->x1 = {}" , pos->element(ai->term.I1 ) );
-      LOG("ai->y1 = {}" , pos->element(ai->term.I1+1 ) );
-      LOG("ai->z1 = {}" , pos->element(ai->term.I1+2 ) );
-      LOG("ai->x2 = {}" , pos->element(ai->term.I2 ) );
-      LOG("ai->y2 = {}" , pos->element(ai->term.I2+1 ) );
-      LOG("ai->z2 = {}" , pos->element(ai->term.I2+2 ) );
-      LOG("ai->x3 = {}" , pos->element(ai->term.I3 ) );
-      LOG("ai->y3 = {}" , pos->element(ai->term.I3+1 ) );
-      LOG("ai->z3 = {}" , pos->element(ai->term.I3+2 ) );
-      bool IllegalAngle = false;
-#define ANGLE_DEBUG_INTERACTIONS(I1,I2,I3)
-#include	<cando/chem/energy_functions/_Angle_termCode.cc>
-#undef ANGLE_DEBUG_INTERACTIONS
-      LOG("Energy = {}" , Energy  );
-      LOG("x1 = {}" , x1  );
-      LOG("y1 = {}" , y1  );
-      LOG("z1 = {}" , z1  );
-      LOG("x2 = {}" , x2  );
-      LOG("y2 = {}" , y2  );
-      LOG("z2 = {}" , z2  );
-      LOG("x3 = {}" , x3  );
-      LOG("y3 = {}" , y3  );
-      LOG("z3 = {}" , z3  );
-      int index = i;
-#include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
+  constexpr size_t PS = Angle<double*>::PositionSize;  // 9
+  const double energyTol = 1.0e-7;
+  const double forceTol  = 1.0e-5;
+  const double hessTol   = 1.0e-3;
+  double localPos[PS];
+  double force_a[PS], force_fd[PS];
+  double hess_a[PS*PS], hess_fd[PS*PS];
+  double dvec_a[PS], dvec_fd[PS];
+  double hdvec_a[PS], hdvec_fd[PS];
+  Angle<double*> angle;
+  int fails = 0;
+  int idx = 0;
+  for ( auto ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++, idx++ ) {
+    int I1 = ai->term.i3x1;
+    int I2 = ai->term.i3x2;
+    int I3 = ai->term.i3x3;
+    if (hasActiveAtomMask &&
+        !(bitvectorActiveAtomMask->testBit(I1/3) &&
+          bitvectorActiveAtomMask->testBit(I2/3) &&
+          bitvectorActiveAtomMask->testBit(I3/3))) continue;
+    localPos[0] = pos->getElement(I1+0);
+    localPos[1] = pos->getElement(I1+1);
+    localPos[2] = pos->getElement(I1+2);
+    localPos[3] = pos->getElement(I2+0);
+    localPos[4] = pos->getElement(I2+1);
+    localPos[5] = pos->getElement(I2+2);
+    localPos[6] = pos->getElement(I3+0);
+    localPos[7] = pos->getElement(I3+1);
+    localPos[8] = pos->getElement(I3+2);
+    for (size_t k = 0; k < PS; ++k) {
+      force_a[k]=0.0; force_fd[k]=0.0;
+      dvec_a[k]=0.0;  dvec_fd[k]=0.0;
+      hdvec_a[k]=0.0; hdvec_fd[k]=0.0;
     }
-    core::lisp_write(fmt::format("There are {} fails out of {} terms\n", fails, i ));
+    for (size_t k = 0; k < PS*PS; ++k) {
+      hess_a[k]=0.0; hess_fd[k]=0.0;
+    }
+    double e_a = 0.0, e_fd = 0.0;
+    angle_term lt(ai->term.kt, ai->term.t0, 0, 3, 6);
+    angle.hessian(   lt, localPos, &e_a,  force_a,  hess_a,  dvec_a,  hdvec_a);
+    angle.hessian_fd(lt, localPos, &e_fd, force_fd, hess_fd, dvec_fd, hdvec_fd);
+    bool termFails = false;
+    if (std::fabs(e_a - e_fd) > energyTol) {
+      termFails = true;
+      core::lisp_write(fmt::format(
+        "  energy mismatch term {}: ana={} fd={} diff={}\n",
+        idx, e_a, e_fd, e_a - e_fd));
+    }
+    for (size_t k = 0; k < PS; ++k) {
+      if (std::fabs(force_a[k] - force_fd[k]) > forceTol) {
+        termFails = true;
+        core::lisp_write(fmt::format(
+          "  force mismatch term {} dof {}: ana={} fd={} diff={}\n",
+          idx, k, force_a[k], force_fd[k], force_a[k] - force_fd[k]));
+      }
+    }
+    for (size_t r = 0; r < PS; ++r) {
+      for (size_t c = 0; c < PS; ++c) {
+        double a = hess_a[r*PS+c];
+        double f = hess_fd[r*PS+c];
+        if (std::fabs(a - f) > hessTol) {
+          termFails = true;
+          core::lisp_write(fmt::format(
+            "  hessian mismatch term {} ({},{}): ana={} fd={} diff={}\n",
+            idx, r, c, a, f, a - f));
+        }
+      }
+    }
+    if (termFails) {
+      fails++;
+      core::lisp_write(fmt::format(
+        "  -> term {} I1={} I2={} I3={} kt={} t0={}\n",
+        idx, I1, I2, I3, ai->term.kt, ai->term.t0));
+    }
   }
+  core::lisp_write(fmt::format(
+    "compareAnalyticalAndNumericalForceAndHessianTermByTerm: {} fails out of {} terms\n",
+    fails, idx));
 }
 
 
@@ -246,9 +221,9 @@ CL_DEFMETHOD void	EnergyAngle_O::compareAnalyticalAndNumericalForceAndHessianTer
 core::List_sp EnergyAngle::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kt),core::clasp_make_double_float(this->term.kt)),
                                   core::Cons_O::create(INTERN_(kw,t0_deg),core::clasp_make_double_float(this->term.t0/0.0174533)),
-                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
-                                  core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
-                                  core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.I3)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.i3x1)),
+                                  core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.i3x2)),
+                                  core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.i3x3)),
                                   core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
                                   core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2),
                                   core::Cons_O::create(INTERN_(kw,atom3), this->_Atom3));
@@ -257,35 +232,6 @@ core::List_sp EnergyAngle::encode() const {
 void EnergyAngle::decode(core::List_sp alist) {
   SIMPLE_ERROR("Implement decode of EnergyAngle");
 }
-
-#ifdef XML_ARCHIVE
-    void	EnergyAngle::archive(core::ArchiveP node)
-{
-//    node->attribute("_Term",this->_Term);
-//    node->attribute("_Type1",this->_Type1);
-//    node->attribute("_Type2",this->_Type2);
-//    node->attribute("_Type3",this->_Type3);
-//    node->attribute("_K3",this->_K3);
-//    node->attribute("_K4",this->_K4);
-//    node->attribute("_Ub_k",this->_Ub_k);
-//    node->attribute("_Ub_len",this->_Ub_len);
-    node->attribute("kt",this->term.kt);
-    node->attribute("t0",this->term.t0);
-    node->attribute("I1",this->term.I1);
-    node->attribute("I2",this->term.I2);
-    node->attribute("I3",this->term.I3);
-    node->attribute("a1",this->_Atom1);
-    node->attribute("a2",this->_Atom2);
-    node->attribute("a3",this->_Atom3);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-    node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
-    node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
-    node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/energy_functions/_Angle_debugEvalSerialize.cc>
-#endif //]
-}
-#endif
-
 
 
 
@@ -305,9 +251,9 @@ void EnergyAngle::defineFrom( FFAngle_sp term , EnergyAtom *ea1, EnergyAtom *ea2
     this->_Atom1 = ea1->atom();
     this->_Atom2 = ea2->atom();
     this->_Atom3 = ea3->atom();
-    this->term.I1 = ea1->coordinateIndexTimes3();
-    this->term.I2 = ea2->coordinateIndexTimes3();
-    this->term.I3 = ea3->coordinateIndexTimes3();
+    this->term.i3x1 = ea1->coordinateIndexTimes3();
+    this->term.i3x2 = ea2->coordinateIndexTimes3();
+    this->term.i3x3 = ea3->coordinateIndexTimes3();
 }
 
 
@@ -345,9 +291,9 @@ num_real	angle;
 //    node->addAttributeString("atom1Type",this->_Type1 );
 //    node->addAttributeString("atom2Type",this->_Type2 );
 //    node->addAttributeString("atom3Type",this->_Type3 );
-    node->addAttributeInt("I1",this->term.I1);
-    node->addAttributeInt("I2",this->term.I2);
-    node->addAttributeInt("I3",this->term.I3);
+    node->addAttributeInt("I1",this->term.i3x1);
+    node->addAttributeInt("I2",this->term.i3x2);
+    node->addAttributeInt("I3",this->term.i3x3);
     node->addAttributeDoubleScientific("kt",this->term.kt);
     node->addAttributeDoubleScientific("t0",this->term.t0);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
@@ -372,9 +318,9 @@ num_real	angle;
     this->_Atom3 = atomTable->findEnergyAtomWithCoordinateIndex(i3)->atom();
     this->term.kt = xml->getAttributeDouble("kt");
     this->term.t0 = xml->getAttributeDouble("t0");
-    this->term.I1 = xml->getAttributeInt("I1");
-    this->term.I2 = xml->getAttributeInt("I2");
-    this->term.I3 = xml->getAttributeInt("I3");
+    this->term.i3x1 = xml->getAttributeInt("I1");
+    this->term.i3x2 = xml->getAttributeInt("I2");
+    this->term.i3x3 = xml->getAttributeInt("I3");
 }
 #endif
 
@@ -419,58 +365,58 @@ void	EnergyAngle_O::setupHessianPreconditioner(
                                         core::T_sp activeAtomMask )
 {
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  core::T_sp debugInteractions = nil<core::T_O>();
-  MAYBE_SETUP_DEBUG_INTERACTIONS(false);
-bool		calcForce = true;
-bool		calcDiagonalHessian = true;
-bool		calcOffDiagonalHessian = true;
-
-//
-// Copy from implementAmberFunction::setupHessianPreconditioner
-
-#undef	ANGLE_SET_PARAMETER
-#define	ANGLE_SET_PARAMETER(x)	{x=ai->term.x;}
-#undef	ANGLE_SET_POSITION
-#define	ANGLE_SET_POSITION(x,ii,of)	{x=nvPosition->element(ii+of);}
-#undef	ANGLE_ENERGY_ACCUMULATE
-#define	ANGLE_ENERGY_ACCUMULATE(e) {}
-#undef	ANGLE_FORCE_ACCUMULATE
-#define	ANGLE_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    m->addToElement((i1)+(o1),(i2)+(o2),v);\
-}
-#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-    m->addToElement((i1)+(o1),(i2)+(o2),v);\
-}
-#define ANGLE_CALC_FORCE
-#define ANGLE_CALC_DIAGONAL_HESSIAN
-#define ANGLE_CALC_OFF_DIAGONAL_HESSIAN
-
- {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include	<cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0;
-	int I1, I2, I3;
-	for ( gctools::Vec0<EnergyAngle>::iterator ai=this->_Terms.begin();
-		    ai!=this->_Terms.end(); ai++ )
-	{
-          bool IllegalAngle = false;
-#include	<cando/chem/energy_functions/_Angle_termCode.cc>
-	}
+  Angle<double*> angle;
+  constexpr size_t PS = Angle<double*>::PositionSize;  // 9
+  double localPos[PS];
+  double localForce[PS];
+  double localHess[PS*PS];
+  double localDvec[PS];
+  double localHdvec[PS];
+  for ( gctools::Vec0<EnergyAngle>::iterator ai=this->_Terms.begin();
+        ai!=this->_Terms.end(); ai++ ) {
+    {
+      int I1 = ai->term.i3x1;
+      int I2 = ai->term.i3x2;
+      int I3 = ai->term.i3x3;
+      ANGLE_APPLY_ATOM_MASK(I1, I2, I3);
+      localPos[0] = (*nvPosition)[I1+0];
+      localPos[1] = (*nvPosition)[I1+1];
+      localPos[2] = (*nvPosition)[I1+2];
+      localPos[3] = (*nvPosition)[I2+0];
+      localPos[4] = (*nvPosition)[I2+1];
+      localPos[5] = (*nvPosition)[I2+2];
+      localPos[6] = (*nvPosition)[I3+0];
+      localPos[7] = (*nvPosition)[I3+1];
+      localPos[8] = (*nvPosition)[I3+2];
+      // Pack the three atoms' 3 coords into a contiguous 9-vector at offsets 0, 3 and 6.
+      // Zero local accumulator buffers (kernel uses += into them).
+      for (size_t k = 0; k < PS; ++k) {
+        localForce[k] = 0.0; localDvec[k] = 0.0; localHdvec[k] = 0.0;
+      }
+      for (size_t k = 0; k < PS*PS; ++k) localHess[k] = 0.0;
+      double energyAccum = 0.0;
+      angle_term lt(ai->term.kt, ai->term.t0, 0, 3, 6);
+      angle.hessian(lt, localPos, &energyAccum, localForce, localHess,
+                    localDvec, localHdvec);
+      // Scatter the 9x9 local Hessian into the global sparse matrix.
+      // Local offsets 0..2 map to global I1+0..I1+2, 3..5 to I2+0..I2+2 and 6..8 to I3+0..I3+2.
+      // The kernel writes BOTH (r,c) and (c,r) for off-diagonal entries
+      // (energyComponent.h:269-270), so accumulate only the lower triangle here.
+      int globalIdx[PS] = { I1+0, I1+1, I1+2, I2+0, I2+1, I2+2, I3+0, I3+1, I3+2 };
+      for (size_t r = 0; r < PS; ++r) {
+        for (size_t c = 0; c <= r; ++c) {
+          double v = localHess[r*PS + c];
+          if (v != 0.0) {
+            m->addToElement(globalIdx[r], globalIdx[c], v);
+          }
+        }
+      }
     }
-
-
+    SKIP_term:;
+  }
 }
 
 
-#if 1
 double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                             chem::NVector_sp 	pos,
                                             core::T_sp energyScale,
@@ -538,18 +484,10 @@ if (hasActiveAtomMask \
 
     if (evalType==energyEval) {
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
-        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
+        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.i3x1,ai->term.i3x2,ai->term.i3x3);
         try {
-          Energy = angle.energy(
-              ai->term.kt,ai->term.t0,
-              ai->term.I1,ai->term.I2,ai->term.I3,
-              position,
-              &termEnergy,
-              NULL,
-              NoHessian(),
-              NULL,
-              NULL);
-          ANGLE_DEBUG_INTERACTIONS(ai->term.I1, ai->term.I2, ai->term.I3);
+          Energy = angle.energy(ai->term, position, &termEnergy);
+          ANGLE_DEBUG_INTERACTIONS(ai->term.i3x1, ai->term.i3x2, ai->term.i3x3);
         } catch (LinearAngleError(err)) {
           badAngle = ai;
           goto ERROR_LINEAR_ANGLE;
@@ -558,17 +496,10 @@ if (hasActiveAtomMask \
     } else if (evalType==gradientEval) {
       rforce = &(*force)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
-        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
+        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.i3x1,ai->term.i3x2,ai->term.i3x3);
         try {
-          Energy = angle.gradient(ai->term.kt,ai->term.t0,
-                                  ai->term.I1,ai->term.I2,ai->term.I3,
-                                  position,
-                                  &termEnergy,
-                                  rforce,
-                                  NoHessian(),
-                                  NULL,
-                                  NULL);
-          ANGLE_DEBUG_INTERACTIONS(ai->term.I1, ai->term.I2, ai->term.I3);
+          Energy = angle.gradient(ai->term, position, &termEnergy, rforce);
+          ANGLE_DEBUG_INTERACTIONS(ai->term.i3x1, ai->term.i3x2, ai->term.i3x3);
         } catch (LinearAngleError(err)) {
           badAngle = ai;
           goto ERROR_LINEAR_ANGLE;
@@ -579,19 +510,10 @@ if (hasActiveAtomMask \
       rdvec = &(*dvec)[0];
       rhdvec = &(*hdvec)[0];
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {
-        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.I1,ai->term.I2,ai->term.I3);
+        KERNEL_ANGLE_APPLY_ATOM_MASK(ai->term.i3x1,ai->term.i3x2,ai->term.i3x3);
         try {
-          Energy = angle.hessian(
-              //old_stretch_energy(
-              ai->term.kt,ai->term.t0,
-              ai->term.I1,ai->term.I2,ai->term.I3,
-              position,
-              &termEnergy,
-              rforce,
-              NoHessian(),
-              rdvec,
-              rhdvec);
-          ANGLE_DEBUG_INTERACTIONS(ai->term.I1, ai->term.I2, ai->term.I3);
+          Energy = angle.hessian(ai->term, position, &termEnergy, rforce, NoHessian(), rdvec, rhdvec);
+          ANGLE_DEBUG_INTERACTIONS(ai->term.i3x1, ai->term.i3x2, ai->term.i3x3);
         } catch (LinearAngleError(err)) {
           badAngle = ai;
           goto ERROR_LINEAR_ANGLE;
@@ -604,97 +526,8 @@ if (hasActiveAtomMask \
  ERROR_LINEAR_ANGLE:
   ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(badAngle->_Atom1,badAngle->_Atom2,badAngle->_Atom3),
                                                              kw::_sym_coordinates,pos,
-                                                             kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(badAngle->term.I1), core::make_fixnum(badAngle->term.I2), core::make_fixnum(badAngle->term.I3))));
+                                                             kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(badAngle->term.i3x1), core::make_fixnum(badAngle->term.i3x2), core::make_fixnum(badAngle->term.i3x3))));
 }
-
-#else
-double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
-                                            chem::NVector_sp 	pos,
-                                            core::T_sp energyScale,
-                                            core::T_sp energyComponents,
-                                            bool 		calcForce,
-                                            gc::Nilable<chem::NVector_sp> 	force,
-                                            bool		calcDiagonalHessian,
-                                            bool		calcOffDiagonalHessian,
-                                            gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                            gc::Nilable<chem::NVector_sp> hdvec,
-                                              gc::Nilable<chem::NVector_sp> dvec,
-                                              core::T_sp activeAtomMask,
-                                              core::T_sp debugInteractions )
-{
-  MAYBE_SETUP_ACTIVE_ATOM_MASK();
-  MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
-  num_real termEnergy = 0.0;
-  this->_Evaluations++;
-
-  auto evalType = determineEnergyComponentEvalType(force,hdvec,dvec);
-
-
-//
-// Copy from implementAmberFunction::evaluateAll
-//
-#define ANGLE_CALC_FORCE
-#define ANGLE_CALC_DIAGONAL_HESSIAN
-#define ANGLE_CALC_OFF_DIAGONAL_HESSIAN
-#undef ANGLE_SET_PARAMETER
-#define ANGLE_SET_PARAMETER(x)	{x=ai->term.x;}
-#undef ANGLE_SET_POSITION
-#define ANGLE_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(e) { termEnergy += (e); }
-#undef	ANGLE_FORCE_ACCUMULATE
-#undef	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANGLE_FORCE_ACCUMULATE 		ForceAcc
-#define	ANGLE_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-
-
-
-  {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
-    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-    num_real x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
-//	double DotAbCb;
-    int I1, I2, I3,i;
-    DOUBLE* position = &(*pos)[0];
-    DOUBLE* rforce = NULL;
-    DOUBLE* rhessian = NULL; // &(*hessian)[0];
-    DOUBLE* rdvec = NULL;
-    DOUBLE* rhdvec = NULL;
-    gctools::Vec0<EnergyAngle>::iterator ai;
-    for ( i=0,ai=this->_Terms.begin();
-          ai!=this->_Terms.end(); ai++,i++ ) {
-      bool IllegalAngle = false;
-#include	<cando/chem/energy_functions/_Angle_termCode.cc>
-                
-      if ( IllegalAngle ) {
-        ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(ai->_Atom1,ai->_Atom2,ai->_Atom3),
-                                                                   kw::_sym_coordinates,pos,
-                                                                   kw::_sym_indexes,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3))));
-      }
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-      ai->_calcForce = calcForce;
-      ai->_calcDiagonalHessian = calcDiagonalHessian;
-      ai->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-#undef	EVAL_SET
-#define	EVAL_SET(var,val)	{ ai->eval.var=val;};
-#include	<cando/chem/energy_functions/_Angle_debugEvalSet.cc>
-#endif //]
-    }
-  }
-  maybeSetEnergy( energyComponents, EnergyAngle_O::static_classSymbol(), termEnergy );
-  return termEnergy;
-}
-#endif
-
-
-
 
 
 
@@ -740,9 +573,9 @@ CL_DEFMETHOD core::List_sp EnergyAngle_O::extract_vectors_as_alist() const {
     const EnergyAngle& entry = this->_Terms[i];
     (*kt_vec)[i] = entry.term.kt;
     (*t0_vec)[i] = entry.term.t0;
-    (*i1_vec)[i] = entry.term.I1;
-    (*i2_vec)[i] = entry.term.I2;
-    (*i3_vec)[i] = entry.term.I3;
+    (*i1_vec)[i] = entry.term.i3x1;
+    (*i2_vec)[i] = entry.term.i3x2;
+    (*i3_vec)[i] = entry.term.i3x3;
     (*atom1_vec)[i] = entry._Atom1;
     (*atom2_vec)[i] = entry._Atom2;
     (*atom3_vec)[i] = entry._Atom3;
@@ -773,9 +606,9 @@ CL_DEFMETHOD void EnergyAngle_O::fill_from_vectors_in_alist(core::List_sp vector
        EnergyAngle& entry = this->_Terms[i];
        entry.term.kt = (*kt_vec)[i];
        entry.term.t0 = (*t0_vec)[i];
-       entry.term.I1 = (*i1_vec)[i];
-       entry.term.I2 = (*i2_vec)[i];
-       entry.term.I3 = (*i3_vec)[i];
+       entry.term.i3x1 = (*i1_vec)[i];
+       entry.term.i3x2 = (*i2_vec)[i];
+       entry.term.i3x3 = (*i3_vec)[i];
        entry._Atom1 = gc::As_unsafe<Atom_sp>((*atom1_vec)[i]);
        entry._Atom2 = gc::As_unsafe<Atom_sp>((*atom2_vec)[i]);
        entry._Atom3 = gc::As_unsafe<Atom_sp>((*atom3_vec)[i]);
@@ -847,7 +680,7 @@ void EnergyAngle_O::emitTestCalls(core::T_sp stream, chem::NVector_sp ) const
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
     core::print(fmt::format("test_angle( errs, {}, {}, {}, {}, {}, position_size, position, force_new, force_old, hessian_new, hessian_old, dvec_new, dvec_old, hdvec_new, hdvec_old );\n",
-                            si->term.kt, si->term.t0, si->term.I1, si->term.I2, si->term.I3 ),stream);
+                            si->term.kt, si->term.t0, si->term.i3x1, si->term.i3x2, si->term.i3x3 ),stream);
   }
 #endif
 }
@@ -871,15 +704,15 @@ size_t EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
   Angle<double*> angle;
   for ( auto si=this->_Terms.begin();
         si!=this->_Terms.end(); si++ ) {
-    position[0] = coords[si->term.I1];
-    position[1] = coords[si->term.I1+1];
-    position[2] = coords[si->term.I1+2];
-    position[3] = coords[si->term.I2];
-    position[4] = coords[si->term.I2+1];
-    position[5] = coords[si->term.I2+2];
-    position[6] = coords[si->term.I3];
-    position[7] = coords[si->term.I3+1];
-    position[8] = coords[si->term.I3+2];
+    position[0] = coords[si->term.i3x1];
+    position[1] = coords[si->term.i3x1+1];
+    position[2] = coords[si->term.i3x1+2];
+    position[3] = coords[si->term.i3x2];
+    position[4] = coords[si->term.i3x2+1];
+    position[5] = coords[si->term.i3x2+2];
+    position[6] = coords[si->term.i3x3];
+    position[7] = coords[si->term.i3x3+1];
+    position[8] = coords[si->term.i3x3+2];
     energy_new = 0.0;
     energy_ground = 0.0;
     test_zero( POS_SIZE,
@@ -888,8 +721,9 @@ size_t EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
     try {
-      angle.gradient( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-      angle.gradient_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+      angle_term lt(si->term.kt, si->term.t0, 0, 3, 6);
+      angle.gradient(    lt, position, &energy_new,    force_new );
+      angle.gradient_fd( lt, position, &energy_ground, force_ground );
     } catch (LinearAngleError err) {
       test_position( stream, POS_SIZE, position );
       core::print(fmt::format("In angle_gradient hit linear-angle-error index = {}\n", idx), stream);
@@ -913,8 +747,9 @@ size_t EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
                dvec_new, dvec_ground,
                hdvec_new, hdvec_ground );
     try {
-      angle.hessian( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_new, force_new, hessian_new, dvec_new, hdvec_new );
-      angle.hessian_fd( si->term.kt, si->term.t0, 0, 3, 6, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+      angle_term lt2(si->term.kt, si->term.t0, 0, 3, 6);
+      angle.hessian(    lt2, position, &energy_new,    force_new,    hessian_new,    dvec_new,    hdvec_new );
+      angle.hessian_fd( lt2, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
     } catch (LinearAngleError err) {
       test_position( stream, POS_SIZE, position );
       core::print(fmt::format("In angle_hessian hit linear-angle-error index = {}\n", idx), stream);
@@ -935,56 +770,5 @@ size_t EnergyAngle_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords) c
   core::print(fmt::format("angle errors = {}\n", errs), stream);
   return errs;
 }
-
-};
-
-#undef ANGLE_SET_PARAMETER
-#define ANGLE_SET_PARAMETER(x)
-
-#undef ANGLE_APPLY_ATOM_MASK
-#define ANGLE_APPLY_ATOM_MASK(i1,i2,i3)
-
-#undef ANGLE_SET_POSITION
-#define ANGLE_SET_POSITION(xx,ii,oo) xx = position[ii+oo]
-
-#undef ANGLE_ENERGY_ACCUMULATE
-#define ANGLE_ENERGY_ACCUMULATE(Energy) *energy_accumulate += Energy
-
-#define calcForce force  // if force is NULL then dont calculate force
-#define calcDiagonalHessian hdvec  // if  NULL then dont calculate hessian
-#define calcOffDiagonalHessian hdvec  // if NULL then dont calculate hessian
-
-#undef ANGLE_FORCE_ACCUMULATE
-#define ANGLE_FORCE_ACCUMULATE(ii,oo,ff) force[ii+oo] += ff
-
-#undef ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
-#undef ANGLE_DIAGONAL_HESSIAN_ACCUMULATE
-#define ANGLE_DIAGONAL_HESSIAN_ACCUMULATE(ii1, oo1, ii2, oo2, hhh) KernelOffDiagHessAcc(ii1,oo1,ii2,oo2,hhh)
-
-#undef ANGLE_DEBUG_INTERACTIONS
-#define ANGLE_DEBUG_INTERACTIONS(ii,jj,kk)
-
-#define doDebugInteractions false
-
-namespace chem {
-
-void old_angle_energy(DOUBLE kt, DOUBLE t0, SIZE_T I1, SIZE_T I2, SIZE_T I3, DOUBLE* position, DOUBLE* energy_accumulate, DOUBLE* force, DOUBLE* hessian, DOUBLE* dvec, DOUBLE* hdvec)
-{
-  DOUBLE x1;
-  DOUBLE y1;
-  DOUBLE z1;
-  DOUBLE x2;
-  DOUBLE y2;
-  DOUBLE z2;
-  DOUBLE x3;
-  DOUBLE y3;
-  DOUBLE z3;
-  size_t IllegalAngle;
-  
-#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#include <cando/chem/energy_functions/_Angle_termCode.cc>
-};
-
 
 };

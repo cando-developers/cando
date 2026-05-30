@@ -296,6 +296,8 @@ namespace chem {
                             core::T_sp debugInteractions,
                             bool disableRestraints );
 
+    size_t runTestCalls(core::T_sp stream, NVector_sp pos);
+    
     string	summarizeEnergyAsString();
 
 

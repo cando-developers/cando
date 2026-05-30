@@ -10,6 +10,14 @@
 (defstruct element-info element atomic-number atomic-mass)
 (defvar *element-info*)
 
+(defparameter *linear-angle-tolerance-radians* (* 0.5d0 0.0174533d0)
+  "A SMIRNOFF <Angle> whose equilibrium angle (theta0, radians) is within this
+tolerance of pi (180 degrees) is treated as a *linear* bond angle and routed to
+the singularity-free linear-bend term (chem:energy-linear-angle, E = kt*(1+cos
+theta)) instead of the standard harmonic angle term, which is singular at 180
+degrees.  Keep this tight: the linear-bend minimum is fixed at 180 degrees, so a
+non-180-degree parameter must NOT be routed here.")
+
 (defgeneric walk-nodes (node))
 (defmethod walk-nodes (node)
   (when node
@@ -122,6 +130,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
               cached smirks-graph)))
     cached))
 
+(defvar *enable-kekulized-bond-matching* t)
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-smirnoff-force-field combined-smirnoff-force-field) keep-interaction-factory)
   (when keep-interaction-factory
     ;; OpenFF SMIRNOFF SMIRKS are written assuming kekulized bond matching:
@@ -129,7 +138,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
     ;; bonds *between aromatic atoms*. Cando's matcher defaults to the
     ;; Daylight-strict reading (which antechamber depends on); bind the
     ;; override for this parameterization pass only.
-   (let ((chem:*smirks-kekulized-bond-matching* t))
+   (let ((chem:*smirks-kekulized-bond-matching* *enable-kekulized-bond-matching*))
     (let* ((molecule-graph (chem:make-molecule-graph-from-molecule molecule))
            (atom-table (chem:atom-table energy-function))
            (bonds (bonds-hash-table molecule))
@@ -187,7 +196,9 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                              (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-angle))))))
         (when keep-interaction-angle-test
           (when (chem:verbose 2) (format t "Generating angle terms~%"))
-          (let ((angle-energy (chem:make-energy-angle energy-function)))
+          (let ((angle-energy (chem:make-energy-angle energy-function))
+                ;; created lazily below, only if a linear (theta0 ~ 180 deg) angle is matched
+                (linear-angle-energy nil))
             (chem:map-angles nil (lambda (a1 a2 a3)
                                    (setf (gethash (list a1 a2 a3) angles) nil))
                              molecule)
@@ -230,7 +241,19 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                       (k (k term))
                                       (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
                                       (angle (angle term)))
-                                 (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle))))
+                                 ;; SMIRNOFF linear bond angles are ordinary harmonic <Angle>
+                                 ;; records with theta0 = 180 deg (e.g. a16/a21/a26/a34).  The
+                                 ;; standard harmonic angle term is singular at 180 deg, so route
+                                 ;; those to the singularity-free linear-bend term
+                                 ;; E = kt*(1 + cos theta).  Matching the curvature at 180 deg gives
+                                 ;; kt = k (= 2*k-amber); theta0 is implicitly 180 deg and is dropped.
+                                 ;; (Linear angles reuse the energy-angle keep-interaction filter.)
+                                 (if (< (abs (- angle pi)) *linear-angle-tolerance-radians*)
+                                     (progn
+                                       (unless linear-angle-energy
+                                         (setf linear-angle-energy (chem:make-energy-linear-angle energy-function)))
+                                       (chem:add-linear-angle-term linear-angle-energy atom-table a1 a2 a3 k))
+                                     (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle)))))
                            (restart-case
                                (chem:missing-angle-error key molecule)
                              (chem:skip-missing-parameters ()

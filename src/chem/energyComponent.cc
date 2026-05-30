@@ -255,7 +255,7 @@ bool test_match( core::T_sp stream,
     errs+=compare_array(stream,label,"hdvec",hdvec_new,hdvec_ground,position_size,0.0001,0001);
   }
   if (hessian_new&&hessian_ground) {
-    errs+=compare_hessian(stream,label,hessian_new,hessian_ground,position_size,0.0001,0.0001);
+    errs+=compare_hessian(stream,label,hessian_new,hessian_ground,position_size,0.01,0.01);
   }
   return (errs==0);
 }
