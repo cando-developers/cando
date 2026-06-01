@@ -163,6 +163,23 @@
            #:optimize-structure
            #:optimize-structure-with-restarts
            #:configure-minimizer
+           ;; minimizer settings (bundle of step-limits + tolerances)
+           #:min-settings
+           #:make-min-settings
+           #:copy-min-settings
+           #:min-settings-p
+           #:min-settings-max-sd-steps
+           #:min-settings-max-cg-steps
+           #:min-settings-max-tn-steps
+           #:min-settings-sd-tolerance
+           #:min-settings-cg-tolerance
+           #:min-settings-tn-tolerance
+           #:*min-settings/default*
+           #:*min-settings/debug*
+           #:*min-settings/optimize*
+           #:*min-settings/restarts*
+           #:*min-settings/starting*
+           #:*min-settings/fail-fast*
            #:minimize-no-fail
            #:minimize-with-restarts
            #:skip-rest-of-minimization

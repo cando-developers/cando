@@ -221,20 +221,54 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (print "Skipping rest of minimization") )))
 
 
-(defun configure-minimizer (minimizer
-                            &key (max-sd-steps 10000)
-                              (max-cg-steps 10000)
-                              (max-tn-steps 10000)
-                              (sd-tolerance 2000.0)
-                              (cg-tolerance 0.5)
-                              (tn-tolerance 0.0001)
-                              )
-  (chem:set-maximum-number-of-steepest-descent-steps minimizer max-sd-steps)
-  (chem:set-maximum-number-of-conjugate-gradient-steps minimizer max-cg-steps)
-  (chem:set-maximum-number-of-truncated-newton-steps minimizer max-tn-steps)
-  (chem:set-steepest-descent-tolerance minimizer sd-tolerance)
-  (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
-  (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
+;;; ----------------------------------------------------------------------
+;;; Minimizer settings.
+;;;
+;;; All the minimizer step-limits and tolerances are bundled into one
+;;; MIN-SETTINGS object so they no longer have to be threaded as six separate
+;;; keyword arguments through every nested minimization function.  Functions
+;;; take a single :SETTINGS argument (defaulting to a named preset below).  To
+;;; tweak one knob, copy a preset and override the field:
+;;;
+;;;   (configure-minimizer min (copy-min-settings *min-settings/starting*
+;;;                                               :max-sd-steps 50))
+;;;
+;;; Presets are shared, read-only defaults -- COPY before mutating.
+;;; ----------------------------------------------------------------------
+(defstruct min-settings
+  (max-sd-steps 10000)
+  (max-cg-steps 10000)
+  (max-tn-steps 10000)
+  (sd-tolerance 200.0)
+  (cg-tolerance 0.5)
+  (tn-tolerance 0.0001))
+
+(defparameter *min-settings/default* (make-min-settings)
+  "configure-minimizer's historical defaults (10000 steps each).")
+(defparameter *min-settings/debug* (make-min-settings :max-sd-steps 500 :max-cg-steps 500 :max-tn-steps 500
+                                                      :sd-tolerance 200.0)
+  "optimize-structure-debug defaults.")
+(defparameter *min-settings/optimize* (make-min-settings :max-sd-steps 1000 :max-cg-steps 2000 :max-tn-steps 5000
+                                                         :sd-tolerance 200.0)
+  "optimize-structure defaults.")
+(defparameter *min-settings/restarts* (make-min-settings :max-sd-steps 500 :max-cg-steps 500 :max-tn-steps 500
+                                                         :sd-tolerance 100.0)
+  "optimize-structure-with-restarts defaults.")
+(defparameter *min-settings/starting* (make-min-settings :max-sd-steps 500 :max-cg-steps 1000 :max-tn-steps 1000
+                                                         :sd-tolerance 200.0 :cg-tolerance 10.0 :tn-tolerance 0.0001)
+  "starting-geometry-with-restarts defaults.")
+(defparameter *min-settings/fail-fast* (make-min-settings :max-sd-steps 500
+                                                          :sd-tolerance 200.0 :cg-tolerance 1.0 :tn-tolerance 0.001)
+  "Few steepest-descent steps so a really-bad starting geometry fails quickly.")
+
+(defun configure-minimizer (minimizer settings)
+  "Apply the step-limits and tolerances in the MIN-SETTINGS object SETTINGS to MINIMIZER."
+  (chem:set-maximum-number-of-steepest-descent-steps   minimizer (min-settings-max-sd-steps settings))
+  (chem:set-maximum-number-of-conjugate-gradient-steps minimizer (min-settings-max-cg-steps settings))
+  (chem:set-maximum-number-of-truncated-newton-steps   minimizer (min-settings-max-tn-steps settings))
+  (chem:set-steepest-descent-tolerance   minimizer (min-settings-sd-tolerance settings))
+  (chem:set-conjugate-gradient-tolerance minimizer (min-settings-cg-tolerance settings))
+  (chem:set-truncated-newton-tolerance   minimizer (min-settings-tn-tolerance settings)))
 
 (defun validate-energy-components (components valid-components)
   (when (consp components)
@@ -247,12 +281,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                           (enable-components nil)
                                           (use-excluded-atoms nil)
                                           (electrostatic-scale 1.0 electrostatic-scale-p)
-                                          (sd-tolerance 500.0)
-                                          (cg-tolerance 0.5)
-                                          (tn-tolerance 0.0001)
-                                          (max-sd-steps 500)
-                                          (max-cg-steps 500)
-                                          (max-tn-steps 500)
+                                          (settings *min-settings/debug*)
                                           verbose)
   "Minimize energy of a structure with lots of control.
 : matter - The matter to optimize.
@@ -286,13 +315,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                    (chem:enable comp))))
     (validate-energy-components disable-components valid-components)
     (validate-energy-components enable-components valid-components)
-    (configure-minimizer min
-                         :sd-tolerance sd-tolerance
-                         :cg-tolerance cg-tolerance
-                         :tn-tolerance tn-tolerance
-                         :max-sd-steps max-sd-steps
-                         :max-cg-steps max-cg-steps
-                         :max-tn-steps max-tn-steps)
+    (configure-minimizer min settings)
     (when verbose (chem:enable-print-intermediate-results min 1 1))
     (minimize-no-fail min :verbose verbose)
     (finish-output t)
@@ -304,12 +327,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                     (use-excluded-atoms nil)
                                     (turn-off-nonbond t)
                                     (electrostatic-scale 1.0 electrostatic-scale-p)
-                                    (sd-tolerance 500.0)
-                                    (cg-tolerance 0.5)
-                                    (tn-tolerance 0.0001)
-                                    (max-sd-steps 1000)
-                                    (max-cg-steps 2000)
-                                    (max-tn-steps 5000)
+                                    (settings *min-settings/optimize*)
                                     verbose)
   "Minimize energy of a structure with lots of control.
 : matter - The matter to optimize.
@@ -343,13 +361,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                    (chem:enable comp))))
     (validate-energy-components disable-components valid-components)
     (validate-energy-components enable-components valid-components)
-    (configure-minimizer min
-                         :sd-tolerance sd-tolerance
-                         :cg-tolerance cg-tolerance
-                         :tn-tolerance tn-tolerance
-                         :max-sd-steps max-sd-steps
-                         :max-cg-steps max-cg-steps
-                         :max-tn-steps max-tn-steps)
+    (configure-minimizer min settings)
     (when verbose (chem:enable-print-intermediate-results min 1 1))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
@@ -365,12 +377,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                                   (turn-off-nonbond t)
                                                   verbose
                                                   energy-function
-                                                  (max-sd-steps 10000)
-                                                  (max-cg-steps 10000)
-                                                  (max-tn-steps 10000)
-                                                  (sd-tolerance 100.0)
-                                                  (cg-tolerance 0.5)
-                                                  (tn-tolerance 0.0001)
+                                                  (settings *min-settings/restarts*)
                                                   )
   (let* ((energy-function (if energy-function
                               energy-function
@@ -378,14 +385,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
                                                          :assign-types t
                                                          :keep-interaction-factory keep-interaction-factory)))
          (min (chem:make-minimizer energy-function)))
-    (configure-minimizer min
-                         :sd-tolerance sd-tolerance
-                         :cg-tolerance cg-tolerance
-                         :tn-tolerance tn-tolerance
-                         :max-sd-steps max-sd-steps
-                         :max-cg-steps max-cg-steps
-                         :max-tn-steps max-tn-steps
-                         )
+    (configure-minimizer min settings)
     (when verbose (chem:enable-print-intermediate-results min 1 1))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
@@ -657,12 +657,7 @@ Disabling happens before enabling - so you can disable all with T and then selec
     rapid-starting-geometry))
 
 (defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose energy-function
-                                              (max-sd-steps 10000)
-                                              (max-cg-steps 10000)
-                                              (max-tn-steps 10000)
-                                              (sd-tolerance 10.0)
-                                              (cg-tolerance 1.0)
-                                              (tn-tolerance 0.001)
+                                              (settings *min-settings/starting*)
                                               )
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
   (let ((atom-types (make-hash-table)))
@@ -697,21 +692,9 @@ Disabling happens before enabling - so you can disable all with T and then selec
       (multiple-value-bind (matter energy-function total-energy)
           (if energy-function
               (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function
-                                                    :max-sd-steps max-sd-steps
-                                                    :max-cg-steps max-cg-steps
-                                                    :max-tn-steps max-tn-steps
-                                                    :sd-tolerance sd-tolerance
-                                                    :cg-tolerance cg-tolerance
-                                                    :tn-tolerance tn-tolerance
-                                                    )
+                                                    :settings settings)
               (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose
-                                                    :max-sd-steps max-sd-steps
-                                                    :max-cg-steps max-cg-steps
-                                                    :max-tn-steps max-tn-steps
-                                                    :sd-tolerance sd-tolerance
-                                                    :cg-tolerance cg-tolerance
-                                                    :tn-tolerance tn-tolerance
-                                                    ))
+                                                    :settings settings))
         (unless energy-function
           (error "starting-geometry-with-restarts energy-function is nil"))
         (values dynamics energy-function total-energy)

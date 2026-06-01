@@ -25,12 +25,12 @@
 ;; -^-
 (in-package :energy)
 
-(defparameter *max-sd-steps* 100000)
-(defparameter *sd-tolerance* 100000.0)
-(defparameter *max-cg-steps* 100000)
-(defparameter *cg-tolerance* 100.0)
-(defparameter *max-tn-steps* 10000)
-(defparameter *tn-tolerance* 0.00000001)
+(defparameter *max-sd-steps* 5000)
+(defparameter *max-cg-steps* 5000)
+(defparameter *max-tn-steps* 500)
+(defparameter *sd-tolerance* 100.0)
+(defparameter *cg-tolerance* 0.5)
+(defparameter *tn-tolerance* 0.00001)
 
 (defparameter *ff* nil)
 (export '*ff*)
@@ -70,12 +70,12 @@
       (let ((restraint-term (chem:get-anchor-restraint-component energy-function)))
         (chem:disable restraint-term)))
     (cando:configure-minimizer minimizer
-                               :max-sd-steps max-sd-steps
-                               :max-cg-steps max-cg-steps
-                               :max-tn-steps max-tn-steps
-                               :sd-tolerance sd-tolerance
-                               :cg-tolerance cg-tolerance
-                               :tn-tolerance tn-tolerance)
+                               (cando:make-min-settings :max-sd-steps max-sd-steps
+                                                        :max-cg-steps max-cg-steps
+                                                        :max-tn-steps max-tn-steps
+                                                        :sd-tolerance sd-tolerance
+                                                        :cg-tolerance cg-tolerance
+                                                        :tn-tolerance tn-tolerance))
     (if print-intermediate-results
         (chem:enable-print-intermediate-results minimizer report-every-n-steps 1)
         (chem:disable-print-intermediate-results minimizer))
@@ -160,12 +160,12 @@
       (let ((restraint-term (chem:get-anchor-restraint-component energy-function)))
         (chem:disable restraint-term)))
     (cando:configure-minimizer minimizer
-                               :max-sd-steps max-sd-steps
-                               :max-cg-steps max-cg-steps
-                               :max-tn-steps max-tn-steps
-                               :sd-tolerance sd-tolerance
-                               :cg-tolerance cg-tolerance
-                               :tn-tolerance tn-tolerance)
+                               (cando:make-min-settings :max-sd-steps max-sd-steps
+                                                        :max-cg-steps max-cg-steps
+                                                        :max-tn-steps max-tn-steps
+                                                        :sd-tolerance sd-tolerance
+                                                        :cg-tolerance cg-tolerance
+                                                        :tn-tolerance tn-tolerance))
     (chem:enable-print-intermediate-results minimizer report-every-n-steps 1)
     (format t "Minimizing with nonbond terms disabled~%")
     (chem:set-option energy-function 'chem:nonbond-term nil)
