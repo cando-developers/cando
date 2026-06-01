@@ -117,4 +117,53 @@ CL_DEFUN core::T_mv chem__dihedral_kernel_near_linear(double colinear_eps) {
   return Values(core::clasp_make_double_float(maxfa), core::clasp_make_double_float(maxfb));
 }
 
+// --------------------------------------------------------------------------
+// Benchmark: evaluate one dihedral kernel op REPS times over every term of
+// COMP, and return an accumulated "sink" value.  Time it from Lisp (the sink
+// return prevents the optimizer from eliminating the loop).  OP selects the
+// op (0=energy, 1=gradient, 2=hessian H.dvec product, the matrix-free TN path).
+// A tiny rep-dependent jitter on pos[0] defeats loop-invariant code motion so
+// the work is actually repeated REPS times.
+// --------------------------------------------------------------------------
+template <typename Functor, typename Term>
+static double bench_dihedral_loop(EnergyDihedral_sp comp, NVector_sp coords, size_t reps, int op) {
+  Functor k;
+  double pos[12], force[12], dvec[12], hdvec[12];
+  double sink = 0.0;
+  for (int i = 0; i < 12; ++i)
+    dvec[i] = 0.1 * (i + 1); // arbitrary nonzero direction for the H.dvec product
+  for (size_t r = 0; r < reps; ++r) {
+    for (auto di = comp->_Terms.begin(); di != comp->_Terms.end(); ++di) {
+      size_t base[4] = {(size_t)di->term.i3x1, (size_t)di->term.i3x2, (size_t)di->term.i3x3, (size_t)di->term.i3x4};
+      for (int a = 0; a < 4; ++a)
+        for (int c = 0; c < 3; ++c)
+          pos[a * 3 + c] = coords[base[a] + c];
+      pos[0] += (double)r * 1.0e-12; // defeat loop-invariant hoisting (negligible drift)
+      for (int i = 0; i < 12; ++i) {
+        force[i] = 0.0;
+        hdvec[i] = 0.0;
+      }
+      Term t(di->term.v, di->term.n, di->term.sinphase, di->term.cosphase, 0, 3, 6, 9);
+      double e = 0.0;
+      switch (op) {
+      case 0: k.energy(t, pos, &e); break;
+      case 1: k.gradient(t, pos, &e, force); break;
+      default: k.hessian(t, pos, &e, force, NoHessian(), dvec, hdvec); break;
+      }
+      sink += e + force[0] + hdvec[0]; // consume outputs so nothing is dead
+    }
+  }
+  return sink;
+}
+
+// (comp coords reps op which) -> sink double.  op: 0=energy 1=gradient 2=hessian.
+// which: 0=dihedral_fast (AD, transcendentals), 1=dihedral_fast_floored (trig-free).
+// Wrap the call in (time ...) in Lisp to measure; ignore the returned sink.
+CL_DEFUN double chem__bench_dihedral(EnergyDihedral_sp comp, NVector_sp coords, size_t reps, int op, int which) {
+  if (which == 0)
+    return bench_dihedral_loop<dih_fast::Dihedral_Fast<NoHessian>, dih_fast::term_type>(comp, coords, reps, op);
+  else
+    return bench_dihedral_loop<dih_floored::Dihedral_Fast_Floored<NoHessian>, dih_floored::term_type>(comp, coords, reps, op);
+}
+
 } // namespace chem

@@ -68,16 +68,14 @@ EnergyDihedral_sp EnergyDihedral_O::make(EnergyFunction_sp energyFunction) {
 namespace chem {
 
 // ---- Dihedral kernel A/B selector ------------------------------------------
+// CANDO_DIHEDRAL_KERNEL is defined in exactly one place -- energyDihedral.h
+// (included above), default 1.  This .cc only READS it; do NOT redefine it here.
 //   0 = dihedral_fast         : AD geometry derivative; uses atan2 + sin + cos
 //   1 = dihedral_fast_floored : manual Blondel-Karplus gradient + trig-free
 //                               multiple-angle recurrence (linear-dihedral safe)
-// Set globally to A/B, e.g.  -DCANDO_DIHEDRAL_KERNEL=1  (see energyDihedral.h:
-// the SAME macro selects the matching kernel header there, so dihedral_term is
-// defined exactly once per translation unit).  The default (0) is also defined
-// in energyDihedral.h, which is included above.
-#ifndef CANDO_DIHEDRAL_KERNEL
-#define CANDO_DIHEDRAL_KERNEL 0
-#endif
+// The header uses the SAME macro to include the matching kernel struct header,
+// so dihedral_term is defined exactly once per translation unit.  Override
+// globally with e.g. -DCANDO_DIHEDRAL_KERNEL=0 to A/B against the AD baseline.
 
 #if CANDO_DIHEDRAL_KERNEL == 1
 #include "cando/chem/energyKernels/dihedral_fast_floored.c"
@@ -166,6 +164,13 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
     dihedral_term lt2(di->term.v, di->term.n, di->term.sinphase, di->term.cosphase, 0, 3, 6, 9);
     dihedral.hessian(    lt2, position, &energy_new,    force_new,    hessian_new,    dvec_new,    hdvec_new );
     dihedral.hessian_fd( lt2, position, &energy_ground, force_ground, hessian_ground, dvec_ground, hdvec_ground );
+#if CANDO_DIHEDRAL_KERNEL == 0
+    // Only the AD kernel (dihedral_fast) has an exact analytic Hessian, so the
+    // FD self-check is meaningful.  dihedral_fast_floored uses a Gauss-Newton
+    // (outer-product-only) Hessian that intentionally differs from the exact FD
+    // Hessian by the dropped dE/dphi*d2phi/dq^2 term, so this comparison is
+    // skipped for it (energy & gradient above are exact and still checked; the
+    // GN Hessian is covered by the TN convergence and preconditioner tests).
     if (!test_match( stream, "dihedral_hessian", POS_SIZE,
                      force_new, force_ground,
                      hessian_new, hessian_ground,
@@ -175,6 +180,7 @@ size_t EnergyDihedral_O::runTestCalls(core::T_sp stream, chem::NVector_sp coords
       core::print(fmt::format("MISMATCH dihedral_hessian #{} V = {}  DN = {}  sinPhase = {}  cosPhase = {}\n",
                               idx, di->term.v, di->term.n, di->term.sinphase, di->term.cosphase ), stream );
     }
+#endif
     idx++;
   }
   core::print(fmt::format("dihedral errors = {}\n", errs), stream);
@@ -365,6 +371,11 @@ CL_DEFMETHOD void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessian
           idx, k, force_a[k], force_fd[k], force_a[k] - force_fd[k]));
       }
     }
+#if CANDO_DIHEDRAL_KERNEL == 0
+    // Exact analytic Hessian (AD kernel) -- compare to FD.  The floored kernel's
+    // Gauss-Newton Hessian intentionally differs from the exact FD Hessian, so
+    // this term-by-term Hessian check is skipped for it (energy & force above
+    // are exact; the GN Hessian is validated by the TN/preconditioner tests).
     for (size_t r = 0; r < PS; ++r) {
       for (size_t c = 0; c < PS; ++c) {
         double a = hess_a[r*PS+c];
@@ -377,6 +388,9 @@ CL_DEFMETHOD void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessian
         }
       }
     }
+#else
+    (void) hess_a; (void) hess_fd; (void) hessTol;
+#endif
     if (termFails) {
       fails++;
       core::lisp_write(fmt::format(

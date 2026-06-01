@@ -521,6 +521,14 @@
 ;;; index bugs in the per-component setupHessianPreconditioner code, independent
 ;;; of the kernels themselves.
 ;;;
+;;; NOTE: the default dihedral kernel (dihedral_fast_floored) supplies a
+;;; Gauss-Newton (outer-product-only) Hessian -- it drops the
+;;; dE/dphi * d2phi/dq^2 curvature term -- so dihedral-coupled entries do NOT
+;;; match the exact FD Hessian (they differ by a few percent).  That is
+;;; intentional (a preconditioner only needs to approximate H; truncated Newton
+;;; still converges -- see the TN test below).  We therefore relax the tolerance
+;;; on dihedral entries and keep it tight on the exact (stretch/angle/...) ones.
+;;;
 ;;; H[i][j] = d(grad_i)/dq_j = -(F_i(q + h e_j) - F_i(q - h e_j)) / (2h),
 ;;; where F = -grad is the force returned by evaluate-energy-force.
 ;;; ======================================================================
@@ -577,23 +585,46 @@
         (dotimes (i n)
           (setf (aref hfd i j)
                 (- (/ (- (%nv-ref fp i) (%nv-ref fm i)) (* 2d0 h)))))))
-    ;; assemble the preconditioner and compare it to the FD Hessian
+    ;; assemble the full bonded preconditioner
     (let ((m (chem:make-sparse-large-square-matrix n 'chem:symmetric-diagonal-lower))
           (mismatches 0)
-          (max-err 0d0))
+          (max-err 0d0)
+          (dih-pairs (make-hash-table :test 'equal)))
       (chem:setup-hessian-preconditioner ef pos m nil)
+      ;; The default dihedral kernel (dihedral_fast_floored) contributes a
+      ;; Gauss-Newton (outer-product-only) Hessian, so its (row,col) entries
+      ;; intentionally differ from the exact FD Hessian by the dropped
+      ;; dE/dphi * d2phi/dq^2 curvature term.  Identify those entries by
+      ;; assembling a dihedral-only preconditioner, and relax the tolerance there
+      ;; (keep it tight everywhere else, where the Hessian is exact).
+      (let ((dih (chem:get-dihedral-component ef)))
+        (loop for comp in (chem:all-components ef)
+              unless (eq comp dih) do (chem:disable comp))
+        (let ((mdih (chem:make-sparse-large-square-matrix n 'chem:symmetric-diagonal-lower)))
+          (chem:setup-hessian-preconditioner ef pos mdih nil)
+          (chem:walk-matrix
+           mdih
+           (lambda (col row val)
+             (when (> (abs val) 1d-12)
+               (setf (gethash (cons row col) dih-pairs) t))))))
       (chem:walk-matrix
        m
        (lambda (col row val)                        ; val = stored preconditioner entry (col,row)
-         (let* ((ref  (aref hfd row col))
-                (err  (abs (- val ref)))
-                (tol  (+ 1d-2 (* 1d-3 (abs ref)))))
+         (let* ((ref       (aref hfd row col))
+                (err       (abs (- val ref)))
+                (dihedralp (gethash (cons row col) dih-pairs))
+                ;; exact entries: tight (0.1% + 1e-2).  Gauss-Newton dihedral
+                ;; entries: relaxed to 10% (still catches sign/scatter bugs, which
+                ;; are O(100%), while tolerating the dropped curvature term ~few%).
+                (tol       (if dihedralp
+                               (+ 1d-2 (* 1d-1 (abs ref)))
+                               (+ 1d-2 (* 1d-3 (abs ref))))))
            (when (> err max-err) (setf max-err err))
            (when (> err tol)
              (incf mismatches)
-             (format t "  precon mismatch (~d,~d): precon=~f  fd=~f  err=~f~%"
-                     row col val ref err)))))
-      (format t "preconditioner vs FD Hessian: max-err = ~f  mismatches = ~d~%"
+             (format t "  precon mismatch (~d,~d)~a: precon=~f  fd=~f  err=~f~%"
+                     row col (if dihedralp " [dihedral/GN]" "") val ref err)))))
+      (format t "preconditioner vs FD Hessian: max-err = ~f  mismatches = ~d (dihedral entries are Gauss-Newton)~%"
               max-err mismatches)
       #+tests(test-true preconditioner-matches-fd-hessian (= mismatches 0)))))
 

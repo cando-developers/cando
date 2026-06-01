@@ -1111,7 +1111,12 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
      (=! energy "V*(1.0 + cos_angle)")))
 
   (:derivatives
-   (:mode :manual
+   ;; :hybrid: manual dE/dphi from below, dphi/dq auto-filled by AD (the energy
+   ;; here is AD-differentiable: phi=atan2, sin/cos).  Equivalent to the old pure-AD
+   ;; gradient, but routed through the manual chain-rule path so the gradient
+   ;; injection (which now uses make-gradient-assignments-from-block) produces a
+   ;; nonzero force.  (dihedral_fast_floored stays :manual with its own dphi/dq.)
+   (:mode :hybrid
     :intermediates (phi)
 
     ;; no manual geometry; AD provides dphi/dcoord
@@ -1203,10 +1208,10 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
      (=. v2_sq "v2x*v2x + v2y*v2y + v2z*v2z")
      (=. v2_len "sqrt(v2_sq)")
 
-     ;; torsion via atan2
+     ;; torsion components (proportional to |c1||c2|*sin(phi) and *cos(phi)).
+     ;; We never form phi itself -- no atan2.
      (=. t1 "v2_len*(v1x*c2x + v1y*c2y + v1z*c2z)")
      (=. t2 "c1x*c2x + c1y*c2y + c1z*c2z")
-     (=. phi "atan2(t1, t2)")
 
      ;; --- linear-dihedral-safe geometry derivatives of phi (gradient/Hessian) ---
      ;; ∇1φ = -g1·c1,  ∇4φ = g4·c2,  with floored denominators |c1|^2,|c2|^2.
@@ -1222,12 +1227,12 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
      ;; Amber-style torsion E(phi) = V*(1 + cos(n*phi - phase)).
      ;; cos(n*phi), sin(n*phi) come from the trig-free multiple-angle recurrence
      ;; (the cos_n_phi/sin_n_phi C++ helpers, which normalize t1,t2 -> cos/sin(phi)
-     ;; and rotate n times).  NO sin()/cos() here.  cos(phi)=t2/|.|, sin(phi)=t1/|.|
-     ;; matches phi=atan2(t1,t2) above, so this is consistent with the Blondel-
-     ;; Karplus dphi/dq.  phi itself is unused at runtime (energy uses cos_angle,
-     ;; gradient uses sin_angle + the BK geometry) -- it is retained only as the
-     ;; chain-rule intermediate and the :geometry-check reference, and should be
-     ;; dead-code-eliminated from the generated C (verify: no atan2 in the .c).
+     ;; and rotate n times).  Fully trig-free: NO atan2/sin/cos anywhere.  This is
+     ;; possible because the gradient is the manual chain rule dE/dphi * dphi/dq
+     ;; (see :derivatives) rather than AD over the energy, so phi is never formed.
+     ;; phi remains a purely symbolic intermediate (the key for dE/dphi and dphi/dq);
+     ;; cos(phi)=t2/|.|, sin(phi)=t1/|.| matches atan2(t1,t2), keeping the energy
+     ;; consistent with the Blondel-Karplus dphi/dq.
      (=. cos_nphi "cos_n_phi(n, t1, t2)")
      (=. sin_nphi "sin_n_phi(n, t1, t2)")
      (=. cos_angle "cos_nphi*cosPhase + sin_nphi*sinPhase") ;; cos(nphi - phase)
@@ -1262,7 +1267,10 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
 
     ;; Gauss-Newton Hessian (no d²phi/dq² tensor needed); see header note.
     :hessian-modes ((phi :outer-product-only))
-    :geometry-check :warn)))
+    ;; :none -- phi is never formed (no atan2 in the body), so the check has no
+    ;; AD reference to compare the manual dphi/dq against.  Correctness of dphi/dq
+    ;; is instead covered at runtime by chem:compare-dihedral-kernels.
+    :geometry-check :none)))
 
 (build-kernel-group (kernels "chiral_restraint" (:energy :gradient :hessian))
   ;; Optimization pipeline
