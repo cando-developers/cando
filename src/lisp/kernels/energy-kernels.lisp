@@ -1128,6 +1128,142 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
     :hessian-modes ((phi :full)) ;; :outer-product-only))
     :geometry-check :warn)))
 
+;; ============================================================================
+;; dihedral_fast_floored
+;;
+;; Same Amber torsion energy as dihedral_fast, but with a hand-written,
+;; linear-dihedral-safe geometry derivative dphi/dq.  AD emits dphi/dq with a
+;; 1/(t1^2+t2^2) factor that blows up at near-linear (degenerate) torsions
+;; where the plane normals |c1|,|c2| -> 0.  Here we instead use the Blondel-
+;; Karplus closed form, whose denominators are |c1|^2 and |c2|^2, and floor
+;; those additively (c_sq + VERYSMALL).  Because these are MANUAL derivative
+;; expressions (never re-differentiated), the additive floor needs no fmax
+;; primitive and introduces no AD-of-the-floor term; the perturbation is
+;; ~VERYSMALL/|c|^2 (~1e-8) in the normal regime.
+;;
+;; The Hessian is Gauss-Newton (:outer-product-only): it keeps d2E/dphi^2 *
+;; (dphi/dq)(dphi/dq) and DROPS the dE/dphi * d2phi/dq^2 geometry-curvature
+;; term.  That avoids hand-deriving the (and flooring the worse 1/|c|^4
+;; singularity in the) ~78-entry d2phi/dq^2 tensor.  The dropped term is
+;; proportional to dE/dphi, which vanishes at a torsion minimum, so this is
+;; exact at convergence and well-suited to the truncated-Newton preconditioner.
+;;
+;; Reuses the dihedral_term struct so it is a drop-in for EnergyDihedral (flip
+;; the `using Dihedral_Component = ...` line).  Do NOT include both
+;; dihedral_fast.h and dihedral_fast_floored.h in the same translation unit --
+;; they both define dihedral_term.
+;;
+;; NOTE: Blondel-Karplus is written for the IUPAC phi sign; if the
+;; :geometry-check :warn pass reports a dphi/dq mismatch vs AD, negate every
+;; :intermediate->coord entry (a global sign flip).
+;; ============================================================================
+(build-kernel-group (kernels "dihedral_fast_floored" (:energy :gradient :hessian))
+  (:pipeline *dihedral-pipeline*)
+  (:coordinate-inputs 4)
+
+  (:term-struct
+   (:name "dihedral_term")
+   (:var term)
+   (:inputs ((|double| V)
+             (|double| n)
+             (|double| sinPhase)
+             (|double| cosPhase)
+             ))
+   (:struct ((|double| V)
+             (|double| n)
+             (|double| sinPhase)
+             (|double| cosPhase)
+             ))
+   )
+  (:body
+   (stmt-block :!base
+     ;; bond vectors
+     (=. v1x "x2 - x1")
+     (=. v1y "y2 - y1")
+     (=. v1z "z2 - z1")
+
+     (=. v2x "x3 - x2")
+     (=. v2y "y3 - y2")
+     (=. v2z "z3 - z2")
+
+     (=. v3x "x4 - x3")
+     (=. v3y "y4 - y3")
+     (=. v3z "z4 - z3")
+
+     ;; plane normals
+     (=. c1x "v1y*v2z - v1z*v2y")
+     (=. c1y "v1z*v2x - v1x*v2z")
+     (=. c1z "v1x*v2y - v1y*v2x")
+
+     (=. c2x "v2y*v3z - v2z*v3y")
+     (=. c2y "v2z*v3x - v2x*v3z")
+     (=. c2z "v2x*v3y - v2y*v3x")
+
+     ;; norms and dot products
+     (=. v2_sq "v2x*v2x + v2y*v2y + v2z*v2z")
+     (=. v2_len "sqrt(v2_sq)")
+
+     ;; torsion via atan2
+     (=. t1 "v2_len*(v1x*c2x + v1y*c2y + v1z*c2z)")
+     (=. t2 "c1x*c2x + c1y*c2y + c1z*c2z")
+     (=. phi "atan2(t1, t2)")
+
+     ;; --- linear-dihedral-safe geometry derivatives of phi (gradient/Hessian) ---
+     ;; ∇1φ = -g1·c1,  ∇4φ = g4·c2,  with floored denominators |c1|^2,|c2|^2.
+     (=. c1_sq "c1x*c1x + c1y*c1y + c1z*c1z"               :modes (:gradient :hessian))
+     (=. c2_sq "c2x*c2x + c2y*c2y + c2z*c2z"               :modes (:gradient :hessian))
+     (=. g1    "v2_len / (c1_sq + VERYSMALL)"              :modes (:gradient :hessian)) ;; |b2|/|c1|^2
+     (=. g4    "v2_len / (c2_sq + VERYSMALL)"              :modes (:gradient :hessian)) ;; |b2|/|c2|^2
+     (=. pp    "(v1x*v2x + v1y*v2y + v1z*v2z) / v2_sq"     :modes (:gradient :hessian)) ;; (b1·b2)/|b2|^2
+     (=. qq    "(v3x*v2x + v3y*v2y + v3z*v2z) / v2_sq"     :modes (:gradient :hessian)) ;; (b3·b2)/|b2|^2
+     (=. d1x "-g1*c1x" :modes (:gradient :hessian)) (=. d1y "-g1*c1y" :modes (:gradient :hessian)) (=. d1z "-g1*c1z" :modes (:gradient :hessian))
+     (=. d4x "g4*c2x"  :modes (:gradient :hessian)) (=. d4y "g4*c2y"  :modes (:gradient :hessian)) (=. d4z "g4*c2z"  :modes (:gradient :hessian))
+
+     ;; Amber-style torsion E(phi) = V*(1 + cos(n*phi - phase)).
+     ;; cos(n*phi), sin(n*phi) come from the trig-free multiple-angle recurrence
+     ;; (the cos_n_phi/sin_n_phi C++ helpers, which normalize t1,t2 -> cos/sin(phi)
+     ;; and rotate n times).  NO sin()/cos() here.  cos(phi)=t2/|.|, sin(phi)=t1/|.|
+     ;; matches phi=atan2(t1,t2) above, so this is consistent with the Blondel-
+     ;; Karplus dphi/dq.  phi itself is unused at runtime (energy uses cos_angle,
+     ;; gradient uses sin_angle + the BK geometry) -- it is retained only as the
+     ;; chain-rule intermediate and the :geometry-check reference, and should be
+     ;; dead-code-eliminated from the generated C (verify: no atan2 in the .c).
+     (=. cos_nphi "cos_n_phi(n, t1, t2)")
+     (=. sin_nphi "sin_n_phi(n, t1, t2)")
+     (=. cos_angle "cos_nphi*cosPhase + sin_nphi*sinPhase") ;; cos(nphi - phase)
+     (=. sin_angle "sin_nphi*cosPhase - cos_nphi*sinPhase") ;; sin(nphi - phase)
+     (=! energy "V*(1.0 + cos_angle)")))
+
+  (:derivatives
+   (:mode :manual
+    :intermediates (phi)
+
+    ;; Blondel-Karplus geometry gradient, denominators floored.  d1 = grad_1 phi,
+    ;; d4 = grad_4 phi; the middle atoms come from grad_2 = dphi/db1 - dphi/db2 and
+    ;; grad_3 = dphi/db2 - dphi/db3 (b1=r2-r1, b2=r3-r2, b3=r4-r3), giving:
+    ;;   grad_1 phi = -g1 c1                         (d1)
+    ;;   grad_4 phi =  g4 c2                          (d4)
+    ;;   grad_2 phi = -(1+pp) d1 + qq d4
+    ;;   grad_3 phi =  pp d1 - (1+qq) d4
+    ;; with pp=(b1.b2)/|b2|^2, qq=(b3.b2)/|b2|^2.  (Sum = 0, translation-invariant.)
+    ;; The grad_2 / grad_3 coefficients are finite-difference verified against AD
+    ;; of atan2(t1,t2); the earlier (pp-1)/(qq-1) forms were wrong (force-only bug,
+    ;; invisible in the energy because SMIRNOFF phases have sinPhase=0).
+    :intermediate->coord
+    ((phi ((x1 "d1x")                       (y1 "d1y")                       (z1 "d1z")
+           (x2 "qq*d4x - (1.0+pp)*d1x")     (y2 "qq*d4y - (1.0+pp)*d1y")     (z2 "qq*d4z - (1.0+pp)*d1z")
+           (x3 "pp*d1x - (1.0+qq)*d4x")     (y3 "pp*d1y - (1.0+qq)*d4y")     (z3 "pp*d1z - (1.0+qq)*d4z")
+           (x4 "d4x")                       (y4 "d4y")                       (z4 "d4z"))))
+
+    ;; dE/dphi  = -V*n*sin_angle ;  d²E/dphi² = -V*n*n*cos_angle
+    :energy->intermediate
+    (:gradient ((phi "-V*n*sin_angle"))
+     :hessian  (((phi phi) "-V*n*n*cos_angle")))
+
+    ;; Gauss-Newton Hessian (no d²phi/dq² tensor needed); see header note.
+    :hessian-modes ((phi :outer-product-only))
+    :geometry-check :warn)))
+
 (build-kernel-group (kernels "chiral_restraint" (:energy :gradient :hessian))
   ;; Optimization pipeline
   (:pipeline *pipeline*)

@@ -43,7 +43,18 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
 #include <clasp/core/ql.h>
+// Dihedral kernel A/B selector (see energyDihedral.cc).  Both headers define an
+// identical `dihedral_term`; include only the one matching the selected kernel
+// so the struct is defined exactly once per translation unit.  Override globally
+// with -DCANDO_DIHEDRAL_KERNEL=1 to A/B the trig-free Blondel-Karplus kernel.
+#ifndef CANDO_DIHEDRAL_KERNEL
+#define CANDO_DIHEDRAL_KERNEL 0
+#endif
+#if CANDO_DIHEDRAL_KERNEL == 1
+#include <cando/chem/energyKernels/dihedral_fast_floored.h>
+#else
 #include <cando/chem/energyKernels/dihedral_fast.h>
+#endif
 
 
 #include <cando/chem/chemPackage.h>

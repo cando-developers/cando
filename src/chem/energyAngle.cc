@@ -78,7 +78,11 @@ inline double linear_angle_clamp(double cos_theta) {
   return copysign(1.0-VERYSMALL,cos_theta);
 }
 
-#include "cando/chem/energyKernels/angle.c"
+#if USE_MATHEMATICA_KERNELS
+# include "cando/chem/energyKernels/mm_angle.c"
+#else
+# include "cando/chem/energyKernels/angle.c"
+#endif
 
 };
 

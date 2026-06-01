@@ -58,10 +58,10 @@ EnergyStretch_sp EnergyStretch_O::make(EnergyFunction_sp energyFunction) {
 }
 
 
-#if 1
-# include "cando/chem/energyKernels/stretch.c"
-#else
+#if USE_MATHEMATICA_KERNELS
 # include "cando/chem/energyKernels/mm_stretch.c"
+#else
+# include "cando/chem/energyKernels/stretch.c"
 #endif
 
 }

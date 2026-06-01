@@ -50,6 +50,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/scoringFunction.h>
 #include <cando/chem/residue.h>
 
+
+#define USE_MATHEMATICA_KERNELS 0
+
 #define SIZE_T size_t
 
 		//
@@ -155,6 +158,7 @@ inline string	atomLabel(Atom_sp a)
 
 #ifndef VERYSMALL
 #define VERYSMALL       0.000000000001
+#define verysmall       VERYSMALL
 #endif
 #define VERYSMALLSQUARED       (VERYSMALL*VERYSMALL)
 #define	TENM3		0.001

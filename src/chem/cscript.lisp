@@ -48,6 +48,7 @@
            #~"energyAngle.cc"
            #~"energyLinearAngle.cc"
            #~"energyDihedral.cc"
+           #~"dihedralKernelCompare.cc"
            #~"energyNonbond.cc"
            #~"energyNonbond14.cc"
            #~"energyRosettaNonbond.cc"

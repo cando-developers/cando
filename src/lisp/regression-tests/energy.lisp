@@ -508,3 +508,194 @@
       (format t "linear-angle FD test:~%")
       #+tests(test-true linear-angle-routing-fd
                         (= 0 (chem:run-test-calls linear-comp *standard-output* coords))))))
+
+
+;;; ======================================================================
+;;; Hessian preconditioner for the truncated-Newton minimizer.
+;;;
+;;; chem:setup-hessian-preconditioner assembles each *bonded* component's local
+;;; analytic Hessian into a sparse symmetric matrix (the preconditioner that
+;;; truncated Newton LDLt-factorizes).  The nonbond / nonbond14 components
+;;; contribute nothing to it.  This test verifies the assembled matrix equals a
+;;; finite-difference Hessian of the bonded gradient -- catching scatter / global
+;;; index bugs in the per-component setupHessianPreconditioner code, independent
+;;; of the kernels themselves.
+;;;
+;;; H[i][j] = d(grad_i)/dq_j = -(F_i(q + h e_j) - F_i(q - h e_j)) / (2h),
+;;; where F = -grad is the force returned by evaluate-energy-force.
+;;; ======================================================================
+
+(defun %nv-ref (v idx)
+  "Read scalar element IDX of NVector V."
+  (let* ((base (* 3 (floor idx 3)))
+         (comp (mod idx 3))
+         (vv (geom:vec-array v base)))
+    (ecase comp
+      (0 (geom:get-x vv))
+      (1 (geom:get-y vv))
+      (2 (geom:get-z vv)))))
+
+(defun %nv-set! (v idx val)
+  "Set scalar element IDX of NVector V to VAL."
+  (let* ((base (* 3 (floor idx 3)))
+         (comp (mod idx 3))
+         (vv (geom:vec-array v base))
+         (x (geom:get-x vv)) (y (geom:get-y vv)) (z (geom:get-z vv)))
+    (ecase comp (0 (setf x val)) (1 (setf y val)) (2 (setf z val)))
+    (geom:vec-set (geom:vec x y z) v base)))
+
+(defun %rms-force (ef pos)
+  "RMS of the gradient (force) of energy-function EF at coordinates POS."
+  (let* ((nn (chem:get-nvector-size ef))
+         (f  (chem:make-nvector nn)))
+    (chem:evaluate-energy-force ef pos :calc-force t :force f)
+    (/ (chem:nvector-magnitude f) (sqrt (float nn 1d0)))))
+
+(multiple-value-bind (ef butane) (%fresh-butane-ef)
+  (declare (ignore butane))
+  ;; Restrict the force to the bonded terms that actually populate the
+  ;; preconditioner, so the finite-difference Hessian matches it exactly.
+  (loop for comp in (chem:all-components ef)
+        when (member (class-name (class-of comp))
+                     '(chem:energy-nonbond chem:energy-nonbond14))
+          do (chem:disable comp))
+  (let* ((n (chem:get-nvector-size ef))
+         (pos (chem:make-nvector n))
+         (fp (chem:make-nvector n))
+         (fm (chem:make-nvector n))
+         (h 1d-5)
+         (hfd (make-array (list n n) :initial-element 0d0)))
+    (chem:load-coordinates-into-vector ef pos)
+    ;; central-difference Hessian of the (bonded) gradient
+    (dotimes (j n)
+      (let ((orig (%nv-ref pos j)))
+        (%nv-set! pos j (+ orig h))
+        (chem:evaluate-energy-force ef pos :calc-force t :force fp)
+        (%nv-set! pos j (- orig h))
+        (chem:evaluate-energy-force ef pos :calc-force t :force fm)
+        (%nv-set! pos j orig)
+        (dotimes (i n)
+          (setf (aref hfd i j)
+                (- (/ (- (%nv-ref fp i) (%nv-ref fm i)) (* 2d0 h)))))))
+    ;; assemble the preconditioner and compare it to the FD Hessian
+    (let ((m (chem:make-sparse-large-square-matrix n 'chem:symmetric-diagonal-lower))
+          (mismatches 0)
+          (max-err 0d0))
+      (chem:setup-hessian-preconditioner ef pos m nil)
+      (chem:walk-matrix
+       m
+       (lambda (col row val)                        ; val = stored preconditioner entry (col,row)
+         (let* ((ref  (aref hfd row col))
+                (err  (abs (- val ref)))
+                (tol  (+ 1d-2 (* 1d-3 (abs ref)))))
+           (when (> err max-err) (setf max-err err))
+           (when (> err tol)
+             (incf mismatches)
+             (format t "  precon mismatch (~d,~d): precon=~f  fd=~f  err=~f~%"
+                     row col val ref err)))))
+      (format t "preconditioner vs FD Hessian: max-err = ~f  mismatches = ~d~%"
+              max-err mismatches)
+      #+tests(test-true preconditioner-matches-fd-hessian (= mismatches 0)))))
+
+
+;;; ======================================================================
+;;; Truncated-Newton convergence test.
+;;;
+;;; "Fast convergence" for a Newton method means it reaches a tight gradient
+;;; tolerance in far fewer OUTER iterations than a first-order method
+;;; (super-linear vs linear convergence).  From a small displacement off the
+;;; minimum we run (a) truncated Newton only and (b) conjugate gradient only,
+;;; both to the same tight RMS-force tolerance, and require that truncated
+;;; Newton converges and does so in fewer iterations than CG.  This also
+;;; exercises the Hessian preconditioner (truncated Newton's default).
+;;; ======================================================================
+
+(multiple-value-bind (ef butane) (%fresh-butane-ef)
+  (declare (ignore butane))
+  (let ((n (chem:get-nvector-size ef))
+        (tol 1d-4))
+    ;; 1. Relax to the minimum to get a clean basin to start from.
+    (let* ((m0 (chem:make-minimizer ef))
+           (refpos (progn
+                     (chem:disable-print-intermediate-results m0)
+                     (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+                       (chem:minimize m0)))))   ; primary value = minimized coordinates
+      ;; 2. Displace a few atoms ~0.15 A off the minimum (still in the basin).
+      (dotimes (k (min 9 n))
+        (%nv-set! refpos k (+ (%nv-ref refpos k) 0.15d0)))
+      ;; 3. Truncated Newton only, from the displaced start.
+      (let ((mtn (chem:make-minimizer ef)))
+        (chem:set-maximum-number-of-steepest-descent-steps mtn 0)
+        (chem:set-maximum-number-of-conjugate-gradient-steps mtn 0)
+        (chem:set-maximum-number-of-truncated-newton-steps mtn 10000)
+        (chem:set-truncated-newton-tolerance mtn tol)
+        (chem:disable-print-intermediate-results mtn)
+        (let* ((tn-final (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+                           (chem:minimize mtn :coords refpos)))  ; refpos is copied, not mutated; primary value = final coords
+               (tn-steps (chem:get-iteration mtn))
+               (tn-rms   (%rms-force ef tn-final)))
+          ;; 4. Conjugate gradient only, same start, same tolerance.
+          (let ((mcg (chem:make-minimizer ef)))
+            (chem:set-maximum-number-of-steepest-descent-steps mcg 0)
+            (chem:set-maximum-number-of-conjugate-gradient-steps mcg 10000)
+            (chem:set-maximum-number-of-truncated-newton-steps mcg 0)
+            (chem:set-conjugate-gradient-tolerance mcg tol)
+            (chem:disable-print-intermediate-results mcg)
+            (let* ((cg-final (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+                               (chem:minimize mcg :coords refpos)))
+                   (cg-steps (chem:get-iteration mcg))
+                   (cg-rms   (%rms-force ef cg-final)))
+              (format t "truncated-Newton  : ~d steps, rms-force = ~e~%" tn-steps tn-rms)
+              (format t "conjugate-gradient: ~d steps, rms-force = ~e~%" cg-steps cg-rms)
+              ;; truncated Newton must reach the tight tolerance ...
+              #+tests(test-true truncated-newton-converged (< tn-rms (* 10d0 tol)))
+              ;; ... and in fewer outer iterations than CG (fast convergence)
+              #+tests(test-true truncated-newton-faster-than-cg (< tn-steps cg-steps)))))))))
+
+
+;;; ===========================================================================
+;;; Dihedral kernel agreement: dihedral_fast vs dihedral_fast_floored
+;;;
+;;; chem:compare-dihedral-kernels (dihedralKernelCompare.cc) compiles BOTH
+;;; kernels into the binary and compares them term-by-term, so this needs only
+;;; ONE build -- no recompiling to swap CANDO_DIHEDRAL_KERNEL.  It returns
+;;; (max |dEnergy|, max |dForce|) over every dihedral term.  Use a fresh energy
+;;; function + freshly loaded coordinates so the geometry is the (non-degenerate)
+;;; input structure and is independent of any earlier in-file minimization.
+;;;
+;;; A sign error in the floored kernel's Blondel-Karplus dphi/dq would flip the
+;;; force and blow max|dForce| up to ~force magnitude, so the force gate doubles
+;;; as the sign check.
+;;; ===========================================================================
+(let* ((cmp-ef   (chem:make-energy-function :matter agg))
+       (cmp-pos  (chem:make-nvector (chem:get-nvector-size cmp-ef))))
+  (chem:load-coordinates-into-vector cmp-ef cmp-pos)
+  (let ((cmp-dih (chem:get-dihedral-component cmp-ef)))
+    (multiple-value-bind (max-de max-df)
+        (chem:compare-dihedral-kernels cmp-dih cmp-pos)
+      (format t "dihedral kernel agreement: max|dEnergy| = ~e   max|dForce| = ~e~%"
+              max-de max-df)
+      #+tests(test-true dihedral-kernels-energy-agree (< max-de 1d-6))
+      #+tests(test-true dihedral-kernels-force-agree  (< max-df 1d-6)))))
+
+
+;;; ===========================================================================
+;;; Near-linear (degenerate) dihedral: dihedral_fast blows up, floored stays finite
+;;;
+;;; chem:dihedral-kernel-near-linear builds one dihedral whose atoms 1-2-3 are
+;;; exactly collinear (eps = 0), so the AD kernel's 1/(t1^2+t2^2) factor is 1/0
+;;; (non-finite) while the floored Blondel-Karplus kernel produces a finite,
+;;; bounded force.  It returns (max|force_fast|, max|force_floored|).  Wrap the
+;;; call so the fast kernel's divide-by-zero doesn't trap.
+;;; ===========================================================================
+(multiple-value-bind (nl-fast nl-floored)
+    (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+      (chem:dihedral-kernel-near-linear 0d0))
+  (format t "near-linear dihedral: max|force| fast = ~e   floored = ~e~%"
+          nl-fast nl-floored)
+  ;; The floored kernel must stay finite (the whole point of the floor) ...
+  #+tests(test-true near-linear-floored-finite
+                    (< nl-floored most-positive-double-float))
+  ;; ... while the AD kernel diverges (inf/nan) at the exact degeneracy.
+  #+tests(test-true near-linear-fast-diverges
+                    (not (< nl-fast most-positive-double-float))))
