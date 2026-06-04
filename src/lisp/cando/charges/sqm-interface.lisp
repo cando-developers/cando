@@ -11,6 +11,11 @@ qm-charge : The overall charge of the molecule"
   (format fout "    qm_theory='~a',~%" (string qm-theory))
   (format fout "    qmcharge=~d,~%" (round qm-charge))
   (format fout "    maxcyc=~d,~%" maxcyc)
+  (format fout "    pseudo_diag = 0,~%")
+  (format fout "    tight_p_conv=1,~%")
+  (format fout "    scfconv   = 1.0d-9,~%")
+  (format fout "    itrmax = 2000,~%")
+  (format fout "    ndiis_attempts = 100,~%")
   (format fout " /~%"))
 
 (defun write-sqm-molecule (fout molecule)
@@ -32,7 +37,7 @@ qm-charge : The overall charge of the molecule"
                 molecule)))
     atom-order))
 
-(defun write-sqm-calculation (fout molecule &key (qm-theory :am1) (qm-charge 0) (maxcyc 9999))
+(defun write-sqm-calculation (fout molecule &key (qm-theory :am1) (qm-charge 0) (maxcyc 0))
   (write-sqm-header fout qm-theory qm-charge maxcyc)
   (write-sqm-molecule fout molecule))
 

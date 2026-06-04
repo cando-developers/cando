@@ -416,8 +416,10 @@
 (defun sqm-executable ()
   (probe-file "amber:bin;sqm"))
   
-(defun calculate-am1-bcc-charges (aggregate &key (maxcyc 9999) verbose (tmpdir #P"/tmp/"))
-  "Calculate Am1-Bcc charges and add the results to the aggregate. Write sqm files into tmpdir"
+(defun calculate-am1-bcc-charges (aggregate &key (maxcyc 0) verbose (tmpdir #P"/tmp/"))
+  "Calculate Am1-Bcc charges and add the results to the aggregate. Write sqm files into tmpdir, maxcyc must be 0 for AM1-BCC"
+  (unless (= maxcyc 0)
+    (error "The maxcyc value must be zero for am1-bcc charges. sqm should calculate charges on the given structure, not try to optimize the structure"))
   (let* ((bcc (calculate-bcc-corrections aggregate))
          (input-filename (sys:mkstemp (format nil "~asqm-input-" (namestring tmpdir))))
          (output-filename (sys:mkstemp (format nil "~asqm-output-" (namestring tmpdir))))
