@@ -144,13 +144,13 @@ void RigidBodyEnergyFunction_O::setupHessianPreconditioner( NVector_sp pos, Abst
 void	RigidBodyEnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 {
   ASSERT(this->_SavedCoordinates && this->_SavedCoordinates->length() == pos->length());
-  core::core__copy_subarray(pos,core::make_fixnum(0),this->_SavedCoordinates,core::make_fixnum(0),core::make_fixnum(pos->length()));
+  core::core__copy_subarray(pos,0,this->_SavedCoordinates,0,pos->length());
 }
 
 void RigidBodyEnergyFunction_O::saveCoordinatesFromVector(NVector_sp pos)
 {
   ASSERT(this->_SavedCoordinates && this->_SavedCoordinates->length() == pos->length());
-  core::core__copy_subarray(this->_SavedCoordinates,core::make_fixnum(0),pos,core::make_fixnum(0),core::make_fixnum(pos->length()));
+  core::core__copy_subarray(this->_SavedCoordinates,0,pos,0,pos->length());
 }
 
 void RigidBodyEnergyFunction_O::saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force)
