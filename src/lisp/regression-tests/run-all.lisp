@@ -11,9 +11,6 @@
 
 (in-package :clasp-tests)
 
-;;; Load quicklisp
-(load "~/quicklisp/setup.lisp")
-
 (reset-clasp-tests)
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;cremer-pople.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;geometry.lisp")
