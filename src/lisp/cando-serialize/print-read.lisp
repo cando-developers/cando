@@ -110,6 +110,9 @@ when using the eclector reader."
         (let ((*readtable* *cando-readtable*))
           (read fin)))))
 
+
+
+
 (defmacro make-class-save-load (class-name &key skip-slot-names
                                              (print-unreadably
                                               `(lambda (obj stream)
@@ -120,11 +123,17 @@ when using the eclector reader."
   (unless (and (listp skip-slot-names)
                (every #'symbolp skip-slot-names))
     (error "The skip-slot-names must be a list of symbols - instead it is ~s" skip-slot-names))
-  `(defmethod print-object ((obj ,class-name) stream)
-     (if *print-readably*
-         (progn
-           (print-object-readably-with-slots obj stream))
-         (funcall ,print-unreadably obj stream))))
+  `(progn
+     (append
+      ,@(when skip-slot-names
+          `((defmethod skip-slot-names ((obj ,class-name))
+              ',@skip-slot-names)))
+      (defmethod print-object ((obj ,class-name) stream)
+        (if *print-readably*
+            (print-object-readably-with-slots obj stream)
+            (funcall ,print-unreadably obj stream))))))
+
+
 
 
 (defclass serializable ()
