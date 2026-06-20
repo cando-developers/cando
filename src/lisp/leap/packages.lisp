@@ -70,6 +70,7 @@
 (defpackage #:leap.commands
   (:use #:common-lisp)
   (:export
+   #:set-default
    #:create-atom
    #:leap
    #:leap-set
@@ -147,6 +148,9 @@
 (defpackage #:leap.core
   (:use #:common-lisp)
   (:export
+   #:*gbdefaults-igbparm-symbol*
+   #:+igbparm-symbol-alist+
+   #:+igbparm-symbol-names+
    #:*variable-package*
    #:leap-error
    #:with-path

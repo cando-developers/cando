@@ -716,36 +716,71 @@ then don't calculate 1,4 interactions"
             (setf prev-molv molv)))
     (values nresidue nmxrs residue-pointer-vector residue-name-vector atoms-per-molecule residue-vector)))
 
+(defun water-hydrogen-p (atm atom-types)
+  "Return T if the atm is a hydrogen in a water"
+  (let ((type (chem:get-type atm atom-types)))
+    (eq type :HW)))
+
+(defun arg-hh/he-p (atm atoms-to-residues)
+  (break "TODO: What do we check here - we need to match unitio.c:6534-6539"))
+
+(defun gb-hydrogen-radius (atom igbparm atom-types atoms-to-residues)
+  ;; tleap unitio.c:6479-6549.  Base Bondi H = 1.2.
+  (if (zerop (chem:number-of-bonds atom))
+      1.2                            ; unbonded H: unmodified (+ warn)
+      (let* ((nbr (chem:bonded-neighbor atom 0)) ; "first bond" rule
+             (zn  (chem:get-element nbr)))
+        (ecase igbparm
+          (:bondi 1.2)                ; no modification
+          (:mbondi (case zn
+                       ((:C :N) 1.3)
+                       ((:O :S) 0.8)
+                       (:H (if (water-hydrogen-p nbr atom-types) 0.8 1.2))
+                       (otherwise 1.2)))
+          ((:mbondi2 :mbondi3)      ; Alexey's scheme
+           (let ((r (if (eq zn :N) 1.3 1.2)))
+             (if (and (eq igbparm :mbondi3) (arg-hh/he-p atom atoms-to-residues))
+                 1.17 r)))))))
+
+(defun gb-oxygen-radius (atom igbparm atoms-to-residues)
+  ;; tleap unitio.c:6580-6605.  Base 1.5; mbondi3 carboxylate/OXT -> 1.4.
+  (if (and (eq igbparm :mbondi3-8) (carboxylate-or-oxt-oxygen-p atom atoms-to-residues))
+      1.4
+      1.5))
+
+(defun gb-radius (atom igbparm atom-types atoms-to-residues)
+  ;; Heavy-atom table shared by all four sets (tleap unitio.c:6478-6624).
+  (case (chem:get-element atom)
+    (:H  (gb-hydrogen-radius atom igbparm atom-types atoms-to-residues))
+    (:C  1.7) 
+    (:N  1.55)
+    (:O  (gb-oxygen-radius atom igbparm atoms-to-residues))
+    (:F  1.5)
+    (:|Si| 2.1)
+    (:P  1.85)
+    (:S  1.8)
+    (:|Cl| 1.7)
+    (otherwise 1.5)))
+
+(defun gb-screen (atom)
+  ;; Identical for all four sets (tleap unitio.c:6710-6735).
+  (case (chem:get-element atom)
+    (:H 0.85) (:C 0.72) (:N 0.79) (:O 0.85)
+    (:F 0.88) (:P 0.86) (:S 0.96)
+    (otherwise 0.8)))
+
+
 ;; for now, hardwire the Bondi radii
-(defun prepare-generalized-born (atomic-number-vector)
-  (let ((generalized-born-radius (make-array (length atomic-number-vector)))
-        (generalized-born-screen (make-array (length atomic-number-vector)))
-        (atomic-number 0)
-        (radius 0)
-        (screen 0))
-    (loop for i from 0 below (length atomic-number-vector)
-       for atomic-number = (aref atomic-number-vector i)
-       do (case atomic-number (1 (setf radius 1.3))
-                (6 (setf radius 1.7))
-                (7 (setf radius 1.55))
-                (8 (setf radius 1.5))
-                (9 (setf radius 1.5))
-                (14 (setf radius 2.1))
-                (15 (setf radius 1.85))
-                (16 (setf radius 1.8))
-                (17 (setf radius 1.7))
-                (otherwise  (setf radius 1.5)))
-       do (setf (aref generalized-born-radius i) radius)
-       do (case atomic-number (1 (setf screen 0.85))
-                (6 (setf screen 0.72))
-                (7 (setf screen 0.79))
-                (8 (setf screen 0.85))
-                (9 (setf screen 0.88))
-                (15 (setf screen 0.86))
-                (16 (setf screen 0.96))
-                (otherwise  (setf screen 0.8)))
-       do (setf (aref generalized-born-screen i) screen))
-    (values generalized-born-radius generalized-born-screen)))
+(defun prepare-generalized-born (atom-table atom-types atoms-to-residues
+                                 &optional (igbparm *gdefaults.igbparm-symbol*))
+  (let* ((natom  (chem:get-number-of-atoms atom-table))
+         (radius (make-array natom))
+         (screen (make-array natom)))
+    (loop for i from 0 below natom
+          for atom = (chem:elt-atom atom-table i)
+          do (setf (aref radius i) (gb-radius atom igbparm atom-types atoms-to-residues)
+                   (aref screen i) (gb-screen atom)))
+    (values radius screen)))
 
 (defmacro outline-progn (&body body)
   "Break some code out into a separate function"
@@ -754,7 +789,7 @@ then don't calculate 1,4 interactions"
       ,@body)))
 
 
-(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname residue-name-to-pdb-alist &key (cando-extensions t))
+(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname residue-name-to-pdb-alist atoms-to-residues &key (cando-extensions t))
   "Generate an AMBER topology/coordinate file pair using the energy function.
 Arguments:
 energy-function : The energy-function to generate the topology from.
@@ -834,8 +869,8 @@ cando-extensions               : T if you want cando-extensions written to the t
         (setf cn1-vec (cdr (assoc :cn1-vec atom-vectors)))
         (setf cn2-vec (cdr (assoc :cn2-vec atom-vectors)))
         (multiple-value-setq (generalized-born-radius generalized-born-screen)
-          (prepare-generalized-born atomic-number))
-                                        ;        (setf generalized-born-screen (prepare-generalized-born atomic-number))
+          (let ((atom-types (chem:atom-types energy-function)))
+            (prepare-generalized-born atomic-number atom-types atoms-to-residues)))
         (setf nhparm 0)
         (setf nparm 0)
         (setf nnb (length excluded-atom-list))
@@ -1466,7 +1501,12 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:fwrite "%FORMAT(1a80)")
          (fortran:debug "-41-")
          (fortran:fformat 1 "{:<80s}")
-         (fortran:fwrite "modified Bondi radii (mbondi)") ;default in leap
+         (fortran:fwrite
+          (ecase *gdefaults.igbparm-symbol*
+            (:bondi   "Bondi radii (bondi)")
+            (:mbondi  "modified Bondi radii (mbondi)")
+            (:mbondi2 "H(N)-modified Bondi radii (mbondi2)")
+            (:mbondi3 "ArgH and AspGluO modified Bondi2 radii (mbondi3)")))
          (fortran:end-line))
 
         ;;next
@@ -1581,7 +1621,10 @@ cando-extensions               : T if you want cando-extensions written to the t
   (finish-output)
   (let* ((energy-function (chem:make-energy-function :matter aggregate
                                                      :use-excluded-atoms t
-                                                     :assign-types assign-types)))
+                                                     :assign-types assign-types))
+         (atom-to-residue (make-hash-table)))
+    (let ((atoms-to-residues (make-hash-table)))
+    (break "I need to map atoms-to residues")
     ;;; We need to:
     ;;;  (1) make sure energy function copies bounding-box property from aggregate
     ;;;  (2) Copy the name of the aggregate into the energy function
@@ -1591,7 +1634,8 @@ cando-extensions               : T if you want cando-extensions written to the t
                                                   topology-pathname
                                                   coordinate-pathname
                                                   residue-name-to-pdb-alist
-                                                  :cando-extensions cando-extensions)))
+                                                  atoms-to-residues
+                                                  :cando-extensions cando-extensions))))
 
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")

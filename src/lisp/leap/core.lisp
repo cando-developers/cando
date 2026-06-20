@@ -307,3 +307,19 @@ given in 'combined-force-field-class-name'.  I'm not sure what 'force-field-info
     (unless search-path
       (error "Could not find ~a in directories ~a" pn *path*))
     search-path))
+
+
+;;; --------------------------------------------------
+;;;
+;;;
+
+(defvar *gdefaults.igbparm-symbol* :mbondi
+  "Readable GB radius-set selector. One of
+     :bondi :mbondi :mbondi2 :mbondi3.
+     The trailing integer is the tleap iGBparm value.")
+
+(defparameter +igbparm-symbol-alist+
+  '((:bondi 0) (:mbondi 2) (:mbondi2 6) (:mbondi3 8) (:amber6 10)))
+
+(defparameter +igbparm-symbol-names+
+  (mapcar #'car +igbparm-symbol-alist+))
