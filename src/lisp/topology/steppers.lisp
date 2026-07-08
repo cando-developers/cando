@@ -182,7 +182,6 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
     (with-slots (topology:monomer-shape-vector
                  topology:monomer-shape-info-vector
                  topology:oligomer
-                 topology:rotamers-database
                  topology:monomer-shape-map) oligomer-shape
       #+debug-mover(format t "-------- Next stage~%")
       (loop :for index below (length topology:monomer-shape-vector)

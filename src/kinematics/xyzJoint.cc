@@ -47,13 +47,13 @@ namespace kinematics
 {
 void XyzJoint_O::fields(core::Record_sp record) {
   static_assert(XyzJoint_O::MaxChildren==5,"XyzJoint_O::MaxChildren has changed from 5 - update the code below");
-  record->field_if_not_unbound(INTERN_(kw,atm),this->_Atom);
   record->field_if_not_unbound(INTERN_(kw,child4),this->_Children[4]);
   record->field_if_not_unbound(INTERN_(kw,child3),this->_Children[3]);
   record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);
   record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
   record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
   record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
+  record->field(INTERN_(kw,atomPos),this->_AtomPositionIndex3);
   this->Base::fields(record);
 }
 
@@ -64,27 +64,21 @@ void XyzJoint_O::initialize() {
   }
 }
 
-	/*! Return the stubJoint1 */
+/*! Return the stubJoint1 */
 CL_DEFMETHOD Joint_sp XyzJoint_O::inputStubJoint0() const { return this->parent();}
 
-	/*! Return the stubJoint2 */
+/*! Return the stubJoint2 */
 CL_DEFMETHOD Joint_sp XyzJoint_O::inputStubJoint1() const { return this->parent()->parent();};
 
-	/*! Return the stubJoint3 */
+/*! Return the stubJoint3 */
 CL_DEFMETHOD Joint_sp XyzJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
-CL_LAMBDA(atom-id name atom-table &optional atom)
+CL_LAMBDA(atom-id name atom-table &optional (atom-position (geom:vec-undefined)))
 CL_LISPIFY_NAME("make_XyzJoint");
 CL_DEF_CLASS_METHOD
-XyzJoint_sp XyzJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp atom) {
-  if (atom.nilp()) {
-    SIMPLE_ERROR("You must define the atom for XyzJoint creation");
-    auto obj = gctools::GC<XyzJoint_O>::allocate(atomId,name,atomTable);
-    return obj;
-  } else {
-    auto obj = gctools::GC<XyzJoint_O>::allocate(atomId,name,atomTable,atom);
-    return obj;
-  }
+XyzJoint_sp XyzJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, const Vector3& atomPos ) {
+  auto obj = gctools::GC<XyzJoint_O>::allocate(atomId,name,atomTable,atomPos);
+  return obj;
 }
 
 
@@ -98,9 +92,9 @@ void XyzJoint_O::_appendChild(Joint_sp c)
 void XyzJoint_O::_insertChild(int before, Joint_sp child)
 {
   if ( this->_numberOfChildren()>this->_maxNumberOfChildren() )
-  {
-    THROW_HARD_ERROR("You exceeded the maximum[%d] number of children allowed for a XyzJoint" , this->_maxNumberOfChildren());
-  }
+    {
+      THROW_HARD_ERROR("You exceeded the maximum[%d] number of children allowed for a XyzJoint" , this->_maxNumberOfChildren());
+    }
   for ( int i=this->_numberOfChildren(); i>before; i-- )
     this->_Children[i] = this->_Children[i-1];
   this->_Children[before] = child;
@@ -111,14 +105,14 @@ void XyzJoint_O::_insertChild(int before, Joint_sp child)
 void XyzJoint_O::_releaseChild(int idx)
 {
   if ( this->_numberOfChildren() == 0 )
-  {
-    THROW_HARD_ERROR(("There are no children to delete"));
-  }
+    {
+      THROW_HARD_ERROR(("There are no children to delete"));
+    }
   int num = this->_numberOfChildren() - 1;
   for ( int i=idx; i < num; i++ )
-  {
-    this->_Children[i] = this->_Children[i+1];
-  }
+    {
+      this->_Children[i] = this->_Children[i+1];
+    }
   this->_NumberOfChildren--;
   this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
 }
@@ -128,23 +122,34 @@ void XyzJoint_O::_releaseAllChildren()
   if ( this->_numberOfChildren() == 0 ) return;
   int num = this->_numberOfChildren();
   for ( int idx=0; idx < num; idx++ )
-  {
-    this->_Children[idx] = unbound<Joint_O>();
-  }
+    {
+      this->_Children[idx] = unbound<Joint_O>();
+    }
   this->_NumberOfChildren = 0;
+}
+
+CL_DEFMETHOD void XyzJoint_O::setFixedPosition(const Vector3& pos) {
+  this->_AtomPosition = pos;
+}
+
+CL_DEFMETHOD Vector3 XyzJoint_O::getFixedPosition() const {
+  if (!this->_AtomPosition.isDefined()) {
+    SIMPLE_ERROR("_AtomPosition is undefined");
+  }
+  return this->_AtomPosition;
 }
 
 void XyzJoint_O::_updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords)
 {
   KIN_LOG(" <<< {}\n" , _rep_(this->asSmartPtr()));
-//	using numeric::x_rotation_matrix_radians;
-//	using numerioc::z_rotation_matrix_radians;
-//	using numeric::constants::d::pi;
-    auto x = (*coords)[this->_PositionIndexX3];
-    auto y = (*coords)[this->_PositionIndexX3+1];
-    auto z = (*coords)[this->_PositionIndexX3+2];
-    Vector3 pos(x,y,z);
-    this->_Atom->setPosition(pos);
+  //	using numeric::x_rotation_matrix_radians;
+  //	using numerioc::z_rotation_matrix_radians;
+  //	using numeric::constants::d::pi;
+  auto x = (*coords)[this->_PositionIndexX3];
+  auto y = (*coords)[this->_PositionIndexX3+1];
+  auto z = (*coords)[this->_PositionIndexX3+2];
+  Vector3 pos(x,y,z);
+  this->setFixedPosition(pos);
 }
 
 bool XyzJoint_O::keepDofFixed(DofType dof) const
@@ -159,7 +164,7 @@ core::Symbol_sp XyzJoint_O::typeSymbol() const { return _sym_xyz;};
 string XyzJoint_O::asString() const
 {
   stringstream ss;
-  Vector3 pos = this->_Atom->getPosition();
+  Vector3 pos = this->getFixedPosition();
   ss << this->Joint_O::asString();
   ss << fmt::format("  _X[{}]  _Y[{}]  _Z[{}]"
                     , pos.getX(), pos.getY(), pos.getZ() );
@@ -176,7 +181,7 @@ Stub XyzJoint_O::getInputStub(chem::NVector_sp coords) const
 }
 
 bool XyzJoint_O::definedp(chem::NVector_sp internals) const {
-  return (this->_Atom->getPosition().isDefined());
+  return (this->getFixedPosition().isDefined());
 }
 
 void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVector_sp coords) {
@@ -184,17 +189,17 @@ void XyzJoint_O::_updateChildrenXyzCoords(chem::NVector_sp internals, chem::NVec
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
     for ( int ii=0; ii < firstNonJumpIndex; ii++) {
       Stub jstub = this->_child(ii)->getInputStub(coords);
-    // I should ratchet the newStub around the X axis and use relative dihedral
+      // I should ratchet the newStub around the X axis and use relative dihedral
       this->_child(ii)->_updateXyzCoord(internals,coords,jstub);
-    // ratchet newStub
-//    this->_DofChangePropagatesToYoungerSiblings = false;
+      // ratchet newStub
+      //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
     }
     Stub stub = this->_child(firstNonJumpIndex)->getInputStub(coords);
     for ( int ii=firstNonJumpIndex; ii < this->_numberOfChildren(); ii++) {
-    // I should ratchet the stub around the X axis and use relative dihedral
+      // I should ratchet the stub around the X axis and use relative dihedral
       this->_child(ii)->_updateXyzCoord(internals,coords,stub);
-//    this->_DofChangePropagatesToYoungerSiblings = false;
+      //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
     }
     for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
@@ -208,8 +213,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,joint);
 
 void XyzJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub)
 {
-      // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  Vector3 d2 = this->_Atom->getPosition();
+  // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
+  Vector3 d2 = this->getFixedPosition();
   if (!d2.isDefined()) {
     ERROR(kinematics::_sym_undefined_internal_coordinates,core::lisp_createList(kw::_sym_joint,this->asSmartPtr()));
   }
@@ -219,9 +224,8 @@ void XyzJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp co
 }
 
 Vector3 XyzJoint_O::transformedPos() const {
-      // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  ASSERT(this->_Atom.boundp());
-  Vector3 d2 = this->_Atom->getPosition();
+  // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
+  Vector3 d2 = this->getFixedPosition();
   if (!d2.isDefined()) {
     ERROR(kinematics::_sym_undefined_internal_coordinates,core::lisp_createList(kw::_sym_joint,this->asSmartPtr()));
   }
@@ -230,9 +234,8 @@ Vector3 XyzJoint_O::transformedPos() const {
 }
 
 Vector3 XyzJoint_O::untransformedPos() const {
-      // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  ASSERT(this->_Atom.boundp());
-  Vector3 d2 = this->_Atom->getPosition();
+  // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
+  Vector3 d2 = this->getFixedPosition();
   if (!d2.isDefined()) {
     ERROR(kinematics::_sym_undefined_internal_coordinates,core::lisp_createList(kw::_sym_joint,this->asSmartPtr()));
   }
@@ -251,14 +254,22 @@ double XyzJoint_O::dof(DofType const& dof) const
   IMPLEMENT_ME();
 }
 
+CL_DEFMETHOD void XyzJoint_O::updateAtomPositionFromCoords(chem::NVector_sp coords) {
+  if (this->_AtomPositionIndex3 >= 0)
+    geom::geom__vec_extract(this->_AtomPosition, coords,this->_AtomPositionIndex3);
+}
 
 SYMBOL_EXPORT_SC_(KinPkg,xyz);
 
 ///CL_LAMBDA(atom-id name atom-table parent-pos grand-parent-pos great-grand-parent-pos);
 CL_LISPIFY_NAME("make_StubJoint");
 CL_DEF_CLASS_METHOD
-StubJoint_sp StubJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, chem::Atom_sp atom, chem::Atom_sp parentAtom, chem::Atom_sp grandParentAtom, chem::Atom_sp greatGrandParentAtom ) {
-  auto obj = gctools::GC<StubJoint_O>::allocate( atomId, name, atomTable, atom, parentAtom, grandParentAtom, greatGrandParentAtom);
+StubJoint_sp StubJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable
+                               ,int atomPositionIndex3
+                               ,int parentAtomPositionIndex3
+                               ,int grandParentAtomPositionIndex3
+                               ,int greatGrandParentAtomPositionIndex3 ) {
+  auto obj = gctools::GC<StubJoint_O>::allocate( atomId, name, atomTable, atomPositionIndex3, parentAtomPositionIndex3, grandParentAtomPositionIndex3, greatGrandParentAtomPositionIndex3 );
   return obj;
 }
 
@@ -268,43 +279,42 @@ void StubJoint_O::initialize() {
 
 
 void StubJoint_O::fields(core::Record_sp node) {
-  node->field_if_not_unbound(INTERN_(kw,ggpatom),this->_GreatGrandParentAtom);
-  node->field_if_not_unbound(INTERN_(kw,gpatom),this->_GrandParentAtom);
-  node->field_if_not_unbound(INTERN_(kw,patom),this->_ParentAtom);
+  node->field_if_not_default(INTERN_(kw,ggpatomPos),this->_GreatGrandParentAtomPosition,Vector3());
+  node->field_if_not_default(INTERN_(kw,gpatomPos),this->_GrandParentAtomPosition,Vector3());
+  node->field_if_not_default(INTERN_(kw,patomPos),this->_ParentAtomPosition,Vector3());
+  node->field(INTERN_(kw,ggpatomPosIndex3),this->_GreatGrandParentAtomPositionIndex3);
+  node->field(INTERN_(kw,gpatomPosIndex3),this->_GrandParentAtomPositionIndex3);
+  node->field(INTERN_(kw,patomPosIndex3),this->_ParentAtomPositionIndex3);
   this->Base::fields(node);
 }
 
 void StubJoint_O::_updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub)
 {
-      // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
+  // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   this->Base::_updateXyzCoord(internals,coords,stub);
 }
 
 CL_DEFMETHOD
 Vector3 StubJoint_O::transformedParentPos() const {
-  chem::Atom_sp atm = this->_ParentAtom;
+  const Vector3& pos = this->_ParentAtomPosition;
   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
-  Vector3 pos = atm->getPosition();
   Vector3 tpos = m.multiplyByVector3(pos);
   return tpos;
 }
 
 CL_DEFMETHOD
 Vector3 StubJoint_O::transformedGrandParentPos() const {
-   chem::Atom_sp atm = this->_GrandParentAtom;
-   Vector3 pos = atm->getPosition();
-   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
-   Vector3 tpos = m.multiplyByVector3(pos);
-   return tpos;
-}
-
-CL_DEFMETHOD
-Vector3 StubJoint_O::transformedGreatGrandParentPos() const {
-  chem::Atom_sp atm = this->_GreatGrandParentAtom;
-  Vector3 pos = atm->getPosition();
+  const Vector3& pos = this->_GrandParentAtomPosition;
   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
   Vector3 tpos = m.multiplyByVector3(pos);
   return tpos;
 }
-  
+
+CL_DEFMETHOD
+void StubJoint_O::updateStubPositionsFromCoords(chem::NVector_sp coords) {
+  this->updateAtomPositionFromCoords(coords);   // fills inherited _AtomPosition
+  geom::geom__vec_extract(this->_ParentAtomPosition, coords, this->_ParentAtomPositionIndex3);
+  geom::geom__vec_extract(this->_GrandParentAtomPosition, coords, this->_GrandParentAtomPositionIndex3);
+  geom::geom__vec_extract(this->_GreatGrandParentAtomPosition, coords, this->_GreatGrandParentAtomPositionIndex3);
+}
 };

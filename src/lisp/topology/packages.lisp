@@ -92,6 +92,7 @@
    #:complex-bonded-internal
    #:internals
    #:fragments
+   #:find-foldamer
    #:foldamer-monomer-context
    #:foldamer-rotamers-database
    #:save-clusterable-context-rotamers
@@ -473,7 +474,6 @@
    #:backbone-shape-kind-p
    #:sidechain-shape-kind-p
    #:do-oligomer-shape
-   #:rotamer-shape-context-rotamers
    #:mutate-oligomer-shape
    #:build-rotamer-shape-map
    #:ligand-oligomer-shape
@@ -607,11 +607,17 @@
    #:lk-solvation-atom-type
    #:foldamer-monomer-context-info-topology
    #:copy-rotamer-shape
-   #:make-oligomer-shape-with-mutated-sidechains
    #:oligomer-to-sexp
    #:oligomer-to-string
    #:monomer-subset
-   #:oligomer-monomer-names))
+   #:oligomer-monomer-names
+   #:register-foldamer
+   #:ligand-index
+   #:receptor-index
+   #:ligand-molecule
+   #:receptor-molecule
+   #:residue-shape-atom-position
+   #:closest-rotamer-index))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

@@ -57,6 +57,18 @@
    (print-unreadable-object (obj stream :type t)
      (format stream "~s ~a" (atom-name obj) (constitution-atom-index obj)))))
 
+(defparameter *foldamers* (make-hash-table))
+
+(defun register-foldamer (name foldamer)
+  (setf (gethash name *foldamers*) foldamer))
+
+(defun find-foldamer (name &optional errorp)
+  (let ((foldamer (gethash name *foldamers*)))
+    (if foldamer
+        foldamer
+        (if errorp
+            (error "Could not find foldamer ~a" foldamer)
+            nil))))
 
 (defclass foldamer-monomer-context-info (cando.serialize:serializable)
   ((foldamer :initarg :foldamer :reader foldamer-monomer-context-info-foldamer)
@@ -454,8 +466,8 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
            (couplings monomer))
   nil)
 
-(defclass oligomer-space ()
-  ((foldamer :initarg :foldamer :accessor foldamer)
+(defclass oligomer-space (cando.serialize:serializable)
+  ((foldamer-name :initarg :foldamer-name :accessor foldamer-name)
    (name :initform :defos :initarg :name :reader name)
    (monomers :initform (make-array 16 :adjustable t :fill-pointer 0)
              :initarg :monomers :accessor monomers)
@@ -471,6 +483,9 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
   :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t))))
+
+(defmethod foldamer (oligomer-space)
+  (find-foldamer (foldamer-name oligomer-space)))
 
 (defun topologys-in-oligomer-space (oligomer-space)
   (loop for monomer across (monomers oligomer-space)
@@ -520,7 +535,7 @@ Examples:
   (unless foldamer
     (error "You must provide a foldamer"))
   (let* ((oligomer-space (make-instance 'oligomer-space
-                                        :foldamer foldamer
+                                        :foldamer-name (foldamer-name foldamer)
                                         :name name))
          (labels (make-hash-table)))
     (interpret-rooted-tree oligomer-space tree labels :parts parts)
@@ -549,7 +564,7 @@ Examples:
 
 (defvar *debug-oligomer-space*)
 (defun is-oligomer-space-supported (foldamer tree &key (parts *parts*))
-  (let* ((oligomer-space (make-instance 'oligomer-space :foldamer foldamer))
+  (let* ((oligomer-space (make-instance 'oligomer-space :foldamer-name (foldamer-name foldamer)))
          (labels (make-hash-table)))
     (interpret-rooted-tree oligomer-space tree labels :parts parts)
     (setf *debug-oligomer-space* oligomer-space)

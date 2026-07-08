@@ -356,12 +356,16 @@ molecule in the global frame."
 (defclass assembler (assembler-base)
   ((oligomer-shapes :initarg :oligomer-shapes :accessor oligomer-shapes)
    (receptor-only :initform nil :initarg :receptor-only :reader receptor-only)
+   (%ligand-oligomer-shape :initform nil :initarg :ligand-oligomer-shape :reader %ligand-oligomer-shape
+                           :documentation "The oligomer-shape designated as the ligand (moving/designed), stored by IDENTITY so the ligand/receptor role does not   depend on list position. NIL unless this is a ligand+receptor complex.")
+   (%receptor-oligomer-shape :initform nil :initarg :receptor-oligomer-shape :reader %receptor-oligomer-shape
+                             :documentation "The oligomer-shape designated as the receptor (fixed reference frame), by identity. NIL unless a complex.")
    (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset)
    (adjustments :initarg :adjustments :accessor adjustments))
   (:documentation "Te assembler class maintains a list of OLIGOMER-SHAPEs
 
 The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
- ))
+   ))
 
 
 (defgeneric oligomers-or-oligomer-shapes (assembler)
@@ -376,29 +380,19 @@ The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
 (defmethod always-oligomers ((assembler assembler))
   (mapcar #'oligomer (oligomer-shapes assembler)))
 
-
 (defun ligand-oligomer-shape (assembler)
-  "Return the ligand oligomer-shape for the ASSEMBLER."
-  (unless (receptor-only assembler)
-    (first (oligomer-shapes assembler))))
-
-(defun ligand-oligomer-shape-orientation (assembler)
-  "Return the ligand oligomer-shape and orientation for the ASSEMBLER."
-  (error "Don't use this - orientation needs to be passed")
-  #+(or)(let ((ligand-oligomer-shape (first (oligomer-shapes assembler))))
-    (values ligand-oligomer-shape (gethash ligand-oligomer-shape (orientations (orientations assembler))))))
+  "Return the ligand (moving/designed) oligomer-shape, by stored identity.
+  Falls back to positional FIRST for assemblers built without an explicit ligand marker."
+  (or (%ligand-oligomer-shape assembler)
+      (unless (receptor-only assembler)
+        (first (oligomer-shapes assembler)))))
 
 (defun receptor-oligomer-shape (assembler)
-  "Return the receptor oligomer-shape for the ASSEMBLER."
-  (second (oligomer-shapes assembler)))
+  "Return the receptor (fixed) oligomer-shape, by stored identity.
+  Falls back to positional SECOND for assemblers built without an explicit receptor marker."
+  (or (%receptor-oligomer-shape assembler)
+      (second (oligomer-shapes assembler))))
 
-(defun receptor-oligomer-shape-orientation (assembler)
-  "Return the receptor oligomer-shape and orientation for the ASSEMBLER."
-  (error "Don't use this - receptors don't need orientation")
-  #+(or)(let ((receptor-oligomer-shape (second (oligomer-shapes assembler))))
-    (values receptor-oligomer-shape (if receptor-oligomer-shape
-                                        (gethash receptor-oligomer-shape (orientations (orientations assembler)))
-                                        nil))))
 
 (defun complex-oligomer-shapes (assembler)
   (values (ligand-oligomer-shape assembler)
@@ -665,7 +659,12 @@ Specialize the foldamer argument to provide methods"))
                    (setf (shape-key-cache-deg monomer-shape) dihedral-cache)
                    ))))))
 
-(defun make-assembler (oligomer-shapes &key (receptor-only nil receptor-only-p) monomer-subset energy-function-factory (monomer-contexts nil monomer-contexts-p))
+(defun make-assembler (oligomer-shapes &key (receptor-only nil receptor-only-p)
+                                         monomer-subset
+                                         energy-function-factory
+                                         (monomer-contexts nil monomer-contexts-p)
+                                         ligand-oligomer-shape
+                                         receptor-oligomer-shape)
   "Build a assembler for the OLIGOMER-SHAPES.
 OLIGOMER-SHAPES - A list of OLIGOMER-SHAPEs that the ASSEMBLER will build.
 RECEPTOR-ONLY   - T if the assembler only contains a receptor
@@ -756,6 +755,8 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                                'subset-assembler
                                                                'assembler)
                                                            :receptor-only receptor-only
+                                                           :ligand-oligomer-shape ligand-oligomer-shape
+                                                           :receptor-oligomer-shape receptor-oligomer-shape
                                                            :monomer-positions monomer-positions
                                                            :monomer-contexts new-monomer-contexts
                                                            :oligomer-shapes oligomer-shapes
@@ -796,10 +797,12 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 
 (defun make-ligand-receptor-assembler (&key ligand receptor monomer-subset energy-function-factory #|tune-energy-function (keep-interaction-factory-factory t)|#)
   "Define an assembler for a complex between a LIGAND and a RECEPTOR."
-  ;; The ligand is the first oligomer-shape and the receptor is the second one
   (make-assembler (list ligand receptor)
                   :monomer-subset monomer-subset
-                  :energy-function-factory energy-function-factory))
+                  :energy-function-factory energy-function-factory
+                  :ligand-oligomer-shape ligand
+                  :receptor-oligomer-shape receptor
+                  ))
 #|                  :tune-energy-function tune-energy-function
                   :keep-interaction-factory-factory keep-interaction-factory-factory))|#
 
@@ -955,10 +958,26 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                (declare (ignore atom-id))
                                (kin:update-internal-coord joint assembler-internals coordinates)))))
 
+(defun ligand-index (assembler)
+  "Aggregate molecule index of the ligand, by role (position of its oligomer-shape). Order-independent."
+  (position (ligand-oligomer-shape assembler) (oligomer-shapes assembler)))
+
+(defun receptor-index (assembler)
+  "Aggregate molecule index of the receptor, by role. Order-independent."
+  (position (receptor-oligomer-shape assembler) (oligomer-shapes assembler)))
+
+(defun ligand-molecule (assembler)
+  "The ligand chem:molecule from the assembler's aggregate, by role (never a hardcoded index)."
+  (chem:content-at (aggregate assembler) (ligand-index assembler)))
+
+(defun receptor-molecule (assembler)
+  "The receptor chem:molecule from the assembler's aggregate, by role."
+  (chem:content-at (aggregate assembler) (receptor-index assembler)))
+
 
 (defgeneric root-joint (assembler &optional oligomer-shape))
 
-(defmethod root-joint ((assembler assembler) &optional (oligomer-shape (first (oligomer-shapes assembler))))
+(defmethod root-joint ((assembler assembler) &optional (oligomer-shape (ligand-oligomer-shape assembler)))
   (let* ((joint-tree (joint-tree assembler))
          (root-map (root-map joint-tree))
          (oligomer (oligomer oligomer-shape))
@@ -979,6 +998,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
           do (update-xyz-coords assembler assembler-internals joint coords))))
 
 
+#+(or)
 (defun build-atom-tree-for-monomer-shape-external-coordinates* (assembler assembler-internals coords oligomer-shape monomer-shape maybe-orientation-transform)
   (let* ((orientation (orientation maybe-orientation-transform assembler))
          (one-oligomer (oligomer oligomer-shape))
@@ -1285,6 +1305,8 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
                   ,@body)))))
 
 (defun copy-atom-positions-to-xyz-joint-pos (assembler)
+  (error "copy-atom-positions-to-xyz-joint-pos shouldn't be necessary - is it?")
+  #+(or)
   (do-joint-atom (joint atm assembler)
     (when (typep joint 'kin:xyz-joint)
           (kin:xyz-joint/set-atom joint atm))))
@@ -1292,8 +1314,7 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
 (defun copy-xyz-joint-pos-to-atom-positions (assembler)
   (do-joint-atom (joint atm assembler)
     (when (typep joint 'kin:xyz-joint)
-      (let* ((joint-atom (kin:xyz-joint/get-atom joint))
-             (pos (chem:atom/get-position joint-atom)))
+      (let* ((pos (kin:xyz-joint/get-fixed-position joint)))
         (when (geom:is-defined pos)
           (chem:set-position atm pos))))))
 
@@ -1430,7 +1451,8 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
 
 (defmethod update-externals ((assembler assembler) assembler-internals &key oligomer-shape
                                                                          (ligand-orientation (topology:make-orientation) ligand-orientation-p)
-                                                                         (coords (topology:make-coordinates-for-assembler assembler)))
+                                                                         (coords (topology:make-coordinates-for-assembler assembler))
+                                                                         fixed-coordinates)
   "Update the external coordinates in COORDS using the ASSEMBLER and ORIENTATION.
 IF OLIGOMER-SHAPE is provided then just build externals for that OLIGOMER-SHAPE.
 If OLIGOMER-SHAPE is not provided then build them all and use the OLIGOMER-SHAPE as the ORIENTATION key.

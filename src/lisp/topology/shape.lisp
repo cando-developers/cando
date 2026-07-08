@@ -7,41 +7,42 @@
 (defun shape-key-dihedral-name-p (name)
   (member name (list +phi+ +phi-1+ +psi+ +psi-1+)))
 
-(defclass monomer-shape-info ()
+(defclass monomer-shape-info (cando.serialize:serializable)
   ((monomer :initarg :monomer :accessor monomer)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
    (monomer-shape-kind :initarg :monomer-shape-kind :accessor monomer-shape-kind)
    ))
 
 (defmethod print-object ((object monomer-shape-info) stream)
-  (print-unreadable-object (object stream :type t)
-    (format stream "~s" (monomer-context object))))
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (object stream :type t)
+        (format stream "~s" (monomer-context object)))))
 
 
-(defclass monomer-shape ()
+(defclass monomer-shape (cando.serialize:serializable)
   (()))
 
 (defgeneric copy-monomer-shape (monomer-shape))
 
-(defclass rotamer-shape (monomer-shape)
-  ((rotamer-index :initarg :rotamer-index :accessor rotamer-index)
-   (rotamer-shape-context-rotamers :initarg :rotamer-shape-context-rotamers :accessor rotamer-shape-context-rotamers))
+(defclass rotamer-shape (monomer-shape cando.serialize:serializable)
+  ((rotamer-index :initarg :rotamer-index :accessor rotamer-index))
   (:documentation "Monomer-shape that chooses between different rotamers"))
 
 (defmethod print-object ((obj rotamer-shape) stream)
-  (print-unreadable-object (obj stream :type t)
-    (format stream "~a"
-            (if (slot-boundp obj 'rotamer-index)
-                (rotamer-index obj)
-                "#<unbound>")
-            )))
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~a"
+                (if (slot-boundp obj 'rotamer-index)
+                    (rotamer-index obj)
+                    "#<unbound>")
+                ))))
 
 (defmethod copy-monomer-shape ((monomer-shape rotamer-shape))
   (if (slot-boundp monomer-shape 'rotamer-index)
-      (make-instance 'rotamer-shape :rotamer-index (rotamer-index monomer-shape)
-                     :rotamer-shape-context-rotamers (rotamer-shape-context-rotamers monomer-shape))
-      (make-instance 'rotamer-shape
-                     :rotamer-shape-context-rotamers (rotamer-shape-context-rotamers monomer-shape))))
+      (make-instance 'rotamer-shape :rotamer-index (rotamer-index monomer-shape))
+      (make-instance 'rotamer-shape)))
 
 (defun make-rotamer-shape (monomer oligomer &key ignore-sidechains)
   "Convenience function to make a rotamer-shape for a MONOMER in an OLIGOMER.
@@ -53,7 +54,21 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
          (context-rotamers (topology:lookup-rotamers-for-context rotamers-database monomer-context :ignore-sidechains ignore-sidechains :errorp nil :error-value :no-context-rotamers)))
     (if (eq context-rotamers :no-context-rotamers)
         :no-rotamer-shape
-        (make-instance 'rotamer-shape :rotamer-shape-context-rotamers context-rotamers))))
+        (make-instance 'rotamer-shape))))
+
+(defmethod apply-monomer-shape-to-atresidue-internals ((assembler subset-assembler) assembler-internals oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue &key verbose)
+  (when verbose
+    (let ((*print-pretty* nil))
+      (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   rotamer-shape ~s~%  monomer-context ~s~%"
+              oligomer-shape rotamer-shape monomer-context)))
+  (let ((subset (monomer-subset assembler)))
+    (when subset
+      (let ((joint0 (aref (joints atresidue) 0)))
+        (when (typep joint0 'kin:stub-joint)
+          (kin:stub-joint/update-stub-positions-from-coords
+           joint0 (coordinates subset))))))
+  (call-next-method))
+
 
 (defmethod apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue &key verbose)
   (when verbose
@@ -78,9 +93,11 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
   ;;(format t "Entered apply-monomer-shape-to-atresidue-internals with the no-rotamer-shape symbol~%")
   )
 
-(defclass residue-shape (monomer-shape)
-  ((residue :initarg :residue :reader residue)
-   (molecule :initarg :molecule :reader molecule)))
+(defclass residue-shape (monomer-shape cando.serialize:serializable)
+  ((name :initarg :name :reader name)
+   (atom-coordinates :initarg :atom-coordinates :accessor atom-coordinates)
+   (closest-rotamer-index :initarg :closest-rotamer-index :accessor closest-rotamer-index)
+   ))
 
 (defclass backbone-residue-shape (residue-shape)
   (#+(or)(shape-key-cache-deg :initarg :shape-key-cache-deg
@@ -91,19 +108,25 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
   residue-shape)
 
 (defmethod print-object ((obj residue-shape) stream)
-  (print-unreadable-object (obj stream :type t)
-    (format stream "~s" (chem:get-name (residue obj)))))
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~s" "A-Residue" #+(or)(chem:get-name (residue obj))))))
 
 
 (defmethod apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape (residue-shape residue-shape) monomer-context atresidue &key verbose)
   (when verbose
     (let ((*print-pretty* nil))
       (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   residue-shape ~s~%  monomer-context ~s~%" oligomer-shape residue-shape monomer-context)))
-  (let ((residue (residue residue-shape)))
+  (let ((atom-coordinates (atom-coordinates residue-shape)))
     (loop for joint across (joints atresidue)
           for name = (kin:joint/name joint)
-          for atm = (chem:first-atom-with-name residue name)
-          do (kin:xyz-joint/set-atom joint atm))))
+          for atom-stub = (find-if (lambda (atom-stub)
+                                     (and (eq (atom-stub-name atom-stub) name)
+                                          (not (atom-stub-borrowed-p atom-stub))))
+                                   atom-coordinates)
+          for position = (atom-stub-position atom-stub)
+          do (kin:xyz-joint/set-fixed-position joint position))))
 
 (defclass backbone-monomer-shape (residue-shape)
   ()
@@ -112,27 +135,23 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
 (defmethod copy-monomer-shape ((backbone-monomer-shape backbone-monomer-shape))
   (if (slot-boundp backbone-monomer-shape 'topology:rotamer-index)
       (make-instance 'backbone-monomer-shape
-                     :rotamer-index (rotamer-index backbone-monomer-shape)
-                     :residue (residue backbone-monomer-shape))
-      (make-instance 'backbone-monomer-shape
-                     :residue (residue backbone-monomer-shape))))
+                     :rotamer-index (rotamer-index backbone-monomer-shape))
+      (make-instance 'backbone-monomer-shape)))
 
 
-
-(defclass oligomer-shape ()
+(defclass oligomer-shape (cando.serialize:serializable)
   ((name :initarg :name :reader name)
+   (oligomer :initarg :oligomer :reader oligomer)
+   (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector
+                         :documentation "This is mutable")
    (rotamers-state :initarg :rotamers-state :accessor rotamers-state
                    :type (member :undefined :incomplete-no-rotamers :incomplete-backbone-rotamers :complete-sidechain-and-backbone-rotamers)
                    :documentation "Mutable slot")
-   (oligomer :initarg :oligomer :reader oligomer)
-   (rotamers-database :initarg :rotamers-database :reader rotamers-database)
-   (monomer-shape-info-vector :initarg :monomer-shape-info-vector :reader monomer-shape-info-vector)
    (the-root-monomer :initarg :the-root-monomer :reader the-root-monomer)
    (in-monomers :initarg :in-monomers :reader in-monomers)
    (out-monomers :initarg :out-monomers :reader out-monomers)
-   (monomer-shape-vector :initarg :monomer-shape-vector :accessor monomer-shape-vector
-                         :documentation "This is mutable")
    (monomer-shape-to-index :initarg :monomer-shape-to-index :reader monomer-shape-to-index)
+   (monomer-shape-info-vector :initarg :monomer-shape-info-vector :reader monomer-shape-info-vector)
    (monomer-shape-map :initarg :monomer-shape-map :reader monomer-shape-map)
    ))
 
@@ -192,7 +211,6 @@ to the components and evaluate the BODY in that scope."
                    :name (name oligomer-shape)
                    :rotamers-state (rotamers-state oligomer-shape)
                    :oligomer (oligomer oligomer-shape)
-                   :rotamers-database (rotamers-database oligomer-shape)
                    :monomer-shape-info-vector (monomer-shape-info-vector oligomer-shape)
                    :the-root-monomer (the-root-monomer oligomer-shape)
                    :monomer-shape-to-index monomer-shape-to-index
@@ -205,9 +223,17 @@ to the components and evaluate the BODY in that scope."
   "Return the oligomer-space for the oligomer of the OLIGOMER-SHAPE"
   (oligomer-space (oligomer oligomer-shape)))
 
+(defmethod rotamers-database ((oligomer-shape oligomer-shape))
+  "Derived, not stored: look up the rotamers-database through the
+oligomer-space's foldamer instead of caching it in a slot."
+  (foldamer-rotamers-database (foldamer (oligomer-space oligomer-shape))))
+
+
 (defmethod print-object ((obj oligomer-shape) stream)
-  (print-unreadable-object (obj stream :type t)
-    (format stream "~s" (name obj))))
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream "~s" (name obj)))))
 
 #+(or)
 (defmethod orientation ((oligomer-shape oligomer-shape) (orientations orientations))
@@ -352,6 +378,100 @@ to the components and evaluate the BODY in that scope."
 
 (defgeneric make-oligomer-shape (oligomer-or-space &key &allow-other-keys))
 
+(defclass atom-stub (cando.serialize:serializable)
+  ((name         :initarg :name         :accessor atom-stub-name)
+   (position     :initarg :position     :accessor atom-stub-position)
+   (parent-index :initarg :parent-index :accessor atom-stub-parent-index)
+   (borrowed-p   :initarg :borrowed-p   :accessor atom-stub-borrowed-p)))
+
+(defmethod print-object ((atom-stub atom-stub) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (atom-stub stream :type t)
+        (format stream "~s ~s :parent-index ~d :borrowed-p ~a"
+                (atom-stub-name atom-stub)
+                (atom-stub-position atom-stub)
+                (atom-stub-parent-index atom-stub)
+                (atom-stub-borrowed-p atom-stub))
+        )))
+
+;; Keep the old constructor interface: still called as (make-atom-stub :name … :position   <geom:vector> …)
+(defun make-atom-stub (&key name position parent-index borrowed-p)
+  (make-instance 'atom-stub
+                 :name name
+                 :position position
+                 :parent-index parent-index
+                 :borrowed-p borrowed-p))
+
+(defun in-link-atom-name (monomer oligomer)
+  "Atom-name in the incoming residue that MONOMER's root bonds to."
+  (let* ((coupling (monomer-plug-named monomer (in-coupling-plug-name monomer)))
+         (incoming (other-monomer coupling monomer))
+         (out-plug-name (if (eq (source-monomer coupling) incoming)
+                            (source-plug-name coupling)
+                            (target-plug-name coupling)))
+         (out-plug (plug-named (monomer-topology incoming oligomer) out-plug-name)))
+    (atom-name (aref (plug-bonds out-plug) 0))))
+
+(defun ancestor-positions (stubs stub n)   ; stub + up to n-1 ancestors via parent-index
+  (loop repeat n for s = stub then (let ((p (atom-stub-parent-index s)))
+                                     (and (>= p 0) (aref stubs p)))
+        while s collect (atom-stub-position s)))
+
+(defun build-residue-shape-atom-coordinates (monomer incoming-shape joint-template position-fn oligomer)
+  (let ((entries (make-array 16 :adjustable t :fill-pointer 0))
+        (t->i (make-hash-table)) (root-parent -1))
+    ;; borrowed: incoming link atom + up to 2 of its ancestors, chained
+    (when incoming-shape
+      (let* ((istubs (atom-coordinates incoming-shape))
+             (link   (find (in-link-atom-name monomer oligomer) istubs :key #'atom-stub-name))
+             (poss   (ancestor-positions istubs link 3)))
+        (setf root-parent (fill-pointer entries))
+        (loop for tail on poss for i from (fill-pointer entries)
+              do (vector-push-extend
+                  (make-atom-stub :name nil :position (car tail) :borrowed-p t
+                                  :parent-index (if (cdr tail) (1+ i) -1))
+                  entries))))
+    ;; own atoms in joint order
+    (walk-joint-template joint-template
+                                  (lambda (jt)
+                                    (let ((p (parent jt)))
+                                      (setf (gethash jt t->i) (fill-pointer entries))
+                                      (vector-push-extend
+                                       (make-atom-stub :name (atom-name jt)
+                                                       :position (funcall position-fn monomer (atom-name jt))
+                                                       :parent-index (if p (gethash p t->i) root-parent))
+                                       entries))))
+    entries))
+
+(defun residue-shape-atom-position (residue-shape atom-name)
+  "Position of the named atom in RESIDUE-SHAPE's atom-coordinates, or NIL if absent.
+  Only reads named (own) stubs; borrowed stubs have :name NIL and are skipped."
+  (let ((stub (find atom-name (atom-coordinates residue-shape) :key #'atom-stub-name)))
+    (and stub (atom-stub-position stub))))
+
+
+(defun fill-residue-shape-coordinates (oligomer-shape oligomer position-fn)
+  "POSITION-FN : (monomer atom-name) -> geom:vector"
+  (loop for monomer in (ordered-monomers oligomer) ; incoming neighbor first
+        for monomer-shape = (gethash monomer (monomer-shape-map oligomer-shape))
+        when (typep monomer-shape 'residue-shape)
+          do (let* ((incoming-monomer (when (has-in-coupling-p monomer)
+                                        (monomer-on-other-side
+                                         monomer (in-coupling-plug-name monomer))))
+                    (incoming-shape   (and incoming-monomer
+                                           (gethash incoming-monomer
+                                                    (monomer-shape-map oligomer-shape)))))
+               (when (and incoming-shape (not (typep incoming-shape 'residue-shape)))
+                 (error "residue-shape for ~a has a rotamer-shape incoming (~a) — a residue-shape cannot borrow off a rotamer-shape"
+                        monomer incoming-shape))
+               (let ((joint-template   (joint-template
+                                        (monomer-topology monomer oligomer))))
+                 (setf (atom-coordinates monomer-shape)
+                       (build-residue-shape-atom-coordinates
+                        monomer incoming-shape joint-template position-fn oligomer))))))
+
+
 (defmethod make-oligomer-shape ((oligomer oligomer)
                                 &key
                                   (oligomer-shape-class-name 'oligomer-shape)
@@ -360,14 +480,14 @@ to the components and evaluate the BODY in that scope."
                                   callback-backbone-rotamer-indexes
                                   callback-sidechain-rotamer-indexes
                                   extra-arguments
+                                  position-fn
                                   name
                                   ignore-sidechains)
   "Make an oligomer-shape for the OLIGOMER.  Use the MONOMER-TO-MONOMER-SHAPE-MAP to lookup monomer-shapes for each monomer.
 Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES to set rotamer-indexes of any rotamer-shapes."
   (check-type callback-backbone-rotamer-indexes (or null function))
   (check-type callback-sidechain-rotamer-indexes (or null function))
-  (let* ((foldamer (topology:foldamer (topology:oligomer-space oligomer)))
-         (rotamers-database (topology:foldamer-rotamers-database foldamer))
+  (let* ((foldamer (foldamer (oligomer-space oligomer)))
          (shape-info (shape-info foldamer))
          #+(or)(kind-order (loop for kind-keys in (kind-keys shape-info)
                                  collect (kind kind-keys))))
@@ -379,7 +499,6 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
       (let* ((os (apply 'make-instance
                         oligomer-shape-class-name
                         :oligomer oligomer
-                        :rotamers-database rotamers-database
                         :monomer-shape-info-vector monomer-shape-info-vector
                         :monomer-shape-vector monomer-shape-vector
                         :monomer-shape-to-index monomer-shape-to-index
@@ -392,6 +511,15 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
                         extra-arguments)))
         (set-rotamers os :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
                          :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes)
+        (let ((unfilled-residue-shapes
+                (some (lambda (ms)
+                        (and (typep ms 'residue-shape)
+                             (not (slot-boundp ms 'atom-coordinates))))
+                      (monomer-shape-vector os))))
+          (cond
+            (position-fn (fill-residue-shape-coordinates os oligomer position-fn))              (unfilled-residue-shapes
+                                                                                                 (error "make-oligomer-shape: unfilled residue-shapes present but no 
+  :position-fn"))))
         os))))
 
 
@@ -799,10 +927,11 @@ The ROTAMER-INDEX slots of the ROTAMER-SHAPEs will be unbound on return."
 If the LIGAND-OLIGOMER mutates any residues in the backbone then random rotamers are chosen for the new oligomer-shape.
 Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
   (check-type original-oligomer-shape topology:oligomer-shape)
-  (let ((new-monomer-shape-map (build-mutant-monomer-shape-map original-oligomer-shape ligand-oligomer)))
+  (let ((new-monomer-shape-map (build-mutant-monomer-shape-map original-oligomer-shape ligand-oligomer))
+        (foldamer (foldamer (oligomer-space ligand-oligomer))))
     ;; Now we have a new-monomer-shape-map with residue-shape and rotamer-shapes
     ;; but the rotamer-shapes have unbound rotamer-index
-    ;; Fix up the backbones by copying rotamer-index if the rotamer-shape-context-rotamers is unchanged
+    ;; Fix up the backbones by copying rotamer-index if the monomer-context is unchanged
     ;;   or assigning a random one if it has changed
     (let ((callback-backbone-rotamer-indexes
             (lambda (permissible-backbone-rotamers)
@@ -814,9 +943,9 @@ Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
                     for monomer-shape-info = (aref (topology:monomer-shape-info-vector original-oligomer-shape) monomer-shape-locus)
                     for monomer = (topology:monomer monomer-shape-info)
                     for new-monomer-shape = (gethash monomer new-monomer-shape-map)
-                    for new-monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers new-monomer-shape)
-                    for monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers monomer-shape)
-                    for same = (eq new-monomer-shape-rotamers monomer-shape-rotamers)
+                    for old-context = (monomer-context monomer-shape-info)
+                    for new-context = (foldamer-monomer-context monomer ligand-oligomer foldamer)
+                    for same = (eq new-context old-context)
                     for new-index = (if same
                                         (topology:rotamer-index monomer-shape)
                                         (progn
@@ -835,44 +964,3 @@ Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
                                     :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
                                     :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes))))
 
-
-(defun make-oligomer-shape-with-mutated-sidechains (original-oligomer-shape ligand-oligomer &key name sidechain-rotamer-indexes)
-  "Generate a new oligomer-shape based on ORIGINAL-OLIGOMER-SHAPE with the sequence LIGAND-OLIGOMER.
-Only mutations in the sidechains are allowed - there can be no changes to the backbone monomers or rotamers.
-Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
-  (check-type original-oligomer-shape topology:oligomer-shape)
-  (let ((new-monomer-shape-map (build-mutant-monomer-shape-map original-oligomer-shape ligand-oligomer)))
-    ;; Now we have a new-monomer-shape-map with residue-shape and rotamer-shapes
-    ;; but the rotamer-shapes have unbound rotamer-index
-    ;; Fix up the backbones by copying rotamer-index if the rotamer-shape-context-rotamers is unchanged
-    ;;   or assigning a random one if it has changed
-    (let ((original-monomer-shape-map (topology:monomer-shape-map original-oligomer-shape)))
-      (break "Check the new-monomer-shape-map and compare it to the one in the original-oligomer-shape"))
-    (let ((callback-backbone-rotamer-indexes
-            (lambda (permissible-backbone-rotamers)
-              (loop with result-vec = (make-array 16 :adjustable t :fill-pointer 0)
-                    for permissible-rotamer across (topology:permissible-rotamer-vector permissible-backbone-rotamers)
-                    for monomer-shape-locus = (topology:monomer-shape-locus permissible-rotamer)
-                    for allowed-rotamer-indexes = (topology:allowed-rotamer-indexes permissible-rotamer)
-                    for monomer-shape = (aref (topology:monomer-shape-vector original-oligomer-shape) monomer-shape-locus)
-                    for monomer-shape-info = (aref (topology:monomer-shape-info-vector original-oligomer-shape) monomer-shape-locus)
-                    for monomer = (topology:monomer monomer-shape-info)
-                    for new-monomer-shape = (gethash monomer new-monomer-shape-map)
-                    for new-monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers new-monomer-shape)
-                    for monomer-shape-rotamers = (topology:rotamer-shape-context-rotamers monomer-shape)
-                    for same = (eq new-monomer-shape-rotamers monomer-shape-rotamers)
-                    for new-index = (if same
-                                        (topology:rotamer-index monomer-shape)
-                                        (progn
-                                          (let ((len (length allowed-rotamer-indexes)))
-                                            (aref allowed-rotamer-indexes (random len)))))
-                    do (vector-push-extend new-index result-vec)
-                    finally (return (make-instance 'topology:rotamer-indexes :rotamer-indexes result-vec)))))
-          (callback-sidechain-rotamer-indexes
-            (lambda (permissible-sidechain-rotamers)
-              sidechain-rotamer-indexes)))
-      (topology:make-oligomer-shape ligand-oligomer
-                                    :monomer-to-monomer-shape-map new-monomer-shape-map
-                                    :name name
-                                    :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
-                                    :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes))))

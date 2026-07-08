@@ -396,6 +396,18 @@ CL_DEFMETHOD void Joint_O::setPosition(chem::NVector_sp coords,const Vector3& po
                _rep_(this->asSmartPtr()), this->_PositionIndexX3, coords->length(), this->_EndPositionIndexX3);
 }
 
+CL_DEFMETHOD Vector3 Joint_O::getPosition(chem::NVector_sp coords) const
+{
+  if (this->_PositionIndexX3>=0 && this->_PositionIndexX3 <coords->length()) {
+    Vector3 pos((*coords)[this->_PositionIndexX3+0],
+                (*coords)[this->_PositionIndexX3+1],
+                (*coords)[this->_PositionIndexX3+2]);
+    return pos;
+  }
+  SIMPLE_ERROR("Out of range Joint_O::setPosition {} at {} when coord length is {} _EndPositionIndexX3 = {}",
+               _rep_(this->asSmartPtr()), this->_PositionIndexX3, coords->length(), this->_EndPositionIndexX3);
+}
+
 
 CL_LISPIFY_NAME("clearProperty");
 CL_DEFMETHOD void Joint_O::clearProperty(core::Symbol_sp symbol)

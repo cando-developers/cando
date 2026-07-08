@@ -165,7 +165,7 @@ This is so we can create multiple foldamers that have different expressive power
   (let ((focus-node (root dag))
         (node-to-monomer (make-hash-table))
         (oligomer-space (make-instance 'topology:oligomer-space
-                                       :foldamer foldamer)))
+                                       :foldamer-name (topology:foldamer-name foldamer))))
     (loop for node across (nodes dag)
           for name = (name node)
           for names = (downselect-foldamer-topology-names foldamer name topology-groups)

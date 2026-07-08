@@ -220,6 +220,7 @@ public:
 
 	/*! Set the position */
   void setPosition(chem::NVector_sp coords, const Vector3& pos);
+  Vector3 getPosition(chem::NVector_sp coords) const;
 
   CL_LISPIFY_NAME("KIN:PROPERTIES");
   CL_DEFMETHOD core::List_sp getProperties() const { return this->_Properties; };

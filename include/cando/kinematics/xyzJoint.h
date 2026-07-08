@@ -54,9 +54,10 @@ public:
   int		_NumberOfChildren;
         // _Children start with the value unbound
   Joint_sp	_Children[MaxChildren];
-  chem::Atom_sp       _Atom;
+  Vector3       _AtomPosition;
+  int           _AtomPositionIndex3 = -1; // >= 0 : source slot in a coords vector to refresh _AtomPositon from; -1: set directly
 public:
-  static XyzJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp atom );
+  static XyzJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, const Vector3& atomPosition );
 public:
 	/*! Xyz atoms can have different numbers of children wrt JumpJoints */
   virtual int _maxNumberOfChildren() const { return MaxChildren;};
@@ -80,15 +81,17 @@ public:
   XyzJoint_O() : Joint_O(),
                  _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()} {};
 
-  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, core::T_sp atom )
+  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, const Vector3& atomPosition )
       : Joint_O(atomId,name,atomTable),
-        _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
-        _Atom(gc::As<chem::Atom_sp>(atom)) {};
+        _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()}
+      , _AtomPosition(atomPosition)
+        {};
 
-  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable)
+  XyzJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, int atomPositionIndex3 )
       : Joint_O(atomId,name,atomTable),
-        _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()},
-        _Atom(unbound<chem::Atom_O>()) {};
+        _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()}
+      , _AtomPositionIndex3(atomPositionIndex3)
+        {};
 
   virtual core::Symbol_sp typeSymbol() const;
 
@@ -101,6 +104,8 @@ public:
 	/*! Return the stubJoint3 */
   virtual Joint_sp inputStubJoint2() const;
 
+  void updateAtomPositionFromCoords(chem::NVector_sp coords);
+  
   virtual void _updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords);
 
   bool keepDofFixed(DofType dof) const;
@@ -122,8 +127,9 @@ public:
 	/*! Geta the value of the DOF */
   double dof(DofType const& dof) const;
 
-  CL_DEFMETHOD chem::Atom_sp getAtom() const { ASSERT(this->_Atom.boundp()); return this->_Atom; };
-  CL_DEFMETHOD void setAtom(chem::Atom_sp atm) { this->_Atom = atm; };
+  void setFixedPosition(const Vector3& pos);
+  Vector3 getFixedPosition() const;
+
   CL_DEFMETHOD Vector3 transformedPos() const;
   CL_DEFMETHOD Vector3 untransformedPos() const;
 
@@ -148,26 +154,29 @@ public:
 public:
   static const NodeType nodeType = stubJoint;
 public:
-  chem::Atom_sp       _ParentAtom;
-  chem::Atom_sp       _GrandParentAtom;
-  chem::Atom_sp       _GreatGrandParentAtom;
+  Vector3       _ParentAtomPosition;
+  Vector3       _GrandParentAtomPosition;
+  Vector3       _GreatGrandParentAtomPosition;
+  int           _ParentAtomPositionIndex3 = -1;
+  int           _GrandParentAtomPositionIndex3 = -1;
+  int           _GreatGrandParentAtomPositionIndex3 = -1;
 public:
-  static StubJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable,
-                           chem::Atom_sp atom,
-                           chem::Atom_sp parentAtom,
-                           chem::Atom_sp grandParentAtom,
-                           chem::Atom_sp greatGrandParentAtom
+  static StubJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable
+                           ,int atomPositionIndex3
+                           ,int parentAtomPositionIndex3
+                           ,int grandParentAtomPositionIndex3
+                           ,int greatGrandParentAtomPositionIndex3
                            );
 public:
   StubJoint_O() : XyzJoint_O() {};
-  StubJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable, 
-              chem::Atom_sp atom,
-              chem::Atom_sp parentAtom,
-              chem::Atom_sp grandParentAtom,
-              chem::Atom_sp greatGrandParentAtom
+  StubJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable
+                            ,int atomPositionIndex3
+                            ,int parentAtomPositionIndex3
+                            ,int grandParentAtomPositionIndex3
+                            ,int greatGrandParentAtomPositionIndex3
               )
-      : XyzJoint_O(atomId,name,atomTable,atom), _ParentAtom(parentAtom), _GrandParentAtom(grandParentAtom),
-        _GreatGrandParentAtom(greatGrandParentAtom) {}
+      : XyzJoint_O(atomId,name,atomTable,atomPositionIndex3)
+      , _ParentAtomPositionIndex3(parentAtomPositionIndex3), _GrandParentAtomPositionIndex3(grandParentAtomPositionIndex3), _GreatGrandParentAtomPositionIndex3(greatGrandParentAtomPositionIndex3) {}
 
   Vector3 transformedParentPos() const;
   Vector3 transformedGrandParentPos() const;
@@ -175,6 +184,7 @@ public:
 
   Joint_sp parent() const { SIMPLE_ERROR("Never ask for the parent of {}", _rep_(this->asSmartPtr()) ); };
   void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub);
+  void updateStubPositionsFromCoords(chem::NVector_sp coords);
 };
 
 

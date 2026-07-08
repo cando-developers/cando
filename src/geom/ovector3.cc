@@ -75,6 +75,14 @@ CL_DEFUN OVector3_sp OVector3_O::make(vecreal x, vecreal y, vecreal z)
   return ov;
 }
 
+CL_NAME("VEC-UNDEFINED");
+DOCGROUP(cando);
+CL_DEFUN OVector3_sp OVector3_O::make_undefined()
+{
+  Vector3 undef; // fill with std::numeric_limits<vecreal>::quiet_NaN()
+  auto ov = gctools::GC<OVector3_O>::allocate(undef.getX(),undef.getY(),undef.getZ());
+  return ov;
+}
 CL_NAME("VEC-ARRAY");
 DOCGROUP(cando);
 CL_DEFUN OVector3_sp OVector3_O::make_array(chem::NVector_sp coordinates, size_t index0)
