@@ -308,8 +308,7 @@
        :accessor id)
    (couplings :type hash-table
               :initform (make-hash-table)
-              :initarg :couplings
-              :accessor couplings)
+              :accessor couplings) ; no :initarg :couplings - so we don't serialize this
    (monomers :initarg :monomers :accessor monomers)))
 
 (defmethod print-object ((obj monomer) stream)
@@ -318,6 +317,9 @@
       (print-unreadable-object (obj stream :type t :identity t)
         (format stream ":id ~s :monomers ~s" (id obj) (monomers obj)))))
 
+(defgeneric register-coupling-with-monomers (coupling)
+  (:documentation "Add COUPLING to the couplings hash-tables of the monomers it joins."))
+  
 (defun number-of-stereoisomers (monomer)
   (length (monomers monomer)))
 
@@ -466,6 +468,14 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
            (couplings monomer))
   nil)
 
+(defmethod register-coupling-with-monomers ((coupling directional-coupling))
+  (setf (gethash (source-plug-name coupling) (couplings (source-monomer coupling))) coupling
+        (gethash (target-plug-name coupling) (couplings (target-monomer coupling))) coupling))
+ 
+(defmethod register-coupling-with-monomers ((coupling ring-coupling))
+  (setf (gethash (plug1 coupling) (couplings (monomer1 coupling))) coupling
+        (gethash (plug2 coupling) (couplings (monomer2 coupling))) coupling))
+  
 (defclass oligomer-space (cando.serialize:serializable)
   ((foldamer-name :initarg :foldamer-name :accessor foldamer-name)
    (name :initform :defos :initarg :name :reader name)
@@ -479,10 +489,11 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
                         :initarg :number-of-sequences
                         :accessor %number-of-sequences)))
 
-(cando.serialize:make-class-save-load oligomer-space
-  :print-unreadably
- (lambda (obj stream)
-   (print-unreadable-object (obj stream :type t))))
+(defmethod initialize-instance :after ((obj oligomer-space) &key &allow-other-keys)
+  ;; On load the monomers' couplings hash-tables are empty (that slot is no longer
+  ;; serialized); rebuild them from the authoritative couplings vector.
+  (loop for coupling across (couplings obj)
+        do (register-coupling-with-monomers coupling)))
 
 (defmethod foldamer (oligomer-space)
   (find-foldamer (foldamer-name oligomer-space)))
