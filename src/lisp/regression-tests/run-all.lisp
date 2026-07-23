@@ -19,6 +19,7 @@
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-nonbond.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-elec.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;energy.lisp")
+(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;smirnoff-cache.lisp")
 
 #-swank(ext:quit (if (show-test-summary) 0 1))
 #+swank(show-test-summary)

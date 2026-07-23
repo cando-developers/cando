@@ -1,13 +1,14 @@
 (in-package :smirnoff)
 
-(defvar *type-index* 0)
-
-(defun next-smirnoff-type-symbol (smirks)
-  (let* ((index (1- (mp:atomic-incf *type-index*)))
-         (index-string (format nil "$~36r" index)))
-    (unless (<= (length index-string) 4)
-      (error "We have exhausted the numbe of Smirnoff atom types that are available"))
-    (intern index-string :keyword)))
+(defun next-smirnoff-type-symbol (smirks index)
+  "The vdw atom type is $<index>.<smirks> interned as a keyword, e.g. :|$5.[#6X4:1]|.
+INDEX is the type's position within this force field's vdw terms.  Leading with the
+index means the name can be TRUNCATED to AMBER's short atom-type field width and
+still be unique (the index alone distinguishes types); the trailing SMIRKS keeps
+the full name human-readable.  INDEX is the per-force-field parse position (not the
+old global *type-index* counter), so the name is deterministic for a given offxml -
+which is what keeps the (atom-name . constitution-context) -> vdw-type cache valid."
+  (intern (format nil "$~a.~a" index smirks) :keyword))
 
 (defvar *smirnoff-types* (make-hash-table :test #'equal :thread-safe t))
 
@@ -279,7 +280,9 @@
                (epsilon (canonical-kj/mol (parse-quantity (safe-gethash "epsilon" attrs))))
                (rmin-half (parse-rmin_half attrs))
                (type (or (gethash smirks *smirnoff-types*)
-                         (let ((type (next-smirnoff-type-symbol smirks)))
+                         (let ((type (next-smirnoff-type-symbol
+                                      smirks
+                                      (length (terms (vdw-force *smirnoff*))))))
                            (setf (gethash smirks *smirnoff-types*) type)
                            type)))
                (term (make-instance 'nonbond-term

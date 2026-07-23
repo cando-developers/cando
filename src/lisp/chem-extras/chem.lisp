@@ -4,11 +4,11 @@
 
 (defparameter chem:*save-positions* nil)
 
-(defgeneric chem:compute-merged-nonbond-force-field-for-aggregate (aggregate atom-types))
-(defgeneric chem:compute-merged-lksolvation-force-field-for-aggregate (aggregate))
+(defgeneric chem:compute-merged-nonbond-force-field-for-aggregate (aggregate atom-types molecule-force-field-names))
+(defgeneric chem:compute-merged-lksolvation-force-field-for-aggregate (aggregate molecule-force-field-names))
 
 ;;(defmethod chem:lookup-atom-properties-radius (atom &optional (force-field-name :default))
-  ;; "Return (values atom-radius radius-is-default-t-nil)"
+;; "Return (values atom-radius radius-is-default-t-nil)"
 ;;  (values 1.5 t))
 
 (defun chem:lookup-atom-properties-radius (atom nonbond-db &optional (force-field-name :default))
@@ -45,10 +45,10 @@
 
 #|
 (defgeneric chem:nonbond-force-field-database (force-field)
-  (:documentation "Return an object that represents the nonbond component of the force-field"))
+(:documentation "Return an object that represents the nonbond component of the force-field"))
 
 (defmethod chem:nonbond-force-field-database ((force-field chem:force-field))
-  (chem:force-field-get-nonbond-db force-field))
+(chem:force-field-get-nonbond-db force-field))
 |#
 
 
@@ -90,6 +90,16 @@ multiple force-fields and know how a more recently added force-field shadows a l
 (defmethod chem:force-fields-as-list ((combined-force-field chem:combined-force-field))
   (chem:combined-force-field/force-fields-as-list combined-force-field))
 
+(defgeneric chem:nonbond-force-field-name (force-field force-field-name)
+    (:documentation "The registry name under which FORCE-FIELD's nonbond parameters
+  should be merged into the aggregate nonbond force field.  Defaults to the FF's own
+  registry name; a wrapper FF that SHARES another FF's nonbond db returns that db's
+  name, so the two dedup into a single merge entry instead of tripping the
+  'there can be only one' duplicate-type error in combine-nonbond-force-fields."))
+
+(defmethod chem:nonbond-force-field-name (force-field force-field-name)
+  force-field-name)
+ 
 
 (defgeneric chem:nonbond-component (force-field)
   (:documentation "Return the nonbond component of the force-field"))
@@ -102,7 +112,27 @@ multiple force-fields and know how a more recently added force-field shadows a l
 (defgeneric chem:assign-force-field-types (combined-force-field molecule atom-types)
   (:documentation  "Assign force-field types"))
 
+(defmethod chem:assign-force-field-types (combined-force-field molecule atom-types)
+  (error "Handle the chem:assign-force-field-types for the type of combined-force-field ~s and the force-field-name for molecule: ~s"
+         combined-force-field (chem:force-field-name molecule)))
+
+(defun assign-given-atom-types (molecule atom-types)
+  "Copy every atom's :given-atom-type property (when present) into ATOM-TYPES.
+This is the highest-priority type source - given > residue-template > rules -
+and is how AMBER-protein template types and smirnoff-parameter-cache
+(atom-name . constitution-context) types are supplied.  Returns ATOM-TYPES."
+  (chem:map-atoms nil (lambda (atom)
+                        (let ((given (chem:matter-get-property-or-default atom :given-atom-type nil)))
+                          (when given
+                            (setf (gethash atom atom-types) given))))
+                  molecule)
+  atom-types)
+
 (defmethod chem:assign-force-field-types ((combined-force-field chem:combined-force-field) molecule atom-types)
+  ;; Highest priority: any :given-atom-type stamped on atoms wins.
+  (assign-given-atom-types molecule atom-types)
+  ;; Then residue-template types, then SMARTS rules, for atoms still untyped.
+  ;; assignTypes skips atoms already present in atom-types.
   (chem:combined-force-field/assign-force-field-types combined-force-field molecule atom-types))
 
 
@@ -129,6 +159,73 @@ multiple force-fields and know how a more recently added force-field shadows a l
           (ffitor-db (chem:get-itor-db merged-force-field)))
       #+(or)(warn "At this point we should run parmchk2 on the stretch/angle/ptor/itor components of the merged-force-field - any missing parameters should be provided by parmchk2")
       (chem:energy-function/generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db :keep-interaction-factory keep-interaction-factory :atom-types (chem:atom-types energy-function)))))
+
+;;; ------------------------------------------------------------
+  ;;; Per-molecule parameterization, dispatched on the force field.
+  ;;; Perception (rings/aromaticity) is NOT here - it lives in the assign/generate
+  ;;; methods that consume it (GAFF assign, SMIRNOFF generate), so a cached force
+  ;;; field that delegates to real SMIRNOFF still perceives.
+  ;;; ------------------------------------------------------------
+
+(defmacro chem:with-perception ((molecule force-field-name) &body body)
+  "Bind chem:*current-rings* and chem:*current-aromaticity-information* for MOLECULE
+  around BODY - but only if they aren't already bound, so a nested call (a cache miss
+  delegating to real SMIRNOFF inside an already-perceiving context) doesn't redo it."
+  (let ((m (gensym "MOL")) (n (gensym "FFN")))
+    `(let ((,m ,molecule) (,n ,force-field-name))
+       (if (boundp 'chem:*current-rings*)
+           (progn ,@body)
+           (let* ((chem:*current-rings* (chem:identify-rings ,m))
+                  (chem:*current-aromaticity-information*
+                    (chem:identify-aromatic-rings ,m ,n)))
+             ,@body)))))
+
+(defgeneric chem:define-for-molecule-using-force-field
+    (energy-function molecule force-field force-field-name atom-types
+     nonbond-force-field keep-interaction-factory)
+  (:documentation "Parameterize one MOLECULE with FORCE-FIELD: assign atom types,
+  construct its atom-table (nonbond) entries, generate its bonded terms.  Dispatches on
+  FORCE-FIELD; perception is handled inside the assign/generate methods that need it."))
+
+(defmethod chem:define-for-molecule-using-force-field
+    (energy-function molecule force-field force-field-name atom-types
+     nonbond-force-field keep-interaction-factory)
+  (declare (ignore force-field-name))
+  (chem:assign-force-field-types force-field molecule atom-types)
+  (chem:construct-from-molecule (chem:atom-table energy-function)
+                                molecule nonbond-force-field keep-interaction-factory atom-types)
+  (chem:generate-molecule-energy-function-tables
+   energy-function molecule force-field keep-interaction-factory))
+
+;;; --- AMBER / GAFF wrappers: thin, dispatch-only, over a ForceField ----------
+(defclass chem:amber-force-field ()
+  ((force-field :initarg :force-field :accessor chem:wrapped-force-field)))
+(defclass chem:gaff-force-field ()
+  ((force-field :initarg :force-field :accessor chem:wrapped-force-field)))
+
+;; typing: AMBER = residue templates (no aromaticity); GAFF = SMARTS rules (needs it).
+(defmethod chem:assign-force-field-types ((ff chem:amber-force-field) molecule atom-types)
+  (chem:assign-types (chem:wrapped-force-field ff) molecule atom-types))
+
+(defmethod chem:assign-force-field-types ((ff chem:gaff-force-field) molecule atom-types)
+  (chem:with-perception (molecule (chem:force-field-name molecule))
+    (chem:assign-types (chem:wrapped-force-field ff) molecule atom-types)))
+
+;; bonded generation: identical DB lookup for both, no aromaticity.
+(defun %generate-standard-for-force-field (ef molecule force-field keep)
+  (chem:energy-function/generate-standard-energy-function-tables
+   ef molecule
+   (chem:get-stretch-db force-field) (chem:get-angle-db force-field)
+   (chem:get-ptor-db force-field)    (chem:get-itor-db force-field)
+   :keep-interaction-factory keep :atom-types (chem:atom-types ef)))
+
+(defmethod chem:generate-molecule-energy-function-tables (ef molecule (ff chem:amber-force-field)
+                                                          keep)
+  (%generate-standard-for-force-field ef molecule (chem:wrapped-force-field ff) keep))
+(defmethod chem:generate-molecule-energy-function-tables (ef molecule (ff chem:gaff-force-field)
+                                                          keep)
+  (%generate-standard-for-force-field ef molecule (chem:wrapped-force-field ff) keep))
+
 
 
 ;;; ------------------------------------------------------------
@@ -361,18 +458,18 @@ evaluates the body in that dynamic environment."
       (format sout "Total E. ~10,5f  mask ~a~%" total-energy (not (null active-atom-mask)))
       (format sout "~s~%" (chem:energy-components/components energy-components)))))
 #||
-      (loop for component in components
-            for comp-energy = (chem:energy-component-evaluate-energy energy-function component pos active-atom-mask)
-            do (format sout "  ~30a ~a ~10,5f~%" (class-name (class-of component))
-                       (chem:energy-component/is-enabled component)
-                       comp-energy)
-            when (typep component 'chem:energy-nonbond)
-              do (format sout "      ee ~10,5f    vdw ~10,5f~%"
-                         (chem:energy-nonbond/get-vdw-energy component)
-                         (chem:energy-nonbond/get-electrostatic-energy component)
-                         )
-            )
-      )))
+(loop for component in components
+for comp-energy = (chem:energy-component-evaluate-energy energy-function component pos active-atom-mask)
+do (format sout "  ~30a ~a ~10,5f~%" (class-name (class-of component))
+(chem:energy-component/is-enabled component)
+comp-energy)
+when (typep component 'chem:energy-nonbond)
+do (format sout "      ee ~10,5f    vdw ~10,5f~%"
+(chem:energy-nonbond/get-vdw-energy component)
+(chem:energy-nonbond/get-electrostatic-energy component)
+)
+)
+)))
 ||#
 
 
@@ -406,7 +503,7 @@ evaluates the body in that dynamic environment."
       (format sout "BOND     = ~12,4f  ANGLE   = ~12,4f   DIHED     = ~12,4f~%" bond angle dihed)
       (format sout "VDWAALS  = ~12,4f  EEL     = ~12,4f   HBOND     = ~12,4f~%" vdwaals eel 0.0)
       (format sout "1-4 VDW  = ~12,4f  1-4 EEL = ~12,4f   RESTRAINT = ~12,4f~%" vdw1-4 eel1-4 restraint)
-    )))
+      )))
 
 (define-condition chem:parameterization-error (error) ()
   (:documentation "Base condition for parameterization errors"))
@@ -767,9 +864,9 @@ SPEC can be:
 ;;; ---------------------------------------------------------------------------
 
 (defun chem:make-energy-function (&rest args &key matter spec
-                                    use-excluded-atoms keep-interaction-factory
-                                    assign-types setup
-                                    disable-components enable-components)
+                                               use-excluded-atoms keep-interaction-factory
+                                               assign-types force-field-overrides setup
+                                               disable-components enable-components)
   "Create an energy function for MATTER.
 If :spec is provided, it is parsed to derive :keep-interaction-factory and :setup.
 Otherwise, :keep-interaction-factory and :setup are used directly (backward compatible).
@@ -784,6 +881,7 @@ Examples:
     :spec '(:rosetta
             (chem:energy-rosetta-nonbond :rep-weight 0.5)))"
   (declare (ignore matter use-excluded-atoms assign-types
+                   force-field-overrides
                    disable-components enable-components))
   (if spec
       (progn
@@ -826,7 +924,7 @@ Examples:
 
 ;;; ---------------------------------------------------------------------------
 
-(defun chem:find-lksolvation-type (lksolvation-db type &key (errorp t))
+(defun chem:find-lksolvation-type (lksolvation-db type &optional (errorp t))
   "Used by energyRosettaLKSolvation.cc"
   (let ((ff (chem:fflksolvation-find-type lksolvation-db type)))
     (if ff

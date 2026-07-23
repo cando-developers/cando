@@ -156,6 +156,7 @@ namespace chem {
     CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
       this->_Matter1 = matter1;
       this->_Matter2 = matter2;
+      this->_DisplacementBuffer = nil<core::T_O>();
     }
     void clearTerms() { _Terms.clear(); }
     void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }

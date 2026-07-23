@@ -211,6 +211,7 @@ public:
   EnergyAtom&	energyAtomEntry(uint i) { return this->_Atoms[i]; };
   EnergyAtom*	findEnergyAtomWithCoordinateIndex(uint i) { return &this->_Atoms[i/3]; };
 
+  
   void	add(EnergyAtom& aa) { SIMPLE_ERROR("AtomTable->add(EnergyAtom may cause recursive allocation"); this->_Atoms.push_back(aa);};
 
 	/*! Add the info for a single atom and return the coordinate index (index*3) of the atom */
@@ -240,7 +241,7 @@ public:
   //
   core::HashTable_sp getAtomTableIndexes();
   CL_DEFMETHOD MatterName elt_atom_name(int index) { return this->_Atoms[index]._AtomName; };
-  CL_DEFMETHOD core::Symbol_sp elt_atom_type(int index,core::HashTable_sp atomTypes);
+  CL_DEFMETHOD core::T_sp elt_atom_type(int index,core::HashTable_sp atomTypes);
   CL_DEFMETHOD Atom_sp elt_atom(int index) { return this->_Atoms[index].atom(); };
   CL_DEFMETHOD int elt_atom_coordinate_index_times3(int index) { return this->_Atoms[index].coordinateIndexTimes3(); };
   CL_DEFMETHOD double elt_charge(int index) { return this->_Atoms[index]._Charge; };

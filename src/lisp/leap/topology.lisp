@@ -598,6 +598,16 @@ then don't calculate 1,4 interactions"
 ;;;                      (format t "type1 ~a type2 ~a~%" type1 type2)
       (values ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))))
 
+(defun amber-atom-type-name (type)
+  "AMBER prmtop atom-type names are short (4 chars).  A vdw type of the form
+$<index>.<smirks> is shortened to its $<index> prefix - unique per type, since the
+index leads.  A name with no dot (an ordinary AMBER/GAFF type) is returned unchanged."
+  (let* ((s (string type))
+         (dot (position #\. s)))
+    (if dot
+        (intern (subseq s 0 dot) :keyword)
+        type)))
+
 (defun chem:prepare-amber-energy-nonbond (energy-function ffnonbond-db)
   (let* ((atom-table (chem:atom-table energy-function))
          (atom-types (chem:atom-types energy-function))
@@ -614,7 +624,7 @@ then don't calculate 1,4 interactions"
 ;;;    (format t "ffnonbond-db -> ~a~%" ffnonbond-db)
     (loop for i from 0 below natom
        for atom-name = (chem:elt-atom-name atom-table i)
-       for atom-type = (chem:elt-atom-type atom-table i atom-types)
+       for atom-type = (amber-atom-type-name (chem:elt-atom-type atom-table i atom-types))
        for charge = (chem:elt-charge atom-table i)
        ;;for mass = (chem:elt-mass atom-table i)
        for type-index = (chem:elt-type-index atom-table i)

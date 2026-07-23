@@ -182,6 +182,10 @@ public:
   Vector3 transformedGrandParentPos() const;
   Vector3 transformedGreatGrandParentPos() const;
 
+  bool    anchoredFrameP()       const override { return true; }
+  Vector3 anchorParentPos()      const override { return this->transformedParentPos(); }
+  Vector3 anchorGrandParentPos() const override { return this->transformedGrandParentPos(); }
+  
   Joint_sp parent() const { SIMPLE_ERROR("Never ask for the parent of {}", _rep_(this->asSmartPtr()) ); };
   void _updateXyzCoord(chem::NVector_sp internals, chem::NVector_sp coords, Stub& stub);
   void updateStubPositionsFromCoords(chem::NVector_sp coords);

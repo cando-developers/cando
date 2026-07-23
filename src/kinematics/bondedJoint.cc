@@ -250,32 +250,24 @@ Stub BondedJoint_O::getInputStub(chem::NVector_sp coords) const
 {
   Stub stub;
   auto parent = this->parent();
-  if (gc::IsA<StubJoint_sp>(parent)) {
-    auto stubParent = gc::As_unsafe<StubJoint_sp>(parent);
+  if (parent->anchoredFrameP()) {
     geom::stubFromThreePoints( stub._Transform,
-                               stubParent->position(coords),
-                               stubParent->transformedParentPos(),
-                               stubParent->transformedGrandParentPos() );
+                               parent->position(coords),
+                               parent->anchorParentPos(),
+                               parent->anchorGrandParentPos());
+    KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
     return stub;
   }
   auto grandParent = parent->parent();
-  if (gc::IsA<StubJoint_sp>(grandParent)) {
-    auto stubGrandParent = gc::As_unsafe<StubJoint_sp>(grandParent);
-    geom::stubFromThreePoints( stub._Transform,
-                               parent->position(coords),
-                               stubGrandParent->position(coords),
-                               stubGrandParent->transformedParentPos() );
-    return stub;
-  }
-  auto greatGrandParent = grandParent->parent();
-  if (gc::IsA<StubJoint_sp>(greatGrandParent)) {
-    auto stubGreatGrandParent = gc::As_unsafe<StubJoint_sp>(greatGrandParent);
+  if (grandParent->anchoredFrameP()) {
     geom::stubFromThreePoints( stub._Transform,
                                parent->position(coords),
                                grandParent->position(coords),
-                               stubGreatGrandParent->position(coords) );
+                               grandParent->anchorParentPos());
+    KIN_LOG("for {} stub = {}\n", _rep_(this->_Name), stub._Transform.asString());
     return stub;
   }
+  auto greatGrandParent = grandParent->parent();
   geom::stubFromThreePoints(stub._Transform,
                       parent->position(coords),
                       grandParent->position(coords),

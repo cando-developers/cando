@@ -617,7 +617,11 @@
    #:ligand-molecule
    #:receptor-molecule
    #:residue-shape-atom-position
-   #:closest-rotamer-index))
+   #:closest-rotamer-index
+   #:assign-given-atom-types
+   #:assign-residue-given-atom-types
+   #:piece-atoms
+   #:place-all-pieces))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)
@@ -645,7 +649,8 @@
    #:match-iterator
    #:copy-specialized
    #:with-match-cache
-   #:node-count))
+   #:node-count
+   #:match-as-constitution-symbol))
 
 (defpackage #:topology.graphviz
   (:use #:common-lisp)

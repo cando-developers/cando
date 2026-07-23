@@ -17,4 +17,5 @@
    (:file "units")
    (:file "load")
    (:file "smirnoff")
+   (:file "smirnoff-cache")
    ))

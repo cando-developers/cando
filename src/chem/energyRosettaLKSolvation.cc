@@ -75,6 +75,21 @@ EnergyRosettaLKSolvation_sp EnergyRosettaLKSolvation_O::make(EnergyFunction_sp e
   SIMPLE_ERROR("Mismatch between keepInteractionFactory (says don't create EnergyRosettaLKSolvation_O) and EnergyRosettaLKSolvation_O::make which says make it");
 }
 
+CL_LAMBDA((self chem:energy-rosetta-lksolvation) mat1 mat2 energy-function keep-interaction-factory);
+CL_DEFMETHOD void EnergyRosettaLKSolvation_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
+                                                                          EnergyFunction_sp energyFunction,
+                                                                          core::T_sp keepInteractionFactory) {
+  this->_Matter1 = mat1;
+  this->_Matter2 = mat2;
+  this->_KeepInteractionFactory = keepInteractionFactory;
+  this->_Terms.clear();
+  this->_AtomTable = energyFunction->_AtomTable;
+  this->_AtomTypes = energyFunction->atomTypes();
+  this->_LKSolvationForceField = this->_AtomTable->lksolvationForceFieldForAggregate();
+  // Force the next maybeRebuildPairList to actually rebuild - see the header comment.
+  this->_DisplacementBuffer = nil<core::T_O>();
+}
+
 std::string EnergyRosettaLKSolvation_O::implementation_details() const {
   Rosetta_Lk_Solvation<NoHessian> lk;
   std::stringstream ss;

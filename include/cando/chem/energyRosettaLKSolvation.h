@@ -154,6 +154,7 @@ namespace chem {
     CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
       this->_Matter1 = matter1;
       this->_Matter2 = matter2;
+      this->_DisplacementBuffer = nil<core::T_O>();
     }
     void clearTerms() { _Terms.clear(); }
     void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
@@ -217,6 +218,17 @@ namespace chem {
                              gc::Nilable<NVector_sp> dvec,
                              core::T_sp activeAtomMask,
                              core::T_sp debugInteractions);
+
+    /*! Point this component at a pair of matters and (re)initialize everything the
+        between-matters pair-list build needs.  Mirrors
+        EnergyRosettaNonbond_O::constructNonbondTermsBetweenMatters.  Clearing
+        _DisplacementBuffer is essential, not incidental: maybeRebuildPairList decides
+        whether to rebuild from coordinate drift alone, so without the reset a second
+        pair evaluated against an unchanged coordinate vector would silently reuse the
+        previous pair's terms. */
+    CL_DEFMETHOD void constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
+                                                   EnergyFunction_sp energyFunction,
+                                                   core::T_sp keepInteractionFactory);
 
     core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
     core::T_mv rebuildPairList(core::T_sp tcoordinates);

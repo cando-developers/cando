@@ -321,56 +321,74 @@ Provide an existing cache or NIL if you don't have one yet."
        ;; COVERED: memoized vdw typing (this class's assign), construct, bonded FROM CACHE
        (chem:assign-force-field-types ff molecule atom-types)
        (chem:construct-from-molecule (chem:atom-table ef) molecule nonbond-force-field keep atom-types)
-       (commit-bonded-from-cache ef molecule cache))
+       (commit-bonded-from-cache ef molecule cache keep))
       (t       
        ;; MISS: full real SMIRNOFF (assign vdw, construct, generate w/ perception) - pass :smirnoff
        (chem:define-for-molecule-using-force-field
            ef molecule smirnoff (smirnoff-name ff) atom-types nonbond-force-field keep)
        (harvest-into-cache ef molecule cache)))))
 
-(defun commit-bonded-from-cache (ef molecule cache)
+(defun commit-bonded-from-cache (ef molecule cache keep-interaction-factory)
   "Coverage guaranteed all bonds+nonbonds present.  Angles/dihedrals/impropers apply
   skip-if-absent: an absent key is a legitimate SMIRNOFF skip (e.g. a linear-group
   angle) that real SMIRNOFF would also omit, so skipping reproduces its energy function."
-  (let ((at       (chem:atom-table ef))
-        (stretch  (chem:make-energy-stretch ef))
-        (angle    (chem:make-energy-angle ef))
-        (dihedral (chem:make-energy-dihedral ef)))
-    (chem:map-bonds
-     nil
-     (lambda (a1 a2 o b) (declare (ignore o b))
-       (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)))
-                         (bond-table cache))))
-         (when p (chem:add-stretch-term stretch at a1 a2 (kb p) (r0 p)))))
-     molecule)
-    (chem:map-angles
-     nil
-     (lambda (a1 a2 a3)
-       (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)
-                                                 (atom-cache-key a3)))
-                         (angle-table cache))))
-         (when p (chem:add-angle-term angle at a1 a2 a3 (kt p) (t0 p)))))
-     molecule)
-    (chem:map-dihedrals
-     nil
-     (lambda (a1 a2 a3 a4)
-       (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)
-                                                 (atom-cache-key a3) (atom-cache-key a4)))
-                         (dihedral-table cache))))
-         (when p (loop for fc in (fourier-terms p)
-                       do (chem:add-dihedral-term dihedral at a1 a2 a3 a4
-                                                  (phase-rad fc) t (v fc) (periodicity fc))))))
-     molecule)
-    (chem:map-impropers
-     nil
-     (lambda (a1 a2 a3 a4)
-       (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)
-                                                 (atom-cache-key a3) (atom-cache-key a4)))
-                         (improper-table cache))))
-         (when p (loop for fc in (fourier-terms p)
-                       do (chem:add-dihedral-term dihedral at a1 a2 a3 a4
-                                                  (phase-rad fc) nil (v fc) (periodicity fc))))))
-     molecule)))
+  (when keep-interaction-factory
+    (let ((at       (chem:atom-table ef))
+          (stretch-test  (or (eq keep-interaction-factory t)
+                             (funcall keep-interaction-factory
+                                      (load-time-value (find-class 'chem:energy-stretch)))))
+          (angle-test  (or (eq keep-interaction-factory t)
+                           (funcall keep-interaction-factory
+                                    (load-time-value (find-class 'chem:energy-angle)))))
+          (dihedral-test  (or (eq keep-interaction-factory t)
+                              (funcall keep-interaction-factory
+                                       (load-time-value (find-class 'chem:energy-dihedral)))))
+          )
+      (when stretch-test
+        (let ((stretch (chem:make-energy-stretch ef)))
+          (chem:map-bonds
+           nil
+           (lambda (a1 a2 o b) (declare (ignore o b))
+             (when (or (eq stretch-test t) (funcall stretch-test a1 a2))
+               (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)))
+                                 (bond-table cache))))
+                 (when p (chem:add-stretch-term stretch at a1 a2 (kb p) (r0 p))))))
+           molecule)))
+      (when angle-test
+        (let ((angle (chem:make-energy-angle ef)))
+          (chem:map-angles
+           nil
+           (lambda (a1 a2 a3)
+             (when (or (eq angle-test t) (funcall angle-test a1 a2 a3))
+               (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)
+                                                         (atom-cache-key a3)))
+                                 (angle-table cache))))
+                 (when p (chem:add-angle-term angle at a1 a2 a3 (kt p) (t0 p))))))
+           molecule)))
+      (when dihedral-test
+        (let ((dihedral (chem:make-energy-dihedral ef)))
+          (chem:map-dihedrals
+           nil
+           (lambda (a1 a2 a3 a4)
+             (when (or (eq dihedral-test t) (funcall dihedral-test a1 a2 a3 a4))
+               (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)
+                                                         (atom-cache-key a3) (atom-cache-key a4)))
+                                 (dihedral-table cache))))
+                 (when p (loop for fc in (fourier-terms p)
+                               do (chem:add-dihedral-term dihedral at a1 a2 a3 a4
+                                                          (phase-rad fc) t (v fc) (periodicity fc)))))))
+           molecule)
+          (chem:map-impropers
+           nil
+           (lambda (a1 a2 a3 a4)
+             (when (or (eq dihedral-test t) (funcall dihedral-test a1 a2 a3 a4))
+               (let ((p (gethash (canonicalize-key (list (atom-cache-key a1) (atom-cache-key a2)
+                                                         (atom-cache-key a3) (atom-cache-key a4)))
+                                 (improper-table cache))))
+                 (when p (loop for fc in (fourier-terms p)
+                               do (chem:add-dihedral-term dihedral at a1 a2 a3 a4
+                                                          (phase-rad fc) nil (v fc) (periodicity fc)))))))
+           molecule))))))
 
 
 ;;; --- harvest after a miss: fill tables + record the signature -------------

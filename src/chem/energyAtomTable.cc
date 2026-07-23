@@ -319,7 +319,7 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyAtom>::iterator	eai;
   string				as1,as2,as3,as4;
-  core::Symbol_sp				str1, str2, str3, str4;
+  core::T_sp				str1, str2, str3, str4;
   int index = 0;
   for ( eai=this->_Atoms.begin(); eai!=this->_Atoms.end(); eai++ ) {
     as1 = atomLabel(eai->atom());
@@ -526,8 +526,7 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
   return this->_Atoms[index]._Flag;
 }
 
-CL_DEFMETHOD
-void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
+CL_DEFMETHOD void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
 {
   uint idx = this->_Atoms.size();
   uint coordinateIndex = idx*3;
@@ -666,7 +665,7 @@ CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list(core::T_sp kee
   return Values(t_number_excluded_atoms, t_excluded_atoms_list);
 }
 
-CL_DEFMETHOD core::Symbol_sp AtomTable_O::elt_atom_type(int index,core::HashTable_sp atomTypes) {
+CL_DEFMETHOD core::T_sp AtomTable_O::elt_atom_type(int index,core::HashTable_sp atomTypes) {
   return this->_Atoms[index]._SharedAtom->getType(atomTypes);
 };
 SYMBOL_EXPORT_SC_(KeywordPkg,atom_vector);

@@ -58,9 +58,9 @@ namespace kinematics
   public:
     static AnchoredBondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name,
                                        chem::AtomTable_sp atomTable,
-                                       int parentAtomPositionIndex3,
-                                       int grandParentAtomPositionIndex3,
-                                       int greatGrandParentAtomPositionIndex3);
+                                       int parentAtomPositionIndex3=-1,
+                                       int grandParentAtomPositionIndex3=-1,
+                                       int greatGrandParentAtomPositionIndex3=-1);
 
   AnchoredBondedJoint_O() : BondedJoint_O() {};
   AnchoredBondedJoint_O(const chem::AtomId& atomId, core::T_sp name,

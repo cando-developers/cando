@@ -167,7 +167,7 @@ CL_END_ENUM(_sym_STARVdwMixWellEnumConverterSTAR);
 
 CL_LAMBDA(type &key (radius-nanometers 0.0) (epsilon-kj 0.0) (apol 0.0) (neff 0.0) (mass 0.0) (polarizability 0.0) (initial-charge 0.0) (fcadj 0.0) (pbci 0.0) (donor-acceptor :da-neither));
 CL_DEF_CLASS_METHOD
-FFNonbond_sp FFNonbond_O::make_FFNonbond(core::Symbol_sp type,
+FFNonbond_sp FFNonbond_O::make_FFNonbond(core::T_sp type,
                                          double radius_nanometers,
                                          double epsilon_kj,
                                          double apol,
@@ -358,12 +358,12 @@ CL_DEFMETHOD void    FFNonbondDb_O::add(FFNonbond_sp nb)
   this->_Parameters->setf_gethash(nb->getType(),core::clasp_make_fixnum(index));
 }
 
-CL_DEFMETHOD bool    FFNonbondDb_O::hasType(core::Symbol_sp type)
+CL_DEFMETHOD bool    FFNonbondDb_O::hasType(core::T_sp type)
 {
   return this->_Parameters->gethash(type).notnilp();
 }
 
-CL_DEFUN core::T_sp chem__FFNonbond_findType(FFNonbondDb_sp ffNonbondDb, core::Symbol_sp type)
+CL_DEFUN core::T_sp chem__FFNonbond_findType(FFNonbondDb_sp ffNonbondDb, core::T_sp type)
 {
   core::T_sp val = ffNonbondDb->_Parameters->gethash(type);
   if ( val.fixnump() ) {
@@ -375,14 +375,14 @@ CL_DEFUN core::T_sp chem__FFNonbond_findType(FFNonbondDb_sp ffNonbondDb, core::S
 }
 
 CL_LISPIFY_NAME("findTypeIndex");
-CL_DEFMETHOD uint FFNonbondDb_O::findTypeIndex(core::Symbol_sp type)
+CL_DEFMETHOD uint FFNonbondDb_O::findTypeIndex(core::T_sp type)
 {
   core::T_sp index = this->_Parameters->gethash(type);
   if (index.fixnump()) return static_cast<uint>(index.unsafe_fixnum());
   SIMPLE_ERROR("Could not find FFNonbondDb type index for type {}" , _rep_(type));
 }
 
-CL_DEFMETHOD size_t FFNonbondDb_O::ffnonbond_find_atom_type_position(core::Symbol_sp type)
+CL_DEFMETHOD size_t FFNonbondDb_O::ffnonbond_find_atom_type_position(core::T_sp type)
 {
   size_t ti = this->findTypeIndex(type);
   if ( ti == UndefinedUnsignedInt )
@@ -392,7 +392,7 @@ CL_DEFMETHOD size_t FFNonbondDb_O::ffnonbond_find_atom_type_position(core::Symbo
   return ti;
 }
 
-uint FFNonbondDb_O::findTypeMajorIndex(core::Symbol_sp type)
+uint FFNonbondDb_O::findTypeMajorIndex(core::T_sp type)
 {
   uint index = this->findTypeIndex(type);
   if (index == UndefinedUnsignedInt) return index;
@@ -418,7 +418,7 @@ CL_DEFMETHOD size_t FFNonbondDb_O::numberOfTypes() const
 void FFNonbond_O::initialize()
 {
   this->Base::initialize();
-  this->_Type = nil<core::Symbol_O>();
+  this->_Type = nil<core::T_O>();
   this->_Radius_Nanometers = 0.0;
   this->_Epsilon_kj = 0.0; // Depth of the VDW well
   this->_Apol = 0.0;

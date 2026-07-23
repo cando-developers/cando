@@ -124,7 +124,10 @@ void FFParameterBaseDb_O::fields(core::Record_sp node)
 
 void FFParameterBaseDb_O::initialize()
 {
-  this->_Parameters = core::HashTable_O::createEq();
+  // EQUAL, not EQ: atom types are generalized to core::T_sp and may be
+  // non-symbol keys (e.g. an (atom-name . constitution-context) cons), which
+  // only compare correctly under EQUAL.  Symbol keys behave identically here.
+  this->_Parameters = core::HashTable_O::createEqual();
   this->Base::initialize();
 }
 

@@ -262,15 +262,6 @@ void EnergyAngle::defineFrom( FFAngle_sp term , EnergyAtom *ea1, EnergyAtom *ea2
 
 
 
-#if 0 //[
-void	EnergyAngle::defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3 )
-{
-    this->_Type1 = ea1->_Atom->getType(atomTypes);
-    this->_Type2 = ea2->_Atom->getType(atomTypes);
-    this->_Type3 = ea3->_Atom->getType(atomTypes);
-}
-#endif //]
-
 double EnergyAngle::getT()
 {
     Vector3	pos1, pos2, pos3;
@@ -631,6 +622,26 @@ CL_DEFMETHOD void EnergyAngle_O::addAngleTerm(AtomTable_sp atomTable, Atom_sp a1
   this->addTerm(energyAngle);
 }
 
+
+CL_DOCSTRING(R"dx(Invoke a callback for every term in the energy-angle.
+The callback takes the lambda-list (index atom1 atom2 atom1-index*3 atom2-index*3 atom3-index*3 kt t0).
+Both kt and t0 are single-floats to avoid consing.
+Use the modify-angle-term-kt and modify-angle-term-t0 to modify the parameters.)dx")
+CL_DEFMETHOD void EnergyAngle_O::walkAngleTerms(core::T_sp callback)
+{
+  for (size_t i=0;i<this->_Terms.size();++i) {
+    const EnergyAngle& entry = this->_Terms[i];
+    core::eval::funcall(callback,core::make_fixnum(i),
+                        entry._Atom1,
+                        entry._Atom2,
+                        entry._Atom3,
+                        core::make_fixnum(entry.term.i3x1),
+                        core::make_fixnum(entry.term.i3x2),
+                        core::make_fixnum(entry.term.i3x3),
+                        core::clasp_make_double_float(entry.term.kt),
+                        core::clasp_make_double_float(entry.term.t0));
+  };
+};
 
 
 

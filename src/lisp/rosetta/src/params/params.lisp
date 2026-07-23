@@ -458,8 +458,8 @@
 
 
 
-(defmethod chem:compute-merged-lksolvation-force-field-for-aggregate (aggregate)
-  (declare (ignore aggregate))
+(defmethod chem:compute-merged-lksolvation-force-field-for-aggregate (aggregate molecule-force-field-names)
+  (declare (ignore aggregate molecule-force-field-names))
   (let* ((combined-force-field (lazy-load-rosetta-params))
          (force-field-parts (chem:force-fields-as-list combined-force-field))
          (rosetta-db (first force-field-parts)))

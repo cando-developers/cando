@@ -107,6 +107,12 @@ SYMBOL_EXPORT_SC_(ChemPkg,missingStretchError);
 SYMBOL_EXPORT_SC_(ChemPkg,missingAngleError);
 SYMBOL_EXPORT_SC_(ChemPkg,missingDihedralError);
 SYMBOL_EXPORT_SC_(ChemPkg,skipMissingParameters);
+SYMBOL_EXPORT_SC_(ChemPkg,define_for_molecule_using_force_field);
+SYMBOL_EXPORT_SC_(ChemPkg,with_perception);
+SYMBOL_EXPORT_SC_(ChemPkg,amber_force_field);
+SYMBOL_EXPORT_SC_(ChemPkg,gaff_force_field);
+SYMBOL_EXPORT_SC_(ChemPkg,wrapped_force_field);
+SYMBOL_EXPORT_SC_(ChemPkg,construct_from_molecule);
 
 
 //Maybe use this in place of InteractionError?
@@ -191,16 +197,17 @@ evaluates nothing) and (lambda (component-class)) returns a (lambda (&rest atoms
 that will be called for each interaction and the function returns T or NIL if
 each interaction should be added to the energy function.
 : assign-types - T (default) assign atom types as part of generating the energy function.  [I don't know what will happen if assing-types is NIL.)doc");
-CL_LAMBDA(&key matter disable-components enable-components (use-excluded-atoms nil) (keep-interaction-factory t) (assign-types t) setup);
+CL_LAMBDA(&key matter disable-components enable-components (use-excluded-atoms nil) (keep-interaction-factory t) (assign-types t) force-field-overrides setup);
 CL_LISPIFY_NAME("chem:%make-energy-function");
-CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
-                                                             bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types, core::T_sp setup )
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Aggregate_sp matter, core::T_sp disableComponents, core::List_sp enableComponents,
+                                                             bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types,
+                                                             core::T_sp forceFieldOverrides, core::T_sp setup )
 {
   auto  me  = gctools::GC<EnergyFunction_O>::allocate();
   if (disableComponents.notnilp()||enableComponents.notnilp()) {
     SIMPLE_ERROR("I think I stopped using disable-components and enable-components.  If this message appears then I'm wrong and we have to keep using the code below");
   }
-  if ( matter.notnilp() ) me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,keepInteractionFactory,assign_types,setup);
+  if ( matter.notnilp() ) me->defineForAggregate( matter, useExcludedAtoms, keepInteractionFactory, assign_types, forceFieldOverrides, setup );
 #if 1
   //
   // Disable and then enable components
@@ -1099,7 +1106,7 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 SYMBOL_EXPORT_SC_(ChemPkg,find_force_field);
 SYMBOL_EXPORT_SC_(ChemPkg,force_fields_as_list);
-
+SYMBOL_EXPORT_SC_(ChemPkg, nonbond_force_field_name);
 SYMBOL_EXPORT_SC_(ChemPkg,add_shadowing_force_field);
 SYMBOL_EXPORT_SC_(ChemPkg,assign_force_field_types);
 SYMBOL_EXPORT_SC_(ChemPkg,compute_merged_nonbond_force_field_for_aggregate);
@@ -1181,10 +1188,7 @@ EnergyFixedNonbondRestraint_sp EnergyFunction_O::getFixedNonbondRestraintCompone
   return gc::As<EnergyFixedNonbondRestraint_sp>(comp);
 };
 
-
-CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) (assign-types t) (setup nil));
-CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types, core::T_sp setup )
+void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types, core::T_sp forceFieldOverrides, core::T_sp setup )
 {
   if (setup.nilp()) {
     setup = core::Cons_O::create(kw::_sym_amber,nil<core::T_O>());
@@ -1195,86 +1199,117 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   if (oCar(setup) == kw::_sym_rosetta && useExcludedAtoms) {
     SIMPLE_ERROR("You cannot have a rosetta energy-function with use-excluded-atoms t");
   }
-  this->_ForceFieldName = gc::As<core::Symbol_sp>(oCar(setup));
-
-  if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
-    {
-      SIMPLE_ERROR("You can only define energy functions for Aggregates or Molecules");
-    }
-
+  this->_ForceFieldName = gc::As<core::Symbol_sp>(oCar(setup)); // we should call this something else like nonbond-function-type because it stores :amber or :rosetta
   core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,nil<core::T_O>());
-  //
-  // Identify rings
-  //
-  if (chem__verbose(0)) core::clasp_write_string("Searching for rings.\n");
 
-  // If *current-rings* is bound then reuse it, otherwise, calculate rings and bind those
-  core::T_sp rings = unbound<core::T_sp>();
-  if (_sym_STARcurrent_ringsSTAR->boundP()) {
-    rings = _sym_STARcurrent_ringsSTAR->symbolValue();
-  } else if (keepInteractionFactory.notnilp()) {
-    rings = RingFinder_O::identifyRings(matter);
-  } else {
-    rings = nil<core::T_O>();
-  }
-  core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
-
+  this->_Matter = aggregate;
   //
-  // Assign relative Cahn-Ingold-Preylog priorities
+  // Loop over the molecules
   //
-  if (chem__verbose(0)) core::clasp_write_string("Assigning CIP priorities.\n");
-  core::HashTable_sp cip = unbound<core::HashTable_O>();
-  if (keepInteractionFactory.notnilp()) {
-    cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
-  }
-
-  //
-  // Assign atom types for each molecule
-  //
-
-  core::HashTable_sp force_fields = core::HashTable_O::createEq();
+  core::HashTable_sp molecule_force_fields = core::HashTable_O::createEq();
+  core::HashTable_sp molecule_force_field_names = core::HashTable_O::createEq();
   Loop moleculeLoop;
-  moleculeLoop.loopTopGoal(matter,MOLECULES);
+  moleculeLoop.loopTopGoal(aggregate,MOLECULES);
   while (moleculeLoop.advanceLoopAndProcess() ) {
     Molecule_sp molecule = moleculeLoop.getMolecule();
     core::T_sp force_field_name = molecule->force_field_name();
-    if (force_fields->gethash(force_field_name).nilp()) {
+    if (forceFieldOverrides.notnilp()) {
+      core::T_sp maybe_override_force_field_name = gc::As<core::HashTable_sp>(forceFieldOverrides)->gethash(molecule);
+      if (maybe_override_force_field_name.notnilp()) {
+        force_field_name = maybe_override_force_field_name;
+      }
+    }
+    if (molecule_force_fields->gethash(molecule).nilp()) {
       core::T_sp combined_force_field = core::eval::funcall(_sym_find_force_field,force_field_name);
-      force_fields->setf_gethash(force_field_name,combined_force_field);
+      molecule_force_fields->setf_gethash(molecule,combined_force_field);
+      molecule_force_field_names->setf_gethash(molecule,force_field_name);
+    } else {
+      SIMPLE_ERROR("A molecule already has a force-field");
     }
   }
   core::HashTable_sp atomTypes = core::HashTable_O::createEq();
-  // Assign given atom-types
-  Loop atom_loop;
-  atom_loop.loopTopGoal(matter,ATOMS);
-  while (atom_loop.advanceLoopAndProcess()) {
-    Atom_sp atom = atom_loop.getAtom();
-    core::T_sp type = atom->getPropertyOrDefault( kw::_sym_given_atom_type, nil<core::T_O>() );
-    if (type.notnilp()) {
-      atomTypes->setf_gethash(atom,type);
-    }
-  }
   this->_AtomTypes = atomTypes;
-  if (assign_types) {
-    if (chem__verbose(0)) core::clasp_write_string("Assigning atom types.\n");
-    moleculeLoop.loopTopGoal(matter,MOLECULES);
+
+  //
+  // Setup the extra information needed by the energy function to generate a topology file
+  //
+  // Get the name to pass that to the atomTable
+  core::T_sp matterName = aggregate->getName();
+  this->_AtomTable->setAggregateName(matterName);
+  core::T_sp boundingBox = unbound<core::T_O>();
+  if (aggregate->boundingBoxBoundP()) {
+    boundingBox = aggregate->boundingBox();
+  }
+  if (boundingBox.unboundp()) {
+    this->_AtomTable->makUnboundBoundingBox();
+  } else {
+    this->_AtomTable->setBoundingBox(boundingBox);
+  }
+
+  if (chem__verbose(0)) core::clasp_write_string("Assembling aggregate nonbond force-field.\n");
+  core::T_sp nonbondForceField = core::eval::funcall(chem::_sym_compute_merged_nonbond_force_field_for_aggregate,aggregate,atomTypes,molecule_force_field_names);
+  this->_AtomTable->setNonbondForceFieldForAggregate(nonbondForceField);
+
+  if (chem__verbose(0)) core::clasp_write_string("Assembling aggregate lksolvation force-field.\n");
+  core::T_sp lksolvationForceField = core::eval::funcall(chem::_sym_compute_merged_lksolvation_force_field_for_aggregate,aggregate,molecule_force_field_names);
+  this->_AtomTable->setLKSolvationForceFieldForAggregate(lksolvationForceField);
+
+  // Separate the molecules for solute from the solvent and handle them solute first then solvent
+  size_t final_solute_residue_iptres = 0;
+  size_t number_of_molecules_nspm = 0;
+  size_t first_solvent_molecule_nspsol = 0;
+  bool solvent_exists = false;
+  
+  if (chem__verbose(0)) core::clasp_write_string("Classifying solute/solvent.\n");
+  ql::list solute_molecules;
+  ql::list solvent_molecules;
+  {
+    Loop moleculeLoop;
+    moleculeLoop.loopTopGoal(aggregate,MOLECULES);
     while (moleculeLoop.advanceLoopAndProcess() ) {
       Molecule_sp molecule = moleculeLoop.getMolecule();
-      core::T_sp force_field_name = molecule->force_field_name();
-      [[maybe_unused]]core::T_sp use_given_types = molecule->force_field_use_given_types();
-      //      if (use_given_types.nilp()) {
-      core::T_sp combined_force_field = force_fields->gethash(force_field_name);
-      if (chem__verbose(0)) core::clasp_write_string(fmt::format("Assigning atom types for molecule {} using {}.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
-      //
-      // Calculate aromaticity using the rings we just calculated
-      //
-      core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-      if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when about to assign force field types - it should not be");
-      core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-      core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes);
+      if (molecule->molecule_type() == kw::_sym_solvent) {
+        solvent_molecules << molecule;
+        solvent_exists = true;
+      } else {
+        solute_molecules << molecule;
+      }
     }
   }
-  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,keepInteractionFactory,cip,atomTypes,setup);
+  core::List_sp solute = solute_molecules.cons();
+  for ( auto cur_solute : solute ) {
+    Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
+    this->defineForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names );
+    final_solute_residue_iptres += onemol->contentSize();
+    ++number_of_molecules_nspm;
+  }
+  core::List_sp solvent = solvent_molecules.cons();
+  first_solvent_molecule_nspsol = number_of_molecules_nspm+1;
+  if (chem__verbose(1)) {
+    if (core::cl__length(solvent)>0) {
+      Molecule_sp onemol = gc::As<Molecule_sp>(oCar(solvent));
+      core::T_sp force_field_name = onemol->force_field_name();
+      core::clasp_write_string(fmt::format("Generating parameters for solvent {} using {} force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
+    }
+  }
+  for ( auto cur_solvent : solvent ) {
+    Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
+    this->defineForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names );
+    ++number_of_molecules_nspm;
+  }
+  if (solvent_exists) {
+    printf("%s:%d  solvent_exists NSPSOL %lu  IPTRES %lu   NSM %lu \n", __FILE__, __LINE__,
+           first_solvent_molecule_nspsol, final_solute_residue_iptres, number_of_molecules_nspm);
+    this->_AtomTable->set_firstSolventMoleculeNSPSOL(first_solvent_molecule_nspsol);
+    this->_AtomTable->set_finalSoluteResidueIPTRES(final_solute_residue_iptres);
+    this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
+  }
+  if (keepInteractionFactory.notnilp()) {
+    if (chem__verbose(1)) core::clasp_write_string("About to calculate nonbond and restraint terms");
+    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,aggregate,nonbondForceField,keepInteractionFactory,atomTypes,setup);
+    this->generateRestraintEnergyFunctionTables(aggregate,nonbondForceField,keepInteractionFactory,atomTypes);
+  }
+
   // Check if setup energy component names all match energy components in this force field.
   core::List_sp validNames = nil<core::T_O>();
   core::List_sp setupRest = oCdr(setup);
@@ -1293,137 +1328,21 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
       }
     }
   }
-}
-
-
-CL_LAMBDA((energy-function chem:energy-function) matter &key use-excluded-atoms (keep-interaction-factory t) cip-priorities atom-types setup);
-CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes, core::T_sp setup )
-{
-  if (keepInteractionFactory.notnilp() && !gc::IsA<core::HashTable_sp>(cip_priorities)) {
-    SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
-  }
-  if (chem__verbose(0)) core::clasp_write_string("defineForMatterWithAtomTypes\n");
-  this->_Matter= matter;
-  if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
-    {
-      SIMPLE_ERROR("You can only define energy functions for Aggregates or Molecules");
-    }
-
-  //
-  // Setup the extra information needed by the energy function to generate a topology file
-  //
-  // Get the name to pass that to the atomTable
-  core::T_sp matterName = matter->getName();
-  this->_AtomTable->setAggregateName(matterName);
-  core::T_sp boundingBox = unbound<core::T_O>();
-  if (gc::IsA<Aggregate_sp>(matter)) {
-    Aggregate_sp agg = gc::As_unsafe<Aggregate_sp>(matter);
-    if (agg->boundingBoxBoundP()) {
-      boundingBox = agg->boundingBox();
-    }
-  }
-  if (boundingBox.unboundp()) {
-    this->_AtomTable->makUnboundBoundingBox();
-  } else {
-    this->_AtomTable->setBoundingBox(boundingBox);
-  }
-
-  if (chem__verbose(0)) core::clasp_write_string("Assembling aggregate nonbond force-field.\n");
-  core::T_sp nonbondForceField = core::eval::funcall(chem::_sym_compute_merged_nonbond_force_field_for_aggregate,matter,atomTypes);
-  this->_AtomTable->setNonbondForceFieldForAggregate(nonbondForceField);
-
-  if (chem__verbose(0)) core::clasp_write_string("Assembling aggregate lksolvation force-field.\n");
-  core::T_sp lksolvationForceField = core::eval::funcall(chem::_sym_compute_merged_lksolvation_force_field_for_aggregate,matter);
-  this->_AtomTable->setLKSolvationForceFieldForAggregate(lksolvationForceField);
-
-  // Separate the molecules for solute from the solvent and handle them solute first then solvent
-  size_t final_solute_residue_iptres = 0;
-  size_t number_of_molecules_nspm = 0;
-  size_t first_solvent_molecule_nspsol = 0;
-  bool solvent_exists = false;
-  if (gc::IsA<Aggregate_sp>(matter)) {
-    if (chem__verbose(0)) core::clasp_write_string("Classifying solute/solvent.\n");
-    ql::list solute_molecules;
-    ql::list solvent_molecules;
-    {
-      Loop moleculeLoop;
-      moleculeLoop.loopTopGoal(matter,MOLECULES);
-      while (moleculeLoop.advanceLoopAndProcess() ) {
-        Molecule_sp molecule = moleculeLoop.getMolecule();
-        if (molecule->molecule_type() == kw::_sym_solvent) {
-          solvent_molecules << molecule;
-          solvent_exists = true;
-        } else {
-          solute_molecules << molecule;
-        }
-      }
-    }
-    core::List_sp solute = solute_molecules.cons();
-    for ( auto cur_solute : solute ) {
-      Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
-      core::T_sp force_field_name = onemol->force_field_name();
-      core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
-      //
-      // Calculate aromaticity using the rings we just calculated
-      //
-      core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-      if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when about to call generate-molecule-energy-function-tables - it should not be");
-      core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,keepInteractionFactory,atomTypes);
-      if (chem__verbose(0)) core::clasp_write_string(fmt::format("Generating parameters for {} using {} force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
-      core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,keepInteractionFactory);
-      final_solute_residue_iptres += onemol->contentSize();
-      ++number_of_molecules_nspm;
-    }
-    core::List_sp solvent = solvent_molecules.cons();
-    first_solvent_molecule_nspsol = number_of_molecules_nspm+1;
-    if (chem__verbose(1)) {
-      if (core::cl__length(solvent)>0) {
-        Molecule_sp onemol = gc::As<Molecule_sp>(oCar(solvent));
-        core::T_sp force_field_name = onemol->force_field_name();
-        core::clasp_write_string(fmt::format("Generating parameters for solvent {} using {} force-field.\n" , _rep_(onemol->getName()) , _rep_(force_field_name) ));
-      }
-    }
-    for ( auto cur_solvent : solvent ) {
-      Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
-      core::T_sp force_field_name = onemol->force_field_name();
-      core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
-      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,keepInteractionFactory,atomTypes);
-      core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,keepInteractionFactory);
-      ++number_of_molecules_nspm;
-    }
-  } else {
-    Molecule_sp molecule = gc::As<Molecule_sp>(matter);
-    core::T_sp force_field_name = molecule->force_field_name();
-    core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
-    //
-    // Calculate aromaticity using the rings we just calculated
-    //
-    core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-    if (aromaticity_info.nilp()) SIMPLE_ERROR("The aromaticity-info was NIL when we were about to call generate-molecule-energy-function-tables for a single molecule - it should not be");
-    core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-    this->_AtomTable->constructFromMolecule(molecule,nonbondForceField,keepInteractionFactory,atomTypes);
-    if (chem__verbose(0)) core::clasp_write_string(fmt::format("Generating parameters for {} using {} force-field.\n" , _rep_(molecule->getName()) , _rep_(force_field_name) ));
-    core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),molecule,forceField,keepInteractionFactory);
-    final_solute_residue_iptres = molecule->contentSize();
-    number_of_molecules_nspm = 1;
-    first_solvent_molecule_nspsol = 2;
-  }
-  if (solvent_exists) {
-    printf("%s:%d  solvent_exists NSPSOL %lu  IPTRES %lu   NSM %lu \n", __FILE__, __LINE__,
-           first_solvent_molecule_nspsol, final_solute_residue_iptres, number_of_molecules_nspm);
-    this->_AtomTable->set_firstSolventMoleculeNSPSOL(first_solvent_molecule_nspsol);
-    this->_AtomTable->set_finalSoluteResidueIPTRES(final_solute_residue_iptres);
-    this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
-  }
-  if (keepInteractionFactory.notnilp()) {
-    if (chem__verbose(1)) core::clasp_write_string("About to calculate nonbond and restraint terms");
-    core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
-    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,keepInteractionFactory,atomTypes,setup);
-    this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,keepInteractionFactory,cip_priorities,atomTypes);
-  }
   core::eval::funcall(_sym_report_parameter_warnings);
 }
+
+
+
+
+void EnergyFunction_O::defineForMolecule( Molecule_sp onemol, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp nonbondForceField, core::HashTable_sp molecule_force_fields, core::HashTable_sp molecule_force_field_names )
+{
+  core::T_sp combined_force_field = molecule_force_fields->gethash(onemol);
+  core::T_sp force_field_name = molecule_force_field_names->gethash(onemol);
+  core::eval::funcall( _sym_define_for_molecule_using_force_field,
+                       this->asSmartPtr(), onemol, combined_force_field, force_field_name,
+                       atomTypes, nonbondForceField, keepInteractionFactory );
+}
+
 
 
 core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
@@ -1752,11 +1671,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 }
 
 
-CL_LAMBDA((energy-function chem:energy-function) matter force-field &key (keep-interaction-factory t) cip-priorities atom-types);
+CL_LAMBDA((energy-function chem:energy-function) matter force-field &key (keep-interaction-factory t) atom-types);
 CL_DOCSTRING(R"dx(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
-This should be called after generateStandardEnergyFunctionTables.
-You need to pass a hash-table of atoms to relative CIP priorities (calculated using CipPrioritizer_O::assignPrioritiesHashTable(matter) for stereochemical restraints.)dx")
-CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, core::T_sp ffNonbond, core::T_sp keepInteractionFactory, core::T_sp cip_priorities, core::HashTable_sp atomTypes ) {
+This should be called after generateStandardEnergyFunctionTables.)dx")
+CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, core::T_sp ffNonbond, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes ) {
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
   core::Symbol_sp  t1, t2, t3, t4, t141, t144;
@@ -1774,6 +1692,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
     core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyChiralRestraint_O::staticClass() );
     if (keepInteraction.notnilp()) {
       auto chiralRestraintComponent = ensureComponent<EnergyChiralRestraint_O>(this->asSmartPtr());
+      auto cip_priorities = CipPrioritizer_O::assignPrioritiesHashTable(matter);
       if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
         SIMPLE_ERROR("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)");
       }

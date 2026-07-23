@@ -992,6 +992,34 @@ CL_DEFMETHOD void EnergyDihedral_O::addDihedralTerm(AtomTable_sp atomTable, Atom
   this->addTerm(energyDihedral);
 }
 
+CL_DOCSTRING(R"dx(Invoke a callback for every term in the energy-dihedral.
+The callback takes the lambda-list
+(index atom1 atom2 atom3 atom4 atom1-index*3 atom2-index*3 atom3-index*3 atom4-index*3 v multiplicity phase-radians proper).
+A dihedral with multiple Fourier components is stored as multiple terms that share the same four
+atoms but differ in multiplicity, phase and v, so this walk invokes the callback once per component.
+Group on the four atoms in the callback if you need the whole Fourier series for a dihedral.
+Proper and improper dihedrals are both visited; the proper argument distinguishes them.
+phase-radians and v are single-floats to avoid consing.)dx")
+CL_DEFMETHOD void EnergyDihedral_O::walkDihedralTerms(core::T_sp callback)
+{
+  for (size_t i=0;i<this->_Terms.size();++i) {
+    const EnergyDihedral& entry = this->_Terms[i];
+    core::eval::funcall(callback,core::make_fixnum(i),
+                        entry._Atom1,
+                        entry._Atom2,
+                        entry._Atom3,
+                        entry._Atom4,
+                        core::make_fixnum(entry.term.i3x1),
+                        core::make_fixnum(entry.term.i3x2),
+                        core::make_fixnum(entry.term.i3x3),
+                        core::make_fixnum(entry.term.i3x4),
+                        core::clasp_make_double_float(entry.term.v),
+                        core::make_fixnum((int)entry.term.n),
+                        core::clasp_make_double_float(entry._PhaseRad),
+                        _lisp->_boolean(entry._Proper));
+  };
+};
+
 EnergyComponent_sp EnergyDihedral_O::copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc) {
   core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,EnergyDihedral_O::staticClass());
   EnergyDihedral_sp copy = EnergyDihedral_O::create();

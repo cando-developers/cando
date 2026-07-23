@@ -254,13 +254,14 @@
   #+nosmarts(format t "Not calling chem:initialize-sybyl-type-rules~%"))
 
 
-(defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate atom-types)
+(defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate atom-types molecule-force-field-names)
   (let* ((aggregate-force-field-name (chem:force-field-name aggregate))
          (aggregate-force-field (leap.core:nonbond-force-field-component aggregate-force-field-name))
          (force-field-names (chem:map-molecules
                              'list
                              (lambda (molecule)
-                               (chem:force-field-name molecule))
+                               (let ((name (gethash molecule molecule-force-field-names)))
+                                 (chem:nonbond-force-field-name (chem:find-force-field name) name)))
                              aggregate))
          (unique-force-field-names (remove-duplicates force-field-names))
          (force-fields-and-name-alist (loop for name in unique-force-field-names

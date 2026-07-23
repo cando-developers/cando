@@ -475,7 +475,17 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
 (defmethod register-coupling-with-monomers ((coupling ring-coupling))
   (setf (gethash (plug1 coupling) (couplings (monomer1 coupling))) coupling
         (gethash (plug2 coupling) (couplings (monomer2 coupling))) coupling))
-  
+
+(defgeneric assign-residue-given-atom-types (foldamer residue constitution-context)
+  (:documentation "Stamp :given-atom-type on RESIDUE's atoms, given its already-computed
+  CONSTITUTION-CONTEXT.  Foldamers that type by other means (amber residue templates) leave
+  RESIDUE untouched - the default is a no-op."))
+
+(defmethod assign-residue-given-atom-types (foldamer residue constitution-context)
+    (declare (ignore foldamer residue constitution-context))
+    nil)
+
+
 (defclass oligomer-space (cando.serialize:serializable)
   ((foldamer-name :initarg :foldamer-name :accessor foldamer-name)
    (name :initform :defos :initarg :name :reader name)
@@ -622,8 +632,9 @@ Examples:
 
 (defun make-permissible-monomer-indexes (oligomer-space wanted-shape-kind permissible-monomer-indexes-subclass-name)
   "Make a permissible-backbone-monomer-indexes-subclass-name object for the oligomer-space"
-  (with-slots (foldamer) oligomer-space
-    (let ((monomer-index-loci (make-array 16 :adjustable t :element-type 'ext:byte32 :fill-pointer 0))
+  (with-slots (foldamer-name) oligomer-space
+    (let ((foldamer (topology:find-foldamer foldamer-name))
+          (monomer-index-loci (make-array 16 :adjustable t :element-type 'ext:byte32 :fill-pointer 0))
           (allowed-index-ends (make-array 16 :adjustable t :element-type 'ext:byte32 :fill-pointer 0)))
       (loop for monomer across (monomers oligomer-space)
             for index from 0

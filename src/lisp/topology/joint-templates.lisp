@@ -413,6 +413,8 @@
            (when parent-joint (kin:joint/add-child parent-joint joint))
            joint))))))
 
+(defgeneric make-appropriate-joint (joint-template nil-or-monomer-shape parent-joint atomid atom-name atom-table))
+
 (defmethod write-into-joint-tree ((joint-template bonded-joint-template)
                                   parent-joint
                                   atresidue
@@ -429,21 +431,12 @@
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
-         (joint
-           (cond
-             ((null nil-or-monomer-shape)
-              (kin:make-bonded-joint atomid atom-name atom-table))
-             ((eq nil-or-monomer-shape :no-rotamer-shape)
-              (kin:make-bonded-joint atomid atom-name atom-table))
-             ((typep nil-or-monomer-shape 'rotamer-shape)
-              (kin:make-bonded-joint atomid atom-name atom-table))
-             ((typep nil-or-monomer-shape 'residue-shape)
-              (kin:make-xyz-joint atomid atom-name atom-table))
-             (t (error "Handle nil-or-monomer-shape of value ~s" nil-or-monomer-shape)))))
+         (joint (make-appropriate-joint joint-template nil-or-monomer-shape parent-joint atomid atom-name atom-table)))
     (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
+#+(or) ;; use create-anchored-joint
 (defun create-stub-joint (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
   (let* ((base-assembler (backbone-assembler monomer-subset))
          (base-ataggregate (ataggregate base-assembler))
@@ -466,6 +459,30 @@
     (kin:joint/set-parent joint backbone-atom-tree-spliced-parent)
     joint))
 
+(defun create-anchored-joint (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  (let* ((base-assembler (backbone-assembler monomer-subset))
+         (base-ataggregate (ataggregate base-assembler))
+         (base-monomer-pos (gethash monomer (monomer-positions base-assembler)))
+         (base-atresidue (at-position base-ataggregate base-monomer-pos))
+         (base-joint0 (aref (joints base-atresidue) 0))
+         (base-parent-joint (kin:parent base-joint0))
+         (base-grand-parent-joint (kin:parent base-parent-joint))
+         (base-great-grand-parent-joint (kin:parent base-grand-parent-joint))
+         (constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         ;; AnchoredBondedJoint computes CB from internals against the 3 anchors -
+         ;; it does NOT need base-joint0's own index (StubJoint's fixed-cartesian source).
+         (joint (kin:make-anchored-bonded-joint atomid atom-name atom-table
+                                                (kin:joint/position-index-x3 base-parent-joint)
+                                                (kin:joint/position-index-x3 base-grand-parent-joint)
+                                                (kin:joint/position-index-x3 base-great-grand-parent-joint)))
+         (backbone-atom-tree-spliced-parent (gethash monomer (monomers monomer-subset))))
+    (put-joint atresidue joint constitution-atoms-index)
+    (kin:joint/set-parent joint backbone-atom-tree-spliced-parent)
+    joint))
+
+
 (defun create-xyz-joint-connect-to-backbone (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
@@ -478,8 +495,9 @@
 
 
 (defun deal-with-pair-scan-sidechain (monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
-  #+(or) (create-xyz-joint-connect-to-backbone monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
-  (create-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  #+(or)(create-xyz-joint-connect-to-backbone monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  #+(or)(create-stub-joint monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
+  (create-anchored-joint   monomer-subset monomer joint-template atmolecule-index atresidue-index atom-table atresidue)
   )
 
 (defmethod write-into-joint-tree ((joint-template xyz-joint-template)

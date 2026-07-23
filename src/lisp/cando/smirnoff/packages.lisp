@@ -37,4 +37,13 @@
    #:load-smirnoff
    #:combined-smirnoff-force-field
    #:molecule
+   #:bond-parameters #:kb #:r0
+   #:angle-parameters #:kt #:t0
+   #:fourier-term #:v #:periodicity #:phase-rad #:fourier-term-equal
+   #:torsion-parameters #:fourier-terms #:dihedral-parameters #:improper-parameters
+   #:nonbond-parameters #:vdw-type #:charge
+   #:parameter-cache #:bond-table #:angle-table #:dihedral-table #:improper-table #:nonbond-table
+   #:key-part< #:canonicalize-key #:add-fourier-term
+   #:expand-parameter-cache
+   #:cached-smirnoff-force-field
    ))

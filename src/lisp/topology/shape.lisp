@@ -56,6 +56,20 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
         :no-rotamer-shape
         (make-instance 'rotamer-shape))))
 
+(defmethod make-appropriate-joint ((joint-template bonded-joint-template) (nil-or-monomer-shape null) parent-joint atomid atom-name atom-table)
+  (declare (ignore joint-template parent-joint))
+  (kin:make-bonded-joint atomid atom-name atom-table))
+
+(defmethod make-appropriate-joint ((joint-template bonded-joint-template) (nil-or-monomer-shape (eql :no-rotamer-shape)) parent-joint atomid atom-name atom-table)
+  (declare (ignore joint-template parent-joint))
+  (kin:make-bonded-joint atomid atom-name atom-table))
+
+(defmethod make-appropriate-joint ((joint-template bonded-joint-template) (nil-or-monomer-shape rotamer-shape) parent-joint atomid atom-name atom-table)
+  (declare (ignore joint-template parent-joint))
+  (kin:make-bonded-joint atomid atom-name atom-table))
+
+
+
 (defmethod apply-monomer-shape-to-atresidue-internals ((assembler subset-assembler) assembler-internals oligomer-shape (rotamer-shape rotamer-shape) monomer-context atresidue &key verbose)
   (when verbose
     (let ((*print-pretty* nil))
@@ -64,9 +78,14 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
   (let ((subset (monomer-subset assembler)))
     (when subset
       (let ((joint0 (aref (joints atresidue) 0)))
-        (when (typep joint0 'kin:stub-joint)
-          (kin:stub-joint/update-stub-positions-from-coords
-           joint0 (coordinates subset))))))
+        (cond
+          ((typep joint0 'kin:stub-joint)
+           (kin:stub-joint/update-stub-positions-from-coords
+            joint0 (coordinates subset)))
+          ((typep joint0 'kin:anchored-bonded-joint)
+           (kin:update-anchor-positions-from-coords joint0 (coordinates subset)))
+          (t (error "Unknown type of joint in apply-monomer-shape-to-atresidue-internals"))
+          ))))
   (call-next-method))
 
 
@@ -98,6 +117,10 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
    (atom-coordinates :initarg :atom-coordinates :accessor atom-coordinates)
    (closest-rotamer-index :initarg :closest-rotamer-index :accessor closest-rotamer-index)
    ))
+
+(defmethod make-appropriate-joint ((joint-template bonded-joint-template) (nil-or-monomer-shape residue-shape) parent-joint atomid atom-name atom-table)
+  (declare (ignore joint-template parent-joint))
+  (kin:make-xyz-joint atomid atom-name atom-table))
 
 (defclass backbone-residue-shape (residue-shape)
   (#+(or)(shape-key-cache-deg :initarg :shape-key-cache-deg
@@ -355,9 +378,6 @@ oligomer-space's foldamer instead of caching it in a slot."
                                          #+(or)(format t "Out plug coupling ~a ~a~%" key coupling))))
                                     couplings)
                            out-monomers)
-          for in-monomer-context = (if in-monomer
-                                       (topology:foldamer-monomer-context in-monomer oligomer foldamer)
-                                       nil)
           for monomer-shape-info = (make-instance 'monomer-shape-info
                                                   :monomer-context monomer-context
                                                   :monomer-shape-kind shape-kind
@@ -963,4 +983,5 @@ Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
                                     :name name
                                     :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
                                     :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes))))
+
 

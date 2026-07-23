@@ -134,6 +134,11 @@ public:
 #endif
   };
 
+  virtual bool anchoredFrameP() const { return false;}
+  virtual Vector3 anchorParentPos() const { SIMPLE_ERROR("No anchor frame"); }
+  virtual Vector3 anchorGrandParentPos() const { SIMPLE_ERROR("No anchor frame"); }
+
+
   int calculatePositionIndex(chem::AtomTable_sp atomTable);
   
   /*! Returns true if the joint represents an Joint */

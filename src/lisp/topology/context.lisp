@@ -127,6 +127,35 @@
   (intern (with-output-to-string (sout)
             (format sout "~{~a~^_~}" (coerce (parts match) 'list))) :keyword))
 
+(defun monomer-name->constitution-name (monomer-name)
+  "Constitution name for a monomer (topology) name.
+  Stereoisomers of one constitution all resolve to the same name
+  (e.g. PRO4SS / PRO4RR / PRO4SR / PRO4RS -> PRO4)."
+  (topology:name (topology:constitution (chem:find-topology monomer-name t))))
+
+(defun match-as-constitution-symbol (match)
+  "Like MATCH-AS-SYMBOL, but each monomer is rendered by its CONSTITUTION name
+  instead of its stereoisomer name(s), so stereoisomers collapse to one context.
+  Plug-name tokens and braces (parts with no parallel monomer) pass through unchanged."
+  (intern
+   (with-output-to-string (sout)
+     (format sout "~{~a~^_~}"
+             (loop for part    across (parts match) 
+                   for monomer across (maybe-monomers match)
+                   collect (if monomer
+                               ;; a monomer part: PART is a stereoisomer name or a
+                               ;; list of them -> map to constitution name(s), dedup.
+                                 (let ((constitutions
+                                         (remove-duplicates
+                                          (mapcar #'monomer-name->constitution-name
+                                                  (if (listp part) part (list part))))))
+                                   (if (= (length constitutions) 1)
+                                       (first constitutions)
+                                       constitutions))
+                                 ;; a plug token or brace -> unchanged 
+                                 part))))
+   :keyword))
+
 (defun cursor (match)
   (fill-pointer (parts match)))
 

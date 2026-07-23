@@ -25,6 +25,7 @@
                (:file "context")
                (:file "badgeom")
                (:file "shape")
+               (:file "piece-assembler")
                (:file "steppers")
                (:file "rotamers-api")
                (:file "manipulator")

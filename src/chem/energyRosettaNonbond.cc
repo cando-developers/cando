@@ -202,8 +202,8 @@ bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, 
                                              const rosetta_nonbond_parameters& params) {
   this->_Atom1_enb = a1;
   this->_Atom2_enb = a2;
-  core::Symbol_sp t1 = a1->getType(atomTypes);
-  core::Symbol_sp t2 = a2->getType(atomTypes);
+  core::T_sp t1 = a1->getType(atomTypes);
+  core::T_sp t2 = a2->getType(atomTypes);
   ASSERT(forceField && forceField.notnilp());
   core::T_sp tffNonbond1 = core::eval::funcall(_sym_find_type, forceField, t1);
   core::T_sp tffNonbond2 = core::eval::funcall(_sym_find_type, forceField, t2);

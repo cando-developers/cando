@@ -305,6 +305,13 @@ public:
 
   void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, double v, int multiplicity);
 
+  // Invoke a callback once per Fourier component.  A dihedral with several
+  // periodicities is stored as several terms sharing the same four atoms, so a
+  // flat walk naturally visits every component; group on the atom quadruple in
+  // Lisp if the whole series is needed.  Proper and improper terms are visited
+  // by the same walk and distinguished by the proper flag.
+  void walkDihedralTerms(core::T_sp callback);
+
   core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::HashTable_sp atomTypes );
 
   virtual void emitTestCalls(core::T_sp stream, chem::NVector_sp pos) const;

@@ -63,29 +63,38 @@ Stub AnchoredBondedJoint_O::getInputStub(chem::NVector_sp coords) const {
 
 CL_DEFMETHOD
 Vector3 AnchoredBondedJoint_O::transformedParentPos() const {
+  return this->_ParentAtomPosition; // ignore orientation-transform
+#if 0
   const Vector3& pos = this->_ParentAtomPosition;
   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
   Vector3 tpos = m.multiplyByVector3(pos);
   return tpos;
+#endif
 }
 
 CL_DEFMETHOD
 Vector3 AnchoredBondedJoint_O::transformedGrandParentPos() const {
+  return this->_GrandParentAtomPosition;
+#if 0
   const Vector3& pos = this->_GrandParentAtomPosition;
   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
   Vector3 tpos = m.multiplyByVector3(pos);
   return tpos;
+#endif
 }
 
 CL_DEFMETHOD
 Vector3 AnchoredBondedJoint_O::transformedGreatGrandParentPos() const {
+  return this->_GreatGrandParentAtomPosition;
+#if 0
   const Vector3& pos = this->_GreatGrandParentAtomPosition;
   Matrix m = gc::As<geom::OMatrix_sp>(core::eval::funcall(_sym_orientation_transform, nil<core::T_O>()))->ref();
   Vector3 tpos = m.multiplyByVector3(pos);
   return tpos;
+#endif
 }
 
-///CL_LAMBDA(atom-id name atom-table parent-pos grand-parent-pos great-grand-parent-pos);
+///CL_LAMBDA(atom-id name atom-table &optional (parent-pos -1) (grand-parent-pos -1) (great-grand-parent-pos -1));
 CL_LISPIFY_NAME("make_AnchoredBondedJoint");
 CL_DEF_CLASS_METHOD
 AnchoredBondedJoint_sp AnchoredBondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable

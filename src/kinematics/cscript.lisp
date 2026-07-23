@@ -7,6 +7,7 @@
            #~"jump.cc"
            #~"jumpJoint.cc"
            #~"xyzJoint.cc"
+           #~"anchoredBondedJoint.cc"
            #~"kinematicsPackage.cc"
            #~"stub.cc"
 )

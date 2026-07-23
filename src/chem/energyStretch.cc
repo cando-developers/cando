@@ -618,10 +618,11 @@ CL_DEFMETHOD void EnergyStretch_O::walkStretchTerms(core::T_sp callback)
                         entry._Atom2,
                         core::make_fixnum(entry.term.i3x1),
                         core::make_fixnum(entry.term.i3x2),
-                        core::make_single_float(entry.term.kb),
-                        core::make_single_float(entry.term.r0));
+                        core::clasp_make_double_float(entry.term.kb),
+                        core::clasp_make_double_float(entry.term.r0));
   };
 };
+
 
 CL_DEFMETHOD void EnergyStretch_O::modifyStretchTermKb(size_t index, float kb) {
   if (index<this->_Terms.size()) {

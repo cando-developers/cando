@@ -212,6 +212,7 @@ public:
 
   void addAngleTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt, double t0);
 
+  void walkAngleTerms(core::T_sp callback);
 
   core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
 

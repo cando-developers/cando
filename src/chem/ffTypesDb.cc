@@ -179,9 +179,13 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
           if (values.second(stereoisomer_atom_mv.number_of_values()).notnilp()) {
             core::T_sp stereoisomer_atom = stereoisomer_atom_mv;
             core::T_sp type = core::eval::funcall(_sym_stereoisomer_atom_type, stereoisomer_atom);
-            atom_types->setf_gethash(atom,type);
-            if (chem__verbose(2)) {
-              core::clasp_write_string(fmt::format("Assigned atom type {} using topology {}\n" , _rep_(type) , _rep_(name)));
+            // Skip if the atom is already typed (e.g. a :given-atom-type override) so we
+            // don't clobber it with the residue-template type.  Priority: given > template > rules.
+            if (atom->getType(atom_types).nilp()) {
+              atom_types->setf_gethash(atom,type);
+              if (chem__verbose(2)) {
+                core::clasp_write_string(fmt::format("Assigned atom type {} using topology {}\n" , _rep_(type) , _rep_(name)));
+              }
             }
           } else {
             if (chem__verbose(2)) {

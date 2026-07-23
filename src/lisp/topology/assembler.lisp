@@ -1,5 +1,16 @@
 (in-package :topology)
 
+;; topology package
+(defgeneric assign-given-atom-types (foldamer oligomer monomers-to-residues)
+  (:documentation "Optionally stamp each atom's :given-atom-type before the energy function is
+  built.  Default does nothing.  Foldamers whose force-field parameters are cached by
+  (atom-name . constitution-context) override this to stamp that cons on every atom."))
+
+(defmethod assign-given-atom-types (foldamer oligomer monomers-to-residues)
+  (declare (ignore foldamer oligomer monomers-to-residues)) ; default: no-op
+  nil)
+
+
 (defclass local-frame-specs (cando.serialize:serializable)
   ((origin-spec :initarg :origin-spec :reader origin-spec)
    (x-spec :initarg :x-spec :reader x-spec)
@@ -707,6 +718,10 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                           :monomer-positions-accumulator monomer-positions)
                                           do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
                                           collect (cons oligomer-shape molecule))))
+    (loop for (oligomer-shape . molecule) in oligomer-shapes-molecules
+          for oligomer = (oligomer oligomer-shape)
+          for foldamer = (foldamer (oligomer-space oligomer))
+          do (assign-given-atom-types foldamer oligomer monomers-to-residues))
     (let* ((ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
                           (resize-atmolecules atagg (length oligomer-shapes))
                           atagg))
@@ -815,12 +830,18 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
     (error "You must provide a list of oligomers"))
   (let* ((aggregate (chem:make-aggregate :all))
          (monomer-positions (make-hash-table))
+         (monomers-to-residues (make-hash-table))
          (oligomer-molecules (loop for oligomer in oligomers
                                    for molecule-index from 0
+                                   for oligomer-space = (oligomer-space oligomer)
+                                   for foldamer = (foldamer oligomer-space)
                                    for molecule = (topology:build-molecule oligomer
                                                                            :aggregate aggregate
                                                                            :molecule-index molecule-index
+                                                                           :monomers-to-residues monomers-to-residues
                                                                            :monomer-positions-accumulator monomer-positions)
+                                   do (chem:setf-force-field-name molecule (oligomer-force-field-name foldamer))
+                                   do (assign-given-atom-types foldamer oligomer monomers-to-residues)
                                    collect (cons oligomer molecule)))
          (monomer-contexts (make-hash-table))
          (ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
@@ -1507,12 +1528,10 @@ Return the COORDS and NIL or the ligand-transform if it was calculated."
          (atres (elt (atresidues atmol) residue-index))
          (joints (joints atres))
          (joint0 (elt joints 0)))
-    (if (eq oligomer-shape (ligand-oligomer-shape assembler))
-        (progn
-          #+(or)(let ((*orientation* ligand-transform))
-                  (progn (update-xyz-coords assembler assembler-internals joint0 coords)))
-          (with-orientation-transform ligand-transform
-            (update-xyz-coords assembler assembler-internals joint0 coords)))
+    (if (and (eq oligomer-shape (ligand-oligomer-shape assembler))
+             (not (typep joint0 'kin:anchored-bonded-joint))) ; anchored roots already carry orientation in their cached anchors
+        (with-orientation-transform ligand-transform
+          (update-xyz-coords assembler assembler-internals joint0 coords))
         (update-xyz-coords assembler assembler-internals joint0 coords))
     (adjust-atom-tree-external-coordinates assembler assembler-internals coords oligomer-shape)
     joint0))

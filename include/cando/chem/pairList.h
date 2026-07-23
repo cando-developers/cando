@@ -247,8 +247,8 @@ core::T_mv rebuildPairListBetweenMattersImpl(Component* comp, core::T_sp tcoordi
 
 template <typename Component>
 core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
-  // Save displacement buffer for maybeRebuildPairList drift detection
-  comp->setDisplacementBuffer(copy_nvector(gc::As<NVector_sp>(tcoordinates)));
+  // Between-matters callers drive rebuilds via set-matters (which clears the
+  // displacement buffer), so drift detection is never used here - skip the copy.
 
   // Delegate to between-matters variant if configured
   if (comp->matter1().notnilp()) {
@@ -257,6 +257,9 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
     }
     SIMPLE_ERROR("For {} matter1 is {} and matter2 is NIL", _rep_(comp->asSmartPtr()), _rep_(comp->matter1()));
   }
+
+  // Save displacement buffer for maybeRebuildPairList drift detection
+  comp->setDisplacementBuffer(copy_nvector(gc::As<NVector_sp>(tcoordinates)));
 
   size_t interactionsKept = 0;
   size_t interactionsDiscarded = 0;

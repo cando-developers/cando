@@ -875,8 +875,8 @@ bool EnergyNonbond::defineForAtomPair(core::T_sp forceField, bool is14, Atom_sp 
   num_real electrostaticScale;
   this->_Atom1_enb = a1;
   this->_Atom2_enb = a2;
-  core::Symbol_sp t1 = a1->getType(atomTypes);
-  core::Symbol_sp t2 = a2->getType(atomTypes);
+  core::T_sp t1 = a1->getType(atomTypes);
+  core::T_sp t2 = a2->getType(atomTypes);
   LOG("Defining nonbond between types: {} - {}", _rep_(t1), _rep_(t2));
   ASSERT(forceField && forceField.notnilp());
   LOG("forceField @{}   .notnilp()->{}", (void *)forceField.raw_(), forceField.notnilp());

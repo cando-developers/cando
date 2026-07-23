@@ -129,7 +129,7 @@ namespace chem {
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    core::Symbol_sp 	_Type;
+    core::T_sp 	_Type;
     double		_Radius_Nanometers;
     double		_Epsilon_kj;	// epsilon in AMBER
     double		_Apol;
@@ -145,7 +145,7 @@ namespace chem {
     core::T_sp          _NonbondComment;
 
   public:
-    static FFNonbond_sp make_FFNonbond(core::Symbol_sp type,
+    static FFNonbond_sp make_FFNonbond(core::T_sp type,
                                        double radius_nanometers,
                                        double epsilon_kj,
                                        double apol,
@@ -161,9 +161,9 @@ namespace chem {
     string __repr__() const;
 
     CL_LISPIFY_NAME(FFNonbond/setType);
-    CL_DEFMETHOD void setType(core::Symbol_sp s) {this->_Type=s;};
+    CL_DEFMETHOD void setType(core::T_sp s) {this->_Type=s;};
     CL_LISPIFY_NAME(FFNonbond/getType);
-    CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
+    CL_DEFMETHOD core::T_sp getType() const { return this->_Type;};
     CL_LISPIFY_NAME(FFNonbond/setPolarizability);
     CL_DEFMETHOD void setPolarizability(double d) { this->_Polarizability = d;};
     CL_LISPIFY_NAME(FFNonbond/getPolarizability);
@@ -355,16 +355,16 @@ namespace chem {
     
     void add( FFNonbond_sp nonbonded );
 
-    bool hasType( core::Symbol_sp type);
+    bool hasType( core::T_sp type);
 
     FFNonbond_sp getFFNonbondUsingTypeIndex( uint typeIdx );
-    uint findTypeIndex( core::Symbol_sp type );
-    size_t ffnonbond_find_atom_type_position( core::Symbol_sp type );
+    uint findTypeIndex( core::T_sp type );
+    size_t ffnonbond_find_atom_type_position( core::T_sp type );
     /*! Return the type index multiplied by the number
      * of type indexes.  Another type index can be added
      * to this number to get an index into a Nonbond crossterm table
      */
-    uint findTypeMajorIndex( core::Symbol_sp type );
+    uint findTypeMajorIndex( core::T_sp type );
 
     /*! Return the number of Nonbond atom types
      */
@@ -402,7 +402,7 @@ namespace chem {
     {};
   };
 
-core::T_sp chem__FFNonbond_findType( FFNonbondDb_sp ffNonbondDb, core::Symbol_sp type );
+core::T_sp chem__FFNonbond_findType( FFNonbondDb_sp ffNonbondDb, core::T_sp type );
 core::T_sp chem__FFLKSolvation_findType( FFLKSolvationDb_sp ffLKSolvationDb, core::Symbol_sp type );
 
 };
