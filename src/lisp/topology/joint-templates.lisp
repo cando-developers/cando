@@ -67,16 +67,19 @@
       (setf (other adjustment) jother))))
 
 (defmethod internal-adjust ((adjustment internal-planar-adjustment) assembler internals)
+  o
   ;; Only when the "other" slot is bound do we make adjustment
-  (when (slot-boundp adjustment 'other)
+  (when (and (slot-boundp adjustment 'other)
+             (typep (joint adjustment) 'kin:bonded-joint)
+             (typep (other adjustment) 'kin:bonded-joint))
     (let* ((joint (joint adjustment))
            (other (other adjustment))
            (phi-original (kin:bonded-joint/get-phi joint internals))
            (phi-other (kin:bonded-joint/get-phi other internals))
            (phi-adjust (radians-add phi-other PI)))
       #+(or)(format t "internal-adjust ~s phi-original ~8,3f  phi-adjust ~8,3f~%"
-              joint
-              (topology:rad-to-deg phi-original) (topology:rad-to-deg phi-adjust))
+                    joint
+                    (topology:rad-to-deg phi-original) (topology:rad-to-deg phi-adjust))
       #+(or)(kin:bonded-joint/set-distance joint 1.47)
       #+(or)(kin:bonded-joint/set-theta joint (topology:deg-to-rad 120.0))
       (fill-joint-phi joint phi-adjust assembler internals)

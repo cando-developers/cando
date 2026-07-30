@@ -190,6 +190,8 @@ public:
 	// Ring membership
   ushort              _RingMembershipCount;
   short               _Ionization;
+  static const size_t NoAtomTableIndex = SIZE_MAX;
+  size_t              _AtomTableIndex = NoAtomTableIndex;
 public:
   static Atom_sp make(MatterName name, Element element);
 public:
@@ -505,6 +507,7 @@ public:
       _UniqueAtomOrder(nextUniqueAtomOrder()),
       _Alias(nil<core::Symbol_O>()),
       _Flags(0),
+      _AtomTableIndex(NoAtomTableIndex),
 //      _Type(nil<core::Symbol_O>()),
       _Charge(0.0),
       _TempInt(0),

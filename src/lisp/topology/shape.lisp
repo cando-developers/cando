@@ -136,6 +136,8 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
       (print-unreadable-object (obj stream :type t)
         (format stream "~s" "A-Residue" #+(or)(chem:get-name (residue obj))))))
 
+(defmethod rotamer-index ((shape residue-shape))
+  (closest-rotamer-index shape))
 
 (defmethod apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape (residue-shape residue-shape) monomer-context atresidue &key verbose)
   (when verbose
@@ -471,25 +473,26 @@ oligomer-space's foldamer instead of caching it in a slot."
     (and stub (atom-stub-position stub))))
 
 
-(defun fill-residue-shape-coordinates (oligomer-shape oligomer position-fn)
+(defun fill-residue-shape-coordinates (oligomer-shape position-fn)
   "POSITION-FN : (monomer atom-name) -> geom:vector"
-  (loop for monomer in (ordered-monomers oligomer) ; incoming neighbor first
-        for monomer-shape = (gethash monomer (monomer-shape-map oligomer-shape))
-        when (typep monomer-shape 'residue-shape)
-          do (let* ((incoming-monomer (when (has-in-coupling-p monomer)
-                                        (monomer-on-other-side
-                                         monomer (in-coupling-plug-name monomer))))
-                    (incoming-shape   (and incoming-monomer
-                                           (gethash incoming-monomer
-                                                    (monomer-shape-map oligomer-shape)))))
-               (when (and incoming-shape (not (typep incoming-shape 'residue-shape)))
-                 (error "residue-shape for ~a has a rotamer-shape incoming (~a) — a residue-shape cannot borrow off a rotamer-shape"
-                        monomer incoming-shape))
-               (let ((joint-template   (joint-template
-                                        (monomer-topology monomer oligomer))))
-                 (setf (atom-coordinates monomer-shape)
-                       (build-residue-shape-atom-coordinates
-                        monomer incoming-shape joint-template position-fn oligomer))))))
+  (let ((oligomer (oligomer oligomer-shape)))
+    (loop for monomer in (ordered-monomers oligomer) ; incoming neighbor first
+          for monomer-shape = (gethash monomer (monomer-shape-map oligomer-shape))
+          when (typep monomer-shape 'residue-shape)
+            do (let* ((incoming-monomer (when (has-in-coupling-p monomer)
+                                          (monomer-on-other-side
+                                           monomer (in-coupling-plug-name monomer))))
+                      (incoming-shape   (and incoming-monomer
+                                             (gethash incoming-monomer
+                                                      (monomer-shape-map oligomer-shape)))))
+                 (when (and incoming-shape (not (typep incoming-shape 'residue-shape)))
+                   (error "residue-shape for ~a has a rotamer-shape incoming (~a) — a residue-shape cannot borrow off a rotamer-shape"
+                          monomer incoming-shape))
+                 (let ((joint-template   (joint-template
+                                          (monomer-topology monomer oligomer))))
+                   (setf (atom-coordinates monomer-shape)
+                         (build-residue-shape-atom-coordinates
+                          monomer incoming-shape joint-template position-fn oligomer)))))))
 
 
 (defmethod make-oligomer-shape ((oligomer oligomer)
@@ -537,8 +540,9 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
                              (not (slot-boundp ms 'atom-coordinates))))
                       (monomer-shape-vector os))))
           (cond
-            (position-fn (fill-residue-shape-coordinates os oligomer position-fn))              (unfilled-residue-shapes
-                                                                                                 (error "make-oligomer-shape: unfilled residue-shapes present but no 
+            (position-fn (fill-residue-shape-coordinates os position-fn))
+            (unfilled-residue-shapes
+             (error "make-oligomer-shape: unfilled residue-shapes present but no 
   :position-fn"))))
         os))))
 

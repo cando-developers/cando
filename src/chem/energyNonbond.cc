@@ -380,6 +380,51 @@ inline double calculate_dQ1Q2(double electrostaticScale, double electrostaticMod
   return electrostaticScale * electrostaticModifier * charge1 * charge2;
 }
 
+void EnergyNonbond_O::ensureParameterCache() {
+  AtomTable_sp at = this->_AtomTable;
+  if (at.nilp()) return;
+  size_t n = at->getNumberOfAtoms();
+  if (this->_CachedForAtomTable == at && this->_CachedValid.size() == n) return;
+  this->_CachedRadius.assign(n, 0.0);
+  this->_CachedEpsilon.assign(n, 0.0);
+  this->_CachedValid.assign(n, 0);
+  double conv = core::Number_O::as_double_float(
+      gc::As<core::Number_sp>(_sym_STARamber_charge_conversion_18_DOT_2223STAR->symbolValue()));
+  this->_CachedDQ1Q2Scale = conv * conv;                       // hoist the invariant scale
+  auto& energyAtoms = at->getVectorEnergyAtoms();
+  for (size_t i = 0; i < n; i++) {
+    core::T_sp type = energyAtoms[i].atom()->getType(this->_AtomTypes);           // 1 gethash/atom
+    core::T_sp tff  = core::eval::funcall(_sym_find_type, this->_NonbondForceField, type); // once/atom
+    if (tff.notnilp()) {
+      FFNonbond_sp ff = gc::As<FFNonbond_sp>(tff);
+      this->_CachedRadius[i]  = ff->getRadius_Angstroms();
+      this->_CachedEpsilon[i] = ff->getEpsilon_kcal();
+      this->_CachedValid[i]   = 1;
+    }
+  } 
+  this->_CachedForAtomTable = at;
+}   
+      
+bool EnergyNonbond_O::tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
+                                       size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
+  if (!this->_CachedValid[li] || !this->_CachedValid[lj]) return false;   // unknown type -> skip
+  double rstar     = this->_CachedRadius[li] + this->_CachedRadius[lj];
+  double epsilonij = std::sqrt(this->_CachedEpsilon[li] * this->_CachedEpsilon[lj]);
+  double r6  = rstar*rstar*rstar*rstar*rstar*rstar;
+  double r12 = r6*r6;
+  EnergyNonbond term;
+  term._Atom1_enb = a1;
+  term._Atom2_enb = a2;
+  term.term.dA    = epsilonij * r12;                              // vdwScale = 1.0 (non-1-4 path)
+  term.term.dC    = 2.0 * epsilonij * r6;
+  term.term.dQ1Q2 = calculate_dQ1Q2(1.0 /*electrostaticScale*/, this->_CachedDQ1Q2Scale,
+                               a1->getCharge(), a2->getCharge());
+  term.term.I1 = i3x1;
+  term.term.I2 = i3x2;
+  this->addTerm(term);
+  return true;
+} 
+
 /*! The main nonbond code using excluded atoms.
     It is a template function so that template arguments can inline or elide testing code.
  */
@@ -1631,6 +1676,7 @@ EnergyComponent_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory
   // copy->_Parameters.do_apply(setupAcc);
   // copy->_DisplacementBuffer = nil<core::T_O>();
   // copy->_Terms.clear();
+  copy->invalidateParameterCache();
   return copy;
 }
 

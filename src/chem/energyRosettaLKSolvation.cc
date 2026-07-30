@@ -79,6 +79,7 @@ CL_LAMBDA((self chem:energy-rosetta-lksolvation) mat1 mat2 energy-function keep-
 CL_DEFMETHOD void EnergyRosettaLKSolvation_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
                                                                           EnergyFunction_sp energyFunction,
                                                                           core::T_sp keepInteractionFactory) {
+  this->invalidateParameterCache();
   this->_Matter1 = mat1;
   this->_Matter2 = mat2;
   this->_KeepInteractionFactory = keepInteractionFactory;
@@ -221,6 +222,37 @@ static bool lookup_lk_solvation_parameters(FFLKSolvation_sp ffLKSolvation,
   return true;
 }
 
+void EnergyRosettaLKSolvation_O::ensureParameterCache() {
+  AtomTable_sp at = this->_AtomTable;
+  if (at.nilp()) return;
+  size_t n = at->getNumberOfAtoms();
+  if (this->_CachedForAtomTable == at && this->_CachedValid.size() == n) return;   // still valid
+  this->_CachedDGfree.assign(n, 0.0);
+  this->_CachedLambda.assign(n, 1.0);   // defineForAtomPair's default lambda is 1.0
+  this->_CachedRadius.assign(n, 0.0);
+  this->_CachedVolume.assign(n, 0.0);
+  this->_CachedValid.assign(n, 0);
+  auto& energyAtoms = at->getVectorEnergyAtoms();
+  for (size_t i = 0; i < n; i++) {
+    core::Symbol_sp type = energyAtoms[i].atom()->getPropertyOrDefault(
+        INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>());
+    core::T_sp tff = core::eval::funcall(_sym_find_lksolvation_type,
+                                         this->_LKSolvationForceField, type);   // funcall, once/atom
+    if (tff.notnilp()) {
+      auto ff = gc::As<FFLKSolvation_sp>(tff);
+      double dg = 0.0, lam = 1.0, rad = 0.0, vol = 0.0;
+      if (lookup_lk_solvation_parameters(ff, dg, lam, rad, vol)) {
+        this->_CachedDGfree[i] = dg;
+        this->_CachedLambda[i] = lam;
+        this->_CachedRadius[i] = rad;
+        this->_CachedVolume[i] = vol;
+        this->_CachedValid[i]  = 1;
+      } 
+    } 
+  }   
+  this->_CachedForAtomTable = at;
+}
+
 bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Atom_sp a2,
                                                  size_t i3x1, size_t i3x2,
                                                  EnergyRosettaLKSolvation_sp energyRosettaLKSolvation,
@@ -319,6 +351,7 @@ EnergyComponent_sp EnergyRosettaLKSolvation_O::copyFilter(core::T_sp keepInterac
   copy->_Parameters.do_apply(setupAcc);
   copy->_DisplacementBuffer = nil<core::T_O>();
   copy->_Terms.clear();
+  copy->invalidateParameterCache();
   return copy;
 }
 

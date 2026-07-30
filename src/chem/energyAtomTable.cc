@@ -258,13 +258,27 @@ CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
 
 EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 {
+  // Fast path: the atom remembers the index it was given by the AtomTable that
+  // claimed it (constructFromMolecule).  The hint is never trusted on its own -
+  // it is only used when THIS table really holds THIS atom at that index.  A
+  // stale hint (copied atom, deserialized atom, a different AtomTable) fails the
+  // check and falls through to the hash lookup, so the worst case is the old
+  // behaviour, never a wrong EnergyAtom.
+  size_t hint = a->_AtomTableIndex;
+  if ( hint < this->_Atoms.size() && this->_Atoms[hint].atom() == a ) {
+    return &this->_Atoms[hint];
+  }
+  // Slow path
   core::T_mv it = this->_AtomTableIndexes->gethash(a);
   core::MultipleValues &values = core::lisp_multipleValues();
   if ( values.second(it.number_of_values()).nilp() ) // it == this->_AtomTableIndexes.end() )
   {
     SIMPLE_ERROR("Could not find atom[{}] in AtomTable" , _rep_(a) );
   }
-  return &this->_Atoms[core::clasp_to_fixnum(it)];
+  size_t new_hint = core::clasp_to_fixnum(it);
+  // Write the slow-path result into the a->_AtomTableIndex to speed it up next time
+  a->_AtomTableIndex = new_hint;
+  return &this->_Atoms[new_hint];
 }
 
 CL_LISPIFY_NAME("addAtomInfo");
@@ -553,6 +567,10 @@ CL_DEFMETHOD void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp
         }
         LOG("Setting atom[{}] in AtomTable[{}]" , _rep_(a1) , idx );
         this->_AtomTableIndexes->setf_gethash(a1,core::clasp_make_fixnum(idx));
+        // Fast-path hint for getEnergyAtomPointer.  Only a hint - it is validated
+        // there against _Atoms[idx]._SharedAtom, so an atom that ends up in a
+        // second AtomTable simply loses the hint for the first one.
+        a1->_AtomTableIndex = idx;
         EnergyAtom ea(nonbondForceField,a1,coordinateIndex,atomTypes,keepInteractionFactory);
         ea._AtomName = a1->getName();
         {

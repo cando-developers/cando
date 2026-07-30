@@ -1214,6 +1214,7 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
 Matter_sp Atom_O::copy(core::T_sp new_to_old)
 {
   auto atm = gc::GC<Atom_O>::copy(*this);
+  atm->_AtomTableIndex = NoAtomTableIndex;
   atm->_Bonds.clear();
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     auto ht = gc::As<core::HashTable_sp>(new_to_old);
@@ -1236,6 +1237,7 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {
   LOG("Copying atom @{}" , this );
   auto  aNew  = gctools::GC<Atom_O>::copy( *this); // = RP_Copy<Atom_O>(this);
+  aNew->_AtomTableIndex = NoAtomTableIndex;
   aNew->_Bonds.clear();
   // Map the old atom to the new
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
