@@ -222,7 +222,21 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
   size_t                          _InteractionsKept;
   size_t                          _InteractionsDiscarded;
+  // Per-atom nonbond params, indexed by atom-table position; + hoisted charge scale.
+  gctools::Vec0<double> _CachedRadius;
+  gctools::Vec0<double> _CachedEpsilon;
+  gctools::Vec0<char>   _CachedValid;
+  double                _CachedDQ1Q2Scale;
+  core::T_sp            _CachedForAtomTable;
 
+public:
+  void ensureParameterCache();
+  void invalidateParameterCache() {
+    this->_CachedForAtomTable = nil<core::T_O>();
+    this->_CachedValid.clear();
+  }
+  bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
+                        size_t i3x1, size_t i3x2, core::T_sp keepInteraction);  // defined in .cc
  public:
   virtual std::string implementation_details() const;
   virtual std::string descriptionOfContents() const;
@@ -350,7 +364,9 @@ public:
       _Matter2(nil<core::T_O>()),
       _FFNonbondDb(nil<core::T_O>()),
       _InteractionsKept(0),
-      _InteractionsDiscarded(0)
+      _InteractionsDiscarded(0),
+      _CachedDQ1Q2Scale(0.0),
+      _CachedForAtomTable(nil<core::T_O>())
   {};
 };
 

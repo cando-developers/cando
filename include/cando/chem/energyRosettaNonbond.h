@@ -114,135 +114,175 @@ namespace translate {
 
 namespace chem {
 
-  class EnergyRosettaNonbond_O : public EnergyComponent_O
-  {
-    LISP_CLASS(chem, ChemPkg, EnergyRosettaNonbond_O, "EnergyRosettaNonbond", EnergyComponent_O);
+// vdW combining rule: two atoms' (radius,epsilon) -> Lennard-Jones A/C.
+// Returns false when the pair contributes nothing (epsilon == 0, e.g. polar H).
+inline bool combineNonbondParams(double r1, double e1, double r2, double e2,
+                                 double& parmA, double& parmC) {
+  double rstar     = r1 + r2;
+  double epsilonij = std::sqrt(e1 * e2);
+  if (epsilonij == 0.0) return false;
+  double r6  = rstar*rstar*rstar*rstar*rstar*rstar;
+  parmA = epsilonij * (r6*r6);   
+  parmC = 2.0 * epsilonij * r6;
+  return true;
+} 
 
-  public:
-    virtual bool restraintp() const override { return false; };
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
+class EnergyRosettaNonbond_O : public EnergyComponent_O
+{
+  LISP_CLASS(chem, ChemPkg, EnergyRosettaNonbond_O, "EnergyRosettaNonbond", EnergyComponent_O);
 
-  public: // virtual functions inherited from Object
-    void initialize();
+public:
+  virtual bool restraintp() const override { return false; };
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 
-  public:
-    typedef EnergyRosettaNonbond TermType;
+public: // virtual functions inherited from Object
+  void initialize();
 
-  public: // instance variables
-    gctools::Vec0<TermType> _Terms;
-    AtomTable_sp            _AtomTable;
-    core::T_sp              _NonbondForceField;
-    core::HashTable_sp      _AtomTypes;
-    core::T_sp              _KeepInteractionFactory;
-    core::T_sp              _DisplacementBuffer;
-    // If _Matter1 and _Matter2 are defined, build pair-list between them instead of using _AtomTable
-    core::T_sp              _Matter1;
-    core::T_sp              _Matter2;
+public:
+  typedef EnergyRosettaNonbond TermType;
 
-    // Rosetta parameters (used to construct terms)
-    rosetta_nonbond_parameters      _Parameters;
+public: // instance variables
+  gctools::Vec0<TermType> _Terms;
+  AtomTable_sp            _AtomTable;
+  core::T_sp              _NonbondForceField;
+  core::HashTable_sp      _AtomTypes;
+  core::T_sp              _KeepInteractionFactory;
+  core::T_sp              _DisplacementBuffer;
+  // If _Matter1 and _Matter2 are defined, build pair-list between them instead of using _AtomTable
+  core::T_sp              _Matter1;
+  core::T_sp              _Matter2;
 
-  public:
-    virtual std::string implementation_details() const;
-    virtual std::string descriptionOfContents() const;
-    typedef gctools::Vec0<TermType>::iterator iterator;
-    static EnergyRosettaNonbond_sp make(EnergyFunction_sp energyFunction,
-                                           core::T_sp keepInteractionFactory,
-                                           SetupAccumulator& setupAcc);
-  public:
-    CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
+  // Rosetta parameters (used to construct terms)
+  rosetta_nonbond_parameters      _Parameters;
+  gctools::Vec0<double>           _CachedRadius;
+  gctools::Vec0<double>           _CachedEpsilon;
+  gctools::Vec0<char>             _CachedValid;
+  core::T_sp                      _CachedForAtomTable;
 
-  public:
+public:
+  void ensureParameterCache();
+  void invalidateParameterCache() {
+    this->_CachedForAtomTable = nil<core::T_O>();
+    this->_CachedValid.clear();
+  }
+  // Cached hot-path term add: no getType, no find-type, no gethash.
+  bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
+                        size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
+    if (!this->_CachedValid[li] || !this->_CachedValid[lj]) return false;
+    double parmA, parmC;
+    if (!combineNonbondParams(this->_CachedRadius[li], this->_CachedEpsilon[li],
+                              this->_CachedRadius[lj], this->_CachedEpsilon[lj],
+                              parmA, parmC)) return false;
+    TermType term;
+    term._Atom1_enb = a1;
+    term._Atom2_enb = a2;
+    term.term = rosetta_nonbond_term(this->_Parameters, parmA, parmC, i3x1, i3x2);
+    this->addTerm(term);
+    return true;
+  }
+public:
+  virtual std::string implementation_details() const;
+  virtual std::string descriptionOfContents() const;
+  typedef gctools::Vec0<TermType>::iterator iterator;
+  static EnergyRosettaNonbond_sp make(EnergyFunction_sp energyFunction,
+                                      core::T_sp keepInteractionFactory,
+                                      SetupAccumulator& setupAcc);
+public:
+  CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
 
-  public: // for building the pairList
-    // In energyRosettaNonbond.h:
-    double rpairlist() const { return _Parameters.rpairlist; }
-    double rcut() const { return _Parameters.rcut; }
-    AtomTable_sp atomTable() const { return _AtomTable; }
-    CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
-    CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
-    CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
-    CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
-    CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
-    CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
-      this->_Matter1 = matter1;
-      this->_Matter2 = matter2;
-      this->_DisplacementBuffer = nil<core::T_O>();
+public:
+
+public: // for building the pairList
+  // In energyRosettaNonbond.h:
+  double rpairlist() const { return _Parameters.rpairlist; }
+  double rcut() const { return _Parameters.rcut; }
+  AtomTable_sp atomTable() const { return _AtomTable; }
+  CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
+  CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
+  CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
+  CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
+  CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
+  CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
+    // this->invalidateParameterCache();
+    this->_Matter1 = matter1;
+    this->_Matter2 = matter2;
+    this->_DisplacementBuffer = nil<core::T_O>();
+  }
+  void clearTerms() { _Terms.clear(); }
+  void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
+  core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
+
+  bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
+                  core::T_sp keepInteraction) {
+    EnergyRosettaNonbond term;
+    if (term.defineForAtomPair(_NonbondForceField, a1, a2, i3x1, i3x2,
+                               this->asSmartPtr(), _AtomTypes,
+                               keepInteraction, _Parameters)) {
+      addTerm(term);
+      return true;
     }
-    void clearTerms() { _Terms.clear(); }
-    void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
-    core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
+    return false;
+  }
 
-    bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
-                    core::T_sp keepInteraction) {
-      EnergyRosettaNonbond term;
-      if (term.defineForAtomPair(_NonbondForceField, a1, a2, i3x1, i3x2,
-                                 this->asSmartPtr(), _AtomTypes,
-                                 keepInteraction, _Parameters)) {
-        addTerm(term);
-        return true;
-      }
-      return false;
-    }
+public:
+  void addTerm(const TermType& term);
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
 
-  public:
-    void addTerm(const TermType& term);
-    virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual double evaluateAllComponent(ScoringFunction_sp scorer,
+                                      NVector_sp pos,
+                                      core::T_sp energyScale,
+                                      core::T_sp componentEnergy,
+                                      bool calcForce,
+                                      gc::Nilable<NVector_sp> force,
+                                      bool calcDiagonalHessian,
+                                      bool calcOffDiagonalHessian,
+                                      gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
+                                      gc::Nilable<NVector_sp> hdvec,
+                                      gc::Nilable<NVector_sp> dvec,
+                                      core::T_sp activeAtomMask,
+                                      core::T_sp debugInteractions);
 
-    virtual double evaluateAllComponent(ScoringFunction_sp scorer,
-                                        NVector_sp pos,
-                                        core::T_sp energyScale,
-                                        core::T_sp componentEnergy,
-                                        bool calcForce,
-                                        gc::Nilable<NVector_sp> force,
-                                        bool calcDiagonalHessian,
-                                        bool calcOffDiagonalHessian,
-                                        gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
-                                        gc::Nilable<NVector_sp> hdvec,
-                                        gc::Nilable<NVector_sp> dvec,
-                                        core::T_sp activeAtomMask,
-                                        core::T_sp debugInteractions);
+  double debugAllComponent(ScoringFunction_sp scorer,
+                           NVector_sp pos,
+                           core::T_sp energyScale,
+                           core::T_sp componentEnergy,
+                           bool calcForce,
+                           gc::Nilable<NVector_sp> force,
+                           bool calcDiagonalHessian,
+                           bool calcOffDiagonalHessian,
+                           gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
+                           gc::Nilable<NVector_sp> hdvec,
+                           gc::Nilable<NVector_sp> dvec,
+                           core::T_sp activeAtomMask,
+                           core::T_sp debugInteractions);
 
-    double debugAllComponent(ScoringFunction_sp scorer,
-                             NVector_sp pos,
-                             core::T_sp energyScale,
-                             core::T_sp componentEnergy,
-                             bool calcForce,
-                             gc::Nilable<NVector_sp> force,
-                             bool calcDiagonalHessian,
-                             bool calcOffDiagonalHessian,
-                             gc::Nilable<AbstractLargeSquareMatrix_sp> hessian,
-                             gc::Nilable<NVector_sp> hdvec,
-                             gc::Nilable<NVector_sp> dvec,
-                             core::T_sp activeAtomMask,
-                             core::T_sp debugInteractions);
+  CL_DEFMETHOD void constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
+                                                        EnergyFunction_sp energyFunction,
+                                                        core::T_sp keepInteractionFactory);
 
-    CL_DEFMETHOD void constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
-                                                           EnergyFunction_sp energyFunction,
-                                                           core::T_sp keepInteractionFactory);
+  core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
+  core::T_mv rebuildPairList(core::T_sp tcoordinates);
+  core::T_mv rebuildPairListBetweenMatters(core::T_sp tcoordinates);
 
-    core::T_mv maybeRebuildPairList(core::T_sp tcoordinates);
-    core::T_mv rebuildPairList(core::T_sp tcoordinates);
-    core::T_mv rebuildPairListBetweenMatters(core::T_sp tcoordinates);
-
-    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m,
                                           core::T_sp activeAtomMask );
 
-    virtual void atomsForEachTerm(core::Function_sp callback);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
-    EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
+  EnergyComponent_sp copyFilter(core::T_sp keepInteractionFactory, SetupAccumulator& setupAcc);
 
-  public:
-    EnergyRosettaNonbond_O(const EnergyRosettaNonbond_O& ss); //!< Copy constructor
+public:
+  EnergyRosettaNonbond_O(const EnergyRosettaNonbond_O& ss); //!< Copy constructor
 
-    EnergyRosettaNonbond_O() :
-        _KeepInteractionFactory(nil<core::T_O>()),
-        _DisplacementBuffer(nil<core::T_O>()),
-        _Matter1(nil<core::T_O>()),
-        _Matter2(nil<core::T_O>())
-    {};
-  };
+  EnergyRosettaNonbond_O() :
+      _KeepInteractionFactory(nil<core::T_O>()),
+      _DisplacementBuffer(nil<core::T_O>()),
+      _Matter1(nil<core::T_O>()),
+      _Matter2(nil<core::T_O>()),
+      _CachedForAtomTable(nil<core::T_O>())
+  {};
+};
 
 };

@@ -211,15 +211,10 @@ bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, 
   FFNonbond_sp ffNonbond1 = gc::As<FFNonbond_sp>(tffNonbond1);
   FFNonbond_sp ffNonbond2 = gc::As<FFNonbond_sp>(tffNonbond2);
 
-  double rstar = ffNonbond1->getRadius_Angstroms() + ffNonbond2->getRadius_Angstroms();
-  double epsilonij = sqrt(ffNonbond1->getEpsilon_kcal() * ffNonbond2->getEpsilon_kcal());
-  // Polar hydrogen types (HO, HW, HS, etc.) intentionally have zero epsilon
-  // in AMBER force fields - skip the vdW term for these pairs
-  if (epsilonij==0.0) return false;
-  double rtothe6th = rstar * rstar * rstar * rstar * rstar * rstar;
-  double rtothe12th = rtothe6th * rtothe6th;
-  double parmA = epsilonij * rtothe12th;
-  double parmC = 2.0 * epsilonij * rtothe6th;
+  double parmA, parmC;
+  if (!combineNonbondParams(ffNonbond1->getRadius_Angstroms(), ffNonbond1->getEpsilon_kcal(),
+                            ffNonbond2->getRadius_Angstroms(), ffNonbond2->getEpsilon_kcal(),
+                            parmA, parmC)) return false;
   this->term = rosetta_nonbond_term(params, parmA, parmC, i3x1, i3x2);
   return true;
 }
@@ -274,7 +269,6 @@ EnergyComponent_sp EnergyRosettaNonbond_O::copyFilter(core::T_sp keepInteraction
   copyEnergyComponent(copy, this->asSmartPtr());
 
   copy->_Parameters = this->_Parameters;
-
   copy->_AtomTable = this->_AtomTable;
   copy->_NonbondForceField = this->_NonbondForceField;
   copy->_AtomTypes = this->_AtomTypes;
@@ -284,6 +278,7 @@ EnergyComponent_sp EnergyRosettaNonbond_O::copyFilter(core::T_sp keepInteraction
   copy->_Parameters.do_apply(setupAcc);
   copy->_DisplacementBuffer = nil<core::T_O>();
   copy->_Terms.clear();
+  copy->invalidateParameterCache();
   return copy;
 }
 
@@ -291,6 +286,7 @@ CL_LAMBDA((self chem:energy-rosetta-nonbond) mat1 mat2 energy-function keep-inte
 CL_DEFMETHOD void EnergyRosettaNonbond_O::constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
                                                                                EnergyFunction_sp energyFunction,
                                                                                core::T_sp keepInteractionFactory) {
+  this->invalidateParameterCache();
   this->_Matter1 = mat1;
   this->_Matter2 = mat2;
   this->_KeepInteractionFactory = keepInteractionFactory;
@@ -299,74 +295,6 @@ CL_DEFMETHOD void EnergyRosettaNonbond_O::constructNonbondTermsBetweenMatters(Ma
   this->_AtomTypes = energyFunction->atomTypes();
   this->_NonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
   this->_DisplacementBuffer = nil<core::T_O>();
-}
-
-core::T_mv EnergyRosettaNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {
-  core::T_sp keepInteractionFactory = this->_KeepInteractionFactory;
-  if (keepInteractionFactory.nilp()) return Values0<core::T_O>();
-  NVector_sp coords = gc::As<NVector_sp>(tcoordinates);
-  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory, EnergyRosettaNonbond_O::staticClass());
-  Matter_sp mat1 = gc::As<Matter_sp>(this->_Matter1);
-  Matter_sp mat2 = gc::As<Matter_sp>(this->_Matter2);
-  bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
-  double rpairlist2 = this->_Parameters.rpairlist * this->_Parameters.rpairlist;
-  const rosetta_nonbond_parameters& params = this->_Parameters;
-  auto atomTable = this->_AtomTable;
-  size_t interactionsKept = 0;
-  size_t interactionsDiscarded = 0;
-  {
-    this->_Terms.clear();
-    Loop lMat1(mat1, ATOMS);
-    while (lMat1.advanceLoopAndProcess()) {
-      Atom_sp a1 = lMat1.getAtom();
-      size_t i3x1 = atomTable->getCoordinateIndexTimes3(a1);
-      Vector3 v1(coords, i3x1, Safe());
-      Loop lMat2(mat2, ATOMS);
-      while (lMat2.advanceLoopAndProcess()) {
-        Atom_sp a2 = lMat2.getAtom();
-        size_t i3x2 = atomTable->getCoordinateIndexTimes3(a2);
-        Vector3 v2(coords, i3x2, Safe());
-        Vector3 vdiff = v1 - v2;
-        double dist2 = vdiff.dotProduct(vdiff);
-        if (dist2 < rpairlist2) {
-          if (hasKeepInteractionFunction) {
-            core::T_sp result = core::eval::funcall(keepInteraction, a1, a2,
-                                                    core::make_fixnum(i3x1),
-                                                    core::make_fixnum(i3x2));
-            if (result.notnilp()) {
-              EnergyRosettaNonbond term;
-              if (term.defineForAtomPair(this->_NonbondForceField, a1, a2,
-                                         i3x1, i3x2,
-                                         this->asSmartPtr(),
-                                         this->_AtomTypes,
-                                         keepInteraction,
-                                         params)) {
-                this->addTerm(term);
-                ++interactionsKept;
-              }
-            } else {
-              ++interactionsDiscarded;
-            }
-          } else {
-            EnergyRosettaNonbond term;
-            if (term.defineForAtomPair(this->_NonbondForceField, a1, a2,
-                                       i3x1, i3x2,
-                                       this->asSmartPtr(),
-                                       this->_AtomTypes,
-                                       keepInteraction,
-                                       params)) {
-              this->addTerm(term);
-              ++interactionsKept;
-            }
-          }
-        }
-      }
-    }
-  }
-  size_t totalInteractions = interactionsKept + interactionsDiscarded;
-  return Values(core::clasp_make_fixnum(interactionsKept),
-                core::clasp_make_fixnum(interactionsDiscarded),
-                core::clasp_make_fixnum(totalInteractions));
 }
 
 core::T_mv EnergyRosettaNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates) {
@@ -402,88 +330,31 @@ core::T_mv EnergyRosettaNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates)
   SIMPLE_ERROR("{}: We should never get here", __FUNCTION__);
 }
 
-core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
-#if 1
-  return rebuildPairListImpl(this, tcoordinates);
-#else
-  this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
-  if (this->_Matter1.notnilp()) {
-    ASSERT(this->_Matter2.notnilp());
-    return this->rebuildPairListBetweenMatters(tcoordinates);
-  }
-  size_t interactionsKept = 0;
-  size_t interactionsDiscarded = 0;
-  size_t totalInteractions = 0;
-  this->_Terms.clear();
-  if (this->_KeepInteractionFactory.notnilp()) {
-    core::T_sp keepInteraction = specializeKeepInteractionFactory(this->_KeepInteractionFactory, EnergyRosettaNonbond_O::staticClass());
-    bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
-    double r_pairlist2 = this->_Parameters.rpairlist * this->_Parameters.rpairlist;
-    const rosetta_nonbond_parameters& params = this->_Parameters;
-    if (this->_AtomTable->getNumberOfAtoms() >= 2) {
-      vecreal* coords = NULL;
-      if (gc::IsA<NVector_sp>(tcoordinates)) {
-        coords = &(*gc::As_unsafe<NVector_sp>(tcoordinates))[0];
-      }
-      gctools::Vec0<EnergyAtom>::iterator iea1;
-      gctools::Vec0<EnergyAtom>::iterator iea2;
-      for (iea1 = this->_AtomTable->begin(); iea1 != this->_AtomTable->end() - 1; iea1++) {
-        Vector3 pos1;
-        if (coords) {
-          pos1.set(coords[iea1->coordinateIndexTimes3()],
-                   coords[iea1->coordinateIndexTimes3() + 1],
-                   coords[iea1->coordinateIndexTimes3() + 2]);
-        } else {
-          pos1 = iea1->atom()->getPosition();
-        }
-        for (iea2 = iea1 + 1; iea2 != this->_AtomTable->end(); iea2++) {
-          if (!(iea1->inBondOrAngle(iea2->atom()) || iea1->relatedBy14(iea2->atom()))) {
-            totalInteractions++;
-            Vector3 pos2;
-            if (coords) {
-              pos2.set(coords[iea2->coordinateIndexTimes3()],
-                       coords[iea2->coordinateIndexTimes3() + 1],
-                       coords[iea2->coordinateIndexTimes3() + 2]);
-            } else {
-              pos2 = iea2->atom()->getPosition();
-            }
-            Vector3 posDelta = pos1 - pos2;
-            double dist2 = posDelta.dotProduct(posDelta);
-            if (dist2 < r_pairlist2) {
-              bool keep = true;
-              if (hasKeepInteractionFunction) {
-                core::T_sp result = core::eval::funcall(keepInteraction,
-                                                        iea1->atom(), iea2->atom(),
-                                                        core::make_fixnum(iea1->coordinateIndexTimes3()),
-                                                        core::make_fixnum(iea2->coordinateIndexTimes3()));
-                keep = result.notnilp();
-              }
-              if (keep) {
-                EnergyRosettaNonbond term;
-                if (term.defineForAtomPair(this->_NonbondForceField,
-                                       iea1->atom(), iea2->atom(),
-                                       iea1->coordinateIndexTimes3(),
-                                       iea2->coordinateIndexTimes3(),
-                                       this->asSmartPtr(),
-                                       this->_AtomTypes,
-                                       keepInteraction,
-                                       params)) {
-                  this->addTerm(term);
-                  ++interactionsKept;
-                }
-              } else {
-                ++interactionsDiscarded;
-              }
-            }
-          }
-        }
-      }
+void EnergyRosettaNonbond_O::ensureParameterCache() {
+  AtomTable_sp at = this->_AtomTable;
+  if (at.nilp()) return;
+  size_t n = at->getNumberOfAtoms();
+  if (this->_CachedForAtomTable == at && this->_CachedRadius.size() == n) return;  // still valid
+  this->_CachedRadius.assign(n, 0.0);
+  this->_CachedEpsilon.assign(n, 0.0);
+  this->_CachedValid.assign(n, 0);
+  FFNonbondDb_sp db = gc::As<FFNonbondDb_sp>(this->_NonbondForceField);
+  auto& energyAtoms = at->getVectorEnergyAtoms();
+  for (size_t i = 0; i < n; i++) {
+    core::T_sp type = energyAtoms[i].atom()->getType(this->_AtomTypes);   // 1 gethash / atom, once
+    core::T_sp tff  = chem__FFNonbond_findType(db, type);                  // direct, no funcall
+    if (tff.notnilp()) {
+      FFNonbond_sp ff = gc::As<FFNonbond_sp>(tff);
+      this->_CachedRadius[i]  = ff->getRadius_Angstroms();
+      this->_CachedEpsilon[i] = ff->getEpsilon_kcal();
+      this->_CachedValid[i]   = 1;
     }
-  }
-  return Values(core::clasp_make_fixnum(interactionsKept),
-                core::clasp_make_fixnum(interactionsDiscarded),
-                core::clasp_make_fixnum(totalInteractions));
-  #endif
+  } 
+  this->_CachedForAtomTable = at;
+}
+
+core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
+  return rebuildPairListImpl(this, tcoordinates);
 }
 
 // Evaluate

@@ -26,6 +26,9 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #define	DEBUG_LEVEL_NONE
 
+//#define WL_DELTA_CHECK 1
+#define DEBUG_DELTA 1
+
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
@@ -203,42 +206,13 @@ struct Energies {
     int index = (yy*(yy-1)/2)+xx;
     return index;
   }
-#if 0
-  __attribute__((optnone))
-  double oldEnergyFunction(State& state) {
-    double* singleTerms = &(*this->_SingleTerms)[0];
-    double* pairTerms = &(*this->_PairTerms)[0];
-    KahanAccumulator singleSum;
-    for ( int ii=0; ii<state._State.size(); ii++ ) {
-      int index = state._State[ii];
-      double energyTerm = singleTerms[index];
-      singleSum.Add(energyTerm);
-      uint32_t lmkey_index = (*this->_MrkeyIndexToLmkeyIndex)[index];
-      double correction = this->_MonomerCorrections[lmkey_index];
-      singleSum.Add(correction);
-    }
-    KahanAccumulator pairSum;
-    for ( int xii=0; xii<state._State.size()-1; xii++ ) {
-      int xxindex = state._State[xii];
-      for ( int yii=xii+1; yii<state._State.size(); yii++ ) {
-        int yyindex = state._State[yii];
-        int ltmIndex = this->lowerTriangularIndex(xxindex,yyindex);
-        double energyTerm = pairTerms[ltmIndex];
-        pairSum.Add(energyTerm);
-      }
-    }
-    KahanAccumulator total;
-    total.Add(this->_IntramolecularBackboneEnergy);
-    total.Add(this->_IntermolecularBackboneEnergy);
-    total.Add(singleSum.sum);
-    total.Add(pairSum.sum);
-    return total.sum;
-  }
-#endif
 
+
+  
   double physicalEnergy(const State& state, double lambda=1.0);
   double reducedEnergy(State& state,double lambda=1.0);
-
+  double deltaReducedEnergy(const State& state, size_t slot, int newMrk, double lambda = 1.0 );
+  
   State randomStep( size_t& slotIndex, const State& state) {
     slotIndex = this->_PickSlot(this->_Rng);
     int max = (*this->_MonomerLocusMaxMrkindex)[slotIndex];
@@ -543,6 +517,34 @@ double Energies::reducedEnergy(State& state, double lambda ) {
 }
 
 
+double Energies::deltaReducedEnergy(const State& state, size_t slot, int newMrk, double lambda) {
+  int oldMrk = state._State[slot];
+  if (oldMrk == newMrk) return 0.0;
+  const double* intra = &(*_IntramolecularSingleTerms)[0];
+  const double* inter = &(*_IntermolecularSingleTerms)[0];
+  const double* pair  = &(*_PairTerms)[0];
+  const uint8_t* pflag = &(*_IntermolecularPPairTerms)[0];
+  KahanAccumulator d;
+  // single-term change for the flipped slot
+  d.Add(intra[newMrk] - intra[oldMrk]);
+  d.Add((inter[newMrk] - inter[oldMrk]) * lambda);
+  // pair-term change: only the pairs (slot, j), j != slot   -- O(L)
+  for (int j = 0; j < (int)state._State.size(); ++j) {
+    if (j == (int)slot) continue;
+    int yy = state._State[j];
+    size_t ltiNew = this->lowerTriangularIndex(newMrk, yy);
+    size_t ltiOld = this->lowerTriangularIndex(oldMrk, yy);
+    d.Add((pflag[ltiNew] ? pair[ltiNew]*lambda : pair[ltiNew])
+          - (pflag[ltiOld] ? pair[ltiOld]*lambda : pair[ltiOld]));
+  }
+  // monomer-correction change for the flipped slot (O(1))
+  uint32_t lmNew = (*_MrkeyIndexToLmkeyIndex)[newMrk];
+  uint32_t lmOld = (*_MrkeyIndexToLmkeyIndex)[oldMrk];
+  d.Add(_MonomerCorrections[lmNew] - _MonomerCorrections[lmOld]);
+  return d.sum;
+}
+
+
 inline double acc_prob_from_log(core::T_sp debug, double beta, double testEnergy, double curEnergy ) {
   // x = log(prob) = -βΔE  (Metropolis)  or  (βi-βj)(Ej-Ei) (REX)
   double delta = beta * (testEnergy - curEnergy);
@@ -600,7 +602,6 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
   for (size_t iter = 0; iter < max_iterations; ++iter) {
     if (debug.notnilp()) core::clasp_write_string(fmt::format("============== Top of loop at iter {}\n", iter),debug);
     size_t testSlotIndex;
-    double curEnergy = energies.reducedEnergy(currentState); // calculated using new MonomerCorrections
     testState = energies.randomStep( testSlotIndex, currentState );
     if (debug.notnilp()) {
       core::clasp_write_string(fmt::format("testState = "),debug);
@@ -610,8 +611,18 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
       }
       core::clasp_write_string(fmt::format("\n"),debug);
     }
-    double testEnergy = energies.reducedEnergy(testState);
-    double p = acc_prob_from_log( debug, beta, testEnergy, curEnergy );
+    double deltaE = energies.deltaReducedEnergy(currentState, testSlotIndex,
+                                                  testState._State[testSlotIndex]);
+#ifdef WL_DELTA_CHECK
+      if (iter < 1000) {
+        double fullDelta = energies.reducedEnergy(testState) - energies.reducedEnergy(currentState);
+        if (std::abs(fullDelta - deltaE) > 1e-6)
+          fmt::print(stderr, "!!! WL delta mismatch iter {}: delta={:.9} full={:.9}\n",
+                     iter, deltaE, fullDelta);
+      }
+#endif
+    double testEnergy = useAcceptCallback ? energies.reducedEnergy(testState) : 0.0; 
+    double p = acc_prob_from_log( debug, beta, deltaE, 0.0 );
     //      double x = -(*betas)[betai] * (testEnergy - curEnergy);
     //      double p = acc_prob_from_log(debug,x);
     double rnd = energies.U01();
@@ -666,8 +677,10 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
         }
         core::clasp_write_string(fmt::format("\n"),debug);
       }
-      // Reset the bias
-      adjustMonomerCorrectionsBias(energies);
+      // Reset the bias only periodically ; acceptance is invariant to a global
+      // shfit (deltaReducedEnergy uses differences), and rebasing only ~1024
+      // steps keeps the corrections small enough for clean differencing
+      if ((iterCount & 1023)==0) adjustMonomerCorrectionsBias(energies);
 
       if (useAcceptCallback) {
         memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
@@ -717,306 +730,8 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
                 stop_reason
                 );
 }
-#if 0
-CL_LAMBDA(energies betas &key (temperature-swap-steps 100) (max-iterations 1000000) flatness-callback accept-callback (flatness-steps 100) (wl-scaling 0.8) (wl-increment-stop 0.1) (wl-increment-start 1.0) (flatness-threshold 0.95) debug);
-CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections(core::T_sp tenergies, core::SimpleVector_double_sp betas, size_t temperature_swap_steps, size_t max_iterations, core::T_sp flatnessCallback, core::T_sp acceptCallback, size_t flatness_steps, double wl_scaling, double wl_increment_stop, double wl_increment_start, double flatness_threshold, core::T_sp debug ) {
-  size_t beta_size = core::cl__length(betas);
-  double wl_increment = wl_increment_start;
-  Energies energies(tenergies);
-  core::T_sp stop_reason = nil<core::T_O>();
-  // Number of slots in state
-  size_t num_slots_in_state = core::cl__length(energies._MonomerLocusMaxMrkindex );
-  core::SimpleVector_byte32_t_sp saveState;
-  bool useAcceptCallback = acceptCallback.notnilp();
-  if (useAcceptCallback) saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
-  std::vector<State> currentStates(beta_size);
-  for ( size_t ii = 0; ii<currentStates.size(); ii++ ) {
-    currentStates[ii].randomState(energies);
-  }
-  State testState;
-  std::vector<std::vector<size_t>> histograms(beta_size,std::vector<size_t>(energies._MonomerCorrectionsLength,0));
-  size_t flatness_iter = 0;
-  size_t iterCount = 0;
-  size_t accepts = 0;
-  size_t flatness_reached = 0;
-  for (size_t iter = 0; iter < max_iterations; ++iter) {
-    if (debug.notnilp()) core::clasp_write_string(fmt::format("============== Top of loop at iter {}\n", iter),debug);
-    for ( size_t betai = 0; betai<beta_size; betai++ ) {
-      double beta = (*betas)[betai];
-      size_t slotIndex;
-      double curEnergy = energies.reducedEnergy(currentStates[betai]); // calculated using new MonomerCorrections
-      testState = energies.randomStep( slotIndex, currentStates[betai] );
-      if (debug.notnilp()) {
-        core::clasp_write_string(fmt::format("testState = "),debug);
-        for ( size_t ii=0; ii<testState._State.size(); ii++ ) {
-          core::clasp_write_string(fmt::format(" {:3}", testState._State[ii]),debug);
-          if (ii==slotIndex) core::clasp_write_string("<",debug);
-        }
-        core::clasp_write_string(fmt::format("\n"),debug);
-      }
-      double testEnergy = energies.reducedEnergy(testState);
-      double p = acc_prob_from_log( debug, (*betas)[betai], testEnergy, curEnergy );
-      //      double x = -(*betas)[betai] * (testEnergy - curEnergy);
-      //      double p = acc_prob_from_log(debug,x);
-      double rnd = energies.U01();
-      if ( rnd <= p) {
-        accepts++;
-        currentStates[betai] = testState;
-        if (debug.notnilp()) core::clasp_write_string(fmt::format(" +++ accepted step\n"),debug);
-      }
-      // Update the histogram and the monomer corrections
-      {
-        // Increment the histogram and the MonomerCorrection for the current monomer
-        uint32_t monomerIndex;
-#define ALL_MONOMERS_UPDATED 0
-        // Update monomerCorrections for only monomerIndex
-        {
-          monomerIndex = (*energies._MrkeyIndexToLmkeyIndex)[currentStates[betai]._State[slotIndex]];
-          histogram[monomerIndex]++;
-          // double beta_increment = wl_increment*(*betas)[betai];
-          double beta_increment = wl_increment;
-          (*energies._MonomerCorrections)[monomerIndex] += beta_increment;
-          if (debug.notnilp())
-            core::clasp_write_string(fmt::format(" >> betai {} monomerIndex {} beta={:.4} wl_increment {:.4} beta_increment {:.4}\n",
-                                                 betai, monomerIndex, beta, wl_increment, beta_increment ),debug);
-        }
-        if (debug.notnilp()) {
-          core::clasp_write_string(fmt::format("Histogram(betai={:2}): ", betai ),debug);
-          for ( size_t ii=0; ii<histograms[betai].size(); ii++ ) {
-            core::clasp_write_string(fmt::format(" {:8}", histograms[betai][ii]),debug);
-            if (ALL_MONOMERS_UPDATED || ii==monomerIndex) core::clasp_write_string("<",debug);
-          }
-          core::clasp_write_string(fmt::format("\n"),debug);
-          core::clasp_write_string(fmt::format("Monomer corrections: "),debug);
-          for ( size_t ii=0; ii<energies._MonomerCorrectionsLength; ii++ ) {
-            core::clasp_write_string(fmt::format(" {:8.2f}", (*energies._MonomerCorrections)[ii]),debug);
-            if (ALL_MONOMERS_UPDATED || ii==monomerIndex) core::clasp_write_string("<",debug);
-          }
-          core::clasp_write_string(fmt::format("\n"),debug);
-        }
-        // Reset the bias
-        adjustMonomerCorrectionsBias(energies);
 
-        if (useAcceptCallback) {
-          memcpy(&(*saveState)[0],&currentStates[betai]._State[0],sizeof(int32_t)*energies._NumberOfSlots);
-          core::eval::funcall( acceptCallback, core::make_fixnum(iter), core::make_fixnum(betai), saveState, mk_double_float(testEnergy), energies._MonomerCorrections );
-        }
-      }
-    }
-    {
-      // Check the histogram for flatness
-      flatness_iter++;
-      if (flatness_iter%flatness_steps==0) {
-        size_t visits = 0, hmin = SIZE_MAX, hmax = 0;
-        size_t flat_count = 0;
-        size_t bi = 0;
-        for (auto const& histogram : histograms ) {
-          if ( flat_enough( debug,  histogram, bi, flatness_threshold ) ) flat_count++;
-          bi++;
-        }
-        if (debug.notnilp()) core::clasp_write_string(fmt::format(" - - - - Flat_count = {}  histograms.size() = {}\n", flat_count, histograms.size()),debug);
-        if (flat_count == histograms.size()) {
-          flatness_reached++;
-          if (debug.notnilp()) core::clasp_write_string(fmt::format("All histograms flat enough wl_increment updated to {:.4}\n", wl_increment ),debug);
-          for ( size_t hi=0; hi<histograms.size(); hi++ ) {
-            for ( size_t ii=0; ii<histograms[hi].size(); ii++ ) {
-              histograms[hi][ii] = 0;
-            }
-          }
-          wl_increment *= wl_scaling;
-          if (flatnessCallback.notnilp()) {
-            core::eval::funcall( flatnessCallback, core::make_fixnum(iter), mk_double_float(wl_increment), energies._MonomerCorrections );
-          }
-          // Write the MonomerCorrections whenever flatness is reached
-          memcpy(&(*energies._MonomerCorrectionsOriginal)[0],&(*energies._MonomerCorrections)[0],energies._MonomerCorrectionsLength*sizeof(double));
-        }
-      }
-    }
-    if (wl_increment<wl_increment_stop) {
-      if (debug.notnilp()) core::clasp_write_string(fmt::format("wl_increment {:.6} is < wl_increment_stop {:.6}\n",
-                                                                wl_increment, wl_increment_stop ),debug);
-      stop_reason = _sym_wl_increment_stop;
-      goto DONE;
-    }
-#if 0
-    if (temperature_swap_steps && (currentStates.size()>=2) && (iter % temperature_swap_steps)==0) {
-      // Try the temperature swap
-      size_t i = tswapPickSlot(rng), j = i+1;
-#if 1
-      double u_i = energies.reducedEnergy(currentStates[i]);
-      double u_j = energies.reducedEnergy(currentStates[j]);
-      double p = acc_beta_prob_from_log(debug,(*betas)[i],u_i,(*betas)[j],u_j);
-#else
-      // ChatGPT says use this
-      double E_i = energies.physicalEnergy(currentStates[i]);
-      double E_j = energies.physicalEnergy(currentStates[j]);
-      double p = acc_beta_prob_from_log(debug,(*betas)[i],E_i,(*betas)[j],E_j);
-#endif
-      double rnd = U01(rng);
-      if (rnd < p) {
-        if (debug.notnilp()) core::clasp_write_string(fmt::format(" <><><> Swapping betai states {} and {}\n", i, j ),debug);
-        std::swap(currentStates[i], currentStates[j]);
-      }
-    }
-#endif
-    iterCount++;
-  }
-  stop_reason = _sym_max_iterations;
- DONE:
-  return Values(core::make_fixnum(iterCount),
-                core::make_fixnum(accepts),
-                core::make_fixnum(flatness_reached),
-                mk_double_float(wl_increment),
-                stop_reason
-                );
-}
-#endif
 
-#if 0
-CL_LAMBDA(energies betas &key (temperature-swap-steps 100) (max-iterations 1000000) flatness-callback accept-callback (flatness-steps 100) (wl-scaling 0.8) (wl-increment-stop 0.1) (wl-increment 20.0) (flatness 0.95) debug);
-CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections(core::T_sp tenergies, core::SimpleVector_double_sp betas, size_t temperature_swap_steps, size_t max_iterations, core::T_sp flatnessCallback, core::T_sp acceptCallback, size_t flatness_steps, double wl_scaling, double wl_increment_stop, double wl_increment, double flatness, core::T_sp debug ) {
-  size_t beta_size = core::cl__length(betas);
-  Energies energies(tenergies);
-  // Number of slots in state
-  size_t num_slots_in_state = core::cl__length(energies._MonomerLocusMaxMrkindex );
-  core::SimpleVector_byte32_t_sp saveState;
-  bool useAcceptCallback = acceptCallback.notnilp();
-  if (useAcceptCallback) saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
-  std::vector<State> currentStates(beta_size);
-  for ( size_t ii = 0; ii<currentStates.size(); ii++ ) {
-    currentStates[ii].randomState(energies);
-  }
-  State testState;
-  std::vector<std::vector<size_t>> histograms(beta_size,std::vector<size_t>(energies._MonomerCorrectionsLength,0));
-  size_t flatness_iter = 0;
-  size_t iterCount = 0;
-  size_t accepts = 0;
-  size_t flatness_reached = 0;
-  for (size_t iter = 0; iter < max_iterations; ++iter) {
-    if (debug.notnilp()) core::clasp_write_string(fmt::format("============== Top of loop at iter {}\n", iter),debug);
-    for ( size_t betai = 0; betai<beta_size; betai++ ) {
-      double beta = (*betas)[betai];
-      size_t slotIndex = pickSlot(rng);
-      double curEnergy = energies.reducedEnergy(currentStates[betai]); // calculated using new MonomerCorrections
-      testState = energies.randomStep( slotIndex, currentStates[betai] );
-      if (debug.notnilp()) {
-        core::clasp_write_string(fmt::format("testState = "),debug);
-        for ( size_t ii=0; ii<testState._State.size(); ii++ ) {
-          core::clasp_write_string(fmt::format(" {:3}", testState._State[ii]),debug);
-          if (ii==slotIndex) core::clasp_write_string("<",debug);
-        }
-        core::clasp_write_string(fmt::format("\n"),debug);
-      }
-      double testEnergy = energies.reducedEnergy(testState);
-      double delta = beta * (testEnergy - curEnergy);
-      double x = - delta;
-      double p = (x >= 0.0) ? 1.0 : std::exp(x);   // never exp(large +)
-      if (debug.notnilp()) core::clasp_write_string(fmt::format("acc_prob test: testE={:.6} prevE={:.6} beta={:.3} delta={:.6} p={:.3}\n", testEnergy, curEnergy, beta, delta, p ),debug);
-      double rnd = U01(rng);
-      if ( rnd <= p) {
-        accepts++;
-        currentStates[betai] = testState;
-        if (debug.notnilp()) core::clasp_write_string(fmt::format(" +++ accepted step\n"),debug);
-      }
-      // Update the histogram and the monomer corrections
-      {
-        // Increment the histogram and the MonomerCorrection for the current monomer
-        uint32_t monomerIndex;
-#define ALL_MONOMERS_UPDATED 0
-        // Update monomerCorrections for only monomerIndex
-        {
-          monomerIndex = (*energies._MrkeyIndexToLmkeyIndex)[currentStates[betai]._State[slotIndex]];
-          histograms[betai][monomerIndex]++;
-
-          (*energies._MonomerCorrections)[monomerIndex] += wl_increment;
-          if (debug.notnilp())
-            core::clasp_write_string(fmt::format(" >> betai {} monomerIndex {} beta={:.4} wl_increment {:.4}\n",
-                                                 betai, monomerIndex, beta, wl_increment ),debug);
-        }
-        if (debug.notnilp()) {
-          core::clasp_write_string(fmt::format("Histogram(betai={:2}): ", betai ),debug);
-          for ( size_t ii=0; ii<histograms[betai].size(); ii++ ) {
-            core::clasp_write_string(fmt::format(" {:8}", histograms[betai][ii]),debug);
-            if (ALL_MONOMERS_UPDATED || ii==monomerIndex) core::clasp_write_string("<",debug);
-          }
-          core::clasp_write_string(fmt::format("\n"),debug);
-          core::clasp_write_string(fmt::format("Monomer corrections: "),debug);
-          for ( size_t ii=0; ii<energies._MonomerCorrectionsLength; ii++ ) {
-            core::clasp_write_string(fmt::format(" {:8.2f}", (*energies._MonomerCorrections)[ii]),debug);
-            if (ALL_MONOMERS_UPDATED || ii==monomerIndex) core::clasp_write_string("<",debug);
-          }
-          core::clasp_write_string(fmt::format("\n"),debug);
-        }
-        // Reset the bias
-        adjustMonomerCorrectionsBias(energies);
-
-        if (useAcceptCallback) {
-          memcpy(&(*saveState)[0],&currentStates[betai]._State[0],sizeof(int32_t)*energies._NumberOfSlots);
-          core::eval::funcall( acceptCallback, core::make_fixnum(iter), core::make_fixnum(betai), saveState, mk_double_float(testEnergy), energies._MonomerCorrections );
-        }
-      }
-    }
-    {
-      // Check the histogram for flatness
-      flatness_iter++;
-      if (flatness_iter%flatness_steps==0) {
-        size_t visits = 0, hmin = SIZE_MAX, hmax = 0;
-        size_t flat_count = 0;
-        size_t bi = 0;
-        for (auto const& histogram : histograms ) {
-          if ( flat_enough( debug,  histogram, bi, flatness ) ) flat_count++;
-          bi++;
-        }
-        if (debug.notnilp()) core::clasp_write_string(fmt::format(" - - - - Flat_count = {}  histograms.size() = {}\n", flat_count, histograms.size()),debug);
-        if (flat_count == histograms.size()) {
-          flatness_reached++;
-          if (debug.notnilp()) core::clasp_write_string(fmt::format("All histograms flat enough wl_increment updated to {:.4}\n", wl_increment ),debug);
-          for ( size_t hi=0; hi<histograms.size(); hi++ ) {
-            for ( size_t ii=0; ii<histograms[hi].size(); ii++ ) {
-              histograms[hi][ii] = 0;
-            }
-          }
-          wl_increment *= wl_scaling;
-          if (flatnessCallback.notnilp()) {
-            core::eval::funcall( flatnessCallback, core::make_fixnum(iter), mk_double_float(wl_increment), energies._MonomerCorrections );
-          }
-        }
-      }
-    }
-    if (wl_increment<wl_increment_stop) {
-      if (debug.notnilp()) core::clasp_write_string(fmt::format("wl_increment {:.6} is < wl_increment_stop {:.6}\n",
-                                                                wl_increment, wl_increment_stop ),debug);
-      goto DONE;
-    }
-    if (temperature_swap_steps && (currentStates.size()>=2) && (iter % temperature_swap_steps)==0) {
-      // Try the temperature swap
-      size_t i = tswapPickSlot(rng), j = i+1;
-
-      double E_i = energies.physicalEnergy(currentStates[i]);
-      double E_j = energies.physicalEnergy(currentStates[j]);
-      double betai = (*betas)[i];
-      double betaj = (*betas)[j];
-      double delta = (betai-betaj)*(E_j - E_i);
-      double x = - delta;
-      double p = (x >= 0.0) ? 1.0 : std::exp(x);   // never exp(large +)
-      if (debug.notnilp()) core::clasp_write_string(fmt::format("acc_beta_prob test: delta={:.6} p={:.3}\n", delta, p ),debug);
-      double rnd = U01(rng);
-      if (rnd < p) {
-        if (debug.notnilp()) core::clasp_write_string(fmt::format(" <><><> Swapping betai states {} and {}\n", i, j ),debug);
-        std::swap(currentStates[i], currentStates[j]);
-      }
-    }
-    iterCount++;
-  }
- DONE:
-  return Values(core::make_fixnum(iterCount),
-                core::make_fixnum(accepts),
-                core::make_fixnum(flatness_reached)
-                );
-}
-#endif
-
-#if 1
 CL_DOCSTRING(R"doc(Perform a constant temperature Hamiltonian replica exchange monte carlo on the
 ENERGIES object using the LAMBDA-WINDOWS at TEMPERATURE taking LAMBDA-STEPS with each set of lambdas
 before attempting to swap windows.
@@ -1043,6 +758,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
 
   double beta = 1.0/(0.0019872*temperature);
 
+
   core::SimpleVector_double_sp lambdaWindows = gc::As<core::SimpleVector_double_sp>(tlambdaWindows);
   size_t numberOfLambdaWindows = core::cl__length(lambdaWindows);
   core::ComplexVector_T_sp energyTrace;
@@ -1051,6 +767,10 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
     energyTrace = gc::As_unsafe<core::ComplexVector_T_sp>(tEnergyTrace);
     hasEnergyTrace = true;
   }
+  if ((*lambdaWindows)[numberOfLambdaWindows-1] != 1.0) {
+    SIMPLE_ERROR("The last lambda window must be 1.0");
+  }
+
   Energies energies(tenergies);
   core::SimpleVector_byte32_t_sp saveState;
   bool useStepCallback = stepCallback.notnilp();
@@ -1083,6 +803,10 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
 
   size_t numSlotsInState = core::cl__length(energies._MonomerLocusMaxMrkindex );
 
+  std::vector<double> curEnergies(numberOfLambdaWindows);
+  for (size_t  w = 0; w < numberOfLambdaWindows; w++)
+    curEnergies[w] = energies.reducedEnergy(currentStates[w], (*lambdaWindows)[w]);  // O(L²) once/window
+
   size_t kk = kkStart;
   State testState;
   State lowestState;
@@ -1091,24 +815,47 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
     for (size_t lambdaWindowIdx=0; lambdaWindowIdx<numberOfLambdaWindows; lambdaWindowIdx++ ) {
       double lambda = (*lambdaWindows)[lambdaWindowIdx];
       for ( size_t lambdaStepi=0; lambdaStepi<lambdaSteps; lambdaStepi++ ) {
-        double curEnergy = energies.reducedEnergy(currentStates[lambdaWindowIdx],lambda);
+
+
         size_t testSlotIndex;
-        testState = energies.randomStep( testSlotIndex, currentStates[lambdaWindowIdx] );
-        double testEnergy = energies.reducedEnergy(testState,lambda);
-        double delta = beta * (testEnergy - curEnergy);
-        double x = - delta;
-        double p = (x >= 0.0) ? 1.0 : std::exp(x);   // never exp(large +)
-        if (debug.notnilp()) core::clasp_write_string(fmt::format("acc_prob test: testE={:.6} prevE={:.6} beta={:.3} delta={:.6} p={:.3}\n", testEnergy, curEnergy, beta, delta, p ),debug);
-        double rnd = energies.U01();
-        bool accepted = false;
-        double eCur = curEnergy;
-        if ( rnd <= p) {
-          accepts++;
-          accepted = true;
-          currentStates[lambdaWindowIdx] = testState;
-          curEnergy = testEnergy;
-          if (debug.notnilp()) core::clasp_write_string(fmt::format(" +++ accepted step\n"),debug);
+        testState = energies.randomStep(testSlotIndex, currentStates[lambdaWindowIdx]);
+        int    newMrk       = testState._State[testSlotIndex];
+        double reducedDelta = energies.deltaReducedEnergy(currentStates[lambdaWindowIdx],
+                                                          testSlotIndex, newMrk, lambda);   // O(L)
+#ifdef DEBUG_DELTA
+        if (debug.notnilp()) {
+          double fullDelta = energies.reducedEnergy(testState, lambda)
+                                 - energies.reducedEnergy(currentStates[lambdaWindowIdx], lambda);
+          if (std::abs(fullDelta - reducedDelta) > 1e-6 * std::max(1.0, std::abs(fullDelta))) {
+            core::clasp_write_string(fmt::format(
+                                         "deltaReducedEnergy MISMATCH iter={} win={} slot={} newMrk={} lambda={:.4}: "
+                                         "delta={:.10} full={:.10} diff={:.3e}\n",
+                                         ii, lambdaWindowIdx, testSlotIndex, newMrk, lambda,
+                                         reducedDelta, fullDelta, (fullDelta - reducedDelta)), debug);
+          }
         }
+#endif
+        double x = -beta * reducedDelta;
+        double p = (x >= 0.0) ? 1.0 : std::exp(x);
+        double rnd = energies.U01();
+        double eCur = curEnergies[lambdaWindowIdx];
+        bool accepted = (rnd <= p);
+        if (accepted) {
+          accepts++;
+          currentStates[lambdaWindowIdx] = testState;
+          curEnergies[lambdaWindowIdx] += reducedDelta;
+        }
+        double curEnergy = curEnergies[lambdaWindowIdx];   // feed the existing callback/trace at 826-836
+#ifdef DEBUG_DELTA
+        if (debug.notnilp()) {
+          double trueCur = energies.reducedEnergy(currentStates[lambdaWindowIdx], lambda);
+          if (std::abs(trueCur - curEnergy) > 1e-4 * std::max(1.0, std::abs(trueCur))) {
+            core::clasp_write_string(fmt::format(
+                                         "curEnergies DRIFT win={} iter={}: tracked={:.6} true={:.6} diff={:.3e}\n",
+                                         lambdaWindowIdx, ii, curEnergy, trueCur, (trueCur - curEnergy)), debug);
+          }
+        }
+#endif
         if (useStepCallback && --stepCallbackCounter == 0) {
           stepCallbackCounter = stepCallbackPeriod;
           memcpy(&(*saveState)[0],&currentStates[lambdaWindowIdx]._State[0],sizeof(int32_t)*energies._NumberOfSlots);
@@ -1159,10 +906,10 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
         State& k1 = currentStates[swapi+1];
         double l0 = (*lambdaWindows)[swapi];
         double l1 = (*lambdaWindows)[swapi+1];
-        double ul1k0 = energies.reducedEnergy(k0,l1);
-        double ul0k0 = energies.reducedEnergy(k0,l0);
-        double ul1k1 = energies.reducedEnergy(k1,l1);
-        double ul0k1 = energies.reducedEnergy(k1,l0);
+        double ul1k0 = energies.reducedEnergy(k0,l1);   // k0 at neighbor lambda — compute
+        double ul0k0 = curEnergies[swapi];               // == reducedEnergy(k0,l0), already tracked
+        double ul1k1 = curEnergies[swapi+1];             // == reducedEnergy(k1,l1), already tracked
+        double ul0k1 = energies.reducedEnergy(k1,l0);   // k1 at neighbor lambda — compute
         double dul1k0_ul0k0 = (ul1k0-ul0k0);
         double dul0k1_ul1k1 = (ul0k1-ul1k1);
         double deltau = dul1k0_ul0k0 +dul0k1_ul1k1;
@@ -1174,13 +921,16 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
           State tempState = currentStates[swapi];
           currentStates[swapi] = currentStates[swapi+1];
           currentStates[swapi+1] = tempState;
+          curEnergies[swapi]   = ul0k1;   // k1 now sits at lambda l0
+          curEnergies[swapi+1] = ul1k0;   // k0 now sits at lambda l1
           if (hasEnergyTrace) {
             bool physicalSwap = (swapi+1 >= numberOfLambdaWindows-1);
-            core::T_sp swapData = core::Cons_O::createList(
-              INTERN_(kw,swap), core::make_fixnum(kk),
-              INTERN_(kw,window), core::make_fixnum(swapi),
-              INTERN_(kw,physical), (physicalSwap ? _lisp->_true() : nil<core::T_O>()));
-            energyTrace->vectorPushExtend(swapData);
+            double physE = curEnergies[numberOfLambdaWindows-1];    // was reducedEnergy(...,1.0)
+            energyTrace->vectorPushExtend(core::Cons_O::createList(
+                                              INTERN_(kw,swap),     core::make_fixnum(kk),
+                                              INTERN_(kw,window),   core::make_fixnum(swapi),
+                                              INTERN_(kw,physical), (physicalSwap ? _lisp->_true() : nil<core::T_O>()),
+                                              INTERN_(kw,energy),   mk_double_float(physE)));
           }
         }
         swapAttempts[swapi]++;
@@ -1195,11 +945,11 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
         }
       }
     }
-    double energy = energies.reducedEnergy(currentStates[numberOfLambdaWindows-1],1.0);
-    if (energy < lowestEnergy) {
-      lowestEnergy = energy;
-      lowestState = currentStates[numberOfLambdaWindows-1];
-    }
+    double energy = curEnergies[numberOfLambdaWindows-1];   // was reducedEnergy(...,1.0)
+    if (hasEnergyTrace)
+      energyTrace->vectorPushExtend(core::Cons_O::createList(
+                                        INTERN_(kw,physical_energy), core::make_fixnum(ii), mk_double_float(energy)));
+    if (energy < lowestEnergy) { lowestEnergy = energy; lowestState = currentStates[numberOfLambdaWindows-1]; }
     // In maxIterations loop
   }
   double initialEnergy = energies.reducedEnergy(initialState,1.0);
@@ -1226,7 +976,6 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
                 core::make_fixnum(kk)
                 );
 }
-#endif
 
 }; // namespace chem
 

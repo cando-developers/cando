@@ -22,6 +22,10 @@
       bool            tryAddTerm(Atom_sp a1, Atom_sp a2,
                                  size_t i3x1, size_t i3x2,
                                  core::T_sp keepInteraction)
+      bool            tryAddTermCached(Atom_sp a1, Atom_sp a2,
+                                 size_t i1, size_t i2,
+                                 size_t i3x1, size_t i3x2,
+                                 core::T_sp keepInteraction)
       void            setDisplacementBuffer(NVector_sp)
       core::T_sp      displacementBuffer() const
       static core::T_sp staticClass()      // already exists on all Lisp classes
@@ -38,6 +42,9 @@
 #include <cando/chem/nVector.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/evaluator.h>
+
+// Leave in for the new cached atom types
+#define PAIRLIST_CACHED 1
 
 namespace chem {
 
@@ -127,24 +134,37 @@ public:
 //  rebuildPairListBetweenMattersImpl
 // ============================================================
 
-// Helper to collect atoms from either a Matter_sp or a SimpleVector_sp of atoms
-template <typename Component>
-void collectAtomsFromMatter(core::T_sp tmatter, AtomTable_sp atomTable,
-                            std::vector<std::pair<Atom_sp, size_t>>& atoms) {
+// Helper to collect coordinate indexes from either a Matter_sp or a
+// SimpleVector_sp of atoms.
+//
+// Only the coordinateIndexTimes3 is collected, not the Atom_sp: the atom is
+// recoverable as atomTable->getVectorEnergyAtoms()[i3/3].atom(), because
+// AtomTable_O::addAtomInfo assigns coordinateIndex = getNumberOfAtoms()*3, so
+// i3/3 IS the atom-table index.  Keeping Atom_sp out of the cached vector means
+// the cache holds no GC pointers to trace.
+//
+// Appends to I3VALUES, so calling it for matter1 then matter2 builds the
+// concatenated index vector the CellGrid wants, with matter1 occupying
+// [0, n1) and matter2 [n1, ntotal).
+//
+// Each getCoordinateIndexTimes3 is a Lisp hash-table lookup and this runs on
+// every pair-list rebuild, so it is the hot spot in this file.  Caching it per
+// component does NOT help: fill-piece-pair-energies sets new matters before
+// every single evaluation, so any matter-keyed cache misses every time.
+inline void collectAtomsFromMatter(core::T_sp tmatter, AtomTable_sp atomTable,
+                                   std::vector<size_t>& i3values) {
   if (gc::IsA<core::SimpleVector_sp>(tmatter)) {
     core::SimpleVector_sp atomVec = gc::As<core::SimpleVector_sp>(tmatter);
     for (size_t i = 0; i < atomVec->length(); i++) {
       Atom_sp a = gc::As<Atom_sp>((*atomVec)[i]);
-      size_t i3 = atomTable->getCoordinateIndexTimes3(a);
-      atoms.push_back({a, i3});
+      i3values.push_back(atomTable->getCoordinateIndexTimes3(a));
     }
-  } else if (gc::IsA<core::SimpleVector_sp>(tmatter)) {
+  } else if (gc::IsA<Matter_sp>(tmatter)) {
     Matter_sp mat = gc::As<Matter_sp>(tmatter);
     Loop l(mat, ATOMS);
     while (l.advanceLoopAndProcess()) {
       Atom_sp a = l.getAtom();
-      size_t i3 = atomTable->getCoordinateIndexTimes3(a);
-      atoms.push_back({a, i3});
+      i3values.push_back(atomTable->getCoordinateIndexTimes3(a));
     }
   } else {
     TYPE_ERROR(tmatter,core::Cons_O::createList(cl::_sym_or,cl::_sym_SimpleVector_O,_sym_Matter_O));
@@ -175,36 +195,35 @@ core::T_mv rebuildPairListBetweenMattersImpl(Component* comp, core::T_sp tcoordi
   size_t interactionsDiscarded = 0;
   comp->clearTerms();
 
-  // Collect atoms and coordinates from mat1 and mat2
-  // Each can be a Matter_sp (Residue/Molecule/Aggregate) or a SimpleVector_sp of atoms
-  std::vector<std::pair<Atom_sp, size_t>> atoms1, atoms2;
-  collectAtomsFromMatter<Component>(tmat1, atomTable, atoms1);
-  collectAtomsFromMatter<Component>(tmat2, atomTable, atoms2);
-
-  // Build cell grid over all atoms, tagging which set they belong to
-  size_t ntotal = atoms1.size() + atoms2.size();
-  std::vector<size_t> allI3(ntotal);
-  for (size_t i = 0; i < atoms1.size(); i++) allI3[i] = atoms1[i].second;
-  for (size_t i = 0; i < atoms2.size(); i++) allI3[atoms1.size() + i] = atoms2[i].second;
+  // Resolve matter1 then matter2 into one concatenated index vector.
+  // Each matter can be a Matter_sp (Residue/Molecule/Aggregate) or a
+  // SimpleVector_sp of atoms.  matter1 occupies [0, n1), matter2 [n1, ntotal).
+  gctools::Vec0<EnergyAtom>& energyAtoms = atomTable->getVectorEnergyAtoms();
+  std::vector<size_t> allI3;
+  collectAtomsFromMatter(tmat1, atomTable, allI3);
+  size_t n1 = allI3.size();
+  collectAtomsFromMatter(tmat2, atomTable, allI3);
+  size_t ntotal = allI3.size();
 
   CellGrid grid;
   grid.build(raw, ntotal, allI3, rpairlist);
 
-  size_t n1 = atoms1.size();
-
+#ifdef PAIRLIST_CACHED
+  comp->ensureParameterCache();
+#endif
   grid.forEachPair([&](size_t li, size_t lj) {
     // Only consider inter-set pairs (one from mat1, one from mat2)
     bool i_in_1 = (li < n1);
     bool j_in_1 = (lj < n1);
     if (i_in_1 == j_in_1) return;  // both in same set, skip
 
-    // Ensure a1 is from mat1, a2 from mat2
-    size_t idx1 = i_in_1 ? li : lj;
-    size_t idx2 = i_in_1 ? lj - n1 : li - n1;
-    Atom_sp a1 = atoms1[idx1].first;
-    Atom_sp a2 = atoms2[idx2].first;
-    size_t i3x1 = atoms1[idx1].second;
-    size_t i3x2 = atoms2[idx2].second;
+    // Ensure a1 is from mat1, a2 from mat2.  li/lj already index allI3.
+    size_t i3x1 = allI3[i_in_1 ? li : lj];
+    size_t i3x2 = allI3[i_in_1 ? lj : li];
+    // i3/3 is the atom-table index - same identity the exclusion check below
+    // relies on - so the Atom_sp comes from the EnergyAtom, not a hash lookup.
+    Atom_sp a1 = energyAtoms[i3x1/3].atom();
+    Atom_sp a2 = energyAtoms[i3x2/3].atom();
 
     // Distance check
     double dx = raw[i3x1]     - raw[i3x2];
@@ -214,8 +233,9 @@ core::T_mv rebuildPairListBetweenMattersImpl(Component* comp, core::T_sp tcoordi
     if (dist2 >= rpairlist2) return;
     // Exclusion check — skip 1-2, 1-3, 1-4 bonded pairs
     {
-      EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(a1);
-      if (ea1->inBondOrAngle(a2) || ea1->relatedBy14(a2)) return;
+      //      EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(a1);a
+      EnergyAtom& ea1 = energyAtoms[i3x1/3]; // direct index
+      if (ea1.inBondOrAngle(a2) || ea1.relatedBy14(a2)) return;
     }
     
     // keepInteraction filter (only if factory was provided)
@@ -229,9 +249,15 @@ core::T_mv rebuildPairListBetweenMattersImpl(Component* comp, core::T_sp tcoordi
         return;
       }
     }
+#ifdef PAIRLIST_CACHED
+    if (comp->tryAddTermCached(a1, a2, i3x1/3, i3x2/3, i3x1, i3x2, keepInteraction)) {
+      ++interactionsKept;
+    }
+#else
     if (comp->tryAddTerm(a1, a2, i3x1, i3x2, keepInteraction)) {
       ++interactionsKept;
     }
+#endif
   });
 
   size_t totalInteractions = interactionsKept + interactionsDiscarded;
@@ -268,7 +294,7 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
 
   if (comp->keepInteractionFactory().notnilp()) {
     core::T_sp keepInteraction = specializeKeepInteractionFactory(
-      comp->keepInteractionFactory(), Component::staticClass());
+        comp->keepInteractionFactory(), Component::staticClass());
     bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
 
     double rpairlist  = comp->rpairlist();
@@ -294,6 +320,10 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
         // Build spatial hash grid with cell size = rpairlist
         CellGrid grid;
         grid.build(coords, natoms, i3values, rpairlist);
+
+#ifdef PAIRLIST_CACHED
+        comp->ensureParameterCache();
+#endif
 
         // Enumerate candidate pairs from neighboring cells
         grid.forEachPair([&](size_t li, size_t lj) {
@@ -324,9 +354,15 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
             keep = result.notnilp();
           }
           if (keep) {
+#ifdef PAIRLIST_CACHED
+            if (comp->tryAddTermCached(ea1.atom(), ea2.atom(), li, lj, i3x1, i3x2, keepInteraction)) {
+              ++interactionsKept;
+            }
+#else
             if (comp->tryAddTerm(ea1.atom(), ea2.atom(), i3x1, i3x2, keepInteraction)) {
               ++interactionsKept;
             }
+#endif
           } else {
             ++interactionsDiscarded;
           }
@@ -334,6 +370,9 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
 
       } else {
         // --- Fallback: read positions from atoms (no coordinate vector) ---
+#ifdef PAIRLIST_CACHED
+        comp->ensureParameterCache();
+#endif
         gctools::Vec0<EnergyAtom>::iterator iea1;
         gctools::Vec0<EnergyAtom>::iterator iea2;
         for (iea1 = atomTable->begin(); iea1 != atomTable->end() - 1; iea1++) {
@@ -349,18 +388,29 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
               bool keep = true;
               if (hasKeepInteractionFunction) {
                 core::T_sp result = core::eval::funcall(keepInteraction,
-                    iea1->atom(), iea2->atom(),
-                    core::make_fixnum(iea1->coordinateIndexTimes3()),
-                    core::make_fixnum(iea2->coordinateIndexTimes3()));
+                                                        iea1->atom(), iea2->atom(),
+                                                        core::make_fixnum(iea1->coordinateIndexTimes3()),
+                                                        core::make_fixnum(iea2->coordinateIndexTimes3()));
                 keep = result.notnilp();
               }
               if (keep) {
+#ifdef PAIRLIST_CACHED
+                size_t li = (size_t)(iea1 - atomTable->begin());
+                size_t lj = (size_t)(iea2 - atomTable->begin());
+                if (comp->tryAddTermCached(iea1->atom(), iea2->atom(), li, lj,
+                                           iea1->coordinateIndexTimes3(),
+                                           iea2->coordinateIndexTimes3(),
+                                           keepInteraction)) {
+                  ++interactionsKept;
+                }
+#else   
                 if (comp->tryAddTerm(iea1->atom(), iea2->atom(),
                                      iea1->coordinateIndexTimes3(),
                                      iea2->coordinateIndexTimes3(),
                                      keepInteraction)) {
                   ++interactionsKept;
                 }
+#endif
               } else {
                 ++interactionsDiscarded;
               }

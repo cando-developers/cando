@@ -578,10 +578,12 @@ changing the SHAPE-KEY-CACHE."
     (cond
       ((typep joint 'kin:complex-bonded-joint)
        (if (kin:complex-bonded-joint/phi-defined-p joint internals)
-           (values (kin:bonded-joint/get-phi joint) joint internals)
+           (values (kin:bonded-joint/get-phi joint internals) joint)
            (values 0.0 nil)))
       ((typep joint 'kin:bonded-joint)
        (values (kin:bonded-joint/get-phi joint internals) joint))
+      ((typep joint 'kin:xyz-joint)
+       (error "Hit an kin:xyz-joint for joint ~s" joint))
       ;; Otherwise return zero because its
       ;; a jump-joint or a complex-bonded-joint
       ;; and the user said it was an important dihedral

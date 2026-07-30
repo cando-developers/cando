@@ -144,6 +144,13 @@ namespace chem {
     // Rosetta parameters (used to construct terms)
 
   public:
+      void ensureParameterCache() {}
+      bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t /*li*/, size_t /*lj*/,
+                            size_t i3x1, size_t i3x2, core::T_sp keepInteraction) {
+        return this->tryAddTerm(a1, a2, i3x1, i3x2, keepInteraction);
+      }
+        
+  public:
     // In energyRosettaElec.h:
     double rpairlist() const { return _Parameters.rpairlist; }
     double rcut() const { return _Parameters.rcut; }

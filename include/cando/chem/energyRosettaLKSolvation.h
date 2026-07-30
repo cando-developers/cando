@@ -142,6 +142,39 @@ namespace chem {
     // Rosetta parameters (used to construct terms)
     rosetta_lk_solvation_parameters _Parameters;
 
+         // Per-atom LK params, indexed by atom-table position. Resolved once from
+      // :lk-solvation-atom-type (invariant); removes the plist scan + find-lksolvation-type
+      // funcall from the per-pair path.
+    gctools::Vec0<double> _CachedDGfree, _CachedLambda, _CachedRadius, _CachedVolume;
+    gctools::Vec0<char>   _CachedValid;
+    core::T_sp          _CachedForAtomTable;   // init nil in ctor
+
+  public:
+    void ensureParameterCache();   // defined in the .cc
+    void invalidateParameterCache() {
+      this->_CachedForAtomTable = nil<core::T_O>();
+      this->_CachedValid.clear();
+    }
+    bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
+                          size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
+      if (!this->_CachedValid[li])
+        SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
+                     _rep_(a1), _rep_(a1->getProperties()));
+      if (!this->_CachedValid[lj])
+        SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
+                     _rep_(a2), _rep_(a2->getProperties()));
+      TermType term;
+      term._Atom1_enb = a1;
+      term._Atom2_enb = a2;
+      term.term = rosetta_lk_solvation_term(this->_Parameters,
+                                            this->_CachedDGfree[li], this->_CachedLambda[li],
+                                            this->_CachedRadius[li], this->_CachedVolume[li],
+                                            this->_CachedDGfree[lj], this->_CachedLambda[lj],
+                                            this->_CachedRadius[lj], this->_CachedVolume[lj],
+                                            i3x1, i3x2);
+      this->addTerm(term);
+      return true;
+    }
   public:
     // pairList.h duck-typed interface
     double rpairlist() const { return _Parameters.rpairlist; }
@@ -152,6 +185,7 @@ namespace chem {
     CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
     CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
     CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
+      // this->invalidateParameterCache();
       this->_Matter1 = matter1;
       this->_Matter2 = matter2;
       this->_DisplacementBuffer = nil<core::T_O>();
@@ -242,7 +276,8 @@ namespace chem {
         _KeepInteractionFactory(nil<core::T_O>()),
         _Matter1(nil<core::T_O>()),
         _Matter2(nil<core::T_O>()),
-        _DisplacementBuffer(nil<core::T_O>())
+        _DisplacementBuffer(nil<core::T_O>()),
+        _CachedForAtomTable(nil<core::T_O>())
     {};
   };
 
