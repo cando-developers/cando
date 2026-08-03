@@ -150,37 +150,52 @@ public: // instance variables
   core::T_sp              _KeepInteractionFactory;
   core::T_sp              _DisplacementBuffer;
   // If _Matter1 and _Matter2 are defined, build pair-list between them instead of using _AtomTable
+  bool                    _ExclusionsPossible = true;  // POD - see setMatters
   core::T_sp              _Matter1;
   core::T_sp              _Matter2;
-
+  double                  _LastFaRep = 0.0;
+  
   // Rosetta parameters (used to construct terms)
   rosetta_nonbond_parameters      _Parameters;
-  gctools::Vec0<double>           _CachedRadius;
-  gctools::Vec0<double>           _CachedEpsilon;
-  gctools::Vec0<char>             _CachedValid;
   core::T_sp                      _CachedForAtomTable;
 
+  gctools::Vec0<int>                    _TypeSlot;        // atom index -> slot, -1 = no type
+  size_t                                _NTypeSlots = 0;
+  gctools::Vec0<rosetta_nonbond_term>   _TermCache;       // _NTypeSlots^2, row-major
+  gctools::Vec0<char>                   _TermCacheValid;
+
+public:
+  CL_DEFMETHOD double getLastFaRep() const { return this->_LastFaRep; };
 public:
   void ensureParameterCache();
   void invalidateParameterCache() {
     this->_CachedForAtomTable = nil<core::T_O>();
-    this->_CachedValid.clear();
+    this->_TypeSlot.clear();
+    this->_TermCache.clear();
+    this->_TermCacheValid.clear();
+    this->_NTypeSlots = 0;
   }
-  // Cached hot-path term add: no getType, no find-type, no gethash.
+
+  // Cached hot-path term add: no getType, no find-type, no gethash,
+  // and no rosetta_nonbond_term construction — the term for this type
+  // pair was precomputed in ensureParameterCache.
   bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
                         size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
-    if (!this->_CachedValid[li] || !this->_CachedValid[lj]) return false;
-    double parmA, parmC;
-    if (!combineNonbondParams(this->_CachedRadius[li], this->_CachedEpsilon[li],
-                              this->_CachedRadius[lj], this->_CachedEpsilon[lj],
-                              parmA, parmC)) return false;
+    int s1 = this->_TypeSlot[li];
+    int s2 = this->_TypeSlot[lj];
+    if (s1 < 0 || s2 < 0) return false;
+    size_t k = (size_t)s1 * this->_NTypeSlots + (size_t)s2;
+    if (!this->_TermCacheValid[k]) return false;
     TermType term;
-    term._Atom1_enb = a1;
+    term._Atom1_enb = a1; 
     term._Atom2_enb = a2;
-    term.term = rosetta_nonbond_term(this->_Parameters, parmA, parmC, i3x1, i3x2);
+    term.term = this->_TermCache[k];     // struct copy — no pow, no arithmetic
+    term.term.i3x1 = (int)i3x1;          // only the geometry-dependent fields
+    term.term.i3x2 = (int)i3x2;
     this->addTerm(term);
     return true;
   }
+  
 public:
   virtual std::string implementation_details() const;
   virtual std::string descriptionOfContents() const;
@@ -192,23 +207,34 @@ public:
   CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
 
 public:
-
+  CL_DEFMETHOD void setRepWeight(double rep_weight) { this->_Parameters.rep_weight = rep_weight; };
+  CL_DEFMETHOD double getRepWeight() const { return this->_Parameters.rep_weight; };
+  
 public: // for building the pairList
   // In energyRosettaNonbond.h:
-  double rpairlist() const { return _Parameters.rpairlist; }
+  CL_DEFMETHOD double rpairlist() const { return _Parameters.rpairlist; }
   double rcut() const { return _Parameters.rcut; }
   AtomTable_sp atomTable() const { return _AtomTable; }
   CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
   CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
   CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
-  CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
-  CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
-  CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
+  // EXCLUSIONS-POSSIBLE declares whether any 1-2/1-3/1-4 bonded pair can span the two
+  // matters.  When it cannot - two sidechains at different loci, two separate molecules,
+  // a sidechain against an intermolecular partner - the per-pair exclusion lookups in
+  // rebuildPairListBetweenMattersImpl are three container probes that always miss.
+  // Defaults to T so every existing caller keeps the checked behaviour; only pass NIL
+  // when the two atom sets provably share no bonded path (see the sidechain-vs-
+  // intra-matter2 singles scan, which genuinely needs the check).
+  CL_LAMBDA(matter1 matter2 &optional (exclusions-possible t));
+  CL_LAMBDA((self chem:energy-rosetta-nonbond) matter1 matter2 &optional (exclusions-possible t));
+  CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2, bool exclusionsPossible = true ) {
     // this->invalidateParameterCache();
     this->_Matter1 = matter1;
     this->_Matter2 = matter2;
+    this->_ExclusionsPossible = exclusionsPossible;
     this->_DisplacementBuffer = nil<core::T_O>();
   }
+  bool exclusionsPossible() const { return this->_ExclusionsPossible; }
   void clearTerms() { _Terms.clear(); }
   void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
   core::T_sp displacementBuffer() const { return _DisplacementBuffer; }

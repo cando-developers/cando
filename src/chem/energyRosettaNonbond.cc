@@ -26,6 +26,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 /* -^- */
 #define DEBUG_LEVEL_NONE
 
+#include <atomic>
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyRosettaNonbond.h>
@@ -99,6 +100,7 @@ namespace chem {
 
 SYMBOL_EXPORT_SC_(ChemPkg, EnergyRosettaNonbond);
 SYMBOL_EXPORT_SC_(ChemPkg, energyRosettaNonbond);
+SYMBOL_EXPORT_SC_(ChemPkg, energyRosettaNonbondFaRep);
 
 core::List_sp EnergyRosettaNonbond::encode() const {
   ql::list ll;
@@ -157,28 +159,30 @@ double template_evaluateUsingTerms(EnergyRosettaNonbond_O* mthis,
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   auto evalType = determineEnergyComponentEvalType(force, hdvec, dvec);
-  double totalNonbondEnergy = 0.0;
+  typedef Rosetta_Nonbond_Dd_Cutoff<NoHessian> KernelType;
+  // acc[0] is the total energy; acc[1] is the fa_rep decomposition.
+  double acc[KernelType::EnergyAccumulatorSize] = {0.0};
   DOUBLE* position = &(*nvposition)[0];
   DOUBLE* rforce = NULL;
   DOUBLE* rdvec = NULL;
   DOUBLE* rhdvec = NULL;
   DOUBLE Energy = 0.0;
-  Rosetta_Nonbond_Dd_Cutoff<NoHessian> nonbond;
+  KernelType nonbond;
 
-#define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                                                            \
+#define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                     \
   if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3))) continue;
 
   if (evalType == energyEval) {
     for (auto si = terms.begin(); si != terms.end(); si++) {
       KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.energy(params, si->term, position, &totalNonbondEnergy);
+      Energy = nonbond.energy(params, si->term, position, acc);
       NONBOND_DEBUG_INTERACTIONS(si->term);
     }
   } else if (evalType == gradientEval) {
     rforce = &(*force)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
       KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.gradient(params, si->term, position, &totalNonbondEnergy, rforce);
+      Energy = nonbond.gradient(params, si->term, position, acc, rforce);
       NONBOND_DEBUG_INTERACTIONS(si->term);
     }
   } else {
@@ -187,12 +191,15 @@ double template_evaluateUsingTerms(EnergyRosettaNonbond_O* mthis,
     rhdvec = &(*hdvec)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
       KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.hessian(params, si->term, position, &totalNonbondEnergy, rforce, NoHessian(), rdvec, rhdvec);
+      Energy = nonbond.hessian(params, si->term, position, acc, rforce, NoHessian(), rdvec, rhdvec);
       NONBOND_DEBUG_INTERACTIONS(si->term);
     }
   }
-  maybeSetEnergy(energyComponents, termSymbol, totalNonbondEnergy);
-  return totalNonbondEnergy;
+  maybeSetEnergy(energyComponents, termSymbol, acc[0]);
+  maybeSetEnergy(energyComponents, _sym_energyRosettaNonbondFaRep,
+                 acc[KernelType::EnergyAccumulatorIndex_fa_rep]);
+  mthis->_LastFaRep = acc[KernelType::EnergyAccumulatorIndex_fa_rep]; 
+  return acc[0];
 }
 
 bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Atom_sp a2,
@@ -334,24 +341,91 @@ void EnergyRosettaNonbond_O::ensureParameterCache() {
   AtomTable_sp at = this->_AtomTable;
   if (at.nilp()) return;
   size_t n = at->getNumberOfAtoms();
-  if (this->_CachedForAtomTable == at && this->_CachedRadius.size() == n) return;  // still valid
-  this->_CachedRadius.assign(n, 0.0);
-  this->_CachedEpsilon.assign(n, 0.0);
-  this->_CachedValid.assign(n, 0);
+  if (this->_CachedForAtomTable == at && this->_TypeSlot.size() == n) return;   // still valid
+ 
+  this->_TypeSlot.assign(n, -1);
   FFNonbondDb_sp db = gc::As<FFNonbondDb_sp>(this->_NonbondForceField);
   auto& energyAtoms = at->getVectorEnergyAtoms();
+
+  // One lookup per atom, then collapse identical (radius,epsilon) into slots.
+  // Two distinct types with identical parameters merging is harmless — they
+  // produce the same term.
+  std::vector<std::pair<double,double>> uniq;
   for (size_t i = 0; i < n; i++) {
-    core::T_sp type = energyAtoms[i].atom()->getType(this->_AtomTypes);   // 1 gethash / atom, once
-    core::T_sp tff  = chem__FFNonbond_findType(db, type);                  // direct, no funcall
-    if (tff.notnilp()) {
-      FFNonbond_sp ff = gc::As<FFNonbond_sp>(tff);
-      this->_CachedRadius[i]  = ff->getRadius_Angstroms();
-      this->_CachedEpsilon[i] = ff->getEpsilon_kcal();
-      this->_CachedValid[i]   = 1;
+    core::T_sp type = energyAtoms[i].atom()->getType(this->_AtomTypes);
+    core::T_sp tff  = chem__FFNonbond_findType(db, type);
+    if (tff.nilp()) continue;                       // _TypeSlot[i] stays -1
+    FFNonbond_sp ff = gc::As<FFNonbond_sp>(tff);
+    double r = ff->getRadius_Angstroms();
+    double e = ff->getEpsilon_kcal(); 
+    int slot = -1;
+    for (size_t s = 0; s < uniq.size(); ++s)
+      if (uniq[s].first == r && uniq[s].second == e) { slot = (int)s; break; }
+    if (slot < 0) { slot = (int)uniq.size(); uniq.emplace_back(r, e); }
+    this->_TypeSlot[i] = slot;
+  }
+    
+  size_t nt = uniq.size();
+  this->_NTypeSlots = nt;
+  this->_TermCache.assign(nt*nt, rosetta_nonbond_term());
+  this->_TermCacheValid.assign(nt*nt, 0);
+  for (size_t s1 = 0; s1 < nt; ++s1)
+    for (size_t s2 = 0; s2 < nt; ++s2) {
+      double parmA, parmC;
+      if (combineNonbondParams(uniq[s1].first, uniq[s1].second,
+                               uniq[s2].first, uniq[s2].second, parmA, parmC)) {
+        this->_TermCache[s1*nt + s2] =
+            rosetta_nonbond_term(this->_Parameters, parmA, parmC, 0, 0);
+        this->_TermCacheValid[s1*nt + s2] = 1;
+      }
     }
-  } 
+  // Some atom types carry no Lennard-Jones parameters at all: AMBER gives HO
+  // and HW radius 0 and epsilon 0, putting all of the sterics on the heavy
+  // atom they are bonded to.  combineNonbondParams refuses those pairs because
+  // the term derives sigma6 = 2A/C and epsilon = C^2/(4A), which is 0/0 when
+  // both are zero.  Skipping such a pair yields exactly the zero the term
+  // would have evaluated to, so no energy is lost - and electrostatics lives
+  // in EnergyRosettaElec_O, so no charge interaction goes with it.
+  //
+  // Report once per process rather than once per energy function: hundreds of
+  // scan energy functions are built, but a *new* offender is still worth
+  // seeing.  One zero-parameter type invalidates its whole row and column, so
+  // b such types account for nt^2 - (nt-b)^2 pairs; anything above that count
+  // means a pair failed for some other reason and deserves a look.
+  {
+    static std::atomic<bool> s_reported{false};
+    size_t invalid = 0;
+    for (size_t k = 0; k < nt*nt; ++k) if (!this->_TermCacheValid[k]) ++invalid;
+    if (invalid && !s_reported.exchange(true)) {
+      fmt::print(stderr, "RosettaNonbond: {} of {} type pairs have zero Lennard-Jones parameters"
+                         " - skipped, each contributes exactly zero\n", invalid, nt*nt);
+      size_t zeroTypes = 0;
+      for (size_t s = 0; s < nt; ++s) {
+        size_t bad = 0;
+        for (size_t s2 = 0; s2 < nt; ++s2) if (!this->_TermCacheValid[s*nt + s2]) ++bad;
+        if (bad != nt) continue;                          // this slot combines with nothing
+        ++zeroTypes;
+        for (size_t i = 0; i < n; i++) {
+          if (this->_TypeSlot[i] == (int)s) {
+            core::T_sp type = energyAtoms[i].atom()->getType(this->_AtomTypes);
+            fmt::print(stderr, "   slot {}: radius={:.4f} epsilon={:.4f} type={} example-atom={}\n",
+                       s, uniq[s].first, uniq[s].second, _rep_(type), _rep_(energyAtoms[i].atom()));
+            break;
+          }
+        }
+      }
+      size_t good = nt - zeroTypes;
+      size_t accounted = nt*nt - good*good;
+      if (invalid != accounted)
+        fmt::print(stderr, "   NOTE: {} zero-parameter type(s) account for only {} of the {} invalid"
+                           " pairs - the rest fail to combine for another reason\n",
+                   zeroTypes, accounted, invalid);
+    }
+  }
   this->_CachedForAtomTable = at;
 }
+
+
 
 core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
   return rebuildPairListImpl(this, tcoordinates);

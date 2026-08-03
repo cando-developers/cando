@@ -26,6 +26,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 /* -^- */
 #define DEBUG_LEVEL_NONE
 
+#include <array>                       // std::array, used by ensureParameterCache
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyRosettaLKSolvation.h>
@@ -226,30 +227,47 @@ void EnergyRosettaLKSolvation_O::ensureParameterCache() {
   AtomTable_sp at = this->_AtomTable;
   if (at.nilp()) return;
   size_t n = at->getNumberOfAtoms();
-  if (this->_CachedForAtomTable == at && this->_CachedValid.size() == n) return;   // still valid
-  this->_CachedDGfree.assign(n, 0.0);
-  this->_CachedLambda.assign(n, 1.0);   // defineForAtomPair's default lambda is 1.0
-  this->_CachedRadius.assign(n, 0.0);
-  this->_CachedVolume.assign(n, 0.0);
-  this->_CachedValid.assign(n, 0);
+  if (this->_CachedForAtomTable == at && this->_TypeSlot.size() == n) return;   // still valid
+  this->_TypeSlot.assign(n, -1);
   auto& energyAtoms = at->getVectorEnergyAtoms();
+
+  // One lookup per atom, then collapse identical parameter tuples into slots.
+  // Two distinct LK types with identical parameters merging is harmless - they
+  // produce the same term.
+  std::vector<std::array<double,4>> uniq;   // dGfree, lambda, radius, volume
   for (size_t i = 0; i < n; i++) {
     core::Symbol_sp type = energyAtoms[i].atom()->getPropertyOrDefault(
         INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>());
     core::T_sp tff = core::eval::funcall(_sym_find_lksolvation_type,
                                          this->_LKSolvationForceField, type);   // funcall, once/atom
-    if (tff.notnilp()) {
-      auto ff = gc::As<FFLKSolvation_sp>(tff);
-      double dg = 0.0, lam = 1.0, rad = 0.0, vol = 0.0;
-      if (lookup_lk_solvation_parameters(ff, dg, lam, rad, vol)) {
-        this->_CachedDGfree[i] = dg;
-        this->_CachedLambda[i] = lam;
-        this->_CachedRadius[i] = rad;
-        this->_CachedVolume[i] = vol;
-        this->_CachedValid[i]  = 1;
-      } 
-    } 
-  }   
+    if (tff.nilp()) continue;                       // _TypeSlot[i] stays -1
+    auto ff = gc::As<FFLKSolvation_sp>(tff);
+    double dg = 0.0, lam = 1.0, rad = 0.0, vol = 0.0;
+    if (!lookup_lk_solvation_parameters(ff, dg, lam, rad, vol)) continue;
+    int slot = -1;
+    for (size_t s = 0; s < uniq.size(); ++s)
+      if (uniq[s][0] == dg && uniq[s][1] == lam && uniq[s][2] == rad && uniq[s][3] == vol) {
+        slot = (int)s; break;
+      }
+    if (slot < 0) { slot = (int)uniq.size(); uniq.push_back({dg, lam, rad, vol}); }
+    this->_TypeSlot[i] = slot;
+  }
+
+  // Precompute the term for every ORDERED slot pair - the term is asymmetric
+  // in i/j, so [s1][s2] and [s2][s1] both have to be built.
+  size_t nt = uniq.size();
+  this->_NTypeSlots = nt;
+  this->_TermCache.assign(nt*nt, rosetta_lk_solvation_term());
+  this->_TermCacheValid.assign(nt*nt, 0);
+  for (size_t s1 = 0; s1 < nt; ++s1)
+    for (size_t s2 = 0; s2 < nt; ++s2) {
+      this->_TermCache[s1*nt + s2] =
+        rosetta_lk_solvation_term(this->_Parameters,
+                                  uniq[s1][0], uniq[s1][1], uniq[s1][2], uniq[s1][3],
+                                  uniq[s2][0], uniq[s2][1], uniq[s2][2], uniq[s2][3],
+                                  0, 0);
+      this->_TermCacheValid[s1*nt + s2] = 1;
+    }
   this->_CachedForAtomTable = at;
 }
 
