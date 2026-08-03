@@ -25,6 +25,9 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
        
 #define	TURN_DEBUG_OFF
+#include <algorithm>
+#include <cstdint>
+#include <vector>
 #include <clasp/core/common.h>
 #include <clasp/core/evaluator.h>
 #include <cando/chem/linearAlgebra.h>
@@ -258,20 +261,54 @@ void	unconventionalModifiedCholeskySymbolicFactorization(AbstractLargeSquareMatr
 #define	TAO	10.0	// See Schlick paper page 10, top paragraph
 
   dim = mprecon->dimension();
+  if ( !gc::IsA<SparseLargeSquareMatrix_sp>(ldlt) ) {
+		//
+		// Dense ldlt: there is no shifting to avoid, so keep the
+		// original in-place loop.
+		//
+    for ( int y=0; y<dim; y++ ) {
+      ldlt->insertElement(y,y);	// Diagonal element is always there
+      for ( int x=y+1; x<dim; x++ ) {	// x is X-coordinate
+        if ( mprecon->hasElement(x,y) ) {
+          ldlt->insertElement(x,y);
+        };
+        if ( y>0 && ldlt->hasElement(x,y-1) ) {
+          ldlt->insertElement(x,y);
+        }
+      }
+    }
+    return;
+  }
+  SparseLargeSquareMatrix_sp sldlt = gc::As_unsafe<SparseLargeSquareMatrix_sp>(ldlt);
+		//
+		// prevCol[x] replaces the old `ldlt->hasElement(x,y-1)` test, which
+		// read back the matrix being built.  The inner loop only ever writes
+		// column y, so column y-1 is exactly what the previous outer
+		// iteration recorded, and the diagonal entry (y-1,y-1) is never a
+		// hit because x >= y+1 > y-1.  Dropping that read-back is what lets
+		// every entry be buffered and sorted once instead of inserted in
+		// place - see SparseLargeSquareMatrix_O::buildPatternFromKeys.
+		//
+  std::vector<char> prevCol(dim,0), curCol(dim,0);
+  std::vector<uint64_t> keys;
+  keys.reserve(static_cast<size_t>(dim)*16);	// hint only; avoids early doublings
 		//
 		// Calculate each column and the diagonal
 		//
-  for ( int y=0; y<dim; y++ ) { 
-    ldlt->insertElement(y,y);	// Diagonal element is always there
+  for ( int y=0; y<dim; y++ ) {
+    keys.push_back(sldlt->patternKey(y,y));	// Diagonal element is always there
+    std::fill(curCol.begin(),curCol.end(),0);
     for ( int x=y+1; x<dim; x++ ) {	// x is X-coordinate
-      if ( mprecon->hasElement(x,y) ) {
-        ldlt->insertElement(x,y);
-      };
-      if ( y>0 && ldlt->hasElement(x,y-1) ) {
-        ldlt->insertElement(x,y);
+		// The two old conditions each called insertElement(x,y) and relied on
+		// it being idempotent; one emit here is the same set of entries.
+      if ( mprecon->hasElement(x,y) || (y>0 && prevCol[x]) ) {
+        keys.push_back(sldlt->patternKey(x,y));
+        curCol[x] = 1;
       }
     }
+    prevCol.swap(curCol);
   }
+  sldlt->buildPatternFromKeys(keys);
 }
 
 void	unconventionalModifiedCholeskyFactorization(SparseLargeSquareMatrix_sp 	mprecon,

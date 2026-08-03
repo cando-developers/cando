@@ -8,7 +8,7 @@ struct rosetta_lk_solvation_parameters {
   double r_solv_high;
   double rpairlist;
   rosetta_lk_solvation_parameters()
-    : c0(3.00000011920928960e-1), c1(2.00000002980232240e-1), r_solv_low(4.50000000000000000e+0), r_solv_high(6.00000000000000000e+0), rpairlist(8.00000000000000000e+0)
+    : c0(0.3), c1(0.2), r_solv_low(4.5), r_solv_high(6.0), rpairlist(8.0)
   {}
   void do_apply(SetupAccumulator& setupAcc) {
     setupAcc.maybe_apply(INTERN_(kw,c0),this->c0);

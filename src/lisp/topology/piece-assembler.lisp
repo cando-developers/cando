@@ -463,13 +463,19 @@ Returns the number of pieces collected."
 ;;; Top level
 ;;; ---------------------------------------------------------------------------
 
-(defun make-piece-assembler (complex-assembler complex-coords &key verbose)
+(defun make-piece-assembler (complex-assembler complex-coords &key verbose (rep-weight 1.0))
   "Build a PIECE-ASSEMBLER from COMPLEX-ASSEMBLER and its COMPLEX-COORDS.
 
 Collects every ligand sidechain choice at every ligand sidechain locus, plus
 every mobile receptor sidechain (those promoted to ROTAMER-SHAPEs by
 MAKE-ASSEMBLER-FOR-COMPLEX-SCANS).  Receptor monomers carry a single topology
-name fixed by the PDB, so they contribute one piece each."
+name fixed by the PDB, so they contribute one piece each.
+
+REP-WEIGHT scales the rosetta nonbond repulsive term in the piece-assembler's
+energy function, which is what computes every PAIR (two-body) energy.  It must
+match the rep-weight the single-scan energy functions use, or the ramp softens
+only one-body repulsion while two-body repulsion stays at this default.  1.0 is
+the chem:energy-rosetta-nonbond default and the previous behaviour."
   (let ((all-oligomer-shapes    (make-array 16 :adjustable t :fill-pointer 0))
         ;; keyed by PIECE-ID structs - EQUALP descends structs, EQUAL does not
         (locus-to-oligomer-shape (make-hash-table :test 'equalp))
@@ -494,7 +500,9 @@ name fixed by the PDB, so they contribute one piece each."
       (let ((energy-function (chem:make-energy-function :matter aggregate
                                                         :keep-interaction-factory #'rosetta-components-keep ; was nil
                                                         :assign-types t
-                                                        :setup (list :rosetta))))
+                                                        :setup (list :rosetta
+                                                                     (list 'chem:energy-rosetta-nonbond
+                                                                           :rep-weight rep-weight)))))
         (let ((pa (make-instance 'piece-assembler
                                  :oligomer-shapes         all-oligomer-shapes
                                  :locus-to-oligomer-shape locus-to-oligomer-shape
@@ -695,8 +703,10 @@ name fixed by the PDB, so they contribute one piece each."
               (id (monomer (aref (monomer-shape-info-vector os2) 0)))
               (length atoms1) (length atoms2))
       ;; (3) set matters on the 3 components
+      ;; os2 is chosen at a different locus than os1 (see the UNLESS above), so no
+      ;; 1-2/1-3/1-4 pair can span the two pieces - skip the exclusion checks.
       (dolist (c (list nb elec lk))
-        (when c (chem:set-matters c atoms1 atoms2)))
+        (when c (chem:set-matters c atoms1 atoms2 nil)))
       ;; (4) evaluate - triggers the between-matters pair-list build
       (let ((energy (chem:evaluate-energy ef coords)))
         (format t "energy = ~f~%" energy)

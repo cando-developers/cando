@@ -143,8 +143,9 @@ struct Energies {
   vector<size_t>                 _LocusMonomerCount;
   size_t                         _NumberOfSlots;
   double                         _TemperatureScale;
-  double                         _IntramolecularBackboneEnergy;
-  double                         _IntermolecularBackboneEnergy;
+  double                         _IntramolecularBackbone[2];   // [0]=fa_rest, [1]=fa_rep
+  double                         _IntermolecularBackbone[2];   // [0]=fa_rest, [1]=fa_rep
+  double                         _RepWeight = 1.0;             // set by each entry point
   core::SimpleVector_sp          _MonomerVector;
   core::SimpleVector_byte32_t_sp _MonomerLocusMaxMrkindex;
   core::SimpleVector_byte32_t_sp _MrkeyIndexToLmkeyIndex;
@@ -158,10 +159,14 @@ struct Energies {
   Energies(core::T_sp energies,double temperatureScale = 0.95) : _Rng(12345u), _U01(0.0,1.0), _Rand(RAND_MAX) {
     this->_TemperatureScale = temperatureScale;
     core::T_sp val;
-    val = core::eval::funcall( _sym_intramolecular_backbone_energy, energies );
-    this->_IntramolecularBackboneEnergy = gc::As<core::DoubleFloat_sp>(val)->get();
+    val = core::eval::funcall( _sym_intramolecular_backbone_energy, energies );   // NVector [fa_rest, fa_rep]
+    { auto bv = gc::As<core::SimpleVector_double_sp>(val);
+      this->_IntramolecularBackbone[0] = (*bv)[0];
+      this->_IntramolecularBackbone[1] = (*bv)[1]; }
     val = core::eval::funcall( _sym_intermolecular_backbone_energy, energies );
-    this->_IntermolecularBackboneEnergy = gc::As<core::DoubleFloat_sp>(val)->get();
+    { auto bv = gc::As<core::SimpleVector_double_sp>(val);
+      this->_IntermolecularBackbone[0] = (*bv)[0];
+      this->_IntermolecularBackbone[1] = (*bv)[1]; }
     val = core::eval::funcall( _sym_monomer_vector, energies );
     this->_MonomerVector = gc::As<core::SimpleVector_sp>(val);
     val = core::eval::funcall( _sym_monomer_locus_max_mrkindex, energies );
@@ -195,6 +200,12 @@ struct Energies {
       this->_LmkeyIndexToLocus.push_back(locus);
       this->_LmkeyIndexToMonomerName.push_back(monomerName);
     }
+  }
+
+  // fa_rest + rep_weight*fa_rep for entry I of an INTERLEAVED vector
+  // ([2i]=fa_rest, [2i+1]=fa_rep) — or of a double[2] with i=0.
+  inline double term(const double* v, size_t i) const {
+    return v[2*i] + this->_RepWeight*v[2*i+1];
   }
 
   int lowerTriangularIndex(int xx, int yy ) {
@@ -247,9 +258,11 @@ void State::randomState(const Energies& energies )
     prevMax = max;
   }
 }
-CL_DEFUN core::DoubleFloat_sp chem__mcstate_energy(core::T_sp tmcstate, core::T_sp tenergies, double lambda)
+CL_LAMBDA(mcstate energies lambda &optional (rep-weight 1.0));
+CL_DEFUN core::DoubleFloat_sp chem__mcstate_energy(core::T_sp tmcstate, core::T_sp tenergies, double lambda, double repWeight)
 {
   Energies energies(tenergies);
+  energies._RepWeight = repWeight;
   State state(gc::As<core::SimpleVector_byte32_t_sp>(tmcstate));
   double testEnergy = energies.reducedEnergy(state,lambda);
   return core::DoubleFloat_O::create(testEnergy);
@@ -261,10 +274,11 @@ SYMBOL_EXPORT_SC_( ChemPkg, min_temperature );
 SYMBOL_EXPORT_SC_( ChemPkg, max_failed_improvements );
 SYMBOL_EXPORT_SC_( ChemPkg, max_failed_accepts );
 
-CL_LAMBDA(energies &key seed (start-temperature 1000.0) (max-iterations 1000000) (epoch-steps 100) (temperature-scale 0.95) initial-state accept-callback temperature-drop-callback debug (max-failed-improvements 100000) (max-failed-accepts 100000) (min-temperature 0.001) );
-CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, core::T_sp seed, double startTemperature, size_t max_iterations, size_t epoch_steps, double temperatureScale, core::T_sp tinitial_state, core::T_sp acceptCallback, core::T_sp temperatureDropCallback, core::T_sp debug, size_t maxFailedImprovements, size_t maxFailedAccepts, double minTemperature ) {
+CL_LAMBDA(energies &key seed (start-temperature 1000.0) (max-iterations 1000000) (epoch-steps 100) (temperature-scale 0.95) initial-state accept-callback temperature-drop-callback debug (max-failed-improvements 100000) (max-failed-accepts 100000) (min-temperature 0.001) (rep-weight 1.0) );
+CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, core::T_sp seed, double startTemperature, size_t max_iterations, size_t epoch_steps, double temperatureScale, core::T_sp tinitial_state, core::T_sp acceptCallback, core::T_sp temperatureDropCallback, core::T_sp debug, size_t maxFailedImprovements, size_t maxFailedAccepts, double minTemperature, double repWeight ) {
   //  srand(time(NULL)); // Initialize random seed
   Energies energies(tenergies,temperatureScale);
+  energies._RepWeight = repWeight;
   if (seed.notnilp()) {
     uint32_t s = core::clasp_to_uint32_t(seed);
     energies._Rng.seed(s);
@@ -361,12 +375,13 @@ CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, core::T_sp se
 }
 
 
-CL_LAMBDA(energies &key (temperature 100.0) (max-iterations 1000) initial-state step-callback debug);
-CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, double temperature, size_t max_iterations, core::T_sp tinitial_state, core::T_sp stepCallback, core::T_sp debug ) {
+CL_LAMBDA(energies &key (temperature 100.0) (max-iterations 1000) initial-state step-callback debug (rep-weight 1.0));
+CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, double temperature, size_t max_iterations, core::T_sp tinitial_state, core::T_sp stepCallback, core::T_sp debug, double repWeight ) {
   srand(time(NULL)); // Initialize random seed
   double beta = 1.0/(0.0019872*temperature);
   size_t accepts = 0;
   Energies energies(tenergies);
+  energies._RepWeight = repWeight;
   core::SimpleVector_byte32_t_sp saveState;
   bool useStepCallback = stepCallback.notnilp();
   if (useStepCallback) saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
@@ -412,9 +427,10 @@ CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, do
                 mk_double_float(curEnergy) );
 }
 
-CL_LAMBDA(energies beta mcstate)
-CL_DEFUN core::T_sp chem__mcstate_energy(core::T_sp tenergies, double beta, core::SimpleVector_byte32_t_sp mcstate ) {
+CL_LAMBDA(energies beta mcstate &optional (rep-weight 1.0))
+CL_DEFUN core::T_sp chem__mcstate_energy(core::T_sp tenergies, double beta, core::SimpleVector_byte32_t_sp mcstate, double repWeight ) {
   Energies energies(tenergies);
+  energies._RepWeight = repWeight;
   State state(mcstate);
   double energy = energies.reducedEnergy(state);
   return core::DoubleFloat_O::create(energy);
@@ -479,8 +495,9 @@ double Energies::physicalEnergy(const State& state,double lambda) {
   KahanAccumulator singleSum, pairSum;
 
   for (int ii = 0; ii < state._State.size(); ++ii) {
-    singleSum.Add(intramolecularSingleTerms[state._State[ii]]);
-    singleSum.Add(intermolecularSingleTerms[state._State[ii]]*lambda);
+    size_t mrk = state._State[ii];
+    singleSum.Add(this->term(intramolecularSingleTerms,mrk));
+    singleSum.Add(this->term(intermolecularSingleTerms,mrk)*lambda);
   }
 
   for (int xii = 0; xii < state._State.size() - 1; ++xii) {
@@ -488,15 +505,15 @@ double Energies::physicalEnergy(const State& state,double lambda) {
     for (int yii = xii + 1; yii < state._State.size(); ++yii) {
       int yy = state._State[yii];
       size_t lti = this->lowerTriangularIndex(xx,yy);
-      double pairTerm = pairTerms[lti];
-      int8_t intermolecular_p = intermolecularPPairTerms[lti];
+      double pairTerm = this->term(pairTerms,lti);
+      int8_t intermolecular_p = intermolecularPPairTerms[lti];   // flags are SINGLE-stride
       pairSum.Add(intermolecular_p ? pairTerm*lambda : pairTerm );
     }
   }
 
   KahanAccumulator total;
-  total.Add(this->_IntramolecularBackboneEnergy);
-  total.Add(this->_IntermolecularBackboneEnergy*lambda);
+  total.Add(this->term(this->_IntramolecularBackbone,0));
+  total.Add(this->term(this->_IntermolecularBackbone,0)*lambda);
   total.Add(singleSum.sum);
   total.Add(pairSum.sum);
   return total.sum;
@@ -526,16 +543,18 @@ double Energies::deltaReducedEnergy(const State& state, size_t slot, int newMrk,
   const uint8_t* pflag = &(*_IntermolecularPPairTerms)[0];
   KahanAccumulator d;
   // single-term change for the flipped slot
-  d.Add(intra[newMrk] - intra[oldMrk]);
-  d.Add((inter[newMrk] - inter[oldMrk]) * lambda);
+  d.Add(this->term(intra,newMrk) - this->term(intra,oldMrk));
+  d.Add((this->term(inter,newMrk) - this->term(inter,oldMrk)) * lambda);
   // pair-term change: only the pairs (slot, j), j != slot   -- O(L)
   for (int j = 0; j < (int)state._State.size(); ++j) {
     if (j == (int)slot) continue;
     int yy = state._State[j];
     size_t ltiNew = this->lowerTriangularIndex(newMrk, yy);
     size_t ltiOld = this->lowerTriangularIndex(oldMrk, yy);
-    d.Add((pflag[ltiNew] ? pair[ltiNew]*lambda : pair[ltiNew])
-          - (pflag[ltiOld] ? pair[ltiOld]*lambda : pair[ltiOld]));
+    double pNew = this->term(pair,ltiNew);
+    double pOld = this->term(pair,ltiOld);
+    d.Add((pflag[ltiNew] ? pNew*lambda : pNew)          // flags are SINGLE-stride
+          - (pflag[ltiOld] ? pOld*lambda : pOld));
   }
   // monomer-correction change for the flipped slot (O(1))
   uint32_t lmNew = (*_MrkeyIndexToLmkeyIndex)[newMrk];
@@ -564,11 +583,14 @@ inline double acc_beta_prob_from_log(core::T_sp debug, double betai,double u_i,d
   return p;
 }
 
-CL_LAMBDA(energies temperature &key seed (max-iterations 1000000) flatness-callback accept-callback (flatness-steps 100) (wl-scaling 0.8) (wl-increment-stop 0.1) (wl-increment-start 1.0) (flatness-threshold 0.95) debug);
-CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(core::T_sp tenergies, double temperature, core::T_sp seed, size_t max_iterations, core::T_sp flatnessCallback, core::T_sp acceptCallback, size_t flatness_steps, double wl_scaling, double wl_increment_stop, double wl_increment_start, double flatness_threshold, core::T_sp debug ) {
+CL_LAMBDA(energies temperature &key seed (max-iterations 1000000) flatness-callback accept-callback (flatness-steps 100) (wl-scaling 0.8) (wl-increment-stop 0.1) (wl-increment-start 1.0) (flatness-threshold 0.95) debug (rep-weight 1.0));
+CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(core::T_sp tenergies, double temperature, core::T_sp seed, size_t max_iterations, core::T_sp flatnessCallback, core::T_sp acceptCallback, size_t flatness_steps, double wl_scaling, double wl_increment_stop, double wl_increment_start, double flatness_threshold, core::T_sp debug, double repWeight ) {
   double wl_increment = wl_increment_start;
   double beta = 1.0/(0.0019872*temperature);
   Energies energies(tenergies);
+  // the monomer corrections built here are WEIGHT-SPECIFIC (a nonlinear log-sum over the
+  // DOS, not linearly reweightable) — they are only valid at this rep-weight
+  energies._RepWeight = repWeight;
   if (seed.notnilp()) {
     uint32_t s = core::clasp_to_uint32_t(seed);
     energies._Rng.seed(s);
@@ -736,7 +758,7 @@ CL_DOCSTRING(R"doc(Perform a constant temperature Hamiltonian replica exchange m
 ENERGIES object using the LAMBDA-WINDOWS at TEMPERATURE taking LAMBDA-STEPS with each set of lambdas
 before attempting to swap windows.
 Return (values lowest-energy-state accepts swap-accepts-for-each-lambda-window swap-attempts-for-each-lambda-window max-iterations lowest-energy initial-state initial-energy))doc");
-CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (kk-start 0) (max-iterations 1000) (warm-up-iterations 100) step-callback (step-callback-period 1000) exchange-callback physical-state-callback (physical-state-callback-period 100) initial-state seen-states debug energy-trace);
+CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (kk-start 0) (max-iterations 1000) (warm-up-iterations 100) step-callback (step-callback-period 1000) exchange-callback physical-state-callback (physical-state-callback-period 100) initial-state seen-states debug energy-trace (rep-weight 1.0));
 CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarlo(core::T_sp tenergies,
                                                                                   core::T_sp tlambdaWindows,
                                                                                   double temperature,
@@ -752,7 +774,8 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
                                                                                   core::T_sp tInitialState,
                                                                                   core::T_sp tSeenStates,
                                                                                   core::T_sp debug,
-                                                                                  core::T_sp tEnergyTrace) {
+                                                                                  core::T_sp tEnergyTrace,
+                                                                                  double repWeight) {
 
   size_t accepts = 0;
 
@@ -772,6 +795,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
   }
 
   Energies energies(tenergies);
+  energies._RepWeight = repWeight;
   core::SimpleVector_byte32_t_sp saveState;
   bool useStepCallback = stepCallback.notnilp();
   bool usePhysicalStateCallback = physicalStateCallback.notnilp();
