@@ -139,10 +139,6 @@ struct NoFiniteDifference {
                                         bool debugForce) {}
 };
 
-inline double calculate_dQ1Q2(double electrostaticScale, double electrostaticModifier, double charge1, double charge2) {
-  return electrostaticScale * electrostaticModifier * charge1 * charge2;
-}
-
 template <class MaybeFiniteDiff>
 double template_evaluateUsingTerms(EnergyRosettaElec_O* mthis,
                                    const gctools::Vec0<EnergyRosettaElec>& terms,
@@ -217,6 +213,33 @@ bool EnergyRosettaElec::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Ato
 }
 
 void EnergyRosettaElec_O::initialize() { this->Base::initialize(); }
+
+void EnergyRosettaElec_O::ensureParameterCache() {
+  AtomTable_sp at = this->_AtomTable;
+  if (at.nilp()) return;
+  size_t n = at->getNumberOfAtoms();
+  if (this->_CachedForAtomTable == at && this->_CachedCharge.size() == n) return;  // still valid
+
+  // Hoisted out of the per-pair path: defineForAtomPair did this symbolValue
+  // lookup and boxed-number unbox on EVERY atom pair.
+  double conv = core::Number_O::as_double_float(
+      gc::As<core::Number_sp>(_sym_STARamber_charge_conversion_18_DOT_2223STAR->symbolValue()));
+  this->_DQ1Q2Scale = conv * conv;
+
+  this->_CachedCharge.assign(n, 0.0);
+  auto& energyAtoms = at->getVectorEnergyAtoms();
+  for (size_t i = 0; i < n; i++) {
+    this->_CachedCharge[i] = energyAtoms[i].atom()->getCharge();
+  }
+
+  // rosetta_elec_term is exactly linear in kqq - every field is a linear
+  // combination of e_rmin/e_rlow/de_rlow/e_rhi/de_rhi with params-only
+  // coefficients, and each of those is proportional to kqq.  So one prototype
+  // at kqq==1 serves every pair and the three exp() calls happen once.
+  this->_Prototype = rosetta_elec_term(this->_Parameters, 1.0, 0, 0);
+  this->_PrototypeValid = true;
+  this->_CachedForAtomTable = at;
+}
 
 void EnergyRosettaElec_O::addTerm(const EnergyRosettaElec& term) { this->_Terms.push_back(term); }
 

@@ -137,59 +137,81 @@ namespace chem {
     core::HashTable_sp          _AtomTypes;
     core::T_sp                  _KeepInteractionFactory;
     core::T_sp                  _DisplacementBuffer;
+    bool                        _ExclusionsPossible = true;  // POD - see setMatters
     core::T_sp                  _Matter1;
     core::T_sp                  _Matter2;
     // Rosetta parameters (used to construct terms)
     rosetta_lk_solvation_parameters _Parameters;
 
-         // Per-atom LK params, indexed by atom-table position. Resolved once from
-      // :lk-solvation-atom-type (invariant); removes the plist scan + find-lksolvation-type
-      // funcall from the per-pair path.
-    gctools::Vec0<double> _CachedDGfree, _CachedLambda, _CachedRadius, _CachedVolume;
-    gctools::Vec0<char>   _CachedValid;
+    // The term is a pure function of the two atoms' LK parameters (dGfree,
+    // lambda, radius, volume), which are resolved from :lk-solvation-atom-type
+    // and are therefore per-TYPE.  So collapse the distinct parameter tuples
+    // into slots and precompute the term for every ordered slot pair - the term
+    // is NOT symmetric in i/j (atom i desolvated by j differs from j by i), so
+    // the table is full nt x nt, not triangular.
+    gctools::Vec0<int>                        _TypeSlot;    // atom index -> slot, -1 = no params
+    size_t                                    _NTypeSlots = 0;
+    gctools::Vec0<rosetta_lk_solvation_term>  _TermCache;   // _NTypeSlots^2, row-major
+    gctools::Vec0<char>                       _TermCacheValid;
     core::T_sp          _CachedForAtomTable;   // init nil in ctor
 
   public:
     void ensureParameterCache();   // defined in the .cc
     void invalidateParameterCache() {
       this->_CachedForAtomTable = nil<core::T_O>();
-      this->_CachedValid.clear();
+      this->_TypeSlot.clear();
+      this->_TermCache.clear();
+      this->_TermCacheValid.clear();
+      this->_NTypeSlots = 0;
     }
+    // Cached hot-path term add: no plist scan, no find-lksolvation-type funcall,
+    // and no rosetta_lk_solvation_term construction - the term for this type
+    // pair was precomputed in ensureParameterCache.
     bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
                           size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
-      if (!this->_CachedValid[li])
+      int s1 = this->_TypeSlot[li];
+      int s2 = this->_TypeSlot[lj];
+      if (s1 < 0)
         SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
                      _rep_(a1), _rep_(a1->getProperties()));
-      if (!this->_CachedValid[lj])
+      if (s2 < 0)
         SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
                      _rep_(a2), _rep_(a2->getProperties()));
+      size_t k = (size_t)s1 * this->_NTypeSlots + (size_t)s2;
+      // ensureParameterCache fills every slot pair, so a miss here is a cache
+      // construction bug - fail loudly rather than silently dropping the pair
+      // (the caller has no else branch and would not count it as discarded).
+      if (!this->_TermCacheValid[k])
+        SIMPLE_ERROR("LKSolvation term cache miss for slot pair {},{} of {} - cache construction bug",
+                     s1, s2, this->_NTypeSlots);
       TermType term;
       term._Atom1_enb = a1;
       term._Atom2_enb = a2;
-      term.term = rosetta_lk_solvation_term(this->_Parameters,
-                                            this->_CachedDGfree[li], this->_CachedLambda[li],
-                                            this->_CachedRadius[li], this->_CachedVolume[li],
-                                            this->_CachedDGfree[lj], this->_CachedLambda[lj],
-                                            this->_CachedRadius[lj], this->_CachedVolume[lj],
-                                            i3x1, i3x2);
+      term.term = this->_TermCache[k];     // struct copy - no term arithmetic
+      term.term.i3x1 = (int)i3x1;          // only the geometry-dependent fields
+      term.term.i3x2 = (int)i3x2;
       this->addTerm(term);
       return true;
     }
   public:
     // pairList.h duck-typed interface
-    double rpairlist() const { return _Parameters.rpairlist; }
+    CL_DEFMETHOD double rpairlist() const { return _Parameters.rpairlist; }
     double rcut() const { return _Parameters.r_solv_high; }  // <-- note: r_solv_high, not rcut
     AtomTable_sp atomTable() const { return _AtomTable; }
     CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
     CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
     CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
     CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
-    CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2 ) {
+    // See EnergyRosettaNonbond_O::setMatters for what EXCLUSIONS-POSSIBLE means.
+    CL_LAMBDA((self chem:energy-rosetta-lksolvation) matter1 matter2 &optional (exclusions-possible t));
+    CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2, bool exclusionsPossible = true ) {
       // this->invalidateParameterCache();
       this->_Matter1 = matter1;
       this->_Matter2 = matter2;
+      this->_ExclusionsPossible = exclusionsPossible;
       this->_DisplacementBuffer = nil<core::T_O>();
     }
+    bool exclusionsPossible() const { return this->_ExclusionsPossible; }
     void clearTerms() { _Terms.clear(); }
     void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
     core::T_sp displacementBuffer() const { return _DisplacementBuffer; }

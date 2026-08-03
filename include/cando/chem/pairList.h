@@ -181,7 +181,7 @@ core::T_mv rebuildPairListBetweenMattersImpl(Component* comp, core::T_sp tcoordi
   bool hasKeepInteractionFunction = false;
   if (keepInteractionFactory.notnilp()) {
     keepInteraction = specializeKeepInteractionFactory(
-      keepInteractionFactory, Component::staticClass());
+        keepInteractionFactory, Component::staticClass());
     hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
   }
 
@@ -204,61 +204,149 @@ core::T_mv rebuildPairListBetweenMattersImpl(Component* comp, core::T_sp tcoordi
   size_t n1 = allI3.size();
   collectAtomsFromMatter(tmat2, atomTable, allI3);
   size_t ntotal = allI3.size();
+  size_t n2 = ntotal - n1;
 
-  CellGrid grid;
-  grid.build(raw, ntotal, allI3, rpairlist);
+  // At this point I know n1 and n2 the size of each pair
+  // I can calculate the maximum number of pairs that we will generate and
+  // decide if we want to use a grid or not.
+
+#if 0
+  // ---- TEMPORARY: measure how often a bounding-sphere test would reject ----
+  if (n1 > 0 && n2 > 0) {
+    static std::atomic<size_t> s_calls{0};
+    static std::atomic<size_t> s_reject{0};
+
+    // Calculate the centers c1 and c2 of the n1 and n2 atom sets
+    double c1[3]={0,0,0}, c2[3]={0,0,0};
+    for (size_t k = 0;  k < n1;     ++k) { size_t i3 = allI3[k];
+      c1[0]+=raw[i3]; c1[1]+=raw[i3+1]; c1[2]+=raw[i3+2]; }
+    for (size_t k = n1; k < ntotal; ++k) { size_t i3 = allI3[k];
+      c2[0]+=raw[i3]; c2[1]+=raw[i3+1]; c2[2]+=raw[i3+2]; }
+    for (int d = 0; d < 3; ++d) { c1[d] /= (double)n1; c2[d] /= (double)n2; }
+
+    // Calculate the radius^2 for each of the spheres containing n1 and n2
+    double r1sq = 0.0, r2sq = 0.0;
+    for (size_t k = 0;  k < n1;     ++k) { size_t i3 = allI3[k];
+      double dx=raw[i3]-c1[0], dy=raw[i3+1]-c1[1], dz=raw[i3+2]-c1[2];
+      double d2=dx*dx+dy*dy+dz*dz; if (d2>r1sq) r1sq=d2;
+    }
+    for (size_t k = n1; k < ntotal; ++k) { size_t i3 = allI3[k];
+      double dx=raw[i3]-c2[0], dy=raw[i3+1]-c2[1], dz=raw[i3+2]-c2[2];
+      double d2=dx*dx+dy*dy+dz*dz; if (d2>r2sq) r2sq=d2;
+    }
+
+    // Reject if the spheres are too far apart so that no atoms
+    // between them will ever be within a distance to form a pairlist
+    double dx=c1[0]-c2[0], dy=c1[1]-c2[1], dz=c1[2]-c2[2];
+    double reach = std::sqrt(r1sq) + std::sqrt(r2sq) + rpairlist;
+    bool rejected = (dx*dx+dy*dy+dz*dz) > reach*reach;
+
+    // fetch_add returns the PREVIOUS value; +1 gives this call's ordinal, so
+    // exactly one thread observes each multiple of the report interval.
+    size_t nth = s_calls.fetch_add(1, std::memory_order_relaxed) + 1;
+    if (rejected) s_reject.fetch_add(1, std::memory_order_relaxed);
+    if ((nth % 500000) == 0) {
+      size_t rej = s_reject.load(std::memory_order_relaxed);
+      fmt::print(stderr,
+                 "sphere-test[{}]: {} / {} rejected ({:.1f}%)  n1={} n2={} rpairlist={:.2f}\n",
+                 Component::staticClass()->_classNameAsString(),
+                 rej, nth, 100.0*rej/nth, n1, n2, rpairlist);
+    }
+  }
+#endif
+
+  // ---- grid or brute force? -------------------------------------------
+  // CellGrid cells are rpairlist on a side, so the grid can only prune when the
+  // atoms span more than about one cell.  Two sidechains (~8 A across, 9 A cell)
+  // land in one cell: forEachPair degenerates to all-pairs and the hashing plus
+  // per-cell vectors are pure overhead.  A sidechain against a whole receptor
+  // backbone spans tens of cells and the grid earns its keep.
+  bool useGrid = false;
+  if (ntotal > 1) {
+    double lo[3] = { raw[allI3[0]], raw[allI3[0]+1], raw[allI3[0]+2] };
+    double hi[3] = { lo[0], lo[1], lo[2] };
+    for (size_t k = 1; k < ntotal; ++k) {
+      size_t i3 = allI3[k];
+      for (int d = 0; d < 3; ++d) {
+        double v = raw[i3+d];
+        if (v < lo[d]) lo[d] = v;
+        if (v > hi[d]) hi[d] = v;
+      }
+    }
+    double cells = std::max(1.0, std::ceil((hi[0]-lo[0])/rpairlist))
+                       * std::max(1.0, std::ceil((hi[1]-lo[1])/rpairlist))
+                       * std::max(1.0, std::ceil((hi[2]-lo[2])/rpairlist));
+    useGrid = (cells > 8.0) && ((double)n1 * (double)n2 > 2048.0);
+  }
 
 #ifdef PAIRLIST_CACHED
   comp->ensureParameterCache();
 #endif
-  grid.forEachPair([&](size_t li, size_t lj) {
-    // Only consider inter-set pairs (one from mat1, one from mat2)
-    bool i_in_1 = (li < n1);
-    bool j_in_1 = (lj < n1);
-    if (i_in_1 == j_in_1) return;  // both in same set, skip
+  // Hoisted out of the per-pair lambda: set once by setMatters, constant for the build.
+  const bool exclusionsPossible = comp->exclusionsPossible();
+  auto consider = [&](size_t li, size_t lj) {
+      // Only consider inter-set pairs (one from mat1, one from mat2)
+      bool i_in_1 = (li < n1);
+      bool j_in_1 = (lj < n1);
+      if (i_in_1 == j_in_1) return;  // both in same set, skip
 
-    // Ensure a1 is from mat1, a2 from mat2.  li/lj already index allI3.
-    size_t i3x1 = allI3[i_in_1 ? li : lj];
-    size_t i3x2 = allI3[i_in_1 ? lj : li];
-    // i3/3 is the atom-table index - same identity the exclusion check below
-    // relies on - so the Atom_sp comes from the EnergyAtom, not a hash lookup.
-    Atom_sp a1 = energyAtoms[i3x1/3].atom();
-    Atom_sp a2 = energyAtoms[i3x2/3].atom();
+      // Ensure a1 is from mat1, a2 from mat2.  li/lj already index allI3.
+      size_t i3x1 = allI3[i_in_1 ? li : lj];
+      size_t i3x2 = allI3[i_in_1 ? lj : li];
 
-    // Distance check
-    double dx = raw[i3x1]     - raw[i3x2];
-    double dy = raw[i3x1 + 1] - raw[i3x2 + 1];
-    double dz = raw[i3x1 + 2] - raw[i3x2 + 2];
-    double dist2 = dx*dx + dy*dy + dz*dz;
-    if (dist2 >= rpairlist2) return;
-    // Exclusion check — skip 1-2, 1-3, 1-4 bonded pairs
-    {
-      //      EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(a1);a
-      EnergyAtom& ea1 = energyAtoms[i3x1/3]; // direct index
-      if (ea1.inBondOrAngle(a2) || ea1.relatedBy14(a2)) return;
-    }
-    
-    // keepInteraction filter (only if factory was provided)
-    if (hasKeepInteractionFunction) {
-      core::T_sp result = core::eval::funcall(keepInteraction,
-                                              a1, a2,
-                                              core::make_fixnum(i3x1),
-                                              core::make_fixnum(i3x2));
-      if (result.nilp()) {
-        ++interactionsDiscarded;
-        return;
+      // Distance check
+      double dx = raw[i3x1]     - raw[i3x2];
+      double dy = raw[i3x1 + 1] - raw[i3x2 + 1];
+      double dz = raw[i3x1 + 2] - raw[i3x2 + 2];
+      double dist2 = dx*dx + dy*dy + dz*dz;
+      if (dist2 >= rpairlist2) return;
+      // Atoms are only needed past the cutoff - the distance test above reads raw[]
+      // directly, so fetching them earlier costs two Vec0 lookups, two divisions and
+      // two smart-pointer constructions on every rejected pair.  i3/3 is the
+      // atom-table index, the same identity the exclusion check relies on.
+      // NOTE: a1/a2 must stay in the lambda's scope - the keepInteraction filter
+      // and tryAddTermCached below both use them.
+      EnergyAtom& ea1 = energyAtoms[i3x1/3];
+      Atom_sp a1 = ea1.atom();
+      Atom_sp a2 = energyAtoms[i3x2/3].atom();
+
+      // Exclusion check — skip 1-2, 1-3, 1-4 bonded pairs.  exclusionsPossible is
+      // false when no bonded path can span the two matters (two sidechains at
+      // different loci, two molecules, a sidechain vs an intermolecular partner);
+      // the three container probes below would then always miss.
+      if (exclusionsPossible && (ea1.inBondOrAngle(a2) || ea1.relatedBy14(a2))) return;
+
+      // keepInteraction filter (only if factory was provided)
+      if (hasKeepInteractionFunction) {
+        core::T_sp result = core::eval::funcall(keepInteraction,
+                                                a1, a2,
+                                                core::make_fixnum(i3x1),
+                                                core::make_fixnum(i3x2));
+        if (result.nilp()) {
+          ++interactionsDiscarded;
+          return;
+        }
       }
-    }
 #ifdef PAIRLIST_CACHED
-    if (comp->tryAddTermCached(a1, a2, i3x1/3, i3x2/3, i3x1, i3x2, keepInteraction)) {
-      ++interactionsKept;
-    }
+      if (comp->tryAddTermCached(a1, a2, i3x1/3, i3x2/3, i3x1, i3x2, keepInteraction)) {
+        ++interactionsKept;
+      }
 #else
-    if (comp->tryAddTerm(a1, a2, i3x1, i3x2, keepInteraction)) {
-      ++interactionsKept;
-    }
+      if (comp->tryAddTerm(a1, a2, i3x1, i3x2, keepInteraction)) {
+        ++interactionsKept;
+      }
 #endif
-  });
+      };
+
+  if (useGrid) {
+    CellGrid grid;
+    grid.build(raw, ntotal, allI3, rpairlist );
+    grid.forEachPair(consider);
+  } else {
+    for (size_t li = 0; li < n1; ++li)
+      for (size_t lj = n1; lj < ntotal; ++lj)
+        consider(li, lj);
+  }
 
   size_t totalInteractions = interactionsKept + interactionsDiscarded;
   return Values(core::clasp_make_fixnum(interactionsKept),
@@ -317,16 +405,38 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
           i3values[i] = energyAtoms[i].coordinateIndexTimes3();
         }
 
-        // Build spatial hash grid with cell size = rpairlist
-        CellGrid grid;
-        grid.build(coords, natoms, i3values, rpairlist);
-
+        // ---- grid or brute force? -------------------------------------
+        // CellGrid cells are rpairlist on a side, so the grid can only prune
+        // when the atoms span more than about one cell.  A compact group
+        // (one residue, ~8 A across against a 9 A cell) lands in a single
+        // cell: forEachPair degenerates to all-pairs and the hashing plus
+        // per-cell vectors are pure overhead.
+        bool useGrid = false;
+        {
+          double lo[3] = { coords[i3values[0]], coords[i3values[0]+1], coords[i3values[0]+2] };
+          double hi[3] = { lo[0], lo[1], lo[2] };
+          for (size_t k = 1; k < natoms; ++k) {
+            size_t i3 = i3values[k];
+            for (int d = 0; d < 3; ++d) {
+              double v = coords[i3+d];
+              if (v < lo[d]) lo[d] = v;
+              if (v > hi[d]) hi[d] = v;
+            } 
+          }   
+          double cells = std::max(1.0, std::ceil((hi[0]-lo[0])/rpairlist))
+                             * std::max(1.0, std::ceil((hi[1]-lo[1])/rpairlist))
+                             * std::max(1.0, std::ceil((hi[2]-lo[2])/rpairlist));
+          double npairs = (double)natoms * (double)(natoms - 1) * 0.5;
+          useGrid = (cells > 8.0) && (npairs > 2048.0);
+        }             
+            
 #ifdef PAIRLIST_CACHED
         comp->ensureParameterCache();
 #endif
 
+
         // Enumerate candidate pairs from neighboring cells
-        grid.forEachPair([&](size_t li, size_t lj) {
+        auto consider = [&](size_t li, size_t lj) {
           EnergyAtom& ea1 = energyAtoms[li];
           EnergyAtom& ea2 = energyAtoms[lj];
 
@@ -366,8 +476,17 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
           } else {
             ++interactionsDiscarded;
           }
-        });
+        };
 
+        if (useGrid) {
+          CellGrid grid;
+          grid.build(coords, natoms, i3values, rpairlist);
+          grid.forEachPair(consider);
+        } else {
+          for (size_t li = 0; li + 1 < natoms; ++li)
+            for (size_t lj = li + 1; lj < natoms; ++lj)
+              consider(li, lj);
+        } 
       } else {
         // --- Fallback: read positions from atoms (no coordinate vector) ---
 #ifdef PAIRLIST_CACHED

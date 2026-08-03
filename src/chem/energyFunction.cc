@@ -561,8 +561,6 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 
   LOG("Starting evaluation of energy" );
 
-  totalEnergy += this->_MonomerCorrectionEnergy;
-  maybeSetEnergy( energyComponents, chem::_sym_monomer_corrections, totalEnergy );
   for ( auto cur : this->_EnergyComponents ) {
     EnergyComponent_sp component = gc::As<EnergyComponent_sp>(CONS_CAR(cur));
     if (!(disableRestraints && component->restraintp()) && component->isEnabled()) {
@@ -742,6 +740,111 @@ double	EnergyFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, core
     LOG("f2 = {}" , f2  );
   }
   return f2;
+}
+
+CL_DOCSTRING(R"doc(Fill SPHERES with one bounding sphere per piece, packed (x y z radius).
+COORDS is the vector the pieces were placed into.  I3-VALUES holds every piece's atom
+coordinate indices concatenated; piece P occupies [OFFSETS[P], OFFSETS[P+1]), so OFFSETS has
+one more element than there are pieces.  SPHERES must be 4*npieces doubles.)doc");
+CL_LAMBDA(coords i3-values offsets spheres);
+CL_DEFUN void chem__calculatePieceSpheres(NVector_sp coords,
+                                          core::SimpleVector_byte32_t_sp i3values,
+                                          core::SimpleVector_byte32_t_sp offsets,
+                                          NVector_sp spheres) {
+  const double*   xyz = &(*coords)[0];
+  const uint32_t* idx = &(*i3values)[0];
+  const uint32_t* off = &(*offsets)[0];
+  double*         out = &(*spheres)[0];
+  size_t npieces = cl__length(offsets) - 1;
+  if (cl__length(spheres) < 4*npieces)
+    SIMPLE_ERROR("spheres vector is {} long, need {} for {} pieces", cl__length(spheres), 4*npieces, npieces);
+  for (size_t p = 0; p < npieces; ++p) {
+    uint32_t b = off[p], e = off[p+1];
+    size_t n = e - b;
+    if (n == 0) {   // no atoms: degenerate sphere at the origin, radius 0
+      out[4*p] = out[4*p+1] = out[4*p+2] = out[4*p+3] = 0.0;
+      continue;
+    }
+    double cx=0.0, cy=0.0, cz=0.0;
+    for (uint32_t k = b; k < e; ++k) {
+      uint32_t i3 = idx[k];
+      cx += xyz[i3]; cy += xyz[i3+1]; cz += xyz[i3+2];
+    }
+    cx /= (double)n; cy /= (double)n; cz /= (double)n;
+    double r2max = 0.0;
+    for (uint32_t k = b; k < e; ++k) {
+      uint32_t i3 = idx[k];
+      double dx = xyz[i3]-cx, dy = xyz[i3+1]-cy, dz = xyz[i3+2]-cz;
+      double d2 = dx*dx + dy*dy + dz*dz;
+      if (d2 > r2max) r2max = d2;
+    }
+    out[4*p]   = cx;
+    out[4*p+1] = cy;
+    out[4*p+2] = cz;
+    out[4*p+3] = std::sqrt(r2max);
+  }
+}
+
+
+CL_DOCSTRING(R"doc(True when pieces I and J can have no atom pair within MAX-CUTOFF.
+For a in I and b in J, |a-b| >= |ci-cj| - ri - rj; if that lower bound is already >=
+MAX-CUTOFF the whole pair evaluation can be skipped.  Compares squared distances, no sqrt.)doc");
+CL_LAMBDA(spheres i j max-cutoff);
+CL_DEFUN bool chem__spheresTooFarApartP(NVector_sp spheres, size_t i, size_t j, double maxCutoff) {
+  const double* s = &(*spheres)[0];
+  const double* a = s + 4*i;
+  const double* b = s + 4*j;
+  double dx = a[0]-b[0], dy = a[1]-b[1], dz = a[2]-b[2];
+  double reach = a[3] + b[3] + maxCutoff;
+  return (dx*dx + dy*dy + dz*dz) > (reach*reach);
+}
+
+CL_LISPIFY_NAME("evaluate-energy-into-fa-rest-fa-rep-vector");
+CL_LAMBDA((energy-function chem:energy-function) positions fa-rest-fa-rep-vector index fa-rep-component &key energy-scale active-atom-mask);
+CL_DEFMETHOD void EnergyFunction_O::evaluateEnergyIntoFaRestFaRepVector(
+    NVector_sp pos, NVector_sp faRestFaRepVector, size_t index,
+    core::T_sp faRepComponent,
+    core::T_sp energyScale, core::T_sp activeAtomMask)
+                                                       {
+  // 1. total across all components (nil energyComponents => no allocation)
+  double total = this->evaluateEnergy(pos, energyScale, nil<core::T_O>(),
+                                      activeAtomMask, nil<core::T_O>(), false);
+  // 2. pull fa_rep + weight off the caller-supplied nonbond component, whose _LastFaRep
+  //    was just set by evaluateEnergy(this,...) above.  The caller resolves this ONCE per
+  //    ef and passes it in, so the hot pair loop never searches the component list.  It
+  //    MUST be THIS ef's own rosetta-nonbond component, or getLastFaRep() is stale.
+  //
+  //    NIL means this ef has NO rosetta-nonbond component, which is a legitimate
+  //    configuration — a ligand-only system has no nonbonded components at all (the
+  //    backbone scan's intermolecular ef is an empty copy there, and evaluates to 0).
+  //    With no repulsive term to separate out, fa_rep = 0 and fa_rest = total, which
+  //    then reweights correctly at every rep_weight.  Callers derive this argument from
+  //    find-component-or-nil, so NIL already means absent — we do NOT re-search the
+  //    component list here (that search is exactly what hoisting the component avoids).
+  double faRep = 0.0;
+  double w     = 0.0;
+  if (faRepComponent.notnilp()) {
+    EnergyRosettaNonbond_sp nb = gc::As<EnergyRosettaNonbond_sp>(faRepComponent);
+    faRep = nb->getLastFaRep();
+    w     = nb->getRepWeight();
+  }
+  double faRest = total - w * faRep;          // everything except the weighted rep
+  // 3. write raw doubles straight into the destination — no boxing
+  double* v = &(*faRestFaRepVector)[0];
+  v[2*index]     = faRest;
+  v[2*index + 1] = faRep;
+} 
+ 
+
+CL_LISPIFY_NAME("energy-total-fa-rest-fa-rep-rep-weight");
+CL_LAMBDA(fa-rest-fa-rep-vector index rep-weight);
+CL_DEFUN double chem__energyTotalFaRestFaRepRepWeight(NVector_sp faRestFaRepVector, size_t index2, double rep_weight)
+{
+  ASSERT((index2&1)==0); // index2 should ALWAYS be even
+  ASSERT(index2<cl__length(faRestFaRepVector));
+  double faRest = (*faRestFaRepVector)[index2];
+  double faRep = (*faRestFaRepVector)[index2+1];
+  return faRest + (rep_weight*faRep);
 }
 
 
@@ -2086,7 +2189,6 @@ EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory
   me->_NonbondCrossTermTable = this->_NonbondCrossTermTable;
   me->_BoundingBox = this->_BoundingBox;
   if (keepInteractionFactory.notnilp()) {
-    me->_MonomerCorrectionEnergy = this->_MonomerCorrectionEnergy;
     ql::list ll;
     for ( auto cur : this->_EnergyComponents ) {
       EnergyComponent_sp component = gc::As<EnergyComponent_sp>(CONS_CAR(cur));

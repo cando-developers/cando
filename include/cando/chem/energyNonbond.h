@@ -222,10 +222,16 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::SimpleVector_int32_t_sp   _ExcludedAtomIndexes;
   size_t                          _InteractionsKept;
   size_t                          _InteractionsDiscarded;
-  // Per-atom nonbond params, indexed by atom-table position; + hoisted charge scale.
-  gctools::Vec0<double> _CachedRadius;
-  gctools::Vec0<double> _CachedEpsilon;
-  gctools::Vec0<char>   _CachedValid;
+  // dA and dC are pure functions of the two atoms' (radius,epsilon) - i.e. of
+  // the TYPE pair - so they are precomputed per ordered slot pair and the
+  // per-pair sqrt and r^6/r^12 multiplies disappear.  dQ1Q2 is NOT type-pure
+  // (partial charges are per atom), so charges are cached per atom instead.
+  gctools::Vec0<int>    _TypeSlot;        // atom index -> slot, -1 = no type
+  size_t                _NTypeSlots = 0;
+  gctools::Vec0<double> _CachedDA;        // _NTypeSlots^2, row-major
+  gctools::Vec0<double> _CachedDC;        // _NTypeSlots^2, row-major
+  gctools::Vec0<char>   _PairValid;       // _NTypeSlots^2
+  gctools::Vec0<double> _CachedCharge;    // per atom-table index
   double                _CachedDQ1Q2Scale;
   core::T_sp            _CachedForAtomTable;
 
@@ -233,7 +239,12 @@ public:
   void ensureParameterCache();
   void invalidateParameterCache() {
     this->_CachedForAtomTable = nil<core::T_O>();
-    this->_CachedValid.clear();
+    this->_TypeSlot.clear();
+    this->_CachedDA.clear();
+    this->_CachedDC.clear();
+    this->_PairValid.clear();
+    this->_CachedCharge.clear();
+    this->_NTypeSlots = 0;
   }
   bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
                         size_t i3x1, size_t i3x2, core::T_sp keepInteraction);  // defined in .cc
@@ -252,6 +263,7 @@ public:
   void callForEachTerm14(core::Function_sp callback);
  public:
 
+  bool exclusionsPossible() const { return true; };
   size_t runTestCalls(core::T_sp stream, chem::NVector_sp coords) const;
   void set_nonbond_pairlist_parameters(double r_switch, double r_cut, double r_pairlist, double distance_dielectric);
 

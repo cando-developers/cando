@@ -73,6 +73,7 @@ namespace       chem
   class EnergyAtom;
 
   FORWARD(FFParameter);
+  FORWARD(EnergyRosettaNonbond);
   FORWARD(AbstractLargeSquareMatrix);
   FORWARD(FFNonbondCrossTermTable);
   FORWARD(QDomNode);
@@ -152,7 +153,6 @@ namespace chem {
      */
     FFNonbondCrossTermTable_sp		_NonbondCrossTermTable;
     AtomTable_sp			_AtomTable;
-    double                              _MonomerCorrectionEnergy;
     core::List_sp                       _EnergyComponents; // list of EnergyComponent_sp objects
     BoundingBox_sp                      _BoundingBox;
     /*! If true then secondary amides are
@@ -177,8 +177,6 @@ namespace chem {
 
     CL_LISPIFY_NAME("atomTable");
     CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
-
-    CL_DEFMETHOD void setMonomerCorrectionEnergy(double en) { this->_MonomerCorrectionEnergy = en; };
 
     core::List_sp allComponents() const;
 
@@ -297,8 +295,12 @@ namespace chem {
                             core::T_sp debugInteractions,
                             bool disableRestraints );
 
+    // faRepComponent is the ef's own EnergyRosettaNonbond, or NIL when this ef has no
+    // rosetta-nonbond component (e.g. a ligand-only system) — then fa_rep is 0.
+    void evaluateEnergyIntoFaRestFaRepVector(NVector_sp pos, NVector_sp faRestFaRepVector, size_t index, core::T_sp faRepComponent, core::T_sp energyScale, core::T_sp activeAtomMask) ;
+
     size_t runTestCalls(core::T_sp stream, NVector_sp pos);
-    
+
     string	summarizeEnergyAsString();
 
 
@@ -315,7 +317,6 @@ namespace chem {
         _Matter(unbound<Matter_O>())
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
-        , _MonomerCorrectionEnergy(0.0)
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(bounding_box)
         ,_ForceFieldName(nil<core::Symbol_O>())
@@ -326,7 +327,6 @@ namespace chem {
         _Matter(unbound<Matter_O>())
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
-        , _MonomerCorrectionEnergy(0.0)
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
         ,_ForceFieldName(nil<core::Symbol_O>())
@@ -336,7 +336,6 @@ namespace chem {
         _Matter(unbound<Matter_O>())
         , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
         , _AtomTable(unbound<AtomTable_O>())
-        , _MonomerCorrectionEnergy(0.0)
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
         ,_ForceFieldName(nil<core::Symbol_O>())

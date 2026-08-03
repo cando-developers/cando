@@ -384,41 +384,71 @@ void EnergyNonbond_O::ensureParameterCache() {
   AtomTable_sp at = this->_AtomTable;
   if (at.nilp()) return;
   size_t n = at->getNumberOfAtoms();
-  if (this->_CachedForAtomTable == at && this->_CachedValid.size() == n) return;
-  this->_CachedRadius.assign(n, 0.0);
-  this->_CachedEpsilon.assign(n, 0.0);
-  this->_CachedValid.assign(n, 0);
+  if (this->_CachedForAtomTable == at && this->_TypeSlot.size() == n) return;
+  this->_TypeSlot.assign(n, -1);
+  this->_CachedCharge.assign(n, 0.0);
   double conv = core::Number_O::as_double_float(
       gc::As<core::Number_sp>(_sym_STARamber_charge_conversion_18_DOT_2223STAR->symbolValue()));
   this->_CachedDQ1Q2Scale = conv * conv;                       // hoist the invariant scale
   auto& energyAtoms = at->getVectorEnergyAtoms();
+
+  // One lookup per atom; collapse identical (radius,epsilon) into slots.  Two
+  // distinct types with identical parameters merging is harmless - same dA/dC.
+  std::vector<std::pair<double,double>> uniq;
   for (size_t i = 0; i < n; i++) {
+    this->_CachedCharge[i] = energyAtoms[i].atom()->getCharge();   // per atom, not per type
     core::T_sp type = energyAtoms[i].atom()->getType(this->_AtomTypes);           // 1 gethash/atom
     core::T_sp tff  = core::eval::funcall(_sym_find_type, this->_NonbondForceField, type); // once/atom
-    if (tff.notnilp()) {
-      FFNonbond_sp ff = gc::As<FFNonbond_sp>(tff);
-      this->_CachedRadius[i]  = ff->getRadius_Angstroms();
-      this->_CachedEpsilon[i] = ff->getEpsilon_kcal();
-      this->_CachedValid[i]   = 1;
+    if (tff.nilp()) continue;                       // _TypeSlot[i] stays -1
+    FFNonbond_sp ff = gc::As<FFNonbond_sp>(tff);
+    double r = ff->getRadius_Angstroms();
+    double e = ff->getEpsilon_kcal();
+    int slot = -1;
+    for (size_t s = 0; s < uniq.size(); ++s)
+      if (uniq[s].first == r && uniq[s].second == e) { slot = (int)s; break; }
+    if (slot < 0) { slot = (int)uniq.size(); uniq.emplace_back(r, e); }
+    this->_TypeSlot[i] = slot;
+  }
+
+  // Precompute dA/dC for every slot pair: the sqrt and the r^6/r^12 multiplies
+  // move off the per-pair path.
+  size_t nt = uniq.size();
+  this->_NTypeSlots = nt;
+  this->_CachedDA.assign(nt*nt, 0.0);
+  this->_CachedDC.assign(nt*nt, 0.0);
+  this->_PairValid.assign(nt*nt, 0);
+  for (size_t s1 = 0; s1 < nt; ++s1)
+    for (size_t s2 = 0; s2 < nt; ++s2) {
+      double rstar     = uniq[s1].first + uniq[s2].first;
+      double epsilonij = std::sqrt(uniq[s1].second * uniq[s2].second);
+      double r6  = rstar*rstar*rstar*rstar*rstar*rstar;
+      double r12 = r6*r6;
+      this->_CachedDA[s1*nt + s2] = epsilonij * r12;    // vdwScale = 1.0 (non-1-4 path)
+      this->_CachedDC[s1*nt + s2] = 2.0 * epsilonij * r6;
+      this->_PairValid[s1*nt + s2] = 1;
     }
-  } 
   this->_CachedForAtomTable = at;
-}   
+}
       
 bool EnergyNonbond_O::tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
                                        size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
-  if (!this->_CachedValid[li] || !this->_CachedValid[lj]) return false;   // unknown type -> skip
-  double rstar     = this->_CachedRadius[li] + this->_CachedRadius[lj];
-  double epsilonij = std::sqrt(this->_CachedEpsilon[li] * this->_CachedEpsilon[lj]);
-  double r6  = rstar*rstar*rstar*rstar*rstar*rstar;
-  double r12 = r6*r6;
+  int s1 = this->_TypeSlot[li];
+  int s2 = this->_TypeSlot[lj];
+  if (s1 < 0 || s2 < 0) return false;                                    // unknown type -> skip
+  size_t k = (size_t)s1 * this->_NTypeSlots + (size_t)s2;
+  // ensureParameterCache fills every slot pair, so a miss here is a cache
+  // construction bug - fail loudly rather than silently dropping the pair
+  // (the caller has no else branch and would not count it as discarded).
+  if (!this->_PairValid[k])
+    SIMPLE_ERROR("Nonbond dA/dC cache miss for slot pair {},{} of {} - cache construction bug",
+                 s1, s2, this->_NTypeSlots);
   EnergyNonbond term;
   term._Atom1_enb = a1;
   term._Atom2_enb = a2;
-  term.term.dA    = epsilonij * r12;                              // vdwScale = 1.0 (non-1-4 path)
-  term.term.dC    = 2.0 * epsilonij * r6;
+  term.term.dA    = this->_CachedDA[k];                           // no sqrt, no r^6/r^12
+  term.term.dC    = this->_CachedDC[k];
   term.term.dQ1Q2 = calculate_dQ1Q2(1.0 /*electrostaticScale*/, this->_CachedDQ1Q2Scale,
-                               a1->getCharge(), a2->getCharge());
+                               this->_CachedCharge[li], this->_CachedCharge[lj]);
   term.term.I1 = i3x1;
   term.term.I2 = i3x2;
   this->addTerm(term);
