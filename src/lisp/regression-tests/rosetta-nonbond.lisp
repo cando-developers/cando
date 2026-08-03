@@ -2,7 +2,13 @@
 
 (defparameter *rosetta-nonbond-test-force-field* :rosetta-nonbond-test)
 (defparameter *rosetta-nonbond-test-type* :rnb)
-(defparameter *rosetta-nonbond-rrep-scale* 0.6000000238418579d0)
+;; MUST be a double-float literal.  A bare 0.6 reads as SINGLE-float and float
+;; contagion widens it to 0.6000000238418579d0, which is NOT the 0.6 the generated
+;; kernel uses (rosetta_nonbond_dd_cutoff.h: rrep = 0.6 * sigma).  The 4e-8 relative
+;; difference is amplified 12x by sr12 ~ rrep^-12 in the linear-ramp branch, which
+;; showed up as a ~1e-4 error at 0.5*sigma, proportional to rep-weight, while every
+;; other distance passed.
+(defparameter *rosetta-nonbond-rrep-scale* 0.6d0)
 
 (defun rosetta-nonbond--ensure-force-field ()
   (let* ((force-field (chem:force-field/make))
@@ -210,7 +216,7 @@ separates each rep-weight series with a comment line."
                                (expected (rosetta-nonbond--expected-energy dist term rep rswitch rcut))
                                (delta (abs (- actual expected))))
                           (when (>= delta tol)
-                            #-tests(format t "Problem for rep(~s) dist(~s) delta(~s) should be less than ~s~%" rep dist delta tol)
+                            (format t "Problem for rep(~s) dist(~s) delta(~s) should be less than ~s~%" rep dist delta tol)
                             (setf all-ok nil)))))))
   #+tests
   (test-true rosetta-nonbond-energy-scan all-ok))
