@@ -40,6 +40,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef LARGE_MATRIX_H
 #define LARGE_MATRIX_H
 
+#include <cstdint>
+#include <utility>
+#include <vector>
+
 #include <clasp/core/common.h>
 #include <cando/chem/nVector.h>
 
@@ -258,6 +262,20 @@ public:
 //virtual	bool	hasElement(uint x, uint y) { return this->indexFromCoordinates(x,y)>=0; };
   virtual	void	insertElement(uint x, uint y);
   virtual	void	col_insertElement(uint x, uint y);
+
+	// Bulk pattern construction - see buildPatternFromKeys() in the .cc.
+	// Packs a coordinate into (row<<32)|col AFTER applying the same triangle
+	// swap that insertElement() applies, so that ascending integer sort order
+	// IS the CSR order the matrix requires.
+  uint64_t	patternKey(uint x, uint y) const {
+    if ( this->_Triangle == SymmetricDiagonalLower && x>y ) {
+      std::swap(x,y);
+    } else if ( this->_Triangle == SymmetricUpperDiagonal && x<y ) {
+      std::swap(x,y);
+    }
+    return (static_cast<uint64_t>(y)<<32) | static_cast<uint64_t>(x);
+  }
+  void	buildPatternFromKeys(std::vector<uint64_t>& keys);
   virtual	void	reset();
   virtual	void	insertionIsComplete();
   virtual       void    doColumnOptimization();

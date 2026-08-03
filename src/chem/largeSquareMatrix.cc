@@ -29,6 +29,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 //#define	DEBUG_VIA_PRINTF
 #include <cando/chem/largeSquareMatrix.h>
+#include <algorithm>
+#include <vector>
 #include <iostream>
 #include <iomanip>
 #include <clasp/core/lispStream.h>
@@ -659,6 +661,55 @@ void	SparseLargeSquareMatrix_O::insertElement(uint x, uint y)
   for ( uint rr = y+1; rr<this->_RowStartEntries;rr++ ) {
     this->_RowStarts[rr]++;
   }
+}
+
+
+// Build the entire CSR pattern in one pass from an unsorted list of packed
+// (row<<32)|col keys - see patternKey() in the header.
+//
+// This replaces the incremental insertElement() path.  Each insertElement()
+// memmove()s the tail of _ColumnForValue and _Values to open a slot and then
+// walks _RowStarts to the end, so it costs O(nnz) per entry and O(nnz^2)
+// overall.  For the truncated-Newton preconditioner that was 89% of the whole
+// geometry optimization - ~54 s inside a single symbolic factorization.  Here
+// the only superlinear cost is one sort, and nothing is ever shifted.
+//
+// KEYS is sorted and deduplicated in place; insertElement() deduplicated too,
+// via its early return when _ColumnForValue[i] == x.  The matrix must be empty.
+void	SparseLargeSquareMatrix_O::buildPatternFromKeys(std::vector<uint64_t>& keys)
+{
+  if ( this->_InsertionIsComplete ) {
+    SIMPLE_ERROR("SparseMatrix InsertionIsComplete so no more entries may be inserted");
+  }
+  if ( this->_ActiveElements != 0 ) {
+    SIMPLE_ERROR("buildPatternFromKeys requires an empty matrix - call reset() first");
+  }
+  std::sort(keys.begin(),keys.end());
+  keys.erase(std::unique(keys.begin(),keys.end()),keys.end());
+  size_t nnz = keys.size();
+		//
+		// The sort is what makes the counting pass below legal: within a
+		// row the columns come out ascending, which is exactly the
+		// invariant insertElement()'s `if (_ColumnForValue[i] > x) break;`
+		// maintained one shift at a time.
+		//
+  this->_RowStarts.assign(this->_RowStartEntries,0);
+  this->_ColumnForValue.resize(nnz,0);
+  this->_Values.resize(nnz,0.0);	// pattern only - insertElement stored 0.0 as well
+  for ( size_t i=0; i<nnz; i++ ) {
+    uint row = static_cast<uint>(keys[i]>>32);
+    if ( row>=this->_Rows ) {
+      SIMPLE_ERROR("Overflow in matrix operation");
+    }
+    this->_ColumnForValue[i] = static_cast<uint>(keys[i] & 0xffffffffu);
+    this->_RowStarts[row+1]++;		// count here, prefix-sum below
+  }
+  for ( uint r=1; r<this->_RowStartEntries; r++ ) {
+    this->_RowStarts[r] += this->_RowStarts[r-1];
+  }
+  this->_ActiveElements = nnz;
+  if ( this->_ReservedElements < nnz ) this->_ReservedElements = nnz;
+  this->_col_OptimizationDone = false;
 }
 
 

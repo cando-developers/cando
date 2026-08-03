@@ -11,7 +11,7 @@ struct rosetta_elec_parameters {
   double rcut;
   double rpairlist;
   rosetta_elec_parameters()
-    : elec_weight(1.00000000000000000e+0), eps_core(6.00000000000000000e+0), eps_solvent(8.00000000000000000e+1), rmin(1.45000004768371550e+0), rlow(1.85000002384185800e+0), rhi(4.50000000000000000e+0), rcut(5.50000000000000000e+0), rpairlist(7.50000000000000000e+0)
+    : elec_weight(1.0), eps_core(6.0), eps_solvent(80.0), rmin(1.45), rlow(1.85), rhi(4.5), rcut(5.5), rpairlist(7.5)
   {}
   void do_apply(SetupAccumulator& setupAcc) {
     setupAcc.maybe_apply(INTERN_(kw,elec_weight),this->elec_weight);

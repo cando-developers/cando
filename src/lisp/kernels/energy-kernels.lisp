@@ -195,14 +195,14 @@
   (:params-struct
    (:name "rosetta_elec_parameters")
    (:var "params")
-   (:struct ((|double| elec_weight 1.0)
-             (|double| eps_core 6.0)
-             (|double| eps_solvent 80.0)
-             (|double| rmin 1.45)
-             (|double| rlow 1.85)
-             (|double| rhi 4.5)
-             (|double| rcut 5.5)
-             (|double| rpairlist 7.5)
+   (:struct ((|double| elec_weight 1.0d0)
+             (|double| eps_core 6.0d0)
+             (|double| eps_solvent 80.0d0)
+             (|double| rmin 1.45d0)
+             (|double| rlow 1.85d0)
+             (|double| rhi 4.5d0)
+             (|double| rcut 5.5d0)
+             (|double| rpairlist 7.5d0)
              )))
 
   (:term-struct
@@ -386,6 +386,11 @@
   (:pipeline *pipeline*)
   (:coordinate-inputs 2)
 
+  ;; fa_rep is reported separately in energy_accumulate[1] so callers can
+  ;; decompose the total.  It is the raw repulsive term - params.rep_weight
+  ;; is applied to it in the energy expression, not here.
+  (:additional-energy-accumulators fa_rep)
+
   #+(or)(:layout ((1 . I3X1) (2 . I3X2))
            ((X . 0) (Y . 1) (Z . 2)))
 
@@ -400,10 +405,10 @@
   (:params-struct
    (:name "rosetta_nonbond_parameters")
    (:var "params")
-   (:struct ((|double| rep_weight 1.0)
-             (|double| rswitch 4.5)
-             (|double| rcut 6.0)
-             (|double| rpairlist 9.0)
+   (:struct ((|double| rep_weight 1.0d0)
+             (|double| rswitch 4.5d0)
+             (|double| rcut 6.0d0)
+             (|double| rpairlist 9.0d0)
              )))
 
   (:term-struct
@@ -613,11 +618,11 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
   (:params-struct
    (:name "rosetta_lk_solvation_parameters")
    (:var "params")
-   (:struct ((|double| c0 0.3)
-             (|double| c1 0.2)
-             (|double| r_solv_low 4.5)
-             (|double| r_solv_high 6.0)
-             (|double| rpairlist 8.0)
+   (:struct ((|double| c0 0.3d0)
+             (|double| c1 0.2d0)
+             (|double| r_solv_low 4.5d0)
+             (|double| r_solv_high 6.0d0)
+             (|double| rpairlist 8.0d0)
              )))
 
   (:term-struct
