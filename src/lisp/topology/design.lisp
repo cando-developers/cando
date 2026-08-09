@@ -187,7 +187,10 @@ This is for looking up parts but if the thing returned is not a part then return
 (defun make-part (name tree)
   (make-instance 'part :name name :tree tree))
 
-(defparameter *parts* (make-hash-table))
+;; DEFVAR, not DEFPARAMETER -- see *TOPOLOGY-GROUPS* in define-topology.lisp.  DEFINE-PART
+;; calls in downstream systems populate this at load time, and MAKE-OLIGOMER-SPACE defaults
+;; :parts to it, so a reload of :topology would empty it and break part lookups.
+(defvar *parts* (make-hash-table))
 
 (defun define-part (name tree)
   "Create a part and register it by name with leap.core:register-variable."

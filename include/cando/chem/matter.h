@@ -392,5 +392,24 @@ protected:
   _RestraintList(nil<core::T_O>()) {};
 };
 
+/*! Restore each copied atom's _Bonds to the order it had in ORIG.
+
+    Molecule_O::copy and Residue_O::copy rebuild the copy's bonds by walking Loop(...,BONDS)
+    after Atom_O::copyDontRedirectAtoms has cleared _Bonds (atom.cc:1241).  That Loop dedups
+    each bond with a RAW POINTER comparison (loop.cc:308) -- a bond is emitted from whichever
+    of its two atoms sits at the lower heap address -- so a copy's per-atom bond order depends
+    on allocation addresses and varies between runs and after GC.
+
+    That order is semantically load-bearing: Atom_O::getNeighborsForAbsoluteConfiguration
+    returns _Bonds unsorted (atom.cc:655-662), and :left-handed / :right-handed chiral
+    restraints define handedness against it (energyFunction.cc:1855-1863).  Without this, an
+    energy function built from a copied aggregate enforces an arbitrary handedness at each
+    stereocenter, differing run to run.
+
+    Atoms whose copy is missing, whose bond count differs, or any of whose neighbors were not
+    copied (an inter-residue bond during Residue_O::copy) are left untouched -- Atom_O::
+    reorderBonds signals an error in those cases and its strict contract is worth keeping. */
+void restoreCopiedBondOrder(Matter_sp orig, core::HashTable_sp new_to_old);
+
 };
 #endif

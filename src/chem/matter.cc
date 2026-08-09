@@ -1436,6 +1436,29 @@ CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(const AtomId& atomId) const
   SUBCLASS_MUST_IMPLEMENT();
 }
 
+// See the comment on the declaration in matter.h.
+void restoreCopiedBondOrder(Matter_sp orig, core::HashTable_sp new_to_old) {
+  Loop latoms;
+  latoms.loopTopGoal(orig, ATOMS);
+  while (latoms.advanceLoopAndProcess()) {
+    Atom_sp aOld = latoms.getAtom();
+    core::T_sp tNew = new_to_old->gethash(aOld);
+    if (!gc::IsA<Atom_sp>(tNew)) continue;
+    Atom_sp aNew = gc::As_unsafe<Atom_sp>(tNew);
+    int nbonds = aOld->numberOfBonds();
+    if (aNew->numberOfBonds() != nbonds) continue;
+    // Collect the ORIGINAL's neighbors, in the original's order, mapped to their copies.
+    ql::list neighbors;
+    bool complete = true;
+    for (int i = 0; i < nbonds; ++i) {
+      core::T_sp tOther = new_to_old->gethash(aOld->bondedNeighbor(i));
+      if (!gc::IsA<Atom_sp>(tOther)) { complete = false; break; }
+      neighbors << tOther;
+    }
+    if (complete) aNew->reorderBonds(neighbors.cons());
+  }
+}
+
 CL_LISPIFY_NAME("CHEM:MATTER-COPY");
 CL_LAMBDA(original &optional (new-to-old-map (make-hash-table)));
 DOCGROUP(cando);

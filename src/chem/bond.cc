@@ -61,6 +61,9 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedgeBegin);
 SYMBOL_EXPORT_SC_(ChemKwPkg,singleHashBegin);
 SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedgeEnd);
 SYMBOL_EXPORT_SC_(ChemKwPkg,singleHashEnd);
+SYMBOL_EXPORT_SC_(ChemKwPkg,blueprint);
+SYMBOL_EXPORT_SC_(ChemKwPkg,noBondMask);
+SYMBOL_EXPORT_SC_(ChemKwPkg,allBondMasks);
 
 
 string	XmlName_Bond = "bond";
@@ -192,6 +195,11 @@ void Bond_O::fields(core::Record_sp node)
 {
   LOG("archive direction = {}" , (node->loading()?"loading":"saving") ); //
   node->field(INTERN_(kw,order), this->_DirectionalOrder ); // attributeSymbolEnumHiddenConverter("order",this->order,_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
+  // FIELD_IF_NOT_DEFAULT, not FIELD: every .cando file written before BondMask existed
+  // (rotamers, receptor, starting poses) has no :bond-mask key, and a plain FIELD would fail
+  // to load them.  This writes nothing for an unflagged bond and defaults to bondMaskNone when
+  // the key is absent, so old files keep loading and unflagged bonds cost no space.
+  node->field_if_not_default(INTERN_(kw,bondMask), this->_BondMask, bondMaskNone);
   node->field_if_not_nil(INTERN_(kw,properties),this->_Properties);
   node->field( INTERN_(kw,a1), this->_Atom1 );
   node->field( INTERN_(kw,a2), this->_Atom2 );
@@ -713,6 +721,32 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   CL_VALUE_ENUM(chemkw::_sym_dashedDoubleBond,dashedDoubleBond);
   CL_VALUE_ENUM(chemkw::_sym_unknownOrderBond,unknownOrderBond);
   CL_END_ENUM(_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
+
+
+/*! Return the BondMask bit for NAME.
+
+    One source of truth for the bit values: they are defined once in bond.fwd.h and Lisp asks
+    for them by keyword rather than repeating the numbers.  Adding a flag is then a one-line
+    change here plus the constant, instead of an edit in two languages that can drift apart.
+
+    A BondMask is a plain std::uint32_t, so it crosses to Lisp as an integer and masks combine
+    with LOGIOR:
+
+      (chem:bond/set-mask bond (chem:bond-mask :blueprint))
+      (logior (chem:bond-mask :blueprint) (chem:bond-mask :some-other))
+*/
+CL_LAMBDA(name);
+DOCGROUP(cando);
+CL_DEFUN chem::BondMask chem__bond_mask(core::Symbol_sp name) {
+  if (name == chemkw::_sym_blueprint)    return bondMaskBluePrint;
+  if (name == chemkw::_sym_noBondMask)   return bondMaskNone;
+  if (name == chemkw::_sym_allBondMasks) return bondMaskAll;
+  SIMPLE_ERROR("Unknown bond mask name {} - expected :blueprint, :no-bond-mask or :all-bond-masks",
+               _rep_(name));
+}
+
+
+
 
 
 

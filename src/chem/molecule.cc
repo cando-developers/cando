@@ -274,6 +274,10 @@ CL_DEFMETHOD     Matter_sp Molecule_O::copy(core::T_sp new_to_old)
     bcopy->addYourselfToCopiedAtoms(gc::As<core::HashTable_sp>(new_to_old));
   }
   newMol->redirectAtoms(gc::As<core::HashTable_sp>(new_to_old));
+  // The bonds above were appended in Loop(...,BONDS) order, which dedups by raw pointer
+  // comparison (loop.cc:308) and is therefore address-dependent.  Put each atom's bonds back
+  // into the order the original had -- see restoreCopiedBondOrder in matter.h.
+  restoreCopiedBondOrder(this->asSmartPtr(), gc::As<core::HashTable_sp>(new_to_old));
   return newMol;
 }
 #if 0 //[

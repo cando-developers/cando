@@ -317,6 +317,10 @@ CL_DEFMETHOD Matter_sp Residue_O::copy(core::T_sp new_to_old)
       bcopy->addYourselfToCopiedAtoms(gc::As<core::HashTable_sp>(new_to_old));
     }
     newRes->redirectAtoms(gc::As<core::HashTable_sp>(new_to_old));
+    // Restore the original's per-atom bond order -- see restoreCopiedBondOrder in matter.h.
+    // Atoms with a bond leaving this residue are skipped, since the far atom is not in
+    // new_to_old and their order cannot be reconstructed here.
+    restoreCopiedBondOrder(this->asSmartPtr(), gc::As<core::HashTable_sp>(new_to_old));
     return newRes;
 }
 

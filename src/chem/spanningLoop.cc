@@ -421,6 +421,27 @@ CL_DEFMETHOD core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
   });
 }
 
+/*! Like NEXT, but refuses to cross any bond carrying a bit in BLOCK.
+
+    Same shape as NEXT above, without the per-edge CORE::EVAL::FUNCALL - the predicate is a
+    C++ lambda over an integer rather than a Lisp call for every bond considered, which matters
+    when walking a whole receptor.
+
+    The motivating use is keeping a walk on the shared scaffold: mark the bonds that attach
+    alternative sidechains with BONDMASKBLUEPRINT and the traversal stops at each attachment
+    instead of crawling out into every rotamer.
+
+      (chem:spanning-loop/next-not-crossing loop (chem:bond-mask :blueprint))
+*/
+CL_LISPIFY_NAME("nextNotCrossing");
+CL_DEFMETHOD core::T_sp SpanningLoop_O::nextNotCrossing(chem::BondMask block) {
+  if (this->done)
+    return nil<core::T_O>();
+  return this->nextSpanningAtom([block](Atom_sp a, Bond_sp b) -> bool {
+    return !b->bondMaskTest(block);
+  });
+}
+
 CL_LISPIFY_NAME("allAtoms");
 CL_DEFMETHOD core::List_sp SpanningLoop_O::allAtoms() {
   core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(), nil<core::T_O>());

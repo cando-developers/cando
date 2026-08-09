@@ -155,6 +155,41 @@ void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,posIndexX3),this->_PositionIndexX3);
   node->field(INTERN_(kw,endPosIndexX3),this->_EndPositionIndexX3);
   node->field(INTERN_(kw,properties),this->_Properties);
+  // Children moved here from the subclasses.  BondedJoint_O and XyzJoint_O used to write
+  // :child0 .. :child4 plus :num_children behind a static_assert on their fixed array of 5;
+  // JumpJoint_O already wrote exactly this single field.
+  node->field_if_not_empty(INTERN_(kw,children),this->_Children);
+}
+
+// Promoted from JumpJoint_O, which was already growable.  The push-empty-then-assign dance is
+// JumpJoint_O's and is kept verbatim - Vec0 wants an element constructed in place before a
+// GC-managed pointer is written into it.
+void Joint_O::_insertChild(int idx, Joint_sp c)
+{
+  Joint_sp empty;
+  this->_Children.ensure_initialized();
+  this->_Children.insert(this->_Children.begin()+idx,empty);
+  this->_Children[idx] = c;
+  // BondedJoint_O::_insertChild set the child's parent here and JumpJoint_O::_insertChild did
+  // not - an inconsistency in the two implementations rather than a stated contract.  Keeping
+  // the BondedJoint behaviour, since bonded joints are the overwhelming majority and losing it
+  // would orphan them silently.  Note _appendChild sets no parent in EITHER original.
+  c->_Parent = this->asSmartPtr();
+}
+
+void Joint_O::_appendChild(Joint_sp c)
+{
+  Joint_sp empty;
+  size_t index = this->_Children.size();
+  this->_Children.push_back(empty);
+  this->_Children[index] = c;
+  LOG(" Appending to node {} child {} at index {}\n" , _rep_(this->asSmartPtr()) , _rep_(c) , index);
+}
+
+void Joint_O::_releaseChild(int idx)
+{
+  this->_Children[idx] = unbound<Joint_O>();
+  this->_Children.erase(this->_Children.begin()+idx);
 }
 
 CL_NAME(KIN:JOINT/NAME);

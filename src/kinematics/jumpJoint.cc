@@ -60,36 +60,16 @@ void JumpJoint_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-void JumpJoint_O::_insertChild(int idx, Joint_sp c)
-{
-  Joint_sp empty;
-  this->_Children.ensure_initialized();
-  this->_Children.insert(this->_Children.begin()+idx,empty);
-  this->_Children[idx] = c;
-}
 
 
-void JumpJoint_O::_appendChild(Joint_sp c)
-{
-  Joint_sp empty;
-  size_t index = this->_Children.size();
-  this->_Children.push_back(empty);
-  this->_Children[index] = c;
-  LOG(" Appending to node {} child {} at index {}\n" , _rep_(this->asSmartPtr()) , _rep_(c) , index);
-}
 
 
-void JumpJoint_O::_releaseChild(int idx)
-{
-  this->_Children[idx] = unbound<Joint_O>();
-  this->_Children.erase(this->_Children.begin()+idx);
-}
 
 
-void JumpJoint_O::_releaseAllChildren()
-{
-  this->_Children.clear();
-}
+
+
+
+
 
 
 void JumpJoint_O::_updateInternalCoord(chem::NVector_sp internals, chem::NVector_sp coords)

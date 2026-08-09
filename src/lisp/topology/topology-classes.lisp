@@ -57,7 +57,7 @@
    (print-unreadable-object (obj stream :type t)
      (format stream "~s ~a" (atom-name obj) (constitution-atom-index obj)))))
 
-(defparameter *foldamers* (make-hash-table))
+(defvar *foldamers* (make-hash-table))
 
 (defun register-foldamer (name foldamer)
   (setf (gethash name *foldamers*) foldamer))

@@ -800,15 +800,15 @@ CL_DEFUN bool chem__spheresTooFarApartP(NVector_sp spheres, size_t i, size_t j, 
 }
 
 CL_LISPIFY_NAME("evaluate-energy-into-fa-rest-fa-rep-vector");
-CL_LAMBDA((energy-function chem:energy-function) positions fa-rest-fa-rep-vector index fa-rep-component &key energy-scale active-atom-mask);
-CL_DEFMETHOD void EnergyFunction_O::evaluateEnergyIntoFaRestFaRepVector(
-    NVector_sp pos, NVector_sp faRestFaRepVector, size_t index,
-    core::T_sp faRepComponent,
-    core::T_sp energyScale, core::T_sp activeAtomMask)
-                                                       {
+CL_LAMBDA((energy-function chem:energy-function) positions fa-rest-fa-rep-vector index fa-rep-component &key energy-scale active-atom-mask debug-interactions disable-restraints);
+CL_DEFMETHOD void EnergyFunction_O::evaluateEnergyIntoFaRestFaRepVector(NVector_sp pos, NVector_sp faRestFaRepVector, size_t index,
+                                                                        core::T_sp faRepComponent,
+                                                                        core::T_sp energyScale, core::T_sp activeAtomMask,
+                                                                        core::T_sp debugInteractions,
+                                                                        bool disableRestraints ) {
   // 1. total across all components (nil energyComponents => no allocation)
   double total = this->evaluateEnergy(pos, energyScale, nil<core::T_O>(),
-                                      activeAtomMask, nil<core::T_O>(), false);
+                                      activeAtomMask, debugInteractions, disableRestraints );
   // 2. pull fa_rep + weight off the caller-supplied nonbond component, whose _LastFaRep
   //    was just set by evaluateEnergy(this,...) above.  The caller resolves this ONCE per
   //    ef and passes it in, so the hot pair loop never searches the component list.  It
@@ -1379,6 +1379,11 @@ void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExclud
       }
     }
   }
+
+
+  // ================================================================================
+  // Currently build the atom table and the stretch/angle/dihedral/improper terms
+  //
   core::List_sp solute = solute_molecules.cons();
   for ( auto cur_solute : solute ) {
     Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
@@ -1407,6 +1412,9 @@ void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExclud
     this->_AtomTable->set_finalSoluteResidueIPTRES(final_solute_residue_iptres);
     this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
   }
+
+
+
   if (keepInteractionFactory.notnilp()) {
     if (chem__verbose(1)) core::clasp_write_string("About to calculate nonbond and restraint terms");
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,aggregate,nonbondForceField,keepInteractionFactory,atomTypes,setup);

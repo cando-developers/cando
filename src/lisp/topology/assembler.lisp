@@ -672,6 +672,8 @@ Specialize the foldamer argument to provide methods"))
 
 (defun make-assembler (oligomer-shapes &key (receptor-only nil receptor-only-p)
                                          monomer-subset
+                                         (build-monomer-p (constantly t))
+                                         after-molecules-fn
                                          energy-function-factory
                                          (monomer-contexts nil monomer-contexts-p)
                                          ligand-oligomer-shape
@@ -679,6 +681,22 @@ Specialize the foldamer argument to provide methods"))
   "Build a assembler for the OLIGOMER-SHAPES.
 OLIGOMER-SHAPES - A list of OLIGOMER-SHAPEs that the ASSEMBLER will build.
 RECEPTOR-ONLY   - T if the assembler only contains a receptor
+BUILD-MONOMER-P - Called with (MONOMER OLIGOMER); NIL means the CALLER will materialize that
+                  monomer itself, so neither a residue nor an atresidue is built for it.  The
+                  blueprint uses this for sidechain loci, where it needs one residue per rotamer
+                  slot rather than the single one this function would make.  Defaults to building
+                  everything.
+AFTER-MOLECULES-FN - Called with (AGGREGATE OLIGOMER-SHAPES-MOLECULES MONOMERS-TO-RESIDUES
+                  MONOMER-POSITIONS) once the molecules are built and before the energy function
+                  is made.  This is the LAST point at which residues may be added: the atom table
+                  comes from the energy function, and the joints built after it take their
+                  atomids from that table, so a residue added any later is chemically present and
+                  energetically invisible.  Its natural partner is BUILD-MONOMER-P - the caller
+                  declines a monomer on the way in and supplies its own residues here.  Joints
+                  for those residues are built by the caller AFTER this function returns, when
+                  (CHEM:ATOM-TABLE (ENERGY-FUNCTION ...)) exists.
+                  OLIGOMER-SHAPES-MOLECULES is an alist of (OLIGOMER-SHAPE . MOLECULE), which is
+                  how a caller decides which molecule an added residue belongs in.
 MONOMER-CONTEXTS - A map of monomers to monomer-contexts copied from another assembler (avoids recalculating them).
 USE-EXCLUDED-ATOMS - A parameter passed to make-energy-function.
 ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the energy-function."
@@ -712,6 +730,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                           for molecule = (topology:build-molecule
                                                           oligomer
                                                           :monomer-subset monomer-subset
+                                                          :build-monomer-p build-monomer-p
                                                           :aggregate aggregate
                                                           :molecule-index molecule-index
                                                           :monomers-to-residues monomers-to-residues
@@ -722,6 +741,13 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
           for oligomer = (oligomer oligomer-shape)
           for foldamer = (foldamer (oligomer-space oligomer))
           do (assign-given-atom-types foldamer oligomer monomers-to-residues))
+    ;; The last point at which residues may still be added.  Everything below reads the
+    ;; aggregate as finished: MAKE-ENERGY-FUNCTION builds the atom table from it, and the joints
+    ;; built after that take their atomids from that table.  A residue added later would exist
+    ;; chemically and be invisible to the energy function.
+    (when after-molecules-fn
+      (funcall after-molecules-fn aggregate oligomer-shapes-molecules
+               monomers-to-residues monomer-positions))
     (let* ((ataggregate (let ((atagg (make-instance 'ataggregate :aggregate aggregate)))
                           (resize-atmolecules atagg (length oligomer-shapes))
                           atagg))
@@ -764,7 +790,8 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                                                    monomer-positions
                                                                                    joint-tree
                                                                                    (chem:atom-table energy-function)
-                                                                                   adjustments)))
+                                                                                   adjustments
+                                                                                   build-monomer-p)))
                                  (put-atmolecule ataggregate atmolecule molecule-index))
                             finally (return (make-instance (if monomer-subset
                                                                'subset-assembler

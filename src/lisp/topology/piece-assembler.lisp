@@ -38,10 +38,26 @@ MONOMER-INDEX - index into (MONOMERS monomer), i.e. which name was chosen.  This
                 monomer-index, so it needs no translation.
 ROTAMER-INDEX - index into the monomer-context's ROTAMER-VECTOR, likewise the same
                 quantity the mrkey uses.
+ORIG-MOL-INDEX,
+ORIG-RES-INDEX,
+ORIG-MONOMER-INDEX
+               - where this piece's residue lives in the ORIGINAL complex, taken from the
+                assembler's MONOMER-POSITION and the atresidue there.  ORIG-MONOMER-INDEX
+                is the ATRESIDUE's monomer-index -- the quantity BUILD-DATOMS prints as
+                miNNN -- and is NOT the same as MONOMER-INDEX above, which is the choice
+                within (MONOMERS monomer).  Both are needed: the name alone does not
+                identify a residue, since one molecule can hold many monomers of the same
+                name.  A piece is its own one-residue
+                molecule in the piece aggregate, so its position THERE (molecule
+                0..npieces, residue always 0) says nothing about the structure it stands
+                for.  Anything that has to line a piece up against the original -- atom
+                identity in the interaction dumps, error messages, attributing bonded
+                terms back to a residue -- needs these rather than the piece-local ones.
 
 Stamped on each piece's throwaway monomer as its ID, so a piece is self-describing
 in backtraces and in the LOCUS-TO-OLIGOMER-SHAPE map."
-  locus monomer-name monomer-index rotamer-index)
+  locus monomer-name monomer-index rotamer-index
+  orig-mol-index orig-res-index orig-monomer-index)
 
 (defun make-one-monomer-oligomer (template-space one-monomer-name &key id)
     "Build a throwaway oligomer-space/oligomer holding exactly ONE monomer.
@@ -110,6 +126,11 @@ in backtraces and in the LOCUS-TO-OLIGOMER-SHAPE map."
    (grand-parent :initarg :grand-parent :reader grand-parent)
    (great-grand-parent :initarg :great-grand-parent :reader great-grand-parent)))
 
+(defvar *anchor-trace-limit* 4
+  "Print this many ANCHOR TRACE lines per owner (:LIGAND / :RECEPTOR).  NIL or 0 silences.")
+(defvar *anchor-trace-counts* (make-hash-table)
+  "owner -> lines printed so far.  CLRHASH between runs to trace again.")
+
 (defun extract-anchor-i3xs (complex-assembler complex-coords monomer)
   (let* ((pos    (gethash monomer (monomer-positions complex-assembler)))
          (atres  (at-position (ataggregate complex-assembler) pos))
@@ -120,6 +141,27 @@ in backtraces and in the LOCUS-TO-OLIGOMER-SHAPE map."
          (i3xp (kin:joint/position-index-x3 p))
          (i3xgp (kin:joint/position-index-x3 gp))
          (i3xggp (kin:joint/position-index-x3 ggp)))
+    ;; DIAGNOSTIC.  A piece is built from its rotamer INTERNALS off the frame these three
+    ;; joints define.  Measured: ligand pieces land within 0.0026 A of the fresh assembler,
+    ;; receptor pieces 1.73 A off (7.58 A max) -- with the SAME rotamer and IDENTICAL
+    ;; internals on both sides, and with the receptor BACKBONE centroids agreeing to four
+    ;; decimals.  Correct internals off a correct coordinate vector can only land wrong if
+    ;; the frame is built from the WRONG THREE ATOMS, so print which atoms the parent walk
+    ;; actually reaches.  Ligand lines are the control: those should name the backbone
+    ;; atoms the sidechain is really bonded to.
+    (let* ((owner (if (gethash monomer (monomer-positions complex-assembler))
+                      (molecule-index pos)
+                      :unknown))
+           (n (gethash owner *anchor-trace-counts* 0)))
+      (when (and *anchor-trace-limit* (< n *anchor-trace-limit*))
+        (setf (gethash owner *anchor-trace-counts*) (1+ n))
+        (format t "~&ANCHOR TRACE mol~a res~a  joint0=~a  p=~a(i3x ~a)  gp=~a(i3x ~a)  ggp=~a(i3x ~a)~%"
+                (molecule-index pos) (residue-index pos)
+                (kin:joint/name joint0)
+                (kin:joint/name p) i3xp
+                (kin:joint/name gp) i3xgp
+                (kin:joint/name ggp) i3xggp)
+        (finish-output t)))
     (make-instance 'anchor-i3xs
                    :parent i3xp
                    :grand-parent i3xgp
@@ -189,7 +231,8 @@ in backtraces and in the LOCUS-TO-OLIGOMER-SHAPE map."
                                   monomer-context monomer-index rotamer-index rotamer-internals
                                   piece-topology piece-atom-info
                                   piece-constitution-context anchor-i3xs
-                                  original-monomer)
+                                  original-monomer
+                                  &key orig-mol-index orig-res-index orig-monomer-index)
   "Build a throwaway one-monomer OLIGOMER-SHAPE wrapping a single PIECE-SHAPE
   for ONE rotamer.  ROTAMER-INDEX is the index into the context's rotamer-vector.
   ORIGINAL-MONOMER is the monomer in the complex-assembler's oligomer-space that
@@ -209,7 +252,10 @@ in backtraces and in the LOCUS-TO-OLIGOMER-SHAPE map."
                                    :id (make-piece-id :locus locus
                                                       :monomer-name one-monomer-name
                                                       :monomer-index monomer-index
-                                                      :rotamer-index rotamer-index))
+                                                      :rotamer-index rotamer-index
+                                                      :orig-mol-index orig-mol-index
+                                                      :orig-res-index orig-res-index
+                                                      :orig-monomer-index orig-monomer-index))
       (let ((shape-to-index (make-hash-table))
             (shape-map      (make-hash-table))
             (out-mons       (make-hash-table)))
@@ -268,6 +314,20 @@ Returns the number of pieces collected."
                     (or (not require-rotamer-shape)
                         (typep monomer-shape 'rotamer-shape)))
             do (let* ((locus (cons locus-pos owner))
+                      ;; Where this monomer's residue lives in the ORIGINAL complex.  Same
+                      ;; monomer-position object new-build-backbone-mask and the single
+                      ;; scans use, so the indices agree with theirs by construction rather
+                      ;; than by a parallel derivation that can drift.
+                      (orig-pos (gethash monomer (monomer-positions complex-assembler)))
+                      (orig-mol-index (when orig-pos (molecule-index orig-pos)))
+                      (orig-res-index (when orig-pos (residue-index orig-pos)))
+                      ;; The ATRESIDUE's monomer-index -- what build-datoms prints as miNNN.
+                      ;; AT-POSITION on the ataggregate is the same lookup
+                      ;; EXTRACT-ANCHOR-I3XS uses just below, so this agrees with the rest
+                      ;; of the file by construction rather than by a parallel derivation.
+                      (orig-monomer-index
+                        (when orig-pos
+                          (monomer-index (at-position (ataggregate complex-assembler) orig-pos))))
                       ;; the shape-key comes from the flanking BACKBONE rotamers, and the
                       ;; backbone is fixed for the whole scan - so compute it once per locus
                       (original-context (foldamer-monomer-context monomer base-oligomer foldamer))
@@ -300,7 +360,10 @@ Returns the number of pieces collected."
                                                                       rotamer-internals
                                                                       piece-topology piece-atom-info
                                                                       piece-constitution-context anchor-i3xs
-                                                                      monomer)
+                                                                      monomer
+                                                                      :orig-mol-index orig-mol-index
+                                                                      :orig-res-index orig-res-index
+                                                                      :orig-monomer-index orig-monomer-index)
                                          (vector-push-extend piece-oligomer-shape all-oligomer-shapes)
                                          ;; Key on the PIECE-ID stamped on the monomer, so the map and
                                          ;; the id are one representation.  The table's test must be
