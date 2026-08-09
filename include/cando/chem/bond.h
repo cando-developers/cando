@@ -64,6 +64,10 @@ class Bond_O : public core::CxxObject_O
   friend	class Loop;
 public:
   BondOrder	        _DirectionalOrder;
+  /*! Bitmask of BondMask flags - see bond.fwd.h.  Must default to bondMaskNone: a bond with
+      indeterminate flags would make graph walks refuse to cross arbitrary bonds, differently
+      on each run. */
+  BondMask              _BondMask = bondMaskNone;
   Atom_sp		_Atom1;
   Atom_sp		_Atom2;
     /*! Store Symbol keyed properties of bond in alist
@@ -124,6 +128,18 @@ CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
  BondOrder getRawOrder() { return this->_DirectionalOrder;};
  CL_LISPIFY_NAME("setOrder");
  CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->setOrder((BondOrder)o); };
+
+ /*! The BondMask flag bits on this bond - see bond.fwd.h and CHEM:BOND-MASK.
+     A BondMask is a plain uint32_t, so these cross to Lisp as integers and combine with
+     LOGIOR / LOGTEST rather than needing an enum translator. */
+ CL_LISPIFY_NAME("bond/mask");
+  CL_DEFMETHOD chem::BondMask getBondMask() const { return this->_BondMask; };
+ CL_LISPIFY_NAME("bond/setf-mask");
+  CL_DEFMETHOD void setBondMask(chem::BondMask m) { this->_BondMask = m; };
+ /*! True when this bond carries every bit in M.  The test a graph walk wants is
+     "does this bond match the mask I must not cross", so pass the blocking mask here. */
+ CL_LISPIFY_NAME("bond/mask-test");
+  CL_DEFMETHOD bool bondMaskTest(chem::BondMask m) const { return (this->_BondMask & m) != 0; };
  Atom_sp	getOtherAtom(Atom_sp atom ) const;
  bool	isInterResidueBond(core::HashTable_sp atomToResidue);
  bool	isIntraResidueBond(core::HashTable_sp atomToResidue ) {return !this->isInterResidueBond(atomToResidue);};

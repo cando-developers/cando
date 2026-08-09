@@ -46,22 +46,16 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 void XyzJoint_O::fields(core::Record_sp record) {
-  static_assert(XyzJoint_O::MaxChildren==5,"XyzJoint_O::MaxChildren has changed from 5 - update the code below");
-  record->field_if_not_unbound(INTERN_(kw,child4),this->_Children[4]);
-  record->field_if_not_unbound(INTERN_(kw,child3),this->_Children[3]);
-  record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);
-  record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
-  record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
-  record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
+  // Children are serialized by Joint_O::fields now, as one :children field.  This used to
+  // write :child0 .. :child4 plus :num_children behind a static_assert on MaxChildren==5.
   record->field(INTERN_(kw,atomPos),this->_AtomPositionIndex3);
   this->Base::fields(record);
 }
 
 
 void XyzJoint_O::initialize() {
-  for (int i=0; i<MaxChildren; ++i ) {
-    this->_Children[i] = unbound<Joint_O>();
-  }
+  // Nothing to do - Joint_O's Vec0 default-constructs empty.  This used to fill a fixed array
+  // of 5 with unbound<Joint_O>().
 }
 
 /*! Return the stubJoint1 */
@@ -82,51 +76,13 @@ XyzJoint_sp XyzJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::
 }
 
 
-void XyzJoint_O::_appendChild(Joint_sp c)
-{
-  size_t index = this->_NumberOfChildren++;
-  LOG(" Appending to node {} child {} at index {}\n" , _rep_(this->asSmartPtr()) , _rep_(c) , index);
-  this->_Children[index] = c;
-}
+
   
-void XyzJoint_O::_insertChild(int before, Joint_sp child)
-{
-  if ( this->_numberOfChildren()>this->_maxNumberOfChildren() )
-    {
-      THROW_HARD_ERROR("You exceeded the maximum[%d] number of children allowed for a XyzJoint" , this->_maxNumberOfChildren());
-    }
-  for ( int i=this->_numberOfChildren(); i>before; i-- )
-    this->_Children[i] = this->_Children[i-1];
-  this->_Children[before] = child;
-  this->_NumberOfChildren++;
-  child->_Parent = this->asSmartPtr();
-}
 
-void XyzJoint_O::_releaseChild(int idx)
-{
-  if ( this->_numberOfChildren() == 0 )
-    {
-      THROW_HARD_ERROR(("There are no children to delete"));
-    }
-  int num = this->_numberOfChildren() - 1;
-  for ( int i=idx; i < num; i++ )
-    {
-      this->_Children[i] = this->_Children[i+1];
-    }
-  this->_NumberOfChildren--;
-  this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
-}
 
-void XyzJoint_O::_releaseAllChildren()
-{
-  if ( this->_numberOfChildren() == 0 ) return;
-  int num = this->_numberOfChildren();
-  for ( int idx=0; idx < num; idx++ )
-    {
-      this->_Children[idx] = unbound<Joint_O>();
-    }
-  this->_NumberOfChildren = 0;
-}
+
+
+
 
 CL_DEFMETHOD void XyzJoint_O::setFixedPosition(const Vector3& pos) {
   this->_AtomPosition = pos;

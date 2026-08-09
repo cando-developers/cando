@@ -47,40 +47,17 @@ FORWARD(BondedJoint);
         void initialize();
     public:
 	static const NodeType nodeType = bondedJoint;
-	static const int MaxChildren = 5;
     public:
-	int		_NumberOfChildren;
-        // _Children have the value unbound unbound
-	Joint_sp	_Children[MaxChildren];
 	bool		_DofChangePropagatesToYoungerSiblings;
     public:
       static BondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
     public:
-	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
-	virtual int _maxNumberOfChildren() const { return MaxChildren;};
-	/*! Return the current number of children */
-	virtual int _numberOfChildren() const {return this->_NumberOfChildren;};
-	/*! Return a reference to the indexed child */
-	virtual Joint_sp _child(int idx) {return this->_Children[idx];};
-	virtual Joint_sp _child(int idx) const {return this->_Children[idx];};
-	/*! Set a child */
-	virtual void _setChild(int idx, Joint_sp h) { this->_Children[idx] = h; };
-	/*! Delete the child at the given index */
-	virtual void _releaseChild(int idx);
-	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
-	virtual void _insertChild(int idx, Joint_sp c );
-	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
-      virtual void _appendChild(Joint_sp c);
-	/*! Delete all of the children for the destructor */
-	virtual void _releaseAllChildren();
-
-    public:
-      BondedJoint_O() : Joint_O(), _NumberOfChildren(0),
-                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()}
-      {};
-      BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) : Joint_O(atomId,name,atomTable), _NumberOfChildren(0),
-                        _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()}
-      {};
+	// Child storage and all seven child methods now live on Joint_O over a growable
+	// gctools::Vec0<Joint_sp>.  This class kept its own fixed array of 5 and a
+	// _NumberOfChildren counter; both are gone, and so is _maxNumberOfChildren.
+      BondedJoint_O() : Joint_O() {};
+      BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable)
+        : Joint_O(atomId,name,atomTable) {};
 
 	virtual core::Symbol_sp typeSymbol() const;
 

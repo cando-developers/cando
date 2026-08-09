@@ -243,6 +243,7 @@
 
 (defun recursively-build-molecule (oligomer
                                    monomer-subset
+                                   build-monomer-p
                                    prev-monomer
                                    prev-topology
                                    prev-residue
@@ -253,11 +254,18 @@
                                    molecule-index
                                    monomer-positions-accumulator)
   (if prev-monomer
-      (let ((next-topology nil)
-            (next-residue nil))
-        (loop for out-coupling in (gethash prev-monomer monomer-out-couplings)
-              for next-monomer = (target-monomer out-coupling)
-              do (when (in-monomer-subset monomer-subset next-monomer)
+      ;; NEXT-RESIDUE and NEXT-TOPOLOGY are bound per ITERATION, not once around the loop.
+      ;; Bound outside, a monomer that fails the test below kept whatever the PREVIOUS
+      ;; out-coupling had set, and the recursion was handed that monomer paired with a
+      ;; different monomer's residue.  Harmless while every skipped monomer is a leaf - the
+      ;; recursion finds no out-couplings and does nothing with it - but BUILD-MONOMER-P makes
+      ;; skipping routine, so the stale pairing is no longer unreachable.
+      (loop for out-coupling in (gethash prev-monomer monomer-out-couplings)
+            for next-monomer = (target-monomer out-coupling)
+            do (let ((next-topology nil)
+                     (next-residue nil))
+                 (when (and (in-monomer-subset monomer-subset next-monomer)
+                            (funcall build-monomer-p next-monomer oligomer))
                    (multiple-value-setq (next-residue next-topology)
                      (build-residue oligomer
                                     monomers-to-residues
@@ -269,8 +277,9 @@
                                     prev-residue
                                     next-monomer
                                     out-coupling)))
-              do (recursively-build-molecule oligomer
+                 (recursively-build-molecule oligomer
                                              monomer-subset
+                                             build-monomer-p
                                              next-monomer
                                              next-topology
                                              next-residue
@@ -305,6 +314,7 @@
                            root-monomer)))
         (recursively-build-molecule oligomer
                                     monomer-subset
+                                    build-monomer-p
                                     root-monomer
                                     root-topology
                                     root-residue
@@ -321,6 +331,7 @@
 (defun build-molecule (oligomer
                        &key (aggregate (chem:make-aggregate :dummy))
                          monomer-subset
+                         (build-monomer-p (constantly t))
                          (molecule-index 0)
                          (monomers-to-residues (make-hash-table))
                          (monomer-positions-accumulator (make-hash-table)))
@@ -344,6 +355,7 @@ of monomers-to-residues."
                        mol)))
       (recursively-build-molecule oligomer
                                   monomer-subset
+                                  build-monomer-p
                                   nil
                                   nil
                                   nil
@@ -396,6 +408,7 @@ of monomers-to-residues."
 
 (defun build-all-molecules (oligomer-space
                             &key
+                              (build-monomer-p (constantly t))
                               (monomers-to-residues (make-hash-table) monomers-to-residues-p)
                               (number-of-sequences (number-of-sequences oligomer-space)))
   "Build all of the molecules in the oligomer-space into a single aggregate and return it.
@@ -412,6 +425,7 @@ than the (chem:oligomer/number-of-sequences oligomer)."
                                             (topology:goto-sequence oligomer index)
                                             (build-molecule oligomer
                                                             :aggregate aggregate
+                                                            :build-monomer-p build-monomer-p
                                                             :molecule-index index
                                                             :monomers-to-residues monomers-to-residues
                                                             :monomer-positions-accumulator monomer-positions-accumulator))

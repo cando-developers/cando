@@ -50,6 +50,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/chem/scoringFunction.h>
 #include <cando/chem/energyComponent.fwd.h>
+// Full definition, not just the fwd - ensureComponent's group branch below dereferences the
+// group's _Components and calls addComponent.  No cycle: energyComponent.h does not include
+// energyFunction.h.
+#include <cando/chem/energyComponentGroup.h>
 #include <cando/chem/atom.h>
 
 
@@ -297,7 +301,9 @@ namespace chem {
 
     // faRepComponent is the ef's own EnergyRosettaNonbond, or NIL when this ef has no
     // rosetta-nonbond component (e.g. a ligand-only system) — then fa_rep is 0.
-    void evaluateEnergyIntoFaRestFaRepVector(NVector_sp pos, NVector_sp faRestFaRepVector, size_t index, core::T_sp faRepComponent, core::T_sp energyScale, core::T_sp activeAtomMask) ;
+    void evaluateEnergyIntoFaRestFaRepVector(NVector_sp pos, NVector_sp faRestFaRepVector, size_t index, core::T_sp faRepComponent,
+                                             core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions,
+                                             bool disableRestraints ) ;
 
     size_t runTestCalls(core::T_sp stream, NVector_sp pos);
 
@@ -350,8 +356,40 @@ namespace chem {
 
   void energyFunction_initializeSmarts();
 
+/*! Find-or-create the one component of class Type for this energy function.
+
+    GROUP scopes the lookup.  NIL - the default, and every caller today - searches the energy
+    function's own components, so there is exactly one EnergyStretch, one EnergyAngle and so on
+    per energy function.  That is the right answer for the backbone.
+
+    A blueprint fan-out needs the opposite: one set of components PER ROTAMER SLOT, so a slot's
+    energy can be evaluated on its own.  Passing a GROUP searches only within that group, so a
+    generation pass driven with a fresh group produces a fresh set of components - one stretch,
+    one angle, one dihedral - holding only that pass's terms.  The group is both the lookup
+    scope and the result: it is what gets stored on the ROTAMER-SCAN.
+
+    GROUP is an EnergyComponentGroup_sp - itself an EnergyComponent_O, so it lives in the energy
+    function's component list like any other and forwards evaluation to its children.
+
+    Note the scoping is per-GROUP, not per-CALL.  ensureComponent is invoked once per TERM, so a
+    fresh component per call would give one component per term.
+
+    Components are pushed onto the energy function either way, so it owns them for evaluation
+    and GC.  Once any group exists, findComponentOrNil is no longer meaningful for the grouped
+    classes - it returns the FIRST, which is the backbone's - so consumers of slot components
+    must hold direct references. */
 template <typename Type>
-gc::smart_ptr<Type> ensureComponent(EnergyFunction_sp mthis) {
+gc::smart_ptr<Type> ensureComponent(EnergyFunction_sp mthis, core::T_sp group = nil<core::T_O>()) {
+  if (group.notnilp()) {
+    EnergyComponentGroup_sp egroup = gc::As<EnergyComponentGroup_sp>(group);
+    for (auto& c : egroup->_Components) {
+      if (gc::IsA<gc::smart_ptr<Type>>(c)) return gc::As<gc::smart_ptr<Type>>(c);
+    }
+    auto new_comp = Type::create();
+    mthis->pushEnergyComponent(new_comp);
+    egroup->addComponent(new_comp);
+    return new_comp;
+  }
   auto comp = mthis->findComponentOrNil(Type::static_classSymbol());
   if (comp.nilp()) {
     auto new_comp = Type::create();

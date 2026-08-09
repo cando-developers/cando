@@ -505,7 +505,8 @@ oligomer-space's foldamer instead of caching it in a slot."
                                   extra-arguments
                                   position-fn
                                   name
-                                  ignore-sidechains)
+                                  ignore-sidechains
+                                  uninitialized)
   "Make an oligomer-shape for the OLIGOMER.  Use the MONOMER-TO-MONOMER-SHAPE-MAP to lookup monomer-shapes for each monomer.
 Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES to set rotamer-indexes of any rotamer-shapes."
   (check-type callback-backbone-rotamer-indexes (or null function))
@@ -532,8 +533,17 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
                         :name name
                         :rotamers-state (ensure-valid-rotamers-state :incomplete-no-rotamers)
                         extra-arguments)))
-        (set-rotamers os :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
-                         :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes)
+        ;; UNINITIALIZED means "leave the rotamer-indexes unbound" -- so skip SET-ROTAMERS
+        ;; outright rather than calling it with null callbacks.  SET-ROTAMERS computes
+        ;; MAKE-PERMISSIBLE-BACKBONE-ROTAMERS / MAKE-PERMISSIBLE-SIDECHAIN-ROTAMERS before it
+        ;; ever looks at the callbacks, and those walk CALCULATE-ALLOWED-ROTAMERS into the
+        ;; foldamer's shape-key callbacks.  For a foldamer with no backbone rotamer library
+        ;; (amber-protein: :shape-info is (:backbone nil) / (:sidechain :phi/psi)) that asks a
+        ;; ROTAMER-SHAPE for CLOSEST-ROTAMER-INDEX, which only RESIDUE-SHAPE has, and dies.
+        ;; ROTAMERS-STATE stays :INCOMPLETE-NO-ROTAMERS, which is the truth in that case.
+        (unless uninitialized
+          (set-rotamers os :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
+                           :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes))
         (let ((unfilled-residue-shapes
                 (some (lambda (ms)
                         (and (typep ms 'residue-shape)
@@ -561,15 +571,17 @@ If UNINITIALIZED then leave them unbound."
                                             for monomer-shape = (make-rotamer-shape monomer oligomer :ignore-sidechains ignore-sidechains)
                                             do (setf (gethash monomer map) monomer-shape)
                                             finally (return map))))
+    ;; Pass ARGS through unchanged -- MAKE-OLIGOMER-SHAPE now takes :UNINITIALIZED itself and
+    ;; uses it to skip SET-ROTAMERS, so stripping it here would defeat the guard.  Duplicate
+    ;; keys are harmless: CL takes the leftmost, so the explicit callbacks below win over
+    ;; anything already in ARGS.
     (if uninitialized
-        (let ((args (remf args :uninitialized)))
-          (apply 'make-oligomer-shape oligomer :monomer-to-monomer-shape-map monomer-to-monomer-shape-map
-                 args))
+        (apply 'make-oligomer-shape oligomer :monomer-to-monomer-shape-map monomer-to-monomer-shape-map
+                                             args)
         (apply 'make-oligomer-shape oligomer :monomer-to-monomer-shape-map monomer-to-monomer-shape-map
                                              :callback-backbone-rotamer-indexes #'random-rotamers
                                              :callback-sidechain-rotamer-indexes #'random-rotamers
-                                             args)
-        )))
+                                             args))))
 
 (defun set-rotamers (oligomer-shape
                      &key

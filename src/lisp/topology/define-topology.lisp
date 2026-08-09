@@ -514,7 +514,12 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                   plugs
                   stereo-information))))))
 
-(defparameter *topology-groups* (make-hash-table))
+;; DEFVAR, not DEFPARAMETER: this registry is populated at load time by DEFINE-TOPOLOGY calls
+;; in downstream systems (amber-protein, spiros, ...).  DEFPARAMETER re-evaluates on every
+;; load, so reloading :topology would silently empty it and orphan everything registered
+;; earlier -- and DEFINE-FOLDAMER reads it (foldamer.lisp:354) to build :topology-names, so
+;; the symptom would be a foldamer with no topologies rather than a clean error.
+(defvar *topology-groups* (make-hash-table))
 
 (defun parse-restraints (restraints)
   (loop for restraint-batch in restraints

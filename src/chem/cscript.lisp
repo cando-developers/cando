@@ -61,6 +61,7 @@
            #~"energyPointToLineRestraint.cc"
            #~"energyOutOfZPlane.cc"
            #~"energyDihedralRestraint.cc"
+           #~"energyComponentGroup.cc"
            #~"energyFixedNonbond.cc"
            #~"energyAtomTable.cc"
            #~"energyRigidBodyStaple.cc"

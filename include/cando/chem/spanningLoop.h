@@ -107,6 +107,9 @@ private:
 
 	void	clearAtomIndexes();
         core::T_sp next(core::T_sp funcDesig);
+        /*! Like NEXT but blocked by a BondMask instead of a Lisp predicate - no per-edge
+            funcall.  See the definition in spanningLoop.cc. */
+      core::T_sp nextNotCrossing(chem::BondMask block);
 	bool	nextObjectInAtom();
 	bool		bLoopAtomVisible(Atom_sp a);
 	bool		bSpanAtomVisible(Atom_sp a, BondOrder order, bool* b);

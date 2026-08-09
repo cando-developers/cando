@@ -271,10 +271,19 @@ Provide an existing cache or NIL if you don't have one yet."
 
 
   ;;; --- cache key + coverage -------------------------------------------------
- (defun atom-cache-key (atom)
-    "An atom's cache key is its :given-atom-type = (atom-name . constitution-context)."
+ (defun atom-cache-key (atom &optional (errorp t))
+    "An atom's cache key is its :given-atom-type = (atom-name . constitution-context).
+
+  ERRORP NIL returns NIL rather than signalling.  A COVERAGE check wants that: an atom with no
+  :given-atom-type is exactly an atom the cache cannot hold a key for, so the answer is 'not
+  covered' - fall back to real SMIRNOFF - not an error.  Signalling there turns a cache miss into
+  a crash for any molecule carrying atoms this cache has never seen.
+
+  Harvesting still wants the error: an untyped atom at that point means something upstream
+  failed to type it."
     (or (chem:matter-get-property-or-default atom :given-atom-type nil)
-        (error "cached-smirnoff-force-field: atom ~s has no :given-atom-type" atom)))
+        (and errorp
+             (error "cached-smirnoff-force-field: atom ~s has no :given-atom-type" atom))))
 
 (defun bonded-cache-covers-molecule-p (molecule cache)
   "T iff every per-atom nonbond key and every bond key of MOLECULE is already cached.
@@ -284,17 +293,24 @@ Provide an existing cache or NIL if you don't have one yet."
   has been harvested => every angle/dihedral SMIRNOFF would assign is present too, and
   any absent angle/dihedral is a genuine SMIRNOFF skip (safe to skip in commit)."
   (block covered 
+    ;; ATOM-CACHE-KEY with ERRORP NIL - an atom with no :given-atom-type is not covered, which
+    ;; is an answer this predicate is entitled to give.  Signalling made an untyped atom fatal
+    ;; instead of merely uncached.
     (chem:map-atoms nil
                     (lambda (atom)
-                      (unless (nth-value 1 (gethash (atom-cache-key atom) (nonbond-table cache)))
-                        (return-from covered nil)))
+                      (let ((key (atom-cache-key atom nil)))
+                        (unless (and key
+                                     (nth-value 1 (gethash key (nonbond-table cache))))
+                          (return-from covered nil))))
                     molecule)
     (chem:map-bonds nil
                     (lambda (a1 a2 o b) (declare (ignore o b))
-                      (unless (nth-value 1 (gethash (canonicalize-key
-                                                     (list (atom-cache-key a1) (atom-cache-key a2)))
-                                                    (bond-table cache)))
-                        (return-from covered nil)))
+                      (let ((k1 (atom-cache-key a1 nil))
+                            (k2 (atom-cache-key a2 nil)))
+                        (unless (and k1 k2
+                                     (nth-value 1 (gethash (canonicalize-key (list k1 k2))
+                                                           (bond-table cache))))
+                          (return-from covered nil))))
                     molecule)
     t))
 
@@ -322,11 +338,17 @@ Provide an existing cache or NIL if you don't have one yet."
        (chem:assign-force-field-types ff molecule atom-types)
        (chem:construct-from-molecule (chem:atom-table ef) molecule nonbond-force-field keep atom-types)
        (commit-bonded-from-cache ef molecule cache keep))
-      (t       
+      (t
        ;; MISS: full real SMIRNOFF (assign vdw, construct, generate w/ perception) - pass :smirnoff
        (chem:define-for-molecule-using-force-field
            ef molecule smirnoff (smirnoff-name ff) atom-types nonbond-force-field keep)
-       (harvest-into-cache ef molecule cache)))))
+       ;; Harvest only from an UNFILTERED parameterization.  KEEP is T for a normal build; NIL
+       ;; means no components were generated at all (an energy function built for its atom table
+       ;; alone), and a FUNCTION means the terms present are a deliberate subset.  Feeding either
+       ;; into the cache would store an incomplete parameterization that a later full build then
+       ;; treats as covered - a silently wrong energy function rather than a slow one.
+       (when (eq keep t)
+         (harvest-into-cache ef molecule cache))))))
 
 (defun commit-bonded-from-cache (ef molecule cache keep-interaction-factory)
   "Coverage guaranteed all bonds+nonbonds present.  Angles/dihedrals/impropers apply

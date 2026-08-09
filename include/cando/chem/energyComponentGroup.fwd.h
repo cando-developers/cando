@@ -1,5 +1,5 @@
 /*
-    File: bond.fwd.h
+    File: energyComponentGroup.fwd.h
 */
 /*
 Open Source License
@@ -19,57 +19,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	bond_FWD_H
-#define bond_FWD_H
-
-#include <clasp/core/common.h>
-
-#include <cando/chem/chemPackage.h>
-
-
-namespace chem
+#ifndef energyComponentGroup_fwd_H
+#define energyComponentGroup_fwd_H
+namespace  chem
 {
-
-FORWARD(Bond);
-                
-
- typedef	enum 	BondOrderEnum : std::uint8_t
-{
-  noBond,
-      singleBond,
-      doubleBond,
-      tripleBond,
-      aromaticBond,
-      hydrogenBond,
-      virtualBond,
-      dashedSingleBond,
-      dashedDoubleBond,
-      singleWedgeBegin,
-      singleHashBegin,
-      singleWedgeEnd,
-      singleHashEnd,
-      unknownOrderBond
-      } BondOrder;
-
- typedef std::uint32_t BondMask;
-
- 
-  constexpr BondMask bondMaskNone      = 0;
-  constexpr BondMask bondMaskBluePrint = 1u << 0;   // crossing this leaves the shared
-                                                    // scaffold and enters one of several
-                                                    // mutually exclusive alternatives
-  constexpr BondMask bondMaskAll       = ~BondMask(0);
-
-  
-    extern core::Symbol_sp& _sym__PLUS_bondOrderToSymbolConverter_PLUS_;
-};
-
-
-
-DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::BondOrder,chem::_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
-
-#endif // bond_FWD_H
+FORWARD(EnergyComponentGroup);
+}
+#endif

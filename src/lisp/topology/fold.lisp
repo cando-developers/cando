@@ -131,8 +131,14 @@
                                         monomer-positions
                                         joint-tree
                                         atom-table
-                                        adjustments)
-  "Build an atmolecule for the OLIGOMER.  The NIL-OR-MONOMER-TO-MONOMER-SHAPE-MAP if it is nil means all joint-templates are set by the topology.  Otherwise, a hash-table of monomers to monomer-shapes will override the topology joint-templates if the monomer-shape is a residue-shape. "
+                                        adjustments
+                                        &optional (build-monomer-p (constantly t)))
+  "Build an atmolecule for the OLIGOMER.  The NIL-OR-MONOMER-TO-MONOMER-SHAPE-MAP if it is nil means all joint-templates are set by the topology.  Otherwise, a hash-table of monomers to monomer-shapes will override the topology joint-templates if the monomer-shape is a residue-shape.
+
+BUILD-MONOMER-P is called with (MONOMER OLIGOMER) and returns NIL for a monomer the CALLER will
+materialize itself - no atresidue and no joints are made for it.  It must agree with whatever was
+passed to BUILD-MOLECULE, or the atresidues and the residues will disagree about what exists.
+Defaults to building everything."
   (let* ((ring-closing-monomer-map (make-hash-table))
          (monomer-out-couplings (make-hash-table))
          (atmolecule (make-instance 'atmolecule :name (chem:get-name molecule) :molecule molecule)))
@@ -159,6 +165,7 @@
                                   nil   ; parent-joint
                                   atom-table
                                   adjustments
+                                  build-monomer-p
                                   )
     #+(or)(make-ring-closing-connections oligomer monomer-positions molecule ring-closing-monomer-map)
     atmolecule))
@@ -228,17 +235,28 @@
                                      monomer-positions ; map of monomers to monomer-positions
                                      parent-joint
                                      atom-table
-                                     adjustments)
+                                     adjustments
+                                     build-monomer-p)
   "Recursively build a atmolecule from an oligomer by linking together kin:atresidues"
   (if prev-monomer
-      (let ((next-atresidue nil)
-            (next-atresidue-index nil)
-            (next-outgoing-plug-names-to-joint-map)
-            (out-couplings (gethash prev-monomer monomer-out-couplings)))
+      (let ((out-couplings (gethash prev-monomer monomer-out-couplings)))
         (loop for out-coupling in out-couplings
               for next-monomer = (target-monomer out-coupling)
               for next-out-couplings = (gethash next-monomer monomer-out-couplings)
-              do (when (in-monomer-subset monomer-subset next-monomer)
+              ;; Re-bound per ITERATION rather than once around the loop.  Held outside, a
+              ;; monomer that fails the test below kept whatever the PREVIOUS out-coupling set,
+              ;; and the recursion was handed that monomer paired with a different monomer's
+              ;; atresidue.  Unreachable while every skipped monomer is a leaf; BUILD-MONOMER-P
+              ;; makes skipping routine, so it no longer is.  (FOR ... = NIL re-evaluates each
+              ;; iteration, so this is a per-iteration binding without re-wrapping the body.)
+              for next-atresidue = nil
+              for next-atresidue-index = nil
+              for next-outgoing-plug-names-to-joint-map = nil
+              ;; Must agree with BUILD-MOLECULE's test.  If they disagree the atresidue and
+              ;; residue indexes drift apart, which the (/= next-atresidue-index
+              ;; next-residue-index) check below catches - loudly, but only after the fact.
+              do (when (and (in-monomer-subset monomer-subset next-monomer)
+                            (funcall build-monomer-p next-monomer oligomer))
                    (multiple-value-setq (next-atresidue next-atresidue-index next-outgoing-plug-names-to-joint-map)
                      (let* ((next-topology (monomer-topology next-monomer oligomer))
                             (next-monomer-position (gethash next-monomer monomer-positions))
@@ -297,12 +315,14 @@
                                                monomer-positions
                                                parent-joint
                                                atom-table
-                                               adjustments)))
+                                               adjustments
+                                               build-monomer-p)))
       (let* ((prev-monomer (root-monomer oligomer))
              (next-atresidue nil)
              (next-atresidue-index nil)
              (next-outgoing-plug-names-to-joint-map))
-        (when (in-monomer-subset monomer-subset prev-monomer)
+        (when (and (in-monomer-subset monomer-subset prev-monomer)
+                   (funcall build-monomer-p prev-monomer oligomer))
           (multiple-value-setq (next-atresidue next-atresidue-index next-outgoing-plug-names-to-joint-map)
             (let* ((next-monomer prev-monomer)
                    (next-topology (monomer-topology next-monomer oligomer))
@@ -356,7 +376,8 @@
                                       monomer-positions
                                       nil ; parent-joint
                                       atom-table
-                                      adjustments))))
+                                      adjustments
+                                      build-monomer-p))))
 
 (defun describe-recursively (atresidue prefix stream)
   (princ prefix stream)

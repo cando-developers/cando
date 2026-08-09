@@ -78,6 +78,7 @@ public:
   int                   _PositionIndexX3;
   int                   _EndPositionIndexX3;
   core::List_sp         _Properties;
+  gctools::Vec0<Joint_sp> _Children;
 private:
 	/*! Track my position in my owner's list of Joints with modified DOFs
 	  -1 when my dofs have not changed since the last update_coords
@@ -87,27 +88,29 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
-	/*! Bonded Joints can have different numbers of children wrt JumpJoints */
-  virtual int _maxNumberOfChildren() const = 0;
+	/*! All children live in _Children, a growable Vec0, so there is no maximum - the
+	  _maxNumberOfChildren concept and its two overflow checks are gone.  A backbone atom in a
+	  blueprint fan-out parents one joint per rotamer slot, which reached 76 at an ARG locus
+	  and could not fit the old fixed array of 5. */
 	/*! Return the current number of children */
-  virtual int _numberOfChildren() const = 0;
+  virtual int _numberOfChildren() const { return this->_Children.size(); };
 	/*! Return a reference to the indexed child */
-  virtual Joint_sp _child(int idx) = 0;
+  virtual Joint_sp _child(int idx) { return this->_Children[idx]; };
 	/*! Return a reference to the indexed child */
-  virtual Joint_sp _child(int idx) const = 0;
+  virtual Joint_sp _child(int idx) const { return this->_Children[idx]; };
 	/*! Set a value of a child */
-  virtual void _setChild(int idx, Joint_sp Joint) = 0;
+  virtual void _setChild(int idx, Joint_sp Joint) { this->_Children[idx] = Joint; };
 	/*! Delete the child at the given index */
-  virtual void _releaseChild(int idx) = 0;
+  virtual void _releaseChild(int idx);
 	/*! Insert the child at the given index - this does the
 	  work of opening up a space and putting the new value in */
-  virtual void _insertChild(int idx, Joint_sp Joint) = 0;
+  virtual void _insertChild(int idx, Joint_sp Joint);
 	/*! Insert the child at the given index - this does the work
 	  of opening up a space and putting the new value in */
-  virtual void _appendChild(Joint_sp Joint) = 0;
+  virtual void _appendChild(Joint_sp Joint);
 
 	/*! Destructors need to delete all Children */
-  virtual void _releaseAllChildren() = 0;
+  virtual void _releaseAllChildren() { this->_Children.clear(); };
   virtual core::List_sp jointChildren() const;
   Joint_sp onlyOtherChild(Joint_sp child) const;
   Joint_sp childWithName(core::T_sp name) const;
