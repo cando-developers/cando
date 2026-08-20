@@ -38,7 +38,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include "core/common.h"
 #include "core/holder.h"
-#include "core/environment.fwd.h"
 
 //#include "jobHistory.h"
 
@@ -227,11 +226,9 @@ namespace       chem
 
 
     core::HashTable_sp readTrainerHeader( core::Path_sp const& path);
-    core::T_sp readTrainerHeader_cando( core::Cons_sp args,  core::Environment_sp environ, core::LispPtr lisp);
 
 
     extern Trainer_sp readTrainer(core::Path_sp const& path, core::LispPtr lisp);
-    extern core::T_sp readTrainer_cando(core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp);
 
 
 
