@@ -3503,8 +3503,10 @@ out, including on a non-local exit."
                          (need cc))))))
     table))
 
-(defun train-foldamer-contexts (foldamer contexts &key verbose)
-  "Train FOLDAMER's parameter cache on CONTEXTS.  Returns (values TRAINED MISSING), or
+
+(defgeneric train-foldamer-contexts (foldamer contexts &key verbose)
+  (:documentation
+   "Train FOLDAMER's parameter cache on CONTEXTS.  Returns (values TRAINED MISSING), or
 (values 0 NIL) when this foldamer has no cache to train.
 
   A foldamer whose force field is not a CACHED-SMIRNOFF-FORCE-FIELD is skipped, not an error:
@@ -3512,40 +3514,8 @@ out, including on a non-local exit."
 
   The name need not be a registered force field at all - AMBER-PROTEIN's is the cons
   (:DEFAULT . :USE-GIVEN-TYPES), and CHEM:FIND-FORCE-FIELD SIGNALS on an unknown name rather than
-  returning NIL.  An unregistered name is just a louder way of saying there is no cache here."
-  (let* ((force-field-name (oligomer-force-field-name foldamer))
-         (ff (handler-case (chem:find-force-field force-field-name)
-               (error () nil))))
-    (unless (typep ff 'smirnoff:cached-smirnoff-force-field)
-      (when verbose
-        (format t "~&  ~a (~s): ~a - ~d context~:p need no training~%"
-                (type-of foldamer) force-field-name
-                (if ff "no parameter cache" "no registered force field")
-                (length contexts)))
-      (return-from train-foldamer-contexts (values 0 nil)))
-    (let ((cache (smirnoff:cache ff))
-          (index (foldamer-trainer-index foldamer))
-          (trained 0)
-          (missing nil))
-      (dolist (cc contexts)
-        ;; Re-read coverage every round: a trainer stores keys for EVERY atom in it, not just its
-        ;; focus, so building one context routinely covers neighbours for free.
-        (unless (gethash cc (cache-trained-contexts cache))
-          (let ((entry (gethash cc index)))
-            (cond (entry
-                   (when verbose
-                     (format t "~&  training ~s~%" cc)
-                     (finish-output))
-                   ;; The build IS the training: the trainer's molecule uses this same registered
-                   ;; force field, so it misses, runs real SMIRNOFF on chemically real geometry,
-                   ;; and HARVEST-INTO-CACHE files the result.  The assembler is discarded.
-                   (make-training-assembler (list (car entry)) :focus-monomer (cdr entry))
-                   (incf trained))
-                  (t (push cc missing))))))
-      ;; A context with no trainer of its own may still have been covered incidentally.
-      (let ((have (cache-trained-contexts cache)))
-        (setf missing (remove-if (lambda (cc) (gethash cc have)) missing)))
-      (values trained missing))))
+  returning NIL.  An unregistered name is just a louder way of saying there is no cache here."))
+  
 
 (defun blueprint-required-constitution-contexts (blueprint)
   "Every constitution-context this BLUEPRINT will stamp as :GIVEN-ATOM-TYPE, pooled across
@@ -3574,18 +3544,6 @@ BLUEPRINT-REQUIRED-CONTEXTS-BY-FOLDAMER.
                        (when cc (pushnew cc contexts :test #'equal))))))
     (nreverse contexts)))
 
-(defun cache-trained-contexts (cache)
-  "The set of constitution-contexts CACHE already holds parameters for, as an EQUAL hash-table.
-
-  Read off NONBOND-TABLE rather than the bonded tables: it has one entry per typed atom keyed by a
-  single (atom-name . constitution-context) cons, so every trained context appears in it, whereas a
-  bonded key is a list of parts."
-  (let ((set (make-hash-table :test 'equal)))
-    (maphash (lambda (key parameters)
-               (declare (ignore parameters))
-               (setf (gethash (cdr key) set) t))
-             (smirnoff:nonbond-table cache))
-    set))
 
 (defgeneric foldamer-trainer-index (foldamer)
   (:documentation "CONSTITUTION-CONTEXT -> (OLIGOMER . FOCUS-MONOMER) for every trainer FOLDAMER can build.
