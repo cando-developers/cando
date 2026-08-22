@@ -628,7 +628,9 @@
    #:assign-given-atom-types
    #:assign-residue-given-atom-types
    #:piece-atoms
-   #:place-all-pieces))
+   #:place-all-pieces
+   #:best-monomer-context-matcher
+   #:foldamer-trainer-index))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

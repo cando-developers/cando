@@ -531,28 +531,15 @@ got a plain MONOMER-SHAPE driven by a rotamer index."
 ;;; contexts, and computing the bound exactly beats any conservative over-estimate.
 ;;; ------------------------------------------------------------------
 
-(defun best-monomer-context-matcher (monomer oligomer-or-space foldamer)
-  "Return (values MATCHER MATCH): the training-oligomer-space matcher that wins for MONOMER, and
+(defgeneric best-monomer-context-matcher (monomer oligomer-or-space foldamer)
+  (:documentation "Return (values MATCHER MATCH): the training-oligomer-space matcher that wins for MONOMER, and
 its match.  Same selection rule as FOLDAMER-MONOMER-CONTEXT (foldamer.lisp:1196-1204) - highest
 NODE-COUNT among those that match - but returns the matcher itself, which that function discards.
 
 NIL NIL when nothing matches.  Matching against a SPACE is stricter than against an oligomer: an
 oligomer needs the one current name to be in the pattern, a space needs EVERY allowed name to be
 (context.lisp:256-258).  A locus whose design alternatives outrun what the foldamer was trained
-on therefore matches nothing here, and gets one slot."
-  (let ((best-matcher nil)
-        (best-match nil)
-        (best-count 0))
-    (monomer-context:with-match-cache
-        (loop for training-space in (foldamer:training-oligomer-spaces foldamer)
-              for matcher = (foldamer:monomer-context-matcher training-space)
-              for count = (monomer-context:node-count matcher)
-              for match = (monomer-context:match matcher monomer oligomer-or-space)
-              when (and match (> count best-count))
-                do (setf best-matcher matcher
-                         best-match match
-                         best-count count)))
-    (values best-matcher best-match)))
+on therefore matches nothing here, and gets one slot."))
 
 (defun reachable-monomer-contexts (match)
   "Every (FOCUS-NAME . MONOMER-CONTEXT) pair MATCH can produce, in iteration order.
@@ -3600,24 +3587,13 @@ BLUEPRINT-REQUIRED-CONTEXTS-BY-FOLDAMER.
              (smirnoff:nonbond-table cache))
     set))
 
-(defun foldamer-trainer-index (foldamer)
-  "CONSTITUTION-CONTEXT -> (OLIGOMER . FOCUS-MONOMER) for every trainer FOLDAMER can build.
+(defgeneric foldamer-trainer-index (foldamer)
+  (:documentation "CONSTITUTION-CONTEXT -> (OLIGOMER . FOCUS-MONOMER) for every trainer FOLDAMER can build.
 
   Cheap by design: MAKE-OLIGOMER and FOLDAMER-MONOMER-CONTEXT only, no assembler and no SMIRNOFF.
   That is what makes demand-driven training practical - the enumeration costs nothing, so only the
-  parameterizations you actually need get paid for."
-  (let ((index (make-hash-table :test 'equal)))
-    (loop for training-space in (foldamer:training-oligomer-spaces foldamer)
-          for focus-monomer = (foldamer:focus-monomer training-space)
-          for space = (foldamer:oligomer-space training-space)
-          do (loop for sequence-index below (number-of-sequences space)
-                   for olig = (make-oligomer space sequence-index)
-                   do (multiple-value-bind (monomer-context cc)
-                          (foldamer-monomer-context focus-monomer olig foldamer)
-                        (declare (ignore monomer-context))
-                        (when (and cc (null (gethash cc index)))
-                          (setf (gethash cc index) (cons olig focus-monomer))))))
-    index))
+  parameterizations you actually need get paid for."))
+
 
 (defun ensure-blueprint-trained (blueprint &key verbose)
   "Train the SMIRNOFF parameter cache on exactly the trainers BLUEPRINT needs, and no others.
