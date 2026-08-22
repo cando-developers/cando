@@ -1008,6 +1008,24 @@ bool EnergyNonbond::defineForAtomPair(core::T_sp forceField, bool is14, Atom_sp 
 }
 
 
+/*! BOTH term vectors.  EnergyNonbond_O keeps its amber 1-4 interactions in _Terms14 on the SAME
+ *  component, so a walker that read only _Terms would silently omit every 1-4 - and the omission
+ *  would look like agreement in any term-set comparison. */
+void EnergyNonbond_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1_enb,
+                          eni->_Atom2_enb,
+                          core::make_fixnum(eni->term.I1),
+                          core::make_fixnum(eni->term.I2));
+  }
+  for (auto eni = this->_Terms14.begin(); eni != this->_Terms14.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1_enb,
+                          eni->_Atom2_enb,
+                          core::make_fixnum(eni->term.I1),
+                          core::make_fixnum(eni->term.I2));
+  }
+}
+
 void EnergyNonbond_O::dumpTerms(core::HashTable_sp atomTypes) {
   gctools::Vec0<EnergyNonbond>::iterator eni;
   string as1, as2, as3, as4;
@@ -1256,35 +1274,10 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(AtomTable_sp atomTable,
 
 CL_DEFMETHOD
 core::T_mv EnergyNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates) {
-  auto coords = gc::As<NVector_sp>(tcoordinates);
-  if (this->_DisplacementBuffer.nilp()) {
-    return this->rebuildPairList(tcoordinates);
-  } else if (gc::IsA<NVector_sp>(this->_DisplacementBuffer)) {
-    NVector_sp nvDisplacementBuffer = gc::As_unsafe<NVector_sp>(this->_DisplacementBuffer);
-    if (nvDisplacementBuffer->size() != coords->size()) {
-      SIMPLE_ERROR("The size of the _DispacementBuffer({}) MUST match the size of the coordinatess({})", nvDisplacementBuffer->size(), coords->size());
-    }
-    double skinThickness = this->_Nonbond_r_pairlist-this->_Nonbond_r_cut;
-    double movedTrigger = 0.5*skinThickness;
-    double movedTrigger2 = movedTrigger*movedTrigger;
-    vecreal* raw_db = &(*nvDisplacementBuffer)[0];
-    vecreal* raw_coords = &(*coords)[0];
-    for (size_t ci=0; ci<nvDisplacementBuffer->size(); ci+=3 ) {
-      const vecreal& dx = raw_db[ci];
-      const vecreal& dy = raw_db[ci+1];
-      const vecreal& dz = raw_db[ci+2];
-      const vecreal& cx = raw_coords[ci];
-      const vecreal& cy = raw_coords[ci+1];
-      const vecreal& cz = raw_coords[ci+2];
-      if (dx==cx && dy==cy && dz==cz ) continue;
-      vecreal dist2 = (dx-cx)*(dx-cx)+ (dy-cy)*(dy-cy)+ (dz-cz)*(dz-cz);
-      if (dist2>movedTrigger2) {
-        return this->rebuildPairList(tcoordinates);
-      }
-    }
-    return Values0<core::T_O>();
-  }
-  SIMPLE_ERROR("{}: We should never get here", __FUNCTION__);
+  // The hand-written drift walk this used to hold is now shared - see maybeRebuildPairListImpl in
+  // pairList.h.  rpairlist()/rcut() report _Nonbond_r_pairlist/_Nonbond_r_cut, so the threshold is
+  // unchanged; the walk it was computed from is not.
+  return maybeRebuildPairListImpl(this, tcoordinates);
 }
 
 CL_DEFMETHOD
@@ -1672,9 +1665,11 @@ EnergyComponent_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory
   // Copy the interaction factory
   copy->_KeepInteractionFactory = keepInteractionFactory;
   if (!this->_UsesExcludedAtoms) {
-    if (this->_DisplacementBuffer.notnilp()) {
-      copy->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(this->_DisplacementBuffer));
-    }
+    // The copy gets the filtered terms, which are valid for exactly the coordinates the original's
+    // list was built from - so it inherits the original's build stamp too.  This used to copy a
+    // whole NVector to say the same thing; epoch 0 carries through unchanged and still means
+    // "never built", so no guard is needed.
+    copy->notePairListBuilt(this->pairListEpoch(), this->pairListDrift());
     // Copy the nonbond pair-list terms
     for (auto edi = this->_Terms.begin(); edi != this->_Terms.end(); edi++) {
       Atom_sp a1 = edi->_Atom1_enb;
@@ -1704,7 +1699,7 @@ EnergyComponent_sp EnergyNonbond_O::copyFilter(core::T_sp keepInteractionFactory
     }
   }
   // copy->_Parameters.do_apply(setupAcc);
-  // copy->_DisplacementBuffer = nil<core::T_O>();
+  // copy->invalidatePairList();
   // copy->_Terms.clear();
   copy->invalidateParameterCache();
   return copy;

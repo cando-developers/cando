@@ -152,6 +152,7 @@ public:
   void addTerm(const TermType& term);
   size_t addAnchorRestraintTerm(EnergyFunction_sp energyFunction, Atom_sp a1, Vector3 position, double forceConstant );
   virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
   virtual bool is_restraint() const { return true; };
 
 

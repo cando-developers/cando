@@ -165,6 +165,7 @@ class EnergyNonbond14_O : public EnergyComponent_O
  public:
   void addTerm14(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m,

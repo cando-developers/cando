@@ -28,6 +28,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/ql.h>
+#include <clasp/core/evaluator.h>   // core::eval::funcall, for atomsForEachTerm
 #include <cando/chem/energyFlatBottomAnchorRestraint.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
@@ -90,6 +91,16 @@ size_t EnergyFlatBottomAnchorRestraint_O::addFlatBottomAnchorRestraintTerm(
   this->_Terms.emplace_back(a1, forceConstant, R0, center,
                             ea->coordinateIndexTimes3());
   return this->_Terms.size() - 1;
+}
+
+/*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
+ *  documents.  A caller taking &rest reads any component without knowing which one it has.
+ */
+void EnergyFlatBottomAnchorRestraint_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1,
+                          core::make_fixnum(eni->term.i3x1));
+  }
 }
 
 void EnergyFlatBottomAnchorRestraint_O::dumpTerms(core::HashTable_sp atomTypes) {}

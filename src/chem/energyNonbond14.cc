@@ -498,6 +498,20 @@ bool EnergyNonbond14::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Atom_
 }
 
 
+/*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
+ *  documents and EnergyRosettaNonbond_O established.  A caller taking &rest can then read any
+ *  bonded class without knowing which one it has: leading Atom_sp are the term, trailing fixnums
+ *  are its coordinate indexes.
+ */
+void EnergyNonbond14_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms14.begin(); eni != this->_Terms14.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1_enb,
+                        eni->_Atom2_enb,
+                        core::make_fixnum(eni->term.i3x1),
+                        core::make_fixnum(eni->term.i3x2));
+  }
+}
+
 void EnergyNonbond14_O::dumpTerms(core::HashTable_sp atomTypes) {
   IMPLEMENT_ME();
   #if 0

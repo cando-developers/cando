@@ -131,7 +131,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
     cached))
 
 (defvar *enable-kekulized-bond-matching* t)
-(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-smirnoff-force-field combined-smirnoff-force-field) keep-interaction-factory)
+(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-smirnoff-force-field combined-smirnoff-force-field) keep-interaction-factory group)
   (when keep-interaction-factory
     ;; OpenFF SMIRNOFF SMIRKS are written assuming kekulized bond matching:
     ;; `-`, `=`, and `#` are expected to match kekule single/double/triple
@@ -151,7 +151,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                                  (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-stretch))))))
           (when keep-interaction-stretch-test
             (when (chem:verbose 2) (format t "Generating stretch terms~%"))
-            (let ((bond-energy (chem:make-energy-stretch energy-function)))
+            (let ((bond-energy (chem:make-energy-stretch energy-function group)))
               ;; Work through the force-fields backwards so that more recent terms will shadow older ones
               (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
                     for bonds-force = (bonds-force force-field)
@@ -197,7 +197,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                                (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-angle))))))
           (when keep-interaction-angle-test
             (when (chem:verbose 2) (format t "Generating angle terms~%"))
-            (let ((angle-energy (chem:make-energy-angle energy-function))
+            (let ((angle-energy (chem:make-energy-angle energy-function group))
                   ;; created lazily below, only if a linear (theta0 ~ 180 deg) angle is matched
                   (linear-angle-energy nil))
               (chem:map-angles nil (lambda (a1 a2 a3)
@@ -252,7 +252,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                    (if (< (abs (- angle pi)) *linear-angle-tolerance-radians*)
                                        (progn
                                          (unless linear-angle-energy
-                                           (setf linear-angle-energy (chem:make-energy-linear-angle energy-function)))
+                                           (setf linear-angle-energy (chem:make-energy-linear-angle energy-function group)))
                                          (chem:add-linear-angle-term linear-angle-energy atom-table a1 a2 a3 k))
                                        (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle)))))
                              (restart-case
@@ -265,7 +265,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                                   (funcall keep-interaction-factory (load-time-value (find-class 'chem:energy-dihedral))))))
           (when keep-interaction-dihedral-test
             (when (chem:verbose 2) (format t "Generating dihedral terms~%"))
-            (let ((dihedral-energy (chem:make-energy-dihedral energy-function)))
+            (let ((dihedral-energy (chem:make-energy-dihedral energy-function group)))
               (chem:map-dihedrals nil (lambda (a1 a2 a3 a4)
                                         (setf (gethash (list a1 a2 a3 a4) ptors) nil))
                                   molecule)

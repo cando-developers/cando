@@ -186,6 +186,22 @@ void EnergyChiralRestraint_O::addTerm(const EnergyChiralRestraint& e)
     this->_Terms.push_back(e);
 }
 
+/*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
+ *  documents.  A caller taking &rest reads any component without knowing which one it has.
+ */
+void EnergyChiralRestraint_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1,
+                          eni->_Atom2,
+                          eni->_Atom3,
+                          eni->_Atom4,
+                          core::make_fixnum(eni->term.i3x1),
+                          core::make_fixnum(eni->term.i3x2),
+                          core::make_fixnum(eni->term.i3x3),
+                          core::make_fixnum(eni->term.i3x4));
+  }
+}
+
 void EnergyChiralRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
     gctools::Vec0<EnergyChiralRestraint>::iterator cri;

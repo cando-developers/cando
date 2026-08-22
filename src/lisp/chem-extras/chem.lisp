@@ -145,10 +145,14 @@ and is how AMBER-protein template types and smirnoff-parameter-cache
   (chem:generate-standard-assign-molecular-force-field-parameters energy-function force-field molecule))
 
 
-(defgeneric chem:generate-molecule-energy-function-tables (energy-function molecule combined-force-field keep-interaction-factory)
-  (:documentation "Generate the molecule energy-function tables"))
+(defgeneric chem:generate-molecule-energy-function-tables (energy-function molecule combined-force-field keep-interaction-factory group)
+  (:documentation "Generate the molecule energy-function tables.
+GROUP is NIL or an ENERGY-COMPONENT-GROUP.  NIL puts the terms in the energy function's own
+single component of each class - one stretch, one angle, one dihedral.  A group scopes
+find-or-create to that group instead, so a pass driven with a fresh group yields a fresh set of
+components holding only that pass's terms.  See ensureComponent in energyFunction.h."))
 
-(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) keep-interaction-factory)
+(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) keep-interaction-factory group)
   "Combine AMBER and GAFF force field and frcmods and run parmchk2"
   (let ((merged-force-field (chem:force-field/make)))
     (loop for partial-force-field in (chem:combined-force-field/force-fields-as-list combined-force-field)
@@ -158,7 +162,7 @@ and is how AMBER-protein template types and smirnoff-parameter-cache
           (ffptor-db (chem:get-ptor-db merged-force-field))
           (ffitor-db (chem:get-itor-db merged-force-field)))
       #+(or)(warn "At this point we should run parmchk2 on the stretch/angle/ptor/itor components of the merged-force-field - any missing parameters should be provided by parmchk2")
-      (chem:energy-function/generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db :keep-interaction-factory keep-interaction-factory :atom-types (chem:atom-types energy-function)))))
+      (chem:energy-function/generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db :keep-interaction-factory keep-interaction-factory :atom-types (chem:atom-types energy-function) :group group))))
 
 ;;; ------------------------------------------------------------
   ;;; Per-molecule parameterization, dispatched on the force field.
@@ -180,22 +184,56 @@ and is how AMBER-protein template types and smirnoff-parameter-cache
                     (chem:identify-aromatic-rings ,m ,n)))
              ,@body)))))
 
-(defgeneric chem:define-for-molecule-using-force-field
+;;; Parameterization runs in TWO passes over ALL molecules, driven by defineForAggregate:
+;;; every molecule's atom-table entries are built before any molecule's bonded terms are
+;;; generated.  That is what lets pass 2 be re-run on its own - with a different
+;;; keep-interaction-factory and a fresh energy-component-group - against an atom table whose
+;;; numbering is already fixed.  See EnergyFunction_O::generateIntoGroup.
+
+(defgeneric chem:construct-atom-table-for-molecule
     (energy-function molecule force-field force-field-name atom-types
      nonbond-force-field keep-interaction-factory)
-  (:documentation "Parameterize one MOLECULE with FORCE-FIELD: assign atom types,
-  construct its atom-table (nonbond) entries, generate its bonded terms.  Dispatches on
-  FORCE-FIELD; perception is handled inside the assign/generate methods that need it."))
+  (:documentation "PASS 1: assign MOLECULE's atom types and append its atoms to
+  ENERGY-FUNCTION's atom-table.  Dispatches on FORCE-FIELD; perception is handled inside the
+  assign methods that need it."))
 
-(defmethod chem:define-for-molecule-using-force-field
+(defmethod chem:construct-atom-table-for-molecule
     (energy-function molecule force-field force-field-name atom-types
      nonbond-force-field keep-interaction-factory)
   (declare (ignore force-field-name))
   (chem:assign-force-field-types force-field molecule atom-types)
   (chem:construct-from-molecule (chem:atom-table energy-function)
-                                molecule nonbond-force-field keep-interaction-factory atom-types)
+                                molecule nonbond-force-field keep-interaction-factory atom-types))
+
+(defgeneric chem:generate-for-molecule-using-force-field
+    (energy-function molecule force-field force-field-name atom-types
+     nonbond-force-field keep-interaction-factory group)
+  (:documentation "PASS 2: generate MOLECULE's bonded terms into GROUP, or into the energy
+  function's own components when GROUP is NIL.  The atom-table is already complete."))
+
+(defmethod chem:generate-for-molecule-using-force-field
+    (energy-function molecule force-field force-field-name atom-types
+     nonbond-force-field keep-interaction-factory group)
+  (declare (ignore force-field-name atom-types nonbond-force-field))
   (chem:generate-molecule-energy-function-tables
-   energy-function molecule force-field keep-interaction-factory))
+   energy-function molecule force-field keep-interaction-factory group))
+
+(defgeneric chem:define-for-molecule-using-force-field
+    (energy-function molecule force-field force-field-name atom-types
+     nonbond-force-field keep-interaction-factory group)
+  (:documentation "Both passes for one MOLECULE, in order.  defineForAggregate no longer calls
+  this - it drives the two passes separately across all molecules - but it remains the
+  single-molecule entry point."))
+
+(defmethod chem:define-for-molecule-using-force-field
+    (energy-function molecule force-field force-field-name atom-types
+     nonbond-force-field keep-interaction-factory group)
+  (chem:construct-atom-table-for-molecule
+   energy-function molecule force-field force-field-name atom-types
+   nonbond-force-field keep-interaction-factory)
+  (chem:generate-for-molecule-using-force-field
+   energy-function molecule force-field force-field-name atom-types
+   nonbond-force-field keep-interaction-factory group))
 
 ;;; --- AMBER / GAFF wrappers: thin, dispatch-only, over a ForceField ----------
 (defclass chem:amber-force-field ()
@@ -212,19 +250,19 @@ and is how AMBER-protein template types and smirnoff-parameter-cache
     (chem:assign-types (chem:wrapped-force-field ff) molecule atom-types)))
 
 ;; bonded generation: identical DB lookup for both, no aromaticity.
-(defun %generate-standard-for-force-field (ef molecule force-field keep)
+(defun %generate-standard-for-force-field (ef molecule force-field keep group)
   (chem:energy-function/generate-standard-energy-function-tables
    ef molecule
    (chem:get-stretch-db force-field) (chem:get-angle-db force-field)
    (chem:get-ptor-db force-field)    (chem:get-itor-db force-field)
-   :keep-interaction-factory keep :atom-types (chem:atom-types ef)))
+   :keep-interaction-factory keep :atom-types (chem:atom-types ef) :group group))
 
 (defmethod chem:generate-molecule-energy-function-tables (ef molecule (ff chem:amber-force-field)
-                                                          keep)
-  (%generate-standard-for-force-field ef molecule (chem:wrapped-force-field ff) keep))
+                                                          keep group)
+  (%generate-standard-for-force-field ef molecule (chem:wrapped-force-field ff) keep group))
 (defmethod chem:generate-molecule-energy-function-tables (ef molecule (ff chem:gaff-force-field)
-                                                          keep)
-  (%generate-standard-for-force-field ef molecule (chem:wrapped-force-field ff) keep))
+                                                          keep group)
+  (%generate-standard-for-force-field ef molecule (chem:wrapped-force-field ff) keep group))
 
 
 

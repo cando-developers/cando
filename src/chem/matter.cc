@@ -609,6 +609,18 @@ CL_DEFMETHOD Matter_mv	Matter_O::addMatter(Matter_sp cp )
   return Values(cp,core::make_fixnum(index));
 }
 
+/*! Append CHILD without touching it - see the header for why this exists.
+ */
+CL_LISPIFY_NAME("addMatterDontUpdateId");
+CL_DEFMETHOD Matter_mv	Matter_O::addMatterDontUpdateId(Matter_sp cp )
+{
+  // Deliberately NOT cp->_Id = this->nextId(): the child is borrowed, not adopted.  And nextId()
+  // is a linear scan for the maximum, so doing it per child makes a bulk build quadratic.
+  size_t index = this->_Contents.size();
+  this->_Contents.push_back(cp);
+  return Values(cp,core::make_fixnum(index));
+}
+
 //
 // addMatterRetainId
 //

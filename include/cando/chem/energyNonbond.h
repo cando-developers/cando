@@ -164,9 +164,9 @@ double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score, core::T_sp energySc
                                     num_real dA, num_real dC, num_real dQ1Q2 );
 
 
-class EnergyNonbond_O : public EnergyComponent_O
+class EnergyNonbond_O : public EnergyPairlistComponent_O
 {
-  LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyPairlistComponent_O);
 
  public:
   virtual bool restraintp() const override {return false;};
@@ -192,11 +192,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   AtomTable_sp                  _AtomTable;
   core::T_sp                    _NonbondForceField;
   core::HashTable_sp            _AtomTypes;
-  core::T_sp                    _KeepInteractionFactory;
-  core::T_sp                    _DisplacementBuffer; // keep track of atom positions used to generate the pair-list in _Terms
-  // If _Matter1 and _Matter2 is defined then _Matter1,_Matter2 are used to build the pair-list - otherwise the _AtomTable is used
-  core::T_sp                    _Matter1;
-  core::T_sp                    _Matter2;
+  // _KeepInteractionFactory, _Matter1, _Matter2, _ExclusionsPossible and the pair-list build stamp
+  // now live on EnergyPairlistComponent_O, along with the query set.
   core::T_sp                    _NonbondForm; // :AMBER or :ROSETTA form for _Terms
   gctools::Vec0<TermType>	_Terms;
   double                        _RepulsionWeight; // 0.0 - 1.0 weight for ROSETTA NonbondForm
@@ -263,23 +260,24 @@ public:
   void callForEachTerm14(core::Function_sp callback);
  public:
 
-  bool exclusionsPossible() const { return true; };
+  // exclusionsPossible() used to be hardcoded TRUE here.  The base's _ExclusionsPossible also
+  // defaults to true and nothing on this class ever cleared it, so behaviour is unchanged - but it
+  // is now settable, which is what a between-matters caller needs.
   size_t runTestCalls(core::T_sp stream, chem::NVector_sp coords) const;
   void set_nonbond_pairlist_parameters(double r_switch, double r_cut, double r_pairlist, double distance_dielectric);
 
-  CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
   CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndexes;}
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndexes;}
 public:
-  double rpairlist() const { return _Nonbond_r_pairlist; }
+  //! CL_DEFMETHOD so a caller can take the MAX rpairlist across a group's components uniformly -
+  //! the three rosetta components already exposed theirs and this one did not.
+  CL_DEFMETHOD double rpairlist() const { return _Nonbond_r_pairlist; }
   double rcut() const { return _Nonbond_r_cut; }
   AtomTable_sp atomTable() const { return _AtomTable; }
-  // keepInteractionFactory() already exists (line 243)
-  core::T_sp matter1() const { return _Matter1; }
-  core::T_sp matter2() const { return _Matter2; }
+  // keepInteractionFactory(), matter1(), matter2() and the pair-list stamp accessors
+  // (pairListEpoch(), pairListDrift(), notePairListBuilt(), invalidatePairList()) are inherited
+  // from EnergyPairlistComponent_O.
   void clearTerms() { _Terms.clear(); }
-  void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
-  core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
 
   bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
                   core::T_sp keepInteraction) {
@@ -295,6 +293,7 @@ public:
   void addTerm14(const TermType& term);
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
   virtual core::List_sp extract_vectors_as_alist() const;
 
@@ -370,10 +369,9 @@ public:
       _Nonbond_r_cut(12.0),
       _Nonbond_r_pairlist(14.0),
       _Nonbond_invdd(1.0),
-      _KeepInteractionFactory(nil<core::T_O>()),
-      _DisplacementBuffer(nil<core::T_O>()),
-      _Matter1(nil<core::T_O>()),
-      _Matter2(nil<core::T_O>()),
+      // _KeepInteractionFactory, _Matter1, _Matter2 and the pair-list build stamp are initialized
+      // by EnergyPairlistComponent_O's constructor now.  A derived class cannot name base members
+      // in its own initializer list.
       _FFNonbondDb(nil<core::T_O>()),
       _InteractionsKept(0),
       _InteractionsDiscarded(0),

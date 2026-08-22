@@ -8,7 +8,14 @@
 (defpackage #:topology
   (:use #:common-lisp)
   (:nicknames #:top)
-  (:shadow #:type #:debug)
+  ;; #:TYPE is deliberately NOT shadowed.  It was, to allow a local variable named TYPE in
+  ;; DEFINE-TOPOLOGY (now renamed STYPE), and the cost was package-wide: with CL:TYPE shadowed,
+  ;; (DECLARE (TYPE FIXNUM X)) in any TOPOLOGY file reads as (DECLARE (TOPOLOGY::TYPE FIXNUM X)),
+  ;; which CL then treats as the type-declaration ABBREVIATION - "declare variables FIXNUM and X to
+  ;; be of type TOPOLOGY::TYPE".  That compiles silently and fails at runtime inside TYPEP with
+  ;; "TOPOLOGY::TYPE is not a valid type specifier", naming a symbol that appears nowhere in the
+  ;; source.  One local variable name is not worth losing DECLARE TYPE across the package.
+  (:shadow #:debug)
   (:export
    #:monomer-shape-locus
    #:assembler-check-joints

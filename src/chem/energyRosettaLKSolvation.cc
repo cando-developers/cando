@@ -26,7 +26,6 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 /* -^- */
 #define DEBUG_LEVEL_NONE
 
-#include <array>                       // std::array, used by ensureParameterCache
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyRosettaLKSolvation.h>
@@ -89,7 +88,7 @@ CL_DEFMETHOD void EnergyRosettaLKSolvation_O::constructNonbondTermsBetweenMatter
   this->_AtomTypes = energyFunction->atomTypes();
   this->_LKSolvationForceField = this->_AtomTable->lksolvationForceFieldForAggregate();
   // Force the next maybeRebuildPairList to actually rebuild - see the header comment.
-  this->_DisplacementBuffer = nil<core::T_O>();
+  this->invalidatePairList();
 }
 
 std::string EnergyRosettaLKSolvation_O::implementation_details() const {
@@ -227,35 +226,71 @@ void EnergyRosettaLKSolvation_O::ensureParameterCache() {
   AtomTable_sp at = this->_AtomTable;
   if (at.nilp()) return;
   size_t n = at->getNumberOfAtoms();
-  if (this->_CachedForAtomTable == at && this->_TypeSlot.size() == n) return;   // still valid
-  this->_TypeSlot.assign(n, -1);
-  auto& energyAtoms = at->getVectorEnergyAtoms();
+  // The generation test is what makes the shared table safe: the atom-table pointer can be
+  // unchanged while its slots have been rebuilt underneath us.
+  if (this->_CachedForAtomTable == at
+      && this->_CachedLKGeneration == at->_LKGeneration
+      && this->_TypeSlot.size() == n) return;   // still valid
 
-  // One lookup per atom, then collapse identical parameter tuples into slots.
-  // Two distinct LK types with identical parameters merging is harmless - they
-  // produce the same term.
-  std::vector<std::array<double,4>> uniq;   // dGfree, lambda, radius, volume
-  for (size_t i = 0; i < n; i++) {
-    core::Symbol_sp type = energyAtoms[i].atom()->getPropertyOrDefault(
-        INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>());
-    core::T_sp tff = core::eval::funcall(_sym_find_lksolvation_type,
-                                         this->_LKSolvationForceField, type);   // funcall, once/atom
-    if (tff.nilp()) continue;                       // _TypeSlot[i] stays -1
-    auto ff = gc::As<FFLKSolvation_sp>(tff);
-    double dg = 0.0, lam = 1.0, rad = 0.0, vol = 0.0;
-    if (!lookup_lk_solvation_parameters(ff, dg, lam, rad, vol)) continue;
-    int slot = -1;
-    for (size_t s = 0; s < uniq.size(); ++s)
-      if (uniq[s][0] == dg && uniq[s][1] == lam && uniq[s][2] == rad && uniq[s][3] == vol) {
-        slot = (int)s; break;
+  // ---- SHARED across every component over this atom table ----
+  //
+  // An atom's LK type is a property of the ATOM, not of the component asking, so this mapping is
+  // identical for all 471 of a blueprint's slot-group components.  Building it per component cost
+  // one Lisp funcall per atom per component - ~3.2 million for 471 components over ~6700 atoms,
+  // all before any pair energy was computed.  Built once here it is ~6700.
+  if (!at->lkTypeSlotsValidFor(this->_LKSolvationForceField)) {
+    at->_LKTypeSlot.assign(n, -1);
+    at->_LKUniq.clear();
+    auto& energyAtoms = at->getVectorEnergyAtoms();
+    // One lookup per atom, then collapse identical parameter tuples into slots.
+    // Two distinct LK types with identical parameters merging is harmless - they
+    // produce the same term.
+    for (size_t i = 0; i < n; i++) {
+      core::Symbol_sp type = energyAtoms[i].atom()->getPropertyOrDefault(
+          INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>());
+      // errorp NIL: the next line is written to skip an untyped atom, but find-lksolvation-type
+      // defaults errorp to T (chem.lisp:965) and would signal "Could not find LKSolvation
+      // parameters for :lk-solvation-atom-type NIL" - naming neither the atom nor its residue -
+      // before this ever got the chance.
+      core::T_sp tff = core::eval::funcall(_sym_find_lksolvation_type,
+                                           this->_LKSolvationForceField, type,
+                                           nil<core::T_O>());   // funcall, once/atom
+      if (tff.nilp()) continue;                     // slot stays -1
+      auto ff = gc::As<FFLKSolvation_sp>(tff);
+      double dg = 0.0, lam = 1.0, rad = 0.0, vol = 0.0;
+      if (!lookup_lk_solvation_parameters(ff, dg, lam, rad, vol)) continue;
+      int slot = -1;
+      size_t nslots = at->_LKUniq.size() / 4;      // 4 doubles per slot - see energyAtomTable.h
+      for (size_t s = 0; s < nslots; ++s)
+        if (at->_LKUniq[4*s+0] == dg && at->_LKUniq[4*s+1] == lam
+            && at->_LKUniq[4*s+2] == rad && at->_LKUniq[4*s+3] == vol) {
+          slot = (int)s; break;
+        }
+      if (slot < 0) {
+        slot = (int)nslots;
+        at->_LKUniq.push_back(dg);
+        at->_LKUniq.push_back(lam);
+        at->_LKUniq.push_back(rad);
+        at->_LKUniq.push_back(vol);
       }
-    if (slot < 0) { slot = (int)uniq.size(); uniq.push_back({dg, lam, rad, vol}); }
-    this->_TypeSlot[i] = slot;
+      at->_LKTypeSlot[i] = slot;
+    }
+    at->_LKCachedForceField = this->_LKSolvationForceField;
+    at->_LKGeneration++;   // every rebuild is a new generation, so stale copies are detectable
   }
 
+  // Copy rather than alias, so the accessors in the header keep indexing this->_TypeSlot
+  // unchanged.  n ints per component is nothing next to the funcalls just avoided; drop the
+  // member and read at->_LKTypeSlot directly if it ever matters.  Element-wise rather than
+  // whole-vector assignment - gctools::Vec0 is not std::vector and copy-assign is not assumed.
+  this->_TypeSlot.assign(n, -1);
+  for (size_t i = 0; i < n; ++i) this->_TypeSlot[i] = at->_LKTypeSlot[i];
+
+  // ---- PER COMPONENT: the term cache depends on _Parameters, which is NOT shared ----
+  //
   // Precompute the term for every ORDERED slot pair - the term is asymmetric
   // in i/j, so [s1][s2] and [s2][s1] both have to be built.
-  size_t nt = uniq.size();
+  size_t nt = at->_LKUniq.size() / 4;      // 4 doubles per slot
   this->_NTypeSlots = nt;
   this->_TermCache.assign(nt*nt, rosetta_lk_solvation_term());
   this->_TermCacheValid.assign(nt*nt, 0);
@@ -263,12 +298,15 @@ void EnergyRosettaLKSolvation_O::ensureParameterCache() {
     for (size_t s2 = 0; s2 < nt; ++s2) {
       this->_TermCache[s1*nt + s2] =
         rosetta_lk_solvation_term(this->_Parameters,
-                                  uniq[s1][0], uniq[s1][1], uniq[s1][2], uniq[s1][3],
-                                  uniq[s2][0], uniq[s2][1], uniq[s2][2], uniq[s2][3],
+                                  at->_LKUniq[4*s1+0], at->_LKUniq[4*s1+1],
+                                  at->_LKUniq[4*s1+2], at->_LKUniq[4*s1+3],
+                                  at->_LKUniq[4*s2+0], at->_LKUniq[4*s2+1],
+                                  at->_LKUniq[4*s2+2], at->_LKUniq[4*s2+3],
                                   0, 0);
       this->_TermCacheValid[s1*nt + s2] = 1;
     }
   this->_CachedForAtomTable = at;
+  this->_CachedLKGeneration = at->_LKGeneration;
 }
 
 bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Atom_sp a2,
@@ -281,9 +319,13 @@ bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp 
   core::Symbol_sp t1 = a1->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>());
   core::Symbol_sp t2 = a2->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>());
   ASSERT(forceField && forceField.notnilp());
-  core::T_sp tffLKSolvation1 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t1);
+  // errorp NIL on both: the checks below name the atom and dump its property list, which is what
+  // makes an untyped atom findable.  Letting find-lksolvation-type signal instead (its errorp
+  // defaults to T, chem.lisp:965) reports only "... for :lk-solvation-atom-type NIL" and loses
+  // every piece of identifying information the caller already has in hand.
+  core::T_sp tffLKSolvation1 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t1, nil<core::T_O>());
   if (tffLKSolvation1.nilp()) SIMPLE_ERROR("Could not find the LKSolvation1 parameter {} for atom {} - property-list {}", _rep_(t1), _rep_(a1), _rep_(a1->getProperties()));
-  core::T_sp tffLKSolvation2 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t2);
+  core::T_sp tffLKSolvation2 = core::eval::funcall(_sym_find_lksolvation_type, forceField, t2, nil<core::T_O>());
   if (tffLKSolvation2.nilp()) SIMPLE_ERROR("Could not find the LKSolvation2 parameter {} for atom {} - property-list {}", _rep_(t2), _rep_(a2), _rep_(a2->getProperties()));
   auto ffLKSolvation1 = gc::As<FFLKSolvation_sp>(tffLKSolvation1);
   auto ffLKSolvation2 = gc::As<FFLKSolvation_sp>(tffLKSolvation2);
@@ -316,12 +358,20 @@ void EnergyRosettaLKSolvation_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
   node->field(INTERN_(kw, LKSolvationForceField), this->_LKSolvationForceField );
   node->field(INTERN_(kw, AtomTypes), this->_AtomTypes );
-  node->field(INTERN_(kw, KeepInteractionFactory), this->_KeepInteractionFactory);
-  node->field(INTERN_(kw, DisplacementBuffer), this->_DisplacementBuffer );
-  node->field(INTERN_(kw, Matter1), this->_Matter1);
-  node->field(INTERN_(kw, Matter2), this->_Matter2);
   this->_Parameters.fields(node);
   this->Base::fields(node);
+}
+
+/*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
+ *  documents.  A caller taking &rest reads any component without knowing which one it has.
+ */
+void EnergyRosettaLKSolvation_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1_enb,
+                          eni->_Atom2_enb,
+                          core::make_fixnum(eni->term.i3x1),
+                          core::make_fixnum(eni->term.i3x2));
+  }
 }
 
 void EnergyRosettaLKSolvation_O::dumpTerms(core::HashTable_sp atomTypes) {
@@ -367,7 +417,7 @@ EnergyComponent_sp EnergyRosettaLKSolvation_O::copyFilter(core::T_sp keepInterac
   copy->_Matter2 = this->_Matter2;
   copy->_KeepInteractionFactory = keepInteractionFactory;
   copy->_Parameters.do_apply(setupAcc);
-  copy->_DisplacementBuffer = nil<core::T_O>();
+  copy->invalidatePairList();
   copy->_Terms.clear();
   copy->invalidateParameterCache();
   return copy;

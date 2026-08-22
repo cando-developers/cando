@@ -102,11 +102,49 @@ void EnergyComponent_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+void EnergyPairlistComponent_O::fields(core::Record_sp node)
+{
+  // The pair-list components each used to write these themselves; consolidated here.
+  //
+  // NOT serialized: the QUERY SET.  It is an enumeration hint a caller re-establishes when it sets
+  // the component up, and restoring a stale one is the dangerous direction - too narrow silently
+  // drops terms.  Leaving it unset restores the safe default, "enumerate from every atom".
+  // Names match exactly what the subclasses used to write - :KeepInteractionFactory, :Matter1,
+  // :Matter2 - so previously saved records still read back.
+  //
+  // :DisplacementBuffer is GONE and deliberately has no replacement.  It was a copy of the
+  // coordinates used for drift detection, now two scalars measured against a snapshot on the
+  // AtomTable (see EnergyPairlistComponent_O::_PairListEpoch).  Those are pure cache: writing them
+  // would be writing a position relative to a reference the reader does not have, and epoch 0 -
+  // what a reader gets by leaving them alone - already means "rebuild before trusting anything",
+  // which is exactly right for a component that has just been read off disk.  An old record that
+  // still carries :DisplacementBuffer reads back with the field ignored, which is also right.
+  //
+  // FIELD_IF_NOT_NIL rather than FIELD, for two reasons.  EnergyNonbond_O never serialized these
+  // at all, so emitting them unconditionally would change ITS record format; and these are nil in
+  // ordinary saved data anyway, since matters are set transiently around a scan.  A reader that
+  // finds them absent leaves the slots at their nil defaults, which is the same result the old
+  // required-field write produced.
+  node->field_if_not_nil( INTERN_(kw,KeepInteractionFactory), this->_KeepInteractionFactory );
+  node->field_if_not_nil( INTERN_(kw,Matter1), this->_Matter1 );
+  node->field_if_not_nil( INTERN_(kw,Matter2), this->_Matter2 );
+  this->Base::fields(node);
+}
+
 
 CL_DOCSTRING(R"doc(Call the CALLBACK for each term and pass the atoms and other information.  Exactly what is passed depends on the energy-component.
-The CALLBACK either needs to accept all the arguments as required arguments or a single &rest parameter.)doc");
+The CALLBACK either needs to accept all the arguments as required arguments or a single &rest parameter.
+
+The CONVENTION every implementation follows: the term's ATOMS first, then its I3 values, in the same
+order.  A caller that takes &rest can therefore treat the leading Atom_sp arguments as the term and
+the trailing fixnums as its coordinate indexes, without knowing which class it is walking.)doc");
 CL_DEFMETHOD void EnergyComponent_O::atomsForEachTerm(core::Function_sp callback) {
-  SUBCLASS_MUST_IMPLEMENT();
+  // SIMPLE_ERROR, not SUBCLASS_MUST_IMPLEMENT.  The latter is a HARD abort - it takes the process
+  // down with no backtrace - which forced every caller to carry a hand-maintained allow-list of the
+  // classes known to implement this, and to keep that list correct on pain of losing the session.
+  // A condition lets a walker over a heterogeneous component list report what it cannot read and
+  // carry on.
+  SIMPLE_ERROR("{} does not implement atomsForEachTerm", _rep_(this->_instanceClass()->_className()));
 }
 
 string	EnergyComponent_O::enabledAsString() 

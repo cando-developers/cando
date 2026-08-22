@@ -127,9 +127,9 @@ inline bool combineNonbondParams(double r1, double e1, double r2, double e2,
   return true;
 } 
 
-class EnergyRosettaNonbond_O : public EnergyComponent_O
+class EnergyRosettaNonbond_O : public EnergyPairlistComponent_O
 {
-  LISP_CLASS(chem, ChemPkg, EnergyRosettaNonbond_O, "EnergyRosettaNonbond", EnergyComponent_O);
+  LISP_CLASS(chem, ChemPkg, EnergyRosettaNonbond_O, "EnergyRosettaNonbond", EnergyPairlistComponent_O);
 
 public:
   virtual bool restraintp() const override { return false; };
@@ -147,17 +147,15 @@ public: // instance variables
   AtomTable_sp            _AtomTable;
   core::T_sp              _NonbondForceField;
   core::HashTable_sp      _AtomTypes;
-  core::T_sp              _KeepInteractionFactory;
-  core::T_sp              _DisplacementBuffer;
-  // If _Matter1 and _Matter2 are defined, build pair-list between them instead of using _AtomTable
-  bool                    _ExclusionsPossible = true;  // POD - see setMatters
-  core::T_sp              _Matter1;
-  core::T_sp              _Matter2;
   double                  _LastFaRep = 0.0;
   
   // Rosetta parameters (used to construct terms)
   rosetta_nonbond_parameters      _Parameters;
   core::T_sp                      _CachedForAtomTable;
+  //! Which generation of the atom table's SHARED _NBTypeSlot this component copied from.
+  //! (size_t)-1 is "never copied" - see AtomTable_O::_NBGeneration for why the atom-table pointer
+  //! alone cannot answer this.
+  size_t                          _CachedNBGeneration = (size_t)-1;
 
   gctools::Vec0<int>                    _TypeSlot;        // atom index -> slot, -1 = no type
   size_t                                _NTypeSlots = 0;
@@ -170,6 +168,7 @@ public:
   void ensureParameterCache();
   void invalidateParameterCache() {
     this->_CachedForAtomTable = nil<core::T_O>();
+    this->_CachedNBGeneration = (size_t)-1;
     this->_TypeSlot.clear();
     this->_TermCache.clear();
     this->_TermCacheValid.clear();
@@ -215,29 +214,8 @@ public: // for building the pairList
   CL_DEFMETHOD double rpairlist() const { return _Parameters.rpairlist; }
   double rcut() const { return _Parameters.rcut; }
   AtomTable_sp atomTable() const { return _AtomTable; }
-  CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
-  CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
-  CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
-  // EXCLUSIONS-POSSIBLE declares whether any 1-2/1-3/1-4 bonded pair can span the two
-  // matters.  When it cannot - two sidechains at different loci, two separate molecules,
-  // a sidechain against an intermolecular partner - the per-pair exclusion lookups in
-  // rebuildPairListBetweenMattersImpl are three container probes that always miss.
-  // Defaults to T so every existing caller keeps the checked behaviour; only pass NIL
-  // when the two atom sets provably share no bonded path (see the sidechain-vs-
-  // intra-matter2 singles scan, which genuinely needs the check).
-  CL_LAMBDA(matter1 matter2 &optional (exclusions-possible t));
-  CL_LAMBDA((self chem:energy-rosetta-nonbond) matter1 matter2 &optional (exclusions-possible t));
-  CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2, bool exclusionsPossible = true ) {
-    // this->invalidateParameterCache();
-    this->_Matter1 = matter1;
-    this->_Matter2 = matter2;
-    this->_ExclusionsPossible = exclusionsPossible;
-    this->_DisplacementBuffer = nil<core::T_O>();
-  }
-  bool exclusionsPossible() const { return this->_ExclusionsPossible; }
+  // setMatters is inherited from EnergyPairlistComponent_O.
   void clearTerms() { _Terms.clear(); }
-  void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
-  core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
 
   bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
                   core::T_sp keepInteraction) {
@@ -303,10 +281,6 @@ public:
   EnergyRosettaNonbond_O(const EnergyRosettaNonbond_O& ss); //!< Copy constructor
 
   EnergyRosettaNonbond_O() :
-      _KeepInteractionFactory(nil<core::T_O>()),
-      _DisplacementBuffer(nil<core::T_O>()),
-      _Matter1(nil<core::T_O>()),
-      _Matter2(nil<core::T_O>()),
       _CachedForAtomTable(nil<core::T_O>())
   {};
 };

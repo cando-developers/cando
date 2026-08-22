@@ -161,7 +161,7 @@ public:
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
   iterator end() { return this->_Terms.end(); };
-  static EnergyAngle_sp make(EnergyFunction_sp energyFunction);
+  static EnergyAngle_sp make(EnergyFunction_sp energyFunction, core::T_sp group = nil<core::T_O>());
 public:
   virtual size_t numberOfTerms() { return this->_Terms.size();};
   CL_DEFMETHOD core::T_mv safe_amber_energy_angle_term(size_t index) {
@@ -184,6 +184,7 @@ public:
   virtual std::string descriptionOfContents() const;
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
   virtual core::List_sp extract_vectors_as_alist() const;
   virtual void fill_from_vectors_in_alist(core::List_sp vectors);

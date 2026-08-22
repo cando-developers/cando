@@ -27,6 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
+#include <cmath>                   // std::sqrt, for updateDrift
 #include <clasp/core/foundation.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/nativeVector.h>
@@ -44,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyComponent.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/forceField.h>
+#include <cando/chem/pairList.h>   // CellGrid, for ensureNeighborList
 #include <cando/units/unitsPackage.h>
 #include <cando/units/quantity.h>
 #include <cando/chem/loop.h>
@@ -539,6 +541,170 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
   }
   return this->_Atoms[index]._Flag;
 }
+
+void AtomTable_O::resnapshotDrift(core::T_sp tcoords)
+{
+  NVector_sp now = gc::As<NVector_sp>(tcoords);
+  this->_RefCoords = copy_nvector(now);
+  this->_DriftOwner = tcoords;
+  this->_MaxDrift = 0.0;
+  this->_RefEpoch++;
+  // 0 means "never built" on the consumer side, so the counter must never land back on it.
+  if (this->_RefEpoch == 0) this->_RefEpoch = 1;
+}
+
+double AtomTable_O::updateDrift(core::T_sp tcoords)
+{
+  if (!gc::IsA<NVector_sp>(tcoords)) {
+    SIMPLE_ERROR("updateDrift needs an NVector of coordinates, got {}", _rep_(tcoords));
+  }
+  NVector_sp now = gc::As_unsafe<NVector_sp>(tcoords);
+  if (!gc::IsA<NVector_sp>(this->_RefCoords)
+      || gc::As_unsafe<NVector_sp>(this->_RefCoords)->size() != now->size()) {
+    // No usable reference - the first call, or the atom table changed size underneath us.  A fresh
+    // snapshot bumps the epoch, so every consumer rebuilds, which is what "I have no idea how far
+    // anything has moved" has to mean.
+    this->resnapshotDrift(tcoords);
+    this->_LastDrift = 0.0;   // nothing was measured - do not leave a stale reading behind
+    return 0.0;
+  }
+  NVector_sp ref = gc::As_unsafe<NVector_sp>(this->_RefCoords);
+  vecreal* r = &(*ref)[0];
+  vecreal* p = &(*now)[0];
+  size_t n = ref->size();
+  double max2 = 0.0;
+  for (size_t i = 0; i < n; i += 3) {
+    // Unmoved is the common case by far - a fill changes one slot and leaves 6700 atoms alone.
+    if (r[i] == p[i] && r[i+1] == p[i+1] && r[i+2] == p[i+2]) continue;
+    vecreal dx = r[i] - p[i], dy = r[i+1] - p[i+1], dz = r[i+2] - p[i+2];
+    double d2 = dx*dx + dy*dy + dz*dz;
+    if (d2 > max2) max2 = d2;
+  }
+  this->_MaxDrift = std::sqrt(max2);
+  this->_LastDrift = this->_MaxDrift;   // survives the re-snapshot below - reporting only
+  this->_DriftOwner = tcoords;
+  // RE-SNAPSHOT once the drift is past every threshold in play.  Every consumer's bound is
+  // maxDrift + itsOwnDriftAtBuild >= maxDrift, so at this point they are all rebuilding anyway and
+  // dropping the epoch costs nothing - while resetting the reference resets the conservatism of
+  // the triangle-inequality bound back to zero.  Without this the bound would creep and start
+  // forcing rebuilds early.
+  if (this->_MaxTriggerSeen > 0.0 && this->_MaxDrift > this->_MaxTriggerSeen) {
+    this->resnapshotDrift(tcoords);
+  }
+  return this->_MaxDrift;
+}
+
+double AtomTable_O::driftFor(core::T_sp tcoords)
+{
+  if (this->_DriftOwner != tcoords) return this->updateDrift(tcoords);
+  return this->_MaxDrift;
+}
+
+bool AtomTable_O::neighborListValidFor(core::T_sp tcoords, double cutoff, core::T_sp targetMask) const
+{
+  if (this->_NeighborEpoch == 0) return false;                  // never built
+  if (this->_NeighborTargetMask != targetMask) return false;
+  if (this->_NeighborCutoff < cutoff) return false;
+  if (this->_NeighborStart.size() != this->_Atoms.size() + 1) return false;
+  if (this->_NeighborEpoch != this->_RefEpoch) return false;    // reference moved under us
+  // The slack between built and requested IS the skin - see the header.  Zero slack means any
+  // motion invalidates, which is correct.
+  //
+  // The drift SINCE THE BUILD is bounded by the drift since the reference plus the drift the
+  // reference already had when we built - see _RefCoords for why that is the right sum.
+  double moved = 0.5 * (this->_NeighborCutoff - cutoff);
+  return (this->_MaxDrift + this->_NeighborDrift) <= moved;
+}
+
+void AtomTable_O::ensureNeighborList(core::T_sp tcoords, double cutoff, core::T_sp targetMask)
+{
+  // Bring the shared drift up to date before asking whether the list survives it, and declare the
+  // widest slack a build here can offer so the re-snapshot policy does not cut this list short.
+  this->driftFor(tcoords);
+  this->noteTrigger(0.5 * NEIGHBOR_LIST_SKIN);
+  if (this->neighborListValidFor(tcoords, cutoff, targetMask)) return;
+  // Build with skin so the list survives motion instead of rebuilding on every step.
+  cutoff += NEIGHBOR_LIST_SKIN;
+  if (!gc::IsA<NVector_sp>(tcoords)) {
+    SIMPLE_ERROR("ensureNeighborList needs an NVector of coordinates, got {}", _rep_(tcoords));
+  }
+  NVector_sp coordsObj = gc::As_unsafe<NVector_sp>(tcoords);
+  vecreal* coords = &(*coordsObj)[0];
+  size_t natoms = this->_Atoms.size();
+  size_t n3 = natoms * 3;
+
+  // The mask is indexed by I3, matching the convention the blueprint's scope bit-vectors use, so
+  // the caller passes the object it already has rather than building a second one.
+  core::SimpleBitVector_sp mask;
+  bool hasMask = targetMask.notnilp();
+  if (hasMask) {
+    if (!gc::IsA<core::SimpleBitVector_sp>(targetMask)) {
+      SIMPLE_ERROR("ensureNeighborList targetMask must be NIL or a simple-bit-vector, got {}",
+                   _rep_(targetMask));
+    }
+    mask = gc::As_unsafe<core::SimpleBitVector_sp>(targetMask);
+    if (mask->length() < n3) {
+      SIMPLE_ERROR("ensureNeighborList targetMask has {} bits, needs {} (3 per atom, indexed by i3)",
+                   mask->length(), n3);
+    }
+  }
+
+  // ---- grid over the TARGET atoms only ----
+  //
+  // Not over the whole table.  For a blueprint the targets are the backbone - roughly a sixth of
+  // the atoms - and the rest are fan-out rotamer atoms that can never be a legitimate neighbour
+  // for a single-scan energy.  A smaller grid is both cheaper to build and cheaper to walk.
+  std::vector<size_t> targetI3;
+  targetI3.reserve(hasMask ? natoms / 4 : natoms);
+  for (size_t i = 0; i < natoms; i++) {
+    size_t i3 = this->_Atoms[i].coordinateIndexTimes3();
+    if (!hasMask || mask->testBit(i3)) targetI3.push_back(i3);
+  }
+
+  std::vector<uint32_t> start(natoms + 1, 0);
+  std::vector<uint32_t> payload;
+
+  if (!targetI3.empty()) {
+    CellGrid grid;
+    grid.build(coords, targetI3.size(), targetI3, cutoff);
+    double cutoff2 = cutoff * cutoff;
+    payload.reserve(targetI3.size() * 48);   // ~45 neighbours each; grows if wrong, never shrinks
+
+    for (size_t i = 0; i < natoms; i++) {
+      start[i] = (uint32_t)payload.size();
+      size_t i3 = this->_Atoms[i].coordinateIndexTimes3();
+      grid.forEachNear(coords, i3, [&](size_t localTarget) {
+          size_t j3 = targetI3[localTarget];
+          if (j3 == i3) return;                        // an atom is not its own neighbour
+          double dx = coords[i3]     - coords[j3];
+          double dy = coords[i3 + 1] - coords[j3 + 1];
+          double dz = coords[i3 + 2] - coords[j3 + 2];
+          if (dx*dx + dy*dy + dz*dz >= cutoff2) return;
+          payload.push_back((uint32_t)j3);
+        });
+    }
+  } else {
+    for (size_t i = 0; i < natoms; i++) start[i] = 0;
+  }
+  start[natoms] = (uint32_t)payload.size();
+
+  // ---- transfer into the GC-managed vectors ----
+  //
+  // Element-wise: gctools::Vec0 is not std::vector and bulk assignment is not assumed.
+  this->_NeighborStart.resize(natoms + 1);
+  for (size_t i = 0; i <= natoms; i++) this->_NeighborStart[i] = start[i];
+  this->_Neighbors.resize(payload.size());
+  for (size_t k = 0; k < payload.size(); k++) this->_Neighbors[k] = payload[k];
+
+  this->_NeighborCoords = tcoords;
+  // Stamp the SHARED drift as it stands now, rather than taking a private copy of 6762 coordinates.
+  this->_NeighborDrift = this->_MaxDrift;
+  this->_NeighborEpoch = this->_RefEpoch;
+  this->_NeighborTargetMask = targetMask;
+  this->_NeighborCutoff = cutoff;
+  this->_NeighborGeneration++;
+}
+
 
 CL_DEFMETHOD void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
 {

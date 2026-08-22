@@ -119,9 +119,9 @@ namespace translate {
 namespace chem {
 
 
-  class EnergyRosettaElec_O : public EnergyComponent_O
+  class EnergyRosettaElec_O : public EnergyPairlistComponent_O
   {
-    LISP_CLASS(chem, ChemPkg, EnergyRosettaElec_O, "EnergyRosettaElec", EnergyComponent_O);
+    LISP_CLASS(chem, ChemPkg, EnergyRosettaElec_O, "EnergyRosettaElec", EnergyPairlistComponent_O);
 
   public:
     virtual bool restraintp() const override { return false; };
@@ -139,12 +139,6 @@ namespace chem {
     AtomTable_sp            _AtomTable;
     core::T_sp              _NonbondForceField;
     core::HashTable_sp      _AtomTypes;
-    core::T_sp              _KeepInteractionFactory;
-    core::T_sp              _DisplacementBuffer;
-    // If _Matter1 and _Matter2 are defined, build pair-list between them instead of using _AtomTable
-    bool                    _ExclusionsPossible = true;  // POD - see setMatters
-    core::T_sp              _Matter1;
-    core::T_sp              _Matter2;
     rosetta_elec_parameters _Parameters;
     // Rosetta parameters (used to construct terms)
 
@@ -198,22 +192,10 @@ namespace chem {
     double rcut() const { return _Parameters.rcut; }
     AtomTable_sp atomTable() const { return _AtomTable; }
     // keepInteractionFactory() already exists (line 159)
-    CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
-    CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
-    CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
-    CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
-    // See EnergyRosettaNonbond_O::setMatters for what EXCLUSIONS-POSSIBLE means.
-    CL_LAMBDA((self chem:energy-rosetta-elec) matter1 matter2 &optional (exclusions-possible t));
-    CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2, bool exclusionsPossible = true ) {
-      this->_Matter1 = matter1;
-      this->_Matter2 = matter2;
-      this->_ExclusionsPossible = exclusionsPossible;
-      this->_DisplacementBuffer = nil<core::T_O>();
-    }
-    bool exclusionsPossible() const { return this->_ExclusionsPossible; }
+    //    CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
+    //    CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
+  // setMatters is inherited from EnergyPairlistComponent_O.
     void clearTerms() { _Terms.clear(); }
-    void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
-    core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
 
     bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
                     core::T_sp keepInteraction) {
@@ -238,11 +220,11 @@ namespace chem {
     void callForEachTerm(core::Function_sp callback);
 
   public:
-    CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
 
   public:
     void addTerm(const TermType& term);
     virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask );
 
@@ -287,12 +269,9 @@ namespace chem {
   public:
     EnergyRosettaElec_O(const EnergyRosettaElec_O& ss); //!< Copy constructor
 
-    EnergyRosettaElec_O() :
-        _KeepInteractionFactory(nil<core::T_O>()),
-        _DisplacementBuffer(nil<core::T_O>()),
-        _Matter1(nil<core::T_O>()),
-        _Matter2(nil<core::T_O>())
-    {};
+    // No initializer list left - every member it used to initialize now belongs to
+    // EnergyPairlistComponent_O, whose own constructor nils them.
+    EnergyRosettaElec_O() {};
   };
 
 };

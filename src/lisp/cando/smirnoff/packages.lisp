@@ -46,4 +46,5 @@
    #:key-part< #:canonicalize-key #:add-fourier-term
    #:expand-parameter-cache
    #:cached-smirnoff-force-field
+   #:cache #:smirnoff-force-field
    ))

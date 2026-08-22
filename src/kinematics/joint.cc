@@ -399,7 +399,13 @@ CL_DEFMETHOD Joint_sp Joint_O::childWithName(core::T_sp name) const
   for ( size_t ii=0; ii<this->_numberOfChildren(); ii++ ) {
     if (this->_child(ii)->name() == name) return this->_child(ii);
   }
-  SIMPLE_ERROR("Could not find child with name {}", _rep_(name));
+
+  ql::list ll;
+  for ( size_t ii=0; ii<this->_numberOfChildren(); ii++ ) {
+    ll << this->_child(ii)->name();
+  }
+  core::T_sp all = ll.cons();
+  SIMPLE_ERROR("Could not find child with name {} - there are {} available names: {}", _rep_(name), cl__length(all), _rep_(all) );
 }
 
     /*! See file:///Users/meister/Development/rosetta3.3/rosetta_source/html/core+numeric+protocols/dc/db0/_atom___8hh-source.html#l00475

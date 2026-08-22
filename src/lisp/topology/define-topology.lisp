@@ -346,13 +346,13 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                      (mapcar (lambda (info)
                                                (let* ((constitution-atom (constitution-atom info))
                                                       (name (atom-name constitution-atom))
-                                                      (type (stype info)))
-                                                 #+(or)(format t "fixed-chiral-info: ~s ~s~%" name type)
-                                                 (when (eq type :undefined-configuration)
+                                                      (stype (stype info)))
+                                                 #+(or)(format t "fixed-chiral-info: ~s ~s~%" name stype)
+                                                 (when (eq stype :undefined-configuration)
                                                    (error "Don't allow :undefined-configuration for ~a" name))
                                                  (make-instance 'stereoconfiguration
                                                                 :atom-name name
-                                                                :configuration type)))
+                                                                :configuration stype)))
                                              fixed-chiral-info)))
              (new-name-string (format nil "~A~{~A~}"
                                       name

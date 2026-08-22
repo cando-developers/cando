@@ -38,7 +38,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/geom/vector3.h>
-#include <clasp/core/environment.fwd.h>
 #include <cando/geom/coordinateArray.fwd.h>
 
 namespace       chem {

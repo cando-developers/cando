@@ -913,13 +913,13 @@ If UNINITIALIZED then leave them unbound."
     (format t "       residue-shapes ~d      rotamer-shapes ~d~%" sidechain-residue-shapes sidechain-rotamer-shapes)
     ))
 
-(defun random-oligomer-shape-aggregate (oligomer-shape &key prepare-assembler)
+(defun random-oligomer-shape-aggregate (oligomer-shape &key receptor-only prepare-assembler)
   "Generate a random oligomer-shape and return the aggregate"
   (let* ((bs (make-permissible-backbone-rotamers oligomer-shape)))
     (write-rotamers oligomer-shape bs (random-rotamers bs))
     (let ((ss (make-permissible-sidechain-rotamers oligomer-shape)))
       (write-rotamers oligomer-shape ss (random-rotamers ss))
-      (let* ((ass (make-assembler (list oligomer-shape)))
+      (let* ((ass (make-assembler (list oligomer-shape) :receptor-only receptor-only))
              (assembler-internals (make-internals-for-assembler ass))
              (coords (make-coordinates-for-assembler ass)))
         (when prepare-assembler

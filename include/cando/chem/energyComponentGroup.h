@@ -80,6 +80,13 @@ class EnergyComponentGroup_O : public EnergyComponent_O
 
 public: // instance variables
   gctools::Vec0<EnergyComponent_sp>	_Components;
+  /*! A label for this group - anything: a symbol, a string, a list.
+   *
+   * Groups are otherwise indistinguishable in a backtrace or an inspector: a blueprint holds one
+   * backbone-intra, one backbone-inter, one pair-scan and 940 per-slot groups, and every one of
+   * them prints as "#<EnergyComponentGroup N components>".  Naming them is what makes an error or
+   * a profile line say WHICH group it came from. */
+  core::T_sp                            _GroupName;
 
 public:
   typedef gctools::Vec0<EnergyComponent_sp>::iterator iterator;
@@ -96,6 +103,10 @@ public:
   CL_DEFMETHOD void addComponent(EnergyComponent_sp c);
   /*! The children, as a list - for walkers that must descend into groups. */
   CL_DEFMETHOD core::List_sp components() const;
+  CL_LISPIFY_NAME("energy-component-group-name");
+  CL_DEFMETHOD core::T_sp groupName() const { return this->_GroupName; };
+  CL_LISPIFY_NAME("setf-energy-component-group-name");
+  CL_DEFMETHOD void setGroupName(core::T_sp name) { this->_GroupName = name; };
   CL_DEFMETHOD size_t numberOfComponents() const { return this->_Components.size(); };
 
   /*! TRUE if ANY child is a restraint.  A group is as much a restraint as its children. */
@@ -143,7 +154,7 @@ public:
 public:
   EnergyComponentGroup_O( const EnergyComponentGroup_O& ss ); //!< Copy constructor
 
-  EnergyComponentGroup_O() {};
+  EnergyComponentGroup_O() : _GroupName(nil<core::T_O>()) {};
   virtual ~EnergyComponentGroup_O() {};
 };
 
