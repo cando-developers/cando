@@ -9,11 +9,12 @@
       - Distance screening
       - Bond/angle/1-4 exclusion checks
       - keepInteraction filter callbacks
-      - Displacement buffer management
+      - Drift detection (rebuild only when the coordinates have actually moved)
       - Between-matters variant
 
     Component requirements (duck-typed):
       double          rpairlist() const
+      double          rcut() const
       AtomTable_sp    atomTable() const
       core::T_sp      keepInteractionFactory() const
       core::T_sp      matter1() const
@@ -26,8 +27,11 @@
                                  size_t i1, size_t i2,
                                  size_t i3x1, size_t i3x2,
                                  core::T_sp keepInteraction)
-      void            setDisplacementBuffer(NVector_sp)
-      core::T_sp      displacementBuffer() const
+      core::T_mv      rebuildPairList(core::T_sp coords)
+      size_t          pairListEpoch() const
+      double          pairListDrift() const
+      void            notePairListBuilt(size_t epoch, double drift)
+      void            invalidatePairList()
       static core::T_sp staticClass()      // already exists on all Lisp classes
 */
 
@@ -37,6 +41,7 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
+#include <clasp/core/array.h>            // SimpleBitVector_sp, for the query set / target mask
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>   // specializeKeepInteractionFactory
 #include <cando/chem/nVector.h>
@@ -126,6 +131,34 @@ public:
         }
       }
     }
+  }
+
+  /*! Visit every local-index in the 27 cells around the point at COORDS[I3].
+
+      A POINT query, where forEachPair above is a full cross product.  The neighbour-list build
+      needs this shape: it asks "what is near THIS atom" once per atom of the whole table, against
+      a grid holding only the target atoms.
+
+      All 27 offsets, not the 14 forward ones.  forEachPair can use forward-only because it emits
+      each unordered pair once and the querying atoms ARE the gridded atoms; here the querying atom
+      is generally not in the grid at all, so every surrounding cell has to be looked at.
+
+      No distance test - the caller applies its own cutoff.  A cell is CELLSIZE on a side, so a
+      27-cell neighbourhood covers everything within CELLSIZE and some things beyond it. */
+  template <typename Visitor>
+  void forEachNear(const vecreal* coords, size_t i3, Visitor&& visit) const {
+    CellKey base{
+      (int32_t)std::floor(coords[i3]     * _invCellSize),
+      (int32_t)std::floor(coords[i3 + 1] * _invCellSize),
+      (int32_t)std::floor(coords[i3 + 2] * _invCellSize)
+    };
+    for (int dx = -1; dx <= 1; ++dx)
+      for (int dy = -1; dy <= 1; ++dy)
+        for (int dz = -1; dz <= 1; ++dz) {
+          auto it = _cells.find(CellKey{base.x + dx, base.y + dy, base.z + dz});
+          if (it == _cells.end()) continue;
+          for (size_t local : it->second) visit(local);
+        }
   }
 };
 
@@ -359,21 +392,180 @@ core::T_mv rebuildPairListBetweenMattersImpl(Component* comp, core::T_sp tcoordi
 //  rebuildPairListImpl — main pair list builder
 // ============================================================
 
+// ============================================================
+//  rebuildPairListFromNeighborsImpl - query-set driven
+// ============================================================
+
+/*! Build the pair list by walking the AtomTable's neighbour list from the component's QUERY SET,
+    instead of gridding the whole table.
+
+    The grid path examines every pair in the table and discards what the predicate rejects.  For a
+    fan-out slot that is ~6.5 million candidates to keep ~4500 - the work scales with the protein
+    while the answer scales with the slot.  Here the work scales with the slot.
+
+    TWO LOOPS, and both are needed:
+
+      CROSS   each query atom against its neighbour list.  The list holds only TARGET atoms, so a
+              slot finds backbone partners and never another rotamer's.
+      INTERNAL both atoms inside a RANGE query.  Those pairs are not in the lists - a slot's own
+              atoms are not targets - and for a rotamer they are real energy: the 1-5-and-beyond
+              contacts within the sidechain.  ~105 candidates over a contiguous range, brute force.
+
+    DEDUPLICATION: when a query atom is ITSELF a target - the backbone querying the backbone - each
+    pair is reachable from both ends, so it is emitted only when i3 < j3.  When the query atom is
+    not a target, as for a slot, that cannot happen and every pair is emitted once. */
+template <typename Component>
+core::T_mv rebuildPairListFromNeighborsImpl(Component* comp, core::T_sp tcoordinates) {
+  NVector_sp coordsObj = gc::As<NVector_sp>(tcoordinates);
+  vecreal* raw = &(*coordsObj)[0];
+  auto atomTable = comp->atomTable();
+  double rpairlist = comp->rpairlist();
+  double rpairlist2 = rpairlist * rpairlist;
+
+  // One build serves every component and every slot at this fold: the cutoff test is >=, so a list
+  // built at the widest rpairlist answers the narrower ones, and the coordinates do not change
+  // across a fill.
+  //
+  // BUILD at queryCutoff when the caller set one - the max across the group - so the list does not
+  // depend on which component happens to evaluate first.  TEST against this component's own
+  // rpairlist2 below regardless: a wider list only offers more candidates, it does not widen the
+  // interaction.
+  double buildCutoff = (comp->queryCutoff() > 0.0) ? comp->queryCutoff() : rpairlist;
+  if (buildCutoff < rpairlist) buildCutoff = rpairlist;
+  atomTable->ensureNeighborList(tcoordinates, buildCutoff, comp->queryTargetMask());
+
+  // AFTER ensureNeighborList, which brings the shared drift up to date and may re-snapshot it.
+  // Stamping before that would record an epoch this list does not actually belong to.
+  comp->notePairListBuilt(atomTable->refEpoch(), atomTable->maxDrift());
+  comp->clearTerms();
+
+#ifdef PAIRLIST_CACHED
+  // NOT optional, and omitting it is why this path first failed with "LKSolvation term cache miss
+  // for slot pair 8,0 of 0".  tryAddTermCached reads _TypeSlot and indexes _TermCache by
+  // _NTypeSlots; ensureParameterCache is what fills both.  Without it _NTypeSlots stays 0 while
+  // _TypeSlot may still hold slots from an earlier build, so the lookup runs off a zero-sized
+  // table.  Both grid paths call it in the same position - see the two sites below.
+  comp->ensureParameterCache();
+#endif
+
+  core::T_sp keepInteraction;
+  bool hasKeepInteractionFunction = false;
+  if (comp->keepInteractionFactory().notnilp()) {
+    keepInteraction = specializeKeepInteractionFactory(comp->keepInteractionFactory(),
+                                                       Component::staticClass());
+    hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
+  }
+  const bool exclusionsPossible = comp->exclusionsPossible();
+  auto& energyAtoms = atomTable->getVectorEnergyAtoms();
+  auto& start = atomTable->_NeighborStart;
+  auto& neighbors = atomTable->_Neighbors;
+
+  size_t interactionsKept = 0;
+  size_t interactionsDiscarded = 0;
+
+  core::SimpleBitVector_sp targets;
+  bool hasTargets = comp->queryTargetMask().notnilp();
+  if (hasTargets) targets = gc::As_unsafe<core::SimpleBitVector_sp>(comp->queryTargetMask());
+
+  auto consider = [&](size_t i3x1, size_t i3x2) {
+      double dx = raw[i3x1]     - raw[i3x2];
+      double dy = raw[i3x1 + 1] - raw[i3x2 + 1];
+      double dz = raw[i3x1 + 2] - raw[i3x2 + 2];
+      if (dx*dx + dy*dy + dz*dz >= rpairlist2) return;
+      EnergyAtom& ea1 = energyAtoms[i3x1/3];
+      Atom_sp a1 = ea1.atom();
+      Atom_sp a2 = energyAtoms[i3x2/3].atom();
+      if (exclusionsPossible && (ea1.inBondOrAngle(a2) || ea1.relatedBy14(a2))) return;
+      if (hasKeepInteractionFunction) {
+        core::T_sp result = core::eval::funcall(keepInteraction, a1, a2,
+                                                core::make_fixnum(i3x1),
+                                                core::make_fixnum(i3x2));
+        if (result.nilp()) { ++interactionsDiscarded; return; }
+      }
+#ifdef PAIRLIST_CACHED
+      if (comp->tryAddTermCached(a1, a2, i3x1/3, i3x2/3, i3x1, i3x2, keepInteraction))
+        ++interactionsKept;
+#else
+      if (comp->tryAddTerm(a1, a2, i3x1, i3x2, keepInteraction)) ++interactionsKept;
+#endif
+    };
+
+  // ---- CROSS: query atoms against their neighbour lists ----
+  auto queryAtom = [&](size_t i3) {
+      size_t i = i3 / 3;
+      bool queryIsTarget = hasTargets && targets->testBit(i3);
+      for (uint32_t k = start[i]; k < start[i+1]; ++k) {
+        size_t j3 = neighbors[k];
+        if (queryIsTarget && j3 < i3) continue;   // reachable from both ends - emit once
+        consider(i3, j3);
+      }
+    };
+
+  if (comp->queryHi3() != 0) {
+    for (size_t i3 = comp->queryLo3(); i3 < comp->queryHi3(); i3 += 3) queryAtom(i3);
+    // ---- INTERNAL: both atoms inside the range ----
+    for (size_t a3 = comp->queryLo3(); a3 < comp->queryHi3(); a3 += 3)
+      for (size_t b3 = a3 + 3; b3 < comp->queryHi3(); b3 += 3)
+        consider(a3, b3);
+  } else {
+    core::SimpleBitVector_sp qmask = gc::As<core::SimpleBitVector_sp>(comp->queryMask());
+    size_t n3 = atomTable->getNumberOfAtoms() * 3;
+    for (size_t i3 = 0; i3 < n3; i3 += 3)
+      if (qmask->testBit(i3)) queryAtom(i3);
+    // No INTERNAL loop for a mask query: a mask-driven caller's own atoms are in the target set
+    // (the backbone querying the backbone), so those pairs already came through the lists above.
+  }
+
+  return Values(core::make_fixnum(interactionsKept),
+                core::make_fixnum(interactionsDiscarded));
+}
+
+
 template <typename Component>
 core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
-  // Between-matters callers drive rebuilds via set-matters (which clears the
-  // displacement buffer), so drift detection is never used here - skip the copy.
+  // Count every rebuild, whichever enumeration it ends up using.  All four components reach a
+  // rebuild through here, so this is the one place that sees them all.  Tests read it to prove the
+  // CACHED path was exercised - see AtomTable_O::_PairListRebuilds.
+  {
+    auto at = comp->atomTable();
+    if (at.notnilp()) at->notePairListRebuild();
+  }
+  // A query set replaces the full-table enumeration entirely - see
+  // rebuildPairListFromNeighborsImpl.  Checked before the matters branch because it is the more
+  // specific instruction: matters say which two SETS to pair, a query set says which atoms to
+  // start from and hands the rest to the neighbour list.
+  if (comp->hasQuerySet()) {
+    if (comp->matter1().notnilp()) {
+      SIMPLE_ERROR("{} has both a query set and matters set - they are alternative ways to bound "
+                   "the same enumeration and only one can apply",
+                   _rep_(comp->asSmartPtr()));
+    }
+    return rebuildPairListFromNeighborsImpl(comp, tcoordinates);
+  }
 
   // Delegate to between-matters variant if configured
   if (comp->matter1().notnilp()) {
     if (comp->matter2().notnilp()) {
+      // Between-matters callers drive rebuilds via set-matters, which invalidates the list, so
+      // drift detection is never used here.  Leave the stamp at "never built" so a list produced
+      // here can never be mistaken for one that drift alone may keep alive - the matters can change
+      // without a single coordinate moving, and drift would report all is well.
+      comp->invalidatePairList();
       return rebuildPairListBetweenMattersImpl(comp, tcoordinates);
     }
     SIMPLE_ERROR("For {} matter1 is {} and matter2 is NIL", _rep_(comp->asSmartPtr()), _rep_(comp->matter1()));
   }
 
-  // Save displacement buffer for maybeRebuildPairList drift detection
-  comp->setDisplacementBuffer(copy_nvector(gc::As<NVector_sp>(tcoordinates)));
+  // Stamp the shared drift for maybeRebuildPairList - see EnergyPairlistComponent_O::_PairListEpoch.
+  // No atom table means no snapshot to stamp against; leaving the epoch at 0 makes every later
+  // evaluation rebuild, which is the safe reading of "I cannot tell whether anything moved".
+  {
+    auto at = comp->atomTable();
+    if (at.notnilp()) {
+      at->driftFor(tcoordinates);
+      comp->notePairListBuilt(at->refEpoch(), at->maxDrift());
+    }
+  }
 
   size_t interactionsKept = 0;
   size_t interactionsDiscarded = 0;
@@ -549,42 +741,56 @@ core::T_mv rebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
 //  maybeRebuildPairListImpl — only rebuild if atoms drifted
 // ============================================================
 
+/*! Rebuild only if the coordinates have drifted far enough to invalidate the pair list.
+ *
+ * O(1).  This used to walk a private copy of every coordinate - see
+ * EnergyPairlistComponent_O::_PairListEpoch for what that cost across a blueprint's ~2829
+ * components.  The walk now happens ONCE per evaluation, in AtomTable_O::updateDrift, and what is
+ * left here is two loads and a compare.
+ *
+ * The bound is the triangle inequality: the component needs the drift since ITS OWN rebuild, and
+ * what the atom table knows is the drift since a shared reference, so
+ *
+ *     |x_now - x_rebuilt| <= |x_now - ref| + |ref - x_rebuilt| <= maxDrift() + pairListDrift()
+ *
+ * Conservative in the safe direction: it can rebuild early, it cannot skip a rebuild that is due.
+ * NOTHING IS LOST relative to the old walk, which was itself global - it asked whether ANY atom in
+ * the table had moved, not just the ones this component enumerates. */
 template <typename Component>
 core::T_mv maybeRebuildPairListImpl(Component* comp, core::T_sp tcoordinates) {
-  auto coords = gc::As<NVector_sp>(tcoordinates);
-
-  core::T_sp dispBuf = comp->displacementBuffer();
-  if (dispBuf.nilp()) {
-    return rebuildPairListImpl(comp, tcoordinates);
-  } else if (gc::IsA<NVector_sp>(dispBuf)) {
-    NVector_sp nvDisplacementBuffer = gc::As_unsafe<NVector_sp>(dispBuf);
-    if (nvDisplacementBuffer->size() != coords->size()) {
-      SIMPLE_ERROR("The size of the _DisplacementBuffer({}) MUST match the size of the coordinates({})",
-                   nvDisplacementBuffer->size(), coords->size());
-    }
-    double rpairlist = comp->rpairlist();
-    double rcut      = comp->rcut();
-    double skinThickness = rpairlist - rcut;
-    double movedTrigger = 0.5 * skinThickness;
-    double movedTrigger2 = movedTrigger * movedTrigger;
-    vecreal* raw_db = &(*nvDisplacementBuffer)[0];
-    vecreal* raw_coords = &(*coords)[0];
-    for (size_t ci = 0; ci < nvDisplacementBuffer->size(); ci += 3) {
-      const vecreal& dx = raw_db[ci];
-      const vecreal& dy = raw_db[ci + 1];
-      const vecreal& dz = raw_db[ci + 2];
-      const vecreal& cx = raw_coords[ci];
-      const vecreal& cy = raw_coords[ci + 1];
-      const vecreal& cz = raw_coords[ci + 2];
-      if (dx == cx && dy == cy && dz == cz) continue;
-      vecreal dist2 = (dx - cx) * (dx - cx) + (dy - cy) * (dy - cy) + (dz - cz) * (dz - cz);
-      if (dist2 > movedTrigger2) {
-        return rebuildPairListImpl(comp, tcoordinates);
-      }
-    }
-    return Values0<core::T_O>();
+  auto atomTable = comp->atomTable();
+  if (atomTable.nilp()) {
+    // Nothing to measure drift against.  A component in this state cannot enumerate anything
+    // either - rebuildPairListImpl only reaches the grid through the atom table - so rebuilding
+    // unconditionally is both correct and cheap.
+    return comp->rebuildPairList(tcoordinates);
   }
-  SIMPLE_ERROR("{}: We should never get here", __FUNCTION__);
+  double movedTrigger = 0.5 * (comp->rpairlist() - comp->rcut());
+  // Declare the threshold so the re-snapshot policy knows how far it may let the drift run before
+  // resetting the reference - see AtomTable_O::updateDrift.  STAYS FIRST: the policy needs the
+  // trigger registered even on the paths that return early below.
+  atomTable->noteTrigger(movedTrigger);
+
+  // BEFORE the drift read, because this branch rebuilds unconditionally and would discard it.  The
+  // ordering note below governs the two branches that COMPARE epoch against drift; this one
+  // compares nothing, so nothing can go stale by answering it early.  It matters during a pair
+  // scan, where set-matters invalidates every component on every iteration.
+  if (comp->pairListEpoch() == 0) {                       // never built, or explicitly invalidated
+    return comp->rebuildPairList(tcoordinates);
+  }
+
+  // FIRST relative to the epoch comparisons below, because it may re-snapshot and so change
+  // refEpoch.  Reading the epoch before this and the drift after would compare against two
+  // different references and silently keep a stale list.
+  double drift = atomTable->driftFor(tcoordinates);
+
+  if (comp->pairListEpoch() != atomTable->refEpoch()) {    // reference moved out from under us
+    return comp->rebuildPairList(tcoordinates);
+  }
+  if (drift + comp->pairListDrift() > movedTrigger) {
+    return comp->rebuildPairList(tcoordinates);
+  }
+  return Values0<core::T_O>();
 }
 
 

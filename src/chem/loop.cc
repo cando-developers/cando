@@ -196,39 +196,41 @@ void	Loop::clearAtomIndexes()
 }
 
 
+/*! Every ordered triple of distinct bonds on A, as a BondList each.
+ *
+ * SAME ENUMERATION as the copy-and-remove version this replaces - ordered triples (i,j,k) of
+ * distinct bond indices, outer index slowest - so the improper terms and their atom orders are
+ * unchanged.  Removing an element from a vector leaves the relative order of the rest, so walking
+ * indices and skipping the two already used visits the same bonds in the same sequence that
+ * iterating the two progressively-shortened copies did.
+ *
+ * WHY IT WAS REWRITTEN.  The old version built each triple by copying the whole bond list twice per
+ * level and deleting from the copies: for an atom with N bonds that is N(N-1)(N-2) output lists
+ * PLUS 2N(N-1) + 2N intermediates, and every intermediate deepishCopy duplicates the entire
+ * GCVector.  For N=4 that is 56 allocations, 28 of them full-list copies, to produce 24 triples.
+ * This allocates only the 24, each with exactly the three bonds it holds.
+ *
+ * It mattered because a blueprint's detach scan maps impropers over the whole molecule once per
+ * slot - 1972 times in the profiled run - where the improper subtree was 43% of the scan and its
+ * allocation churn (BondList_O::deepishCopy, GCVector<Bond_sp>::reserve) most of that. */
 void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
 {
-  BondList_sp		blrest0;
-  gctools::Vec0<Bond_sp>::iterator	bl1, bl2, bl3;
   this->_Impropers.clear();
-  blrest0 = a->getBondList();
+  BondList_sp bonds = a->getBondList();
   LOG("Attempting to build a list of impropers centered on {}" , a->description() );
-  LOG("It has the bonds: {}" , blrest0->description() );
-  if ( blrest0->size() >= 3 )
-  {
-    LOG("This atom has more than three bonded neighbors");
-    for ( bl1=blrest0->begin(); bl1!=blrest0->end(); bl1++ )
-    {
-      LOG("Loop 1" );
-      auto  accumulate1  = gctools::GC<BondList_O>::allocate();
-      accumulate1->append(*bl1);
-      BondList_sp blrest1 = blrest0->deepishCopy(); 
-      LOG("Copy blrest1 = {}" , blrest1->description() );
-      ASSERTF(blrest1->size() == blrest0->size(),
-              ("The blrest1 copy doesn't have the same number of elements as the original"));
-      blrest1->removeBond(*bl1);
-      for ( bl2 = blrest1->begin(); bl2!=blrest1->end(); bl2++ )
-      {
-        LOG("Loop 2" );
-        BondList_sp accumulate2 = accumulate1->deepishCopy();
-        accumulate2->append(*bl2);
-        BondList_sp blrest2 = blrest1->deepishCopy();
-        blrest2->removeBond(*bl2);
-        for ( bl3=blrest2->begin(); bl3!=blrest2->end(); bl3++ ) {
-          LOG("Loop 3" );
-          BondList_sp accumulate3 = accumulate2->deepishCopy();
-          accumulate3->append(*bl3);
-          this->_Impropers.push_back(accumulate3);
+  LOG("It has the bonds: {}" , bonds->description() );
+  int n = bonds->size();
+  if ( n >= 3 ) {
+    for ( int i = 0; i < n; i++ ) {
+      for ( int j = 0; j < n; j++ ) {
+        if ( j == i ) continue;
+        for ( int k = 0; k < n; k++ ) {
+          if ( k == i || k == j ) continue;
+          auto trio = gctools::GC<BondList_O>::allocate();
+          trio->append(bonds->atIndex(i));
+          trio->append(bonds->atIndex(j));
+          trio->append(bonds->atIndex(k));
+          this->_Impropers.push_back(trio);
         }
       }
     }

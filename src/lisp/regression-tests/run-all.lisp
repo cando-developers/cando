@@ -12,6 +12,7 @@
 (in-package :clasp-tests)
 
 (reset-clasp-tests)
+(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;bench-blueprint.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;cremer-pople.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;geometry.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;leap.lisp")

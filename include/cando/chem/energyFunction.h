@@ -165,6 +165,15 @@ namespace chem {
     bool				_RestrainSecondaryAmides;
     core::T_sp                          _Message;
     core::Symbol_sp                     _ForceFieldName; // :amber or :rosetta
+    /*! The FULL setup list that defineForAggregate was called with, kept verbatim.
+     * _ForceFieldName above holds only its head.  generateIntoGroup has to re-run
+     * generateNonbondEnergyFunctionTables for one rotamer slot, and the rosetta branch builds
+     * SetupAccumulator(classSymbol,setup) from the WHOLE list - reconstructing (list
+     * _ForceFieldName) would drop the tail and silently reparameterize.  _UseExcludedAtoms is
+     * kept for the same reason: same call, same arguments.
+     */
+    core::T_sp                          _Setup;
+    bool                                _UseExcludedAtoms;
     core::List_sp			_MissingParameters;
   public:
     void	_eraseMissingParameters() { this->_MissingParameters = nil<core::T_O>();};
@@ -195,6 +204,21 @@ namespace chem {
     bool boundingBoxBoundP() const;
     void setBoundingBox(BoundingBox_sp bounding_box);
     void makUnboundBoundingBox();
+
+    void resolveMoleculeForceFields(Aggregate_sp aggregate,
+                                    core::T_sp forceFieldOverrides,
+                                    core::HashTable_sp molecule_force_fields,
+                                    core::HashTable_sp molecule_force_field_names);
+
+    /*! BONDED NIL skips the per-molecule pass entirely and generates only the nonbond components.
+     *
+     * Refusing the bonded classes in the keep-interaction-factory is NOT the same thing.  That
+     * discards the TERMS, but generateForMolecule has already run the full force-field
+     * parameterization by then - so a caller wanting only nonbond re-parameterizes every molecule
+     * to produce zero bonded terms.  For a blueprint pair group that is pure waste, and worse: the
+     * parameterization runs before any predicate is consulted, so a fully attached spiro NG with
+     * 16 bonds trips SMIRNOFF's bond-order check and kills the run. */
+    void generateIntoGroup(core::T_sp keepInteractionFactory, core::T_sp group, core::T_sp forceFieldOverrides, bool bonded=true, core::T_sp scopeAggregate=nil<core::T_O>());
 
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, core::T_sp energyScale, NVector_sp force, core::T_sp activeAtomMask );
 
@@ -238,6 +262,7 @@ namespace chem {
 
     core::List_sp allEnergyComponents() const;
     void          pushEnergyComponent(EnergyComponent_sp component);
+    bool          removeEnergyComponent(EnergyComponent_sp component);
 
     CL_DEFMETHOD bool hasMissingParameters();
     CL_DEFMETHOD core::List_sp getMissingParameters();
@@ -264,16 +289,33 @@ namespace chem {
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
-    void defineForAggregate(Aggregate_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true, core::T_sp forceFieldOverrides=nil<core::T_O>(), core::T_sp setup=nil<core::T_O>() );
-    void defineForMolecule(Molecule_sp molecule, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp nonbondForceField, core::HashTable_sp force_fields, core::HashTable_sp force_field_names );
+    void defineForAggregate(Aggregate_sp agg, bool useExcludedAtoms, core::T_sp keepInteractionFactory=nil<core::T_O>(), bool assign_types=true, core::T_sp forceFieldOverrides=nil<core::T_O>(), core::T_sp setup=nil<core::T_O>(), core::T_sp maybe_energy_component_group=nil<core::T_O>() );
+    /*! PASS 1 - assign MOLECULE's atom types and append its atoms to the atom table. */
+    void constructAtomTableForMolecule(Molecule_sp molecule, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp nonbondForceField, core::HashTable_sp force_fields, core::HashTable_sp force_field_names );
+    /*! PASS 2 - generate MOLECULE's bonded terms into GROUP (or into the energy function's
+        own components when GROUP is NIL).  The atom table is already complete. */
+    void generateForMolecule(Molecule_sp molecule, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp nonbondForceField, core::HashTable_sp force_fields, core::HashTable_sp force_field_names, core::T_sp group=nil<core::T_O>() );
     void generateStandardEnergyFunctionTables(Matter_sp mol,
                                               FFStretchDb_sp stretchDb,
                                               FFAngleDb_sp angleDb,
                                               FFPtorDb_sp ptorDb,
                                               FFItorDb_sp itorDb,
                                               core::T_sp keepInteractionFactory,
-                                              core::HashTable_sp atomTypes);
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp setup );
+                                              core::HashTable_sp atomTypes,
+                                              core::T_sp group=nil<core::T_O>());
+    /*! GROUP NIL puts the nonbond components on the energy function, which is what
+        defineForAggregate wants.  GROUP non-NIL collects them there instead - see
+        collectComponent - which is how one rotamer slot gets its own nonbond terms. */
+    /*! BONDED14 false suppresses the 1-4 component.
+     *
+     * A 1-4 interaction is a nonbond ENERGY whose MEMBERSHIP comes from the bond graph:
+     * construct14InteractionTerms loops PROPERS over the matter and takes each proper dihedral's
+     * terminal atoms.  Same Loop, same matter, same source as the dihedral terms - so it is
+     * topology-determined in exactly the way the bonded terms are, and a caller that skipped the
+     * bonded pass has no business paying for it either.
+     *
+     * Defaults true so defineForAggregate is unaffected. */
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp setup, core::T_sp group=nil<core::T_O>(), bool bonded14=true );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
 
     /*! Add the restraints to the energy function.
@@ -305,6 +347,25 @@ namespace chem {
                                              core::T_sp energyScale, core::T_sp activeAtomMask, core::T_sp debugInteractions,
                                              bool disableRestraints ) ;
 
+    /*! As above, but evaluate ONE NAMED component instead of scanning the component list.
+     *
+     * evaluateAll walks _EnergyComponents - a CONS LIST - testing isEnabled() and the virtual
+     * restraintp() on every element.  A blueprint holds ~2829 components across ~471 groups and a
+     * pair scan enables exactly one group, so every evaluation chases 2829 heap-scattered cells to
+     * find the one that is on.  That search measured 84% of a scan against 12% for the physics it
+     * was searching for.
+     *
+     * The component's own isEnabled() still gates it (energyComponentGroup.cc:181), so this changes
+     * WHICH components are considered, not whether the named one runs.
+     *
+     * No DISABLE-RESTRAINTS: it only means anything while scanning a list, and here the caller has
+     * named the component outright - including, if it likes, a restraint. */
+    void evaluateComponentIntoFaRestFaRepVector(core::T_sp component, NVector_sp pos,
+                                                NVector_sp faRestFaRepVector, size_t index,
+                                                core::T_sp faRepComponent,
+                                                core::T_sp energyScale, core::T_sp activeAtomMask,
+                                                core::T_sp debugInteractions ) ;
+
     size_t runTestCalls(core::T_sp stream, NVector_sp pos);
 
     string	summarizeEnergyAsString();
@@ -326,6 +387,8 @@ namespace chem {
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(bounding_box)
         ,_ForceFieldName(nil<core::Symbol_O>())
+        ,_Setup(nil<core::T_O>())
+        ,_UseExcludedAtoms(false)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
 
@@ -336,6 +399,8 @@ namespace chem {
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
         ,_ForceFieldName(nil<core::Symbol_O>())
+        ,_Setup(nil<core::T_O>())
+        ,_UseExcludedAtoms(false)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
     EnergyFunction_O( const EnergyFunction_O& ef ) :
@@ -345,6 +410,8 @@ namespace chem {
         ,_EnergyComponents(nil<core::T_O>())
         ,_BoundingBox(unbound<BoundingBox_O>())
         ,_ForceFieldName(nil<core::Symbol_O>())
+        ,_Setup(nil<core::T_O>())
+        ,_UseExcludedAtoms(false)
 //      , _MissingParameters(unbound<core::List_O>())
     {};
   };
@@ -374,10 +441,11 @@ namespace chem {
     Note the scoping is per-GROUP, not per-CALL.  ensureComponent is invoked once per TERM, so a
     fresh component per call would give one component per term.
 
-    Components are pushed onto the energy function either way, so it owns them for evaluation
-    and GC.  Once any group exists, findComponentOrNil is no longer meaningful for the grouped
-    classes - it returns the FIRST, which is the backbone's - so consumers of slot components
-    must hold direct references. */
+    A grouped component is NOT also pushed onto the energy function.  The group itself is pushed,
+    once, and forwards evaluation to its children; pushing both double-counts every term, and
+    pushing neither makes enable/disable a no-op.  Once any group exists, findComponentOrNil is no
+    longer meaningful for the grouped classes - it returns the FIRST, which is the backbone's - so
+    consumers of slot components must hold direct references. */
 template <typename Type>
 gc::smart_ptr<Type> ensureComponent(EnergyFunction_sp mthis, core::T_sp group = nil<core::T_O>()) {
   if (group.notnilp()) {
@@ -386,7 +454,6 @@ gc::smart_ptr<Type> ensureComponent(EnergyFunction_sp mthis, core::T_sp group = 
       if (gc::IsA<gc::smart_ptr<Type>>(c)) return gc::As<gc::smart_ptr<Type>>(c);
     }
     auto new_comp = Type::create();
-    mthis->pushEnergyComponent(new_comp);
     egroup->addComponent(new_comp);
     return new_comp;
   }
@@ -397,6 +464,22 @@ gc::smart_ptr<Type> ensureComponent(EnergyFunction_sp mthis, core::T_sp group = 
     return new_comp;
   }
   return gc::As<gc::smart_ptr<Type>>(comp);
+}
+
+/*! Route an ALREADY-CONSTRUCTED component to a group, or to the energy function when GROUP is NIL.
+
+    The nonbond counterpart of ensureComponent, and deliberately NOT a find-or-create: nonbond
+    components are built fresh at each generation pass (constructNonbondTermsFromAtomTable fills a
+    new one), so there is nothing to look up.  A slot wants its own EnergyNonbond regardless.
+
+    Same group contract as ensureComponent: the child goes in the group and is NOT also pushed onto
+    the energy function.  The group is pushed once, by the caller. */
+inline void collectComponent(EnergyFunction_sp mthis, EnergyComponent_sp component, core::T_sp group) {
+  if (group.notnilp()) {
+    gc::As<EnergyComponentGroup_sp>(group)->addComponent(component);
+    return;
+  }
+  mthis->pushEnergyComponent(component);
 }
 
 };

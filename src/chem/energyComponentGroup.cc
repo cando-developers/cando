@@ -50,6 +50,7 @@ namespace chem {
 // component does the same: EnergyDihedralRestraint_O declares one and never defines it.
 // copyFilter builds copies through make() + addComponent instead.
 
+CL_LISPIFY_NAME(make-energy-component-group);
 CL_DEF_CLASS_METHOD
 EnergyComponentGroup_sp EnergyComponentGroup_O::make()
 {
@@ -59,6 +60,7 @@ EnergyComponentGroup_sp EnergyComponentGroup_O::make()
 void EnergyComponentGroup_O::fields(core::Record_sp node)
 {
   node->field_if_not_empty(INTERN_(kw,components),this->_Components);
+  node->field_if_not_nil(INTERN_(kw,name),this->_GroupName);
   this->Base::fields(node);
 }
 
@@ -102,6 +104,10 @@ size_t EnergyComponentGroup_O::numberOfTerms()
 
 std::string EnergyComponentGroup_O::descriptionOfContents() const
 {
+  // The NAME first when there is one - a blueprint holds ~940 of these and they are otherwise
+  // indistinguishable in a backtrace.
+  if (this->_GroupName.notnilp())
+    return fmt::format("{} {} components", _rep_(this->_GroupName), this->_Components.size());
   return fmt::format("{} components", this->_Components.size());
 }
 
@@ -200,6 +206,7 @@ EnergyComponent_sp EnergyComponentGroup_O::copyFilter(core::T_sp keepInteraction
   EnergyComponentGroup_sp copy = EnergyComponentGroup_O::make();
   copy->_Enabled = this->_Enabled;
   copy->_Scale = this->_Scale;
+  copy->_GroupName = this->_GroupName;   // a filtered copy is still the same group
   for ( auto& c : this->_Components ) {
     EnergyComponent_sp filtered = c->copyFilter(keepInteractionFactory,setupAcc);
     if ( filtered.notnilp() ) copy->addComponent(filtered);

@@ -115,9 +115,9 @@ namespace translate {
 
 namespace chem {
 
-  class EnergyRosettaLKSolvation_O : public EnergyComponent_O
+  class EnergyRosettaLKSolvation_O : public EnergyPairlistComponent_O
   {
-    LISP_CLASS(chem, ChemPkg, EnergyRosettaLKSolvation_O, "EnergyRosettaLKSolvation", EnergyComponent_O);
+    LISP_CLASS(chem, ChemPkg, EnergyRosettaLKSolvation_O, "EnergyRosettaLKSolvation", EnergyPairlistComponent_O);
 
   public:
     virtual bool restraintp() const override { return false; };
@@ -135,11 +135,6 @@ namespace chem {
     AtomTable_sp                _AtomTable;
     core::T_sp                  _LKSolvationForceField;
     core::HashTable_sp          _AtomTypes;
-    core::T_sp                  _KeepInteractionFactory;
-    core::T_sp                  _DisplacementBuffer;
-    bool                        _ExclusionsPossible = true;  // POD - see setMatters
-    core::T_sp                  _Matter1;
-    core::T_sp                  _Matter2;
     // Rosetta parameters (used to construct terms)
     rosetta_lk_solvation_parameters _Parameters;
 
@@ -154,6 +149,10 @@ namespace chem {
     gctools::Vec0<rosetta_lk_solvation_term>  _TermCache;   // _NTypeSlots^2, row-major
     gctools::Vec0<char>                       _TermCacheValid;
     core::T_sp          _CachedForAtomTable;   // init nil in ctor
+    //! The AtomTable_O::_LKGeneration this component's _TypeSlot and _TermCache were derived from.
+    //! Not redundant with _CachedForAtomTable: the shared table can be rebuilt IN PLACE on the
+    //! same atom table, and then the pointer still matches while the contents no longer do.
+    size_t              _CachedLKGeneration = (size_t)-1;
 
   public:
     void ensureParameterCache();   // defined in the .cc
@@ -163,6 +162,7 @@ namespace chem {
       this->_TermCache.clear();
       this->_TermCacheValid.clear();
       this->_NTypeSlots = 0;
+      this->_CachedLKGeneration = (size_t)-1;
     }
     // Cached hot-path term add: no plist scan, no find-lksolvation-type funcall,
     // and no rosetta_lk_solvation_term construction - the term for this type
@@ -198,23 +198,10 @@ namespace chem {
     CL_DEFMETHOD double rpairlist() const { return _Parameters.rpairlist; }
     double rcut() const { return _Parameters.r_solv_high; }  // <-- note: r_solv_high, not rcut
     AtomTable_sp atomTable() const { return _AtomTable; }
-    CL_DEFMETHOD core::T_sp matter1() const { return _Matter1; }
-    CL_DEFMETHOD core::T_sp matter2() const { return _Matter2; }
-    CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
-    CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
-    // See EnergyRosettaNonbond_O::setMatters for what EXCLUSIONS-POSSIBLE means.
-    CL_LAMBDA((self chem:energy-rosetta-lksolvation) matter1 matter2 &optional (exclusions-possible t));
-    CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2, bool exclusionsPossible = true ) {
-      // this->invalidateParameterCache();
-      this->_Matter1 = matter1;
-      this->_Matter2 = matter2;
-      this->_ExclusionsPossible = exclusionsPossible;
-      this->_DisplacementBuffer = nil<core::T_O>();
-    }
-    bool exclusionsPossible() const { return this->_ExclusionsPossible; }
+    // CL_DEFMETHOD void setMatter1(core::T_sp matter) { this->_Matter1 = matter; };
+    //CL_DEFMETHOD void setMatter2(core::T_sp matter) { this->_Matter2 = matter; };
+    // setMatters is inherited from EnergyPairlistComponent_O.
     void clearTerms() { _Terms.clear(); }
-    void setDisplacementBuffer(NVector_sp buf) { _DisplacementBuffer = buf; }
-    core::T_sp displacementBuffer() const { return _DisplacementBuffer; }
 
     bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
                     core::T_sp keepInteraction) {
@@ -239,11 +226,11 @@ namespace chem {
     void callForEachTerm(core::Function_sp callback);
 
   public:
-    CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
 
   public:
     void addTerm(const TermType& term);
     virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask );
 
@@ -277,11 +264,11 @@ namespace chem {
 
     /*! Point this component at a pair of matters and (re)initialize everything the
         between-matters pair-list build needs.  Mirrors
-        EnergyRosettaNonbond_O::constructNonbondTermsBetweenMatters.  Clearing
-        _DisplacementBuffer is essential, not incidental: maybeRebuildPairList decides
-        whether to rebuild from coordinate drift alone, so without the reset a second
-        pair evaluated against an unchanged coordinate vector would silently reuse the
-        previous pair's terms. */
+        EnergyRosettaNonbond_O::constructNonbondTermsBetweenMatters.  Invalidating the
+        pair list is essential, not incidental: maybeRebuildPairList decides whether to
+        rebuild from coordinate drift alone, and the MATTERS change without a single
+        coordinate moving - so without the reset a second pair evaluated against an
+        unchanged coordinate vector would silently reuse the previous pair's terms. */
     CL_DEFMETHOD void constructNonbondTermsBetweenMatters(Matter_sp mat1, Matter_sp mat2,
                                                    EnergyFunction_sp energyFunction,
                                                    core::T_sp keepInteractionFactory);
@@ -295,10 +282,6 @@ namespace chem {
     EnergyRosettaLKSolvation_O(const EnergyRosettaLKSolvation_O& ss); //!< Copy constructor
 
     EnergyRosettaLKSolvation_O() :
-        _KeepInteractionFactory(nil<core::T_O>()),
-        _Matter1(nil<core::T_O>()),
-        _Matter2(nil<core::T_O>()),
-        _DisplacementBuffer(nil<core::T_O>()),
         _CachedForAtomTable(nil<core::T_O>())
     {};
   };

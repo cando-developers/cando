@@ -165,7 +165,7 @@ Returns TORSION-PARAMETERS."
 ;;; Build the cache from an energy function
 ;;; ---------------------------------------------------------------------------
 
-(defun expand-parameter-cache (energy-function atom-to-constitution-context atom-types &optional cache)
+(defun expand-parameter-cache (energy-function molecule atom-to-constitution-context atom-types &optional cache)
   "Expand an existing parameter-cache or build a new one and return a PARAMETER-CACHE from ENERGY-FUNCTION.
 
 ATOM-TYPES is the atom -> vdw-type-symbol hash-table produced by
@@ -186,11 +186,22 @@ ENERGY-FUNCTION we form a key - a canonically ordered list of
 and store the parameters for that interaction under it.  Proper and improper
 torsions come from the same dihedral component and are split by the term's
 PROPER flag.
+MOLECULE is the single molecule this harvest describes.  Both ENERGY-FUNCTION's components
+and ATOM-TYPES span the WHOLE aggregate, so every walk below has to be restricted to
+MOLECULE's own atoms.  This matters because defineForAggregate types EVERY molecule (pass 1)
+before it generates ANY bonded terms (pass 2): by the time the first molecule is harvested,
+ATOM-TYPES already holds the receptor's atoms, and a receptor atom has no :given-atom-type
+and therefore no constitution-context.  An atom that IS in MOLECULE but has no context is
+still an error - that is the check that catches missing :given-atom-type.
+
 Provide an existing cache or NIL if you don't have one yet."
   (let ((cache (if cache
                    cache
-                   (make-instance 'parameter-cache))))
-    (flet ((part (atom)
+                   (make-instance 'parameter-cache)))
+        (mine (make-hash-table :test #'eq)))
+    (chem:map-atoms nil (lambda (a) (setf (gethash a mine) t)) molecule)
+    (flet ((minep (&rest atoms) (every (lambda (a) (gethash a mine)) atoms))
+           (part (atom)
              (cons (chem:get-name atom)
                    (or (gethash atom atom-to-constitution-context)
                        (error "No constitution-context for atom ~s" atom)))))
@@ -201,9 +212,10 @@ Provide an existing cache or NIL if you don't have one yet."
            stretch
            (lambda (index a1 a2 i1 i2 kb r0)
              (declare (ignore index i1 i2))
-             (setf (gethash (canonicalize-key (list (part a1) (part a2)))
-                            (bond-table cache))
-                   (make-instance 'bond-parameters :kb kb :r0 r0))))))
+             (when (minep a1 a2)
+               (setf (gethash (canonicalize-key (list (part a1) (part a2)))
+                              (bond-table cache))
+                     (make-instance 'bond-parameters :kb kb :r0 r0)))))))
       ;; --- angles ---
       (let ((angle (chem:energy-function/get-angle-component energy-function)))
         (when angle
@@ -211,9 +223,10 @@ Provide an existing cache or NIL if you don't have one yet."
            angle
            (lambda (index a1 a2 a3 i1 i2 i3 kt t0)
              (declare (ignore index i1 i2 i3))
-             (setf (gethash (canonicalize-key (list (part a1) (part a2) (part a3)))
-                            (angle-table cache))
-                   (make-instance 'angle-parameters :kt kt :t0 t0))))))
+             (when (minep a1 a2 a3)
+               (setf (gethash (canonicalize-key (list (part a1) (part a2) (part a3)))
+                              (angle-table cache))
+                     (make-instance 'angle-parameters :kt kt :t0 t0)))))))
       ;; --- dihedrals + impropers (one component, split by PROPER) ---
       (let ((dihedral (chem:energy-function/get-dihedral-component energy-function)))
         (when dihedral
@@ -221,27 +234,30 @@ Provide an existing cache or NIL if you don't have one yet."
            dihedral
            (lambda (index a1 a2 a3 a4 i1 i2 i3 i4 v n phase proper)
              (declare (ignore index i1 i2 i3 i4))
-             (let* ((key (canonicalize-key (list (part a1) (part a2) (part a3) (part a4))))
-                    (table (if proper (dihedral-table cache) (improper-table cache)))
-                    (fourier (make-instance 'fourier-term :v v :periodicity n :phase-rad phase))
-                    (existing (gethash key table)))
-               (if existing
-                   (add-fourier-term existing fourier)
-                   (setf (gethash key table)
-                         (add-fourier-term
-                          (make-instance (if proper 'dihedral-parameters 'improper-parameters))
-                          fourier))))))))
+             (when (minep a1 a2 a3 a4)
+               (let* ((key (canonicalize-key (list (part a1) (part a2) (part a3) (part a4))))
+                      (table (if proper (dihedral-table cache) (improper-table cache)))
+                      (fourier (make-instance 'fourier-term :v v :periodicity n :phase-rad phase))
+                      (existing (gethash key table)))
+                 (if existing
+                     (add-fourier-term existing fourier)
+                     (setf (gethash key table)
+                           (add-fourier-term
+                            (make-instance (if proper 'dihedral-parameters 'improper-parameters))
+                            fourier)))))))))
       ;; --- nonbonded (vdw type + partial charge), one entry per typed atom ---
       ;; Iterate ATOM-TYPES itself: its keys are the typed atoms and its values
       ;; are the vdw type symbols, so the type is always present.  Charge is read
       ;; straight off the atom, matching EnergyAtom::defineForAtom.  PART supplies
       ;; the (atom-name . constitution-context) key and errors if an atom has no
       ;; constitution-context, the same contract as the bonded walks above.
+      ;; ATOM-TYPES covers the whole AGGREGATE, so MINEP is what keeps this to MOLECULE.
       (maphash (lambda (atom vdw-type)
-                 (setf (gethash (part atom) (nonbond-table cache))
-                       (make-instance 'nonbond-parameters
-                                      :vdw-type vdw-type
-                                      :charge (chem:get-charge atom))))
+                 (when (minep atom)
+                   (setf (gethash (part atom) (nonbond-table cache))
+                         (make-instance 'nonbond-parameters
+                                        :vdw-type vdw-type
+                                        :charge (chem:get-charge atom)))))
                atom-types))
     cache))
 
@@ -314,6 +330,59 @@ Provide an existing cache or NIL if you don't have one yet."
                     molecule)
     t))
 
+(defun uncovered-cache-reason (molecule cache)
+  "Why BONDED-CACHE-COVERS-MOLECULE-P said no: (values KIND KEY ATOM), or NIL when it said yes.
+
+  The predicate answers T or NIL and a NIL is expensive - it drops the whole molecule onto real
+  SMIRKS, which is vf2 over every atom for every term in every force field.  On a blueprint's
+  fanned-out molecule that is tens of thousands of vertices, and coverage is ALL OR NOTHING: one
+  untyped atom out of 27000 costs the entire molecule.  So the one thing worth knowing on a miss is
+  WHICH atom, and the predicate is not allowed to tell you."
+  (block reason
+    (chem:map-atoms nil
+                    (lambda (atom)
+                      (let ((key (atom-cache-key atom nil)))
+                        (cond ((null key)
+                               (return-from reason (values :no-given-atom-type nil atom)))
+                              ((not (nth-value 1 (gethash key (nonbond-table cache))))
+                               (return-from reason (values :atom-not-in-cache key atom))))))
+                    molecule)
+    (chem:map-bonds nil
+                    (lambda (a1 a2 o b) (declare (ignore o b))
+                      (let ((k1 (atom-cache-key a1 nil))
+                            (k2 (atom-cache-key a2 nil)))
+                        (when (and k1 k2
+                                   (not (nth-value 1 (gethash (canonicalize-key (list k1 k2))
+                                                              (bond-table cache)))))
+                          (return-from reason
+                            (values :bond-not-in-cache (canonicalize-key (list k1 k2)) a1)))))
+                    molecule)
+    nil))
+
+(defvar *reported-coverage-failures* (make-hash-table :test #'equal)
+  "Coverage failures already reported, keyed by (molecule-name kind key).
+
+  Throttling, not memoization.  A blueprint detach scan re-parameterizes the same molecule once per
+  rotamer slot, so an unthrottled report would print the same line ~2000 times and bury the run.")
+
+(defun report-coverage-failure (molecule cache)
+  "Warn once about why MOLECULE misses the cache.  Called only on the slow branch."
+  (multiple-value-bind (kind key atom) (uncovered-cache-reason molecule cache)
+    (when kind
+      (let ((id (list (chem:get-name molecule) kind key)))
+        (unless (gethash id *reported-coverage-failures*)
+          (setf (gethash id *reported-coverage-failures*) t)
+          #+(or)(format *error-output*
+                  "~&;;; SMIRNOFF CACHE MISS on molecule ~a - falling back to real SMIRKS.~%~
+                   ;;;   reason: ~a~@[  key: ~s~]~@[  first atom: ~a~]~%~
+                   ;;;   Real SMIRKS is vf2 over the WHOLE molecule per force-field term.  On a~%~
+                   ;;;   blueprint's fanned-out molecule that dominates everything else, and the~%~
+                   ;;;   result is not harvested (a scoped pass must never teach the cache), so~%~
+                   ;;;   it is paid again for every later pass.  Train this context first.~%"
+                  (chem:get-name molecule) kind key
+                  (and atom (chem:get-name atom)))
+          )))))
+
   ;;; --- atom typing on a HIT: memoized vdw $types, no SMIRKS re-run ----------
 (defmethod chem:assign-force-field-types ((ff cached-smirnoff-force-field) molecule atom-types)
   ;; Only reached on the covered branch, so every key is present.  Charge stays on
@@ -326,34 +395,55 @@ Provide an existing cache or NIL if you don't have one yet."
                         (setf (gethash atom atom-types) (vdw-type p))))
                     molecule)))
 
- ;;; --- the per-molecule entry point -----------------------------------------
-(defmethod chem:define-for-molecule-using-force-field
+ ;;; --- the per-molecule entry points, one per pass ---------------------------
+ ;;;
+ ;;; Coverage is tested SEPARATELY in each pass rather than memoized from pass 1, because an
+ ;;; EARLIER molecule's harvest during pass 2 can cover us in between.  The cache only ever
+ ;;; grows, so a pass-1 hit implies a pass-2 hit; the only new combination is pass-1 miss /
+ ;;; pass-2 hit, which is a win - bonded terms come from the cache and no harvest is needed,
+ ;;; since whoever covered us stored the same keys.
+ ;;;
+ ;;; One cost is inherent to the two-pass order: every coverage test in pass 1 happens before
+ ;;; any harvest, so N identical molecules (a solvent box) each pay real-SMIRNOFF vdw TYPING
+ ;;; instead of only the first.  Bonded generation - the expensive half, vf2 over the whole
+ ;;; molecule per term - is still cached from the second molecule on.
+
+(defmethod chem:construct-atom-table-for-molecule
     (ef molecule (ff cached-smirnoff-force-field) ff-name atom-types nonbond-force-field keep)
   (declare (ignore ff-name))
-  (let ((smirnoff (smirnoff-force-field ff))
-        (cache    (cache ff)))
-    (cond
-      ((bonded-cache-covers-molecule-p molecule cache)
-       ;; COVERED: memoized vdw typing (this class's assign), construct, bonded FROM CACHE
-       (chem:assign-force-field-types ff molecule atom-types)
-       (chem:construct-from-molecule (chem:atom-table ef) molecule nonbond-force-field keep atom-types)
-       (commit-bonded-from-cache ef molecule cache keep))
-      (t
-       ;; MISS: full real SMIRNOFF (assign vdw, construct, generate w/ perception) - pass :smirnoff
-       (chem:define-for-molecule-using-force-field
-           ef molecule smirnoff (smirnoff-name ff) atom-types nonbond-force-field keep)
-       ;; Harvest only from an UNFILTERED parameterization.  KEEP is T for a normal build; NIL
-       ;; means no components were generated at all (an energy function built for its atom table
-       ;; alone), and a FUNCTION means the terms present are a deliberate subset.  Feeding either
-       ;; into the cache would store an incomplete parameterization that a later full build then
-       ;; treats as covered - a silently wrong energy function rather than a slow one.
-       (when (eq keep t)
-         (harvest-into-cache ef molecule cache))))))
+  (if (bonded-cache-covers-molecule-p molecule (cache ff))
+      (chem:assign-force-field-types ff molecule atom-types)                        ; memoized vdw types
+      (chem:assign-force-field-types (smirnoff-force-field ff) molecule atom-types)) ; real SMIRKS
+  (chem:construct-from-molecule (chem:atom-table ef) molecule nonbond-force-field keep atom-types))
 
-(defun commit-bonded-from-cache (ef molecule cache keep-interaction-factory)
+(defmethod chem:generate-for-molecule-using-force-field
+    (ef molecule (ff cached-smirnoff-force-field) ff-name atom-types nonbond-force-field keep group)
+  (declare (ignore ff-name atom-types nonbond-force-field))
+  (if (bonded-cache-covers-molecule-p molecule (cache ff))
+      (commit-bonded-from-cache ef molecule (cache ff) keep group)
+      (progn
+        ;; Say WHY, once.  This branch is orders of magnitude slower than the other and there is
+        ;; nothing in the output to distinguish "the run is big" from "the cache is missing one
+        ;; atom's context and every molecule is being re-matched from scratch".
+        (report-coverage-failure molecule (cache ff))
+        (chem:generate-molecule-energy-function-tables
+         ef molecule (smirnoff-force-field ff) keep group)
+        ;; Harvest only from an UNFILTERED parameterization.  KEEP is T for a normal build; NIL
+        ;; means no components were generated at all (an energy function built for its atom table
+        ;; alone), and a FUNCTION means the terms present are a deliberate subset.  Feeding either
+        ;; into the cache would store an incomplete parameterization that a later full build then
+        ;; treats as covered - a silently wrong energy function rather than a slow one.
+        ;;
+        ;; A GROUP likewise means a scoped pass (one blueprint rotamer slot), never the whole
+        ;; molecule - so it must not be harvested either.
+        (when (and (eq keep t) (null group))
+          (harvest-into-cache ef molecule (cache ff))))))
+
+(defun commit-bonded-from-cache (ef molecule cache keep-interaction-factory group)
   "Coverage guaranteed all bonds+nonbonds present.  Angles/dihedrals/impropers apply
   skip-if-absent: an absent key is a legitimate SMIRNOFF skip (e.g. a linear-group
-  angle) that real SMIRNOFF would also omit, so skipping reproduces its energy function."
+  angle) that real SMIRNOFF would also omit, so skipping reproduces its energy function.
+  GROUP is NIL or the ENERGY-COMPONENT-GROUP this pass's components belong to."
   (when keep-interaction-factory
     (let ((at       (chem:atom-table ef))
           (stretch-test  (or (eq keep-interaction-factory t)
@@ -367,7 +457,7 @@ Provide an existing cache or NIL if you don't have one yet."
                                        (load-time-value (find-class 'chem:energy-dihedral)))))
           )
       (when stretch-test
-        (let ((stretch (chem:make-energy-stretch ef)))
+        (let ((stretch (chem:make-energy-stretch ef group)))
           (chem:map-bonds
            nil
            (lambda (a1 a2 o b) (declare (ignore o b))
@@ -377,7 +467,7 @@ Provide an existing cache or NIL if you don't have one yet."
                  (when p (chem:add-stretch-term stretch at a1 a2 (kb p) (r0 p))))))
            molecule)))
       (when angle-test
-        (let ((angle (chem:make-energy-angle ef)))
+        (let ((angle (chem:make-energy-angle ef group)))
           (chem:map-angles
            nil
            (lambda (a1 a2 a3)
@@ -388,7 +478,7 @@ Provide an existing cache or NIL if you don't have one yet."
                  (when p (chem:add-angle-term angle at a1 a2 a3 (kt p) (t0 p))))))
            molecule)))
       (when dihedral-test
-        (let ((dihedral (chem:make-energy-dihedral ef)))
+        (let ((dihedral (chem:make-energy-dihedral ef group)))
           (chem:map-dihedrals
            nil
            (lambda (a1 a2 a3 a4)
@@ -423,6 +513,6 @@ Provide an existing cache or NIL if you don't have one yet."
                       (let ((given (chem:matter-get-property-or-default atom :given-atom-type nil)))
                         (when given (setf (gethash atom atom-to-context) (cdr given)))))
                     molecule) 
-    (expand-parameter-cache ef atom-to-context (chem:atom-types ef) cache)
+    (expand-parameter-cache ef molecule atom-to-context (chem:atom-types ef) cache)
     ))
 

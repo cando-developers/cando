@@ -49,9 +49,10 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 CL_LISPIFY_NAME(make-energy-angle);
+CL_LAMBDA(energy-function &optional group);
 CL_DEF_CLASS_METHOD
-EnergyAngle_sp EnergyAngle_O::make(EnergyFunction_sp energyFunction) {
-  auto component = ensureComponent<EnergyAngle_O>(energyFunction);
+EnergyAngle_sp EnergyAngle_O::make(EnergyFunction_sp energyFunction, core::T_sp group) {
+  auto component = ensureComponent<EnergyAngle_O>(energyFunction,group);
   return component;
 }
 
@@ -326,6 +327,22 @@ void EnergyAngle_O::addTerm(const EnergyAngle& term)
 }
 
 
+
+/*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
+ *  documents and EnergyRosettaNonbond_O established.  A caller taking &rest can then read any
+ *  bonded class without knowing which one it has: leading Atom_sp are the term, trailing fixnums
+ *  are its coordinate indexes.
+ */
+void EnergyAngle_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1,
+                        eni->_Atom2,
+                        eni->_Atom3,
+                        core::make_fixnum(eni->term.i3x1),
+                        core::make_fixnum(eni->term.i3x2),
+                        core::make_fixnum(eni->term.i3x3));
+  }
+}
 
 void	EnergyAngle_O::dumpTerms(core::HashTable_sp atomTypes)
 {

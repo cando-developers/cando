@@ -59,6 +59,7 @@ __END_DOC
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyStretch.h>
 #include <cando/chem/energyAngle.h>
+#include <cando/chem/energyLinearAngle.h>
 #include <cando/chem/energyDihedral.h>
 #include <cando/chem/energyNonbond.h>
 #include <cando/chem/energyPeriodicBoundaryConditionsNonbond.h>
@@ -108,6 +109,8 @@ SYMBOL_EXPORT_SC_(ChemPkg,missingAngleError);
 SYMBOL_EXPORT_SC_(ChemPkg,missingDihedralError);
 SYMBOL_EXPORT_SC_(ChemPkg,skipMissingParameters);
 SYMBOL_EXPORT_SC_(ChemPkg,define_for_molecule_using_force_field);
+SYMBOL_EXPORT_SC_(ChemPkg,construct_atom_table_for_molecule);
+SYMBOL_EXPORT_SC_(ChemPkg,generate_for_molecule_using_force_field);
 SYMBOL_EXPORT_SC_(ChemPkg,with_perception);
 SYMBOL_EXPORT_SC_(ChemPkg,amber_force_field);
 SYMBOL_EXPORT_SC_(ChemPkg,gaff_force_field);
@@ -130,14 +133,48 @@ bool energyFunctionInitialized = false;
 
 
 void EnergyFunction_O::pushEnergyComponent(EnergyComponent_sp component) {
-  auto componentClass = component->_instanceClass();
-  for ( auto cur : this->_EnergyComponents ) {
-    EnergyComponent_sp existing = gc::As<EnergyComponent_sp>(oCar(cur));
-    if (existing->_instanceClass() == componentClass) {
-      SIMPLE_ERROR("Attempted to add a duplicate EnergyComponent of class {}", _rep_(componentClass->_className()));
+  // EnergyComponentGroups are deliberately MANY - one per blueprint rotamer slot, ~470 on the myc
+  // system - so the one-per-class rule cannot apply to them.  It is narrowed rather than dropped
+  // because it still catches a real bug for the singleton components: two EnergyStretch in one
+  // energy function means every bonded term is counted twice, which shows up as a plausible
+  // number rather than a failure.
+  //
+  // Skipping the scan for groups also keeps pushing N groups linear.  The check is O(n) per push,
+  // so 470 groups through it would be ~110,000 comparisons.
+  if (!gc::IsA<EnergyComponentGroup_sp>(component)) {
+    auto componentClass = component->_instanceClass();
+    for ( auto cur : this->_EnergyComponents ) {
+      EnergyComponent_sp existing = gc::As<EnergyComponent_sp>(oCar(cur));
+      if (existing->_instanceClass() == componentClass) {
+        SIMPLE_ERROR("Attempted to add a duplicate EnergyComponent of class {}", _rep_(componentClass->_className()));
+      }
     }
   }
   this->_EnergyComponents = core::Cons_O::create(component,this->_EnergyComponents);
+}
+
+CL_LISPIFY_NAME("remove-energy-component");
+CL_DOCSTRING(R"dx(Drop COMPONENT from this energy function's component list.  Returns T if it was
+  there.
+
+  For scratch components - a group built only to be compared against another and then thrown away.
+  Left in place such a group is evaluated by every later whole-function walk, which for a blueprint
+  slot group means one rotamer's energy silently added twice.)dx")
+CL_DEFMETHOD bool EnergyFunction_O::removeEnergyComponent(EnergyComponent_sp component) {
+  core::List_sp kept = nil<core::T_O>();
+  bool found = false;
+  for ( auto cur : this->_EnergyComponents ) {
+    core::T_sp one = oCar(cur);
+    if (one == component) { found = true; continue; }
+    kept = core::Cons_O::create(one, kept);
+  }
+  // The list is built by pushing, so it is already reverse-of-insertion; rebuilding by pushing
+  // reverses it again.  Nothing depends on the order - evaluateAll sums - but preserving it keeps
+  // a before/after inspection readable.
+  core::List_sp restored = nil<core::T_O>();
+  for ( auto cur : kept ) restored = core::Cons_O::create(oCar(cur), restored);
+  this->_EnergyComponents = restored;
+  return found;
 }
 
 int	_areValuesClose( double numVal, double analVal, const char* funcName, const char* termName, int index )
@@ -330,6 +367,15 @@ void EnergyFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,AtomTable),this->_AtomTable);
   node->field_if_not_unbound(INTERN_(kw,BoundingBox),this->_BoundingBox);
   node->field(INTERN_(kw,OtherEnergyComponents),this->_EnergyComponents);
+  // Needed to replay generateNonbondEnergyFunctionTables in generateIntoGroup - a deserialized
+  // energy function that lost this could not build slot groups.
+  //
+  // _UseExcludedAtoms is NOT serialized: Record has no bool field overload (only
+  // field_if_defined, whose bool is a presence flag, not the value), which is why the existing
+  // bool _RestrainSecondaryAmides is absent here too.  It round-trips as false, and false is the
+  // only value any live path uses - the true branch of generateNonbondEnergyFunctionTables
+  // SIMPLE_ERRORs immediately.  Wrap it if that ever stops being true.
+  node->field_if_not_nil(INTERN_(kw,setup),this->_Setup);
   this->Base::fields(node);
 }
 
@@ -560,6 +606,29 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
   }
 
   LOG("Starting evaluation of energy" );
+
+  // ONE drift walk for every pair-list component below.
+  //
+  // Each of them needs to know whether the coordinates have moved far enough to invalidate its
+  // pair list, and each of them used to answer that by walking a private copy of all 3N
+  // coordinates.  Across a blueprint's ~2829 components that was tens of millions of comparisons
+  // per evaluation, all recomputing one number.  The walk happens here instead, once, and
+  // maybeRebuildPairListImpl reads the result - see AtomTable_O::_RefCoords.
+  //
+  // THIS IS THE FUNNEL.  evaluateEnergy, evaluateEnergyForce and
+  // evaluateEnergyIntoFaRestFaRepVector all route through evaluateAll, so this covers every
+  // evaluation path including a blueprint scoring one group with the rest disabled.  A caller that
+  // reaches a component directly is caught by driftFor's owner check only if it also brings a
+  // different coordinate vector - mutating the same vector in place and skipping this would leave
+  // stale pair lists in use.
+  // SKIPPED while the coordinates are pinned - see AtomTable_O::_CoordinatesPinned.  A pair scan
+  // re-points every component and evaluates once per pair without ever touching the coordinates, so
+  // this walk runs n^2/2 times to produce a number that is identically zero and that every
+  // component then discards, having been invalidated by set-matters.  It measured 24.8% of one such
+  // scan.
+  if (this->_AtomTable.notnilp() && !this->_AtomTable->coordinatesPinned()) {
+    this->_AtomTable->updateDrift(pos);
+  }
 
   for ( auto cur : this->_EnergyComponents ) {
     EnergyComponent_sp component = gc::As<EnergyComponent_sp>(CONS_CAR(cur));
@@ -833,8 +902,60 @@ CL_DEFMETHOD void EnergyFunction_O::evaluateEnergyIntoFaRestFaRepVector(NVector_
   double* v = &(*faRestFaRepVector)[0];
   v[2*index]     = faRest;
   v[2*index + 1] = faRep;
-} 
- 
+}
+
+// Evaluate ONE named component, skipping the component-list scan.  See the header for why: a pair
+// scan enables one group out of ~2829 components and evaluateAll re-finds it by walking a cons list
+// on every one of its n^2/2 evaluations.
+//
+// Everything evaluateAll does BESIDES that loop is either preserved here or provably a no-op on
+// this path: the calcForce/calcHessian consistency checks cannot fire with both false, and the
+// force/hessian/hdvec zeroing is skipped because all three are NIL.  The drift update is NOT a
+// no-op and is kept - evaluateAll is the funnel that keeps every pair list honest, and a second
+// entry point that skipped it would leave stale lists in use with no way to notice.
+
+CL_LISPIFY_NAME("evaluate-component-into-fa-rest-fa-rep-vector");
+CL_LAMBDA((energy-function chem:energy-function) component positions fa-rest-fa-rep-vector index fa-rep-component &key energy-scale active-atom-mask debug-interactions);
+CL_DEFMETHOD void EnergyFunction_O::evaluateComponentIntoFaRestFaRepVector(core::T_sp tcomponent,
+                                                                          NVector_sp pos,
+                                                                          NVector_sp faRestFaRepVector,
+                                                                          size_t index,
+                                                                          core::T_sp faRepComponent,
+                                                                          core::T_sp energyScale,
+                                                                          core::T_sp activeAtomMask,
+                                                                          core::T_sp debugInteractions ) {
+  if (this->_AtomTable.notnilp() && !this->_AtomTable->coordinatesPinned()) {
+    this->_AtomTable->updateDrift(pos);
+  }
+  EnergyComponent_sp component = gc::As<EnergyComponent_sp>(tcomponent);
+  double total = component->evaluateAllComponent(this->asSmartPtr(),
+                                                 pos,
+                                                 energyScale,
+                                                 nil<core::T_O>(),   // energyComponents: no breakdown
+                                                 false,              // calcForce
+                                                 nil<NVector_O>(),   // force
+                                                 false,              // calcDiagonalHessian
+                                                 false,              // calcOffDiagonalHessian
+                                                 nil<AbstractLargeSquareMatrix_O>(),
+                                                 nil<NVector_O>(),   // hdvec
+                                                 nil<NVector_O>(),   // dvec
+                                                 activeAtomMask,
+                                                 debugInteractions );
+  // Same split as evaluateEnergyIntoFaRestFaRepVector: fa_rep comes off the caller-supplied nonbond
+  // component, whose _LastFaRep the evaluation above just set.  NIL is legitimate - a system with no
+  // rosetta-nonbond has no repulsive term to separate out, so fa_rep is 0 and fa_rest is the total.
+  double faRep = 0.0;
+  double w     = 0.0;
+  if (faRepComponent.notnilp()) {
+    EnergyRosettaNonbond_sp nb = gc::As<EnergyRosettaNonbond_sp>(faRepComponent);
+    faRep = nb->getLastFaRep();
+    w     = nb->getRepWeight();
+  }
+  double* v = &(*faRestFaRepVector)[0];
+  v[2*index]     = total - w * faRep;
+  v[2*index + 1] = faRep;
+}
+
 
 CL_LISPIFY_NAME("energy-total-fa-rest-fa-rep-rep-weight");
 CL_LAMBDA(fa-rest-fa-rep-vector index rep-weight);
@@ -1291,7 +1412,315 @@ EnergyFixedNonbondRestraint_sp EnergyFunction_O::getFixedNonbondRestraintCompone
   return gc::As<EnergyFixedNonbondRestraint_sp>(comp);
 };
 
-void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types, core::T_sp forceFieldOverrides, core::T_sp setup )
+void EnergyFunction_O::resolveMoleculeForceFields(Aggregate_sp aggregate,
+                                                    core::T_sp forceFieldOverrides,
+                                                    core::HashTable_sp molecule_force_fields,
+                                                    core::HashTable_sp molecule_force_field_names)
+{
+  Loop moleculeLoop;
+  moleculeLoop.loopTopGoal(aggregate,MOLECULES);
+  while (moleculeLoop.advanceLoopAndProcess() ) {
+    Molecule_sp molecule = moleculeLoop.getMolecule();
+    core::T_sp force_field_name = molecule->force_field_name();
+    if (forceFieldOverrides.notnilp()) {
+      core::T_sp maybe_override = gc::As<core::HashTable_sp>(forceFieldOverrides)->gethash(molecule);
+      if (maybe_override.notnilp()) force_field_name = maybe_override;
+    }
+    if (molecule_force_fields->gethash(molecule).nilp()) {
+      molecule_force_fields->setf_gethash(molecule, core::eval::funcall(_sym_find_force_field,force_field_name));
+      molecule_force_field_names->setf_gethash(molecule,force_field_name);
+    } else {
+      SIMPLE_ERROR("A molecule already has a force-field");
+    }
+  }
+} 
+
+
+CL_DOCSTRING(R"dx(Run pass 2 over the aggregate this energy function was already defined for,
+  collecting every component into GROUP.
+
+  The atom table is untouched: atom numbering, charges and nonbond parameters all stay as
+  defineForAggregate left them, so the terms generated here index the same coordinate vector as
+  the backbone's.  Call this once per rotamer slot with that slot's KEEP-INTERACTION-FACTORY and a
+  fresh GROUP.
+
+  BONDED NIL skips the per-molecule pass and generates only the nonbond components.  Refusing the
+  bonded classes in the factory is NOT equivalent - that discards the TERMS, but generateForMolecule
+  has already re-run the whole force-field parameterization by then.
+
+  SCOPE-AGGREGATE runs this pass over a DIFFERENT aggregate than the one the energy function was
+  defined for - a temporary one holding only what this pass needs to see.
+
+  The atom table is NOT rebuilt and is not consulted for scoping: it still describes the real
+  aggregate, and every atom reachable through SCOPE-AGGREGATE is the same object with the same
+  coordinate index, so the terms generated index the same coordinate vector as always.  What changes
+  is only WHAT GETS WALKED.
+
+  This is what makes a blueprint's rotamer pass affordable.  Its aggregate holds every rotamer of
+  every slot simultaneously, and a per-slot pass walks all of them to keep one slot's terms: the
+  Loop hierarchy in map-bonds/angles/dihedrals/impropers, ring perception and SMIRKS matching in the
+  real-SMIRNOFF path, and construct14InteractionTerms below - all of them scale with the fan-out
+  rather than with the answer.  A scope aggregate holding backbone-plus-one-rotamer bounds every one
+  of them at once.
+
+  Its molecules must carry a FORCE-FIELD-NAME, like any other: resolveMoleculeForceFields runs over
+  whatever aggregate this is given.
+
+  BONDED NIL skips the per-molecule pass and generates only the nonbond components.)dx");
+CL_LISPIFY_NAME(energy-function/generate-into-group);
+CL_LAMBDA((energy-function chem:energy-function) keep-interaction-factory group &key force-field-overrides (bonded t) scope-aggregate);
+CL_DEFMETHOD void EnergyFunction_O::generateIntoGroup(core::T_sp keepInteractionFactory,
+                                                      core::T_sp group,
+                                                      core::T_sp forceFieldOverrides,
+                                                      bool bonded,
+                                                      core::T_sp scopeAggregate)
+{
+  // ONE substitution, here, and every use below reads AGGREGATE - the force-field resolution, the
+  // molecule loop and the nonbond tables.  Scoping applied at any one of those alone would leave
+  // the others walking the full structure, which is exactly what a per-molecule restriction did.
+  core::T_sp matterForPass = scopeAggregate.notnilp() ? scopeAggregate : this->_Matter;
+  if (!gc::IsA<Aggregate_sp>(matterForPass)) {
+    if (scopeAggregate.notnilp()) {
+      SIMPLE_ERROR("scope-aggregate must be an aggregate, got {}", _rep_(scopeAggregate));
+    }
+    SIMPLE_ERROR("generateIntoGroup requires an energy function already defined for an aggregate");
+  }
+  Aggregate_sp aggregate = gc::As_unsafe<Aggregate_sp>(matterForPass);
+  if (this->_AtomTable->getNumberOfAtoms() == 0) {
+    SIMPLE_ERROR("The atom table is empty - call defineForAggregate before generateIntoGroup");
+  }   
+  if (!this->_AtomTable->nonbondForceFieldForAggregateBoundP()) {
+    SIMPLE_ERROR("The atom table has no aggregate nonbond force-field - call defineForAggregate before generateIntoGroup");
+  }
+  core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
+  core::HashTable_sp ffs = core::HashTable_O::createEq();
+  core::HashTable_sp ffnames = core::HashTable_O::createEq();
+  this->resolveMoleculeForceFields(aggregate, forceFieldOverrides, ffs, ffnames);
+  // The group joins the ef's component list; its children do not (see ensureComponent).
+  if (group.notnilp()) this->pushEnergyComponent(gc::As<EnergyComponent_sp>(group));
+  // Solute/solvent ordering mattered only for atom-table numbering, which is already fixed.
+  //
+  // Skipped entirely when BONDED is false.  generateForMolecule re-parameterizes the molecule
+  // against its force field BEFORE any keep-interaction predicate is consulted, so a caller that
+  // wants only nonbond cannot express that through the factory - it would pay for the whole
+  // parameterization and then discard every term it produced.  For a blueprint's pair-scan group
+  // that is not merely wasteful: the parameterization sees the aggregate as it stands, and a spiro
+  // NG carrying all 16 of its fan-out bonds fails SMIRNOFF's bond-order check outright.
+  //
+  // Over AGGREGATE, which is the scope aggregate when one was given - so narrowing the pass needs no
+  // special case here at all.  A scope aggregate holding one molecule visits one molecule.
+  if (bonded) {
+    Loop moleculeLoop;
+    moleculeLoop.loopTopGoal(aggregate,MOLECULES);
+    while (moleculeLoop.advanceLoopAndProcess()) {
+      this->generateForMolecule( moleculeLoop.getMolecule(), keepInteractionFactory,
+                                 this->_AtomTypes, nonbondForceField, ffs, ffnames, group );
+    }
+  }
+  // Nonbond terms are AGGREGATE-wide, not per-molecule - the interactions that decide a rotamer
+  // cross from the slot to the receptor - so this is one call outside the molecule loop, matching
+  // defineForAggregate.  Without it a slot group holds only stretch/angle/dihedral and its energy
+  // cannot rank rotamers at all.
+  //
+  // AGGREGATE here is the scope aggregate when one was given, and that matters: the components
+  // themselves are built from _AtomTable, but construct14InteractionTerms walks the MATTER to find
+  // 1-4 pairs.  Handed the full aggregate it walks every fanned-out rotamer to produce 1-4 terms the
+  // factory then discards - 26% of the profiled scan.  Scoping loses nothing: a 1-4 pair is three
+  // bonds apart, so both ends are in the same molecule, and for a slot both are in backbone-plus-
+  // that-slot.
+  //
+  // _Setup and _UseExcludedAtoms are replayed verbatim from defineForAggregate.  If this energy
+  // function was never defined for an aggregate they are NIL/false, which the setup dispatch below
+  // rejects with "Provide a valid setup" - the guards at the top of this function should have
+  // caught that first.
+  if (this->_Setup.notnilp()) {
+    // BONDED gates the 1-4 component too - it is derived from proper dihedrals, so a caller that
+    // asked for no bonded terms was getting the bond-graph walk anyway.  A blueprint's remapped
+    // rotamers rely on COPY-REMAPPED-BONDED-TERMS to supply 1-4 along with stretch/angle/dihedral;
+    // if that ever stops handling EnergyNonbond14, those slots lose the terms silently.
+    this->generateNonbondEnergyFunctionTables( this->_UseExcludedAtoms, aggregate, nonbondForceField,
+                                               keepInteractionFactory, this->_AtomTypes,
+                                               this->_Setup, group, bonded );
+  }
+}
+
+
+// ============================================================
+//  copy-remapped bonded terms - one parameterization per monomer, not per rotamer
+// ============================================================
+//
+// Rotamers of the same monomer are THE SAME MOLECULE in different conformations.  Bonded parameters
+// depend on atom types and connectivity; both are identical across rotamers.  Coordinates differ,
+// but coordinates are not in the terms - only INDEXES INTO the coordinate vector are.  So one
+// rotamer's stretch/angle/dihedral terms become another's by renaming atoms and shifting indexes,
+// with every parameter carried across byte-for-byte.
+//
+// That turns the detach scan's bonded cost from one force-field parameterization per SLOT into one
+// per (locus, monomer) - the pass that was 95% of the profiled run.
+//
+// NOT A UNIFORM SHIFT.  A slot's terms cross into the backbone: the CA-CB bond, the CA-CB-CG angle,
+// backbone-CA-CB-CG dihedrals.  Backbone atoms are shared between rotamers and do not move.  Only
+// indexes inside the source slot's range shift; everything else is copied unchanged.  This is what
+// the contiguity check in BLUEPRINT-SLOT-I3-RANGE exists to guarantee.
+//
+// NONBOND IS DELIBERATELY NOT HANDLED HERE.  Which backbone atoms lie within a slot's cutoff is
+// GEOMETRY, and geometry is exactly what differs between rotamers - copying those would be silently
+// wrong.  The caller generates them per slot with :BONDED NIL, which is also what pushes the
+// destination group onto the energy function.
+
+namespace {
+
+/*! Shift an index that lies inside the source slot; leave everything else alone. */
+inline int remapSlotI3(int i3, size_t lo3, size_t hi3, ptrdiff_t delta) {
+  size_t u = (size_t)i3;
+  if (u >= lo3 && u < hi3) return (int)((ptrdiff_t)i3 + delta);
+  return i3;
+}
+
+/*! The atom at an i3, straight from the atom table.
+ *
+ * Not from a per-slot atom vector: ATOM-SET-TO-VECTOR walks a hash set and its order is not i3
+ * order, so indexing one by position would pair terms with the wrong atoms - and since the
+ * INDEXES would still be right, the energy would be correct while every atom label was wrong. */
+inline Atom_sp atomAtI3(AtomTable_sp at, int i3) {
+  return at->getVectorEnergyAtoms()[i3/3].atom();
+}
+
+} // anonymous namespace
+
+CL_LAMBDA(energy-function dest-group src-group src-lo3 src-hi3 delta);
+CL_DOCSTRING(R"dx(Copy SRC-GROUP's bonded terms into DEST-GROUP, renaming the atoms of one rotamer
+  slot to those of another.
+
+  Indexes in [SRC-LO3, SRC-HI3) are shifted by DELTA - those are the source slot's own atoms.
+  Everything outside that range is backbone, shared between rotamers, and is copied unchanged.
+  Every force-field parameter is carried across untouched: this is a rename, not a
+  reparameterization, and it is exact because bonded parameters depend on topology alone.
+
+  Handles ENERGY-STRETCH, ENERGY-ANGLE and ENERGY-DIHEDRAL.  Any other component in SRC-GROUP -
+  notably the nonbond components, whose terms depend on geometry - is SKIPPED, and the second return
+  value counts them so a caller can assert it saw only what it expected.
+
+  Returns (values TERMS-COPIED COMPONENTS-SKIPPED).)dx")
+CL_DEFUN core::T_mv chem__copy_remapped_bonded_terms(EnergyFunction_sp ef,
+                                                     core::T_sp tdestGroup,
+                                                     core::T_sp tsrcGroup,
+                                                     size_t srcLo3,
+                                                     size_t srcHi3,
+                                                     gc::Fixnum delta)
+{
+  EnergyComponentGroup_sp src = gc::As<EnergyComponentGroup_sp>(tsrcGroup);
+  if (!gc::IsA<EnergyComponentGroup_sp>(tdestGroup)) {
+    SIMPLE_ERROR("dest-group must be an energy-component-group, got {}", _rep_(tdestGroup));
+  }
+  if (srcHi3 <= srcLo3) {
+    SIMPLE_ERROR("Empty source slot range lo3={} hi3={}", srcLo3, srcHi3);
+  }
+  AtomTable_sp at = ef->_AtomTable;
+  size_t copied = 0;
+  size_t skipped = 0;
+  for (auto& c : src->_Components) {
+    if (gc::IsA<EnergyStretch_sp>(c)) {
+      EnergyStretch_sp s = gc::As_unsafe<EnergyStretch_sp>(c);
+      EnergyStretch_sp d = ensureComponent<EnergyStretch_O>(ef, tdestGroup);
+      // Carried, not defaulted.  Both happen to match a fresh component today - scale 1.0, enabled -
+      // so leaving them out would be right by luck and wrong the moment either is set.
+      d->setScale(s->getScale());
+      if (s->isEnabled()) d->enable(); else d->disable();
+      for (auto& t : s->_Terms) {
+        EnergyStretch nt = t;                          // parameters copied verbatim
+        nt.term.i3x1 = remapSlotI3(t.term.i3x1, srcLo3, srcHi3, delta);
+        nt.term.i3x2 = remapSlotI3(t.term.i3x2, srcLo3, srcHi3, delta);
+        nt._Atom1 = atomAtI3(at, nt.term.i3x1);
+        nt._Atom2 = atomAtI3(at, nt.term.i3x2);
+        d->_Terms.push_back(nt);
+        copied++;
+      }
+    } else if (gc::IsA<EnergyAngle_sp>(c)) {
+      EnergyAngle_sp s = gc::As_unsafe<EnergyAngle_sp>(c);
+      EnergyAngle_sp d = ensureComponent<EnergyAngle_O>(ef, tdestGroup);
+      d->setScale(s->getScale());
+      if (s->isEnabled()) d->enable(); else d->disable();
+      for (auto& t : s->_Terms) {
+        EnergyAngle nt = t;
+        nt.term.i3x1 = remapSlotI3(t.term.i3x1, srcLo3, srcHi3, delta);
+        nt.term.i3x2 = remapSlotI3(t.term.i3x2, srcLo3, srcHi3, delta);
+        nt.term.i3x3 = remapSlotI3(t.term.i3x3, srcLo3, srcHi3, delta);
+        nt._Atom1 = atomAtI3(at, nt.term.i3x1);
+        nt._Atom2 = atomAtI3(at, nt.term.i3x2);
+        nt._Atom3 = atomAtI3(at, nt.term.i3x3);
+        d->_Terms.push_back(nt);
+        copied++;
+      }
+    } else if (gc::IsA<EnergyLinearAngle_sp>(c)) {
+      // Same shape as EnergyAngle and equally topology-determined: a linear angle exists because
+      // three atoms are colinear in the BOND GRAPH, not because of where they sit.
+      EnergyLinearAngle_sp s = gc::As_unsafe<EnergyLinearAngle_sp>(c);
+      EnergyLinearAngle_sp d = ensureComponent<EnergyLinearAngle_O>(ef, tdestGroup);
+      d->setScale(s->getScale());
+      if (s->isEnabled()) d->enable(); else d->disable();
+      for (auto& t : s->_Terms) {
+        EnergyLinearAngle nt = t;
+        nt.term.i3x1 = remapSlotI3(t.term.i3x1, srcLo3, srcHi3, delta);
+        nt.term.i3x2 = remapSlotI3(t.term.i3x2, srcLo3, srcHi3, delta);
+        nt.term.i3x3 = remapSlotI3(t.term.i3x3, srcLo3, srcHi3, delta);
+        nt._Atom1 = atomAtI3(at, nt.term.i3x1);
+        nt._Atom2 = atomAtI3(at, nt.term.i3x2);
+        nt._Atom3 = atomAtI3(at, nt.term.i3x3);
+        d->_Terms.push_back(nt);
+        copied++;
+      }
+    } else if (gc::IsA<EnergyDihedral_sp>(c)) {
+      EnergyDihedral_sp s = gc::As_unsafe<EnergyDihedral_sp>(c);
+      EnergyDihedral_sp d = ensureComponent<EnergyDihedral_O>(ef, tdestGroup);
+      d->setScale(s->getScale());
+      if (s->isEnabled()) d->enable(); else d->disable();
+      for (auto& t : s->_Terms) {
+        EnergyDihedral nt = t;
+        nt.term.i3x1 = remapSlotI3(t.term.i3x1, srcLo3, srcHi3, delta);
+        nt.term.i3x2 = remapSlotI3(t.term.i3x2, srcLo3, srcHi3, delta);
+        nt.term.i3x3 = remapSlotI3(t.term.i3x3, srcLo3, srcHi3, delta);
+        nt.term.i3x4 = remapSlotI3(t.term.i3x4, srcLo3, srcHi3, delta);
+        nt._Atom1 = atomAtI3(at, nt.term.i3x1);
+        nt._Atom2 = atomAtI3(at, nt.term.i3x2);
+        nt._Atom3 = atomAtI3(at, nt.term.i3x3);
+        nt._Atom4 = atomAtI3(at, nt.term.i3x4);
+        d->_Terms.push_back(nt);
+        copied++;
+      }
+    } else if (gc::IsA<EnergyNonbond14_sp>(c)) {
+      // 1-4 is here rather than with the nonbond components because it is TOPOLOGY-determined:
+      // construct14InteractionTerms loops PROPERS over the matter and takes each proper dihedral's
+      // terminal atoms.  Same enumeration, same source as the dihedral terms - so it renames across
+      // rotamers of a monomer for exactly the same reason they do.
+      //
+      // The reference's terms are already deduplicated on their (i3,i3) pairs, and the shift is
+      // injective - a constant offset inside the source slot range, identity outside - mapping that
+      // range onto the destination slot range, which is disjoint from the backbone.  So no two
+      // reference pairs can collide after shifting and none can collide with a backbone pair; the
+      // deduplication survives without being redone.
+      EnergyNonbond14_sp s = gc::As_unsafe<EnergyNonbond14_sp>(c);
+      EnergyNonbond14_sp d = ensureComponent<EnergyNonbond14_O>(ef, tdestGroup);
+      d->setScale(s->getScale());
+      if (s->isEnabled()) d->enable(); else d->disable();
+      for (auto& t : s->_Terms14) {
+        EnergyNonbond14 nt = t;
+        nt.term.i3x1 = remapSlotI3(t.term.i3x1, srcLo3, srcHi3, delta);
+        nt.term.i3x2 = remapSlotI3(t.term.i3x2, srcLo3, srcHi3, delta);
+        nt._Atom1_enb = atomAtI3(at, nt.term.i3x1);
+        nt._Atom2_enb = atomAtI3(at, nt.term.i3x2);
+        d->_Terms14.push_back(nt);
+        copied++;
+      }
+    } else {
+      skipped++;
+    }
+  }
+  return Values(core::make_fixnum(copied), core::make_fixnum(skipped));
+}
+
+
+void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExcludedAtoms, core::T_sp keepInteractionFactory, bool assign_types, core::T_sp forceFieldOverrides, core::T_sp setup, core::T_sp maybe_energy_component_group )
 {
   if (setup.nilp()) {
     setup = core::Cons_O::create(kw::_sym_amber,nil<core::T_O>());
@@ -1303,6 +1732,12 @@ void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExclud
     SIMPLE_ERROR("You cannot have a rosetta energy-function with use-excluded-atoms t");
   }
   this->_ForceFieldName = gc::As<core::Symbol_sp>(oCar(setup)); // we should call this something else like nonbond-function-type because it stores :amber or :rosetta
+  // Keep the FULL setup and the useExcludedAtoms flag so generateIntoGroup can re-run
+  // generateNonbondEnergyFunctionTables with exactly these arguments.  _ForceFieldName holds only
+  // oCar(setup); the rosetta branch builds SetupAccumulator(classSymbol,setup) from the whole
+  // list, so rebuilding it as (list _ForceFieldName) would drop the tail and reparameterize.
+  this->_Setup = setup;
+  this->_UseExcludedAtoms = useExcludedAtoms;
   core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,nil<core::T_O>());
 
   this->_Matter = aggregate;
@@ -1311,25 +1746,9 @@ void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExclud
   //
   core::HashTable_sp molecule_force_fields = core::HashTable_O::createEq();
   core::HashTable_sp molecule_force_field_names = core::HashTable_O::createEq();
-  Loop moleculeLoop;
-  moleculeLoop.loopTopGoal(aggregate,MOLECULES);
-  while (moleculeLoop.advanceLoopAndProcess() ) {
-    Molecule_sp molecule = moleculeLoop.getMolecule();
-    core::T_sp force_field_name = molecule->force_field_name();
-    if (forceFieldOverrides.notnilp()) {
-      core::T_sp maybe_override_force_field_name = gc::As<core::HashTable_sp>(forceFieldOverrides)->gethash(molecule);
-      if (maybe_override_force_field_name.notnilp()) {
-        force_field_name = maybe_override_force_field_name;
-      }
-    }
-    if (molecule_force_fields->gethash(molecule).nilp()) {
-      core::T_sp combined_force_field = core::eval::funcall(_sym_find_force_field,force_field_name);
-      molecule_force_fields->setf_gethash(molecule,combined_force_field);
-      molecule_force_field_names->setf_gethash(molecule,force_field_name);
-    } else {
-      SIMPLE_ERROR("A molecule already has a force-field");
-    }
-  }
+
+  this->resolveMoleculeForceFields( aggregate, forceFieldOverrides, molecule_force_fields, molecule_force_field_names );
+
   core::HashTable_sp atomTypes = core::HashTable_O::createEq();
   this->_AtomTypes = atomTypes;
 
@@ -1381,17 +1800,23 @@ void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExclud
   }
 
 
-  // ================================================================================
-  // Currently build the atom table and the stretch/angle/dihedral/improper terms
-  //
   core::List_sp solute = solute_molecules.cons();
+  core::List_sp solvent = solvent_molecules.cons();
+
+  // ================================================================================
+  // PASS 1 - atom types and the atom table, solute first then solvent.
+  //
+  // This runs for EVERY molecule before ANY molecule's bonded terms are generated.  Atom
+  // numbering is fixed here and pass 2 only reads it, so pass 2 can be re-run later against a
+  // different keep-interaction-factory and a fresh energy-component-group without disturbing
+  // the coordinate vector - that is what generateIntoGroup does for a blueprint rotamer slot.
+  //
   for ( auto cur_solute : solute ) {
     Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
-    this->defineForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names );
+    this->constructAtomTableForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names );
     final_solute_residue_iptres += onemol->contentSize();
     ++number_of_molecules_nspm;
   }
-  core::List_sp solvent = solvent_molecules.cons();
   first_solvent_molecule_nspsol = number_of_molecules_nspm+1;
   if (chem__verbose(1)) {
     if (core::cl__length(solvent)>0) {
@@ -1402,8 +1827,20 @@ void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExclud
   }
   for ( auto cur_solvent : solvent ) {
     Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
-    this->defineForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names );
+    this->constructAtomTableForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names );
     ++number_of_molecules_nspm;
+  }
+
+  // ================================================================================
+  // PASS 2 - stretch/angle/dihedral/improper terms, same order.
+  //
+  for ( auto cur_solute : solute ) {
+    Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
+    this->generateForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names, maybe_energy_component_group );
+  }
+  for ( auto cur_solvent : solvent ) {
+    Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
+    this->generateForMolecule( onemol, keepInteractionFactory, atomTypes, nonbondForceField, molecule_force_fields, molecule_force_field_names, maybe_energy_component_group );
   }
   if (solvent_exists) {
     printf("%s:%d  solvent_exists NSPSOL %lu  IPTRES %lu   NSM %lu \n", __FILE__, __LINE__,
@@ -1445,13 +1882,25 @@ void EnergyFunction_O::defineForAggregate(Aggregate_sp aggregate, bool useExclud
 
 
 
-void EnergyFunction_O::defineForMolecule( Molecule_sp onemol, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp nonbondForceField, core::HashTable_sp molecule_force_fields, core::HashTable_sp molecule_force_field_names )
+// PASS 1 for one molecule - assign its atom types and append its atoms to the atom table.
+void EnergyFunction_O::constructAtomTableForMolecule( Molecule_sp onemol, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp nonbondForceField, core::HashTable_sp molecule_force_fields, core::HashTable_sp molecule_force_field_names )
 {
-  core::T_sp combined_force_field = molecule_force_fields->gethash(onemol);
-  core::T_sp force_field_name = molecule_force_field_names->gethash(onemol);
-  core::eval::funcall( _sym_define_for_molecule_using_force_field,
-                       this->asSmartPtr(), onemol, combined_force_field, force_field_name,
+  core::eval::funcall( _sym_construct_atom_table_for_molecule,
+                       this->asSmartPtr(), onemol,
+                       molecule_force_fields->gethash(onemol),
+                       molecule_force_field_names->gethash(onemol),
                        atomTypes, nonbondForceField, keepInteractionFactory );
+}
+
+// PASS 2 for one molecule - generate its bonded terms.  GROUP is NIL or an
+// EnergyComponentGroup that collects every component this pass creates.
+void EnergyFunction_O::generateForMolecule( Molecule_sp onemol, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp nonbondForceField, core::HashTable_sp molecule_force_fields, core::HashTable_sp molecule_force_field_names, core::T_sp group )
+{
+  core::eval::funcall( _sym_generate_for_molecule_using_force_field,
+                       this->asSmartPtr(), onemol,
+                       molecule_force_fields->gethash(onemol),
+                       molecule_force_field_names->gethash(onemol),
+                       atomTypes, nonbondForceField, keepInteractionFactory, group );
 }
 
 
@@ -1473,15 +1922,21 @@ core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
   return ht;
 }
 
-CL_LAMBDA((energy-function chem:energy-function) molecule ffstretches ffangles ffptors ffitors &key (keep-interaction-factory t) atom-types)
-CL_DOCSTRING(R"dx(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.)dx")
+CL_LAMBDA((energy-function chem:energy-function) molecule ffstretches ffangles ffptors ffitors &key (keep-interaction-factory t) atom-types group)
+CL_DOCSTRING(R"dx(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.
+
+GROUP is NIL or an EnergyComponentGroup.  NIL puts the stretch/angle/dihedral terms in the energy
+function's own single component of each class.  A group scopes find-or-create to that group, so a
+pass driven with a fresh group yields a fresh set of components holding only that pass's terms -
+which is how one blueprint rotamer slot gets an energy of its own.)dx")
 CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule,
                                                                          FFStretchDb_sp ffstretches,
                                                                          FFAngleDb_sp ffangles,
                                                                          FFPtorDb_sp ffptors,
                                                                          FFItorDb_sp ffitors,
                                                                          core::T_sp keepInteractionFactory,
-                                                                         core::HashTable_sp atomTypes )
+                                                                         core::HashTable_sp atomTypes,
+                                                                         core::T_sp group )
 {
   if (keepInteractionFactory.nilp()) return;
   Loop loop;
@@ -1506,7 +1961,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
     size_t missing_terms = 0;
     core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyStretch_O::staticClass() );
     if (keepInteraction.notnilp()) {
-      auto stretchComponent = ensureComponent<EnergyStretch_O>(this->asSmartPtr());
+      auto stretchComponent = ensureComponent<EnergyStretch_O>(this->asSmartPtr(),group);
       loop.loopTopGoal(molecule,BONDS);
       while ( loop.advanceLoopAndProcess() ) {
         a1 = loop.getBondA1();
@@ -1540,7 +1995,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   {
     core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyAngle_O::staticClass() );
     if (keepInteraction.notnilp()) {
-      auto angleComponent = ensureComponent<EnergyAngle_O>(this->asSmartPtr());
+      auto angleComponent = ensureComponent<EnergyAngle_O>(this->asSmartPtr(),group);
       size_t terms = 0;
       size_t missing_terms = 0;
       loop.loopTopGoal(molecule,ANGLES);
@@ -1574,7 +2029,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   {
     core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedral_O::staticClass() );
     if (keepInteraction.notnilp()) {
-      auto dihedralComponent = ensureComponent<EnergyDihedral_O>(this->asSmartPtr());
+      auto dihedralComponent = ensureComponent<EnergyDihedral_O>(this->asSmartPtr(),group);
       size_t terms = 0;
       size_t missing_terms = 0;
       loop.loopTopGoal(molecule,PROPERS);
@@ -1709,7 +2164,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
 CL_DOCSTRING(R"dx(Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.)dx");
-CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp setup )
+CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes, core::T_sp setup, core::T_sp group, bool bonded14 )
 {
   if (keepInteractionFactory.nilp()) return;
   if (chem__verbose(0))
@@ -1727,7 +2182,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
       nonbond = EnergyNonbond_O::create();
       nonbond->initialize();
     }
-    this->pushEnergyComponent(nonbond);
+    collectComponent(this->asSmartPtr(),nonbond,group);
     if (useExcludedAtoms) {
       SIMPLE_ERROR(":use-excluded-atoms is T - Don't use excluded atoms for the time being");
       // The nonbond parameters are calculated in Common Lisp
@@ -1738,15 +2193,26 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
       nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
     } else {
       nonbond->constructNonbondTermsFromAtomTable(this->_AtomTable, nonbondForceField,atomTypes, keepInteractionFactory );
-      nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
+      // BONDED14 - see the header.  The 1-4 set comes off the bond graph, not the atom table.
+      if (bonded14) {
+        nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
+      }
     }
   } else if (oCar(setup)==kw::_sym_rosetta) {
     {
       core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyRosettaNonbond_O::staticClass() );
       if (keepInteraction.notnilp()) {
         SetupAccumulator setupAccNonbond(EnergyRosettaNonbond_O::static_classSymbol(),setup);
-        auto energyRosettaNonbond = EnergyRosettaNonbond_O::make(this->asSmartPtr(), keepInteraction, setupAccNonbond );
-        this->pushEnergyComponent(gc::As<EnergyRosettaNonbond_sp>(energyRosettaNonbond));
+        // keepInteractionFactory, NOT the specialized keepInteraction above.  ::make runs
+        // specializeKeepInteractionFactory itself (energyRosettaNonbond.cc:66) and stores the
+        // result in _KeepInteractionFactory, so handing it the already-specialized predicate
+        // specializes TWICE - the predicate gets funcalled with the component class as its only
+        // argument.  A &rest predicate accepts that and returns NIL, which trips ::make's own
+        // "Mismatch between keepInteractionFactory ... and ::make" guard.  The other three
+        // components below already pass the factory; this line was the odd one out, and it only
+        // ever worked because the design path's factory is T, for which specialize is idempotent.
+        auto energyRosettaNonbond = EnergyRosettaNonbond_O::make(this->asSmartPtr(), keepInteractionFactory, setupAccNonbond );
+        collectComponent(this->asSmartPtr(),gc::As<EnergyRosettaNonbond_sp>(energyRosettaNonbond),group);
       }
     }
     {
@@ -1754,7 +2220,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
       if (keepInteraction.notnilp()) {
         SetupAccumulator setupAccElec(EnergyRosettaElec_O::static_classSymbol(),setup);
         auto energyRosettaElec = EnergyRosettaElec_O::make(this->asSmartPtr(), keepInteractionFactory, setupAccElec );
-        this->pushEnergyComponent(gc::As<EnergyRosettaElec_sp>(energyRosettaElec));
+        collectComponent(this->asSmartPtr(),gc::As<EnergyRosettaElec_sp>(energyRosettaElec),group);
       }
     }
     {
@@ -1764,16 +2230,21 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
         SetupAccumulator setupAccLK(EnergyRosettaLKSolvation_O::static_classSymbol(), setup);
         auto energyLKSolvation = EnergyRosettaLKSolvation_O::make(
             this->asSmartPtr(), keepInteractionFactory, setupAccLK);
-        this->pushEnergyComponent(gc::As<EnergyRosettaLKSolvation_sp>(energyLKSolvation));
+        collectComponent(this->asSmartPtr(),gc::As<EnergyRosettaLKSolvation_sp>(energyLKSolvation),group);
       }
     }
-    {
+    // BONDED14 - see the header.  construct14InteractionTerms loops PROPERS over the MATTER and
+    // takes each proper dihedral's terminal atoms, so this is the same enumeration, over the same
+    // structure, that produces the dihedral terms.  It is topology-determined in exactly the way the
+    // bonded terms are, which is why it is gated with them rather than with the nonbond components
+    // above - those are built from _AtomTable and never touch the matter.
+    if (bonded14) {
       core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, EnergyDihedral_O::staticClass() );
       if (keepInteraction.notnilp()) {
         SetupAccumulator setupAcc14(EnergyNonbond14_O::static_classSymbol(),setup);
         auto energyNonbond14 = EnergyNonbond14_O::make(this->asSmartPtr(),keepInteractionFactory,setupAcc14);
         energyNonbond14->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
-        this->pushEnergyComponent(energyNonbond14);
+        collectComponent(this->asSmartPtr(),energyNonbond14,group);
       }
     }
   } else {
@@ -2196,6 +2667,12 @@ EnergyFunction_sp EnergyFunction_O::copyFilter(core::T_sp keepInteractionFactory
   me->_AtomTable = this->_AtomTable;
   me->_NonbondCrossTermTable = this->_NonbondCrossTermTable;
   me->_BoundingBox = this->_BoundingBox;
+  // Carry the defining setup so a filtered copy can still generateIntoGroup.  This is THIS->_Setup
+  // (what defineForAggregate was called with), deliberately not the SETUP argument above - that
+  // one configures the per-component SetupAccumulator for this filtering pass and is a different
+  // thing that merely tends to look the same.
+  me->_Setup = this->_Setup;
+  me->_UseExcludedAtoms = this->_UseExcludedAtoms;
   if (keepInteractionFactory.notnilp()) {
     ql::list ll;
     for ( auto cur : this->_EnergyComponents ) {

@@ -352,6 +352,7 @@ inline void KernelHessOffDiagAcc(size_t positionSize, double* hessian, double* d
 
 
 SMART(EnergyComponent );
+SMART(EnergyPairlistComponent );
 class EnergyComponent_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyComponent_O,"EnergyComponent",core::CxxObject_O);
@@ -425,6 +426,183 @@ public:
   virtual void setupHessianPreconditioner(NVector_sp nvPosition, AbstractLargeSquareMatrix_sp m, core::T_sp activeAtomMask) = 0;
 
 };
+
+
+/*! Base for every component that builds a PAIR LIST - EnergyNonbond_O, EnergyRosettaNonbond_O,
+    EnergyRosettaElec_O and EnergyRosettaLKSolvation_O.
+
+    These five members were declared identically in all four classes.  rebuildPairListImpl
+    (pairList.h) is a template that reaches them by duck typing, with the requirements written out
+    as a comment at the top of that file; collecting them here makes that contract a declared base
+    class instead, so a new pair-list component inherits the interface rather than reproducing it.
+
+    Nothing here is virtual.  The template still binds by static type, so there is no dispatch cost
+    and the derived classes stay layout-compatible with what they were. */
+class EnergyPairlistComponent_O : public EnergyComponent_O
+{
+  LISP_ABSTRACT_CLASS(chem,ChemPkg,EnergyPairlistComponent_O,"EnergyPairlistComponent",EnergyComponent_O);
+public:
+  core::T_sp            _KeepInteractionFactory;
+  /*! When the current pair list was built, and how far the coordinates had already drifted then.
+   *
+   * These two scalars replace _DisplacementBuffer, which was a full COPY of the coordinates - 162 KB
+   * per component - walked in its entirety on every evaluation.  A blueprint holds ~2829 pair-list
+   * components over 6762 atoms, so that was ~460 MB of copies and ~57 million coordinate comparisons
+   * per cycle, all of them recomputing the same answer from the same numbers.
+   *
+   * The snapshot now lives once on the AtomTable (AtomTable_O::_RefCoords) and each component keeps
+   * only its position relative to it: the epoch the reference was in, and the drift it had reached.
+   * maybeRebuildPairListImpl turns those into the same decision with two loads and a compare - see
+   * pairList.h and the _RefCoords comment for the triangle-inequality bound that makes it sound.
+   *
+   * EPOCH 0 MEANS NEVER BUILT, which is why AtomTable_O::_RefEpoch starts at 1 and skips 0 on wrap.
+   * Everything that used to nil out _DisplacementBuffer now zeroes the epoch, and it means the same
+   * thing: the next evaluation must rebuild rather than trust what is cached. */
+  size_t                _PairListEpoch = 0;
+  double                _PairListDrift = 0.0;
+  //! False when no bonded path can span the two matters - two molecules, or a sidechain against an
+  //! intermolecular partner - so the 1-2/1-3/1-4 probes would always miss and are pure cost.
+  bool                  _ExclusionsPossible = true;
+  //! When both are set the pair list is built BETWEEN them rather than over the whole atom table.
+  core::T_sp            _Matter1;
+  core::T_sp            _Matter2;
+
+  /*! QUERY SET - which atoms this component enumerates candidate pairs FROM.
+   *
+   * Unset (the default) means "every atom": the full-table grid enumeration rebuildPairListImpl
+   * has always done.  Every existing caller leaves it unset and is unaffected.
+   *
+   * Set, it means: iterate THESE atoms, read each one's neighbour list off the AtomTable, and form
+   * candidates from that.  Scoring one rotamer the old way examined ~6.5 million candidate pairs -
+   * gridding all 6762 atoms to find the ~4500 involving 15 of them - and did it once per component
+   * per evaluation, with the coordinates unchanged throughout.
+   *
+   * Two forms, because the two callers have different shapes.  A fan-out slot is a CONTIGUOUS i3
+   * range, so it is two integers and no allocation.  A backbone is not contiguous and needs the
+   * mask, which its caller already holds.  Forcing both through a mask would spend 470 masks of
+   * 2.5 KB to say what two fixnums say.
+   *
+   * INVARIANT: the query set must be a SUPERSET of the atoms keepInteraction would accept on the
+   * query side.  It is an enumeration hint, not a second filter - the predicate still runs and
+   * still decides.  Too wide costs only speed; TOO NARROW SILENTLY DROPS TERMS.
+   */
+  size_t                _QueryLo3 = 0;
+  size_t                _QueryHi3 = 0;      //!< 0 means no range set
+  core::T_sp            _QueryMask;         //!< NIL means no mask set; else an i3-indexed bit-vector
+  /*! Which atoms may be FOUND as neighbours - the other end of the query set.
+   *
+   * The query set says what to enumerate FROM; this says what may be enumerated TO, and it is what
+   * the AtomTable's neighbour list gets built against.  For a blueprint it is the backbone, so a
+   * slot finds backbone partners and never another rotamer's atoms.
+   *
+   * NIL means every atom is a target.  Only consulted when a query set is set. */
+  core::T_sp            _QueryTargetMask;
+  /*! Cutoff to BUILD the shared neighbour list at, when it differs from this component's own.
+   *
+   * 0 means "use my own rpairlist".  Set it to the MAX rpairlist across the group's components and
+   * every one of them builds the same list: validity is `_NeighborCutoff >= requested`, so a wider
+   * list answers a narrower request, and each component still applies its own exact distance test
+   * per pair.
+   *
+   * Without it the FIRST component to evaluate sets the width.  Today that is rosetta nonbond at
+   * 9.0 and the others reuse it, but only by the order components happen to be added - override
+   * :rpairlist to make nonbond narrower than LK and the first build would be too small, forcing a
+   * second full pass.  PROTEIN-BINDER.LISP:2328 takes the same max for the same reason. */
+  double                _QueryCutoff = 0.0;
+
+public:
+  void fields(core::Record_sp node);
+
+public:
+  CL_DEFMETHOD core::T_sp keepInteractionFactory() const { return this->_KeepInteractionFactory; };
+  core::T_sp matter1() const { return this->_Matter1; };
+  core::T_sp matter2() const { return this->_Matter2; };
+  bool exclusionsPossible() const { return this->_ExclusionsPossible; };
+  size_t pairListEpoch() const { return this->_PairListEpoch; };
+  double pairListDrift() const { return this->_PairListDrift; };
+  /*! Record that the pair list was just built against EPOCH with the reference at DRIFT. */
+  void notePairListBuilt(size_t epoch, double drift) {
+    this->_PairListEpoch = epoch;
+    this->_PairListDrift = drift;
+  };
+  CL_LISPIFY_NAME("invalidate-pair-list");
+  CL_DOCSTRING(R"dx(Force the next evaluation to rebuild this component's pair list.)dx");
+  CL_DEFMETHOD void invalidatePairList() { this->_PairListEpoch = 0; };
+
+  bool hasQuerySet() const {
+    return this->_QueryHi3 != 0 || this->_QueryMask.notnilp();
+  };
+  size_t queryLo3() const { return this->_QueryLo3; };
+  size_t queryHi3() const { return this->_QueryHi3; };
+  core::T_sp queryMask() const { return this->_QueryMask; };
+
+  CL_LISPIFY_NAME("set-query-range");
+  CL_DOCSTRING(R"dx(Enumerate candidate pairs from the atoms with i3 from LO3 up to but not including HI3.)dx");
+  CL_DEFMETHOD void setQueryRange(size_t lo3, size_t hi3) {
+    if (hi3 <= lo3)
+      SIMPLE_ERROR("Empty query range lo3={} hi3={} - use clear-query-set for 'every atom'", lo3, hi3);
+    this->_QueryLo3 = lo3;
+    this->_QueryHi3 = hi3;
+    this->invalidatePairList();
+  };
+  CL_LISPIFY_NAME("set-query-mask");
+  CL_DOCSTRING(R"dx(Enumerate candidate pairs from the atoms whose i3 bit is set in MASK.)dx");
+  CL_DEFMETHOD void setQueryMask(core::T_sp mask) {
+    this->_QueryMask = mask;
+    this->invalidatePairList();
+  };
+  /*! Build the pair list BETWEEN matter1 and matter2 instead of over the whole atom table.
+   *
+   * EXCLUSIONS-POSSIBLE NIL says no bonded path can span the two matters - two molecules, or a
+   * sidechain against an intermolecular partner - so the 1-2/1-3/1-4 probes would always miss and
+   * are pure cost per pair.
+   *
+   * Invalidating the pair list is not incidental: maybeRebuildPairList decides whether to rebuild
+   * from how far the coordinates have drifted, and the coordinates do not move when the MATTERS
+   * change - so leaving the stamp in place would let the next evaluation happily reuse a pair list
+   * built for the PREVIOUS pair of matters.
+   *
+   * The three rosetta components each had this verbatim and byte-identical, including a
+   * commented-out invalidateParameterCache() call.  Leaving that out is correct: their parameter
+   * caches are keyed on the atom table and the force field, neither of which setMatters touches. */
+  CL_LAMBDA((self chem:energy-pairlist-component) matter1 matter2 &optional (exclusions-possible t));
+  CL_DEFMETHOD void setMatters(core::T_sp matter1, core::T_sp matter2, bool exclusionsPossible = true) {
+    this->_Matter1 = matter1;
+    this->_Matter2 = matter2;
+    this->_ExclusionsPossible = exclusionsPossible;
+    this->invalidatePairList();
+  };
+  core::T_sp queryTargetMask() const { return this->_QueryTargetMask; };
+  double queryCutoff() const { return this->_QueryCutoff; };
+  CL_LISPIFY_NAME("set-query-cutoff");
+  CL_DOCSTRING(R"dx(Build the shared neighbour list at CUTOFF rather than at this component's own rpairlist.  Pass the max across the group so every component shares one list.  Zero reverts to using rpairlist.)dx");
+  CL_DEFMETHOD void setQueryCutoff(double cutoff) { this->_QueryCutoff = cutoff; };
+  CL_LISPIFY_NAME("set-query-targets");
+  CL_DOCSTRING(R"dx(Restrict the atoms that may be FOUND as neighbours to those whose i3 bit is set in MASK.  NIL means every atom.)dx");
+  CL_DEFMETHOD void setQueryTargets(core::T_sp mask) {
+    this->_QueryTargetMask = mask;
+    this->invalidatePairList();
+  };
+  CL_LISPIFY_NAME("clear-query-set");
+  CL_DOCSTRING(R"dx(Revert to enumerating candidate pairs from every atom.)dx");
+  CL_DEFMETHOD void clearQuerySet() {
+    this->_QueryLo3 = 0;
+    this->_QueryHi3 = 0;
+    this->_QueryMask = nil<core::T_O>();
+    this->_QueryTargetMask = nil<core::T_O>();
+    this->invalidatePairList();
+  };
+
+public:
+  EnergyPairlistComponent_O()
+    : _KeepInteractionFactory(nil<core::T_O>())
+    , _Matter1(nil<core::T_O>())
+    , _Matter2(nil<core::T_O>())
+    , _QueryMask(nil<core::T_O>())
+    , _QueryTargetMask(nil<core::T_O>())
+  {};
+};
+
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
   if (list.consp()) {

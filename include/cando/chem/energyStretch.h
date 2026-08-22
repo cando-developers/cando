@@ -157,12 +157,13 @@ public:
     typedef gctools::Vec0<TermType>::iterator iterator;
     iterator begin() { return this->_Terms.begin(); };
     iterator end() { return this->_Terms.end(); };
-  static EnergyStretch_sp make(EnergyFunction_sp energyFunction);
+  static EnergyStretch_sp make(EnergyFunction_sp energyFunction, core::T_sp group = nil<core::T_O>());
 public:
   virtual std::string descriptionOfContents() const;
     virtual size_t numberOfTerms() { return this->_Terms.size();};
     void addTerm(const TermType& term);
     virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
     CL_DEFMETHOD core::T_mv safe_amber_energy_stretch_term(size_t index) {
       if (index >= this->numberOfTerms() ) {

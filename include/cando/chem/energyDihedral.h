@@ -198,12 +198,13 @@ public:	// Creation class functions
   iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
 public:
-  static EnergyDihedral_sp make(EnergyFunction_sp energyFunction);
+  static EnergyDihedral_sp make(EnergyFunction_sp energyFunction, core::T_sp group = nil<core::T_O>());
   virtual size_t numberOfTerms() { return this->_Terms.size();};
 
 public:
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
 
   CL_DEFMETHOD core::T_mv safe_amber_energy_dihedral_term(size_t index) {
     if (index >= this->numberOfTerms() ) {

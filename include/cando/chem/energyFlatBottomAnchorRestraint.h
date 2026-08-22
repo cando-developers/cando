@@ -120,6 +120,7 @@ public:
       Vector3 center, double R0, double forceConstant);
 
   virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
   virtual bool is_restraint() const { return true; };
 
   virtual void setupHessianPreconditioner(

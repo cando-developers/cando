@@ -267,6 +267,26 @@ protected:
   CL_DEFMETHOD   MatterName getName_notConst() { return this->_Name; };
 
   virtual Matter_mv	addMatter( Matter_sp child );
+  /*! Append CHILD, leaving CHILD completely untouched.
+   *
+   * WHY: addMatter renumbers the child - `cp->_Id = this->nextId()` - which mutates an object the
+   * caller may not own.  A temporary container assembled to SCOPE a pass (a molecule holding the
+   * backbone plus one rotamer residue, so parameterization and ring perception see a small graph
+   * instead of every fanned-out sidechain) shares its residues with the real molecule and has to
+   * hand them back exactly as it found them.
+   *
+   * ALSO O(1).  nextId() scans the whole contents vector for the maximum, so building an N-residue
+   * container with addMatter is O(N^2); this is a push_back.
+   *
+   * SHARING A CHILD BETWEEN TWO PARENTS IS SAFE because addMatter sets no parent pointer - see the
+   * commented-out setContainedBy in Matter_O::addMatter.  Nothing points back up, so a residue can
+   * sit in two _Contents vectors at once.  That is load-bearing for the scoping use above: restore
+   * that line and this stops being safe.
+   *
+   * NOT VIRTUAL, and it does NO type checking - Aggregate_O::addMatter rejects non-molecules, this
+   * does not.  It is a low-level primitive for temporary containers you fully control. */
+  CL_LISPIFY_NAME("addMatterDontUpdateId");
+  CL_DEFMETHOD Matter_mv addMatterDontUpdateId( Matter_sp child );
   void	addMatterRetainId( Matter_sp child );
   void	removeMatter( Matter_sp child );
 

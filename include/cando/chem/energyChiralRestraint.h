@@ -162,6 +162,7 @@ public:
   size_t addChiralRestraintTerm(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double k, double co);
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
+  virtual void atomsForEachTerm(core::Function_sp callback);
   virtual bool is_restraint() const { return true; };
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,

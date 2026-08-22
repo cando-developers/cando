@@ -246,14 +246,22 @@ void EnergyRosettaElec_O::addTerm(const EnergyRosettaElec& term) { this->_Terms.
 void EnergyRosettaElec_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, terms), this->_Terms);
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
-  node->field(INTERN_(kw, KeepInteractionFactory), this->_KeepInteractionFactory);
-  node->field(INTERN_(kw, Matter1), this->_Matter1);
-  node->field(INTERN_(kw, Matter2), this->_Matter2);
   node->field(INTERN_(kw, NonbondForceField), this->_NonbondForceField);
   node->field(INTERN_(kw, AtomTypes), this->_AtomTypes);
-  node->field(INTERN_(kw, DisplacementBuffer), this->_DisplacementBuffer);
   this->_Parameters.fields(node);
   this->Base::fields(node);
+}
+
+/*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
+ *  documents.  A caller taking &rest reads any component without knowing which one it has.
+ */
+void EnergyRosettaElec_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1_enb,
+                          eni->_Atom2_enb,
+                          core::make_fixnum(eni->term.i3x1),
+                          core::make_fixnum(eni->term.i3x2));
+  }
 }
 
 void EnergyRosettaElec_O::dumpTerms(core::HashTable_sp atomTypes) {
@@ -295,7 +303,7 @@ EnergyComponent_sp EnergyRosettaElec_O::copyFilter(core::T_sp keepInteractionFac
   copy->_Matter2 = this->_Matter2;
   copy->_KeepInteractionFactory = keepInteractionFactory;
   copy->_Parameters.do_apply(setupAcc);
-  copy->_DisplacementBuffer = nil<core::T_O>();
+  copy->invalidatePairList();
   copy->_Terms.clear();
   return copy;
 }
@@ -311,7 +319,7 @@ CL_DEFMETHOD void EnergyRosettaElec_O::constructNonbondTermsBetweenMatters(Matte
   this->_AtomTable = energyFunction->_AtomTable;
   this->_AtomTypes = energyFunction->atomTypes();
   this->_NonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
-  this->_DisplacementBuffer = nil<core::T_O>();
+  this->invalidatePairList();
 }
 
 core::T_mv EnergyRosettaElec_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {
@@ -381,36 +389,8 @@ core::T_mv EnergyRosettaElec_O::rebuildPairListBetweenMatters(core::T_sp tcoordi
 }
 
 core::T_mv EnergyRosettaElec_O::maybeRebuildPairList(core::T_sp tcoordinates) {
-  auto coords = gc::As<NVector_sp>(tcoordinates);
-  if (this->_DisplacementBuffer.nilp()) {
-    return this->rebuildPairList(tcoordinates);
-  } else if (gc::IsA<NVector_sp>(this->_DisplacementBuffer)) {
-    NVector_sp nvDisplacementBuffer = gc::As_unsafe<NVector_sp>(this->_DisplacementBuffer);
-    if (nvDisplacementBuffer->size() != coords->size()) {
-      SIMPLE_ERROR("The size of the _DispacementBuffer({}) MUST match the size of the coordinatess({})",
-                   nvDisplacementBuffer->size(), coords->size());
-    }
-    double skinThickness = this->_Parameters.rpairlist - this->_Parameters.rcut;
-    double movedTrigger = 0.5 * skinThickness;
-    double movedTrigger2 = movedTrigger * movedTrigger;
-    vecreal* raw_db = &(*nvDisplacementBuffer)[0];
-    vecreal* raw_coords = &(*coords)[0];
-    for (size_t ci = 0; ci < nvDisplacementBuffer->size(); ci += 3) {
-      const vecreal& dx = raw_db[ci];
-      const vecreal& dy = raw_db[ci + 1];
-      const vecreal& dz = raw_db[ci + 2];
-      const vecreal& cx = raw_coords[ci];
-      const vecreal& cy = raw_coords[ci + 1];
-      const vecreal& cz = raw_coords[ci + 2];
-      if (dx == cx && dy == cy && dz == cz) continue;
-      vecreal dist2 = (dx - cx) * (dx - cx) + (dy - cy) * (dy - cy) + (dz - cz) * (dz - cz);
-      if (dist2 > movedTrigger2) {
-        return this->rebuildPairList(tcoordinates);
-      }
-    }
-    return Values0<core::T_O>();
-  }
-  SIMPLE_ERROR("{}: We should never get here", __FUNCTION__);
+  // Shared implementation - see maybeRebuildPairListImpl in pairList.h.
+  return maybeRebuildPairListImpl(this, tcoordinates);
 }
 
 core::T_mv EnergyRosettaElec_O::rebuildPairList(core::T_sp tcoordinates) {

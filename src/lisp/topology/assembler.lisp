@@ -296,40 +296,6 @@ molecule in the global frame."
                 (m2 (geom:m*m (global-positioning-transform orientation) m1)))
            m2)))))
 
-#+(or)
-(defclass orientations ()
-  ((orientations :initform (make-hash-table) :initarg :orientations :accessor orientations))
-  (:documentation "A hash-table that maps OLIGOMER-SHAPEs to ORIENTATIONs"))
-
-#+(or)
-(defun ensure-complete-orientations (orientations oligomer-shapes)
-  (loop for oligomer-shape in oligomer-shapes
-        unless (gethash oligomer-shape (orientations orientations))
-          do (error "The orientation for oligomer-shape ~s is missing" oligomer-shape)))
-
-#+(or)
-(defun make-orientations (pairs)
-  (let ((ht (make-hash-table)))
-    (loop for cur = pairs then (cddr cur)
-          for oligomer-shape = (car cur)
-          for maybe-orientation = (cadr cur)
-          for orientation = (or maybe-orientation (make-orientation))
-          unless (typep orientation 'orientation)
-          do (error "~s must be an orientation or nil" orientation)
-          when (null cur)
-          do (return nil)
-          do (setf (gethash oligomer-shape ht) orientation))
-    (make-instance 'orientations :orientations ht)))
-
-#+(or)
-(defun oligomer-space-orientations (orientations)
-  "Convert the orientations hash-table to be keyed on oligomer-space, rather than oligomer or oligomer-shape"
-  (let ((ht (make-hash-table)))
-    (maphash (lambda (key value)
-               (setf (gethash (oligomer-space key) ht) value))
-             (orientations orientations))
-    (make-instance 'orientations :orientations ht)))
-
 (defclass monomer-position ()
   ((molecule-index :initarg :molecule-index :reader molecule-index)
    (residue-index :initarg :residue-index :reader residue-index)))
@@ -1072,7 +1038,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
 
 (defun build-all-atom-tree-external-coordinates-and-adjust (assembler assembler-internals coords)
   (loop for oligomer-shape in (oligomer-shapes assembler)
-        do (build-atom-tree-external-coordinates-and-adjust assembler assembler-internals coords oligomer-shape oligomer-shape)))
+        do (build-atom-tree-external-coordinates-and-adjust assembler assembler-internals coords oligomer-shape)))
 
 (defun build-atom-tree-external-coordinates-and-adjust (assembler assembler-internals coords oligomer-shape)
   (build-atom-tree-external-coordinates* assembler assembler-internals coords oligomer-shape)

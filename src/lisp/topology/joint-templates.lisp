@@ -52,22 +52,68 @@
   "default - don't do anything"
   nil)
 
+(defmethod print-object ((obj adjustment) stream)
+  "Name the joint this adjustment acts on.
+
+Subclasses add whatever state decides whether they FIRE - see the INTERNAL-PLANAR-ADJUSTMENT
+method.  Reporting an adjustment is the class's own job: an outside caller cannot know which slot
+gates which subclass, and one that reads OTHER directly will describe BETA-CARBON - which has no
+OTHER and is gated on nothing - as though it were disabled."
+  (print-unreadable-object (obj stream :type t)
+    (format stream "joint ~a"
+            (if (slot-boundp obj 'joint) (kin:joint/name (joint obj)) :unbound))))
+
 (defclass internal-planar-adjustment (internal-adjustment)
   ((other :initarg :other :accessor other))
   (:documentation "Adjust joint to be rotated 180 degrees from other"))
 
+(defmethod print-object ((obj internal-planar-adjustment) stream)
+  "OTHER is included because INTERNAL-ADJUST is a no-op unless it is bound, so it is the difference
+between an adjustment that fires and one that silently does nothing."
+  (print-unreadable-object (obj stream :type t)
+    (format stream "joint ~a other ~a"
+            (if (slot-boundp obj 'joint) (kin:joint/name (joint obj)) :unbound)
+            (if (slot-boundp obj 'other)
+                (let ((o (other obj))) (if o (kin:joint/name o) nil))
+                :unbound))))
+
+(defun joint-plug-name (joint)
+  "The :OUT-PLUG-NAME property WRITE-INTO-JOINT-TREE stamps on an in-plug joint
+  (joint-templates.lisp:566-568), or NIL for a joint that does not start a coupling.
+                                                    
+  This is what says WHICH plug a child arrived through, and it is the only thing that separates a
+  sidechain root from the backbone continuation without relying on atom names - which vary."
+  (kin:get-property-or-default joint :out-plug-name nil))
+
 (defmethod initialize-adjustment ((adjustment internal-planar-adjustment) assembler)
   (let* ((joint (joint adjustment))
          (jparent (kin:parent joint))
-         (jother (when (= (kin:number-of-children jparent) 2)
-                   (kin:joint/only-other-child jparent joint))))
-    ;; Only when there is an other joint do we set (other adjustment)
-    ;; for ring closing connections we need to do something else
-    (when jother
-      (setf (other adjustment) jother))))
+         (my-plug-name (joint-plug-name joint))
+         (jother (if (null my-plug-name)
+                     (if (= (kin:number-of-children jparent) 2)
+                         (kin:joint/only-other-child jparent joint)
+                         (error "~s on joint ~a: parent has ~d children and this joint has no :out-plug-name, ~
+         so the sibling cannot be identified.  Expected exactly 2 children."
+                                (class-name (class-of adjustment)) (kin:joint/name joint)
+                                (kin:number-of-children jparent)))
+                     (let ((candidates (remove-if (lambda (child)
+                                                    (or (eq child joint)
+                                                        (eql (joint-plug-name child) my-plug-name)))
+                                                  (kin:joint/joint-children jparent))))
+                       (if (= (length candidates) 1)
+                           (first candidates)
+                           (error "~s on joint ~a: expected exactly one sibling arriving through a plug other than ~s, ~
+          found ~d among ~d children.  Under a fan-out every alternate shares this joint's plug ~
+          and is excluded, so ~:[none remained~;the parent has more than one continuation~]."
+                                  (class-name (class-of adjustment)) (kin:joint/name joint) my-plug-name
+                                  (length candidates) (kin:number-of-children jparent) (plusp (length candidates))))))))
+    (setf (other adjustment) jother)))
+
+(defmethod print-object ((adjustment internal-planar-adjustment) stream)
+  (print-unreadable-object (adjustment stream :type t)
+    (format stream "other ~s" (other adjustment))))
 
 (defmethod internal-adjust ((adjustment internal-planar-adjustment) assembler internals)
-  o
   ;; Only when the "other" slot is bound do we make adjustment
   (when (and (slot-boundp adjustment 'other)
              (typep (joint adjustment) 'kin:bonded-joint)

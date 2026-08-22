@@ -178,6 +178,16 @@ size_t EnergyAnchorRestraint_O::addAnchorRestraintTerm(EnergyFunction_sp energyF
 
 
 
+/*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
+ *  documents.  A caller taking &rest reads any component without knowing which one it has.
+ */
+void EnergyAnchorRestraint_O::atomsForEachTerm(core::Function_sp callback) {
+  for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
+    core::eval::funcall(callback, eni->_Atom1,
+                          core::make_fixnum(eni->term.i3x1));
+  }
+}
+
 void	EnergyAnchorRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
 }
