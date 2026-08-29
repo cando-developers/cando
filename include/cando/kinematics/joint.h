@@ -170,7 +170,7 @@ public:
 	*/
   void addChild(Joint_sp child);
 
-  virtual bool definedp() const;
+  virtual bool definedp(chem::NVector_sp internals) const;
 
   void setToInternal(core::Symbol_sp cc);
   core::Symbol_sp getToInternal();
