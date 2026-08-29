@@ -844,6 +844,12 @@ structure the way sidechain rotamers can, and there is nothing for a slot range 
 This is why backbone owns no mrkindex.  ACTIVE-ROTAMER-COUNT still says how many are AVAILABLE
 here - the index is valid in [0, that) - but the choice is made and evaluated by installing it,
 not by indexing a pair table.")
+   (refined-backbone-mask :initarg :refined-backbone-mask :reader refined-backbone-mask
+                          :documentation "Per LOCUS bit vector: 1 means that this persona's
+INTERNALS vector contains refinement-derived geometry for the backbone at that locus.  The bit
+is separate from BACKBONE-ROTAMER-INDEX because NIL there can also mean that a catalogue index
+could not be resolved.  No geometry is duplicated here; this is only the marker that prevents a
+later UPDATE-BLUEPRINT-INTERNALS from overwriting refined values with the oligomer-shape.")
    (monomer-contexts :initarg :monomer-contexts :reader monomer-contexts
                      :documentation "Per BLUEPRINT-MONOMER, indexed by MONOMER-ORDINAL: the
 monomer-context that applies right now.  With SHAPE-KEYS below it is the exact key pair that
@@ -928,12 +934,41 @@ builds the joint tree that determines its size."
                                 :monomer-contexts (make-array (monomer-count blueprint) :initial-element nil)
                                 :backbone-rotamer-index (make-array (monomer-count blueprint)
                                                                     :initial-element nil)
+                                :refined-backbone-mask (make-array (length (loci blueprint))
+                                                                   :element-type 'bit
+                                                                   :initial-element 0)
                                 :shape-keys (make-array (length (loci blueprint)) :initial-element nil))))
     (if fill
         (multiple-value-bind (loaded overflows)
             (fill-persona persona :verbose verbose)
           (values persona loaded overflows))
         (values persona 0 nil))))
+
+(defun copy-persona (persona)
+  "Return an independent conformational-state copy of PERSONA.
+
+The blueprint and the rotamer objects installed in its slots are immutable and remain shared.
+Every mutable persona vector is copied, including INTERNALS when it has been built.  The copy has
+the same GENERATION because copying does not change a conformation; a subsequent refinement or
+backbone refresh is responsible for incrementing it.
+
+Geometry movers use this operation before installing refinement-derived rotamers so that applying
+a mover cannot change the input pose through its shared PERSONA."
+  (let ((copy (make-instance 'persona
+                             :blueprint (blueprint persona)
+                             :slot-to-rotamer (copy-seq (slot-to-rotamer persona))
+                             :active-rotamer-count (copy-seq (active-rotamer-count persona))
+                             :active-stereoisomer (copy-seq (active-stereoisomer persona))
+                             :refined-rotamer-index-or-nil
+                             (copy-seq (refined-rotamer-index-or-nil persona))
+                             :backbone-rotamer-index (copy-seq (backbone-rotamer-index persona))
+                             :monomer-contexts (copy-seq (monomer-contexts persona))
+                             :shape-keys (copy-seq (shape-keys persona))
+                             :refined-backbone-mask (copy-seq (refined-backbone-mask persona))
+                             :internals (when (internals persona)
+                                          (copy-seq (internals persona))))))
+    (setf (generation copy) (generation persona))
+    copy))
 
 
 ;;; ------------------------------------------------------------------
@@ -1831,13 +1866,69 @@ this function.")
   "A vector sized to hold every atom's external coordinates for BLUEPRINT."
   (make-coordinates-for-number-of-atoms (chem:number-of-atoms (aggregate blueprint))))
 
-(defun update-blueprint-base-internals (blueprint internals &key verbose)
+(defun blueprint-locus-atresidue (blueprint blueprint-locus)
+  "Return the assembler ATRESIDUE represented by a fixed or backbone BLUEPRINT-LOCUS.
+
+Sidechain loci have fan-out atresidues per mrkindex rather than one base atresidue, so accepting
+one here would hide an addressing error."
+  (unless (member (kind blueprint-locus) '(:fixed :backbone))
+    (error "Locus ~d is ~s, not a fixed or backbone locus"
+           (locus blueprint-locus) (kind blueprint-locus)))
+  (unless (and (< (locus blueprint-locus) (length (loci blueprint)))
+               (eq blueprint-locus (aref (loci blueprint) (locus blueprint-locus))))
+    (error "~s does not belong to ~s" blueprint-locus blueprint))
+  (let ((position (gethash (original-monomer blueprint-locus)
+                           (monomer-positions blueprint))))
+    (unless position
+      (error "No assembler position for locus ~d monomer ~s"
+             (locus blueprint-locus) (original-monomer blueprint-locus)))
+    (at-position (ataggregate blueprint) position)))
+
+(defun install-refined-backbone-internals
+    (persona blueprint-locus refined-internals defined-mask &key verbose)
+  "Install one optimized backbone's residue-local internals into PERSONA.
+
+REFINED-INTERNALS has three values per joint of BLUEPRINT-LOCUS's ATRESIDUE.  DEFINED-MASK has
+one bit per joint and prevents undefined values from replacing valid geometry.  The full geometry
+is stored only in PERSONA's blueprint-sized INTERNALS vector; REFINED-BACKBONE-MASK merely tells a
+later rebuild to preserve it.
+
+The caller must subsequently recalculate shape keys, reload sidechain catalogue rotamers, and
+append the optimized sidechain rotamers.  This function increments GENERATION so energies cached
+against the old geometry are detectably stale."
+  (let* ((blueprint (blueprint persona))
+         (atresidue (blueprint-locus-atresidue blueprint blueprint-locus))
+         (joint-count (length (joints atresidue))))
+    (unless (eq (kind blueprint-locus) :backbone)
+      (error "Cannot install refined backbone internals at ~s" blueprint-locus))
+    (unless (internals persona)
+      (update-blueprint-internals blueprint persona :verbose verbose))
+    (unless (= (length refined-internals) (* 3 joint-count))
+      (error "Refined internals have length ~d; locus ~d needs ~d"
+             (length refined-internals) (locus blueprint-locus) (* 3 joint-count)))
+    (unless (or (null defined-mask) (= (length defined-mask) joint-count))
+      (error "Defined mask has length ~d; locus ~d needs ~d"
+             (length defined-mask) (locus blueprint-locus) joint-count))
+    (write-internals blueprint (internals persona) atresidue
+                     refined-internals defined-mask :verbose verbose)
+    (setf (aref (refined-backbone-mask persona) (locus blueprint-locus)) 1)
+    (loop for blueprint-monomer across (monomers blueprint-locus)
+          for ordinal = (monomer-ordinal blueprint-monomer)
+          do (setf (aref (backbone-rotamer-index persona) ordinal) nil
+                   (aref (active-rotamer-count persona) ordinal) 1))
+    (incf (generation persona))
+    persona))
+
+(defun update-blueprint-base-internals (blueprint persona internals &key verbose)
   "Fill internals for the :FIXED and :BACKBONE residues - everything MAKE-ASSEMBLER built.
 
   Mirrors FILL-INTERNALS-FROM-OLIGOMER-SHAPE (assembler.lisp:1142-1155), including its ordering
   requirement: ORDERED-MONOMERS runs root-outwards so a monomer's internals are installed after
   those of everything it hangs from.  The one difference is the MONOMER-POSITION test - a declined
-  sidechain monomer has no position, and is skipped rather than dereferenced."
+  sidechain monomer has no position, and is skipped rather than dereferenced.
+
+  A backbone marked in REFINED-BACKBONE-MASK is already authoritative in PERSONA's INTERNALS and is
+  preserved instead of being overwritten from its old OLIGOMER-SHAPE."
   (let ((atagg (ataggregate blueprint))
         (filled 0))
     (loop for oligomer-shape in (oligomer-shapes blueprint)
@@ -1848,11 +1939,17 @@ this function.")
                      do (let* ((atmol (elt (atmolecules atagg) (molecule-index monomer-position)))
                                (atres (elt (atresidues atmol) (residue-index monomer-position)))
                                (monomer-context (gethash monomer (monomer-contexts blueprint)))
-                               (monomer-shape (gethash monomer (monomer-shape-map oligomer-shape))))
-                          (when monomer-shape
+                               (monomer-shape (gethash monomer (monomer-shape-map oligomer-shape)))
+                               (blueprint-locus (gethash monomer (locus-map blueprint)))
+                               (refined-p (and blueprint-locus
+                                               (eq (kind blueprint-locus) :backbone)
+                                               (= 1 (aref (refined-backbone-mask persona)
+                                                          (locus blueprint-locus))))))
+                          (when (and monomer-shape (not refined-p))
                             (apply-monomer-shape-to-atresidue-internals
                              blueprint internals oligomer-shape monomer-shape
-                             monomer-context atres :verbose verbose)
+                             monomer-context atres :verbose verbose))
+                          (when (or monomer-shape refined-p)
                             (incf filled)))))
     filled))
 
@@ -1935,10 +2032,12 @@ this function.")
     (values filled fallbacks)))
 
 (defun update-blueprint-internals (blueprint persona &key internals verbose)
-  "Fill an internals vector for the WHOLE blueprint: base residues then fan-out slots.
+  "Fill and retain PERSONA's internals vector for the WHOLE blueprint.
 
-  PERSONA supplies the rotamer selection.  Nothing is written into the joints - internals are a
-  value passed to the fold, which is what lets several personas coexist over one blueprint.
+  PERSONA supplies the rotamer selection.  When INTERNALS is supplied, it becomes this persona's
+  vector; otherwise the persona's existing vector is reused or a new one is allocated.  Nothing is
+  written into the joints - internals are a value passed to the fold, which is what lets several
+  personas coexist over one blueprint.
 
   The ADJUST-ALL-INTERNALS call is not optional and it is the reason the fan used to land in the
   wrong place.  The normal path is UPDATE-INTERNALS = fill THEN adjust (assembler.lisp:1212-1223);
@@ -1952,15 +2051,18 @@ this function.")
   a separate traversal.  Their adjustments were registered at fan-out and initialized by the
   INITIALIZE-ADJUSTMENT loop in BUILD-BLUEPRINT-FAN-OUT-JOINTS.
 
-  Returns the internals vector."
-  (let ((internals (or internals (make-internals-for-blueprint blueprint))))
-    (let ((base (update-blueprint-base-internals blueprint internals :verbose verbose)))
+  Stores and returns the internals vector."
+  (let ((internals (or internals
+                       (internals persona)
+                       (make-internals-for-blueprint blueprint))))
+    (let ((base (update-blueprint-base-internals blueprint persona internals :verbose verbose)))
       (multiple-value-bind (slots fallbacks)
           (update-blueprint-slot-internals blueprint persona internals :verbose verbose)
         (adjust-all-internals blueprint internals)
         (format t "~&blueprint internals: ~d base residues, ~d slots filled~
                    ~@[ (~d with a stand-in rotamer)~], adjusted~%"
                 base slots (and (plusp fallbacks) fallbacks))))
+    (setf (internals persona) internals)
     internals))
 
 (defun build-blueprint-coordinates (blueprint persona &key verbose internals coords
