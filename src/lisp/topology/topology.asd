@@ -26,10 +26,10 @@
                (:file "badgeom")
                (:file "shape")
                (:file "piece-assembler")
-               (:file "blueprint")
                (:file "steppers")
                (:file "rotamers-api")
                (:file "manipulator")
+               (:file "blueprint")
                ))
 
 

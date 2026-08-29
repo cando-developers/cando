@@ -755,6 +755,11 @@ off the oligomer-shape rather than deciding it here."
                      :rotamer-scans (make-array total-slots :initial-element nil)))))
 
 
+(defun make-blueprint-and-materialize (assembler &rest args &key (moveable-p-fn #'locus-moveable-p))
+  (let ((bp (apply 'make-blueprint assembler args)))
+    (materialize-blueprint bp)
+    bp))
+
 (defun moveable-loci (blueprint)
   "The loci that are design choices - the ones that own slots and mrkindexes."
   (remove-if-not #'moveable-p (loci blueprint)))
@@ -907,23 +912,28 @@ NOT change keep their values across a partial refresh."))
                       (when (internals obj) "+internals")))
             (format stream "gen ~d unallocated" (generation obj))))))
 
-(defun make-persona (blueprint)
+(defun make-persona (blueprint &key (fill t) verbose)
   "An empty persona sized for BLUEPRINT - all vectors allocated, no conformations loaded.
 
 Allocating here rather than on demand means every vector has its final length from the start, so
 a later refresh overwrites in place and no index can move.  INTERNALS stays NIL until pass 2
 builds the joint tree that determines its size."
-  (make-instance 'persona
-                 :blueprint blueprint
-                 :slot-to-rotamer (make-array (total-slots blueprint) :initial-element nil)
-                 :active-rotamer-count (make-array (monomer-count blueprint) :initial-element 0)
-                 :active-stereoisomer (make-array (monomer-count blueprint) :initial-element nil)
-                 :refined-rotamer-index-or-nil (make-array (monomer-count blueprint)
-                                                           :initial-element nil)
-                 :monomer-contexts (make-array (monomer-count blueprint) :initial-element nil)
-                 :backbone-rotamer-index (make-array (monomer-count blueprint)
-                                                     :initial-element nil)
-                 :shape-keys (make-array (length (loci blueprint)) :initial-element nil)))
+  (let ((persona (make-instance 'persona
+                                :blueprint blueprint
+                                :slot-to-rotamer (make-array (total-slots blueprint) :initial-element nil)
+                                :active-rotamer-count (make-array (monomer-count blueprint) :initial-element 0)
+                                :active-stereoisomer (make-array (monomer-count blueprint) :initial-element nil)
+                                :refined-rotamer-index-or-nil (make-array (monomer-count blueprint)
+                                                                          :initial-element nil)
+                                :monomer-contexts (make-array (monomer-count blueprint) :initial-element nil)
+                                :backbone-rotamer-index (make-array (monomer-count blueprint)
+                                                                    :initial-element nil)
+                                :shape-keys (make-array (length (loci blueprint)) :initial-element nil))))
+    (if fill
+        (multiple-value-bind (loaded overflows)
+            (fill-persona persona :verbose verbose)
+          (values persona loaded overflows))
+        (values persona 0 nil))))
 
 
 ;;; ------------------------------------------------------------------
@@ -1706,7 +1716,7 @@ this function.")
                                           (list 'chem:energy-rosetta-nonbond
                                                 :rep-weight rep-weight))))
 
-(defun materialize-blueprint-base (blueprint &key (energy-function-factory #'blueprint-bare-energy-function)
+(defun materialize-blueprint (blueprint &key (energy-function-factory #'blueprint-bare-energy-function)
                                                   (ensure-trained t) (verbose nil))
   "PASS 2, STAGE 1.  Build the base structure and bind the inherited ASSEMBLER-BASE slots.
 
@@ -1953,9 +1963,13 @@ this function.")
                 base slots (and (plusp fallbacks) fallbacks))))
     internals))
 
-(defun build-blueprint-coordinates (blueprint persona &key verbose
+(defun build-blueprint-coordinates (blueprint persona &key verbose internals coords
                                                           (ligand-orientation nil ligand-orientation-p))
   "Rebuild EVERYTHING: internals from PERSONA, then coordinates, then write them into the atoms.
+
+  INTERNALS and COORDS are reused when supplied, and freshly allocated when not.  They must be
+  sized for THIS blueprint; nothing checks.  Reuse also means a bug that skips atoms leaves the
+  PREVIOUS fold's positions in place rather than zeros, which looks plausible.
 
   The fold is UPDATE-EXTERNALS, inherited from ASSEMBLER now that BLUEPRINT subclasses it.  Do not
   hand-roll it: for a two-oligomer-shape system it dispatches ligand and receptor separately
@@ -1995,8 +2009,11 @@ this function.")
     (error "BUILD-BLUEPRINT-COORDINATES requires :LIGAND-ORIENTATION.  Pass the pose's own ~
             (DESIGN:ORIENTATION pose); a fresh (MAKE-ORIENTATION) silently builds the ligand at ~
             the origin instead of on the receptor."))
-  (let* ((internals (update-blueprint-internals blueprint persona :verbose verbose))
+  (let* ((internals (update-blueprint-internals blueprint persona
+                                                :internals internals
+                                                :verbose verbose))
          (coords (update-externals blueprint internals
+                                   :coords (or coords (make-coordinates-for-assembler blueprint))
                                    :ligand-orientation ligand-orientation)))
     (copy-all-joint-positions-into-atoms blueprint coords)
     (values coords internals)))
@@ -2348,6 +2365,16 @@ and store it on that slot's ROTAMER-SCAN.
                                                    (blueprint-slot-atom-map blueprint mrkindex)
                                                    backbone-map))
                                          (group (chem:make-energy-component-group)))
+                                     (chem:setf-energy-component-group-name
+                                      group
+                                      (list :source :blueprint
+                                            :scope :slot
+                                            :channel :intramolecular
+                                            :terms :bonded
+                                            :mrkindex mrkindex
+                                            :blueprint-locus (locus bp-locus)
+                                            :monomer (monomer-name bp-monomer)
+                                            :slot slot))
                                      (chem:set-content-at scope-mol scope-pos
                                                           (slot-residue-of scan))
                                      (chem:energy-function/generate-into-group
@@ -2928,6 +2955,9 @@ never read."
   must not be evaluated as-is."
   (let ((ef (energy-function blueprint))
         (group (chem:make-energy-component-group)))
+    (chem:setf-energy-component-group-name
+     group
+     '(:blueprint :pair-scan))
     ;; :BONDED NIL - generate ONLY the nonbond components.  Refusing the bonded classes in the
     ;; factory would discard their terms but still re-run the whole per-molecule force-field
     ;; parameterization first, which is both wasted work and what made this sensitive to bond state.
@@ -3080,6 +3110,7 @@ generate that slot's group, and finally restore every bond.
            ;; INTERMOLECULAR-BACKBONE-ENERGY separately, and a single "no atom in any slot" group
            ;; mixes each molecule's internal terms with the ligand/receptor cross terms.
            (setf backbone-group (chem:make-energy-component-group))
+           (chem:setf-energy-component-group-name backbone-group '(:blueprint :backbone :intramolecular))
            (chem:energy-function/generate-into-group
             ef (make-backbone-intramolecular-factory backbone-maps
                                                      :backbone-bits backbone-bits)
@@ -3090,6 +3121,9 @@ generate that slot's group, and finally restore every bond.
            (format t "~&  backbone intra group: ~d terms~%"
                    (chem:number-of-terms backbone-group))
            (setf backbone-inter-group (chem:make-energy-component-group))
+           (chem:setf-energy-component-group-name
+            backbone-inter-group
+            '(:blueprint :backbone :intermolecular))
            ;; :BONDED NIL - this factory refuses every bonded class, so the per-molecule pass
            ;; would re-parameterize each molecule only to have every term it produced discarded.
            (chem:energy-function/generate-into-group
@@ -3158,6 +3192,20 @@ generate that slot's group, and finally restore every bond.
                                                       ;; slot's range is the same for both, only
                                                       ;; the target set differs.
                                                       (slot-lo3 0) (slot-hi3 0))
+                                                  (chem:setf-energy-component-group-name
+                                                   group
+                                                   (list :blueprint :slot :intramolecular
+                                                                    :mrkindex mrkindex
+                                                                    :locus (locus bp-locus)
+                                                                    :monomer (monomer-name bp-monomer)
+                                                                    :slot slot))
+                                                  (chem:setf-energy-component-group-name
+                                                   inter-group
+                                                   (list :blueprint :slot :intermolecular
+                                                                    :mrkindex mrkindex
+                                                                    :locus (locus bp-locus)
+                                                                    :monomer (monomer-name bp-monomer)
+                                                                    :slot slot))
                                                  (multiple-value-bind (lo3 hi3)
                                                      (blueprint-slot-i3-range atom-table map)
                                                    (let ((factory (make-detached-slot-factory
@@ -3287,6 +3335,8 @@ generate that slot's group, and finally restore every bond.
             (if (plusp reparameterized)
                 (/ (+ reparameterized remapped) (float reparameterized))
                 1.0))
+    (when (or (null backbone-group) (null backbone-inter-group) (null pair-group))
+      (error "There are missing groups"))
     (values built backbone-group backbone-inter-group pair-group)))
 
 

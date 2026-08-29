@@ -309,7 +309,7 @@
        ;; must be empty: a non-empty list means rotamer-slot-count was computed too small and
        ;; rotamers are being silently dropped.
        (format t "~&~%!!!! PERSONA: LOAD ROTAMERS INTO THE SLOTS, AND CHECK THE BOUND~%")
-       (defparameter *persona* (topology::make-persona *blueprint*))
+       (defparameter *persona* (topology::make-persona *blueprint* :fill nil))
        (multiple-value-bind (loaded overflows)
            (topology::fill-persona *persona* :verbose t)
          (declare (ignorable loaded))
@@ -349,9 +349,9 @@
        ;; two-pass parameterization split is therefore NOT independently verified by this run.
        (format t "~&~%!!!! PASS 2 STAGE 1: BASE STRUCTURE, SIDECHAIN LOCI DECLINED~%")
        (defparameter *ensure-trained* t)
-       (topology::materialize-blueprint-base *blueprint*
-                                             :ensure-trained *ensure-trained*
-                                             :verbose t)
+       (topology::materialize-blueprint *blueprint*
+                                        :ensure-trained *ensure-trained*
+                                        :verbose t)
        (multiple-value-bind (residues atresidues)
            (topology::blueprint-materialized-counts *blueprint*)
          ;; One residue per NON-sidechain locus - build-monomer-p declines the sidechain ones -
@@ -362,7 +362,7 @@
                 (base-residues (- (length loci) sidechain-loci))
                 (slot-residues (topology::total-slots *blueprint*))
                 (expected (+ base-residues slot-residues)))
-           (format t "~&~%materialize-blueprint-base:~%")
+           (format t "~&~%materialize-blueprint:~%")
            (format t "   residues   ~4d~%" residues)
            (format t "   atresidues ~4d~@[  ~a~]~%" atresidues
                    (unless (= residues atresidues)
@@ -1189,4 +1189,3 @@
        (format t "Done bench-blueprint.lisp~%")
        )
   (dribble))
-
