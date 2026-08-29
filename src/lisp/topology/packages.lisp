@@ -635,6 +635,8 @@
    #:make-blueprint
    #:materialize-blueprint
    #:make-persona
+   #:copy-persona
+   #:install-refined-backbone-internals
    #:make-blueprint-and-materialize
    #:owns-slots-p
    #:loci
@@ -690,4 +692,3 @@
    #:make-graph
    #:node-id
    #:dot-svg-foldamer-joint-trees))
-
