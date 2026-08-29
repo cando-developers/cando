@@ -197,7 +197,7 @@ CL_DEFMETHOD core::T_sp Joint_O::name() const {
   return this->_Name;
 }
 
-CL_DEFMETHOD bool Joint_O::definedp() const {
+CL_DEFMETHOD bool Joint_O::definedp(chem::NVector_sp internals) const {
   SUBCLASS_MUST_IMPLEMENT();
 }
 
