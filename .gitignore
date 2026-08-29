@@ -9,3 +9,4 @@ local.config
 *~
 .ipynb_checkpoints
 \#*\#
+src/lisp/regression-tests/output/
