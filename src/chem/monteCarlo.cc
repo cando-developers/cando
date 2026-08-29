@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //#define WL_DELTA_CHECK 1
 #define DEBUG_DELTA 1
 
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
@@ -76,6 +77,10 @@ SYMBOL_EXPORT_SC_( ChemPkg, intermolecular_backbone_energy );
 SYMBOL_EXPORT_SC_( ChemPkg, monomer_vector );
 SYMBOL_EXPORT_SC_( ChemPkg, monomer_corrections );
 SYMBOL_EXPORT_SC_( ChemPkg, mrkey_index_to_lmkey_index );
+SYMBOL_EXPORT_SC_( ChemPkg, lmkey_mrkindex_begin );
+SYMBOL_EXPORT_SC_( ChemPkg, lmkey_active_rotamer_count );
+SYMBOL_EXPORT_SC_( ChemPkg, monomer_locus_molecule_index );
+SYMBOL_EXPORT_SC_( ChemPkg, ligand_molecule_index );
 SYMBOL_EXPORT_SC_( ChemPkg, monomer_locus_max_mrkindex );
 SYMBOL_EXPORT_SC_( ChemPkg, intramolecular_single_scan_energy );
 SYMBOL_EXPORT_SC_( ChemPkg, intermolecular_single_scan_energy );
@@ -104,18 +109,8 @@ struct State {
     this->_State.resize(sz);
   }
 
-  void randomState(const Energies& energies );
-
-  void verifyState(core::SimpleVector_byte32_t_sp sv_monomerLocusMaxMrkindex ) {
-    int prevMax = -1;
-    uint32_t* monomerLocusMaxMrkindex = &(*sv_monomerLocusMaxMrkindex)[0]; 
-    for ( size_t ii=0; ii<sv_monomerLocusMaxMrkindex->length(); ii++ ) {
-      int max = (*sv_monomerLocusMaxMrkindex)[ii];
-      int val = this->_State[ii];
-      if (prevMax < val && val <= max ) continue;
-      SIMPLE_ERROR("Invalidated state: {}", this->stateAsString());
-    }
-  }
+  void randomState(Energies& energies);
+  void verifyState(const Energies& energies);
 
   std::string stateAsString() {
     stringstream ss;
@@ -141,6 +136,14 @@ struct Energies {
   vector<size_t>                 _LmkeyIndexToLocus;
   vector<std::string>            _LmkeyIndexToMonomerName;
   vector<size_t>                 _LocusMonomerCount;
+  vector<vector<size_t>>         _LocusActiveLmkeys;
+  vector<size_t>                 _LocusActiveRotamerCount;
+  core::SimpleVector_byte32_t_sp _MonomerLocusMoleculeIndex;
+  size_t                         _LigandMoleculeIndex = 0;
+  bool                           _HasLigandMoleculeIndex = false;
+  vector<bool>                   _IsLigandLocus;
+  vector<size_t>                 _LigandLoci;
+  bool                           _UseLmkeyActiveRanges = false;
   size_t                         _NumberOfSlots;
   double                         _TemperatureScale;
   double                         _IntramolecularBackbone[2];   // [0]=fa_rest, [1]=fa_rep
@@ -149,6 +152,8 @@ struct Energies {
   core::SimpleVector_sp          _MonomerVector;
   core::SimpleVector_byte32_t_sp _MonomerLocusMaxMrkindex;
   core::SimpleVector_byte32_t_sp _MrkeyIndexToLmkeyIndex;
+  core::SimpleVector_byte32_t_sp _LmkeyMrkindexBegin;
+  core::SimpleVector_byte32_t_sp _LmkeyActiveRotamerCount;
   core::SimpleVector_double_sp   _MonomerCorrectionsOriginal;
   core::SimpleVector_double_sp   _MonomerCorrections;
   size_t                         _MonomerCorrectionsLength;
@@ -171,9 +176,24 @@ struct Energies {
     this->_MonomerVector = gc::As<core::SimpleVector_sp>(val);
     val = core::eval::funcall( _sym_monomer_locus_max_mrkindex, energies );
     this->_MonomerLocusMaxMrkindex = gc::As<core::SimpleVector_byte32_t_sp>(val);
+    val = core::eval::funcall( _sym_monomer_locus_molecule_index, energies );
+    this->_MonomerLocusMoleculeIndex = gc::As<core::SimpleVector_byte32_t_sp>(val);
+    val = core::eval::funcall( _sym_ligand_molecule_index, energies );
+    if (val.notnilp()) {
+      this->_LigandMoleculeIndex = core::clasp_to_fixnum(val);
+      this->_HasLigandMoleculeIndex = true;
+    }
     val = core::eval::funcall( _sym_mrkey_index_to_lmkey_index, energies );
     this->_MrkeyIndexToLmkeyIndex = gc::As<core::SimpleVector_byte32_t_sp>(val);
+    val = core::eval::funcall( _sym_lmkey_mrkindex_begin, energies );
+    this->_LmkeyMrkindexBegin = gc::As<core::SimpleVector_byte32_t_sp>(val);
+    val = core::eval::funcall( _sym_lmkey_active_rotamer_count, energies );
+    this->_LmkeyActiveRotamerCount = gc::As<core::SimpleVector_byte32_t_sp>(val);
     this->_NumberOfSlots = core::cl__length(this->_MonomerLocusMaxMrkindex);
+    if (this->_NumberOfSlots == 0) {
+      SIMPLE_ERROR("Cannot construct Monte Carlo energies with zero loci");
+    }
+    this->initializeMoleculeOwnership();
     val = core::eval::funcall( _sym_monomer_corrections, energies );
     this->_MonomerCorrectionsOriginal = gc::As<core::SimpleVector_double_sp>(val);
     this->_MonomerCorrections = gc::As<core::SimpleVector_double_sp>(core::cl__copy_seq(this->_MonomerCorrectionsOriginal));
@@ -200,6 +220,122 @@ struct Energies {
       this->_LmkeyIndexToLocus.push_back(locus);
       this->_LmkeyIndexToMonomerName.push_back(monomerName);
     }
+    this->initializeActiveRanges();
+  }
+
+  void initializeMoleculeOwnership() {
+    size_t ownershipLength = this->_MonomerLocusMoleculeIndex->length();
+    this->_IsLigandLocus.assign(this->_NumberOfSlots, true);
+    this->_LigandLoci.clear();
+
+    // Legacy ligand-only energies carry no molecule ownership metadata.
+    if (ownershipLength == 0) {
+      for (size_t locus=0; locus<this->_NumberOfSlots; ++locus)
+        this->_LigandLoci.push_back(locus);
+      return;
+    }
+    if (ownershipLength != this->_NumberOfSlots) {
+      SIMPLE_ERROR("MONOMER-LOCUS-MOLECULE-INDEX has {} entries but the energies object has {} loci",
+                   ownershipLength, this->_NumberOfSlots);
+    }
+    if (!this->_HasLigandMoleculeIndex) {
+      SIMPLE_ERROR("LIGAND-MOLECULE-INDEX is NIL for energies with molecule ownership metadata");
+    }
+
+    this->_IsLigandLocus.assign(this->_NumberOfSlots, false);
+    for (size_t locus=0; locus<this->_NumberOfSlots; ++locus) {
+      if ((*this->_MonomerLocusMoleculeIndex)[locus] == this->_LigandMoleculeIndex) {
+        this->_IsLigandLocus[locus] = true;
+        this->_LigandLoci.push_back(locus);
+      }
+    }
+    if (this->_LigandLoci.empty()) {
+      SIMPLE_ERROR("No Monte Carlo locus belongs to ligand molecule {}",
+                   this->_LigandMoleculeIndex);
+    }
+  }
+
+  void initializeActiveRanges() {
+    size_t beginLength = this->_LmkeyMrkindexBegin->length();
+    size_t countLength = this->_LmkeyActiveRotamerCount->length();
+    if (beginLength == 0 && countLength == 0) return;
+    if (beginLength != countLength) {
+      SIMPLE_ERROR("LMKEY-MRKINDEX-BEGIN has {} entries but LMKEY-ACTIVE-ROTAMER-COUNT has {}",
+                   beginLength, countLength);
+    }
+    if (beginLength != this->_MonomerCorrectionsLength) {
+      SIMPLE_ERROR("The lmkey active-range vectors have {} entries but the energies object has {} lmkeys",
+                   beginLength, this->_MonomerCorrectionsLength);
+    }
+    if (this->_MrkeyIndexToLmkeyIndex->length() <=
+        (*this->_MonomerLocusMaxMrkindex)[this->_NumberOfSlots-1]) {
+      SIMPLE_ERROR("MRKEY-INDEX-TO-LMKEY-INDEX is too short for the allocated mrkindex range");
+    }
+
+    this->_UseLmkeyActiveRanges = true;
+    this->_LocusActiveLmkeys.resize(this->_NumberOfSlots);
+    this->_LocusActiveRotamerCount.resize(this->_NumberOfSlots,0);
+    for ( size_t lmkey=0; lmkey<beginLength; ++lmkey ) {
+      size_t locus = this->_LmkeyIndexToLocus[lmkey];
+      size_t begin = (*this->_LmkeyMrkindexBegin)[lmkey];
+      size_t count = (*this->_LmkeyActiveRotamerCount)[lmkey];
+      size_t locusBegin = (locus == 0) ? 0 : (*this->_MonomerLocusMaxMrkindex)[locus-1] + 1;
+      size_t locusEnd = (*this->_MonomerLocusMaxMrkindex)[locus] + 1;
+      if (begin < locusBegin || begin >= locusEnd || count > locusEnd-begin) {
+        SIMPLE_ERROR("lmkey {} active range [{},{}) is outside locus {} range [{},{})",
+                     lmkey, begin, begin+count, locus, locusBegin, locusEnd);
+      }
+      if ((*this->_MrkeyIndexToLmkeyIndex)[begin] != lmkey) {
+        SIMPLE_ERROR("lmkey {} range begins at mrkindex {}, which belongs to lmkey {}",
+                     lmkey, begin, (*this->_MrkeyIndexToLmkeyIndex)[begin]);
+      }
+      for ( size_t mrkindex=begin; mrkindex<begin+count; ++mrkindex ) {
+        if ((*this->_MrkeyIndexToLmkeyIndex)[mrkindex] != lmkey) {
+          SIMPLE_ERROR("lmkey {} active range crosses into lmkey {} at mrkindex {}",
+                       lmkey, (*this->_MrkeyIndexToLmkeyIndex)[mrkindex], mrkindex);
+        }
+      }
+      if (count > 0) {
+        this->_LocusActiveLmkeys[locus].push_back(lmkey);
+        this->_LocusActiveRotamerCount[locus] += count;
+      }
+    }
+    for ( size_t locus=0; locus<this->_NumberOfSlots; ++locus ) {
+      if (this->_LocusActiveRotamerCount[locus] == 0) {
+        SIMPLE_ERROR("Locus {} has no active rotamers", locus);
+      }
+    }
+  }
+
+  uint32_t randomMrkindexForLocus(size_t locus) {
+    if (!this->_UseLmkeyActiveRanges) {
+      size_t locusBegin = (locus == 0) ? 0 : (*this->_MonomerLocusMaxMrkindex)[locus-1] + 1;
+      size_t count = (*this->_MonomerLocusMaxMrkindex)[locus] + 1 - locusBegin;
+      return (this->_Rand(this->_Rng) % count) + locusBegin;
+    }
+
+    size_t total = this->_LocusActiveRotamerCount[locus];
+    std::uniform_int_distribution<size_t> pick(0,total-1);
+    size_t ordinal = pick(this->_Rng);
+    for ( size_t lmkey : this->_LocusActiveLmkeys[locus] ) {
+      size_t count = (*this->_LmkeyActiveRotamerCount)[lmkey];
+      if (ordinal < count) return (*this->_LmkeyMrkindexBegin)[lmkey] + ordinal;
+      ordinal -= count;
+    }
+    SIMPLE_ERROR("Could not map active choice ordinal at locus {}", locus);
+  }
+
+  bool validMrkindexForLocus(size_t locus, uint32_t mrkindex) const {
+    if (!this->_UseLmkeyActiveRanges) {
+      size_t begin = (locus == 0) ? 0 : (*this->_MonomerLocusMaxMrkindex)[locus-1] + 1;
+      return begin <= mrkindex && mrkindex <= (*this->_MonomerLocusMaxMrkindex)[locus];
+    }
+    for ( size_t lmkey : this->_LocusActiveLmkeys[locus] ) {
+      size_t begin = (*this->_LmkeyMrkindexBegin)[lmkey];
+      size_t end = begin + (*this->_LmkeyActiveRotamerCount)[lmkey];
+      if (begin <= mrkindex && mrkindex < end) return true;
+    }
+    return false;
   }
 
   // fa_rest + rep_weight*fa_rep for entry I of an INTERLEAVED vector
@@ -223,13 +359,22 @@ struct Energies {
   double physicalEnergy(const State& state, double lambda=1.0);
   double reducedEnergy(State& state,double lambda=1.0);
   double deltaReducedEnergy(const State& state, size_t slot, int newMrk, double lambda = 1.0 );
+  double ligandIntrinsicPhysicalEnergy(const State& state);
+  double ligandIntrinsicReducedEnergy(const State& state);
+  double deltaLigandIntrinsicReducedEnergy(const State& state, size_t slot, int newMrk);
   
   State randomStep( size_t& slotIndex, const State& state) {
     slotIndex = this->_PickSlot(this->_Rng);
-    int max = (*this->_MonomerLocusMaxMrkindex)[slotIndex];
-    int prevMax = (slotIndex==0) ? -1 : (*this->_MonomerLocusMaxMrkindex)[slotIndex-1];
-    int range = max - prevMax;
-    size_t mrkeyIndex = (this->_Rand(this->_Rng) % range) + prevMax + 1;
+    size_t mrkeyIndex = this->randomMrkindexForLocus(slotIndex);
+    State tempState(state);
+    tempState._State[slotIndex] = mrkeyIndex;
+    return tempState;
+  }
+
+  State randomLigandStep( size_t& slotIndex, const State& state) {
+    std::uniform_int_distribution<size_t> pickLigandLocus(0,this->_LigandLoci.size()-1);
+    slotIndex = this->_LigandLoci[pickLigandLocus(this->_Rng)];
+    size_t mrkeyIndex = this->randomMrkindexForLocus(slotIndex);
     State tempState(state);
     tempState._State[slotIndex] = mrkeyIndex;
     return tempState;
@@ -246,16 +391,35 @@ struct Energies {
   }
 };
 
-void State::randomState(const Energies& energies )
+void State::randomState(Energies& energies)
 {
-  this->_State.resize(energies._MonomerLocusMaxMrkindex->length());
-  int prevMax = -1;
-  uint32_t* monomerLocusMaxMrkindex = &(*energies._MonomerLocusMaxMrkindex)[0]; 
+  this->_State.resize(energies._NumberOfSlots);
+  if (!energies._UseLmkeyActiveRanges) {
+    int prevMax = -1;
+    for ( size_t locus=0; locus<this->_State.size(); ++locus ) {
+      int max = (*energies._MonomerLocusMaxMrkindex)[locus];
+      int range = max - prevMax;
+      this->_State[locus] = (rand() % range) + prevMax + 1;
+      prevMax = max;
+    }
+    return;
+  }
   for ( size_t ii=0; ii<this->_State.size(); ii++ ) {
-    int max = monomerLocusMaxMrkindex[ii];
-    int range = max - prevMax;
-    this->_State[ii] = (rand() % range) + prevMax + 1;
-    prevMax = max;
+    this->_State[ii] = energies.randomMrkindexForLocus(ii);
+  }
+}
+
+void State::verifyState(const Energies& energies)
+{
+  if (this->_State.size() != energies._NumberOfSlots) {
+    SIMPLE_ERROR("State has {} loci but energies requires {}: {}",
+                 this->_State.size(), energies._NumberOfSlots, this->stateAsString());
+  }
+  for ( size_t locus=0; locus<this->_State.size(); ++locus ) {
+    if (!energies.validMrkindexForLocus(locus,this->_State[locus])) {
+      SIMPLE_ERROR("State selects inactive mrkindex {} at locus {}: {}",
+                   this->_State[locus], locus, this->stateAsString());
+    }
   }
 }
 CL_LAMBDA(mcstate energies lambda &optional (rep-weight 1.0));
@@ -264,6 +428,7 @@ CL_DEFUN core::DoubleFloat_sp chem__mcstate_energy(core::T_sp tmcstate, core::T_
   Energies energies(tenergies);
   energies._RepWeight = repWeight;
   State state(gc::As<core::SimpleVector_byte32_t_sp>(tmcstate));
+  state.verifyState(energies);
   double testEnergy = energies.reducedEnergy(state,lambda);
   return core::DoubleFloat_O::create(testEnergy);
 }
@@ -302,7 +467,7 @@ CL_DEFUN core::T_mv chem__simulatedAnnealing(core::T_sp tenergies, core::T_sp se
     for ( size_t ii=0; ii<energies._NumberOfSlots; ii++ ) {
       initial_state._State[ii] = (*passed)[ii];
     }
-    initial_state.verifyState(energies._MonomerLocusMaxMrkindex);
+    initial_state.verifyState(energies);
   }
   State currentState = initial_state;
   double temperature = startTemperature;
@@ -394,7 +559,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureMonteCarlo(core::T_sp tenergies, do
     for ( size_t ii=0; ii<energies._NumberOfSlots; ii++ ) {
       initial_state._State[ii] = (*passed)[ii];
     }
-    initial_state.verifyState(energies._MonomerLocusMaxMrkindex);
+    initial_state.verifyState(energies);
   }
   size_t num_slots_in_state = core::cl__length(energies._MonomerLocusMaxMrkindex );
   State currentState = initial_state;
@@ -474,16 +639,89 @@ inline bool flat_enough(core::T_sp debug,
   return false;
 }
 
-void adjustMonomerCorrectionsBias(Energies& energies)
+void adjustMonomerCorrectionsBias(Energies& energies,
+                                      const std::vector<size_t>& reachable)
 {
-  // Reset the bias
+  // A zero-active lmkey is not part of this Wang-Landau domain and must not
+  // pin the minimum correction at zero.
   double bias = std::numeric_limits<double>::max();
+  bool foundReachable = false;
   for ( size_t ii = 0; ii<energies._MonomerCorrectionsLength; ii++ ) {
+    if (!reachable[ii]) continue;
     bias = std::min((*energies._MonomerCorrections)[ii],bias);
+    foundReachable = true;
   }
+  if (!foundReachable) return;
   for ( size_t ii = 0; ii<energies._MonomerCorrectionsLength; ii++ ) {
-    (*energies._MonomerCorrections)[ii] -= bias;
+    if (reachable[ii]) (*energies._MonomerCorrections)[ii] -= bias;
   }
+}
+
+double Energies::ligandIntrinsicPhysicalEnergy(const State& state) {
+  const double* intra = &(*this->_IntramolecularSingleTerms)[0];
+  const double* pair = &(*this->_PairTerms)[0];
+  const uint8_t* pflag = &(*this->_IntermolecularPPairTerms)[0];
+  KahanAccumulator total;
+
+  for (size_t xi=0; xi<this->_LigandLoci.size(); ++xi) {
+    size_t xLocus = this->_LigandLoci[xi];
+    int xx = state._State[xLocus];
+    total.Add(this->term(intra,xx));
+    for (size_t yi=xi+1; yi<this->_LigandLoci.size(); ++yi) {
+      size_t yLocus = this->_LigandLoci[yi];
+      int yy = state._State[yLocus];
+      size_t lti = this->lowerTriangularIndex(xx,yy);
+      if (pflag[lti]) {
+        SIMPLE_ERROR("Pair between ligand loci {} and {} is marked intermolecular",
+                     xLocus, yLocus);
+      }
+      total.Add(this->term(pair,lti));
+    }
+  }
+  return total.sum;
+}
+
+double Energies::ligandIntrinsicReducedEnergy(const State& state) {
+  KahanAccumulator total;
+  total.Add(this->ligandIntrinsicPhysicalEnergy(state));
+  for (size_t locus : this->_LigandLoci) {
+    uint32_t mrkindex = state._State[locus];
+    uint32_t lmkey = (*this->_MrkeyIndexToLmkeyIndex)[mrkindex];
+    total.Add((*this->_MonomerCorrections)[lmkey]);
+  }
+  return total.sum;
+}
+
+double Energies::deltaLigandIntrinsicReducedEnergy(const State& state,
+                                                    size_t slot, int newMrk) {
+  if (slot >= state._State.size() || !this->_IsLigandLocus[slot]) {
+    SIMPLE_ERROR("Ligand-intrinsic move requested for non-ligand locus {}", slot);
+  }
+  int oldMrk = state._State[slot];
+  if (oldMrk == newMrk) return 0.0;
+  const double* intra = &(*this->_IntramolecularSingleTerms)[0];
+  const double* pair = &(*this->_PairTerms)[0];
+  const uint8_t* pflag = &(*this->_IntermolecularPPairTerms)[0];
+  KahanAccumulator delta;
+
+  delta.Add(this->term(intra,newMrk) - this->term(intra,oldMrk));
+  for (size_t otherLocus : this->_LigandLoci) {
+    if (otherLocus == slot) continue;
+    int otherMrk = state._State[otherLocus];
+    size_t newIndex = this->lowerTriangularIndex(newMrk,otherMrk);
+    size_t oldIndex = this->lowerTriangularIndex(oldMrk,otherMrk);
+    if (pflag[newIndex] || pflag[oldIndex]) {
+      SIMPLE_ERROR("Pair between ligand loci {} and {} is marked intermolecular",
+                   slot, otherLocus);
+    }
+    delta.Add(this->term(pair,newIndex) - this->term(pair,oldIndex));
+  }
+
+  uint32_t newLmkey = (*this->_MrkeyIndexToLmkeyIndex)[newMrk];
+  uint32_t oldLmkey = (*this->_MrkeyIndexToLmkeyIndex)[oldMrk];
+  delta.Add((*this->_MonomerCorrections)[newLmkey]
+            - (*this->_MonomerCorrections)[oldLmkey]);
+  return delta.sum;
 }
 
 double Energies::physicalEnergy(const State& state,double lambda) {
@@ -591,6 +829,15 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
   // the monomer corrections built here are WEIGHT-SPECIFIC (a nonlinear log-sum over the
   // DOS, not linearly reweightable) — they are only valid at this rep-weight
   energies._RepWeight = repWeight;
+  // Receptor monomer identities are fixed and have no Wang-Landau correction.
+  // Clear any stale values in both the working copy and the Lisp-owned vector.
+  for (size_t lmkey=0; lmkey<energies._MonomerCorrectionsLength; ++lmkey) {
+    size_t locus = energies._LmkeyIndexToLocus[lmkey];
+    if (!energies._IsLigandLocus[locus]) {
+      (*energies._MonomerCorrections)[lmkey] = 0.0;
+      (*energies._MonomerCorrectionsOriginal)[lmkey] = 0.0;
+    }
+  }
   if (seed.notnilp()) {
     uint32_t s = core::clasp_to_uint32_t(seed);
     energies._Rng.seed(s);
@@ -615,16 +862,29 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
 
   // In chem__voelz_optimize_monomer_corrections_single_temperature
   std::vector<size_t> reachable(histogram.size(), 0);
-  for (size_t ii = 0; ii < energies._MrkeyIndexToLmkeyIndex->length(); ++ii) {
-    uint32_t lm = (*energies._MrkeyIndexToLmkeyIndex)[ii];
-    reachable[lm] += 1;
+  if (energies._UseLmkeyActiveRanges) {
+    for (size_t lmkey = 0; lmkey < energies._LmkeyActiveRotamerCount->length(); ++lmkey) {
+      size_t locus = energies._LmkeyIndexToLocus[lmkey];
+      if (energies._IsLigandLocus[locus]
+          && (*energies._LmkeyActiveRotamerCount)[lmkey] > 0)
+        reachable[lmkey] = 1;
+    }
+  } else {
+    for (size_t ii = 0; ii < energies._MrkeyIndexToLmkeyIndex->length(); ++ii) {
+      uint32_t lmkey = (*energies._MrkeyIndexToLmkeyIndex)[ii];
+      size_t locus = energies._LmkeyIndexToLocus[lmkey];
+      if (energies._IsLigandLocus[locus]) reachable[lmkey] = 1;
+    }
   }
-  size_t reachable_count = std::count(reachable.begin(), reachable.end(), 1);
+  if (std::none_of(reachable.begin(), reachable.end(),
+                   [](size_t value) { return value != 0; })) {
+    SIMPLE_ERROR("Wang-Landau has no reachable ligand monomers");
+  }
 
   for (size_t iter = 0; iter < max_iterations; ++iter) {
     if (debug.notnilp()) core::clasp_write_string(fmt::format("============== Top of loop at iter {}\n", iter),debug);
     size_t testSlotIndex;
-    testState = energies.randomStep( testSlotIndex, currentState );
+    testState = energies.randomLigandStep( testSlotIndex, currentState );
     if (debug.notnilp()) {
       core::clasp_write_string(fmt::format("testState = "),debug);
       for ( size_t ii=0; ii<testState._State.size(); ii++ ) {
@@ -633,17 +893,17 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
       }
       core::clasp_write_string(fmt::format("\n"),debug);
     }
-    double deltaE = energies.deltaReducedEnergy(currentState, testSlotIndex,
-                                                  testState._State[testSlotIndex]);
+    double deltaE = energies.deltaLigandIntrinsicReducedEnergy(
+      currentState, testSlotIndex, testState._State[testSlotIndex]);
 #ifdef WL_DELTA_CHECK
       if (iter < 1000) {
-        double fullDelta = energies.reducedEnergy(testState) - energies.reducedEnergy(currentState);
+        double fullDelta = energies.ligandIntrinsicReducedEnergy(testState)
+          - energies.ligandIntrinsicReducedEnergy(currentState);
         if (std::abs(fullDelta - deltaE) > 1e-6)
           fmt::print(stderr, "!!! WL delta mismatch iter {}: delta={:.9} full={:.9}\n",
                      iter, deltaE, fullDelta);
       }
 #endif
-    double testEnergy = useAcceptCallback ? energies.reducedEnergy(testState) : 0.0; 
     double p = acc_prob_from_log( debug, beta, deltaE, 0.0 );
     //      double x = -(*betas)[betai] * (testEnergy - curEnergy);
     //      double p = acc_prob_from_log(debug,x);
@@ -662,7 +922,10 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
       // Update monomerCorrections for only curLmkeyIndex
       {
         curLmkeyIndex = (*energies._MrkeyIndexToLmkeyIndex)[currentState._State[slotIndex]];
-        size_t numberOfMonomers = energies._LocusMonomerCount[energies._LmkeyIndexToLocus[curLmkeyIndex]];
+        size_t locus = energies._LmkeyIndexToLocus[curLmkeyIndex];
+        size_t numberOfMonomers = energies._UseLmkeyActiveRanges
+          ? energies._LocusActiveLmkeys[locus].size()
+          : energies._LocusMonomerCount[locus];
         histogram[curLmkeyIndex] += numberOfMonomers;
         rawHistogram[curLmkeyIndex]++;
         // double beta_increment = wl_increment*(*betas)[betai];
@@ -702,11 +965,12 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
       // Reset the bias only periodically ; acceptance is invariant to a global
       // shfit (deltaReducedEnergy uses differences), and rebasing only ~1024
       // steps keeps the corrections small enough for clean differencing
-      if ((iterCount & 1023)==0) adjustMonomerCorrectionsBias(energies);
+      if ((iterCount & 1023)==0) adjustMonomerCorrectionsBias(energies, reachable);
 
       if (useAcceptCallback) {
+        double currentEnergy = energies.ligandIntrinsicReducedEnergy(currentState);
         memcpy(&(*saveState)[0],&currentState._State[0],sizeof(int32_t)*energies._NumberOfSlots);
-        core::eval::funcall( acceptCallback, core::make_fixnum(iter), saveState, mk_double_float(testEnergy), energies._MonomerCorrections );
+        core::eval::funcall( acceptCallback, core::make_fixnum(iter), saveState, mk_double_float(currentEnergy), energies._MonomerCorrections );
       }
     }
     {
@@ -817,8 +1081,13 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
   for ( size_t ii = 0; ii<currentStates.size(); ii++ ) currentStates[ii].randomState(energies);
   if (tInitialState.notnilp()) {
     core::SimpleVector_byte32_t_sp initState = gc::As<core::SimpleVector_byte32_t_sp>(tInitialState);
+    if (initState->length() != energies._NumberOfSlots) {
+      SIMPLE_ERROR("Initial HREMC state has {} loci but energies requires {}",
+                   initState->length(), energies._NumberOfSlots);
+    }
     memcpy(&currentStates[numberOfLambdaWindows-1]._State[0], &(*initState)[0],
            sizeof(int32_t)*energies._NumberOfSlots);
+    currentStates[numberOfLambdaWindows-1].verifyState(energies);
   }
   State initialState = currentStates[numberOfLambdaWindows-1];
 
@@ -1002,5 +1271,4 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
 }
 
 }; // namespace chem
-
 
