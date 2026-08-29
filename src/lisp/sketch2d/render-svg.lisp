@@ -203,6 +203,8 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
    ))
 
 (defun optimize-annotations (sketch2d atom-nodes atoms-to-nodes)
+  (when (null atom-nodes)
+    (return-from optimize-annotations nil))
   (let* ((annotations (annotations sketch2d))
          (molecule (molecule sketch2d))
          (center-pos (let ((sum-pos (geom:vec 0.0 0.0 0.0)))
