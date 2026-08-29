@@ -629,8 +629,16 @@
    #:assign-residue-given-atom-types
    #:piece-atoms
    #:place-all-pieces
+   #:train-foldamer-contexts
    #:best-monomer-context-matcher
-   #:foldamer-trainer-index))
+   #:foldamer-trainer-index
+   #:make-blueprint
+   #:materialize-blueprint
+   #:make-persona
+   #:make-blueprint-and-materialize
+   #:owns-slots-p
+   #:loci
+   #:locus))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

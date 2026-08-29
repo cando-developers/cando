@@ -322,7 +322,7 @@ oligomer-space's foldamer instead of caching it in a slot."
 
 (defgeneric shape-info (foldamer))
 
-(defgeneric shape-kind (foldamer monomer oligomer))
+(defgeneric shape-kind (foldamer monomer oligomer &key errorp))
 
 (defun build-shape-key (shape-info monomer-shape-map shape-kind monomer oligomer in-monomers out-monomers)
   (let ((key-names (loop for kind-keys in (kind-keys shape-info)
