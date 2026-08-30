@@ -637,6 +637,8 @@
    #:make-persona
    #:copy-persona
    #:install-refined-backbone-internals
+   #:install-refined-sidechain-rotamer
+   #:reload-persona-sidechain-rotamers
    #:make-blueprint-and-materialize
    #:owns-slots-p
    #:loci

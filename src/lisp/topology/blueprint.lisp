@@ -1242,6 +1242,81 @@ reports every offender instead of dying on the first."
     (values loaded overflows)))
 
 
+(defun reload-persona-sidechain-rotamers (persona &key verbose)
+  "Reload PERSONA's catalogue sidechain slots using its preserved SHAPE-KEYS.
+
+Unlike FILL-PERSONA, this function does not derive shape keys from the blueprint's
+OLIGOMER-SHAPEs.  It is the refinement path: optimized backbone internals remain in PERSONA,
+while the discrete shape-key inherited from the catalogue backbone selects the sidechain
+rotamers that are still compatible with that state.
+
+For each :SIDECHAIN locus, catalogue rotamers are written contiguously starting at slot zero.
+Every remaining slot is cleared, including any previously installed refined rotamer, and
+REFINED-ROTAMER-INDEX-OR-NIL is reset.  MONOMER-CONTEXTS, SHAPE-KEYS and
+ACTIVE-STEREOISOMER are preserved.
+
+Returns (values LOADED OVERFLOWS), with the same meanings as FILL-PERSONA, and increments
+GENERATION because the slot conformations have been rewritten."
+  (let* ((blueprint (blueprint persona))
+         (slots (slot-to-rotamer persona))
+         (contexts (monomer-contexts persona))
+         (counts (active-rotamer-count persona))
+         (refined (refined-rotamer-index-or-nil persona))
+         (keys (shape-keys persona))
+         (loaded 0)
+         (overflows nil))
+    (loop for bp-locus across (loci blueprint)
+          when (owns-slots-p bp-locus)
+            do (let* ((shape (oligomer-shape bp-locus))
+                      (database (rotamers-database shape))
+                      (shape-key (aref keys (locus bp-locus))))
+                 (loop for bp-monomer across (monomers bp-locus)
+                       for ordinal = (monomer-ordinal bp-monomer)
+                       for context = (aref contexts ordinal)
+                       for container = (and context
+                                            (gethash context
+                                                     (context-to-rotamers database)))
+                       for indexes = (and container
+                                          (gethash shape-key
+                                                   (shape-key-to-index container)))
+                       for rotamer-vector = (and container (rotamer-vector container))
+                       for found = (length indexes)
+                       for capacity = (1- (rotamer-slot-count bp-monomer))
+                       for fits = (min found capacity)
+                       do (when (> found capacity)
+                            (push (list (monomer-name bp-monomer) found capacity)
+                                  overflows))
+                          ;; Clear the entire fixed-capacity range first.  Besides removing a
+                          ;; previous refinement, this prevents stale catalogue rotamers from a
+                          ;; larger active set remaining visible above the new active count.
+                          (loop for slot below (rotamer-slot-count bp-monomer)
+                                do (setf (aref slots
+                                               (blueprint-mrkindex bp-locus
+                                                                   bp-monomer slot))
+                                         nil))
+                          (loop for slot below fits
+                                for database-index = (aref indexes slot)
+                                do (setf (aref slots
+                                               (blueprint-mrkindex bp-locus
+                                                                   bp-monomer slot))
+                                         (aref rotamer-vector database-index))
+                                   (incf loaded))
+                          (setf (aref counts ordinal) fits
+                                (aref refined ordinal) nil))))
+    (when verbose
+      (format t "~&reload-persona-sidechain-rotamers: ~d catalogue slot~:p loaded~%"
+              loaded)
+      (if overflows
+          (loop initially
+                  (format t "~&  ~d OVERFLOW~:p - the bound is TOO SMALL:~%"
+                          (length overflows))
+                for (name found capacity) in overflows
+                do (format t "     ~a needs ~d, has ~d~%" name found capacity))
+          (format t "~&  no overflows - every monomer's rotamers fit its slots~%")))
+    (incf (generation persona))
+    (values loaded (nreverse overflows))))
+
+
 (defun report-persona (persona &key (stream *standard-output*) zeros-only)
   "Print ACTIVE/CAPACITY per BLUEPRINT-MONOMER; return the list that loaded NOTHING.
 
@@ -1893,9 +1968,11 @@ one bit per joint and prevents undefined values from replacing valid geometry.  
 is stored only in PERSONA's blueprint-sized INTERNALS vector; REFINED-BACKBONE-MASK merely tells a
 later rebuild to preserve it.
 
-The caller must subsequently recalculate shape keys, reload sidechain catalogue rotamers, and
-append the optimized sidechain rotamers.  This function increments GENERATION so energies cached
-against the old geometry are detectably stale."
+The caller must subsequently reload sidechain catalogue rotamers using the preserved persona
+shape keys, then append the optimized sidechain rotamers.  It must not replace the discrete keys
+with classifications derived from the optimized geometry; shape-key drift is diagnostic only.
+This function increments GENERATION so energies cached against the old geometry are detectably
+stale."
   (let* ((blueprint (blueprint persona))
          (atresidue (blueprint-locus-atresidue blueprint blueprint-locus))
          (joint-count (length (joints atresidue))))
@@ -1918,6 +1995,54 @@ against the old geometry are detectably stale."
                    (aref (active-rotamer-count persona) ordinal) 1))
     (incf (generation persona))
     persona))
+
+(defun install-refined-sidechain-rotamer
+    (persona blueprint-locus blueprint-monomer refined-rotamer)
+  "Append REFINED-ROTAMER to one sidechain monomer's contiguous active slot range.
+
+The first installation uses the slot at ACTIVE-ROTAMER-COUNT, which is the extra capacity
+reserved when the blueprint layout was computed, then increments that count.  If this monomer
+already has a refined rotamer, it must be the final active slot and is replaced in place; repeated
+refinement therefore does not grow the range.
+
+Returns (values PERSONA SLOT MRKINDEX).  The caller must rebuild the persona internals before
+folding coordinates and must refresh energies cached against the previous generation."
+  (check-type refined-rotamer sidechain-rotamer)
+  (let ((blueprint (blueprint persona)))
+    (unless (and (< (locus blueprint-locus) (length (loci blueprint)))
+                 (eq blueprint-locus
+                     (aref (loci blueprint) (locus blueprint-locus))))
+      (error "~s does not belong to ~s" blueprint-locus blueprint))
+    (unless (owns-slots-p blueprint-locus)
+      (error "Cannot install a refined sidechain rotamer at ~a locus ~d"
+             (kind blueprint-locus) (locus blueprint-locus)))
+    (unless (find blueprint-monomer (monomers blueprint-locus) :test #'eq)
+      (error "~s does not belong to blueprint locus ~d"
+             blueprint-monomer (locus blueprint-locus)))
+    (let* ((ordinal (monomer-ordinal blueprint-monomer))
+           (counts (active-rotamer-count persona))
+           (refined (refined-rotamer-index-or-nil persona))
+           (count (aref counts ordinal))
+           (old-refined-slot (aref refined ordinal))
+           (slot-count (rotamer-slot-count blueprint-monomer))
+           (slot (or old-refined-slot count)))
+      (when old-refined-slot
+        (unless (and (plusp count)
+                     (= old-refined-slot (1- count))
+                     (< old-refined-slot slot-count))
+          (error "Locus ~d monomer ~a has inconsistent refined slot ~s and active count ~d"
+                 (locus blueprint-locus) (monomer-name blueprint-monomer)
+                 old-refined-slot count)))
+      (unless (< slot slot-count)
+        (error "Locus ~d monomer ~a has no capacity after ~d active rotamers"
+               (locus blueprint-locus) (monomer-name blueprint-monomer) count))
+      (let ((mrkindex (blueprint-mrkindex blueprint-locus blueprint-monomer slot)))
+        (setf (aref (slot-to-rotamer persona) mrkindex) refined-rotamer
+              (aref refined ordinal) slot)
+        (unless old-refined-slot
+          (incf (aref counts ordinal)))
+        (incf (generation persona))
+        (values persona slot mrkindex)))))
 
 (defun update-blueprint-base-internals (blueprint persona internals &key verbose)
   "Fill internals for the :FIXED and :BACKBONE residues - everything MAKE-ASSEMBLER built.

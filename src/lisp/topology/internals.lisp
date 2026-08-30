@@ -1052,6 +1052,12 @@ INDEX counts by 1 and _not_ by 3."
         (aref internals (+ 2 index3)) (kin:bonded-joint/get-phi joint assembler-internals)
         (aref joint-mask (/ index3 3)) 1))
 
+(defmethod write-internals-to-vector
+    (assembler assembler-internals (joint kin:jump-joint) index3 internals joint-mask)
+  "A jump joint's transform is not stored in the assembler internals vector."
+  (declare (ignore assembler assembler-internals joint index3 internals joint-mask))
+  nil)
+
 (defmethod write-internals-to-vector (assembler assembler-internals (joint kin:xyz-joint) index3 internals joint-mask)
   "xyz-joint get write their x,y,z coordinates"
   (let ((pos (kin:xyz-joint/transformed-pos joint)))
@@ -1084,7 +1090,8 @@ that is 1 for each heavy atom."
           when (heavy-atom-p joint constitution-atoms)
             do (setf (aref heavy-atom-mask index) 1)
           when (kin:definedp joint assembler-internals)
-            do (write-internals-to-vector assembler joint index3 internals joint-mask))
+            do (write-internals-to-vector assembler assembler-internals
+                                          joint index3 internals joint-mask))
     (values internals joint-mask heavy-atom-mask)))
 
 
