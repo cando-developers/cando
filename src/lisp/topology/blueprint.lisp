@@ -2044,6 +2044,101 @@ folding coordinates and must refresh energies cached against the previous genera
         (incf (generation persona))
         (values persona slot mrkindex)))))
 
+(defun build-refined-persona
+    (source-persona backbone-refinements sidechain-refinements &key verbose)
+  "Build a complete refined persona without modifying SOURCE-PERSONA.
+
+BACKBONE-REFINEMENTS is a list of
+
+  (BLUEPRINT-LOCUS INTERNALS DEFINED-MASK)
+
+and SIDECHAIN-REFINEMENTS is a list of
+
+  (BLUEPRINT-LOCUS BLUEPRINT-MONOMER SIDECHAIN-ROTAMER).
+
+All records are validated before a private persona copy is made.  Refined backbones are installed
+first; catalogue sidechains are then reloaded from the copy's preserved shape keys; refined
+sidechains are appended last.  The full blueprint internals vector is rebuilt only after every
+conformation is installed.  SOURCE-PERSONA remains unchanged if validation or construction
+signals an error.
+
+Returns (values REFINED-PERSONA MAPPINGS).  Each entry of MAPPINGS is
+
+  (:LOCUS BLUEPRINT-LOCUS :MONOMER BLUEPRINT-MONOMER :SLOT SLOT :MRKINDEX MRKINDEX)
+
+and provides the design layer with the new selection needed to remap an MC state.  Energies
+cached against SOURCE-PERSONA are not refreshed here and must not be used with the result."
+  (check-type source-persona persona)
+  (let* ((blueprint (blueprint source-persona))
+         (backbone-loci (make-hash-table :test #'eq))
+         (sidechain-loci (make-hash-table :test #'eq)))
+    (labels ((validate-locus (bp-locus expected-kind)
+               (check-type bp-locus blueprint-locus)
+               (unless (and (< (locus bp-locus) (length (loci blueprint)))
+                            (eq bp-locus (aref (loci blueprint) (locus bp-locus))))
+                 (error "~s does not belong to ~s" bp-locus blueprint))
+               (unless (eq (kind bp-locus) expected-kind)
+                 (error "Locus ~d is ~s, not ~s"
+                        (locus bp-locus) (kind bp-locus) expected-kind))))
+      ;; Validate the complete request before allocating or changing the result persona.  One
+      ;; concrete optimized structure can contribute at most one conformation per locus.
+      (dolist (refinement backbone-refinements)
+        (destructuring-bind (bp-locus refined-internals defined-mask) refinement
+          (validate-locus bp-locus :backbone)
+          (when (gethash bp-locus backbone-loci)
+            (error "Backbone locus ~d occurs more than once in the refinement request"
+                   (locus bp-locus)))
+          (setf (gethash bp-locus backbone-loci) t)
+          (let ((joint-count
+                  (length (joints (blueprint-locus-atresidue blueprint bp-locus)))))
+            (unless (= (length refined-internals) (* 3 joint-count))
+              (error "Refined internals have length ~d; backbone locus ~d needs ~d"
+                     (length refined-internals) (locus bp-locus) (* 3 joint-count)))
+            (unless (or (null defined-mask) (= (length defined-mask) joint-count))
+              (error "Defined mask has length ~d; backbone locus ~d needs ~d"
+                     (length defined-mask) (locus bp-locus) joint-count)))))
+      (dolist (refinement sidechain-refinements)
+        (destructuring-bind (bp-locus bp-monomer refined-rotamer) refinement
+          (validate-locus bp-locus :sidechain)
+          (check-type bp-monomer blueprint-monomer)
+          (check-type refined-rotamer sidechain-rotamer)
+          (unless (find bp-monomer (monomers bp-locus) :test #'eq)
+            (error "~s does not belong to blueprint locus ~d"
+                   bp-monomer (locus bp-locus)))
+          (when (gethash bp-locus sidechain-loci)
+            (error "Sidechain locus ~d occurs more than once in the refinement request"
+                   (locus bp-locus)))
+          (setf (gethash bp-locus sidechain-loci) t)
+          (let* ((mrkindex (blueprint-mrkindex bp-locus bp-monomer 0))
+                 (atresidue (atresidue (aref (rotamer-scans blueprint) mrkindex)))
+                 (needed (* 3 (length (joints atresidue))))
+                 (provided (length (internals-values refined-rotamer))))
+            (unless (= provided needed)
+              (error "Refined rotamer internals have length ~d; locus ~d monomer ~a needs ~d"
+                     provided (locus bp-locus) (monomer-name bp-monomer) needed)))))
+      (let ((result (copy-persona source-persona))
+            (mappings nil))
+        (dolist (refinement backbone-refinements)
+          (destructuring-bind (bp-locus refined-internals defined-mask) refinement
+            (install-refined-backbone-internals
+             result bp-locus refined-internals defined-mask :verbose verbose)))
+        (multiple-value-bind (loaded overflows)
+            (reload-persona-sidechain-rotamers result :verbose verbose)
+          (declare (ignore loaded))
+          (when overflows
+            (error "Refined persona sidechain reload overflowed: ~s" overflows)))
+        (dolist (refinement sidechain-refinements)
+          (destructuring-bind (bp-locus bp-monomer refined-rotamer) refinement
+            (multiple-value-bind (persona slot mrkindex)
+                (install-refined-sidechain-rotamer
+                 result bp-locus bp-monomer refined-rotamer)
+              (declare (ignore persona))
+              (push (list :locus bp-locus :monomer bp-monomer
+                          :slot slot :mrkindex mrkindex)
+                    mappings))))
+        (update-blueprint-internals blueprint result :verbose verbose)
+        (values result (nreverse mappings))))))
+
 (defun update-blueprint-base-internals (blueprint persona internals &key verbose)
   "Fill internals for the :FIXED and :BACKBONE residues - everything MAKE-ASSEMBLER built.
 
