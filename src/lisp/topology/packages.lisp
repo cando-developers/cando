@@ -636,6 +636,7 @@
    #:materialize-blueprint
    #:make-persona
    #:copy-persona
+   #:build-refined-persona
    #:install-refined-backbone-internals
    #:install-refined-sidechain-rotamer
    #:reload-persona-sidechain-rotamers
