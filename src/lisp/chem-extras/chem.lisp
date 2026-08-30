@@ -809,8 +809,8 @@ Also returns a list of (class-name . param-plist) for setup."
                          (setf rest (cddr rest)))
                         (t
                          ;; It's a parameter key-value pair
-                         (push (cadr rest) params)
                          (push (car rest) params)
+                         (push (cadr rest) params)
                          (setf rest (cddr rest)))))
              (setf (gethash class filter-map) filter)
              (when params
@@ -969,5 +969,4 @@ Examples:
         ff
         (when errorp
           (error "Could not find LKSolvation parameters for :lk-solvation-atom-type ~s" type)))))
-
 
