@@ -281,6 +281,7 @@ public:
   virtual       void    doColumnOptimization();
   virtual	void	debug();
   virtual	SparseLargeSquareMatrix_sp optimized();
+  void projectActiveCoordinates(core::SimpleBitVector_sp activeCoordinateMask);
   virtual	void	setAtIndex(uint ii, vecreal d) { this->_Values[ii] = d;};
   virtual	vecreal getAtIndex(uint ii) { return this->_Values[ii];};
 

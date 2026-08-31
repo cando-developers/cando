@@ -684,6 +684,64 @@
               #+tests(test-true truncated-newton-faster-than-cg (< tn-steps cg-steps)))))))))
 
 
+;;; ======================================================================
+;;; Cartesian active-coordinate masks.
+;;;
+;;; A mask has one bit per Cartesian coordinate.  A bonded term crossing the
+;;; active/fixed boundary must remain in the objective, while minimization must
+;;; change only coordinates whose bits are set.  Exercise a single movable x
+;;; coordinate so this also catches accidental atom-index (i3x/3) masking.
+;;; ======================================================================
+
+(multiple-value-bind (ef butane) (%fresh-butane-ef)
+  (declare (ignore butane))
+  (let* ((n (chem:get-nvector-size ef))
+         (pos (chem:make-nvector n))
+         (mask (make-array n :element-type 'bit :initial-element 0))
+         (stretch (chem:get-stretch-component ef))
+         (expected 0d0))
+    (chem:load-coordinates-into-vector ef pos)
+    ;; Only x of the atom at i3x=0 is movable.
+    (setf (aref mask 0) 1)
+    (chem:walk-stretch-terms
+     stretch
+     (lambda (index atom1 atom2 i3x1 i3x2 kb r0)
+       (declare (ignore index atom1 atom2))
+       (when (or (= i3x1 0) (= i3x2 0))
+         (let* ((p1 (geom:vec-array pos i3x1))
+                (p2 (geom:vec-array pos i3x2))
+                (distance (geom:vlength (geom:v- p1 p2))))
+           (incf expected (* kb (expt (- distance r0) 2)))))))
+    (let ((masked (chem:energy-component-evaluate-energy ef stretch pos mask)))
+      #+tests(test-true active-coordinate-mask-keeps-cross-boundary-terms
+                        (< (abs (- masked expected)) 1d-8)))
+
+    ;; Displace the one active coordinate and run projected TN.  Every other
+    ;; coordinate, including y and z of the same atom, must remain bit-identical.
+    (%nv-set! pos 0 (+ (%nv-ref pos 0) 0.15d0))
+    (let* ((before (copy-seq pos))
+           (minimizer (chem:make-minimizer ef)))
+      (chem:set-maximum-number-of-steepest-descent-steps minimizer 0)
+      (chem:set-maximum-number-of-conjugate-gradient-steps minimizer 0)
+      (chem:set-maximum-number-of-truncated-newton-steps minimizer 10000)
+      (chem:set-truncated-newton-tolerance minimizer 1d-4)
+      (chem:disable-print-intermediate-results minimizer)
+      (let* ((after
+               (ext:with-float-traps-masked
+                   (:underflow :overflow :invalid :inexact :divide-by-zero)
+                 (chem:minimize minimizer :coords pos :active-atom-mask mask)))
+             (energy (chem:evaluate-energy ef after)))
+        #+tests(test-true projected-truncated-newton-moves-active-coordinate
+                          (> (abs (- (%nv-ref after 0) (%nv-ref before 0))) 1d-10))
+        #+tests(test-true projected-truncated-newton-preserves-fixed-coordinates
+                          (loop for coordinate from 1 below n
+                                always (= (%nv-ref after coordinate)
+                                          (%nv-ref before coordinate))))
+        #+tests(test-true projected-truncated-newton-energy-is-finite
+                          (and (not (ext:float-nan-p energy))
+                               (not (ext:float-infinity-p energy))))))))
+
+
 ;;; ===========================================================================
 ;;; Dihedral kernel agreement: dihedral_fast vs dihedral_fast_floored
 ;;;

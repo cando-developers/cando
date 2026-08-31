@@ -1,6 +1,11 @@
 (in-package :chem.extras)
 
-(export 'chem::coordinates :chem)
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (export 'chem::coordinates :chem)
+  (export '(chem::force-field-cache-miss
+            chem::call-with-force-field-cache-miss-handler
+            chem::retry-force-field-cache-miss)
+          :chem))
 
 (defparameter chem:*save-positions* nil)
 
@@ -28,6 +33,28 @@
 ;;;
 ;;; Find nonbond atom type position in non-bond force-field
 ;;;
+
+(define-condition chem:force-field-cache-miss (error) ()
+  (:documentation
+   "Base condition for a force field that cannot complete a grouped parameterization from its
+cache.  Concrete force fields retain their own missing-key details below this neutral API."))
+
+(defgeneric chem:retry-force-field-cache-miss (condition)
+  (:documentation
+   "Verify that CONDITION's concrete cache miss has been filled and retry its lookup.
+Implemented by the force field that signalled CONDITION."))
+
+(defun chem:call-with-force-field-cache-miss-handler (handler thunk)
+  "Call THUNK and invoke zero-argument HANDLER when a force-field cache miss is signalled.
+
+When HANDLER returns true, ask the concrete force field to verify its exact missing entry and
+retry.  Returning NIL declines recovery and lets the original condition propagate."
+  (handler-bind
+      ((chem:force-field-cache-miss
+         (lambda (condition)
+           (when (funcall handler)
+             (chem:retry-force-field-cache-miss condition)))))
+    (funcall thunk)))
 
 (defgeneric chem:find-atom-type-position (nonbond-force-field type))
 
@@ -969,4 +996,3 @@ Examples:
         ff
         (when errorp
           (error "Could not find LKSolvation parameters for :lk-solvation-atom-type ~s" type)))))
-

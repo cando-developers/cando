@@ -163,8 +163,7 @@ namespace chem {
 
 #define STRETCH_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3))) goto SKIP_term;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) goto SKIP_term;
 
 double _evaluateEnergyOnly_Stretch ( int I1,
                                      int I2,
@@ -210,8 +209,7 @@ CL_DEFMETHOD void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianT
     int I1 = si->term.i3x1;
     int I2 = si->term.i3x2;
     if (hasActiveAtomMask &&
-        !(bitvectorActiveAtomMask->testBit(I1/3) &&
-          bitvectorActiveAtomMask->testBit(I2/3))) continue;
+        !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
     localPos[0] = pos->getElement(I1+0);
     localPos[1] = pos->getElement(I1+1);
     localPos[2] = pos->getElement(I1+2);
@@ -449,8 +447,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
     // energy only
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
       if (hasActiveAtomMask &&
-          !(bitvectorActiveAtomMask->testBit(si->term.i3x1/3) &&
-            bitvectorActiveAtomMask->testBit(si->term.i3x2/3))) continue;
+          !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, si->term.i3x1, si->term.i3x2)) continue;
       Energy = stretch.energy(si->term, position, &totalEnergy);
       STRETCH_DEBUG_INTERACTIONS(si->term.i3x1,si->term.i3x2);
     }
@@ -458,8 +455,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
     rforce = &(*force)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
       if (hasActiveAtomMask &&
-          !(bitvectorActiveAtomMask->testBit(si->term.i3x1/3) &&
-            bitvectorActiveAtomMask->testBit(si->term.i3x2/3))) continue;
+          !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, si->term.i3x1, si->term.i3x2)) continue;
       Energy = stretch.gradient(si->term, position, &totalEnergy, rforce);
       STRETCH_DEBUG_INTERACTIONS(si->term.i3x1,si->term.i3x2);
     }
@@ -469,8 +465,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
     rhdvec = &(*hdvec)[0];
     for ( i=0,si=this->_Terms.begin(); si!=this->_Terms.end(); si++,i++ ) {
       if (hasActiveAtomMask &&
-          !(bitvectorActiveAtomMask->testBit(si->term.i3x1/3) &&
-            bitvectorActiveAtomMask->testBit(si->term.i3x2/3))) continue;
+          !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, si->term.i3x1, si->term.i3x2)) continue;
       Energy = stretch.hessian(si->term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
       STRETCH_DEBUG_INTERACTIONS(si->term.i3x1,si->term.i3x2);
     }
@@ -701,7 +696,6 @@ EnergyComponent_sp EnergyStretch_O::copyFilter(core::T_sp keepInteractionFactory
 
 
 };
-
 
 
 

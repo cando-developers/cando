@@ -353,7 +353,18 @@ even though the CONTENTS are pass 2's: a vector that can never disagree with TOT
 worth more than a slot left unbound.  A NIL entry means not yet materialized.
 
 Covers the MOVEABLE tier only.  Fixed loci own no mrkindex, so their single residue and
-atresidue hang off the BLUEPRINT-LOCUS instead."))
+atresidue hang off the BLUEPRINT-LOCUS instead.")
+   (backbone-intramolecular-energy-group
+    :initform nil :accessor backbone-intramolecular-energy-group
+    :documentation "Reusable component group for all intramolecular background terms.  It is
+structural blueprint state; a persona changes coordinates, not the terms or their atom indexes.")
+   (backbone-intermolecular-energy-group
+    :initform nil :accessor backbone-intermolecular-energy-group
+    :documentation "Reusable component group for ligand/receptor background interactions.")
+   (pair-scan-energy-group
+    :initform nil :accessor pair-scan-energy-group
+    :documentation "Reusable nonbond group repointed at each cross-locus slot pair while filling
+the pair energy matrix."))
   (:documentation "An entire design search space, laid out once with a permanent numbering.
 
 Where an assembler describes ONE structure, a blueprint describes every structure reachable
@@ -1834,11 +1845,12 @@ this function.")
   MONOMER-POSITIONS are bound afterwards - they are deliberately unbound before, so reaching for
   them early signals rather than returning a stale answer.
 
-  ENSURE-TRAINED T (the default) trains the SMIRNOFF parameter cache on this blueprint's trainers
-  FIRST.  It has to happen here rather than being left to the caller: MAKE-ASSEMBLER builds the
-  energy function, and an untrained cache would be taught by the fanned-out aggregate - a CA with
-  58-79 substituents - poisoning every later build silently.  Pass NIL only when the cache is
-  known to be trained already, and expect a slow build with no coverage if you are wrong."
+  ENSURE-TRAINED T (the default) trains the SMIRNOFF parameter cache on the concrete oligomer
+  before materialization.  It has to happen here rather than being left to the caller:
+  MAKE-ASSEMBLER builds the energy function, and an untrained cache would be taught by the
+  fanned-out aggregate - a CA with 58-79 substituents - poisoning every later build silently.
+  Selectable alternatives are parameterized on demand when their grouped energy pass reports
+  a structured cache miss."
   (unless (cdr (oligomer-shapes blueprint))
     (error "MAKE-ASSEMBLER wants :RECEPTOR-ONLY when there is a single oligomer-shape - decide ~
               what that means for a blueprint before calling this."))
@@ -2251,6 +2263,65 @@ cached against SOURCE-PERSONA are not refreshed here and must not be used with t
       (format t "~&  ~d unloaded slots folded with a stand-in rotamer~%" fallbacks))
     (values filled fallbacks)))
 
+(defun capture-refined-backbone-internals (blueprint persona)
+  "Copy PERSONA's refined backbone internals before a rebuild mutates its vector.
+
+Each result is (ATRESIDUE VALUES DEFINED-MASK).  A residue-local copy is required even when
+UPDATE-BLUEPRINT-INTERNALS reuses PERSONA's internals vector: the ordinary fill and adjustment
+pass is allowed to overwrite that vector before the refined values are restored."
+  (let ((source (internals persona)))
+    (loop for bp-locus across (loci blueprint)
+          when (and (eq (kind bp-locus) :backbone)
+                    (= 1 (aref (refined-backbone-mask persona) (locus bp-locus))))
+            collect
+            (progn
+              (unless source
+                (error "Persona marks backbone locus ~d as refined but has no internals vector"
+                       (locus bp-locus)))
+              (let* ((atresidue (blueprint-locus-atresidue blueprint bp-locus))
+                     (joint-count (length (joints atresidue)))
+                     (local-internals (make-array (* 3 joint-count)
+                                                  :element-type 'double-float
+                                                  :initial-element 0.0d0))
+                     (defined-mask (make-array joint-count
+                                               :element-type 'bit
+                                               :initial-element 0)))
+                (loop for joint across (joints atresidue)
+                      for index3 from 0 by 3
+                      do (write-internals-to-vector
+                          blueprint source joint index3 local-internals defined-mask))
+                (list atresidue local-internals defined-mask))))))
+
+(defun restore-refined-geometry
+    (blueprint persona internals refined-backbones &key verbose)
+  "Restore explicitly refined geometry after ordinary internal adjustments.
+
+Normal adjustments remain authoritative for catalogue rotamers.  Refined backbones and refined
+  sidechain slots instead describe optimized geometry and are deliberately written last."
+  (dolist (record refined-backbones)
+    (destructuring-bind (atresidue local-internals defined-mask) record
+      (write-internals blueprint internals atresidue local-internals defined-mask
+                       :verbose verbose)))
+  (let ((scans (rotamer-scans blueprint))
+        (restored-sidechains 0))
+    (loop for bp-locus across (loci blueprint)
+          when (owns-slots-p bp-locus)
+            do (loop for bp-monomer across (monomers bp-locus)
+                     for ordinal = (monomer-ordinal bp-monomer)
+                     for slot = (aref (refined-rotamer-index-or-nil persona) ordinal)
+                     when slot
+                       do (let* ((mrkindex
+                                   (blueprint-mrkindex bp-locus bp-monomer slot))
+                                 (rotamer (slot-rotamer-internals persona mrkindex)))
+                            (unless rotamer
+                              (error "Refined slot ~d at locus ~d monomer ~a has no rotamer"
+                                     slot (locus bp-locus) (monomer-name bp-monomer)))
+                            (apply-fragment-internals-to-atresidue
+                             blueprint internals rotamer slot
+                             (atresidue (aref scans mrkindex)))
+                            (incf restored-sidechains))))
+    (values (length refined-backbones) restored-sidechains)))
+
 (defun update-blueprint-internals (blueprint persona &key internals verbose)
   "Fill and retain PERSONA's internals vector for the WHOLE blueprint.
 
@@ -2271,17 +2342,30 @@ cached against SOURCE-PERSONA are not refreshed here and must not be used with t
   a separate traversal.  Their adjustments were registered at fan-out and initialized by the
   INITIALIZE-ADJUSTMENT loop in BUILD-BLUEPRINT-FAN-OUT-JOINTS.
 
+  Explicitly refined geometry is different: it records the result of Cartesian optimization and
+  must be the final authority.  Refined backbone internals are snapshotted before the ordinary
+  fill/adjust pass, then restored afterward; refined sidechain rotamers are likewise reapplied
+  after adjustments.  Catalogue rotamers still receive every normal adjustment.
+
   Stores and returns the internals vector."
-  (let ((internals (or internals
-                       (internals persona)
-                       (make-internals-for-blueprint blueprint))))
+  (let* ((refined-backbones (capture-refined-backbone-internals blueprint persona))
+         (internals (or internals
+                        (internals persona)
+                        (make-internals-for-blueprint blueprint))))
     (let ((base (update-blueprint-base-internals blueprint persona internals :verbose verbose)))
       (multiple-value-bind (slots fallbacks)
           (update-blueprint-slot-internals blueprint persona internals :verbose verbose)
         (adjust-all-internals blueprint internals)
-        (format t "~&blueprint internals: ~d base residues, ~d slots filled~
-                   ~@[ (~d with a stand-in rotamer)~], adjusted~%"
-                base slots (and (plusp fallbacks) fallbacks))))
+        (multiple-value-bind (restored-backbones restored-sidechains)
+            (restore-refined-geometry blueprint persona internals refined-backbones
+                                      :verbose verbose)
+          (format t "~&blueprint internals: ~d base residues, ~d slots filled~
+                     ~@[ (~d with a stand-in rotamer)~], adjusted"
+                  base slots (and (plusp fallbacks) fallbacks))
+          (when (or (plusp restored-backbones) (plusp restored-sidechains))
+            (format t ", restored ~d refined backbone~:p and ~d refined sidechain~:p"
+                    restored-backbones restored-sidechains))
+          (terpri))))
     (setf (internals persona) internals)
     internals))
 
@@ -2504,6 +2588,159 @@ diagnostics that run over a handful of slots."
                             when (= mrkindex (blueprint-mrkindex bp-locus bp-monomer slot))
                               do (return-from blueprint-locus-of-mrkindex
                                    (values bp-locus bp-monomer slot))))))
+
+;;; ------------------------------------------------------------------
+;;; Materializing one selected blueprint state as an ordinary assembler
+;;; ------------------------------------------------------------------
+
+(defun blueprint-state-selected-shapes (blueprint persona mcstate)
+  "Build ordinary oligomer-shapes with the monomer identities selected by MCSTATE.
+
+The rotamer indexes installed while making these shapes are only construction stand-ins.  The
+authoritative geometry is copied from PERSONA after the ordinary assembler has been built."
+  (let ((selected (make-hash-table :test 'eq))
+        (slot-loci (remove-if-not #'owns-slots-p (coerce (loci blueprint) 'list))))
+    (unless (= (length mcstate) (length slot-loci))
+      (error "Blueprint state has ~d entries, but the blueprint has ~d slot-owning loci"
+             (length mcstate) (length slot-loci)))
+    (loop for bp-locus in slot-loci
+          for state-index from 0
+          for mrkindex = (aref mcstate state-index)
+          do (multiple-value-bind (owner bp-monomer slot)
+                 (blueprint-locus-of-mrkindex blueprint mrkindex)
+               (unless (eq owner bp-locus)
+                 (error "MCSTATE entry ~d (~d) belongs to ~a, not locus ~d"
+                        state-index mrkindex
+                        (if owner (format nil "locus ~d" (locus owner)) "no locus")
+                        (locus bp-locus)))
+               (unless (< slot (aref (active-rotamer-count persona)
+                                     (monomer-ordinal bp-monomer)))
+                 (error "MCSTATE entry ~d selects inactive slot ~d for locus ~d monomer ~a"
+                        state-index slot (locus bp-locus) (monomer-name bp-monomer)))
+               (setf (gethash bp-locus selected) (list bp-monomer slot))))
+    (loop for source-shape in (oligomer-shapes blueprint)
+          for source-oligomer = (oligomer source-shape)
+          for new-oligomer = (copy-oligomer source-oligomer)
+          for changed = nil
+          do (loop for bp-locus across (loci blueprint)
+                   for selection = (gethash bp-locus selected)
+                   when (and selection (eq source-shape (oligomer-shape bp-locus)))
+                     do (let* ((bp-monomer (first selection))
+                               (space (oligomer-space new-oligomer))
+                               (monomer-position
+                                 (position (original-monomer bp-locus) (monomers space)))
+                               (name-position
+                                 (position (monomer-name bp-monomer)
+                                           (monomers (original-monomer bp-locus)))))
+                          (unless (and monomer-position name-position)
+                            (error "Cannot select monomer ~a at blueprint locus ~d"
+                                   (monomer-name bp-monomer) (locus bp-locus)))
+                          (setf (aref (monomer-indexes new-oligomer) monomer-position)
+                                name-position
+                                changed t)))
+          collect
+          (if changed
+              (let ((shape (mutate-oligomer-shape
+                            source-shape new-oligomer :uninitialized t)))
+                ;; Sidechain permissibility depends on the installed backbone.  Do this in two
+                ;; explicit stages: calculate the mutated shape's permissible backbones and pick
+                ;; the first, then calculate its permissible sidechains and pick the first.
+                ;; These are construction stand-ins; persona internals overwrite them below.
+                (let ((permissible-backbones
+                        (make-permissible-backbone-rotamers shape)))
+                  (write-rotamers shape permissible-backbones nil))
+                (let ((permissible-sidechains
+                        (make-permissible-sidechain-rotamers shape)))
+                  (write-rotamers shape permissible-sidechains nil))
+                (set-rotamers-state shape :complete-sidechain-and-backbone-rotamers)
+                shape)
+              (copy-oligomer-shape source-shape)))))
+
+(defun transfer-blueprint-atresidue-internals
+    (blueprint source-internals source-atresidue assembler target-internals target-atresidue)
+  "Copy one residue's defined internal coordinates between compatible joint trees."
+  (let* ((source-joints (joints source-atresidue))
+         (target-joints (joints target-atresidue))
+         (count (length source-joints)))
+    (unless (= count (length target-joints))
+      (error "Cannot materialize residue: source has ~d joints and target has ~d"
+             count (length target-joints)))
+    (let ((values (make-array (* 3 count) :element-type 'double-float
+                                           :initial-element 0.0d0))
+          (mask (make-array count :element-type 'bit :initial-element 0)))
+      (loop for source-joint across source-joints
+            for target-joint across target-joints
+            for index3 from 0 by 3
+            unless (eq (kin:joint/name source-joint) (kin:joint/name target-joint))
+              do (error "Cannot materialize residue: source joint ~a does not match target joint ~a"
+                        (kin:joint/name source-joint) (kin:joint/name target-joint))
+            do (write-internals-to-vector blueprint source-internals source-joint
+                                          index3 values mask))
+      (write-internals assembler target-internals target-atresidue values mask))))
+
+(defun materialize-blueprint-state
+    (blueprint persona mcstate &key ligand-orientation energy-function-factory verbose)
+  "Materialize MCSTATE from PERSONA as a conventional ASSEMBLER.
+
+MCSTATE chooses a monomer and persona slot at each selectable locus.  Unlike the legacy
+DESIGN:ASSEMBLER-FROM-MCSTATE path, the slot is never interpreted as a rotamer-database index.
+After building the selected chemical structure, this function transfers the final adjusted
+backbone and selected-slot internals directly from PERSONA.  Geometry-optimized rotamers are
+therefore preserved exactly.
+
+Returns (values ASSEMBLER COORDINATES INTERNALS)."
+  (unless (eq blueprint (blueprint persona))
+    (error "The persona does not belong to the supplied blueprint"))
+  ;; Refreshing is safe for refined personas: UPDATE-BLUEPRINT-INTERNALS snapshots and restores
+  ;; their authoritative optimized geometry around the ordinary adjustment pass.
+  (let* ((source-internals (update-blueprint-internals blueprint persona :verbose verbose))
+         (shapes (blueprint-state-selected-shapes blueprint persona mcstate))
+         (source-ligand (ligand-oligomer-shape blueprint))
+         (source-receptor (receptor-oligomer-shape blueprint))
+         (ligand-position (position source-ligand (oligomer-shapes blueprint)))
+         (receptor-position (position source-receptor (oligomer-shapes blueprint)))
+         (ligand-shape (and ligand-position (nth ligand-position shapes)))
+         (receptor-shape (and receptor-position (nth receptor-position shapes)))
+         (assembler (apply #'make-assembler shapes
+                           (append (when (= (length shapes) 1)
+                                     (list :receptor-only (null ligand-shape)))
+                                   (list :ligand-oligomer-shape ligand-shape
+                                         :receptor-oligomer-shape receptor-shape
+                                         :energy-function-factory energy-function-factory))))
+         (target-internals (make-internals-for-assembler assembler)))
+    (update-internals assembler target-internals)
+    ;; Transfer every moveable backbone and the one selected sidechain at each slot-owning locus.
+    ;; Fixed residue-shapes were copied with their Cartesian coordinates and need no transfer.
+    (loop for bp-locus across (loci blueprint)
+          when (eq (kind bp-locus) :backbone)
+            do (let* ((position (gethash (original-monomer bp-locus)
+                                         (monomer-positions assembler)))
+                      (target (and position (at-position (ataggregate assembler) position))))
+                 (unless target
+                   (error "No materialized residue for backbone locus ~d" (locus bp-locus)))
+                 (transfer-blueprint-atresidue-internals
+                  blueprint source-internals
+                  (blueprint-locus-atresidue blueprint bp-locus)
+                  assembler target-internals target)))
+    (loop for state-index below (length mcstate)
+          for mrkindex = (aref mcstate state-index)
+          do (multiple-value-bind (bp-locus bp-monomer slot)
+                 (blueprint-locus-of-mrkindex blueprint mrkindex)
+               (declare (ignore bp-monomer slot))
+               (let* ((position (gethash (original-monomer bp-locus)
+                                         (monomer-positions assembler)))
+                      (target (and position (at-position (ataggregate assembler) position))))
+                 (unless target
+                   (error "No materialized residue for selected locus ~d" (locus bp-locus)))
+                 (transfer-blueprint-atresidue-internals
+                  blueprint source-internals
+                  (atresidue (aref (rotamer-scans blueprint) mrkindex))
+                  assembler target-internals target))))
+    (let ((coords (make-coordinates-for-assembler assembler)))
+      (update-externals assembler target-internals :coords coords
+                                                   :ligand-orientation ligand-orientation)
+      (copy-all-joint-positions-into-atoms assembler coords)
+      (values assembler coords target-internals))))
 
 (defun mrkindex-info (blueprint mrkindex)
   "Everything MRKINDEX names, as a plist.  NIL when no locus owns it.
@@ -3550,9 +3787,13 @@ generate that slot's group, and finally restore every bond.
                                                            (chem:set-content-at
                                                             scope-mol scope-pos
                                                             (slot-residue-of scan))
-                                                           (chem:energy-function/generate-into-group
-                                                            ef factory group
-                                                            :scope-aggregate scope)
+                                                           (call-with-blueprint-cache-miss-recovery
+                                                            bp-locus bp-monomer
+                                                            (lambda ()
+                                                              (chem:energy-function/generate-into-group
+                                                               ef factory group
+                                                               :scope-aggregate scope))
+                                                            :verbose verbose)
                                                            (setf ref-group group
                                                                  ref-lo3 lo3
                                                                  ref-hi3 hi3
@@ -3659,6 +3900,9 @@ generate that slot's group, and finally restore every bond.
                 1.0))
     (when (or (null backbone-group) (null backbone-inter-group) (null pair-group))
       (error "There are missing groups"))
+    (setf (backbone-intramolecular-energy-group blueprint) backbone-group
+          (backbone-intermolecular-energy-group blueprint) backbone-inter-group
+          (pair-scan-energy-group blueprint) pair-group)
     (values built backbone-group backbone-inter-group pair-group)))
 
 
@@ -3887,6 +4131,48 @@ out, including on a non-local exit."
   The name need not be a registered force field at all - AMBER-PROTEIN's is the cons
   (:DEFAULT . :USE-GIVEN-TYPES), and CHEM:FIND-FORCE-FIELD SIGNALS on an unknown name rather than
   returning NIL.  An unregistered name is just a louder way of saying there is no cache here."))
+
+(defgeneric train-foldamer-oligomers (foldamer oligomers &key verbose)
+  (:documentation
+   "Train the concrete chemically real OLIGOMERS needed to materialize a blueprint baseline.
+Selectable alternatives are parameterized later by grouped cache-miss recovery."))
+
+(defun blueprint-cache-miss-oligomer (blueprint-locus blueprint-monomer)
+  "Build the chemically real oligomer for BLUEPRINT-MONOMER's grouped energy pass.
+
+Copy the locus's concrete oligomer and install BLUEPRINT-MONOMER at that locus.  The resulting
+ordinary oligomer contains the slot's sidechain in its real backbone environment."
+  (let* ((shape (oligomer-shape blueprint-locus))
+         (source (oligomer shape))
+         (space (oligomer-space source))
+         (locus-monomer (original-monomer blueprint-locus))
+         (locus-index (position locus-monomer (monomers space)))
+         (allowed-index (position (monomer-name blueprint-monomer)
+                                  (monomers locus-monomer))))
+    (unless locus-index
+      (error "Blueprint locus ~d is not present in its oligomer space"
+             (locus blueprint-locus)))
+    (unless allowed-index
+      (error "Monomer ~s is not allowed at blueprint locus ~d"
+             (monomer-name blueprint-monomer) (locus blueprint-locus)))
+    (let ((trainer (copy-oligomer source)))
+      (setf (aref (monomer-indexes trainer) locus-index) allowed-index)
+      trainer)))
+
+(defun call-with-blueprint-cache-miss-recovery
+    (blueprint-locus blueprint-monomer thunk &key verbose)
+  "Call THUNK and let the locus's foldamer fill its force-field cache if CHEM reports a miss."
+  (let* ((trainer (blueprint-cache-miss-oligomer blueprint-locus blueprint-monomer))
+         (foldamer (foldamer (oligomer-space trainer))))
+    (chem:call-with-force-field-cache-miss-handler
+     (lambda ()
+       (when verbose
+         (format t "~&Force-field cache miss at locus ~d monomer ~s; parameterizing ~s~%"
+                 (locus blueprint-locus) (monomer-name blueprint-monomer)
+                 (oligomer-to-sexp trainer))
+         (finish-output))
+       (fill-force-field-cache foldamer trainer :verbose verbose))
+     thunk)))
   
 
 (defun blueprint-required-constitution-contexts (blueprint)
@@ -3926,37 +4212,33 @@ BLUEPRINT-REQUIRED-CONTEXTS-BY-FOLDAMER.
 
 
 (defun ensure-blueprint-trained (blueprint &key verbose)
-  "Train the SMIRNOFF parameter cache on exactly the trainers BLUEPRINT needs, and no others.
+  "Ensure each cached-SMIRNOFF foldamer is trained on the blueprint's concrete oligomer.
 
   CALL THIS BEFORE MATERIALIZE-BLUEPRINT-BASE.  An untrained cache learns from whatever is built
   first, and for a blueprint that is the fanned-out aggregate - see the commentary above.
 
-  Errors listing any required context that no trainer produces.  That is the useful failure: it
-  means the foldamer's training oligomer spaces do not cover this blueprint's design space, and no
-  amount of building will fix it.
+  Selectable alternatives are deliberately not prefetched.  Grouped energy construction catches a
+  structured cache miss, builds the exact real ligand containing that interaction, parameterizes
+  it with uncached SMIRNOFF, and retries the lookup.
 
   Returns (values TRAINED-COUNT REQUIRED-COUNT)."
   (let ((by-foldamer (blueprint-required-contexts-by-foldamer blueprint))
         (trained 0)
-        (required 0)
-        (missing nil))
+        (required 0))
     (maphash (lambda (foldamer contexts)
                (incf required (length contexts))
-               (multiple-value-bind (n gaps)
-                   (train-foldamer-contexts foldamer contexts :verbose verbose)
-                 (incf trained n)
-                 (when gaps (push (cons foldamer gaps) missing))))
+               ;; Only the concrete sequence is required before materialization.  Alternative
+               ;; monomers are trained on demand from the slot group that exposes the miss.
+               (incf trained
+                     (train-foldamer-oligomers
+                      foldamer
+                      (loop for oligomer-shape in (oligomer-shapes blueprint)
+                            for oligomer = (oligomer oligomer-shape)
+                            when (eq foldamer (foldamer (oligomer-space oligomer)))
+                              collect oligomer)
+                      :verbose verbose)))
              by-foldamer)
-    (when missing
-      (error "No trainer produces these constitution-contexts the blueprint requires:~%~
-              ~{~{  ~a:~%~{    ~s~%~}~}~}~
-              That foldamer's TRAINING-OLIGOMER-SPACES do not cover this blueprint's design ~
-              space.  Without them the cached force field cannot cover the blueprint aggregate ~
-              and would fall back to real SMIRNOFF over the fanned-out graph."
-             (mapcar (lambda (entry)
-                       (list (type-of (car entry)) (cdr entry)))
-                     missing)))
-    (format t "~&ensure-blueprint-trained: ~d contexts required across ~d foldamer~:p, ~
-               ~d newly trained~%"
+    (format t "~&ensure-blueprint-trained: ~d contexts expected across ~d foldamer~:p, ~
+               ~d concrete oligomer~:p newly trained; alternatives are demand-driven~%"
             required (hash-table-count by-foldamer) trained)
     (values trained required)))

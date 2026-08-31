@@ -166,11 +166,7 @@ namespace chem {
 
 #define DIHEDRAL_HARMONIC_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         && bitvectorActiveAtomMask->testBit(I4/3)) \
-    ) goto SKIP_term;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) goto SKIP_term;
 #define DIHEDRAL_HARMONIC_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,EnergyDihedralRestraint_O::static_classSymbol(), \

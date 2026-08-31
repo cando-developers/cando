@@ -162,7 +162,7 @@ double template_evaluateUsingTerms(EnergyRosettaElec_O* mthis,
   Rosetta_Elec_Cutoff<NoHessian> elec;
 
 #define KERNEL_TERM_ELEC_APPLY_ATOM_MASK(I1, I2)                                                                  \
-  if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3))) continue;
+  if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
   if (evalType == energyEval) {
     for (auto si = terms.begin(); si != terms.end(); si++) {

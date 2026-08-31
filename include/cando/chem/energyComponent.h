@@ -126,6 +126,39 @@ namespace       chem {
   auto bitvectorActiveAtomMask = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
 #define MAYBE_SETUP_DEBUG_INTERACTIONS(dbgint) bool doDebugInteractions = dbgint;
 
+// Active-atom masks are Cartesian-coordinate masks: three bits per atom, at
+// the same i3x offsets used by energy terms. A term contributes whenever at
+// least one coordinate of at least one participating atom is movable.
+inline bool activeAtomMaskAtomIsActive(core::SimpleBitVector_sp mask, size_t i3x) {
+  return mask->testBit(i3x) || mask->testBit(i3x + 1) || mask->testBit(i3x + 2);
+}
+
+inline bool activeAtomMaskAnyAtomIsActive(core::SimpleBitVector_sp mask, size_t i3x1) {
+  return activeAtomMaskAtomIsActive(mask, i3x1);
+}
+
+inline bool activeAtomMaskAnyAtomIsActive(core::SimpleBitVector_sp mask,
+                                          size_t i3x1, size_t i3x2) {
+  return activeAtomMaskAtomIsActive(mask, i3x1) ||
+         activeAtomMaskAtomIsActive(mask, i3x2);
+}
+
+inline bool activeAtomMaskAnyAtomIsActive(core::SimpleBitVector_sp mask,
+                                          size_t i3x1, size_t i3x2, size_t i3x3) {
+  return activeAtomMaskAtomIsActive(mask, i3x1) ||
+         activeAtomMaskAtomIsActive(mask, i3x2) ||
+         activeAtomMaskAtomIsActive(mask, i3x3);
+}
+
+inline bool activeAtomMaskAnyAtomIsActive(core::SimpleBitVector_sp mask,
+                                          size_t i3x1, size_t i3x2,
+                                          size_t i3x3, size_t i3x4) {
+  return activeAtomMaskAtomIsActive(mask, i3x1) ||
+         activeAtomMaskAtomIsActive(mask, i3x2) ||
+         activeAtomMaskAtomIsActive(mask, i3x3) ||
+         activeAtomMaskAtomIsActive(mask, i3x4);
+}
+
 SMART(QDomNode);
 SMART(AbstractLargeSquareMatrix);
 FORWARD(EnergyFunction);

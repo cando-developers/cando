@@ -958,10 +958,18 @@ The ROTAMER-INDEX slots of the ROTAMER-SHAPEs will be unbound on return."
              original-monomer-to-monomer-shape-map)
     new-monomer-shape-map))
 
-(defun mutate-oligomer-shape (original-oligomer-shape ligand-oligomer &key do-not-mutate-backbone-rotamers name sidechain-rotamer-indexes)
+(defun mutate-oligomer-shape
+    (original-oligomer-shape ligand-oligomer
+     &key do-not-mutate-backbone-rotamers name sidechain-rotamer-indexes
+       backbone-rotamer-index-callback sidechain-rotamer-index-callback uninitialized)
   "Generate a new oligomer-shape based on ORIGINAL-OLIGOMER-SHAPE with the sequence LIGAND-OLIGOMER.
 If the LIGAND-OLIGOMER mutates any residues in the backbone then random rotamers are chosen for the new oligomer-shape.
-Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
+Assign SIDECHAIN-ROTAMER-INDEXES to the sidechain shapes.  When
+SIDECHAIN-ROTAMER-INDEX-CALLBACK is supplied, call it with the permissible sidechain rotamers
+for the mutated oligomer and use the ROTAMER-INDEXES it returns instead.
+BACKBONE-ROTAMER-INDEX-CALLBACK likewise overrides the normal preserve-or-randomize backbone
+selection.  UNINITIALIZED constructs the mutated shape without assigning either class of
+rotamers, so a caller can calculate and install them in explicit dependency order."
   (check-type original-oligomer-shape topology:oligomer-shape)
   (let ((new-monomer-shape-map (build-mutant-monomer-shape-map original-oligomer-shape ligand-oligomer))
         (foldamer (foldamer (oligomer-space ligand-oligomer))))
@@ -971,7 +979,10 @@ Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
     ;;   or assigning a random one if it has changed
     (let ((callback-backbone-rotamer-indexes
             (lambda (permissible-backbone-rotamers)
-              (loop with result-vec = (make-array 16 :adjustable t :fill-pointer 0)
+              (if backbone-rotamer-index-callback
+                  (funcall backbone-rotamer-index-callback
+                           permissible-backbone-rotamers)
+                  (loop with result-vec = (make-array 16 :adjustable t :fill-pointer 0)
                     for permissible-rotamer across (topology:permissible-rotamer-vector permissible-backbone-rotamers)
                     for monomer-shape-locus = (topology:monomer-shape-locus permissible-rotamer)
                     for allowed-rotamer-indexes = (topology:allowed-rotamer-indexes permissible-rotamer)
@@ -990,14 +1001,17 @@ Assign the SIDECHAIN-ROTAMER-INDEXES to the shape of the sidechains."
                                           (let ((len (length allowed-rotamer-indexes)))
                                             (aref allowed-rotamer-indexes (random len)))))
                     do (vector-push-extend new-index result-vec)
-                    finally (return (make-instance 'topology:rotamer-indexes :rotamer-indexes result-vec)))))
+                    finally (return (make-instance 'topology:rotamer-indexes
+                                                   :rotamer-indexes result-vec))))))
           (callback-sidechain-rotamer-indexes
             (lambda (permissible-sidechain-rotamers)
-              sidechain-rotamer-indexes)))
+              (if sidechain-rotamer-index-callback
+                  (funcall sidechain-rotamer-index-callback
+                           permissible-sidechain-rotamers)
+                  sidechain-rotamer-indexes))))
       (topology:make-oligomer-shape ligand-oligomer
                                     :monomer-to-monomer-shape-map new-monomer-shape-map
                                     :name name
+                                    :uninitialized uninitialized
                                     :callback-backbone-rotamer-indexes callback-backbone-rotamer-indexes
                                     :callback-sidechain-rotamer-indexes callback-sidechain-rotamer-indexes))))
-
-

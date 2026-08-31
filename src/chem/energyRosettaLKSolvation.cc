@@ -180,7 +180,7 @@ double template_evaluateUsingTerms(EnergyRosettaLKSolvation_O* mthis,
   Rosetta_Lk_Solvation<NoHessian> lk;
 
 #define KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(I1, I2)                                                          \
-  if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3))) continue;
+  if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
   if (evalType == energyEval) {
     for (auto si = terms.begin(); si != terms.end(); si++) {
