@@ -49,6 +49,13 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/chemPackage.h>
 
+template <>
+struct gctools::GCInfo<chem::SparseLargeSquareMatrix_O> {
+  static bool constexpr CanAllocateWithNoArguments = true;
+  static bool constexpr NeedsInitialization = true;
+  static bool constexpr NeedsFinalization = true;
+  static GCInfo_policy constexpr Policy = normal;
+};
 
 namespace chem {
 
@@ -343,14 +350,6 @@ public:
   DEFAULT_CTOR(SparseLargeSquareMatrix_O);
   virtual ~SparseLargeSquareMatrix_O(); // Non-trivial
 };
-};
-
-template <>
-struct gctools::GCInfo<chem::SparseLargeSquareMatrix_O> {
-  static bool constexpr CanAllocateWithNoArguments = true;
-  static bool constexpr NeedsInitialization = true;
-  static bool constexpr NeedsFinalization = true;
-  static GCInfo_policy constexpr Policy = normal;
 };
 
 namespace chem {
