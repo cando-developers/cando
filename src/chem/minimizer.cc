@@ -336,6 +336,22 @@ void maybeSavePosition(NVector_sp pos) {
   }
 }
 
+static void projectNVectorToActiveCoordinates(NVector_sp vector,
+                                              core::T_sp activeAtomMask) {
+  if (activeAtomMask.nilp()) return;
+  if (!gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
+  }
+  auto mask = gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask);
+  if (mask->length() != vector->length()) {
+    SIMPLE_ERROR("Active coordinate mask has {} entries but vector has {} entries",
+                 mask->length(), vector->length());
+  }
+  for (size_t coordinate = 0; coordinate < vector->length(); ++coordinate) {
+    if (!mask->testBit(coordinate)) (*vector)[coordinate] = 0.0;
+  }
+}
+
 
 /*
  *      dTotalEnergy
@@ -373,9 +389,11 @@ double	Minimizer_O::dTotalEnergyForce( NVector_sp pos,
                                         core::T_sp energyScale,
                                         NVector_sp nvForce, core::T_sp activeAtomMask )
 {
-  return this->_ScoringFunction->evaluateEnergyForce(pos,
-                                                     energyScale,
-                                                     true,nvForce,activeAtomMask);
+  double energy = this->_ScoringFunction->evaluateEnergyForce(pos,
+                                                              energyScale,
+                                                              true,nvForce,activeAtomMask);
+  projectNVectorToActiveCoordinates(nvForce, activeAtomMask);
+  return energy;
 }
 
 
@@ -415,6 +433,7 @@ double	Minimizer_O::d1DTotalEnergyForce( double x, core::T_sp energyScale, doubl
                                                      energyScale,
                                                      true, this->nvP1DSearchTemp2,
                                                      activeAtomMask );
+  projectNVectorToActiveCoordinates(this->nvP1DSearchTemp2, activeAtomMask);
   *dfx = -dotProductWithActiveAtomMask(this->nvP1DSearchTemp2,this->nvP1DSearchDirection,activeAtomMask);
   return *fx;
 }
@@ -1596,12 +1615,14 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
     // exit PCG loop with pk=pj ( for j=1, set pk=force)
     //
 
+    projectNVectorToActiveCoordinates(dj_dvec, activeAtomMask);
     this->_ScoringFunction->evaluateAll( pos,
                                          energyScale,
                                          nil<core::T_O>(),
                                          true, nvDummy,
                                          true, true, nmDummy,
                                          qj_hdvec, dj_dvec, activeAtomMask);
+    projectNVectorToActiveCoordinates(qj_hdvec, activeAtomMask);
     // MOVE rjDotzj calculation above this loop because
     // 	its calculated in step 6
     // rjDotzj = rj->dotProduct(zj);
@@ -1799,6 +1820,10 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
     //
   LOG("Setting up preconditioner" );
   this->_ScoringFunction->setupHessianPreconditioner(pos,mprecon,activeAtomMask);
+  if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+    mprecon->projectActiveCoordinates(
+        gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask));
+  }
   opt_mprecon = mprecon->optimized();
   // Insert entries once into ldlt based on mprecon so it has entries that can accept the factorization 
   unconventionalModifiedCholeskySymbolicFactorization(opt_mprecon,ldlt);
@@ -1940,6 +1965,10 @@ void	Minimizer_O::_truncatedNewton(int numSteps,
 	    // Compute the preconditioner M at X{k+1}
 	    //
       this->_ScoringFunction->setupHessianPreconditioner(posNext,mprecon,activeAtomMask);
+      if (gc::IsA<core::SimpleBitVector_sp>(activeAtomMask)) {
+        mprecon->projectActiveCoordinates(
+            gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask));
+      }
       opt_mprecon = mprecon->optimized();
       unconventionalModifiedCholeskyFactorization(opt_mprecon,ldlt,kSum);
       opt_ldlt = ldlt->optimized();

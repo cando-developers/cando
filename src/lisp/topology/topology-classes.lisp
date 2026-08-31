@@ -485,6 +485,11 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
     (declare (ignore foldamer residue constitution-context))
     nil)
 
+(defgeneric fill-force-field-cache (foldamer oligomer &key verbose)
+  (:documentation
+   "Parameterize one chemically real OLIGOMER using FOLDAMER's underlying force field and add the
+resulting parameters to its cache.  Return true when handled; signal if parameterization fails."))
+
 
 (defclass oligomer-space (cando.serialize:serializable)
   ((foldamer-name :initarg :foldamer-name :accessor foldamer-name)

@@ -44,7 +44,7 @@ namespace chem {
 #include <cando/chem/energyKernels/flat_bottom_anchor_restraint.c>
 
 #define FBAR_APPLY_ATOM_MASK(I1) \
-  if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(I1/3)) continue;
+  if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1)) continue;
 
 core::List_sp EnergyFlatBottomAnchorRestraint::encode() const {
   return core::Cons_O::createList(

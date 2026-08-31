@@ -94,11 +94,7 @@ namespace chem {
 
 #define ANGLE_APPLY_ATOM_MASK(I1,I2,I3) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         ) \
-    ) goto SKIP_term;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3)) goto SKIP_term;
 
 
 double	_evaluateEnergyOnly_Angle(
@@ -149,9 +145,7 @@ CL_DEFMETHOD void	EnergyAngle_O::compareAnalyticalAndNumericalForceAndHessianTer
     int I2 = ai->term.i3x2;
     int I3 = ai->term.i3x3;
     if (hasActiveAtomMask &&
-        !(bitvectorActiveAtomMask->testBit(I1/3) &&
-          bitvectorActiveAtomMask->testBit(I2/3) &&
-          bitvectorActiveAtomMask->testBit(I3/3))) continue;
+        !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3)) continue;
     localPos[0] = pos->getElement(I1+0);
     localPos[1] = pos->getElement(I1+1);
     localPos[2] = pos->getElement(I1+2);
@@ -488,11 +482,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 
 #define KERNEL_ANGLE_APPLY_ATOM_MASK(I1,I2,I3) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         ) \
-    ) continue;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3)) continue;
 
     if (evalType==energyEval) {
       for ( i=0,ai=this->_Terms.begin(); ai!=this->_Terms.end(); ai++,i++ ) {

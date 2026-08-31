@@ -272,7 +272,7 @@ core::T_sp nonbond_type(bool is14) {
   return chem::_sym_EnergyNonbond;
 }
 #define NONBOND_APPLY_ATOM_MASK(I1, I2)                                                                                            \
-  if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3)))                \
+  if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2))                                        \
     goto SKIP_term;
 
 /* No periodic boundary conditons/bounding-box is used in this code.
@@ -512,7 +512,7 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
   }
 
 #define KERNEL_EXCLUDED_NONBOND_APPLY_ATOM_MASK(I1, I2)                                                              \
-  if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3)))  continue;
+  if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
   bool interactionsAre14 = false;
   Nonbond<NoHessian> nonbond;
@@ -696,7 +696,7 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
     double inv_range = 1.0/(mthis->_Nonbond_r_cut-mthis->_Nonbond_r_switch); // 1.0/(r_cut - r_switch)
 
 #define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                                                              \
-  if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3)))  continue;
+  if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
     if (evalType==energyEval) {
       for (auto si = terms.begin(); si != terms.end(); si++ ) {

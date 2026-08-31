@@ -209,7 +209,7 @@ void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
   for ( gctools::Vec0<EnergyAnchorRestraint>::iterator cri=this->_Terms.begin();
         cri!=this->_Terms.end(); cri++ ) {
     int I1 = cri->term.i3x1;
-    if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(I1/3)) continue;
+    if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1)) continue;
     localPos[0] = (*nvPosition)[I1+0];
     localPos[1] = (*nvPosition)[I1+1];
     localPos[2] = (*nvPosition)[I1+2];
@@ -272,14 +272,14 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
   gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
   if (evalType==energyEval) {
     for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
-      if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(cri->term.i3x1/3)) continue;
+      if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, cri->term.i3x1)) continue;
       Energy = anchor.energy(cri->term, position, &totalEnergy);
       ANCHOR_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1);
     }
   } else if (evalType==gradientEval) {
     rforce = &(*force)[0];
     for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
-      if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(cri->term.i3x1/3)) continue;
+      if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, cri->term.i3x1)) continue;
       Energy = anchor.gradient(cri->term, position, &totalEnergy, rforce);
       ANCHOR_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1);
     }
@@ -288,7 +288,7 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
     rdvec = &(*dvec)[0];
     rhdvec = &(*hdvec)[0];
     for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
-      if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(cri->term.i3x1/3)) continue;
+      if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, cri->term.i3x1)) continue;
       Energy = anchor.hessian(cri->term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
       ANCHOR_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1);
     }
@@ -321,7 +321,7 @@ void	EnergyAnchorRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermBy
   int idx = 0;
   for ( auto cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++, idx++ ) {
     int I1 = cri->term.i3x1;
-    if (hasActiveAtomMask && !bitvectorActiveAtomMask->testBit(I1/3)) continue;
+    if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1)) continue;
     localPos[0] = pos->getElement(I1+0);
     localPos[1] = pos->getElement(I1+1);
     localPos[2] = pos->getElement(I1+2);

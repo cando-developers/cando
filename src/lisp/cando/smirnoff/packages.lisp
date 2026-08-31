@@ -43,6 +43,7 @@
    #:torsion-parameters #:fourier-terms #:dihedral-parameters #:improper-parameters
    #:nonbond-parameters #:vdw-type #:charge
    #:parameter-cache #:bond-table #:angle-table #:dihedral-table #:improper-table #:nonbond-table
+   #:trained-context-table #:trained-oligomer-table
    #:key-part< #:canonicalize-key #:add-fourier-term
    #:expand-parameter-cache
    #:cached-smirnoff-force-field

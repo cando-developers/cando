@@ -997,6 +997,32 @@ CL_DEFMETHOD void	SparseLargeSquareMatrix_O::walkMatrix(core::T_sp callback)
   }
 }
 
+void SparseLargeSquareMatrix_O::projectActiveCoordinates(
+    core::SimpleBitVector_sp activeCoordinateMask) {
+  if (activeCoordinateMask->length() != this->_Rows) {
+    SIMPLE_ERROR("Active coordinate mask has {} entries but matrix dimension is {}",
+                 activeCoordinateMask->length(), this->_Rows);
+  }
+  // Form P M P. Fixed coordinates receive identity rows so the full-size
+  // factorization remains nonsingular while its projected RHS stays zero.
+  for (uint row = 0; row < this->_Rows; ++row) {
+    uint begin = this->_RowStarts[row];
+    uint end = this->_RowStarts[row + 1];
+    for (uint index = begin; index < end; ++index) {
+      uint col = this->_ColumnForValue[index];
+      if (!activeCoordinateMask->testBit(row) ||
+          !activeCoordinateMask->testBit(col)) {
+        this->_Values[index] = 0.0;
+      }
+    }
+  }
+  for (uint coordinate = 0; coordinate < this->_Rows; ++coordinate) {
+    if (!activeCoordinateMask->testBit(coordinate)) {
+      this->setElement(coordinate, coordinate, 1.0);
+    }
+  }
+}
+
 
 
 vecreal	SparseLargeSquareMatrix_O::element(uint x, uint y)

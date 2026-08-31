@@ -216,7 +216,7 @@ core::T_sp nonbond14_type(bool is14) {
   return chem::_sym_EnergyNonbond14;
 }
 #define NONBOND_APPLY_ATOM_MASK(I1, I2)                                                                                            \
-  if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3)))                \
+  if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2))                                        \
     goto SKIP_term;
 
 /* No periodic boundary conditons/bounding-box is used in this code.
@@ -311,7 +311,7 @@ double template_evaluateUsingTerms(EnergyNonbond14_O *mthis,
   {
 
 #define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                     \
-    if (hasActiveAtomMask && !(bitvectorActiveAtomMask->testBit(I1 / 3) && bitvectorActiveAtomMask->testBit(I2 / 3)))  continue;
+    if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
     if (evalType==energyEval) {
       for (auto si = terms.begin(); si != terms.end(); si++ ) {

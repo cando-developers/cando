@@ -275,11 +275,7 @@ core::T_sp dihedral_type(int in) {
 #undef DIHEDRAL_APPLY_ATOM_MASK
 #define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         && bitvectorActiveAtomMask->testBit(I4/3)) \
-    ) goto SKIP_term;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) goto SKIP_term;
 
 
 
@@ -329,10 +325,7 @@ CL_DEFMETHOD void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessian
     int I3 = di->term.i3x3;
     int I4 = di->term.i3x4;
     if (hasActiveAtomMask &&
-        !(bitvectorActiveAtomMask->testBit(I1/3) &&
-          bitvectorActiveAtomMask->testBit(I2/3) &&
-          bitvectorActiveAtomMask->testBit(I3/3) &&
-          bitvectorActiveAtomMask->testBit(I4/3))) continue;
+        !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) continue;
     localPos[0]  = pos->getElement(I1+0);
     localPos[1]  = pos->getElement(I1+1);
     localPos[2]  = pos->getElement(I1+2);
@@ -744,10 +737,7 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
     int I3 = di->term.i3x3;
     int I4 = di->term.i3x4;
     if (hasActiveAtomMask &&
-        !(bitvectorActiveAtomMask->testBit(I1/3) &&
-          bitvectorActiveAtomMask->testBit(I2/3) &&
-          bitvectorActiveAtomMask->testBit(I3/3) &&
-          bitvectorActiveAtomMask->testBit(I4/3))) continue;
+        !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) continue;
     localPos[0]  = (*nvPosition)[I1+0];
     localPos[1]  = (*nvPosition)[I1+1];
     localPos[2]  = (*nvPosition)[I1+2];
@@ -804,11 +794,7 @@ double	EnergyDihedral_O::evaluateAllComponentSingle(
 #undef DIHEDRAL_APPLY_ATOM_MASK
 #define DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         && bitvectorActiveAtomMask->testBit(I4/3)) \
-    ) goto SKIP_term_and_angle_test;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) goto SKIP_term_and_angle_test;
   MAYBE_SETUP_ACTIVE_ATOM_MASK();
   MAYBE_SETUP_DEBUG_INTERACTIONS(debugInteractions.notnilp());
   double totalEnergy = 0.0;
@@ -834,11 +820,7 @@ if (hasActiveAtomMask \
   Dihedral_Component<NoHessian> dihedral;
 #define KERNEL_DIHEDRAL_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         && bitvectorActiveAtomMask->testBit(I4/3)) \
-    ) continue;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) continue;
   if (evalType==energyEval) {
     for ( di=di_start; di!= di_end; di++ ) {
       KERNEL_DIHEDRAL_APPLY_ATOM_MASK(di->term.i3x1, di->term.i3x2, di->term.i3x3, di->term.i3x4);

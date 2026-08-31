@@ -53,12 +53,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,ChiralRestraint)
 
 #define CHIRAL_RESTRAINT_APPLY_ATOM_MASK(I1,I2,I3,I4) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         && bitvectorActiveAtomMask->testBit(I3/3) \
-         && bitvectorActiveAtomMask->testBit(I4/3) \
-         ) \
-    ) goto SKIP_term;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) goto SKIP_term;
 #define CHIRAL_RESTRAINT_DEBUG_INTERACTIONS(I1,I2,I3,I4) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,kw::_sym_ChiralRestraint, \
@@ -238,10 +233,7 @@ void	EnergyChiralRestraint_O::setupHessianPreconditioner(chem::NVector_sp nvPosi
     int I3 = cri->term.i3x3;
     int I4 = cri->term.i3x4;
     if (hasActiveAtomMask &&
-        !(bitvectorActiveAtomMask->testBit(I1/3) &&
-          bitvectorActiveAtomMask->testBit(I2/3) &&
-          bitvectorActiveAtomMask->testBit(I3/3) &&
-          bitvectorActiveAtomMask->testBit(I4/3))) continue;
+        !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2, I3, I4)) continue;
     localPos[0]  = (*nvPosition)[I1+0];
     localPos[1]  = (*nvPosition)[I1+1];
     localPos[2]  = (*nvPosition)[I1+2];
@@ -320,10 +312,9 @@ double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
   if (evalType==energyEval) {
     for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
       if (hasActiveAtomMask &&
-          !(bitvectorActiveAtomMask->testBit(cri->term.i3x1/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x2/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x3/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x4/3))) continue;
+          !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, cri->term.i3x1,
+                                         cri->term.i3x2, cri->term.i3x3,
+                                         cri->term.i3x4)) continue;
       Energy = chiral.energy(cri->term, position, &totalEnergy);
       CHIRAL_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1, cri->term.i3x2, cri->term.i3x3, cri->term.i3x4);
     }
@@ -331,10 +322,9 @@ double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
     rforce = &(*force)[0];
     for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
       if (hasActiveAtomMask &&
-          !(bitvectorActiveAtomMask->testBit(cri->term.i3x1/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x2/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x3/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x4/3))) continue;
+          !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, cri->term.i3x1,
+                                         cri->term.i3x2, cri->term.i3x3,
+                                         cri->term.i3x4)) continue;
       Energy = chiral.gradient(cri->term, position, &totalEnergy, rforce);
       CHIRAL_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1, cri->term.i3x2, cri->term.i3x3, cri->term.i3x4);
     }
@@ -344,10 +334,9 @@ double EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
     rhdvec = &(*hdvec)[0];
     for ( cri=this->_Terms.begin(); cri!=this->_Terms.end(); cri++ ) {
       if (hasActiveAtomMask &&
-          !(bitvectorActiveAtomMask->testBit(cri->term.i3x1/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x2/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x3/3) &&
-            bitvectorActiveAtomMask->testBit(cri->term.i3x4/3))) continue;
+          !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, cri->term.i3x1,
+                                         cri->term.i3x2, cri->term.i3x3,
+                                         cri->term.i3x4)) continue;
       Energy = chiral.hessian(cri->term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
       CHIRAL_RESTRAINT_DEBUG_INTERACTIONS(cri->term.i3x1, cri->term.i3x2, cri->term.i3x3, cri->term.i3x4);
     }

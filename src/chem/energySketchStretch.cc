@@ -48,10 +48,7 @@ namespace chem {
 
 #define STRETCH_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         ) \
-    ) goto SKIP_term;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) goto SKIP_term;
 #define STRETCH_DEBUG_INTERACTIONS(I1,I2) \
     if (doDebugInteractions) { \
       core::eval::funcall(debugInteractions,EnergySketchStretch_O::static_classSymbol(), \

@@ -630,10 +630,13 @@
    #:piece-atoms
    #:place-all-pieces
    #:train-foldamer-contexts
+   #:train-foldamer-oligomers
+   #:fill-force-field-cache
    #:best-monomer-context-matcher
    #:foldamer-trainer-index
    #:make-blueprint
    #:materialize-blueprint
+   #:materialize-blueprint-state
    #:make-persona
    #:copy-persona
    #:build-refined-persona

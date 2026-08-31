@@ -70,10 +70,7 @@ core::T_sp pbnonbond_type(bool is14) {
 
 #define NONBOND_APPLY_ATOM_MASK(I1,I2) \
 if (hasActiveAtomMask \
-    && !(bitvectorActiveAtomMask->testBit(I1/3) \
-         && bitvectorActiveAtomMask->testBit(I2/3) \
-         ) \
-    ) goto SKIP_term;
+    && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) goto SKIP_term;
 
 #define NONBOND_DEBUG_INTERACTIONS(I1,I2) \
     if (doDebugInteractions) { \
@@ -585,4 +582,3 @@ size_t EnergyPeriodicBoundaryConditionsNonbond_O::runTestCalls(core::T_sp stream
 }
 
 };
-
