@@ -1478,14 +1478,16 @@ CL_DEFMETHOD void EnergyFunction_O::generateIntoGroup(core::T_sp keepInteraction
   // ONE substitution, here, and every use below reads AGGREGATE - the force-field resolution, the
   // molecule loop and the nonbond tables.  Scoping applied at any one of those alone would leave
   // the others walking the full structure, which is exactly what a per-molecule restriction did.
-  core::T_sp matterForPass = scopeAggregate.notnilp() ? scopeAggregate : this->_Matter;
-  if (!gc::IsA<Aggregate_sp>(matterForPass)) {
-    if (scopeAggregate.notnilp()) {
-      SIMPLE_ERROR("scope-aggregate must be an aggregate, got {}", _rep_(scopeAggregate));
-    }
-    SIMPLE_ERROR("generateIntoGroup requires an energy function already defined for an aggregate");
-  }
-  Aggregate_sp aggregate = gc::As_unsafe<Aggregate_sp>(matterForPass);
+  core::T_sp matterForPass = scopeAggregate;
+  if (scopeAggregate.nilp()) {
+    // not provided, so check _Matter and use it.
+    matterForPass = this->_Matter;
+    if (!matterForPass.isA<Aggregate_O>())
+      SIMPLE_ERROR("generateIntoGroup requires an energy function already defined for an aggregate");
+  } else if (!matterForPass.isA<Aggregate_O>())
+    // scopeAggregate was provided but is not actually an aggregate.
+    SIMPLE_ERROR("scope-aggregate must be an aggregate, got {}", _rep_(scopeAggregate));
+  Aggregate_sp aggregate = matterForPass.as_unsafe<Aggregate_O>();
   if (this->_AtomTable->getNumberOfAtoms() == 0) {
     SIMPLE_ERROR("The atom table is empty - call defineForAggregate before generateIntoGroup");
   }   
