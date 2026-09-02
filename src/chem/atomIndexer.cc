@@ -87,7 +87,7 @@ void	AtomIndexer_O::setFromList(core::List_sp sl)
 {
     LOG("Setting from atom names: {}" , sl->asString().c_str()  );
     for ( auto it : sl ) {
-      this->_Names.push_back(CONS_CAR(it));
+      this->_Names.push_back(CONS_CAR(it).as<core::Symbol_O>());
     }
 }
 

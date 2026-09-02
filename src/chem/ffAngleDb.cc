@@ -158,9 +158,9 @@ FFAngle_sp FFAngleDb_O::findTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, che
 FFAngle_sp       match;
 core::Symbol_sp          key;
 core::Symbol_sp		t1, t2, t3;
-    t1 = a1->getType(atomTypes);
-    t2 = a2->getType(atomTypes);
-    t3 = a3->getType(atomTypes);
+    t1 = a1->getType(atomTypes).as<core::Symbol_O>();
+    t2 = a2->getType(atomTypes).as<core::Symbol_O>();
+    t3 = a3->getType(atomTypes).as<core::Symbol_O>();
     key = angleKey(t1,t2,t3);
     core::T_sp parm;
     parm = this->_Parameters->gethash(key);
@@ -200,9 +200,9 @@ double		d, z1, c2, z3, angRad, k;
 core::Symbol_sp		element1, element2, element3;
 core::Symbol_sp		t1, t2, t3;
     LOG("status" );
-    t1 = a1->getType(atomTypes);
-    t2 = a2->getType(atomTypes);
-    t3 = a3->getType(atomTypes);
+    t1 = a1->getType(atomTypes).as<core::Symbol_O>();
+    t2 = a2->getType(atomTypes).as<core::Symbol_O>();
+    t3 = a3->getType(atomTypes).as<core::Symbol_O>();
     LOG("status" );
     // To avoid an std::endless loop of estimating terms just go straight to guess if t1==t3
     if ( t1==t3 ) goto GUESS;

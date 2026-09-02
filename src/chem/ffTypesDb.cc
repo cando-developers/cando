@@ -109,7 +109,7 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
       if ( matches_mv.notnilp() ) {
         LOG("Rule MATCH!!!" );
         if (chem__verbose(2)) core::clasp_write_string(fmt::format("Matched {} type-> {}\n" , _rep_(root) , _rep_((*it)->_Type)));
-        return (*it)->_Type;
+        return (*it)->_Type.as<core::Symbol_O>();
       } else {
         if (chem__verbose(2)) core::clasp_write_string(fmt::format("Did not match {} type-> {}\n" , _rep_(root) , _rep_((*it)->_Type)));
       }

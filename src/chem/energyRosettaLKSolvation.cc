@@ -246,8 +246,7 @@ void EnergyRosettaLKSolvation_O::ensureParameterCache() {
     // Two distinct LK types with identical parameters merging is harmless - they
     // produce the same term.
     for (size_t i = 0; i < n; i++) {
-      core::Symbol_sp type = energyAtoms[i].atom()->getPropertyOrDefault(
-          INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>());
+      core::Symbol_sp type = energyAtoms[i].atom()->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>()).as<core::Symbol_O>();
       // errorp NIL: the next line is written to skip an untyped atom, but find-lksolvation-type
       // defaults errorp to T (chem.lisp:965) and would signal "Could not find LKSolvation
       // parameters for :lk-solvation-atom-type NIL" - naming neither the atom nor its residue -
@@ -316,8 +315,8 @@ bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp 
                                                  const rosetta_lk_solvation_parameters& params) {
   this->_Atom1_enb = a1;
   this->_Atom2_enb = a2;
-  core::Symbol_sp t1 = a1->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>());
-  core::Symbol_sp t2 = a2->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>());
+  core::Symbol_sp t1 = a1->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>()).as<core::Symbol_O>();
+  core::Symbol_sp t2 = a2->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>()).as<core::Symbol_O>();
   ASSERT(forceField && forceField.notnilp());
   // errorp NIL on both: the checks below name the atom and dump its property list, which is what
   // makes an untyped atom findable.  Letting find-lksolvation-type signal instead (its errorp

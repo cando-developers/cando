@@ -457,12 +457,12 @@ CL_DEFMETHOD Aggregate_sp RigidBodyEnergyFunction_O::buildPseudoAggregate(NVecto
       stapleTerm = gc::As<EnergyRigidBodyStaple_sp>(term);
     }
   }
-  Aggregate_sp aggregate = Aggregate_O::make(nil<core::T_O>());
+  Aggregate_sp aggregate = Aggregate_O::make(nil<core::Symbol_O>());
   if (nonbondTerm.boundp()) {
     size_t prevAtomInfoEnd = 0;
     for ( size_t nbodyi = 0; nbodyi < nonbondTerm->_RigidBodyEndAtom->length(); nbodyi++ ) {
-      Molecule_sp molecule = Molecule_O::make(nil<core::T_O>());
-      Residue_sp residue = Residue_O::make(nil<core::T_O>());
+      Molecule_sp molecule = Molecule_O::make(nil<core::Symbol_O>());
+      Residue_sp residue = Residue_O::make(nil<core::Symbol_O>());
       Atom_sp prevAtom = unbound<Atom_O>();
       aggregate->addMatter(molecule);
       molecule->addMatter(residue);
@@ -475,7 +475,7 @@ CL_DEFMETHOD Aggregate_sp RigidBodyEnergyFunction_O::buildPseudoAggregate(NVecto
           Atom_sp atm = gc::As_unsafe<Atom_sp>(atomInfo._Object);
           part_atom = Atom_O::make(atm->getName(),atm->getElement());
         } else {
-          part_atom = Atom_O::make(nil<core::T_O>(),element_C);
+          part_atom = Atom_O::make(nil<core::Symbol_O>(),element_C);
         }
         float x = (*coords)[idx++];
         float y = (*coords)[idx++];
@@ -493,17 +493,17 @@ CL_DEFMETHOD Aggregate_sp RigidBodyEnergyFunction_O::buildPseudoAggregate(NVecto
   }
   if (stapleTerm.boundp()) {
     for ( size_t ii = 0; ii < stapleTerm->_Terms.size(); ii++ ) {
-      Molecule_sp molecule = Molecule_O::make(nil<core::T_O>());
-      Residue_sp residue = Residue_O::make(nil<core::T_O>());
+      Molecule_sp molecule = Molecule_O::make(nil<core::Symbol_O>());
+      Residue_sp residue = Residue_O::make(nil<core::Symbol_O>());
       aggregate->addMatter(molecule);
       molecule->addMatter(residue);
-      Atom_sp atomK = Atom_O::make(nil<core::T_O>(),element_N);
+      Atom_sp atomK = Atom_O::make(nil<core::Symbol_O>(),element_N);
       float xK = (*coords)[idx++];
       float yK = (*coords)[idx++];
       float zK = (*coords)[idx++];
       Vector3 posK( xK, yK, zK );
       atomK->setPosition(posK);
-      Atom_sp atomL = Atom_O::make(nil<core::T_O>(),element_N);
+      Atom_sp atomL = Atom_O::make(nil<core::Symbol_O>(),element_N);
       float xL = (*coords)[idx++];
       float yL = (*coords)[idx++];
       float zL = (*coords)[idx++];

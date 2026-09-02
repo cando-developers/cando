@@ -634,13 +634,13 @@ core::T_mv mol2Read(Mol2File& fIn)
         m->addMatter(res);
         LOG("Setting residue name at index: {}" , si->mId  );
         LOG("Setting residue name to: {}" , si->subst_name.c_str()  );
-        core::T_sp sub_name = chemkw_intern(si->subst_name);
+        core::Symbol_sp sub_name = chemkw_intern(si->subst_name);
         if (chem__verbose(1)) {
           core::clasp_write_string(fmt::format("Setting substructure residue name: {}\n" , _rep_(sub_name)));
         }
         res->setName(sub_name);
         LOG("Setting residue PDB name to: {}" , si->sub_type.c_str()  );
-        core::T_sp sub_type = chemkw_intern(si->sub_type);
+        core::Symbol_sp sub_type = chemkw_intern(si->sub_type);
         res->setPdbName(sub_type);
         if (solventName.notnilp() && (sub_name==solventName || sub_type==solventName))
         {
@@ -781,7 +781,7 @@ core::HashTable_sp	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out
 
         // Figure out if there is a solvent residue and a bounding box
 
-  core::Symbol_sp solventName = nil<core::T_O>();
+  core::Symbol_sp solventName = nil<core::Symbol_O>();
   core::T_sp boundingBox = nil<core::T_O>();
   {
     Loop lMol;

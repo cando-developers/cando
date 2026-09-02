@@ -461,20 +461,20 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
           if ( t1 != "X" ) {
             st1 = chemkw_intern(t1);
           } else {
-            st1 = nil<core::T_O>();
+            st1 = nil<core::Symbol_O>();
           }
           core::Symbol_sp st2;
           if ( t2 != "X" ) {
             st2 = chemkw_intern(t2);
           } else {
-            st2 = nil<core::T_O>();
+            st2 = nil<core::Symbol_O>();
           }
           core::Symbol_sp st3 = chemkw_intern(t3);
           core::Symbol_sp st4;
           if ( t4 != "X" ) {
             st4 = chemkw_intern(t4);
           } else {
-            st4 = nil<core::T_O>();
+            st4 = nil<core::Symbol_O>();
           }
           ffItor->setTypes(st1,st2,st3,st4);
           string parms = line.substr(13,52);
