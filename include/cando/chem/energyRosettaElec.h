@@ -38,6 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #pragma once
 
 #include <stdio.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <set>
@@ -55,6 +56,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 FORWARD(EnergyFunction); // Declares class EnergyFunction_O {} and EnergyFunction_sp
 FORWARD(EnergyRosettaElec);
+FORWARD(RosettaElecTermCache);
 FORWARD(FFNonbondDb);
 FORWARD(AtomTable);
 FORWARD(Matter);
@@ -118,6 +120,45 @@ namespace translate {
 
 namespace chem {
 
+  /*! Shared Rosetta electrostatic coefficients for kqq == 1.0.
+   *
+   * A pair's charge product is still per pair. Everything else in rosetta_elec_term is a
+   * parameter-only linear coefficient, so one prototype can be scaled on the stack during
+   * evaluation instead of storing ten doubles in every pair record.
+   */
+  class RosettaElecTermCache_O : public core::CxxObject_O {
+    LISP_CLASS(chem, ChemPkg, RosettaElecTermCache_O, "RosettaElecTermCache", core::CxxObject_O);
+  public:
+    double _EpsCore = 0.0;
+    double _EpsSolvent = 0.0;
+    double _Rmin = 0.0;
+    double _Rlow = 0.0;
+    double _Rhi = 0.0;
+    double _Rcut = 0.0;
+    rosetta_elec_term _Prototype;
+
+    bool matches(const rosetta_elec_parameters& params) const {
+      return this->_EpsCore == params.eps_core
+          && this->_EpsSolvent == params.eps_solvent
+          && this->_Rmin == params.rmin
+          && this->_Rlow == params.rlow
+          && this->_Rhi == params.rhi
+          && this->_Rcut == params.rcut;
+    }
+  };
+
+  /*! Component-specific electrostatic pair record.
+   *
+   * kqq is the only coefficient that is genuinely per atom pair. Atom pointers are recovered from
+   * the AtomTable when a caller iterates/debugs terms.
+   */
+  struct RosettaElecPair {
+    uint32_t i3x1;
+    uint32_t i3x2;
+    double kqq;
+  };
+  static_assert(sizeof(RosettaElecPair) == 16, "RosettaElecPair must remain compact");
+
 
   class EnergyRosettaElec_O : public EnergyPairlistComponent_O
   {
@@ -132,7 +173,7 @@ namespace chem {
     void initialize();
 
   public:
-    typedef EnergyRosettaElec TermType;
+    typedef RosettaElecPair TermType;
 
   public: // instance variables
     gctools::Vec0<TermType> _Terms;
@@ -143,48 +184,17 @@ namespace chem {
     // Rosetta parameters (used to construct terms)
 
     // ---- hot-path cache -------------------------------------------------
-    // Unlike the nonbond/LK components the elec term is NOT a function of the
-    // atom TYPE pair - it depends on the two atoms' partial charges, which are
-    // per-atom.  But rosetta_elec_term is exactly LINEAR in kqq: every field is
-    // a linear combination of e_rmin/e_rlow/de_rlow/e_rhi/de_rhi with
-    // params-only coefficients, and each of those is proportional to kqq.  So
-    // one prototype term at kqq==1 serves every pair, scaled per pair.
-    core::T_sp              _CachedForAtomTable;
-    gctools::Vec0<double>   _CachedCharge;      // per atom-table index
-    double                  _DQ1Q2Scale = 0.0;  // hoisted global constant
-    rosetta_elec_term       _Prototype;         // term for kqq == 1.0
-    bool                    _PrototypeValid = false;
+    // Electrostatics keep kqq per pair and share the parameter-only spline coefficients.
+    double                  _DQ1Q2Scale = 0.0;
+    RosettaElecTermCache_sp _ParameterCache;
 
   public:
       void ensureParameterCache();
       void invalidateParameterCache() {
-        this->_CachedForAtomTable = nil<core::T_O>();
-        this->_CachedCharge.clear();
-        this->_PrototypeValid = false;
+        this->_ParameterCache = nil<RosettaElecTermCache_O>();
       }
-      // Cached hot-path term add: no symbolValue lookup, no getCharge, and no
-      // rosetta_elec_term construction - that costs three exp() calls, which
-      // are folded into the prototype built once in ensureParameterCache.
       bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
-                            size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
-        if (!this->_PrototypeValid) return false;
-        double kqq = calculate_dQ1Q2(1.0, this->_DQ1Q2Scale,
-                                     this->_CachedCharge[li], this->_CachedCharge[lj]);
-        TermType term;
-        term._Atom1_enb = a1;
-        term._Atom2_enb = a2;
-        term.term = this->_Prototype;      // struct copy - no exp, no spline math
-        term.term.kqq     *= kqq;          // every field is linear in kqq
-        term.term.e_rmin  *= kqq;
-        term.term.aa_low  *= kqq;  term.term.bb_low  *= kqq;
-        term.term.cc_low  *= kqq;  term.term.dd_low  *= kqq;
-        term.term.aa_high *= kqq;  term.term.bb_high *= kqq;
-        term.term.cc_high *= kqq;  term.term.dd_high *= kqq;
-        term.term.i3x1 = (int)i3x1;
-        term.term.i3x2 = (int)i3x2;
-        this->addTerm(term);
-        return true;
-      }
+                            size_t i3x1, size_t i3x2, core::T_sp keepInteraction);
         
   public:
     // In energyRosettaElec.h:
@@ -199,12 +209,9 @@ namespace chem {
 
     bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
                     core::T_sp keepInteraction) {
-      EnergyRosettaElec term;
-      term.defineForAtomPair(_NonbondForceField, a1, a2, i3x1, i3x2,
-                             this->asSmartPtr(), _AtomTypes,
-                             keepInteraction, _Parameters);
-      addTerm(term);
-      return true;  // defineForAtomPair always returns true for elec
+      this->ensureParameterCache();
+      return this->tryAddTermCached(a1, a2, i3x1 / 3, i3x2 / 3,
+                                    i3x1, i3x2, keepInteraction);
     }
 
   public:
@@ -271,7 +278,9 @@ namespace chem {
 
     // No initializer list left - every member it used to initialize now belongs to
     // EnergyPairlistComponent_O, whose own constructor nils them.
-    EnergyRosettaElec_O() {};
+    EnergyRosettaElec_O() :
+        _ParameterCache(nil<RosettaElecTermCache_O>())
+    {};
   };
 
 };

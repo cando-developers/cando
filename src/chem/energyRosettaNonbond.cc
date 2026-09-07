@@ -27,6 +27,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #define DEBUG_LEVEL_NONE
 
 #include <atomic>
+#include <limits>
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyRosettaNonbond.h>
@@ -112,6 +113,13 @@ core::List_sp EnergyRosettaNonbond::encode() const {
 
 void EnergyRosettaNonbond::decode(core::List_sp alist) { SIMPLE_ERROR("Implement decode of EnergyRosettaNonbond"); }
 
+static Atom_sp atomForRosettaNonbondPairIndex(AtomTable_sp atomTable, uint32_t i3) {
+  if ((i3 % 3) != 0 || (i3 / 3) >= atomTable->_Atoms.size())
+    SIMPLE_ERROR("Invalid RosettaNonbond coordinate index {} for an AtomTable with {} atoms",
+                 i3, atomTable->_Atoms.size());
+  return atomTable->_Atoms[i3 / 3].atom();
+}
+
 core::T_sp debug_rosetta_nonbond(double Energy, double x1, double y1, double z1, double x2, double y2, double z2,
                                  const rosetta_nonbond_term& term) {
   double r2 = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
@@ -145,9 +153,18 @@ inline double calculate_dQ1Q2(double electrostaticScale, double electrostaticMod
   return electrostaticScale * electrostaticModifier * charge1 * charge2;
 }
 
+static rosetta_nonbond_term rosettaNonbondTermForPair(const rosetta_nonbond_term& coefficients,
+                                                      uint32_t i3x1,
+                                                      uint32_t i3x2) {
+  rosetta_nonbond_term term = coefficients;
+  term.i3x1 = (int)i3x1;
+  term.i3x2 = (int)i3x2;
+  return term;
+}
+
 template <class MaybeFiniteDiff>
 double template_evaluateUsingTerms(EnergyRosettaNonbond_O* mthis,
-                                   const gctools::Vec0<EnergyRosettaNonbond>& terms,
+                                   const gctools::Vec0<RosettaNonbondPair>& terms,
                                    core::T_sp termSymbol,
                                    ScoringFunction_sp score, NVector_sp nvposition,
                                    core::T_sp energyScale, core::T_sp energyComponents,
@@ -168,31 +185,38 @@ double template_evaluateUsingTerms(EnergyRosettaNonbond_O* mthis,
   DOUBLE* rhdvec = NULL;
   DOUBLE Energy = 0.0;
   KernelType nonbond;
+  const auto& coefficientTerms = mthis->_ParameterCache->_Terms;
 
 #define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                     \
   if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
   if (evalType == energyEval) {
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.energy(params, si->term, position, acc);
-      NONBOND_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      rosetta_nonbond_term term =
+          rosettaNonbondTermForPair(coefficientTerms[si->cacheIndex], si->i3x1, si->i3x2);
+      Energy = nonbond.energy(params, term, position, acc);
+      NONBOND_DEBUG_INTERACTIONS(term);
     }
   } else if (evalType == gradientEval) {
     rforce = &(*force)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.gradient(params, si->term, position, acc, rforce);
-      NONBOND_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      rosetta_nonbond_term term =
+          rosettaNonbondTermForPair(coefficientTerms[si->cacheIndex], si->i3x1, si->i3x2);
+      Energy = nonbond.gradient(params, term, position, acc, rforce);
+      NONBOND_DEBUG_INTERACTIONS(term);
     }
   } else {
     rforce = &(*force)[0];
     rdvec = &(*dvec)[0];
     rhdvec = &(*hdvec)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = nonbond.hessian(params, si->term, position, acc, rforce, NoHessian(), rdvec, rhdvec);
-      NONBOND_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      rosetta_nonbond_term term =
+          rosettaNonbondTermForPair(coefficientTerms[si->cacheIndex], si->i3x1, si->i3x2);
+      Energy = nonbond.hessian(params, term, position, acc, rforce, NoHessian(), rdvec, rhdvec);
+      NONBOND_DEBUG_INTERACTIONS(term);
     }
   }
   maybeSetEnergy(energyComponents, termSymbol, acc[0]);
@@ -228,10 +252,11 @@ bool EnergyRosettaNonbond::defineForAtomPair(core::T_sp forceField, Atom_sp a1, 
 
 void EnergyRosettaNonbond_O::initialize() { this->Base::initialize(); }
 
-void EnergyRosettaNonbond_O::addTerm(const EnergyRosettaNonbond& term) { this->_Terms.push_back(term); }
+void EnergyRosettaNonbond_O::addTerm(const RosettaNonbondPair& term) { this->_Terms.push_back(term); }
 
 void EnergyRosettaNonbond_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw, terms), this->_Terms);
+  // _Terms and _ParameterCache are derived pair-list data. A compact pair only means something
+  // with the transient AtomTable coefficient cache that built it.
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
   node->field(INTERN_(kw, NonbondForceField), this->_NonbondForceField);
   node->field(INTERN_(kw, AtomTypes), this->_AtomTypes);
@@ -240,13 +265,13 @@ void EnergyRosettaNonbond_O::fields(core::Record_sp node) {
 }
 
 void EnergyRosettaNonbond_O::dumpTerms(core::HashTable_sp atomTypes) {
-  gctools::Vec0<EnergyRosettaNonbond>::iterator eni;
+  gctools::Vec0<RosettaNonbondPair>::iterator eni;
   string as1, as2;
   string str1, str2;
   core::clasp_write_string(fmt::format("Dumping {} terms\n", this->_Terms.size()));
   for (eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    as1 = _rep_(eni->_Atom1_enb->getName());
-    as2 = _rep_(eni->_Atom2_enb->getName());
+    as1 = _rep_(atomForRosettaNonbondPairIndex(this->_AtomTable, eni->i3x1)->getName());
+    as2 = _rep_(atomForRosettaNonbondPairIndex(this->_AtomTable, eni->i3x2)->getName());
     if (as1 < as2) {
       str1 = as1;
       str2 = as2;
@@ -260,9 +285,11 @@ void EnergyRosettaNonbond_O::dumpTerms(core::HashTable_sp atomTypes) {
 
 void EnergyRosettaNonbond_O::atomsForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    core::eval::funcall(callback, eni->_Atom1_enb, eni->_Atom2_enb,
-                        core::make_fixnum(eni->term.i3x1),
-                        core::make_fixnum(eni->term.i3x2));
+    core::eval::funcall(callback,
+                        atomForRosettaNonbondPairIndex(this->_AtomTable, eni->i3x1),
+                        atomForRosettaNonbondPairIndex(this->_AtomTable, eni->i3x2),
+                        core::make_fixnum(eni->i3x1),
+                        core::make_fixnum(eni->i3x2));
   }
 }
 
@@ -297,12 +324,17 @@ CL_DEFMETHOD void EnergyRosettaNonbond_O::constructNonbondTermsBetweenMatters(Ma
   this->_AtomTable = energyFunction->_AtomTable;
   this->_AtomTypes = energyFunction->atomTypes();
   this->_NonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
+  this->_PairCacheGeneration = (size_t)-1;
   this->invalidatePairList();
 }
 
 core::T_mv EnergyRosettaNonbond_O::maybeRebuildPairList(core::T_sp tcoordinates) {
   // Shared implementation - see maybeRebuildPairListImpl in pairList.h.  The threshold is still
   // 0.5*(rpairlist - rcut) off _Parameters; only the way the drift is measured has changed.
+  this->ensureParameterCache();
+  if (this->_AtomTable.notnilp()
+      && this->_PairCacheGeneration != this->_AtomTable->_NBGeneration)
+    this->invalidatePairList();
   return maybeRebuildPairListImpl(this, tcoordinates);
 }
 
@@ -310,27 +342,24 @@ void EnergyRosettaNonbond_O::ensureParameterCache() {
   AtomTable_sp at = this->_AtomTable;
   if (at.nilp()) return;
   size_t n = at->getNumberOfAtoms();
-  // The generation test is what makes the shared table safe: the atom-table pointer can be
-  // unchanged while its slots have been rebuilt underneath us.
+
   if (this->_CachedForAtomTable == at
       && this->_CachedNBGeneration == at->_NBGeneration
-      && this->_TypeSlot.size() == n) return;   // still valid
+      && at->nbTypeSlotsValidFor(this->_NonbondForceField)
+      && this->_ParameterCache.notnilp()
+      && this->_ParameterCache->matches(at->_NBGeneration, at->_NBUniq.size() / 2, this->_Parameters))
+    return;
 
   FFNonbondDb_sp db = gc::As<FFNonbondDb_sp>(this->_NonbondForceField);
   auto& energyAtoms = at->getVectorEnergyAtoms();
 
-  // ---- SHARED across every component over this atom table ----
-  //
-  // An atom's nonbond type is a property of the ATOM and the force field, not of the component
-  // asking, so this mapping is identical for all of a blueprint's slot-group components.  Building
-  // it per component cost TWO hash lookups per atom - Atom_O::getType is a gethash (atom.cc:1712)
-  // and chem__FFNonbond_findType is a second one keyed on the type STRING - and every slot group
-  // owns its own copies of these components, each starting with an invalid cache.  That is ~2820
-  // cold starts over ~6700 atoms, ~40 million lookups, measured at 49% of the single-scan fill.
-  // Built once here it is ~6700.
   if (!at->nbTypeSlotsValidFor(this->_NonbondForceField)) {
-    at->_NBTypeSlot.assign(n, -1);
-    at->_NBUniq.clear();
+    // Build off to the side.  A type lookup can signal; the AtomTable must retain either its
+    // complete old table or a complete new one, never a partially filled vector.
+    gctools::Vec0<int> newTypeSlot(true);
+    gctools::Vec0<double> newUniq(true);
+    newTypeSlot.assign(n, -1);
+
     // One lookup per atom, then collapse identical (radius,epsilon) into slots.  Two distinct types
     // with identical parameters merging is harmless - they produce the same term.
     for (size_t i = 0; i < n; i++) {
@@ -341,41 +370,62 @@ void EnergyRosettaNonbond_O::ensureParameterCache() {
       double r = ff->getRadius_Angstroms();
       double e = ff->getEpsilon_kcal();
       int slot = -1;
-      size_t nslots = at->_NBUniq.size() / 2;       // 2 doubles per slot - see energyAtomTable.h
+      size_t nslots = newUniq.size() / 2;           // 2 doubles per slot - see energyAtomTable.h
       for (size_t s = 0; s < nslots; ++s)
-        if (at->_NBUniq[2*s+0] == r && at->_NBUniq[2*s+1] == e) { slot = (int)s; break; }
+        if (newUniq[2*s+0] == r && newUniq[2*s+1] == e) { slot = (int)s; break; }
       if (slot < 0) {
         slot = (int)nslots;
-        at->_NBUniq.push_back(r);
-        at->_NBUniq.push_back(e);
+        newUniq.push_back(r);
+        newUniq.push_back(e);
       }
-      at->_NBTypeSlot[i] = slot;
+      newTypeSlot[i] = slot;
     }
+    at->_NBTypeSlot.swap(newTypeSlot);
+    at->_NBUniq.swap(newUniq);
+    at->_NBTermCaches.clear();
     at->_NBCachedForceField = this->_NonbondForceField;
     at->_NBGeneration++;   // every rebuild is a new generation, so stale copies are detectable
   }
 
-  // Copy rather than alias, so the accessors in the header keep indexing this->_TypeSlot
-  // unchanged.  n ints per component is nothing next to the lookups just avoided.  Element-wise
-  // rather than whole-vector assignment - gctools::Vec0 is not std::vector.
-  this->_TypeSlot.assign(n, -1);
-  for (size_t i = 0; i < n; ++i) this->_TypeSlot[i] = at->_NBTypeSlot[i];
-
-  // ---- PER COMPONENT: the term cache depends on _Parameters, which is NOT shared ----
   size_t nt = at->_NBUniq.size() / 2;      // 2 doubles per slot
-  this->_NTypeSlots = nt;
-  this->_TermCache.assign(nt*nt, rosetta_nonbond_term());
-  this->_TermCacheValid.assign(nt*nt, 0);
+
+  // A small linear bank is enough: there are normally one or two Rosetta nonbond parameter
+  // variants over a blueprint.  Hashing doubles would add machinery without saving work here.
+  for (auto& cache : at->_NBTermCaches) {
+    if (cache.notnilp() && cache->matches(at->_NBGeneration, nt, this->_Parameters)) {
+      this->_ParameterCache = cache;
+      this->_CachedForAtomTable = at;
+      this->_CachedNBGeneration = at->_NBGeneration;
+      return;
+    }
+  }
+
+  if (nt != 0 && nt > std::numeric_limits<size_t>::max() / nt)
+    SIMPLE_ERROR("Too many RosettaNonbond type slots ({}) for a square coefficient table", nt);
+
+  size_t numberOfTerms = nt * nt;
+  auto cache = gctools::GC<RosettaNonbondTermCache_O>::allocate();
+  cache->_Generation = at->_NBGeneration;
+  cache->_NTypeSlots = nt;
+  cache->_RSwitch = this->_Parameters.rswitch;
+  cache->_RCut = this->_Parameters.rcut;
+  cache->_Terms.reserve(numberOfTerms);
+  cache->_Terms.resize(numberOfTerms);
+  cache->_TermValid.reserve(numberOfTerms);
+  cache->_TermValid.resize(numberOfTerms);
+  for (size_t k = 0; k < numberOfTerms; ++k) cache->_TermValid[k] = 0;
+
   for (size_t s1 = 0; s1 < nt; ++s1)
     for (size_t s2 = 0; s2 < nt; ++s2) {
       double parmA, parmC;
       if (combineNonbondParams(at->_NBUniq[2*s1+0], at->_NBUniq[2*s1+1],
                                at->_NBUniq[2*s2+0], at->_NBUniq[2*s2+1], parmA, parmC)) {
-        this->_TermCache[s1*nt + s2] =
+        cache->_Terms[s1*nt + s2] =
             rosetta_nonbond_term(this->_Parameters, parmA, parmC, 0, 0);
-        this->_TermCacheValid[s1*nt + s2] = 1;
+        cache->_TermValid[s1*nt + s2] = 1;
       }
     }
+
   // Some atom types carry no Lennard-Jones parameters at all: AMBER gives HO
   // and HW radius 0 and epsilon 0, putting all of the sterics on the heavy
   // atom they are bonded to.  combineNonbondParams refuses those pairs because
@@ -392,18 +442,18 @@ void EnergyRosettaNonbond_O::ensureParameterCache() {
   {
     static std::atomic<bool> s_reported{false};
     size_t invalid = 0;
-    for (size_t k = 0; k < nt*nt; ++k) if (!this->_TermCacheValid[k]) ++invalid;
+    for (size_t k = 0; k < nt*nt; ++k) if (!cache->_TermValid[k]) ++invalid;
     if (invalid && !s_reported.exchange(true)) {
       fmt::print(stderr, "RosettaNonbond: {} of {} type pairs have zero Lennard-Jones parameters"
                          " - skipped, each contributes exactly zero\n", invalid, nt*nt);
       size_t zeroTypes = 0;
       for (size_t s = 0; s < nt; ++s) {
         size_t bad = 0;
-        for (size_t s2 = 0; s2 < nt; ++s2) if (!this->_TermCacheValid[s*nt + s2]) ++bad;
+        for (size_t s2 = 0; s2 < nt; ++s2) if (!cache->_TermValid[s*nt + s2]) ++bad;
         if (bad != nt) continue;                          // this slot combines with nothing
         ++zeroTypes;
         for (size_t i = 0; i < n; i++) {
-          if (this->_TypeSlot[i] == (int)s) {
+          if (at->_NBTypeSlot[i] == (int)s) {
             core::T_sp type = energyAtoms[i].atom()->getType(this->_AtomTypes);
             fmt::print(stderr, "   slot {}: radius={:.4f} epsilon={:.4f} type={} example-atom={}\n",
                        s, at->_NBUniq[2*s+0], at->_NBUniq[2*s+1],
@@ -420,14 +470,61 @@ void EnergyRosettaNonbond_O::ensureParameterCache() {
                    zeroTypes, accounted, invalid);
     }
   }
+
+  // Publish only after the immutable table is complete.  No lock is required: one worker owns
+  // this AtomTable and its blueprint.  Push NIL first, then assign through the GC-aware slot.
+  at->_NBTermCaches.push_back(nil<RosettaNonbondTermCache_O>());
+  at->_NBTermCaches.back() = cache;
+  this->_ParameterCache = cache;
   this->_CachedForAtomTable = at;
   this->_CachedNBGeneration = at->_NBGeneration;
 }
 
+bool EnergyRosettaNonbond_O::tryAddTermCached(Atom_sp a1, Atom_sp a2,
+                                              size_t li, size_t lj,
+                                              size_t i3x1, size_t i3x2,
+                                              core::T_sp keepInteraction) {
+  (void)a1;
+  (void)a2;
+  (void)keepInteraction;
+  AtomTable_sp at = this->_AtomTable;
+  if (at.nilp()) SIMPLE_ERROR("Cannot add a RosettaNonbond pair without an AtomTable");
+  if (this->_ParameterCache.nilp())
+    SIMPLE_ERROR("RosettaNonbond parameter cache was not prepared before adding pairs");
+  if (li >= at->_NBTypeSlot.size() || lj >= at->_NBTypeSlot.size())
+    SIMPLE_ERROR("RosettaNonbond atom-table indices {},{} are out of range for {} atoms",
+                 li, lj, at->_NBTypeSlot.size());
+  int s1 = at->_NBTypeSlot[li];
+  int s2 = at->_NBTypeSlot[lj];
+  if (s1 < 0 || s2 < 0) return false;     // preserve defineForAtomPair's missing-type skip
+  size_t k = (size_t)s1 * this->_ParameterCache->_NTypeSlots + (size_t)s2;
+  if (k >= this->_ParameterCache->_Terms.size())
+    SIMPLE_ERROR("RosettaNonbond coefficient index {} for slot pair {},{} is outside {} terms",
+                 k, s1, s2, this->_ParameterCache->_Terms.size());
+  if (!this->_ParameterCache->_TermValid[k]) return false;  // zero LJ pair, exact zero energy
+  if (i3x1 > (size_t)std::numeric_limits<int32_t>::max()
+      || i3x2 > (size_t)std::numeric_limits<int32_t>::max()
+      || k > (size_t)std::numeric_limits<uint32_t>::max())
+    SIMPLE_ERROR("RosettaNonbond compact pair ({},{},{}) exceeds its 32-bit representation",
+                 i3x1, i3x2, k);
+  this->addTerm(RosettaNonbondPair{(uint32_t)i3x1, (uint32_t)i3x2, (uint32_t)k});
+  return true;
+}
 
+
+
+core::T_mv EnergyRosettaNonbond_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {
+  this->ensureParameterCache();
+  core::T_mv result = rebuildPairListBetweenMattersImpl(this, tcoordinates);
+  this->_PairCacheGeneration = this->_AtomTable->_NBGeneration;
+  return result;
+}
 
 core::T_mv EnergyRosettaNonbond_O::rebuildPairList(core::T_sp tcoordinates) {
-  return rebuildPairListImpl(this, tcoordinates);
+  this->ensureParameterCache();
+  core::T_mv result = rebuildPairListImpl(this, tcoordinates);
+  this->_PairCacheGeneration = this->_AtomTable->_NBGeneration;
+  return result;
 }
 
 // Evaluate
@@ -449,6 +546,7 @@ double EnergyRosettaNonbond_O::evaluateAllComponent(ScoringFunction_sp score,
   double energy = 0.0;
   size_t fails = 0;
   size_t index = 0;
+  this->ensureParameterCache();
   this->maybeRebuildPairList(pos);
   energy += template_evaluateUsingTerms<NoFiniteDifference>(this, this->_Terms, _sym_energyRosettaNonbond,
                                                             score, pos, energyScale, energyComponents, calcForce, force,

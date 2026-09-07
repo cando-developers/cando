@@ -38,6 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #pragma once
 
 #include <stdio.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <set>
@@ -55,6 +56,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
   FORWARD(EnergyFunction); // Declares class EnergyFunction_O {} and EnergyFunction_sp
   FORWARD(EnergyRosettaNonbond);
+  FORWARD(RosettaNonbondTermCache);
   FORWARD(FFNonbondDb);
   FORWARD(AtomTable);
   FORWARD(Matter);
@@ -114,6 +116,42 @@ namespace translate {
 
 namespace chem {
 
+/*! Shared Rosetta nonbond coefficients for one AtomTable NB slot generation.
+ *
+ * The table is keyed by the shared radius/epsilon slots on AtomTable plus the coefficient-shaping
+ * parameters. rep_weight is intentionally not part of the key because it is applied at evaluation
+ * time and does not enter rosetta_nonbond_term construction.
+ */
+class RosettaNonbondTermCache_O : public core::CxxObject_O {
+  LISP_CLASS(chem, ChemPkg, RosettaNonbondTermCache_O, "RosettaNonbondTermCache", core::CxxObject_O);
+public:
+  size_t _Generation = 0;
+  size_t _NTypeSlots = 0;
+  double _RSwitch = 0.0;
+  double _RCut = 0.0;
+  gctools::Vec0<rosetta_nonbond_term> _Terms;
+  gctools::Vec0<char> _TermValid;
+
+  RosettaNonbondTermCache_O() : _Terms(true), _TermValid(true) {}
+
+  bool matches(size_t generation, size_t nTypeSlots,
+               const rosetta_nonbond_parameters& params) const {
+    return this->_Generation == generation
+        && this->_NTypeSlots == nTypeSlots
+        && this->_RSwitch == params.rswitch
+        && this->_RCut == params.rcut;
+  }
+};
+
+/*! Component-specific Rosetta nonbond pair record.
+ */
+struct RosettaNonbondPair {
+  uint32_t i3x1;
+  uint32_t i3x2;
+  uint32_t cacheIndex;
+};
+static_assert(sizeof(RosettaNonbondPair) == 12, "RosettaNonbondPair must remain a compact triple");
+
 // vdW combining rule: two atoms' (radius,epsilon) -> Lennard-Jones A/C.
 // Returns false when the pair contributes nothing (epsilon == 0, e.g. polar H).
 inline bool combineNonbondParams(double r1, double e1, double r2, double e2,
@@ -140,7 +178,7 @@ public: // virtual functions inherited from Object
   void initialize();
 
 public:
-  typedef EnergyRosettaNonbond TermType;
+  typedef RosettaNonbondPair TermType;
 
 public: // instance variables
   gctools::Vec0<TermType> _Terms;
@@ -152,15 +190,13 @@ public: // instance variables
   // Rosetta parameters (used to construct terms)
   rosetta_nonbond_parameters      _Parameters;
   core::T_sp                      _CachedForAtomTable;
-  //! Which generation of the atom table's SHARED _NBTypeSlot this component copied from.
-  //! (size_t)-1 is "never copied" - see AtomTable_O::_NBGeneration for why the atom-table pointer
+  //! Which generation of the atom table's SHARED _NBTypeSlot this component uses.
+  //! (size_t)-1 is "never cached" - see AtomTable_O::_NBGeneration for why the atom-table pointer
   //! alone cannot answer this.
   size_t                          _CachedNBGeneration = (size_t)-1;
 
-  gctools::Vec0<int>                    _TypeSlot;        // atom index -> slot, -1 = no type
-  size_t                                _NTypeSlots = 0;
-  gctools::Vec0<rosetta_nonbond_term>   _TermCache;       // _NTypeSlots^2, row-major
-  gctools::Vec0<char>                   _TermCacheValid;
+  RosettaNonbondTermCache_sp            _ParameterCache;
+  size_t                                _PairCacheGeneration = (size_t)-1;
 
 public:
   CL_DEFMETHOD double getLastFaRep() const { return this->_LastFaRep; };
@@ -169,31 +205,15 @@ public:
   void invalidateParameterCache() {
     this->_CachedForAtomTable = nil<core::T_O>();
     this->_CachedNBGeneration = (size_t)-1;
-    this->_TypeSlot.clear();
-    this->_TermCache.clear();
-    this->_TermCacheValid.clear();
-    this->_NTypeSlots = 0;
+    this->_ParameterCache = nil<RosettaNonbondTermCache_O>();
+    this->_PairCacheGeneration = (size_t)-1;
   }
 
   // Cached hot-path term add: no getType, no find-type, no gethash,
   // and no rosetta_nonbond_term construction — the term for this type
   // pair was precomputed in ensureParameterCache.
   bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
-                        size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
-    int s1 = this->_TypeSlot[li];
-    int s2 = this->_TypeSlot[lj];
-    if (s1 < 0 || s2 < 0) return false;
-    size_t k = (size_t)s1 * this->_NTypeSlots + (size_t)s2;
-    if (!this->_TermCacheValid[k]) return false;
-    TermType term;
-    term._Atom1_enb = a1; 
-    term._Atom2_enb = a2;
-    term.term = this->_TermCache[k];     // struct copy — no pow, no arithmetic
-    term.term.i3x1 = (int)i3x1;          // only the geometry-dependent fields
-    term.term.i3x2 = (int)i3x2;
-    this->addTerm(term);
-    return true;
-  }
+                        size_t i3x1, size_t i3x2, core::T_sp keepInteraction);
   
 public:
   virtual std::string implementation_details() const;
@@ -219,14 +239,9 @@ public: // for building the pairList
 
   bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
                   core::T_sp keepInteraction) {
-    EnergyRosettaNonbond term;
-    if (term.defineForAtomPair(_NonbondForceField, a1, a2, i3x1, i3x2,
-                               this->asSmartPtr(), _AtomTypes,
-                               keepInteraction, _Parameters)) {
-      addTerm(term);
-      return true;
-    }
-    return false;
+    this->ensureParameterCache();
+    return this->tryAddTermCached(a1, a2, i3x1 / 3, i3x2 / 3,
+                                  i3x1, i3x2, keepInteraction);
   }
 
 public:
@@ -281,7 +296,8 @@ public:
   EnergyRosettaNonbond_O(const EnergyRosettaNonbond_O& ss); //!< Copy constructor
 
   EnergyRosettaNonbond_O() :
-      _CachedForAtomTable(nil<core::T_O>())
+      _CachedForAtomTable(nil<core::T_O>()),
+      _ParameterCache(nil<RosettaNonbondTermCache_O>())
   {};
 };
 

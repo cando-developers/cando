@@ -26,6 +26,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 /* -^- */
 #define DEBUG_LEVEL_NONE
 
+#include <limits>
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyRosettaElec.h>
@@ -139,9 +140,36 @@ struct NoFiniteDifference {
                                         bool debugForce) {}
 };
 
+static rosetta_elec_term scaledRosettaElecTermForPair(const rosetta_elec_term& base,
+                                                      double kqq,
+                                                      uint32_t i3x1,
+                                                      uint32_t i3x2) {
+  rosetta_elec_term term = base;
+  term.kqq *= kqq;
+  term.e_rmin *= kqq;
+  term.aa_low *= kqq;
+  term.bb_low *= kqq;
+  term.cc_low *= kqq;
+  term.dd_low *= kqq;
+  term.aa_high *= kqq;
+  term.bb_high *= kqq;
+  term.cc_high *= kqq;
+  term.dd_high *= kqq;
+  term.i3x1 = (int)i3x1;
+  term.i3x2 = (int)i3x2;
+  return term;
+}
+
+static Atom_sp atomForRosettaElecPairIndex(AtomTable_sp atomTable, uint32_t i3) {
+  if ((i3 % 3) != 0 || (i3 / 3) >= atomTable->_Atoms.size())
+    SIMPLE_ERROR("Invalid RosettaElec coordinate index {} for an AtomTable with {} atoms",
+                 i3, atomTable->_Atoms.size());
+  return atomTable->_Atoms[i3 / 3].atom();
+}
+
 template <class MaybeFiniteDiff>
 double template_evaluateUsingTerms(EnergyRosettaElec_O* mthis,
-                                   const gctools::Vec0<EnergyRosettaElec>& terms,
+                                   const gctools::Vec0<RosettaElecPair>& terms,
                                    core::T_sp termSymbol,
                                    ScoringFunction_sp score, NVector_sp nvposition,
                                    core::T_sp energyScale, core::T_sp energyComponents,
@@ -160,31 +188,35 @@ double template_evaluateUsingTerms(EnergyRosettaElec_O* mthis,
   DOUBLE* rhdvec = NULL;
   DOUBLE Energy = 0.0;
   Rosetta_Elec_Cutoff<NoHessian> elec;
+  const auto& coefficients = mthis->_ParameterCache->_Prototype;
 
 #define KERNEL_TERM_ELEC_APPLY_ATOM_MASK(I1, I2)                                                                  \
   if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
   if (evalType == energyEval) {
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_ELEC_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = elec.energy(params, si->term, position, &totalEnergy);
-      ELEC_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_ELEC_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      rosetta_elec_term term = scaledRosettaElecTermForPair(coefficients, si->kqq, si->i3x1, si->i3x2);
+      Energy = elec.energy(params, term, position, &totalEnergy);
+      ELEC_DEBUG_INTERACTIONS(term);
     }
   } else if (evalType == gradientEval) {
     rforce = &(*force)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_ELEC_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = elec.gradient(params, si->term, position, &totalEnergy, rforce);
-      ELEC_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_ELEC_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      rosetta_elec_term term = scaledRosettaElecTermForPair(coefficients, si->kqq, si->i3x1, si->i3x2);
+      Energy = elec.gradient(params, term, position, &totalEnergy, rforce);
+      ELEC_DEBUG_INTERACTIONS(term);
     }
   } else {
     rforce = &(*force)[0];
     rdvec = &(*dvec)[0];
     rhdvec = &(*hdvec)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_ELEC_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = elec.hessian(params, si->term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
-      ELEC_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_ELEC_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      rosetta_elec_term term = scaledRosettaElecTermForPair(coefficients, si->kqq, si->i3x1, si->i3x2);
+      Energy = elec.hessian(params, term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
+      ELEC_DEBUG_INTERACTIONS(term);
     }
   }
   maybeSetEnergy(energyComponents, termSymbol, totalEnergy);
@@ -217,8 +249,6 @@ void EnergyRosettaElec_O::initialize() { this->Base::initialize(); }
 void EnergyRosettaElec_O::ensureParameterCache() {
   AtomTable_sp at = this->_AtomTable;
   if (at.nilp()) return;
-  size_t n = at->getNumberOfAtoms();
-  if (this->_CachedForAtomTable == at && this->_CachedCharge.size() == n) return;  // still valid
 
   // Hoisted out of the per-pair path: defineForAtomPair did this symbolValue
   // lookup and boxed-number unbox on EVERY atom pair.
@@ -226,25 +256,56 @@ void EnergyRosettaElec_O::ensureParameterCache() {
       gc::As<core::Number_sp>(_sym_STARamber_charge_conversion_18_DOT_2223STAR->symbolValue()));
   this->_DQ1Q2Scale = conv * conv;
 
-  this->_CachedCharge.assign(n, 0.0);
-  auto& energyAtoms = at->getVectorEnergyAtoms();
-  for (size_t i = 0; i < n; i++) {
-    this->_CachedCharge[i] = energyAtoms[i].atom()->getCharge();
+  for (auto& cache : at->_ElecTermCaches) {
+    if (cache.notnilp() && cache->matches(this->_Parameters)) {
+      this->_ParameterCache = cache;
+      return;
+    }
   }
 
-  // rosetta_elec_term is exactly linear in kqq - every field is a linear
-  // combination of e_rmin/e_rlow/de_rlow/e_rhi/de_rhi with params-only
-  // coefficients, and each of those is proportional to kqq.  So one prototype
-  // at kqq==1 serves every pair and the three exp() calls happen once.
-  this->_Prototype = rosetta_elec_term(this->_Parameters, 1.0, 0, 0);
-  this->_PrototypeValid = true;
-  this->_CachedForAtomTable = at;
+  auto cache = gctools::GC<RosettaElecTermCache_O>::allocate();
+  cache->_EpsCore = this->_Parameters.eps_core;
+  cache->_EpsSolvent = this->_Parameters.eps_solvent;
+  cache->_Rmin = this->_Parameters.rmin;
+  cache->_Rlow = this->_Parameters.rlow;
+  cache->_Rhi = this->_Parameters.rhi;
+  cache->_Rcut = this->_Parameters.rcut;
+  cache->_Prototype = rosetta_elec_term(this->_Parameters, 1.0, 0, 0);
+
+  at->_ElecTermCaches.push_back(nil<RosettaElecTermCache_O>());
+  at->_ElecTermCaches.back() = cache;
+  this->_ParameterCache = cache;
 }
 
-void EnergyRosettaElec_O::addTerm(const EnergyRosettaElec& term) { this->_Terms.push_back(term); }
+void EnergyRosettaElec_O::addTerm(const RosettaElecPair& term) { this->_Terms.push_back(term); }
+
+bool EnergyRosettaElec_O::tryAddTermCached(Atom_sp a1, Atom_sp a2,
+                                           size_t li, size_t lj,
+                                           size_t i3x1, size_t i3x2,
+                                           core::T_sp keepInteraction) {
+  (void)a1;
+  (void)a2;
+  (void)keepInteraction;
+  AtomTable_sp at = this->_AtomTable;
+  if (at.nilp()) SIMPLE_ERROR("Cannot add a RosettaElec pair without an AtomTable");
+  if (this->_ParameterCache.nilp())
+    SIMPLE_ERROR("RosettaElec parameter cache was not prepared before adding pairs");
+  if (li >= at->_Atoms.size() || lj >= at->_Atoms.size())
+    SIMPLE_ERROR("RosettaElec atom-table indices {},{} are out of range for {} atoms",
+                 li, lj, at->_Atoms.size());
+  if (i3x1 > (size_t)std::numeric_limits<int32_t>::max()
+      || i3x2 > (size_t)std::numeric_limits<int32_t>::max())
+    SIMPLE_ERROR("RosettaElec compact pair ({},{}) exceeds its 32-bit representation",
+                 i3x1, i3x2);
+  double kqq = calculate_dQ1Q2(1.0, this->_DQ1Q2Scale,
+                               a1->getCharge(), a2->getCharge());
+  this->addTerm(RosettaElecPair{(uint32_t)i3x1, (uint32_t)i3x2, kqq});
+  return true;
+}
 
 void EnergyRosettaElec_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw, terms), this->_Terms);
+  // _Terms and _ParameterCache are derived pair-list data. A compact pair only means something
+  // with the transient AtomTable coefficient cache that built it.
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
   node->field(INTERN_(kw, NonbondForceField), this->_NonbondForceField);
   node->field(INTERN_(kw, AtomTypes), this->_AtomTypes);
@@ -257,21 +318,22 @@ void EnergyRosettaElec_O::fields(core::Record_sp node) {
  */
 void EnergyRosettaElec_O::atomsForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    core::eval::funcall(callback, eni->_Atom1_enb,
-                          eni->_Atom2_enb,
-                          core::make_fixnum(eni->term.i3x1),
-                          core::make_fixnum(eni->term.i3x2));
+    core::eval::funcall(callback,
+                        atomForRosettaElecPairIndex(this->_AtomTable, eni->i3x1),
+                        atomForRosettaElecPairIndex(this->_AtomTable, eni->i3x2),
+                        core::make_fixnum(eni->i3x1),
+                        core::make_fixnum(eni->i3x2));
   }
 }
 
 void EnergyRosettaElec_O::dumpTerms(core::HashTable_sp atomTypes) {
-  gctools::Vec0<EnergyRosettaElec>::iterator eni;
+  gctools::Vec0<RosettaElecPair>::iterator eni;
   string as1, as2;
   string str1, str2;
   core::clasp_write_string(fmt::format("Dumping {} terms\n", this->_Terms.size()));
   for (eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    as1 = _rep_(eni->_Atom1_enb->getName());
-    as2 = _rep_(eni->_Atom2_enb->getName());
+    as1 = _rep_(atomForRosettaElecPairIndex(this->_AtomTable, eni->i3x1)->getName());
+    as2 = _rep_(atomForRosettaElecPairIndex(this->_AtomTable, eni->i3x2)->getName());
     if (as1 < as2) {
       str1 = as1;
       str2 = as2;
@@ -285,9 +347,11 @@ void EnergyRosettaElec_O::dumpTerms(core::HashTable_sp atomTypes) {
 
 void EnergyRosettaElec_O::callForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    core::eval::funcall(callback, eni->_Atom1_enb, eni->_Atom2_enb,
-                        core::make_fixnum(eni->term.i3x1),
-                        core::make_fixnum(eni->term.i3x2));
+    core::eval::funcall(callback,
+                        atomForRosettaElecPairIndex(this->_AtomTable, eni->i3x1),
+                        atomForRosettaElecPairIndex(this->_AtomTable, eni->i3x2),
+                        core::make_fixnum(eni->i3x1),
+                        core::make_fixnum(eni->i3x2));
   }
 }
 
@@ -305,6 +369,7 @@ EnergyComponent_sp EnergyRosettaElec_O::copyFilter(core::T_sp keepInteractionFac
   copy->_Parameters.do_apply(setupAcc);
   copy->invalidatePairList();
   copy->_Terms.clear();
+  copy->invalidateParameterCache();
   return copy;
 }
 
@@ -319,82 +384,24 @@ CL_DEFMETHOD void EnergyRosettaElec_O::constructNonbondTermsBetweenMatters(Matte
   this->_AtomTable = energyFunction->_AtomTable;
   this->_AtomTypes = energyFunction->atomTypes();
   this->_NonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
+  this->invalidateParameterCache();
   this->invalidatePairList();
 }
 
 core::T_mv EnergyRosettaElec_O::rebuildPairListBetweenMatters(core::T_sp tcoordinates) {
-  core::T_sp keepInteractionFactory = this->_KeepInteractionFactory;
-  if (keepInteractionFactory.nilp()) return Values0<core::T_O>();
-  NVector_sp coords = gc::As<NVector_sp>(tcoordinates);
-  core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory, EnergyRosettaElec_O::staticClass());
-  Matter_sp mat1 = gc::As<Matter_sp>(this->_Matter1);
-  Matter_sp mat2 = gc::As<Matter_sp>(this->_Matter2);
-  bool hasKeepInteractionFunction = gc::IsA<core::Function_sp>(keepInteraction);
-  rosetta_elec_parameters& params = this->_Parameters;
-  double rpairlist2 = params.rpairlist * params.rpairlist;
-  auto atomTable = this->_AtomTable;
-  size_t interactionsKept = 0;
-  size_t interactionsDiscarded = 0;
-  {
-    this->_Terms.clear();
-    Loop lMat1(mat1, ATOMS);
-    while (lMat1.advanceLoopAndProcess()) {
-      Atom_sp a1 = lMat1.getAtom();
-      size_t i3x1 = atomTable->getCoordinateIndexTimes3(a1);
-      Vector3 v1(coords, i3x1, Safe());
-      Loop lMat2(mat2, ATOMS);
-      while (lMat2.advanceLoopAndProcess()) {
-        Atom_sp a2 = lMat2.getAtom();
-        size_t i3x2 = atomTable->getCoordinateIndexTimes3(a2);
-        Vector3 v2(coords, i3x2, Safe());
-        Vector3 vdiff = v1 - v2;
-        double dist2 = vdiff.dotProduct(vdiff);
-        if (dist2 < rpairlist2) {
-          if (hasKeepInteractionFunction) {
-            core::T_sp result = core::eval::funcall(keepInteraction, a1, a2,
-                                                    core::make_fixnum(i3x1),
-                                                    core::make_fixnum(i3x2));
-            if (result.notnilp()) {
-              EnergyRosettaElec term;
-              term.defineForAtomPair(this->_NonbondForceField, a1, a2,
-                                     i3x1, i3x2,
-                                     this->asSmartPtr(),
-                                     this->_AtomTypes,
-                                     keepInteraction,
-                                     params);
-              this->addTerm(term);
-              ++interactionsKept;
-            } else {
-              ++interactionsDiscarded;
-            }
-          } else {
-            EnergyRosettaElec term;
-            term.defineForAtomPair(this->_NonbondForceField, a1, a2,
-                                   i3x1, i3x2,
-                                   this->asSmartPtr(),
-                                   this->_AtomTypes,
-                                   keepInteraction,
-                                   params);
-            this->addTerm(term);
-            ++interactionsKept;
-          }
-        }
-      }
-    }
-  }
-  size_t totalInteractions = interactionsKept + interactionsDiscarded;
-  return Values(core::clasp_make_fixnum(interactionsKept),
-                core::clasp_make_fixnum(interactionsDiscarded),
-                core::clasp_make_fixnum(totalInteractions));
+  this->ensureParameterCache();
+  return rebuildPairListBetweenMattersImpl(this, tcoordinates);
 }
 
 core::T_mv EnergyRosettaElec_O::maybeRebuildPairList(core::T_sp tcoordinates) {
   // Shared implementation - see maybeRebuildPairListImpl in pairList.h.
+  this->ensureParameterCache();
   return maybeRebuildPairListImpl(this, tcoordinates);
 }
 
 core::T_mv EnergyRosettaElec_O::rebuildPairList(core::T_sp tcoordinates) {
 #if 1
+  this->ensureParameterCache();
   return rebuildPairListImpl(this, tcoordinates);
 #else
   this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
@@ -495,6 +502,7 @@ double EnergyRosettaElec_O::evaluateAllComponent(ScoringFunction_sp score,
   double energy = 0.0;
   size_t fails = 0;
   size_t index = 0;
+  this->ensureParameterCache();
   this->maybeRebuildPairList(pos);
   energy += template_evaluateUsingTerms<NoFiniteDifference>(this, this->_Terms, _sym_energyRosettaElec,
                                                             score, pos, energyScale, energyComponents, calcForce, force,

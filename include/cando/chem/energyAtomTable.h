@@ -70,6 +70,8 @@ SMART(ForceField);
 SMART(Matter);
 SMART(FFNonbondDb);
 SMART(RosettaLKTermCache);
+SMART(RosettaNonbondTermCache);
+SMART(RosettaElecTermCache);
 
 /*! Store a pointer to an Atom and an index into the coordinate vector array
  * which stores coordinates in a 1D array (x1,y1,z1,x2,y2,z2,x3,...,xN,yN,zN)
@@ -221,8 +223,9 @@ public:
    * friends), n^2/2 times during a pair scan, and the guard returns immediately every time after
    * the first.  All of the cost is in the cold starts, and sharing is what removes them.
    *
-   * Only these nonbond SLOTS are shared.  Unlike LK, each nonbond component still builds its own
-   * _TermCache, which depends on its own _Parameters and is O(distinct-types^2) - a handful.
+   * The immutable coefficient tables are shared as well.  The small cache bank permits multiple
+   * nonbond smoothing-parameter variants over the same type-slot generation; a component keeps only
+   * a pointer to the matching table and compact (i3x1,i3x2,cache-index) pair records.
    *
    * INVALIDATION: same contract as the LK table.  Retyping an atom after the first component has
    * cached will NOT be noticed - call invalidateNBTypeSlots() if that ever happens.
@@ -234,6 +237,21 @@ public:
   core::T_sp                            _NBCachedForceField;
   //! Bumped on rebuild AND on invalidation - see _LKGeneration for why a boolean cannot do this.
   size_t                                _NBGeneration = 0;
+  /*! Immutable Rosetta nonbond coefficient caches for this NB slot generation.
+   *
+   * The atom-type slots are shared above.  These tables add the second half of that sharing:
+   * each slot-group component keeps compact pair records, while the repeated type-pair
+   * coefficients live here once per (rswitch, rcut) parameter variant.
+   */
+  gctools::Vec0<RosettaNonbondTermCache_sp> _NBTermCaches;
+
+  /*! Immutable Rosetta electrostatic coefficient prototypes.
+   *
+   * Electrostatics are atom-charge dependent rather than type-pair dependent, so each compact
+   * pair keeps its own kqq.  The spline coefficients for kqq == 1.0 are parameter-only and are
+   * shared here across every component over the AtomTable.
+   */
+  gctools::Vec0<RosettaElecTermCache_sp> _ElecTermCaches;
 
   /*! NEIGHBOUR LIST, in CSR form: atom i's neighbours are
    *    _Neighbors[_NeighborStart[i] .. _NeighborStart[i+1])
@@ -444,6 +462,7 @@ public:
     this->_NBCachedForceField = nil<core::T_O>();
     this->_NBTypeSlot.clear();
     this->_NBUniq.clear();
+    this->_NBTermCaches.clear();
     this->_NBGeneration++;
   }
  public:
