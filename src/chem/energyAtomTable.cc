@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <cmath>                   // std::sqrt, for updateDrift
+#include <vector>
 #include <clasp/core/foundation.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/nativeVector.h>
@@ -50,7 +51,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/units/quantity.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/lispStream.h>
-#include <cando/chem/spanningLoop.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <clasp/core/translators.h>
 #include <clasp/core/wrappers.h>
@@ -706,9 +706,64 @@ void AtomTable_O::ensureNeighborList(core::T_sp tcoords, double cutoff, core::T_
 }
 
 
+static void populateBondAngle14Removes(AtomTable_O* atomTable,
+                                      size_t firstAtomIndex,
+                                      size_t endAtomIndex)
+{
+  // SpanningLoop used to allocate a GC-managed hash table and one SpanningInfo
+  // object per visited atom for every root atom.  The remove sets only need
+  // shortest-path distances one through three, so perform that bounded BFS
+  // with native scratch storage shared by all roots in this construction.
+  const size_t atomCount = atomTable->_Atoms.size();
+  std::vector<size_t> seenGeneration(atomCount, 0);
+  std::vector<unsigned char> distance(atomCount, 0);
+  std::vector<size_t> queue;
+  queue.reserve(atomCount);
+
+  for (size_t rootIndex = firstAtomIndex; rootIndex < endAtomIndex; ++rootIndex) {
+    const size_t generation = rootIndex + 1;
+    EnergyAtom& rootEnergyAtom = atomTable->_Atoms[rootIndex];
+    queue.clear();
+    seenGeneration[rootIndex] = generation;
+    distance[rootIndex] = 0;
+    queue.push_back(rootIndex);
+
+    for (size_t head = 0; head < queue.size(); ++head) {
+      const size_t atomIndex = queue[head];
+      const unsigned char atomDistance = distance[atomIndex];
+      if (atomDistance == 3) continue;
+
+      Atom_sp atom = atomTable->_Atoms[atomIndex].atom();
+      for (int bondIndex = 0; bondIndex < atom->numberOfBonds(); ++bondIndex) {
+        Atom_sp bonded = atom->bondedNeighbor(bondIndex);
+        const size_t bondedIndex = bonded->_AtomTableIndex;
+
+        // _AtomTableIndex is only a hint and may name a different table.  It
+        // is safe to use after validating both the range and atom identity.
+        // Atoms outside this AtomTable cannot participate in its pair scans.
+        if (bondedIndex >= atomCount
+            || atomTable->_Atoms[bondedIndex].atom() != bonded)
+          continue;
+        if (seenGeneration[bondedIndex] == generation) continue;
+
+        const unsigned char bondedDistance = atomDistance + 1;
+        seenGeneration[bondedIndex] = generation;
+        distance[bondedIndex] = bondedDistance;
+        queue.push_back(bondedIndex);
+        ASSERT(bondedDistance >= 1 && bondedDistance <= 3);
+        LOG("Adding atom at remove {} --> {}\n",
+            bondedDistance - 1, _rep_(bonded->getName()));
+        rootEnergyAtom._AtomsAtRemoveBondAngle14[bondedDistance - 1].insert(bonded);
+      }
+    }
+  }
+}
+
+
 CL_DEFMETHOD void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes )
 {
   uint idx = this->_Atoms.size();
+  const uint firstAtomIndex = idx;
   uint coordinateIndex = idx*3;
   // Push to the molecules
   this->_Molecules->vectorPushExtend(mol);
@@ -739,42 +794,28 @@ CL_DEFMETHOD void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp
         a1->_AtomTableIndex = idx;
         EnergyAtom ea(nonbondForceField,a1,coordinateIndex,atomTypes,keepInteractionFactory);
         ea._AtomName = a1->getName();
-        {
-          LOG("Spanning tree for atom: {}\n" , _rep_(a1->getName()));
-          SpanningLoop_sp span = SpanningLoop_O::create(a1);
-          Atom_sp bonded;
-          while ( span->advance() ) {
-            bonded = span->getAtom();
-            if ( bonded == a1 ) continue;
-            int backCount = span->getBackCount(bonded); // ->getBackCount();
-            LOG("Looking at atom[{}] at remove[{}]" , _rep_(bonded) , backCount );
-			// Once we crawl out 4 bonds we have gone as far as we need
-            if ( backCount >= 4 ) {
-              LOG("Hit remove of 4 - terminating spanning loop");
-              break;
-            }
-            ASSERT(backCount>0 && backCount<=3);
-            LOG("Adding atom at remove {} --> {}\n" , (backCount-1) , _rep_(bonded->getName()));
-            ea._AtomsAtRemoveBondAngle14[backCount-1].insert(bonded);
-          }
-        }
         this->_Atoms.push_back(ea);
         idx++;
         coordinateIndex += 3;
-#ifdef DEBUG_ON
-        stringstream ss;
-        gctools::SmallOrderedSet<Atom_sp>::iterator si;
-        for ( int zr = 0; zr<=EnergyAtom::max_remove; zr++ ) {
-          ss.str("");
-          for ( si = ea._AtomsAtRemoveBondAngle14[zr].begin(); si!=ea._AtomsAtRemoveBondAngle14[zr].end(); si++ ) {
-            ss << " " << _rep_((*si));
-          }
-          LOG("Atoms at remove {} = {}" , zr , ss.str() );
-        }
-#endif
       }
     }
   }
+  populateBondAngle14Removes(this, firstAtomIndex, idx);
+#ifdef DEBUG_ON
+  for (size_t atomIndex = firstAtomIndex; atomIndex < idx; ++atomIndex) {
+    EnergyAtom& ea = this->_Atoms[atomIndex];
+    stringstream ss;
+    gctools::SmallOrderedSet<Atom_sp>::iterator si;
+    for (int zr = 0; zr <= EnergyAtom::max_remove; zr++) {
+      ss.str("");
+      for (si = ea._AtomsAtRemoveBondAngle14[zr].begin();
+           si != ea._AtomsAtRemoveBondAngle14[zr].end(); si++) {
+        ss << " " << _rep_((*si));
+      }
+      LOG("Atoms at remove {} = {}", zr, ss.str());
+    }
+  }
+#endif
   this->_ResiduePointers->vectorPushExtend(idx);
   this->_AtomsPerMolecule->vectorPushExtend(idx);
 #if 0
