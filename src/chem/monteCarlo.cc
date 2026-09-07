@@ -1021,8 +1021,13 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
 CL_DOCSTRING(R"doc(Perform a constant temperature Hamiltonian replica exchange monte carlo on the
 ENERGIES object using the LAMBDA-WINDOWS at TEMPERATURE taking LAMBDA-STEPS with each set of lambdas
 before attempting to swap windows.
-Return (values lowest-energy-state accepts swap-accepts-for-each-lambda-window swap-attempts-for-each-lambda-window max-iterations lowest-energy initial-state initial-energy))doc");
-CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (kk-start 0) (max-iterations 1000) (warm-up-iterations 100) step-callback (step-callback-period 1000) exchange-callback physical-state-callback (physical-state-callback-period 100) initial-state seen-states debug energy-trace (rep-weight 1.0));
+When COLLECT-EXCHANGE-STATISTICS is true, return a tenth value after KK: a
+five-element vector containing per-boundary sample counts, forward sums, forward
+sums of squares, reverse sums, and reverse sums of squares.  These moments cover
+the same post-warm-up exchange attempts reported to EXCHANGE-CALLBACK, but are
+accumulated without allocating Lisp numbers.  Otherwise preserve the legacy nine
+return values.)doc");
+CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (kk-start 0) (max-iterations 1000) (warm-up-iterations 100) (collect-exchange-statistics nil) step-callback (step-callback-period 1000) exchange-callback physical-state-callback (physical-state-callback-period 100) initial-state seen-states debug energy-trace (rep-weight 1.0));
 CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarlo(core::T_sp tenergies,
                                                                                   core::T_sp tlambdaWindows,
                                                                                   double temperature,
@@ -1030,6 +1035,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
                                                                                   size_t kkStart,
                                                                                   size_t maxIterations,
                                                                                   size_t warmUpIterations,
+                                                                                  core::T_sp collectExchangeStatistics,
                                                                                   core::T_sp stepCallback,
                                                                                   size_t stepCallbackPeriod,
                                                                                   core::T_sp exchangeCallback,
@@ -1068,6 +1074,7 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
   if (useStepCallback || usePhysicalStateCallback)
     saveState = core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots);
   bool useExchangeCallback = exchangeCallback.notnilp();
+  bool collectExchangeStats = collectExchangeStatistics.notnilp();
   core::HashTableEqualp_sp seenStates;
   bool hasSeenStates = false;
   core::SimpleVector_byte32_t_sp seenStatesProbeKey;
@@ -1093,6 +1100,19 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
 
   std::vector<byte64_t> swapAccepts(numberOfLambdaWindows,0);
   std::vector<byte64_t> swapAttempts(numberOfLambdaWindows,0);
+  std::vector<byte64_t> exchangeCounts;
+  std::vector<double> exchangeForwardSums;
+  std::vector<double> exchangeForwardSumSquares;
+  std::vector<double> exchangeReverseSums;
+  std::vector<double> exchangeReverseSumSquares;
+  if (collectExchangeStats) {
+    size_t numberOfBoundaries = numberOfLambdaWindows - 1;
+    exchangeCounts.assign(numberOfBoundaries, 0);
+    exchangeForwardSums.assign(numberOfBoundaries, 0.0);
+    exchangeForwardSumSquares.assign(numberOfBoundaries, 0.0);
+    exchangeReverseSums.assign(numberOfBoundaries, 0.0);
+    exchangeReverseSumSquares.assign(numberOfBoundaries, 0.0);
+  }
 
   size_t numSlotsInState = core::cl__length(energies._MonomerLocusMaxMrkindex );
 
@@ -1227,14 +1247,23 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
           }
         }
         swapAttempts[swapi]++;
-        if (useExchangeCallback && ii>warmUpIterations) {
-          core::eval::funcall(exchangeCallback,
-                              core::make_fixnum(ii),
-                              core::make_fixnum(swapi),
-                              mk_double_float(l0),
-                              mk_double_float(l1),
-                              mk_double_float(dul1k0_ul0k0),
-                              mk_double_float(dul0k1_ul1k1));
+        if ((collectExchangeStats || useExchangeCallback) && ii > warmUpIterations) {
+          if (collectExchangeStats) {
+            exchangeCounts[swapi]++;
+            exchangeForwardSums[swapi] += dul1k0_ul0k0;
+            exchangeForwardSumSquares[swapi] += dul1k0_ul0k0 * dul1k0_ul0k0;
+            exchangeReverseSums[swapi] += dul0k1_ul1k1;
+            exchangeReverseSumSquares[swapi] += dul0k1_ul1k1 * dul0k1_ul1k1;
+          }
+          if (useExchangeCallback) {
+            core::eval::funcall(exchangeCallback,
+                                core::make_fixnum(ii),
+                                core::make_fixnum(swapi),
+                                mk_double_float(l0),
+                                mk_double_float(l1),
+                                mk_double_float(dul1k0_ul0k0),
+                                mk_double_float(dul0k1_ul1k1));
+          }
         }
       }
     }
@@ -1246,29 +1275,48 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
     // In maxIterations loop
   }
   double initialEnergy = energies.reducedEnergy(initialState,1.0);
-  return Values(core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots,
-                                                    0, false,
-                                                    energies._NumberOfSlots,   // initialContentsSize
-                                                    &lowestState._State[0] ),  // initialContents
-                core::make_fixnum(accepts),
-                core::SimpleVector_byte64_t_O::make(numberOfLambdaWindows-1,
-                                                  0, false,
-                                                  numberOfLambdaWindows-1,
-                                                  &swapAccepts[0]),
-                core::SimpleVector_byte64_t_O::make(numberOfLambdaWindows-1,
-                                                  0, false,
-                                                  numberOfLambdaWindows-1,
-                                                  &swapAttempts[0]),
-                core::make_fixnum(maxIterations),
-                mk_double_float(lowestEnergy),
-                core::SimpleVector_byte32_t_O::make(energies._NumberOfSlots,
-                                                    0, false,
-                                                    energies._NumberOfSlots,   // initialContentsSize
-                                                    &initialState._State[0] ),  // initialContents
-                mk_double_float(initialEnergy),
-                core::make_fixnum(kk)
-                );
+  core::T_sp exchangeStatisticsResult = nil<core::T_O>();
+  if (collectExchangeStats) {
+    size_t numberOfBoundaries = numberOfLambdaWindows - 1;
+    core::SimpleVector_sp statistics = core::SimpleVector_O::make(5);
+    (*statistics)[0] = core::SimpleVector_byte64_t_O::make(
+      numberOfBoundaries, 0, false, numberOfBoundaries, exchangeCounts.data());
+    (*statistics)[1] = core::SimpleVector_double_O::make(
+      numberOfBoundaries, 0, false, numberOfBoundaries, exchangeForwardSums.data());
+    (*statistics)[2] = core::SimpleVector_double_O::make(
+      numberOfBoundaries, 0, false, numberOfBoundaries, exchangeForwardSumSquares.data());
+    (*statistics)[3] = core::SimpleVector_double_O::make(
+      numberOfBoundaries, 0, false, numberOfBoundaries, exchangeReverseSums.data());
+    (*statistics)[4] = core::SimpleVector_double_O::make(
+      numberOfBoundaries, 0, false, numberOfBoundaries, exchangeReverseSumSquares.data());
+    exchangeStatisticsResult = statistics;
+  }
+  core::T_sp lowestStateResult = core::SimpleVector_byte32_t_O::make(
+    energies._NumberOfSlots, 0, false, energies._NumberOfSlots,
+    &lowestState._State[0]);
+  core::T_sp acceptsResult = core::make_fixnum(accepts);
+  core::T_sp swapAcceptsResult = core::SimpleVector_byte64_t_O::make(
+    numberOfLambdaWindows - 1, 0, false, numberOfLambdaWindows - 1,
+    &swapAccepts[0]);
+  core::T_sp swapAttemptsResult = core::SimpleVector_byte64_t_O::make(
+    numberOfLambdaWindows - 1, 0, false, numberOfLambdaWindows - 1,
+    &swapAttempts[0]);
+  core::T_sp iterationsResult = core::make_fixnum(maxIterations);
+  core::T_sp lowestEnergyResult = mk_double_float(lowestEnergy);
+  core::T_sp initialStateResult = core::SimpleVector_byte32_t_O::make(
+    energies._NumberOfSlots, 0, false, energies._NumberOfSlots,
+    &initialState._State[0]);
+  core::T_sp initialEnergyResult = mk_double_float(initialEnergy);
+  core::T_sp kkResult = core::make_fixnum(kk);
+  if (collectExchangeStats) {
+    return Values(lowestStateResult, acceptsResult, swapAcceptsResult,
+                  swapAttemptsResult, iterationsResult, lowestEnergyResult,
+                  initialStateResult, initialEnergyResult, kkResult,
+                  exchangeStatisticsResult);
+  }
+  return Values(lowestStateResult, acceptsResult, swapAcceptsResult,
+                swapAttemptsResult, iterationsResult, lowestEnergyResult,
+                initialStateResult, initialEnergyResult, kkResult);
 }
 
 }; // namespace chem
-
