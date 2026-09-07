@@ -31,6 +31,23 @@ closed before returning, so there is a small race window before swank binds it."
                port)))
       (sb-bsd-sockets:socket-close listen))))
 
+(defun install-swank-gray-compatibility ()
+  (let* ((gray-package (find-package "GRAY"))
+         (swank-gray-package (find-package "SWANK/GRAY"))
+         (interactive-p
+           (and gray-package
+                (find-symbol "STREAM-INTERACTIVE-P" gray-package)))
+         (output-stream
+           (and swank-gray-package
+                (find-symbol "SLIME-OUTPUT-STREAM" swank-gray-package))))
+    (unless (and interactive-p output-stream)
+      (error "SWANK Gray stream classes were not loaded"))
+    (eval
+     `(defmethod ,interactive-p ((stream ,output-stream))
+        (declare (ignore stream))
+        t))))
+
+
 (defun start-swank-server (&optional (port 4005))
   (format t "Checking SLIME_HOME and cando-user:*slime-home*~%")
   (let ((slime-home (or (and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME"))))
@@ -56,6 +73,7 @@ closed before returning, so there is a small race window before swank binds it."
             (setf (symbol-value slime-cache-symbol) slime-cache)
             (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
               (funcall swank-loader-init :delete nil :reload nil :load-contribs nil))
+            (install-swank-gray-compatibility)
             (let ((swank-create-server (find-symbol "CREATE-SERVER" "SWANK")))
               (mp:process-run-function 'swank-main
                                        (lambda ()
