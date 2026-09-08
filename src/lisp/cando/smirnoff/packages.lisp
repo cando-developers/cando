@@ -48,4 +48,6 @@
    #:expand-parameter-cache
    #:cached-smirnoff-force-field
    #:cache #:smirnoff-force-field
+   #:parameter-cache-lock
+   #:with-parameter-cache-locked
    ))

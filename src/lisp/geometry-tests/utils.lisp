@@ -35,9 +35,9 @@ Returns the plane or nil"
           ;; Calculate full 3x3 covariance matrix, excluding symmetries
           (loop for p in points
                 for r = (geom:v- p centroid)
-                for rx double-float = (geom:get-x r)
-                for ry double-float = (geom:get-y r)
-                for rz double-float = (geom:get-z r)
+                for rx of-type double-float = (geom:get-x r)
+                for ry of-type double-float = (geom:get-y r)
+                for rz of-type double-float = (geom:get-z r)
                 do (incf xx (infix:infix rx * rx))
                 do (incf xy (infix:infix rx * ry))
                 do (incf xz (infix:infix rx * rz))

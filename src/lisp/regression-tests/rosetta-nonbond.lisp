@@ -125,6 +125,15 @@
                (chem:all-components energy-function))
       (error "No rosetta nonbond component found in energy-function")))
 
+(defun rosetta-nonbond--interior-distances (term rswitch rcut rpairlist)
+  "Return one distance strictly inside each piece of the nonbond potential."
+  (let ((sigma (getf term :sigma)))
+    (list (* 0.5d0 sigma)
+          (* 0.8d0 sigma)
+          (* 0.5d0 (+ sigma rswitch))
+          (* 0.5d0 (+ rswitch rcut))
+          (+ rcut (* 0.25d0 (- rpairlist rcut))))))
+
 (defun rosetta-nonbond-generate-xy-pairs (&key (rep-weights (list 0.5d0 1.0d0 2.0d0))
                                                (start 0.1d0)
                                                (end 10.0d0)
@@ -220,3 +229,88 @@ separates each rep-weight series with a comment line."
                             (setf all-ok nil)))))))
   #+tests
   (test-true rosetta-nonbond-energy-scan all-ok))
+
+;;; Exercise every smooth piece of rosetta_nonbond_dd_cutoff away from branch
+;;; boundaries.  The basis-vector H*d sweep checks all 36 Hessian entries; the
+;;; dense direction separately checks simultaneous accumulation from them.
+(let* ((ffnonbond (rosetta-nonbond--ensure-force-field))
+       (rswitch 4.5d0)
+       (rcut 6.0d0)
+       (rpairlist 9.0d0)
+       (term (rosetta-nonbond--term-from-ffnonbond
+              ffnonbond rswitch rcut))
+       (distances (rosetta-nonbond--interior-distances
+                   term rswitch rcut rpairlist))
+       (rep-weights '(0.5d0 1.0d0 2.0d0))
+       (energy-ok t)
+       (force-ok t)
+       (hessian-ok t)
+       (hdvec-ok t))
+  (dolist (rep-weight rep-weights)
+    (multiple-value-bind (aggregate atom1 atom2)
+        (rosetta-nonbond--make-two-atom-aggregate
+         *rosetta-nonbond-test-force-field*
+         *rosetta-nonbond-test-type*)
+      ;; Give pair-list construction a valid initial geometry.
+      (pairwise-derivatives--set-oblique-separation
+       atom1 atom2 (first distances))
+      (let* ((setup
+               (list :rosetta
+                     (list 'chem:energy-rosetta-nonbond
+                           :rep-weight rep-weight
+                           :rswitch rswitch
+                           :rcut rcut
+                           :rpairlist rpairlist)))
+             (energy-function
+               (chem:make-energy-function
+                :matter aggregate
+                :use-excluded-atoms nil
+                :assign-types nil
+                :setup setup))
+             (component (rosetta-nonbond--component energy-function))
+             (position
+               (chem:make-nvector
+                (chem:get-nvector-size energy-function))))
+        ;; The scoring-function derivative API evaluates every enabled
+        ;; component, so isolate the component under test.
+        (dolist (other (chem:all-components energy-function))
+          (unless (eq other component)
+            (chem:disable other)))
+        (dolist (distance distances)
+          (pairwise-derivatives--set-oblique-separation
+           atom1 atom2 distance)
+          (chem:load-coordinates-into-vector energy-function position)
+          (multiple-value-bind
+                (actual-energy force-error hessian-error hdvec-error)
+              (pairwise-derivatives--finite-difference-errors
+               energy-function position)
+            (let* ((expected-energy
+                     (rosetta-nonbond--expected-energy
+                      distance term rep-weight rswitch rcut))
+                   (energy-error
+                     (pairwise-derivatives--error-ratio
+                      actual-energy expected-energy 1.0d-8 1.0d-11)))
+              (unless (<= energy-error 1.0d0)
+                (setf energy-ok nil))
+              (unless (<= force-error 1.0d0)
+                (setf force-ok nil))
+              (unless (<= hessian-error 1.0d0)
+                (setf hessian-ok nil))
+              (unless (<= hdvec-error 1.0d0)
+                (setf hdvec-ok nil))
+              (when (or (> energy-error 1.0d0)
+                        (> force-error 1.0d0)
+                        (> hessian-error 1.0d0)
+                        (> hdvec-error 1.0d0))
+                (format t
+                        "Rosetta nonbond mismatch for rep-weight ~s, distance ~s: energy ratio ~s, force ratio ~s, Hessian ratio ~s, H*d ratio ~s~%"
+                        rep-weight distance energy-error force-error
+                        hessian-error hdvec-error))))))))
+  #+tests
+  (test-true rosetta-nonbond-derivative-energy-scan energy-ok)
+  #+tests
+  (test-true rosetta-nonbond-force-finite-difference force-ok)
+  #+tests
+  (test-true rosetta-nonbond-hessian-columns-finite-difference hessian-ok)
+  #+tests
+  (test-true rosetta-nonbond-hessian-vector-finite-difference hdvec-ok))

@@ -211,7 +211,8 @@
         (ht (make-hash-table)))
     (format t "~s energy total = ~f~%" name (chem:evaluate-energy en pos :active-atom-mask mask))
     (loop for comp in components
-          for energy = (chem:energy-component-evaluate-energy en comp pos mask)
+          for energy = (chem:energy-component-evaluate-energy
+                        en comp pos :active-atom-mask mask)
           for class-name = (class-name (class-of comp))
           do (setf (gethash class-name ht) energy)
           do (format t "~s ~s -> ~f~%" name (class-name (class-of comp)) energy))
@@ -227,7 +228,8 @@
           do (setf (gethash class-name ht) comp))
     (let ((dihedral (gethash 'chem:energy-dihedral ht)))
       (loop for idx below num
-            for energy = (chem:energy-component-evaluate-energy en dihedral pos mask)))))
+            for energy = (chem:energy-component-evaluate-energy
+                          en dihedral pos :active-atom-mask mask)))))
 
 #+(or)
 (progn
@@ -712,7 +714,8 @@
                 (p2 (geom:vec-array pos i3x2))
                 (distance (geom:vlength (geom:v- p1 p2))))
            (incf expected (* kb (expt (- distance r0) 2)))))))
-    (let ((masked (chem:energy-component-evaluate-energy ef stretch pos mask)))
+    (let ((masked (chem:energy-component-evaluate-energy
+                   ef stretch pos :active-atom-mask mask)))
       #+tests(test-true active-coordinate-mask-keeps-cross-boundary-terms
                         (< (abs (- masked expected)) 1d-8)))
 

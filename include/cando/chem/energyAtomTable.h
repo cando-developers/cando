@@ -69,6 +69,7 @@ SMART(Atom);
 SMART(ForceField);
 SMART(Matter);
 SMART(FFNonbondDb);
+SMART(RosettaLKTermCache);
 
 /*! Store a pointer to an Atom and an index into the coordinate vector array
  * which stores coordinates in a 1D array (x1,y1,z1,x2,y2,z2,x3,...,xN,yN,zN)
@@ -174,8 +175,9 @@ public:
    * that is ~3.2 million funcalls before a single pair energy is computed.  Computed once here it
    * is ~6700.
    *
-   * Only the SLOTS are shared.  Each component still builds its own _TermCache, because that
-   * depends on its own _Parameters, and it is O(distinct-types^2) - a handful.
+   * The immutable coefficient tables are shared as well.  The small cache bank permits multiple
+   * LK smoothing-parameter variants over the same type-slot generation; a component keeps only a
+   * pointer to the matching table and compact (i3x1,i3x2,cache-index) pair records.
    *
    * INVALIDATION: keyed on the force field and the atom count via lkTypeSlotsValidFor.  Mutating
    * an atom's :lk-solvation-atom-type after the first component has cached will NOT be noticed -
@@ -191,14 +193,17 @@ public:
   core::T_sp                            _LKCachedForceField;
   /*! Bumped on every rebuild AND on every invalidation.
    *
-   * Components keep their own copy of the slots and their own _TermCache derived from _LKUniq, so
-   * "is the SHARED table valid" is not the question they need answered - it is "is the shared
-   * table the same one I copied from".  A boolean cannot express that: after an invalidation the
-   * first component rebuilds the shared table, and every other component would then see a valid
-   * shared table plus its own already-set _CachedForAtomTable and return early holding stale
-   * slots.  Comparing generations catches exactly that.
+   * Compact pair records contain indices into a coefficient table derived from this slot order.
+   * A boolean cannot distinguish the old and new order after an in-place rebuild; comparing this
+   * generation does.
    */
   size_t                                _LKGeneration = 0;
+  /*! Immutable LK coefficient caches for this slot generation.
+   *
+   * The bank and its contents are derived and transient.  No lock is needed under the ownership
+   * contract that one worker thread operates on one AtomTable/blueprint.
+   */
+  gctools::Vec0<RosettaLKTermCache_sp>  _LKTermCaches;
 
   /*! The same sharing, for the ROSETTA-NONBOND (radius, epsilon) slots.
    *
@@ -216,8 +221,8 @@ public:
    * friends), n^2/2 times during a pair scan, and the guard returns immediately every time after
    * the first.  All of the cost is in the cold starts, and sharing is what removes them.
    *
-   * Only the SLOTS are shared, exactly as for LK.  Each component still builds its own _TermCache,
-   * which depends on its own _Parameters and is O(distinct-types^2) - a handful.
+   * Only these nonbond SLOTS are shared.  Unlike LK, each nonbond component still builds its own
+   * _TermCache, which depends on its own _Parameters and is O(distinct-types^2) - a handful.
    *
    * INVALIDATION: same contract as the LK table.  Retyping an atom after the first component has
    * cached will NOT be noticed - call invalidateNBTypeSlots() if that ever happens.
@@ -428,6 +433,7 @@ public:
     this->_LKCachedForceField = nil<core::T_O>();
     this->_LKTypeSlot.clear();
     this->_LKUniq.clear();
+    this->_LKTermCaches.clear();
     this->_LKGeneration++;
   }
   bool nbTypeSlotsValidFor(core::T_sp ff) const {

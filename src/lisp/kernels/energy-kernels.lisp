@@ -489,7 +489,7 @@
        (=. fa_rep "fa_rep_epsilon + epsilon")
        (=. fa_atr "-epsilon")
        (=. dE_dr   "rep_weight*epsilon*((-12*sr12 + 12*sr6)/rr)" :modes (:gradient :hessian))
-       (=. d2E_dr2 "rep_weight*epsilon*((156*sr12 - 42*sr6)/(rr*rr))" :modes (:hessian))
+       (=. d2E_dr2 "rep_weight*epsilon*((156*sr12 - 84*sr6)/(rr*rr))" :modes (:hessian))
        (=. energy "rep_weight*fa_rep + fa_atr"))
 
       ("rr<=rswitch"
@@ -499,7 +499,7 @@
        (=. sr12 "sr6*sr6")
        (=. fa_atr "epsilon*(sr12 - 2*sr6)")
        (=. dE_dr   "epsilon*((-12*sr12 + 12*sr6)/rr)" :modes (:gradient :hessian))
-       (=. d2E_dr2 "epsilon*((156*sr12 - 42*sr6)/(rr*rr))" :modes (:hessian))
+       (=. d2E_dr2 "epsilon*((156*sr12 - 84*sr6)/(rr*rr))" :modes (:hessian))
        (=. energy "fa_atr"))
 
       ("rr<=rcut"
@@ -614,6 +614,7 @@ scaled by the previously defined connectivity weight (eq 13(Efa_sol)):
 
   (:pipeline *pipeline*)
   (:coordinate-inputs 2)
+  (:coordinate-indices-in-term nil)
 
   (:params-struct
    (:name "rosetta_lk_solvation_parameters")

@@ -26,6 +26,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 /* -^- */
 #define DEBUG_LEVEL_NONE
 
+#include <limits>
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyRosettaLKSolvation.h>
@@ -87,6 +88,7 @@ CL_DEFMETHOD void EnergyRosettaLKSolvation_O::constructNonbondTermsBetweenMatter
   this->_AtomTable = energyFunction->_AtomTable;
   this->_AtomTypes = energyFunction->atomTypes();
   this->_LKSolvationForceField = this->_AtomTable->lksolvationForceFieldForAggregate();
+  this->_PairCacheGeneration = (size_t)-1;
   // Force the next maybeRebuildPairList to actually rebuild - see the header comment.
   this->invalidatePairList();
 }
@@ -119,7 +121,9 @@ SYMBOL_EXPORT_SC_(ChemPkg, energyRosettaLKSolvation);
 core::List_sp EnergyRosettaLKSolvation::encode() const {
   ql::list ll;
   this->term.encode(ll);
-  ll << INTERN_(kw, atom1) << this->_Atom1_enb
+  ll << INTERN_(kw, i1) << core::make_fixnum(this->_I3x1)
+     << INTERN_(kw, i2) << core::make_fixnum(this->_I3x2)
+     << INTERN_(kw, atom1) << this->_Atom1_enb
      << INTERN_(kw, atom2) << this->_Atom2_enb;
   return ll.cons();
 }
@@ -140,14 +144,14 @@ core::T_sp debug_rosetta_lk_solvation(double Energy, double x1, double y1, doubl
   return ll.cons();
 }
 
-#define LK_SOLVATION_DEBUG_INTERACTIONS(term)                                                                                     \
+#define LK_SOLVATION_DEBUG_INTERACTIONS(pair, coefficients)                                                                      \
   if (doDebugInteractions) {                                                                                                      \
     core::eval::funcall(debugInteractions, chem::_sym_EnergyRosettaLKSolvation,                                                  \
                         debug_rosetta_lk_solvation(Energy,                                                                       \
-                                                   position[term.i3x1], position[term.i3x1 + 1], position[term.i3x1 + 2],       \
-                                                   position[term.i3x2], position[term.i3x2 + 1], position[term.i3x2 + 2],       \
-                                                   term),                                                                        \
-                        core::make_fixnum(term.i3x1), core::make_fixnum(term.i3x2));                                              \
+                                                   position[pair.i3x1], position[pair.i3x1 + 1], position[pair.i3x1 + 2],       \
+                                                   position[pair.i3x2], position[pair.i3x2 + 1], position[pair.i3x2 + 2],       \
+                                                   coefficients),                                                                \
+                        core::make_fixnum(pair.i3x1), core::make_fixnum(pair.i3x2));                                              \
   }
 
 struct NoFiniteDifference {
@@ -159,7 +163,7 @@ struct NoFiniteDifference {
 
 template <class MaybeFiniteDiff>
 double template_evaluateUsingTerms(EnergyRosettaLKSolvation_O* mthis,
-                                   const gctools::Vec0<EnergyRosettaLKSolvation>& terms,
+                                   const gctools::Vec0<RosettaLKPair>& terms,
                                    core::T_sp termSymbol,
                                    ScoringFunction_sp score, NVector_sp nvposition,
                                    core::T_sp energyScale, core::T_sp energyComponents,
@@ -178,31 +182,38 @@ double template_evaluateUsingTerms(EnergyRosettaLKSolvation_O* mthis,
   DOUBLE* rhdvec = NULL;
   DOUBLE Energy = 0.0;
   Rosetta_Lk_Solvation<NoHessian> lk;
+  const auto& coefficientTerms = mthis->_ParameterCache->_Terms;
 
 #define KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(I1, I2)                                                          \
   if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
 
   if (evalType == energyEval) {
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = lk.energy(params, si->term, position, &totalEnergy);
-      LK_SOLVATION_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      const auto& coefficients = coefficientTerms[si->cacheIndex];
+      Energy = lk.energy(params, coefficients, (int)si->i3x1, (int)si->i3x2,
+                         position, &totalEnergy);
+      LK_SOLVATION_DEBUG_INTERACTIONS((*si), coefficients);
     }
   } else if (evalType == gradientEval) {
     rforce = &(*force)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = lk.gradient(params, si->term, position, &totalEnergy, rforce);
-      LK_SOLVATION_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      const auto& coefficients = coefficientTerms[si->cacheIndex];
+      Energy = lk.gradient(params, coefficients, (int)si->i3x1, (int)si->i3x2,
+                           position, &totalEnergy, rforce);
+      LK_SOLVATION_DEBUG_INTERACTIONS((*si), coefficients);
     }
   } else {
     rforce = &(*force)[0];
     rdvec = &(*dvec)[0];
     rhdvec = &(*hdvec)[0];
     for (auto si = terms.begin(); si != terms.end(); si++) {
-      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->term.i3x1, si->term.i3x2);
-      Energy = lk.hessian(params, si->term, position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
-      LK_SOLVATION_DEBUG_INTERACTIONS(si->term);
+      KERNEL_TERM_LK_SOLVATION_APPLY_ATOM_MASK(si->i3x1, si->i3x2);
+      const auto& coefficients = coefficientTerms[si->cacheIndex];
+      Energy = lk.hessian(params, coefficients, (int)si->i3x1, (int)si->i3x2,
+                          position, &totalEnergy, rforce, NoHessian(), rdvec, rhdvec);
+      LK_SOLVATION_DEBUG_INTERACTIONS((*si), coefficients);
     }
   }
   maybeSetEnergy(energyComponents, termSymbol, totalEnergy);
@@ -226,27 +237,27 @@ void EnergyRosettaLKSolvation_O::ensureParameterCache() {
   AtomTable_sp at = this->_AtomTable;
   if (at.nilp()) return;
   size_t n = at->getNumberOfAtoms();
-  // The generation test is what makes the shared table safe: the atom-table pointer can be
-  // unchanged while its slots have been rebuilt underneath us.
-  if (this->_CachedForAtomTable == at
-      && this->_CachedLKGeneration == at->_LKGeneration
-      && this->_TypeSlot.size() == n) return;   // still valid
 
-  // ---- SHARED across every component over this atom table ----
+  // ---- Type slots shared across every component over this atom table ----
   //
   // An atom's LK type is a property of the ATOM, not of the component asking, so this mapping is
   // identical for all 471 of a blueprint's slot-group components.  Building it per component cost
   // one Lisp funcall per atom per component - ~3.2 million for 471 components over ~6700 atoms,
   // all before any pair energy was computed.  Built once here it is ~6700.
   if (!at->lkTypeSlotsValidFor(this->_LKSolvationForceField)) {
-    at->_LKTypeSlot.assign(n, -1);
-    at->_LKUniq.clear();
+    // Build off to the side.  A missing/invalid atom type may signal during the Lisp lookup; the
+    // AtomTable must retain either its complete old table or a complete new one, never a partially
+    // filled vector that happens to have the expected size.
+    gctools::Vec0<int> newTypeSlot(true);
+    gctools::Vec0<double> newUniq(true);
+    newTypeSlot.assign(n, -1);
     auto& energyAtoms = at->getVectorEnergyAtoms();
     // One lookup per atom, then collapse identical parameter tuples into slots.
     // Two distinct LK types with identical parameters merging is harmless - they
     // produce the same term.
     for (size_t i = 0; i < n; i++) {
-      core::Symbol_sp type = energyAtoms[i].atom()->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>()).as<core::Symbol_O>();
+      core::Symbol_sp type = gc::As<core::Symbol_sp>(energyAtoms[i].atom()->getPropertyOrDefault(
+                                                         INTERN_(kw,lk_solvation_atom_type), nil<core::Symbol_O>()));
       // errorp NIL: the next line is written to skip an untyped atom, but find-lksolvation-type
       // defaults errorp to T (chem.lisp:965) and would signal "Could not find LKSolvation
       // parameters for :lk-solvation-atom-type NIL" - naming neither the atom nor its residue -
@@ -259,53 +270,70 @@ void EnergyRosettaLKSolvation_O::ensureParameterCache() {
       double dg = 0.0, lam = 1.0, rad = 0.0, vol = 0.0;
       if (!lookup_lk_solvation_parameters(ff, dg, lam, rad, vol)) continue;
       int slot = -1;
-      size_t nslots = at->_LKUniq.size() / 4;      // 4 doubles per slot - see energyAtomTable.h
+      size_t nslots = newUniq.size() / 4;      // 4 doubles per slot - see energyAtomTable.h
       for (size_t s = 0; s < nslots; ++s)
-        if (at->_LKUniq[4*s+0] == dg && at->_LKUniq[4*s+1] == lam
-            && at->_LKUniq[4*s+2] == rad && at->_LKUniq[4*s+3] == vol) {
+        if (newUniq[4*s+0] == dg && newUniq[4*s+1] == lam
+            && newUniq[4*s+2] == rad && newUniq[4*s+3] == vol) {
           slot = (int)s; break;
         }
       if (slot < 0) {
         slot = (int)nslots;
-        at->_LKUniq.push_back(dg);
-        at->_LKUniq.push_back(lam);
-        at->_LKUniq.push_back(rad);
-        at->_LKUniq.push_back(vol);
+        newUniq.push_back(dg);
+        newUniq.push_back(lam);
+        newUniq.push_back(rad);
+        newUniq.push_back(vol);
       }
-      at->_LKTypeSlot[i] = slot;
+      newTypeSlot[i] = slot;
     }
+    at->_LKTypeSlot.swap(newTypeSlot);
+    at->_LKUniq.swap(newUniq);
+    at->_LKTermCaches.clear();
     at->_LKCachedForceField = this->_LKSolvationForceField;
-    at->_LKGeneration++;   // every rebuild is a new generation, so stale copies are detectable
+    at->_LKGeneration++;   // compact pair cache indices are stamped with this generation
   }
 
-  // Copy rather than alias, so the accessors in the header keep indexing this->_TypeSlot
-  // unchanged.  n ints per component is nothing next to the funcalls just avoided; drop the
-  // member and read at->_LKTypeSlot directly if it ever matters.  Element-wise rather than
-  // whole-vector assignment - gctools::Vec0 is not std::vector and copy-assign is not assumed.
-  this->_TypeSlot.assign(n, -1);
-  for (size_t i = 0; i < n; ++i) this->_TypeSlot[i] = at->_LKTypeSlot[i];
-
-  // ---- PER COMPONENT: the term cache depends on _Parameters, which is NOT shared ----
-  //
-  // Precompute the term for every ORDERED slot pair - the term is asymmetric
-  // in i/j, so [s1][s2] and [s2][s1] both have to be built.
+  // ---- Coefficient table shared by components with the same LK parameters ----
   size_t nt = at->_LKUniq.size() / 4;      // 4 doubles per slot
-  this->_NTypeSlots = nt;
-  this->_TermCache.assign(nt*nt, rosetta_lk_solvation_term());
-  this->_TermCacheValid.assign(nt*nt, 0);
+  // This is intentionally a small linear bank: a blueprint normally has one parameter variant,
+  // and even multiple SetupAccumulator variants amount to a handful of entries.  Hashing four
+  // doubles would add machinery without improving that lookup.
+  for (auto& cache : at->_LKTermCaches) {
+    if (cache.notnilp() && cache->matches(at->_LKGeneration, nt, this->_Parameters)) {
+      this->_ParameterCache = cache;
+      return;
+    }
+  }
+
+  if (nt != 0 && nt > std::numeric_limits<size_t>::max() / nt)
+    SIMPLE_ERROR("Too many LKSolvation type slots ({}) for a square coefficient table", nt);
+  size_t numberOfTerms = nt * nt;
+  auto cache = gctools::GC<RosettaLKTermCache_O>::allocate();
+  cache->_Generation = at->_LKGeneration;
+  cache->_NTypeSlots = nt;
+  cache->_C0 = this->_Parameters.c0;
+  cache->_C1 = this->_Parameters.c1;
+  cache->_RSolvLow = this->_Parameters.r_solv_low;
+  cache->_RSolvHigh = this->_Parameters.r_solv_high;
+  // rpairlist controls which compact pairs are retained; it does not enter a coefficient.
+  // Reserve first so resize does not choose GCVector's usual 2x growth capacity.
+  cache->_Terms.reserve(numberOfTerms);
+  cache->_Terms.resize(numberOfTerms);
+  // Precompute every ORDERED pair: i desolvated by j is not interchangeable with j by i.
   for (size_t s1 = 0; s1 < nt; ++s1)
     for (size_t s2 = 0; s2 < nt; ++s2) {
-      this->_TermCache[s1*nt + s2] =
+      cache->_Terms[s1*nt + s2] =
         rosetta_lk_solvation_term(this->_Parameters,
                                   at->_LKUniq[4*s1+0], at->_LKUniq[4*s1+1],
                                   at->_LKUniq[4*s1+2], at->_LKUniq[4*s1+3],
                                   at->_LKUniq[4*s2+0], at->_LKUniq[4*s2+1],
-                                  at->_LKUniq[4*s2+2], at->_LKUniq[4*s2+3],
-                                  0, 0);
-      this->_TermCacheValid[s1*nt + s2] = 1;
+                                  at->_LKUniq[4*s2+2], at->_LKUniq[4*s2+3]);
     }
-  this->_CachedForAtomTable = at;
-  this->_CachedLKGeneration = at->_LKGeneration;
+
+  // Publish only after the immutable table is complete.  No lock is required: one worker owns
+  // this AtomTable and its blueprint.  Push NIL first, then assign through the GC-aware slot.
+  at->_LKTermCaches.push_back(nil<RosettaLKTermCache_O>());
+  at->_LKTermCaches.back() = cache;
+  this->_ParameterCache = cache;
 }
 
 bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp a1, Atom_sp a2,
@@ -313,10 +341,16 @@ bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp 
                                                  EnergyRosettaLKSolvation_sp energyRosettaLKSolvation,
                                                  core::HashTable_sp atomTypes, core::T_sp keepInteraction,
                                                  const rosetta_lk_solvation_parameters& params) {
+  if (i3x1 > std::numeric_limits<uint32_t>::max()
+      || i3x2 > std::numeric_limits<uint32_t>::max())
+    SIMPLE_ERROR("LKSolvation coordinate indices {},{} exceed the 32-bit term representation",
+                 i3x1, i3x2);
   this->_Atom1_enb = a1;
   this->_Atom2_enb = a2;
-  core::Symbol_sp t1 = a1->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>()).as<core::Symbol_O>();
-  core::Symbol_sp t2 = a2->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>()).as<core::Symbol_O>();
+  this->_I3x1 = (uint32_t)i3x1;
+  this->_I3x2 = (uint32_t)i3x2;
+  core::Symbol_sp t1 = gc::As<core::Symbol_sp>(a1->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>()));
+  core::Symbol_sp t2 = gc::As<core::Symbol_sp>(a2->getPropertyOrDefault(INTERN_(kw,lk_solvation_atom_type),nil<core::Symbol_O>()));
   ASSERT(forceField && forceField.notnilp());
   // errorp NIL on both: the checks below name the atom and dump its property list, which is what
   // makes an untyped atom findable.  Letting find-lksolvation-type signal instead (its errorp
@@ -343,17 +377,60 @@ bool EnergyRosettaLKSolvation::defineForAtomPair(core::T_sp forceField, Atom_sp 
 
   this->term = rosetta_lk_solvation_term(params,
                                          lk_dgfree_i, lk_lambda_i, lj_radius_i, lk_volume_i,
-                                         lk_dgfree_j, lk_lambda_j, lj_radius_j, lk_volume_j,
-                                         i3x1, i3x2);
+                                         lk_dgfree_j, lk_lambda_j, lj_radius_j, lk_volume_j);
   return (ok1 && ok2);
 }
 
 void EnergyRosettaLKSolvation_O::initialize() { this->Base::initialize(); }
 
-void EnergyRosettaLKSolvation_O::addTerm(const EnergyRosettaLKSolvation& term) { this->_Terms.push_back(term); }
+void EnergyRosettaLKSolvation_O::addTerm(const RosettaLKPair& term) { this->_Terms.push_back(term); }
+
+bool EnergyRosettaLKSolvation_O::tryAddTermCached(Atom_sp a1, Atom_sp a2,
+                                                  size_t li, size_t lj,
+                                                  size_t i3x1, size_t i3x2,
+                                                  core::T_sp keepInteraction) {
+  (void)keepInteraction;
+  AtomTable_sp at = this->_AtomTable;
+  if (at.nilp()) SIMPLE_ERROR("Cannot add an LKSolvation pair without an AtomTable");
+  if (this->_ParameterCache.nilp())
+    SIMPLE_ERROR("LKSolvation parameter cache was not prepared before adding pairs");
+  if (li >= at->_LKTypeSlot.size() || lj >= at->_LKTypeSlot.size())
+    SIMPLE_ERROR("LKSolvation atom-table indices {},{} are out of range for {} atoms",
+                 li, lj, at->_LKTypeSlot.size());
+  int s1 = at->_LKTypeSlot[li];
+  int s2 = at->_LKTypeSlot[lj];
+  if (s1 < 0)
+    SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
+                 _rep_(a1), _rep_(a1->getProperties()));
+  if (s2 < 0)
+    SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
+                 _rep_(a2), _rep_(a2->getProperties()));
+  size_t k = (size_t)s1 * this->_ParameterCache->_NTypeSlots + (size_t)s2;
+  if (k >= this->_ParameterCache->_Terms.size())
+    SIMPLE_ERROR("LKSolvation coefficient index {} for slot pair {},{} is outside {} terms",
+                 k, s1, s2, this->_ParameterCache->_Terms.size());
+  if (i3x1 > (size_t)std::numeric_limits<int32_t>::max()
+      || i3x2 > (size_t)std::numeric_limits<int32_t>::max()
+      || k > (size_t)std::numeric_limits<uint32_t>::max())
+    SIMPLE_ERROR("LKSolvation compact pair ({},{},{}) exceeds its 32-bit representation",
+                 i3x1, i3x2, k);
+  this->addTerm(RosettaLKPair{(uint32_t)i3x1, (uint32_t)i3x2, (uint32_t)k});
+  return true;
+}
+
+bool EnergyRosettaLKSolvation_O::tryAddTerm(Atom_sp a1, Atom_sp a2,
+                                            size_t i3x1, size_t i3x2,
+                                            core::T_sp keepInteraction) {
+  if ((i3x1 % 3) != 0 || (i3x2 % 3) != 0)
+    SIMPLE_ERROR("LKSolvation coordinate indices {},{} are not multiples of three", i3x1, i3x2);
+  this->ensureParameterCache();
+  return this->tryAddTermCached(a1, a2, i3x1 / 3, i3x2 / 3,
+                                i3x1, i3x2, keepInteraction);
+}
 
 void EnergyRosettaLKSolvation_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw, terms), this->_Terms);
+  // _Terms and _ParameterCache are derived pair-list data.  In particular, a compact pair's
+  // cacheIndex is meaningful only for the transient AtomTable slot generation that produced it.
   node->field(INTERN_(kw, AtomTable), this->_AtomTable);
   node->field(INTERN_(kw, LKSolvationForceField), this->_LKSolvationForceField );
   node->field(INTERN_(kw, AtomTypes), this->_AtomTypes );
@@ -361,26 +438,34 @@ void EnergyRosettaLKSolvation_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
+static Atom_sp atomForLKPairIndex(AtomTable_sp atomTable, uint32_t i3) {
+  if ((i3 % 3) != 0 || (i3 / 3) >= atomTable->_Atoms.size())
+    SIMPLE_ERROR("Invalid LKSolvation coordinate index {} for an AtomTable with {} atoms",
+                 i3, atomTable->_Atoms.size());
+  return atomTable->_Atoms[i3 / 3].atom();
+}
+
 /*! ATOMS first, then their I3 values - the convention EnergyComponent_O::atomsForEachTerm
  *  documents.  A caller taking &rest reads any component without knowing which one it has.
  */
 void EnergyRosettaLKSolvation_O::atomsForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    core::eval::funcall(callback, eni->_Atom1_enb,
-                          eni->_Atom2_enb,
-                          core::make_fixnum(eni->term.i3x1),
-                          core::make_fixnum(eni->term.i3x2));
+    core::eval::funcall(callback,
+                        atomForLKPairIndex(this->_AtomTable, eni->i3x1),
+                        atomForLKPairIndex(this->_AtomTable, eni->i3x2),
+                        core::make_fixnum(eni->i3x1),
+                        core::make_fixnum(eni->i3x2));
   }
 }
 
 void EnergyRosettaLKSolvation_O::dumpTerms(core::HashTable_sp atomTypes) {
-  gctools::Vec0<EnergyRosettaLKSolvation>::iterator eni;
+  gctools::Vec0<RosettaLKPair>::iterator eni;
   string as1, as2;
   string str1, str2;
   core::clasp_write_string(fmt::format("Dumping {} terms\n", this->_Terms.size()));
   for (eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    as1 = _rep_(eni->_Atom1_enb->getName());
-    as2 = _rep_(eni->_Atom2_enb->getName());
+    as1 = _rep_(atomForLKPairIndex(this->_AtomTable, eni->i3x1)->getName());
+    as2 = _rep_(atomForLKPairIndex(this->_AtomTable, eni->i3x2)->getName());
     if (as1 < as2) {
       str1 = as1;
       str2 = as2;
@@ -398,9 +483,11 @@ void EnergyRosettaLKSolvation_O::setupHessianPreconditioner(NVector_sp nvPositio
 
 void EnergyRosettaLKSolvation_O::callForEachTerm(core::Function_sp callback) {
   for (auto eni = this->_Terms.begin(); eni != this->_Terms.end(); eni++) {
-    core::eval::funcall(callback, eni->_Atom1_enb, eni->_Atom2_enb,
-                        core::make_fixnum(eni->term.i3x1),
-                        core::make_fixnum(eni->term.i3x2));
+    core::eval::funcall(callback,
+                        atomForLKPairIndex(this->_AtomTable, eni->i3x1),
+                        atomForLKPairIndex(this->_AtomTable, eni->i3x2),
+                        core::make_fixnum(eni->i3x1),
+                        core::make_fixnum(eni->i3x2));
   }
 }
 
@@ -419,11 +506,16 @@ EnergyComponent_sp EnergyRosettaLKSolvation_O::copyFilter(core::T_sp keepInterac
   copy->invalidatePairList();
   copy->_Terms.clear();
   copy->invalidateParameterCache();
+  copy->_PairCacheGeneration = (size_t)-1;
   return copy;
 }
 
 core::T_mv EnergyRosettaLKSolvation_O::maybeRebuildPairList(core::T_sp tcoordinates) {
 #if 1
+  this->ensureParameterCache();
+  if (this->_AtomTable.notnilp()
+      && this->_PairCacheGeneration != this->_AtomTable->_LKGeneration)
+    this->invalidatePairList();
   return maybeRebuildPairListImpl(this,tcoordinates);
 #else
   auto coords = gc::As<NVector_sp>(tcoordinates);
@@ -463,7 +555,10 @@ core::T_mv EnergyRosettaLKSolvation_O::maybeRebuildPairList(core::T_sp tcoordina
 
 core::T_mv EnergyRosettaLKSolvation_O::rebuildPairList(core::T_sp tcoordinates) {
 #if 1
-  return rebuildPairListImpl(this,tcoordinates);
+  this->ensureParameterCache();
+  core::T_mv result = rebuildPairListImpl(this,tcoordinates);
+  this->_PairCacheGeneration = this->_AtomTable->_LKGeneration;
+  return result;
 #else
   this->_DisplacementBuffer = copy_nvector(gc::As<NVector_sp>(tcoordinates));
   size_t interactionsKept = 0;

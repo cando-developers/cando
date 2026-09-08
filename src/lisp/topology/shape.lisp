@@ -44,7 +44,7 @@
       (make-instance 'rotamer-shape :rotamer-index (rotamer-index monomer-shape))
       (make-instance 'rotamer-shape)))
 
-(defun make-rotamer-shape (monomer oligomer &key ignore-sidechains)
+(defun make-rotamer-shape (monomer oligomer &key (ignore-sidechains *ignore-sidechains*))
   "Convenience function to make a rotamer-shape for a MONOMER in an OLIGOMER.
 If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy its ROTAMER-INDEX."
   (let* ((foldamer (foldamer (oligomer-space oligomer)))
@@ -561,7 +561,7 @@ Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES
                                                   &rest args
                                                   &key (name :default)
                                                     uninitialized
-                                                    ignore-sidechains
+                                                    (ignore-sidechains *ignore-sidechains*)
                                                     )
   "Build an oligomer-shape using only rotamer-shapes for OLIGOMER.
 By default initialize the rotamer-indexes to random allowed values.

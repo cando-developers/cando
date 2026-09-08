@@ -296,9 +296,9 @@ Symbol_mv SymbolSet_O::first() {
   T_sp found = nil<T_O>();
   Symbol_sp result = nil<Symbol_O>();
   this->_Symbols->map_while_true([&found, &result](T_sp key, T_sp val) -> bool {
-                result = key.as<core::Symbol_O>();
-                found = _lisp->_true();
-                return false;
+    result = gc::As<core::Symbol_sp>(key);
+    found = _lisp->_true();
+    return false;
   });
   return Values(result, found);
 }

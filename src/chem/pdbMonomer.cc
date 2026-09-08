@@ -235,7 +235,7 @@ void PdbMonomerConnectivity_O::addLongName(core::Symbol_sp longName) { this->_Lo
 
 void PdbMonomerConnectivity_O::addConnect(core::Symbol_sp mainAtom, adapt::SymbolSet_sp bonded) {
   bonded->map([this, &mainAtom](core::T_sp key) {
-    core::Symbol_sp skey = key.as<core::Symbol_O>();
+    core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);
     if (!this->hasConnection(mainAtom, skey)) {
       AtomPair two(mainAtom, skey);
       this->_BondAtomPairs.push_back(two);

@@ -512,9 +512,11 @@ changing the SHAPE-KEY-CACHE."
 (defmethod monomer-context-to-context-rotamers ((obj conformers-database))
   (context-to-rotamers obj))
 
-(defgeneric lookup-rotamers-for-context (fcc context &key errorp ignore-sidechains))
+(defvar *ignore-sidechains* nil)
+(defgeneric lookup-rotamers-for-context (fcc context &key errorp error-value (ignore-sidechains *ignore-sidechains*)))
 
-(defmethod lookup-rotamers-for-context ((db rotamers-database) monomer-context &key (errorp t) ignore-sidechains)
+
+(defmethod lookup-rotamers-for-context ((db rotamers-database) monomer-context &key (errorp t) error-value (ignore-sidechains *ignore-sidechains*))
   (when ignore-sidechains
     (error "ignore-sidechains is only allowed for a conformers-database"))
   (let ((rot (gethash monomer-context (context-to-rotamers db))))
@@ -524,7 +526,7 @@ changing the SHAPE-KEY-CACHE."
             (error "Could not find rotamers for ~s" monomer-context)
             nil))))
 
-(defmethod lookup-rotamers-for-context ((db conformers-database) monomer-context &key (errorp t) (error-value :no-sidechain-rotamer) ignore-sidechains)
+(defmethod lookup-rotamers-for-context ((db conformers-database) monomer-context &key (errorp t) (error-value :no-sidechain-rotamer) (ignore-sidechains *ignore-sidechains*))
   (unless ignore-sidechains
     (error "ignore-sidechains must be set for conformers-database"))
   (let ((rot (gethash monomer-context (context-to-rotamers db))))

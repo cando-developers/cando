@@ -638,10 +638,10 @@ core::T_mv mol2Read(Mol2File& fIn)
         if (chem__verbose(1)) {
           core::clasp_write_string(fmt::format("Setting substructure residue name: {}\n" , _rep_(sub_name)));
         }
-        res->setName(sub_name);
+        res->setName(gc::As<core::Symbol_sp>(sub_name));
         LOG("Setting residue PDB name to: {}" , si->sub_type.c_str()  );
-        core::Symbol_sp sub_type = chemkw_intern(si->sub_type);
-        res->setPdbName(sub_type);
+        core::T_sp sub_type = chemkw_intern(si->sub_type);
+        res->setPdbName(gc::As<core::Symbol_sp>(sub_type));
         if (solventName.notnilp() && (sub_name==solventName || sub_type==solventName))
         {
           //          printf("%s:%d Setting molecule %s to solvent\n", __FILE__, __LINE__, _rep_(m).c_str());

@@ -4,7 +4,8 @@
     Template-based pair list building for nonbond energy components.
 
     Provides rebuildPairListImpl<Component> that factors out the heavy lifting
-    shared by EnergyNonbond_O, EnergyRosettaNonbond_O, and EnergyRosettaElec_O:
+    shared by EnergyNonbond_O, EnergyRosettaNonbond_O, EnergyRosettaElec_O, and
+    EnergyRosettaLKSolvation_O:
       - Cell-list spatial hashing for O(N) neighbor finding
       - Distance screening
       - Bond/angle/1-4 exclusion checks
@@ -440,11 +441,10 @@ core::T_mv rebuildPairListFromNeighborsImpl(Component* comp, core::T_sp tcoordin
   comp->clearTerms();
 
 #ifdef PAIRLIST_CACHED
-  // NOT optional, and omitting it is why this path first failed with "LKSolvation term cache miss
-  // for slot pair 8,0 of 0".  tryAddTermCached reads _TypeSlot and indexes _TermCache by
-  // _NTypeSlots; ensureParameterCache is what fills both.  Without it _NTypeSlots stays 0 while
-  // _TypeSlot may still hold slots from an earlier build, so the lookup runs off a zero-sized
-  // table.  Both grid paths call it in the same position - see the two sites below.
+  // NOT optional.  LK tryAddTermCached reads the AtomTable's shared type slots and appends a
+  // compact index into its shared coefficient table; ensureParameterCache prepares both before
+  // the first pair is considered.  The other cached components use the same hook for their own
+  // parameter caches.  Both grid paths call it in the same position - see the two sites below.
   comp->ensureParameterCache();
 #endif
 

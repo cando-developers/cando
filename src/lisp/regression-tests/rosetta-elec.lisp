@@ -197,6 +197,129 @@
               :rcut (getf params :rcut)
               :rpairlist (getf params :rpairlist))))
 
+(defun rosetta-elec--nvector-ref (vector index)
+  "Return scalar INDEX from the packed XYZ NVECTOR VECTOR."
+  (let* ((base (* 3 (floor index 3)))
+         (component (mod index 3))
+         (value (geom:vec-array vector base)))
+    (ecase component
+      (0 (geom:get-x value))
+      (1 (geom:get-y value))
+      (2 (geom:get-z value)))))
+
+(defun rosetta-elec--nvector-set (vector index new-value)
+  "Set scalar INDEX in the packed XYZ NVECTOR VECTOR to NEW-VALUE."
+  (let* ((base (* 3 (floor index 3)))
+         (component (mod index 3))
+         (value (geom:vec-array vector base))
+         (x (geom:get-x value))
+         (y (geom:get-y value))
+         (z (geom:get-z value)))
+    (ecase component
+      (0 (setf x new-value))
+      (1 (setf y new-value))
+      (2 (setf z new-value)))
+    (geom:vec-set (geom:vec x y z) vector base)))
+
+(defun rosetta-elec--error-ratio (actual expected absolute-tolerance relative-tolerance)
+  "Return a normalized error; values at or below one are within tolerance."
+  (/ (abs (- actual expected))
+     (+ absolute-tolerance
+        (* relative-tolerance
+           (max (abs actual) (abs expected))))))
+
+(defun rosetta-elec--interior-distances (params)
+  "Return one distance safely inside each piece of the electrostatic potential."
+  (let ((rmin (getf params :rmin))
+        (rlow (getf params :rlow))
+        (rhi (getf params :rhi))
+        (rcut (getf params :rcut))
+        (rpairlist (getf params :rpairlist)))
+    (list (* 0.8d0 rmin)
+          (* 0.5d0 (+ rmin rlow))
+          (* 0.5d0 (+ rlow rhi))
+          (* 0.5d0 (+ rhi rcut))
+          (* 0.5d0 (+ rcut rpairlist)))))
+
+(defun rosetta-elec--finite-difference-errors (energy-function position
+                                               &key (step 1.0d-5))
+  "Compare analytic force and HESSIAN*D against central finite differences.
+
+Return three values: the energy from the analytic Hessian evaluation, the
+largest normalized force error, and the largest normalized HESSIAN*D error."
+  (let* ((size (chem:get-nvector-size energy-function))
+         ;; Moving both atoms differently exercises diagonal, transverse, and
+         ;; cross-atom Hessian entries rather than only the radial x entries.
+         (direction #(0.31d0 -0.47d0 0.23d0 -0.19d0 0.41d0 -0.37d0))
+         (origin (make-array size :element-type 'double-float))
+         (dvec (chem:make-nvector size))
+         (analytic-force (chem:make-nvector size))
+         (numerical-force (chem:make-nvector size))
+         (analytic-hdvec (chem:make-nvector size))
+         (force-plus (chem:make-nvector size))
+         (force-minus (chem:make-nvector size)))
+    (unless (= size (length direction))
+      (error "The Rosetta electrostatic finite-difference test expected ~d coordinates, not ~d"
+             (length direction) size))
+    (dotimes (coordinate size)
+      (setf (aref origin coordinate)
+            (rosetta-elec--nvector-ref position coordinate))
+      (rosetta-elec--nvector-set dvec coordinate
+                                 (aref direction coordinate)))
+    (let ((energy
+            (chem:scoring-function/evaluate-all
+             energy-function position
+             :calc-force t
+             :force analytic-force
+             :calc-diagonal-hessian t
+             :calc-off-diagonal-hessian t
+             :hdvec analytic-hdvec
+             :dvec dvec)))
+      ;; The built-in numerical-force path differentiates the same complete
+      ;; energy function.  The test disables every component except elec.
+      (chem:evaluate-finite-difference-force
+       energy-function position :force numerical-force :delta step)
+      ;; H*d = -d(force)/dt because Cando's force is minus the gradient.
+      (unwind-protect
+           (progn
+             (dotimes (coordinate size)
+               (rosetta-elec--nvector-set
+                position coordinate
+                (+ (aref origin coordinate)
+                   (* step (aref direction coordinate)))))
+             (chem:evaluate-energy-force
+              energy-function position :calc-force t :force force-plus)
+             (dotimes (coordinate size)
+               (rosetta-elec--nvector-set
+                position coordinate
+                (- (aref origin coordinate)
+                   (* step (aref direction coordinate)))))
+             (chem:evaluate-energy-force
+              energy-function position :calc-force t :force force-minus))
+        (dotimes (coordinate size)
+          (rosetta-elec--nvector-set position coordinate
+                                     (aref origin coordinate))))
+      (let ((maximum-force-error 0.0d0)
+            (maximum-hdvec-error 0.0d0))
+        (dotimes (coordinate size)
+          (setf maximum-force-error
+                (max maximum-force-error
+                     (rosetta-elec--error-ratio
+                      (rosetta-elec--nvector-ref analytic-force coordinate)
+                      (rosetta-elec--nvector-ref numerical-force coordinate)
+                      2.0d-6 2.0d-7)))
+          (let ((numerical-hdvec
+                  (- (/ (- (rosetta-elec--nvector-ref force-plus coordinate)
+                             (rosetta-elec--nvector-ref force-minus coordinate))
+                          (* 2.0d0 step)))))
+            (setf maximum-hdvec-error
+                  (max maximum-hdvec-error
+                       (rosetta-elec--error-ratio
+                        (rosetta-elec--nvector-ref analytic-hdvec coordinate)
+                        numerical-hdvec
+                        2.0d-5 2.0d-6)))))
+        (values energy maximum-force-error maximum-hdvec-error)))))
+
 (defun rosetta-elec-generate-xy-pairs (&key (elec-weights (list 0.5d0 1.0d0 2.0d0))
                                             (charge1 1.0d0)
                                             (charge2 -1.0d0)
@@ -328,3 +451,91 @@ separates each elec-weight series with a comment line."
                             (setf all-ok nil)))))))
   #+tests
   (test-true rosetta-elec-energy-scan all-ok))
+
+;;; Exercise charge scaling, nondefault shared parameters, and the generated
+;;; gradient/Hessian kernels.  The independent reference above deliberately
+;;; retains the original per-term coefficient calculation; it is the baseline
+;;; for a shared unit-charge (starred-coefficient) implementation.
+(let* ((parameter-sets
+         (list (rosetta-elec--params)
+               (rosetta-elec--params
+                :elec-weight 1.7d0
+                :eps-core 4.2d0
+                :eps-solvent 63.0d0
+                :rmin 1.25d0
+                :rlow 1.95d0
+                :rhi 4.1d0
+                :rcut 5.25d0
+                :rpairlist 7.0d0)))
+       (charge-pairs '((1.0d0 -1.0d0)
+                       (0.37d0 0.82d0)
+                       (-0.61d0 0.44d0)
+                       (0.0d0 0.73d0)))
+       (energy-ok t)
+       (force-ok t)
+       (hessian-ok t))
+  (rosetta-elec--ensure-force-field)
+  (dolist (params parameter-sets)
+    (dolist (charges charge-pairs)
+      (destructuring-bind (charge1 charge2) charges
+        (let* ((distances (rosetta-elec--interior-distances params))
+               (initial-distance (first distances)))
+          (multiple-value-bind (aggregate atom1 atom2)
+              (rosetta-elec--make-two-atom-aggregate
+               *rosetta-elec-test-force-field*
+               *rosetta-elec-test-type*
+               :charge1 charge1
+               :charge2 charge2)
+            ;; Construct the initial pair list at a valid, nonzero separation.
+            (chem:set-position atom1 (geom:vec 0.0d0 0.0d0 0.0d0))
+            (chem:set-position atom2 (geom:vec initial-distance 0.0d0 0.0d0))
+            (let* ((energy-function
+                     (chem:make-energy-function
+                      :matter aggregate
+                      :use-excluded-atoms nil
+                      :assign-types nil
+                      :setup (rosetta-elec--setup params)))
+                   (component (rosetta-elec--component energy-function))
+                   (position
+                     (chem:make-nvector
+                      (chem:get-nvector-size energy-function)))
+                   (kqq (rosetta-elec--kqq charge1 charge2))
+                   (reference-term (rosetta-elec--term params kqq)))
+              ;; The scoring-function force/Hessian APIs operate over enabled
+              ;; components, so make the component under test the only one.
+              (dolist (other (chem:all-components energy-function))
+                (unless (eq other component)
+                  (chem:disable other)))
+              (dolist (distance distances)
+                (chem:set-position atom1 (geom:vec 0.0d0 0.0d0 0.0d0))
+                (chem:set-position atom2 (geom:vec distance 0.0d0 0.0d0))
+                (chem:load-coordinates-into-vector energy-function position)
+                (multiple-value-bind (actual-energy force-error hessian-error)
+                    (rosetta-elec--finite-difference-errors
+                     energy-function position)
+                  (let* ((expected-energy
+                           (rosetta-elec--expected-energy
+                            distance reference-term params))
+                         (energy-error
+                           (rosetta-elec--error-ratio
+                            actual-energy expected-energy 1.0d-8 1.0d-11)))
+                    (unless (<= energy-error 1.0d0)
+                      (setf energy-ok nil))
+                    (unless (<= force-error 1.0d0)
+                      (setf force-ok nil))
+                    (unless (<= hessian-error 1.0d0)
+                      (setf hessian-ok nil))
+                    (when (or (> energy-error 1.0d0)
+                              (> force-error 1.0d0)
+                              (> hessian-error 1.0d0))
+                      #-tests
+                      (format t
+                              "Rosetta elec mismatch for params ~s, charges (~s ~s), distance ~s: energy ratio ~s, force ratio ~s, Hessian*d ratio ~s~%"
+                              params charge1 charge2 distance
+                              energy-error force-error hessian-error)))))))))))
+  #+tests
+  (test-true rosetta-elec-charge-and-parameter-scan energy-ok)
+  #+tests
+  (test-true rosetta-elec-force-finite-difference force-ok)
+  #+tests
+  (test-true rosetta-elec-hessian-vector-finite-difference hessian-ok))

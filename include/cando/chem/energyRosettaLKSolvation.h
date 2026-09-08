@@ -38,6 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #pragma once
 
 #include <stdio.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <set>
@@ -57,15 +58,60 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
   FORWARD(EnergyFunction); // Declares class EnergyFunction_O {} and EnergyFunction_sp
   FORWARD(EnergyRosettaLKSolvation);
+  FORWARD(RosettaLKTermCache);
   FORWARD(FFNonbondDb);
   FORWARD(AtomTable);
 
-  /*! A Rosetta LK solvation term
+  /*! The immutable coefficient table shared by every LK component over one AtomTable.
+   *
+   * There is deliberately no lock here.  A blueprint and all of its energy components are owned
+   * by one worker thread; concurrently constructing caches on the same AtomTable is unsupported.
+   */
+  class RosettaLKTermCache_O : public core::CxxObject_O {
+    LISP_CLASS(chem, ChemPkg, RosettaLKTermCache_O, "RosettaLKTermCache", core::CxxObject_O);
+  public:
+    size_t _Generation = 0;
+    size_t _NTypeSlots = 0;
+    double _C0 = 0.0;
+    double _C1 = 0.0;
+    double _RSolvLow = 0.0;
+    double _RSolvHigh = 0.0;
+    gctools::Vec0<rosetta_lk_solvation_term> _Terms;
+
+    RosettaLKTermCache_O() : _Terms(true) {}
+
+    bool matches(size_t generation, size_t nTypeSlots,
+                 const rosetta_lk_solvation_parameters& params) const {
+      return this->_Generation == generation
+          && this->_NTypeSlots == nTypeSlots
+          && this->_C0 == params.c0
+          && this->_C1 == params.c1
+          && this->_RSolvLow == params.r_solv_low
+          && this->_RSolvHigh == params.r_solv_high;
+    }
+  };
+
+  /*! The component-specific portion of an LK pair.
+   *
+   * CACHEINDEX selects the immutable coefficients in the AtomTable's shared cache.  The atom
+   * pointers are recoverable as AtomTable->_Atoms[I3X/3].atom(), so retaining them here would be
+   * redundant as well.
+   */
+  struct RosettaLKPair {
+    uint32_t i3x1;
+    uint32_t i3x2;
+    uint32_t cacheIndex;
+  };
+  static_assert(sizeof(RosettaLKPair) == 12, "RosettaLKPair must remain a compact triple");
+
+  /*! A standalone Rosetta LK solvation term retained for the legacy construction interface.
    */
   class EnergyRosettaLKSolvation : public EnergyTerm {
   public:
     Atom_sp                  _Atom1_enb;
     Atom_sp                  _Atom2_enb;
+    uint32_t                 _I3x1;
+    uint32_t                 _I3x2;
     rosetta_lk_solvation_term term;
   public:
     string className() { return "EnergyRosettaLKSolvation"; };
@@ -128,7 +174,7 @@ namespace chem {
     void initialize();
 
   public:
-    typedef EnergyRosettaLKSolvation TermType;
+    typedef RosettaLKPair TermType;
 
   public: // instance variables
     gctools::Vec0<TermType>     _Terms;
@@ -138,61 +184,18 @@ namespace chem {
     // Rosetta parameters (used to construct terms)
     rosetta_lk_solvation_parameters _Parameters;
 
-    // The term is a pure function of the two atoms' LK parameters (dGfree,
-    // lambda, radius, volume), which are resolved from :lk-solvation-atom-type
-    // and are therefore per-TYPE.  So collapse the distinct parameter tuples
-    // into slots and precompute the term for every ordered slot pair - the term
-    // is NOT symmetric in i/j (atom i desolvated by j differs from j by i), so
-    // the table is full nt x nt, not triangular.
-    gctools::Vec0<int>                        _TypeSlot;    // atom index -> slot, -1 = no params
-    size_t                                    _NTypeSlots = 0;
-    gctools::Vec0<rosetta_lk_solvation_term>  _TermCache;   // _NTypeSlots^2, row-major
-    gctools::Vec0<char>                       _TermCacheValid;
-    core::T_sp          _CachedForAtomTable;   // init nil in ctor
-    //! The AtomTable_O::_LKGeneration this component's _TypeSlot and _TermCache were derived from.
-    //! Not redundant with _CachedForAtomTable: the shared table can be rebuilt IN PLACE on the
-    //! same atom table, and then the pointer still matches while the contents no longer do.
-    size_t              _CachedLKGeneration = (size_t)-1;
+    //! Shared immutable type-pair coefficients; owned by the AtomTable cache bank.
+    RosettaLKTermCache_sp _ParameterCache;
+    //! The AtomTable slot generation used to construct the compact pair cache indices.
+    size_t _PairCacheGeneration = (size_t)-1;
 
   public:
     void ensureParameterCache();   // defined in the .cc
     void invalidateParameterCache() {
-      this->_CachedForAtomTable = nil<core::T_O>();
-      this->_TypeSlot.clear();
-      this->_TermCache.clear();
-      this->_TermCacheValid.clear();
-      this->_NTypeSlots = 0;
-      this->_CachedLKGeneration = (size_t)-1;
+      this->_ParameterCache = nil<RosettaLKTermCache_O>();
     }
-    // Cached hot-path term add: no plist scan, no find-lksolvation-type funcall,
-    // and no rosetta_lk_solvation_term construction - the term for this type
-    // pair was precomputed in ensureParameterCache.
     bool tryAddTermCached(Atom_sp a1, Atom_sp a2, size_t li, size_t lj,
-                          size_t i3x1, size_t i3x2, core::T_sp /*keepInteraction*/) {
-      int s1 = this->_TypeSlot[li];
-      int s2 = this->_TypeSlot[lj];
-      if (s1 < 0)
-        SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
-                     _rep_(a1), _rep_(a1->getProperties()));
-      if (s2 < 0)
-        SIMPLE_ERROR("Could not find LKSolvation parameter for atom {} - property-list {}",
-                     _rep_(a2), _rep_(a2->getProperties()));
-      size_t k = (size_t)s1 * this->_NTypeSlots + (size_t)s2;
-      // ensureParameterCache fills every slot pair, so a miss here is a cache
-      // construction bug - fail loudly rather than silently dropping the pair
-      // (the caller has no else branch and would not count it as discarded).
-      if (!this->_TermCacheValid[k])
-        SIMPLE_ERROR("LKSolvation term cache miss for slot pair {},{} of {} - cache construction bug",
-                     s1, s2, this->_NTypeSlots);
-      TermType term;
-      term._Atom1_enb = a1;
-      term._Atom2_enb = a2;
-      term.term = this->_TermCache[k];     // struct copy - no term arithmetic
-      term.term.i3x1 = (int)i3x1;          // only the geometry-dependent fields
-      term.term.i3x2 = (int)i3x2;
-      this->addTerm(term);
-      return true;
-    }
+                          size_t i3x1, size_t i3x2, core::T_sp keepInteraction);
   public:
     // pairList.h duck-typed interface
     CL_DEFMETHOD double rpairlist() const { return _Parameters.rpairlist; }
@@ -204,16 +207,7 @@ namespace chem {
     void clearTerms() { _Terms.clear(); }
 
     bool tryAddTerm(Atom_sp a1, Atom_sp a2, size_t i3x1, size_t i3x2,
-                    core::T_sp keepInteraction) {
-      EnergyRosettaLKSolvation term;
-      if (term.defineForAtomPair(_LKSolvationForceField, a1, a2, i3x1, i3x2,
-                                 this->asSmartPtr(), _AtomTypes,
-                                 keepInteraction, _Parameters)) {
-        addTerm(term);
-        return true;
-      }
-      return false;
-    }
+                    core::T_sp keepInteraction);
   public:
     virtual std::string implementation_details() const;
     virtual std::string descriptionOfContents() const;
@@ -282,7 +276,8 @@ namespace chem {
     EnergyRosettaLKSolvation_O(const EnergyRosettaLKSolvation_O& ss); //!< Copy constructor
 
     EnergyRosettaLKSolvation_O() :
-        _CachedForAtomTable(nil<core::T_O>())
+        _Terms(true),
+        _ParameterCache(nil<RosettaLKTermCache_O>())
     {};
   };
 

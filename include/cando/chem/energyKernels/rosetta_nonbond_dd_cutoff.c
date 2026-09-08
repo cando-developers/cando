@@ -507,7 +507,7 @@ double hessian(const rosetta_nonbond_parameters& params, const rosetta_nonbond_t
           double cse_p60_t57_g5084 = (sr2 * sr2 * sr2);
           double sr6 = cse_p60_t57_g5084;
           double cse_p60_t2_g5029 = (-2.0 * sr6);
-          double cse_p60_t3_g5030 = (-42.0 * sr6);
+          double cse_p60_t3_g5030 = (-84.0 * sr6);
           double cse_p60_t4_g5031 = (12.0 * sr6);
           double cse_p60_t58_g5085 = (sr6 * sr6);
           double sr12 = cse_p60_t58_g5085;
@@ -655,7 +655,7 @@ double hessian(const rosetta_nonbond_parameters& params, const rosetta_nonbond_t
             double de_dr = (cse_p1015_t2_invr90234 * term.epsilon * ((-12.0 * sr12) + (12.0 * sr6)));
             double cse_p11_t1_g110 = (rr * rr);
             double cse_p1015_t3_invr90235 = (1.0 / (cse_p11_t1_g110));
-            double d2e_dr2 = (cse_p1015_t3_invr90235 * term.epsilon * ((-42.0 * sr6) + (156.0 * sr12)));
+            double d2e_dr2 = (cse_p1015_t3_invr90235 * term.epsilon * ((-84.0 * sr6) + (156.0 * sr12)));
             double energy = fa_atr;
             energy_added += energy;
             *energy_accumulate += energy;

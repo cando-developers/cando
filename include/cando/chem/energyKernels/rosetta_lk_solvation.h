@@ -42,14 +42,10 @@ struct rosetta_lk_solvation_term {
   double bb_high_j;
   double cc_high_j;
   double dd_high_j;
-  int i3x1;
-  int i3x2;
   rosetta_lk_solvation_term() {}
-  rosetta_lk_solvation_term(const rosetta_lk_solvation_parameters& params, double lk_dgfree_i, double lk_lambda_i, double lj_radius_i, double lk_volume_i, double lk_dgfree_j, double lk_lambda_j, double lj_radius_j, double lk_volume_j, int i3x1, int i3x2) {
+  rosetta_lk_solvation_term(const rosetta_lk_solvation_parameters& params, double lk_dgfree_i, double lk_lambda_i, double lj_radius_i, double lk_volume_i, double lk_dgfree_j, double lk_lambda_j, double lj_radius_j, double lk_volume_j) {
     this->lj_radius_i = lj_radius_i;
     this->lj_radius_j = lj_radius_j;
-    this->i3x1 = i3x1;
-    this->i3x2 = i3x2;
     double sigmaij = (lj_radius_i + lj_radius_j);
     this->sigmaij = sigmaij;
     double r0_low = (sigmaij + (-(params.c0)));
@@ -198,8 +194,6 @@ struct rosetta_lk_solvation_term {
         << INTERN_(kw, bb_high_j) << core::clasp_make_double_float(this->bb_high_j)
         << INTERN_(kw, cc_high_j) << core::clasp_make_double_float(this->cc_high_j)
         << INTERN_(kw, dd_high_j) << core::clasp_make_double_float(this->dd_high_j)
-        << INTERN_(kw, i1) << core::make_fixnum(this->i3x1)
-        << INTERN_(kw, i2) << core::make_fixnum(this->i3x2)
         ;
   }
 };

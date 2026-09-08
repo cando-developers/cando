@@ -189,7 +189,7 @@ core::Symbol_sp chemkw_intern(const string &symName) {
   if (trimmed == ",") {
     printf("%s:%d chemkw_intern of %s @%p\n", __FILE__, __LINE__, trimmed.c_str(), (void *)strimmed.raw_());
   }
-  core::Symbol_sp sym = chemkwPkg->intern(strimmed).as<core::Symbol_O>();
+  core::Symbol_sp sym = gctools::As<core::Symbol_sp>(chemkwPkg->intern(strimmed));
   chemkwPkg->_export2(sym);
   return sym;
 }

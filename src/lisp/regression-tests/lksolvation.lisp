@@ -288,6 +288,19 @@ and cubic Hermite splines at the transition boundaries."
                (chem:all-components energy-function))
       (error "No rosetta lksolvation component found in energy-function")))
 
+(defun lksolvation--interior-distances ()
+  "Return one distance strictly inside each piece of the LK potential."
+  (let* ((sigma-ij (+ *lk-test-lj-radius* *lk-test-lj-radius*))
+         (r0-low (- sigma-ij *lk-c0*))
+         (r1-low (+ sigma-ij *lk-c1*))
+         (r2-high *lk-r-solv-low*)
+         (r3-high *lk-r-solv-high*))
+    (list (* 0.8d0 r0-low)
+          (* 0.5d0 (+ r0-low r1-low))
+          (* 0.5d0 (+ r1-low r2-high))
+          (* 0.5d0 (+ r2-high r3-high))
+          (+ r3-high 0.5d0))))
+
 ;;; ============================================================================
 ;;; XY pair generation (for plotting/debugging)
 ;;; ============================================================================
@@ -379,7 +392,7 @@ Returns a list of (distance energy) pairs."
                           (* 0.99d0 r0-low) ; just inside contact region
                           (* 0.5d0 (+ r0-low r1-low)) ; middle of low spline
                           (* 0.5d0 (+ r1-low r2-high)) ; middle of Gaussian region
-                          3.5d0         ; another Gaussian point
+                          4.3d0         ; another Gaussian point
                           (* 0.5d0 (+ r2-high r3-high)) ; middle of high spline
                           5.8d0             ; near end of high spline
                           (+ r3-high 0.5d0))) ; beyond cutoff (zero)
@@ -421,4 +434,79 @@ Returns a list of (distance energy) pairs."
     #+tests
     (test-true lksolvation-energy-scan all-ok)))
 
+(defun test-lksolvation-derivatives ()
+  "Check LK force, every Hessian entry, and a dense Hessian-vector product."
+  (let ((distances (lksolvation--interior-distances))
+        (energy-ok t)
+        (force-ok t)
+        (hessian-ok t)
+        (hdvec-ok t))
+    (lksolvation--ensure-force-field)
+    (multiple-value-bind (aggregate atom1 atom2)
+        (lksolvation--make-two-atom-aggregate *lk-test-type*)
+      ;; Give pair-list construction a valid initial geometry.
+      (pairwise-derivatives--set-oblique-separation
+       atom1 atom2 (first distances))
+      (let* ((setup
+               (list :rosetta
+                     (list 'chem:energy-rosetta-lksolvation)))
+             (energy-function
+               (chem:make-energy-function
+                :matter aggregate
+                :use-excluded-atoms nil
+                :assign-types nil
+                :setup setup))
+             (component (lksolvation--component energy-function))
+             (position
+               (chem:make-nvector
+                (chem:get-nvector-size energy-function))))
+        ;; The scoring-function derivative API evaluates every enabled
+        ;; component, so isolate the component under test.
+        (dolist (other (chem:all-components energy-function))
+          (unless (eq other component)
+            (chem:disable other)))
+        (dolist (distance distances)
+          (pairwise-derivatives--set-oblique-separation
+           atom1 atom2 distance)
+          (chem:load-coordinates-into-vector energy-function position)
+          (multiple-value-bind
+                (actual-energy force-error hessian-error hdvec-error)
+              (pairwise-derivatives--finite-difference-errors
+               energy-function position)
+            (let* ((expected-energy
+                     (lksolvation--expected-energy
+                      distance
+                      *lk-test-lj-radius* *lk-test-lk-dgfree*
+                      *lk-test-lk-lambda* *lk-test-lk-volume*
+                      *lk-test-lj-radius* *lk-test-lk-dgfree*
+                      *lk-test-lk-lambda* *lk-test-lk-volume*))
+                   (energy-error
+                     (pairwise-derivatives--error-ratio
+                      actual-energy expected-energy 1.0d-8 1.0d-11)))
+              (unless (<= energy-error 1.0d0)
+                (setf energy-ok nil))
+              (unless (<= force-error 1.0d0)
+                (setf force-ok nil))
+              (unless (<= hessian-error 1.0d0)
+                (setf hessian-ok nil))
+              (unless (<= hdvec-error 1.0d0)
+                (setf hdvec-ok nil))
+              (when (or (> energy-error 1.0d0)
+                        (> force-error 1.0d0)
+                        (> hessian-error 1.0d0)
+                        (> hdvec-error 1.0d0))
+                (format t
+                        "LK solvation mismatch for distance ~s: energy ratio ~s, force ratio ~s, Hessian ratio ~s, H*d ratio ~s~%"
+                        distance energy-error force-error
+                        hessian-error hdvec-error)))))))
+    #+tests
+    (test-true lksolvation-derivative-energy-scan energy-ok)
+    #+tests
+    (test-true lksolvation-force-finite-difference force-ok)
+    #+tests
+    (test-true lksolvation-hessian-columns-finite-difference hessian-ok)
+    #+tests
+    (test-true lksolvation-hessian-vector-finite-difference hdvec-ok)))
+
 (test-lksolvation)
+(test-lksolvation-derivatives)

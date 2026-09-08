@@ -49,6 +49,10 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/chemPackage.h>
 
+namespace chem {
+SMART(SparseLargeSquareMatrix);
+};
+
 template <>
 struct gctools::GCInfo<chem::SparseLargeSquareMatrix_O> {
   static bool constexpr CanAllocateWithNoArguments = true;
@@ -210,7 +214,6 @@ inline	FullLargeSquareMatrix_sp new_FullLargeSquareMatrix_sp(const FullLargeSqua
 
 
 
-SMART(SparseLargeSquareMatrix);
 class SparseLargeSquareMatrix_O : public AbstractLargeSquareMatrix_O
 {
   LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix",AbstractLargeSquareMatrix_O);

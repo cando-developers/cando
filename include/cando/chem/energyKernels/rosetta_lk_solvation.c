@@ -5,16 +5,16 @@ struct Rosetta_Lk_Solvation {
   static constexpr size_t PositionSize = 6;
   static constexpr size_t EnergyAccumulatorSize = 1;
   static std::string description() { return "mathkernel-rosetta_lk_solvation"; };
-double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, double* position, double* energy_accumulate, double* force) {
+double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, int i3x1, int i3x2, double* position, double* energy_accumulate, double* force) {
   double energy_added = 0.0;
   {
     /* !BASE */
-    DOUBLE x1 = position[term.i3x1 + 0];
-    DOUBLE y1 = position[term.i3x1 + 1];
-    DOUBLE z1 = position[term.i3x1 + 2];
-    DOUBLE x2 = position[term.i3x2 + 0];
-    DOUBLE y2 = position[term.i3x2 + 1];
-    DOUBLE z2 = position[term.i3x2 + 2];
+    DOUBLE x1 = position[i3x1 + 0];
+    DOUBLE y1 = position[i3x1 + 1];
+    DOUBLE z1 = position[i3x1 + 2];
+    DOUBLE x2 = position[i3x2 + 0];
+    DOUBLE y2 = position[i3x2 + 1];
+    DOUBLE z2 = position[i3x2 + 2];
     {
       /* !BASE */
       double dx = (x1 + (-(x2)));
@@ -40,17 +40,17 @@ double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_
         double cse_p60_t6_g1046 = (cse_p11_t1_g23 * dy);
         double cse_p60_t7_g1047 = (cse_p11_t1_g23 * dz);
         double g_x1 = cse_p60_t5_g1045;
-        KernelGradientAcc(term.i3x1, 0, g_x1);
+        KernelGradientAcc(i3x1, 0, g_x1);
         double g_y1 = cse_p60_t6_g1046;
-        KernelGradientAcc(term.i3x1, 1, g_y1);
+        KernelGradientAcc(i3x1, 1, g_y1);
         double g_z1 = cse_p60_t7_g1047;
-        KernelGradientAcc(term.i3x1, 2, g_z1);
+        KernelGradientAcc(i3x1, 2, g_z1);
         double g_x2 = cse_p60_t1_g1061;
-        KernelGradientAcc(term.i3x2, 0, g_x2);
+        KernelGradientAcc(i3x2, 0, g_x2);
         double g_y2 = cse_p60_t3_g1043;
-        KernelGradientAcc(term.i3x2, 1, g_y2);
+        KernelGradientAcc(i3x2, 1, g_y2);
         double g_z2 = cse_p60_t4_g1044;
-        KernelGradientAcc(term.i3x2, 2, g_z2);
+        KernelGradientAcc(i3x2, 2, g_z2);
       } else {
         /* !COND-ELSE-1 */
         if ((rr <= term.r1_low)) {
@@ -62,18 +62,18 @@ double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_
           double cse_p1005_t1_invr20006 = (1.0 / (rr));
           double cse_p60_t1_g1041 = (cse_p1005_t1_invr20006 * de_dr);
           double g_x1 = (cse_p60_t1_g1041 * dx);
-          KernelGradientAcc(term.i3x1, 0, g_x1);
+          KernelGradientAcc(i3x1, 0, g_x1);
           double g_y1 = (cse_p60_t1_g1041 * dy);
-          KernelGradientAcc(term.i3x1, 1, g_y1);
+          KernelGradientAcc(i3x1, 1, g_y1);
           double g_z1 = (cse_p60_t1_g1041 * dz);
-          KernelGradientAcc(term.i3x1, 2, g_z1);
+          KernelGradientAcc(i3x1, 2, g_z1);
           double cse_p12_t1_g53 = (cse_p60_t1_g1041 * (-(dx)));
           double g_x2 = cse_p12_t1_g53;
-          KernelGradientAcc(term.i3x2, 0, g_x2);
+          KernelGradientAcc(i3x2, 0, g_x2);
           double g_y2 = (cse_p60_t1_g1041 * (-(dy)));
-          KernelGradientAcc(term.i3x2, 1, g_y2);
+          KernelGradientAcc(i3x2, 1, g_y2);
           double g_z2 = (cse_p60_t1_g1041 * (-(dz)));
-          KernelGradientAcc(term.i3x2, 2, g_z2);
+          KernelGradientAcc(i3x2, 2, g_z2);
         } else {
           /* !COND-ELSE-2 */
           if ((rr <= term.r2_high)) {
@@ -99,18 +99,18 @@ double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_
             double de_dr = (dfi + dfj);
             double cse_p11_t1_g23 = (cse_p1005_t1_invr20006 * de_dr);
             double g_x1 = (cse_p11_t1_g23 * dx);
-            KernelGradientAcc(term.i3x1, 0, g_x1);
+            KernelGradientAcc(i3x1, 0, g_x1);
             double g_y1 = (cse_p11_t1_g23 * dy);
-            KernelGradientAcc(term.i3x1, 1, g_y1);
+            KernelGradientAcc(i3x1, 1, g_y1);
             double g_z1 = (cse_p11_t1_g23 * dz);
-            KernelGradientAcc(term.i3x1, 2, g_z1);
+            KernelGradientAcc(i3x1, 2, g_z1);
             double cse_p60_t1_g1061 = (cse_p11_t1_g23 * (-(dx)));
             double g_x2 = cse_p60_t1_g1061;
-            KernelGradientAcc(term.i3x2, 0, g_x2);
+            KernelGradientAcc(i3x2, 0, g_x2);
             double g_y2 = (cse_p11_t1_g23 * (-(dy)));
-            KernelGradientAcc(term.i3x2, 1, g_y2);
+            KernelGradientAcc(i3x2, 1, g_y2);
             double g_z2 = (cse_p11_t1_g23 * (-(dz)));
-            KernelGradientAcc(term.i3x2, 2, g_z2);
+            KernelGradientAcc(i3x2, 2, g_z2);
           } else {
             /* !COND-ELSE-3 */
             if ((rr <= term.r3_high)) {
@@ -122,18 +122,18 @@ double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_
               double cse_p1005_t1_invr20006 = (1.0 / (rr));
               double cse_p11_t1_g23 = (cse_p1005_t1_invr20006 * de_dr);
               double g_x1 = (cse_p11_t1_g23 * dx);
-              KernelGradientAcc(term.i3x1, 0, g_x1);
+              KernelGradientAcc(i3x1, 0, g_x1);
               double g_y1 = (cse_p11_t1_g23 * dy);
-              KernelGradientAcc(term.i3x1, 1, g_y1);
+              KernelGradientAcc(i3x1, 1, g_y1);
               double g_z1 = (cse_p11_t1_g23 * dz);
-              KernelGradientAcc(term.i3x1, 2, g_z1);
+              KernelGradientAcc(i3x1, 2, g_z1);
               double cse_p60_t1_g1061 = (cse_p11_t1_g23 * (-(dx)));
               double g_x2 = cse_p60_t1_g1061;
-              KernelGradientAcc(term.i3x2, 0, g_x2);
+              KernelGradientAcc(i3x2, 0, g_x2);
               double g_y2 = (cse_p11_t1_g23 * (-(dy)));
-              KernelGradientAcc(term.i3x2, 1, g_y2);
+              KernelGradientAcc(i3x2, 1, g_y2);
               double g_z2 = (cse_p11_t1_g23 * (-(dz)));
-              KernelGradientAcc(term.i3x2, 2, g_z2);
+              KernelGradientAcc(i3x2, 2, g_z2);
             } else {
               /* !COND-ELSE-4 */
               {
@@ -143,19 +143,19 @@ double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_
                 *energy_accumulate += energy;
                 double de_dr = 0.0;
                 double g_x1 = (de_dr * dx * (1.0 / (rr)));
-                KernelGradientAcc(term.i3x1, 0, g_x1);
+                KernelGradientAcc(i3x1, 0, g_x1);
                 double cse_p1005_t1_invr20006 = (1.0 / (rr));
                 double g_y1 = (cse_p1005_t1_invr20006 * de_dr * dy);
-                KernelGradientAcc(term.i3x1, 1, g_y1);
+                KernelGradientAcc(i3x1, 1, g_y1);
                 double cse_p11_t1_g23 = (cse_p1005_t1_invr20006 * de_dr);
                 double g_z1 = (cse_p11_t1_g23 * dz);
-                KernelGradientAcc(term.i3x1, 2, g_z1);
+                KernelGradientAcc(i3x1, 2, g_z1);
                 double g_x2 = (cse_p11_t1_g23 * (-(dx)));
-                KernelGradientAcc(term.i3x2, 0, g_x2);
+                KernelGradientAcc(i3x2, 0, g_x2);
                 double g_y2 = (cse_p11_t1_g23 * (-(dy)));
-                KernelGradientAcc(term.i3x2, 1, g_y2);
+                KernelGradientAcc(i3x2, 1, g_y2);
                 double g_z2 = (cse_p11_t1_g23 * (-(dz)));
-                KernelGradientAcc(term.i3x2, 2, g_z2);
+                KernelGradientAcc(i3x2, 2, g_z2);
               }
             }
           }
@@ -165,98 +165,98 @@ double gradient(const rosetta_lk_solvation_parameters& params, const rosetta_lk_
   }
   return energy_added;
 }
-void gradient_fd(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, double* position, double* energy_accumulate, double* force)
+void gradient_fd(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, int i3x1, int i3x2, double* position, double* energy_accumulate, double* force)
 {
   constexpr size_t PositionSize = 6;
   const double h = 1.0e-5;
   const double inv2h = 1.0/(2.0*h);
   double e0[EnergyAccumulatorSize] = {0.0};
-  energy(params, term, position, e0);
+  energy(params, term, i3x1, i3x2, position, e0);
   if (energy_accumulate) { *energy_accumulate += e0[0]; }
   {
-    double saved = position[term.i3x1 + 0];
+    double saved = position[i3x1 + 0];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 0] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 0] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 0] = saved;
+    position[i3x1 + 0] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 0] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 0] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x1, 0, d);
+    KernelGradientAcc(i3x1, 0, d);
   }
   {
-    double saved = position[term.i3x1 + 1];
+    double saved = position[i3x1 + 1];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 1] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 1] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 1] = saved;
+    position[i3x1 + 1] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 1] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 1] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x1, 1, d);
+    KernelGradientAcc(i3x1, 1, d);
   }
   {
-    double saved = position[term.i3x1 + 2];
+    double saved = position[i3x1 + 2];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 2] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 2] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 2] = saved;
+    position[i3x1 + 2] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 2] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 2] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x1, 2, d);
+    KernelGradientAcc(i3x1, 2, d);
   }
   {
-    double saved = position[term.i3x2 + 0];
+    double saved = position[i3x2 + 0];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 0] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 0] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 0] = saved;
+    position[i3x2 + 0] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 0] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 0] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x2, 0, d);
+    KernelGradientAcc(i3x2, 0, d);
   }
   {
-    double saved = position[term.i3x2 + 1];
+    double saved = position[i3x2 + 1];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 1] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 1] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 1] = saved;
+    position[i3x2 + 1] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 1] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 1] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x2, 1, d);
+    KernelGradientAcc(i3x2, 1, d);
   }
   {
-    double saved = position[term.i3x2 + 2];
+    double saved = position[i3x2 + 2];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 2] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 2] = saved;
+    position[i3x2 + 2] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 2] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 2] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x2, 2, d);
+    KernelGradientAcc(i3x2, 2, d);
   }
 }
 
-double energy(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, double* position, double* energy_accumulate) {
+double energy(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, int i3x1, int i3x2, double* position, double* energy_accumulate) {
   double energy_added = 0.0;
   {
     /* !BASE */
-    DOUBLE x1 = position[term.i3x1 + 0];
-    DOUBLE y1 = position[term.i3x1 + 1];
-    DOUBLE z1 = position[term.i3x1 + 2];
-    DOUBLE x2 = position[term.i3x2 + 0];
-    DOUBLE y2 = position[term.i3x2 + 1];
-    DOUBLE z2 = position[term.i3x2 + 2];
+    DOUBLE x1 = position[i3x1 + 0];
+    DOUBLE y1 = position[i3x1 + 1];
+    DOUBLE z1 = position[i3x1 + 2];
+    DOUBLE x2 = position[i3x2 + 0];
+    DOUBLE y2 = position[i3x2 + 1];
+    DOUBLE z2 = position[i3x2 + 2];
     {
       /* !BASE */
       double dx = (x1 + (-(x2)));
@@ -318,21 +318,21 @@ double energy(const rosetta_lk_solvation_parameters& params, const rosetta_lk_so
   }
   return energy_added;
 }
-void energy_fd(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, double* position, double* energy_accumulate)
+void energy_fd(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, int i3x1, int i3x2, double* position, double* energy_accumulate)
 {
-  energy(params, term, position, energy_accumulate);
+  energy(params, term, i3x1, i3x2, position, energy_accumulate);
 }
 
-double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
+double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, int i3x1, int i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec) {
   double energy_added = 0.0;
   {
     /* !BASE */
-    DOUBLE x1 = position[term.i3x1 + 0];
-    DOUBLE y1 = position[term.i3x1 + 1];
-    DOUBLE z1 = position[term.i3x1 + 2];
-    DOUBLE x2 = position[term.i3x2 + 0];
-    DOUBLE y2 = position[term.i3x2 + 1];
-    DOUBLE z2 = position[term.i3x2 + 2];
+    DOUBLE x1 = position[i3x1 + 0];
+    DOUBLE y1 = position[i3x1 + 1];
+    DOUBLE z1 = position[i3x1 + 2];
+    DOUBLE x2 = position[i3x2 + 0];
+    DOUBLE y2 = position[i3x2 + 1];
+    DOUBLE z2 = position[i3x2 + 2];
     {
       /* !BASE */
       double dx = (x1 + (-(x2)));
@@ -435,59 +435,59 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
         double cse_p60_t10_g4207 = (cse_p11_t1_g103 * dy);
         double cse_p60_t11_g4208 = (cse_p11_t1_g103 * dz);
         double g_x1 = cse_p60_t9_g4206;
-        KernelGradientAcc(term.i3x1, 0, g_x1);
+        KernelGradientAcc(i3x1, 0, g_x1);
         double g_y1 = cse_p60_t10_g4207;
-        KernelGradientAcc(term.i3x1, 1, g_y1);
+        KernelGradientAcc(i3x1, 1, g_y1);
         double g_z1 = cse_p60_t11_g4208;
-        KernelGradientAcc(term.i3x1, 2, g_z1);
+        KernelGradientAcc(i3x1, 2, g_z1);
         double g_x2 = cse_p60_t6_g4203;
-        KernelGradientAcc(term.i3x2, 0, g_x2);
+        KernelGradientAcc(i3x2, 0, g_x2);
         double g_y2 = cse_p60_t7_g4204;
-        KernelGradientAcc(term.i3x2, 1, g_y2);
+        KernelGradientAcc(i3x2, 1, g_y2);
         double g_z2 = cse_p60_t8_g4205;
-        KernelGradientAcc(term.i3x2, 2, g_z2);
+        KernelGradientAcc(i3x2, 2, g_z2);
         double h_x1_x1 = cse_p12_t54_g157;
-        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 0, h_x1_x1);
+        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 0, h_x1_x1);
         double h_x1_y1 = cse_p12_t55_g158;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 1, h_x1_y1);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 1, h_x1_y1);
         double h_x1_z1 = cse_p12_t56_g159;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 2, h_x1_z1);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 2, h_x1_z1);
         double h_x1_x2 = cse_p12_t48_g151;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 0, h_x1_x2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 0, h_x1_x2);
         double h_x1_y2 = cse_p12_t59_g162;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 1, h_x1_y2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 1, h_x1_y2);
         double h_x1_z2 = cse_p12_t51_g154;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 2, h_x1_z2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 2, h_x1_z2);
         double h_y1_y1 = cse_p12_t68_g171;
-        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 1, h_y1_y1);
+        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 1, h_y1_y1);
         double h_y1_z1 = cse_p12_t57_g160;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 2, h_y1_z1);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 2, h_y1_z1);
         double h_y1_x2 = cse_p12_t58_g161;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 0, h_y1_x2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 0, h_y1_x2);
         double h_y1_y2 = cse_p12_t49_g152;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 1, h_y1_y2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 1, h_y1_y2);
         double h_y1_z2 = cse_p12_t52_g155;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 2, h_y1_z2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 2, h_y1_z2);
         double h_z1_z1 = cse_p12_t70_g173;
-        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x1, 2, h_z1_z1);
+        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x1, 2, h_z1_z1);
         double h_z1_x2 = cse_p12_t62_g165;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 0, h_z1_x2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 0, h_z1_x2);
         double h_z1_y2 = cse_p12_t64_g167;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 1, h_z1_y2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 1, h_z1_y2);
         double h_z1_z2 = cse_p12_t53_g156;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 2, h_z1_z2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 2, h_z1_z2);
         double h_x2_x2 = cse_p12_t50_g153;
-        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 0, h_x2_x2);
+        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 0, h_x2_x2);
         double h_x2_y2 = cse_p12_t60_g163;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 1, h_x2_y2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 1, h_x2_y2);
         double h_x2_z2 = cse_p12_t61_g164;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 2, h_x2_z2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 2, h_x2_z2);
         double h_y2_y2 = cse_p12_t69_g172;
-        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 1, h_y2_y2);
+        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 1, h_y2_y2);
         double h_y2_z2 = cse_p12_t63_g166;
-        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 2, h_y2_z2);
+        KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 2, h_y2_z2);
         double h_z2_z2 = cse_p12_t71_g174;
-        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 2, term.i3x2, 2, h_z2_z2);
+        KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 2, i3x2, 2, h_z2_z2);
       } else {
         /* !COND-ELSE-1 */
         if ((rr <= term.r1_low)) {
@@ -508,17 +508,17 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
           double cse_p1015_t2_invr78560 = (1.0 / (rr));
           double cse_p60_t1_g4198 = (cse_p1015_t2_invr78560 * de_dr);
           double g_x1 = (cse_p60_t1_g4198 * dx);
-          KernelGradientAcc(term.i3x1, 0, g_x1);
+          KernelGradientAcc(i3x1, 0, g_x1);
           double g_y1 = (cse_p60_t1_g4198 * dy);
-          KernelGradientAcc(term.i3x1, 1, g_y1);
+          KernelGradientAcc(i3x1, 1, g_y1);
           double g_z1 = (cse_p60_t1_g4198 * dz);
-          KernelGradientAcc(term.i3x1, 2, g_z1);
+          KernelGradientAcc(i3x1, 2, g_z1);
           double g_x2 = (cse_p60_t1_g4198 * (-(dx)));
-          KernelGradientAcc(term.i3x2, 0, g_x2);
+          KernelGradientAcc(i3x2, 0, g_x2);
           double g_y2 = (cse_p60_t1_g4198 * (-(dy)));
-          KernelGradientAcc(term.i3x2, 1, g_y2);
+          KernelGradientAcc(i3x2, 1, g_y2);
           double g_z2 = (cse_p60_t1_g4198 * (-(dz)));
-          KernelGradientAcc(term.i3x2, 2, g_z2);
+          KernelGradientAcc(i3x2, 2, g_z2);
           double cse_p11_t1_g94 = (cse_p1015_t2_invr78560 * cse_p1015_t2_invr78560 * d2e_dr2);
           double cse_p60_t12_g4209 = (cse_p11_t1_g94 * (-(dx)));
           double cse_p60_t13_g4210 = (cse_p11_t1_g94 * (-(dy)));
@@ -562,13 +562,13 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
           double cse_p14_t63_g372 = (cse_p60_t29_g4226 * dy);
           double cse_p13_t106_g294 = (cse_p60_t15_g4212 + cse_p60_t24_g4221);
           double h_x1_x1 = cse_p13_t106_g294;
-          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 0, h_x1_x1);
+          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 0, h_x1_x1);
           double h_x1_y1 = cse_p60_t53_g4250;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 1, h_x1_y1);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 1, h_x1_y1);
           double cse_p13_t84_g272 = (cse_p14_t60_g369 + cse_p60_t17_g4214);
           double cse_p13_t85_g273 = (cse_p14_t61_g370 + cse_p60_t19_g4216);
           double h_x1_z1 = cse_p13_t84_g272;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 2, h_x1_z1);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 2, h_x1_z1);
           double cse_p13_t78_g266 = (cse_p14_t48_g357 + cse_p60_t21_g4218);
           double cse_p13_t86_g274 = (cse_p14_t49_g358 + cse_p60_t27_g4224);
           double cse_p13_t88_g276 = (cse_p14_t46_g355 + cse_p60_t28_g4225);
@@ -576,52 +576,52 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
           double cse_p13_t90_g278 = (cse_p14_t50_g359 + cse_p14_t62_g371);
           double cse_p13_t107_g295 = (cse_p14_t45_g354 + cse_p60_t24_g4221);
           double h_x1_x2 = cse_p13_t78_g266;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 0, h_x1_x2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 0, h_x1_x2);
           double cse_p13_t79_g267 = (cse_p14_t54_g363 + cse_p60_t22_g4219);
           double cse_p13_t87_g275 = (cse_p14_t53_g362 + cse_p60_t27_g4224);
           double cse_p13_t91_g279 = (cse_p14_t52_g361 + cse_p14_t61_g370);
           double cse_p13_t92_g280 = (cse_p14_t55_g364 + cse_p14_t63_g372);
           double h_x1_y2 = cse_p13_t87_g275;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 1, h_x1_y2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 1, h_x1_y2);
           double cse_p13_t80_g268 = (cse_p14_t57_g366 + cse_p14_t62_g371);
           double cse_p13_t81_g269 = (cse_p14_t58_g367 + cse_p14_t63_g372);
           double cse_p13_t82_g270 = (cse_p14_t59_g368 + cse_p60_t23_g4220);
           double h_x1_z2 = cse_p13_t80_g268;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 2, h_x1_z2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 2, h_x1_z2);
           double cse_p13_t99_g287 = (cse_p60_t18_g4215 + cse_p60_t25_g4222);
           double cse_p13_t100_g288 = (cse_p14_t51_g360 + cse_p60_t25_g4222);
           double h_y1_y1 = cse_p13_t99_g287;
-          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 1, h_y1_y1);
+          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 1, h_y1_y1);
           double h_y1_z1 = cse_p13_t85_g273;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 2, h_y1_z1);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 2, h_y1_z1);
           double h_y1_x2 = cse_p13_t86_g274;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 0, h_y1_x2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 0, h_y1_x2);
           double h_y1_y2 = cse_p13_t79_g267;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 1, h_y1_y2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 1, h_y1_y2);
           double h_y1_z2 = cse_p13_t81_g269;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 2, h_y1_z2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 2, h_y1_z2);
           double cse_p13_t101_g289 = (cse_p60_t20_g4217 + cse_p60_t26_g4223);
           double cse_p13_t102_g290 = (cse_p14_t56_g365 + cse_p60_t26_g4223);
           double h_z1_z1 = cse_p13_t101_g289;
-          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x1, 2, h_z1_z1);
+          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x1, 2, h_z1_z1);
           double h_z1_x2 = cse_p13_t90_g278;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 0, h_z1_x2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 0, h_z1_x2);
           double h_z1_y2 = cse_p13_t92_g280;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 1, h_z1_y2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 1, h_z1_y2);
           double h_z1_z2 = cse_p13_t82_g270;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 2, h_z1_z2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 2, h_z1_z2);
           double h_x2_x2 = cse_p13_t107_g295;
-          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 0, h_x2_x2);
+          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 0, h_x2_x2);
           double h_x2_y2 = cse_p13_t88_g276;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 1, h_x2_y2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 1, h_x2_y2);
           double h_x2_z2 = cse_p13_t89_g277;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 2, h_x2_z2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 2, h_x2_z2);
           double h_y2_y2 = cse_p13_t100_g288;
-          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 1, h_y2_y2);
+          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 1, h_y2_y2);
           double h_y2_z2 = cse_p13_t91_g279;
-          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 2, h_y2_z2);
+          KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 2, h_y2_z2);
           double h_z2_z2 = cse_p13_t102_g290;
-          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 2, term.i3x2, 2, h_z2_z2);
+          KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 2, i3x2, 2, h_z2_z2);
         } else {
           /* !COND-ELSE-2 */
           if ((rr <= term.r2_high)) {
@@ -651,17 +651,17 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
             double d2e_dr2 = (d2fi + d2fj);
             double cse_p11_t1_g103 = (cse_p1015_t2_invr78560 * de_dr);
             double g_x1 = (cse_p11_t1_g103 * dx);
-            KernelGradientAcc(term.i3x1, 0, g_x1);
+            KernelGradientAcc(i3x1, 0, g_x1);
             double g_y1 = (cse_p11_t1_g103 * dy);
-            KernelGradientAcc(term.i3x1, 1, g_y1);
+            KernelGradientAcc(i3x1, 1, g_y1);
             double g_z1 = (cse_p11_t1_g103 * dz);
-            KernelGradientAcc(term.i3x1, 2, g_z1);
+            KernelGradientAcc(i3x1, 2, g_z1);
             double g_x2 = (cse_p11_t1_g103 * (-(dx)));
-            KernelGradientAcc(term.i3x2, 0, g_x2);
+            KernelGradientAcc(i3x2, 0, g_x2);
             double g_y2 = (cse_p11_t1_g103 * (-(dy)));
-            KernelGradientAcc(term.i3x2, 1, g_y2);
+            KernelGradientAcc(i3x2, 1, g_y2);
             double g_z2 = (cse_p11_t1_g103 * (-(dz)));
-            KernelGradientAcc(term.i3x2, 2, g_z2);
+            KernelGradientAcc(i3x2, 2, g_z2);
             double cse_p11_t1_g94 = (cse_p1015_t2_invr78560 * cse_p1015_t2_invr78560 * d2e_dr2);
             double cse_p1015_t1_invr78559 = (1.0 / ((rr * rr * rr)));
             double cse_p11_t1_g95 = (cse_p1015_t1_invr78559 * de_dr);
@@ -669,9 +669,9 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
             double cse_p12_t1_g188 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t41_g53))));
             double cse_p60_t73_g4270 = (cse_p12_t1_g188 + (cse_p11_t1_g94 * dx * dx));
             double h_x1_x1 = cse_p60_t73_g4270;
-            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 0, h_x1_x1);
+            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 0, h_x1_x1);
             double h_x1_y1 = ((cse_p11_t1_g94 * dx * dy) + (cse_p11_t1_g95 * dy * (-(dx))));
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 1, h_x1_y1);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 1, h_x1_y1);
             double cse_p11_t1_g99 = (cse_p11_t1_g95 * dz);
             double cse_p60_t41_g4238 = (cse_p11_t1_g99 * (-(dx)));
             double cse_p60_t42_g4239 = (cse_p11_t1_g99 * (-(dy)));
@@ -680,7 +680,7 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
             double cse_p60_t54_g4251 = (cse_p60_t41_g4238 + (cse_p11_t1_g94 * dx * dz));
             double cse_p60_t55_g4252 = (cse_p60_t42_g4239 + (cse_p11_t1_g94 * dy * dz));
             double h_x1_z1 = cse_p60_t54_g4251;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 2, h_x1_z1);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 2, h_x1_z1);
             double cse_p11_t1_g97 = (cse_p11_t1_g94 * (-(dx)));
             double cse_p60_t30_g4227 = (cse_p11_t1_g97 * (-(dx)));
             double cse_p60_t31_g4228 = (cse_p11_t1_g97 * (-(dy)));
@@ -695,7 +695,7 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
             double cse_p60_t60_g4257 = (cse_p60_t35_g4232 + cse_p60_t43_g4240);
             double cse_p60_t74_g4271 = (cse_p12_t1_g188 + cse_p60_t30_g4227);
             double h_x1_x2 = cse_p60_t48_g4245;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 0, h_x1_x2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 0, h_x1_x2);
             double cse_p11_t1_g98 = (cse_p11_t1_g94 * (-(dy)));
             double cse_p60_t36_g4233 = (cse_p11_t1_g98 * (-(dy)));
             double cse_p60_t37_g4234 = (cse_p11_t1_g98 * (-(dz)));
@@ -707,7 +707,7 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
             double cse_p60_t61_g4258 = (cse_p60_t37_g4234 + cse_p60_t42_g4239);
             double cse_p60_t62_g4259 = (cse_p60_t40_g4237 + cse_p60_t44_g4241);
             double h_x1_y2 = cse_p60_t57_g4254;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 1, h_x1_y2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 1, h_x1_y2);
             double cse_p11_t1_g100 = (cse_p11_t1_g94 * (-(dz)));
             double cse_p60_t2_g4199 = (cse_p11_t1_g100 * (-(dz)));
             double cse_p60_t3_g4200 = (cse_p11_t1_g100 * dx);
@@ -717,43 +717,43 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
             double cse_p60_t51_g4248 = (cse_p60_t44_g4241 + cse_p60_t4_g4201);
             double cse_p60_t52_g4249 = (cse_p60_t5_g4202 + (cse_p11_t1_g95 * (cse_p11_t43_g55 + (-(cse_p11_t1_g96)))));
             double h_x1_z2 = cse_p60_t50_g4247;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 2, h_x1_z2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 2, h_x1_z2);
             double cse_p11_t1_g101 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t42_g54))));
             double cse_p60_t66_g4263 = (cse_p11_t1_g101 + (cse_p11_t1_g94 * dy * dy));
             double cse_p60_t67_g4264 = (cse_p11_t1_g101 + cse_p60_t36_g4233);
             double h_y1_y1 = cse_p60_t66_g4263;
-            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 1, h_y1_y1);
+            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 1, h_y1_y1);
             double h_y1_z1 = cse_p60_t55_g4252;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 2, h_y1_z1);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 2, h_y1_z1);
             double h_y1_x2 = cse_p60_t56_g4253;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 0, h_y1_x2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 0, h_y1_x2);
             double h_y1_y2 = cse_p60_t49_g4246;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 1, h_y1_y2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 1, h_y1_y2);
             double h_y1_z2 = cse_p60_t51_g4248;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 2, h_y1_z2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 2, h_y1_z2);
             double cse_p11_t1_g102 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t43_g55))));
             double cse_p60_t68_g4265 = (cse_p11_t1_g102 + (cse_p11_t1_g94 * dz * dz));
             double cse_p60_t69_g4266 = (cse_p11_t1_g102 + cse_p60_t2_g4199);
             double h_z1_z1 = cse_p60_t68_g4265;
-            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x1, 2, h_z1_z1);
+            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x1, 2, h_z1_z1);
             double h_z1_x2 = cse_p60_t60_g4257;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 0, h_z1_x2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 0, h_z1_x2);
             double h_z1_y2 = cse_p60_t62_g4259;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 1, h_z1_y2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 1, h_z1_y2);
             double h_z1_z2 = cse_p60_t52_g4249;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 2, h_z1_z2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 2, h_z1_z2);
             double h_x2_x2 = cse_p60_t74_g4271;
-            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 0, h_x2_x2);
+            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 0, h_x2_x2);
             double h_x2_y2 = cse_p60_t58_g4255;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 1, h_x2_y2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 1, h_x2_y2);
             double h_x2_z2 = cse_p60_t59_g4256;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 2, h_x2_z2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 2, h_x2_z2);
             double h_y2_y2 = cse_p60_t67_g4264;
-            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 1, h_y2_y2);
+            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 1, h_y2_y2);
             double h_y2_z2 = cse_p60_t61_g4258;
-            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 2, h_y2_z2);
+            KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 2, h_y2_z2);
             double h_z2_z2 = cse_p60_t69_g4266;
-            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 2, term.i3x2, 2, h_z2_z2);
+            KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 2, i3x2, 2, h_z2_z2);
           } else {
             /* !COND-ELSE-3 */
             if ((rr <= term.r3_high)) {
@@ -767,69 +767,69 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
               double cse_p1015_t2_invr78560 = (1.0 / (rr));
               double cse_p11_t1_g103 = (cse_p1015_t2_invr78560 * de_dr);
               double g_x1 = (cse_p11_t1_g103 * dx);
-              KernelGradientAcc(term.i3x1, 0, g_x1);
+              KernelGradientAcc(i3x1, 0, g_x1);
               double g_y1 = (cse_p11_t1_g103 * dy);
-              KernelGradientAcc(term.i3x1, 1, g_y1);
+              KernelGradientAcc(i3x1, 1, g_y1);
               double g_z1 = (cse_p11_t1_g103 * dz);
-              KernelGradientAcc(term.i3x1, 2, g_z1);
+              KernelGradientAcc(i3x1, 2, g_z1);
               double g_x2 = (cse_p11_t1_g103 * (-(dx)));
-              KernelGradientAcc(term.i3x2, 0, g_x2);
+              KernelGradientAcc(i3x2, 0, g_x2);
               double g_y2 = (cse_p11_t1_g103 * (-(dy)));
-              KernelGradientAcc(term.i3x2, 1, g_y2);
+              KernelGradientAcc(i3x2, 1, g_y2);
               double g_z2 = (cse_p11_t1_g103 * (-(dz)));
-              KernelGradientAcc(term.i3x2, 2, g_z2);
+              KernelGradientAcc(i3x2, 2, g_z2);
               double cse_p11_t1_g94 = (cse_p1015_t2_invr78560 * cse_p1015_t2_invr78560 * d2e_dr2);
               double cse_p1015_t1_invr78559 = (1.0 / ((rr * rr * rr)));
               double cse_p11_t1_g95 = (cse_p1015_t1_invr78559 * de_dr);
               double cse_p12_t1_g188 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t41_g53))));
               double h_x1_x1 = (cse_p12_t1_g188 + (cse_p11_t1_g94 * dx * dx));
-              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 0, h_x1_x1);
+              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 0, h_x1_x1);
               double h_x1_y1 = ((cse_p11_t1_g94 * dx * dy) + (cse_p11_t1_g95 * dy * (-(dx))));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 1, h_x1_y1);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 1, h_x1_y1);
               double cse_p11_t1_g99 = (cse_p11_t1_g95 * dz);
               double h_x1_z1 = ((cse_p11_t1_g94 * dx * dz) + (cse_p11_t1_g99 * (-(dx))));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 2, h_x1_z1);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 2, h_x1_z1);
               double cse_p11_t1_g97 = (cse_p11_t1_g94 * (-(dx)));
               double h_x1_x2 = ((cse_p11_t1_g95 * (cse_p11_t41_g53 + (-(cse_p11_t1_g96)))) + (cse_p11_t1_g97 * dx));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 0, h_x1_x2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 0, h_x1_x2);
               double cse_p11_t1_g98 = (cse_p11_t1_g94 * (-(dy)));
               double h_x1_y2 = ((cse_p11_t1_g95 * dx * dy) + (cse_p11_t1_g98 * dx));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 1, h_x1_y2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 1, h_x1_y2);
               double cse_p11_t1_g100 = (cse_p11_t1_g94 * (-(dz)));
               double h_x1_z2 = ((cse_p11_t1_g100 * dx) + (cse_p11_t1_g99 * dx));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 2, h_x1_z2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 2, h_x1_z2);
               double cse_p11_t1_g101 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t42_g54))));
               double h_y1_y1 = (cse_p11_t1_g101 + (cse_p11_t1_g94 * dy * dy));
-              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 1, h_y1_y1);
+              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 1, h_y1_y1);
               double h_y1_z1 = ((cse_p11_t1_g94 * dy * dz) + (cse_p11_t1_g99 * (-(dy))));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 2, h_y1_z1);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 2, h_y1_z1);
               double h_y1_x2 = ((cse_p11_t1_g95 * dx * dy) + (cse_p11_t1_g97 * dy));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 0, h_y1_x2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 0, h_y1_x2);
               double h_y1_y2 = ((cse_p11_t1_g95 * (cse_p11_t42_g54 + (-(cse_p11_t1_g96)))) + (cse_p11_t1_g98 * dy));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 1, h_y1_y2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 1, h_y1_y2);
               double h_y1_z2 = ((cse_p11_t1_g100 * dy) + (cse_p11_t1_g99 * dy));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 2, h_y1_z2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 2, h_y1_z2);
               double cse_p11_t1_g102 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t43_g55))));
               double h_z1_z1 = (cse_p11_t1_g102 + (cse_p11_t1_g94 * dz * dz));
-              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x1, 2, h_z1_z1);
+              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x1, 2, h_z1_z1);
               double h_z1_x2 = ((cse_p11_t1_g97 * dz) + (cse_p11_t1_g99 * dx));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 0, h_z1_x2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 0, h_z1_x2);
               double h_z1_y2 = ((cse_p11_t1_g98 * dz) + (cse_p11_t1_g99 * dy));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 1, h_z1_y2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 1, h_z1_y2);
               double h_z1_z2 = ((cse_p11_t1_g100 * dz) + (cse_p11_t1_g95 * (cse_p11_t43_g55 + (-(cse_p11_t1_g96)))));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 2, h_z1_z2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 2, h_z1_z2);
               double h_x2_x2 = (cse_p12_t1_g188 + (cse_p11_t1_g97 * (-(dx))));
-              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 0, h_x2_x2);
+              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 0, h_x2_x2);
               double h_x2_y2 = ((cse_p11_t1_g95 * dy * (-(dx))) + (cse_p11_t1_g97 * (-(dy))));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 1, h_x2_y2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 1, h_x2_y2);
               double h_x2_z2 = ((cse_p11_t1_g97 * (-(dz))) + (cse_p11_t1_g99 * (-(dx))));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 2, h_x2_z2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 2, h_x2_z2);
               double h_y2_y2 = (cse_p11_t1_g101 + (cse_p11_t1_g98 * (-(dy))));
-              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 1, h_y2_y2);
+              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 1, h_y2_y2);
               double h_y2_z2 = ((cse_p11_t1_g98 * (-(dz))) + (cse_p11_t1_g99 * (-(dy))));
-              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 2, h_y2_z2);
+              KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 2, h_y2_z2);
               double h_z2_z2 = (cse_p11_t1_g102 + (cse_p11_t1_g100 * (-(dz))));
-              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 2, term.i3x2, 2, h_z2_z2);
+              KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 2, i3x2, 2, h_z2_z2);
             } else {
               /* !COND-ELSE-4 */
               {
@@ -840,72 +840,72 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
                 double de_dr = 0.0;
                 double d2e_dr2 = 0.0;
                 double g_x1 = (de_dr * dx * (1.0 / (rr)));
-                KernelGradientAcc(term.i3x1, 0, g_x1);
+                KernelGradientAcc(i3x1, 0, g_x1);
                 double cse_p1015_t2_invr78560 = (1.0 / (rr));
                 double g_y1 = (cse_p1015_t2_invr78560 * de_dr * dy);
-                KernelGradientAcc(term.i3x1, 1, g_y1);
+                KernelGradientAcc(i3x1, 1, g_y1);
                 double cse_p11_t1_g103 = (cse_p1015_t2_invr78560 * de_dr);
                 double g_z1 = (cse_p11_t1_g103 * dz);
-                KernelGradientAcc(term.i3x1, 2, g_z1);
+                KernelGradientAcc(i3x1, 2, g_z1);
                 double g_x2 = (cse_p11_t1_g103 * (-(dx)));
-                KernelGradientAcc(term.i3x2, 0, g_x2);
+                KernelGradientAcc(i3x2, 0, g_x2);
                 double g_y2 = (cse_p11_t1_g103 * (-(dy)));
-                KernelGradientAcc(term.i3x2, 1, g_y2);
+                KernelGradientAcc(i3x2, 1, g_y2);
                 double g_z2 = (cse_p11_t1_g103 * (-(dz)));
-                KernelGradientAcc(term.i3x2, 2, g_z2);
+                KernelGradientAcc(i3x2, 2, g_z2);
                 double h_x1_x1 = ((cse_p1015_t2_invr78560 * cse_p1015_t2_invr78560 * d2e_dr2 * dx * dx) + (de_dr * ((rr * rr) + (-(cse_p11_t41_g53))) * (1.0 / ((rr * rr * rr)))));
-                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 0, h_x1_x1);
+                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 0, h_x1_x1);
                 double cse_p1015_t1_invr78559 = (1.0 / ((rr * rr * rr)));
                 double cse_p11_t1_g96 = (rr * rr);
                 double cse_p11_t1_g95 = (cse_p1015_t1_invr78559 * de_dr);
                 double cse_p11_t1_g94 = (cse_p1015_t2_invr78560 * cse_p1015_t2_invr78560 * d2e_dr2);
                 double h_x1_y1 = ((cse_p11_t1_g94 * dx * dy) + (cse_p11_t1_g95 * dy * (-(dx))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 1, h_x1_y1);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 1, h_x1_y1);
                 double h_x1_z1 = ((cse_p11_t1_g94 * dx * dz) + (cse_p11_t1_g95 * dz * (-(dx))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x1, 2, h_x1_z1);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x1, 2, h_x1_z1);
                 double cse_p11_t1_g99 = (cse_p11_t1_g95 * dz);
                 double h_x1_x2 = ((cse_p11_t1_g94 * dx * (-(dx))) + (cse_p11_t1_g95 * (cse_p11_t41_g53 + (-(cse_p11_t1_g96)))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 0, h_x1_x2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 0, h_x1_x2);
                 double cse_p11_t1_g97 = (cse_p11_t1_g94 * (-(dx)));
                 double h_x1_y2 = ((cse_p11_t1_g94 * dx * (-(dy))) + (cse_p11_t1_g95 * dx * dy));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 1, h_x1_y2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 1, h_x1_y2);
                 double cse_p11_t1_g98 = (cse_p11_t1_g94 * (-(dy)));
                 double h_x1_z2 = ((cse_p11_t1_g94 * dx * (-(dz))) + (cse_p11_t1_g99 * dx));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 0, term.i3x2, 2, h_x1_z2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 0, i3x2, 2, h_x1_z2);
                 double cse_p11_t1_g100 = (cse_p11_t1_g94 * (-(dz)));
                 double h_y1_y1 = ((cse_p11_t1_g94 * dy * dy) + (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t42_g54)))));
-                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 1, h_y1_y1);
+                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 1, h_y1_y1);
                 double cse_p11_t1_g101 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t42_g54))));
                 double h_y1_z1 = ((cse_p11_t1_g94 * dy * dz) + (cse_p11_t1_g99 * (-(dy))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x1, 2, h_y1_z1);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x1, 2, h_y1_z1);
                 double h_y1_x2 = ((cse_p11_t1_g95 * dx * dy) + (cse_p11_t1_g97 * dy));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 0, h_y1_x2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 0, h_y1_x2);
                 double h_y1_y2 = ((cse_p11_t1_g95 * (cse_p11_t42_g54 + (-(cse_p11_t1_g96)))) + (cse_p11_t1_g98 * dy));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 1, h_y1_y2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 1, h_y1_y2);
                 double h_y1_z2 = ((cse_p11_t1_g100 * dy) + (cse_p11_t1_g99 * dy));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 1, term.i3x2, 2, h_y1_z2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 1, i3x2, 2, h_y1_z2);
                 double h_z1_z1 = ((cse_p11_t1_g94 * dz * dz) + (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t43_g55)))));
-                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x1, 2, h_z1_z1);
+                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x1, 2, h_z1_z1);
                 double cse_p11_t1_g102 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t43_g55))));
                 double h_z1_x2 = ((cse_p11_t1_g97 * dz) + (cse_p11_t1_g99 * dx));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 0, h_z1_x2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 0, h_z1_x2);
                 double h_z1_y2 = ((cse_p11_t1_g98 * dz) + (cse_p11_t1_g99 * dy));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 1, h_z1_y2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 1, h_z1_y2);
                 double h_z1_z2 = ((cse_p11_t1_g100 * dz) + (cse_p11_t1_g95 * (cse_p11_t43_g55 + (-(cse_p11_t1_g96)))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x1, 2, term.i3x2, 2, h_z1_z2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x1, 2, i3x2, 2, h_z1_z2);
                 double h_x2_x2 = ((cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t41_g53)))) + (cse_p11_t1_g97 * (-(dx))));
-                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 0, h_x2_x2);
+                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 0, h_x2_x2);
                 double cse_p12_t1_g188 = (cse_p11_t1_g95 * (cse_p11_t1_g96 + (-(cse_p11_t41_g53))));
                 double h_x2_y2 = ((cse_p11_t1_g95 * dy * (-(dx))) + (cse_p11_t1_g97 * (-(dy))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 1, h_x2_y2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 1, h_x2_y2);
                 double h_x2_z2 = ((cse_p11_t1_g97 * (-(dz))) + (cse_p11_t1_g99 * (-(dx))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 0, term.i3x2, 2, h_x2_z2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 0, i3x2, 2, h_x2_z2);
                 double h_y2_y2 = (cse_p11_t1_g101 + (cse_p11_t1_g98 * (-(dy))));
-                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 1, h_y2_y2);
+                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 1, h_y2_y2);
                 double h_y2_z2 = ((cse_p11_t1_g98 * (-(dz))) + (cse_p11_t1_g99 * (-(dy))));
-                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 1, term.i3x2, 2, h_y2_z2);
+                KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 1, i3x2, 2, h_y2_z2);
                 double h_z2_z2 = (cse_p11_t1_g102 + (cse_p11_t1_g100 * (-(dz))));
-                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  term.i3x2, 2, term.i3x2, 2, h_z2_z2);
+                KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec,  i3x2, 2, i3x2, 2, h_z2_z2);
               }
             }
           }
@@ -915,443 +915,443 @@ double hessian(const rosetta_lk_solvation_parameters& params, const rosetta_lk_s
   }
   return energy_added;
 }
-void hessian_fd(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)
+void hessian_fd(const rosetta_lk_solvation_parameters& params, const rosetta_lk_solvation_term& term, int i3x1, int i3x2, double* position, double* energy_accumulate, double* force, HESSIAN hessian, double* dvec, double* hdvec)
 {
   constexpr size_t PositionSize = 6;
   const double h = 1.0e-5;
   const double inv2h = 1.0/(2.0*h);
   const double invh2 = 1.0/((h*h));
   double e0[EnergyAccumulatorSize] = {0.0};
-  energy(params, term, position, e0);
+  energy(params, term, i3x1, i3x2, position, e0);
   if (energy_accumulate) { *energy_accumulate += e0[0]; }
   {
-    double saved = position[term.i3x1 + 0];
+    double saved = position[i3x1 + 0];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 0] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 0] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 0] = saved;
+    position[i3x1 + 0] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 0] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 0] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x1, 0, d);
+    KernelGradientAcc(i3x1, 0, d);
   }
   {
-    double saved = position[term.i3x1 + 1];
+    double saved = position[i3x1 + 1];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 1] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 1] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 1] = saved;
+    position[i3x1 + 1] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 1] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 1] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x1, 1, d);
+    KernelGradientAcc(i3x1, 1, d);
   }
   {
-    double saved = position[term.i3x1 + 2];
+    double saved = position[i3x1 + 2];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 2] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 2] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 2] = saved;
+    position[i3x1 + 2] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 2] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 2] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x1, 2, d);
+    KernelGradientAcc(i3x1, 2, d);
   }
   {
-    double saved = position[term.i3x2 + 0];
+    double saved = position[i3x2 + 0];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 0] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 0] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 0] = saved;
+    position[i3x2 + 0] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 0] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 0] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x2, 0, d);
+    KernelGradientAcc(i3x2, 0, d);
   }
   {
-    double saved = position[term.i3x2 + 1];
+    double saved = position[i3x2 + 1];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 1] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 1] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 1] = saved;
+    position[i3x2 + 1] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 1] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 1] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x2, 1, d);
+    KernelGradientAcc(i3x2, 1, d);
   }
   {
-    double saved = position[term.i3x2 + 2];
+    double saved = position[i3x2 + 2];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 2] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 2] = saved;
+    position[i3x2 + 2] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 2] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 2] = saved;
     double d = (e_plus[0] - e_minus[0]) * inv2h;
-    KernelGradientAcc(term.i3x2, 2, d);
+    KernelGradientAcc(i3x2, 2, d);
   }
   {
-    double saved = position[term.i3x1 + 0];
+    double saved = position[i3x1 + 0];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 0] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 0] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 0] = saved;
+    position[i3x1 + 0] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 0] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 0] = saved;
     double hval = (e_plus[0] + e_minus[0] - (2.0*e0[0])) * invh2;
-    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x1, 0, term.i3x1, 0, hval);
+    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, i3x1, 0, i3x1, 0, hval);
   }
   {
-    double saved = position[term.i3x1 + 1];
+    double saved = position[i3x1 + 1];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 1] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 1] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 1] = saved;
+    position[i3x1 + 1] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 1] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 1] = saved;
     double hval = (e_plus[0] + e_minus[0] - (2.0*e0[0])) * invh2;
-    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x1, 1, term.i3x1, 1, hval);
+    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, i3x1, 1, i3x1, 1, hval);
   }
   {
-    double saved = position[term.i3x1 + 2];
+    double saved = position[i3x1 + 2];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 2] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x1 + 2] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x1 + 2] = saved;
+    position[i3x1 + 2] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x1 + 2] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x1 + 2] = saved;
     double hval = (e_plus[0] + e_minus[0] - (2.0*e0[0])) * invh2;
-    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x1, 2, term.i3x1, 2, hval);
+    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, i3x1, 2, i3x1, 2, hval);
   }
   {
-    double saved = position[term.i3x2 + 0];
+    double saved = position[i3x2 + 0];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 0] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 0] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 0] = saved;
+    position[i3x2 + 0] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 0] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 0] = saved;
     double hval = (e_plus[0] + e_minus[0] - (2.0*e0[0])) * invh2;
-    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 0, term.i3x2, 0, hval);
+    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 0, i3x2, 0, hval);
   }
   {
-    double saved = position[term.i3x2 + 1];
+    double saved = position[i3x2 + 1];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 1] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 1] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 1] = saved;
+    position[i3x2 + 1] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 1] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 1] = saved;
     double hval = (e_plus[0] + e_minus[0] - (2.0*e0[0])) * invh2;
-    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 1, term.i3x2, 1, hval);
+    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 1, i3x2, 1, hval);
   }
   {
-    double saved = position[term.i3x2 + 2];
+    double saved = position[i3x2 + 2];
     double e_plus[EnergyAccumulatorSize] = {0.0};
     double e_minus[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved + h;
-    energy(params, term, position, e_plus);
-    position[term.i3x2 + 2] = saved - h;
-    energy(params, term, position, e_minus);
-    position[term.i3x2 + 2] = saved;
+    position[i3x2 + 2] = saved + h;
+    energy(params, term, i3x1, i3x2, position, e_plus);
+    position[i3x2 + 2] = saved - h;
+    energy(params, term, i3x1, i3x2, position, e_minus);
+    position[i3x2 + 2] = saved;
     double hval = (e_plus[0] + e_minus[0] - (2.0*e0[0])) * invh2;
-    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 2, term.i3x2, 2, hval);
+    KernelHessDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 2, i3x2, 2, hval);
   }
   {
-    double saved_i = position[term.i3x1 + 1];
-    double saved_j = position[term.i3x1 + 0];
+    double saved_i = position[i3x1 + 1];
+    double saved_j = position[i3x1 + 0];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 1] = saved_i + h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x1 + 1] = saved_i - h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x1 + 1] = saved_i; position[term.i3x1 + 0] = saved_j;
+    position[i3x1 + 1] = saved_i + h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x1 + 1] = saved_i - h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x1 + 1] = saved_i; position[i3x1 + 0] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x1, 1, term.i3x1, 0, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x1, 1, i3x1, 0, hval);
   }
   {
-    double saved_i = position[term.i3x1 + 2];
-    double saved_j = position[term.i3x1 + 0];
+    double saved_i = position[i3x1 + 2];
+    double saved_j = position[i3x1 + 0];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 2] = saved_i + h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x1 + 2] = saved_i - h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x1 + 2] = saved_i; position[term.i3x1 + 0] = saved_j;
+    position[i3x1 + 2] = saved_i + h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x1 + 2] = saved_i - h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x1 + 2] = saved_i; position[i3x1 + 0] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x1, 2, term.i3x1, 0, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x1, 2, i3x1, 0, hval);
   }
   {
-    double saved_i = position[term.i3x1 + 2];
-    double saved_j = position[term.i3x1 + 1];
+    double saved_i = position[i3x1 + 2];
+    double saved_j = position[i3x1 + 1];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x1 + 2] = saved_i + h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x1 + 2] = saved_i - h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x1 + 2] = saved_i; position[term.i3x1 + 1] = saved_j;
+    position[i3x1 + 2] = saved_i + h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x1 + 2] = saved_i - h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x1 + 2] = saved_i; position[i3x1 + 1] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x1, 2, term.i3x1, 1, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x1, 2, i3x1, 1, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 0];
-    double saved_j = position[term.i3x1 + 0];
+    double saved_i = position[i3x2 + 0];
+    double saved_j = position[i3x1 + 0];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 0] = saved_i + h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 0] = saved_i - h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 0] = saved_i; position[term.i3x1 + 0] = saved_j;
+    position[i3x2 + 0] = saved_i + h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 0] = saved_i - h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 0] = saved_i; position[i3x1 + 0] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 0, term.i3x1, 0, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 0, i3x1, 0, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 0];
-    double saved_j = position[term.i3x1 + 1];
+    double saved_i = position[i3x2 + 0];
+    double saved_j = position[i3x1 + 1];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 0] = saved_i + h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 0] = saved_i - h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 0] = saved_i; position[term.i3x1 + 1] = saved_j;
+    position[i3x2 + 0] = saved_i + h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 0] = saved_i - h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 0] = saved_i; position[i3x1 + 1] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 0, term.i3x1, 1, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 0, i3x1, 1, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 0];
-    double saved_j = position[term.i3x1 + 2];
+    double saved_i = position[i3x2 + 0];
+    double saved_j = position[i3x1 + 2];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 0] = saved_i + h; position[term.i3x1 + 2] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 2] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 0] = saved_i - h; position[term.i3x1 + 2] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 2] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 0] = saved_i; position[term.i3x1 + 2] = saved_j;
+    position[i3x2 + 0] = saved_i + h; position[i3x1 + 2] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 2] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 0] = saved_i - h; position[i3x1 + 2] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 2] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 0] = saved_i; position[i3x1 + 2] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 0, term.i3x1, 2, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 0, i3x1, 2, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 1];
-    double saved_j = position[term.i3x1 + 0];
+    double saved_i = position[i3x2 + 1];
+    double saved_j = position[i3x1 + 0];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 1] = saved_i + h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 1] = saved_i - h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 1] = saved_i; position[term.i3x1 + 0] = saved_j;
+    position[i3x2 + 1] = saved_i + h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 1] = saved_i - h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 1] = saved_i; position[i3x1 + 0] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 1, term.i3x1, 0, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 1, i3x1, 0, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 1];
-    double saved_j = position[term.i3x1 + 1];
+    double saved_i = position[i3x2 + 1];
+    double saved_j = position[i3x1 + 1];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 1] = saved_i + h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 1] = saved_i - h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 1] = saved_i; position[term.i3x1 + 1] = saved_j;
+    position[i3x2 + 1] = saved_i + h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 1] = saved_i - h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 1] = saved_i; position[i3x1 + 1] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 1, term.i3x1, 1, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 1, i3x1, 1, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 1];
-    double saved_j = position[term.i3x1 + 2];
+    double saved_i = position[i3x2 + 1];
+    double saved_j = position[i3x1 + 2];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 1] = saved_i + h; position[term.i3x1 + 2] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 2] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 1] = saved_i - h; position[term.i3x1 + 2] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 2] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 1] = saved_i; position[term.i3x1 + 2] = saved_j;
+    position[i3x2 + 1] = saved_i + h; position[i3x1 + 2] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 2] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 1] = saved_i - h; position[i3x1 + 2] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 2] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 1] = saved_i; position[i3x1 + 2] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 1, term.i3x1, 2, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 1, i3x1, 2, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 1];
-    double saved_j = position[term.i3x2 + 0];
+    double saved_i = position[i3x2 + 1];
+    double saved_j = position[i3x2 + 0];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 1] = saved_i + h; position[term.i3x2 + 0] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x2 + 0] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 1] = saved_i - h; position[term.i3x2 + 0] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x2 + 0] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 1] = saved_i; position[term.i3x2 + 0] = saved_j;
+    position[i3x2 + 1] = saved_i + h; position[i3x2 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x2 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 1] = saved_i - h; position[i3x2 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x2 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 1] = saved_i; position[i3x2 + 0] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 1, term.i3x2, 0, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 1, i3x2, 0, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 2];
-    double saved_j = position[term.i3x1 + 0];
+    double saved_i = position[i3x2 + 2];
+    double saved_j = position[i3x1 + 0];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved_i + h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 2] = saved_i - h; position[term.i3x1 + 0] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 0] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 2] = saved_i; position[term.i3x1 + 0] = saved_j;
+    position[i3x2 + 2] = saved_i + h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 2] = saved_i - h; position[i3x1 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 2] = saved_i; position[i3x1 + 0] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 2, term.i3x1, 0, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 2, i3x1, 0, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 2];
-    double saved_j = position[term.i3x1 + 1];
+    double saved_i = position[i3x2 + 2];
+    double saved_j = position[i3x1 + 1];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved_i + h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 2] = saved_i - h; position[term.i3x1 + 1] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 1] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 2] = saved_i; position[term.i3x1 + 1] = saved_j;
+    position[i3x2 + 2] = saved_i + h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 2] = saved_i - h; position[i3x1 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 2] = saved_i; position[i3x1 + 1] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 2, term.i3x1, 1, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 2, i3x1, 1, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 2];
-    double saved_j = position[term.i3x1 + 2];
+    double saved_i = position[i3x2 + 2];
+    double saved_j = position[i3x1 + 2];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved_i + h; position[term.i3x1 + 2] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x1 + 2] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 2] = saved_i - h; position[term.i3x1 + 2] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x1 + 2] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 2] = saved_i; position[term.i3x1 + 2] = saved_j;
+    position[i3x2 + 2] = saved_i + h; position[i3x1 + 2] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x1 + 2] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 2] = saved_i - h; position[i3x1 + 2] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x1 + 2] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 2] = saved_i; position[i3x1 + 2] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 2, term.i3x1, 2, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 2, i3x1, 2, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 2];
-    double saved_j = position[term.i3x2 + 0];
+    double saved_i = position[i3x2 + 2];
+    double saved_j = position[i3x2 + 0];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved_i + h; position[term.i3x2 + 0] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x2 + 0] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 2] = saved_i - h; position[term.i3x2 + 0] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x2 + 0] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 2] = saved_i; position[term.i3x2 + 0] = saved_j;
+    position[i3x2 + 2] = saved_i + h; position[i3x2 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x2 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 2] = saved_i - h; position[i3x2 + 0] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x2 + 0] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 2] = saved_i; position[i3x2 + 0] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 2, term.i3x2, 0, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 2, i3x2, 0, hval);
   }
   {
-    double saved_i = position[term.i3x2 + 2];
-    double saved_j = position[term.i3x2 + 1];
+    double saved_i = position[i3x2 + 2];
+    double saved_j = position[i3x2 + 1];
     double e_pp[EnergyAccumulatorSize] = {0.0};
     double e_pm[EnergyAccumulatorSize] = {0.0};
     double e_mp[EnergyAccumulatorSize] = {0.0};
     double e_mm[EnergyAccumulatorSize] = {0.0};
-    position[term.i3x2 + 2] = saved_i + h; position[term.i3x2 + 1] = saved_j + h;
-    energy(params, term, position, e_pp);
-    position[term.i3x2 + 1] = saved_j - h;
-    energy(params, term, position, e_pm);
-    position[term.i3x2 + 2] = saved_i - h; position[term.i3x2 + 1] = saved_j + h;
-    energy(params, term, position, e_mp);
-    position[term.i3x2 + 1] = saved_j - h;
-    energy(params, term, position, e_mm);
-    position[term.i3x2 + 2] = saved_i; position[term.i3x2 + 1] = saved_j;
+    position[i3x2 + 2] = saved_i + h; position[i3x2 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_pp);
+    position[i3x2 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_pm);
+    position[i3x2 + 2] = saved_i - h; position[i3x2 + 1] = saved_j + h;
+    energy(params, term, i3x1, i3x2, position, e_mp);
+    position[i3x2 + 1] = saved_j - h;
+    energy(params, term, i3x1, i3x2, position, e_mm);
+    position[i3x2 + 2] = saved_i; position[i3x2 + 1] = saved_j;
     double hval = (e_pp[0] - e_pm[0] - e_mp[0] + e_mm[0]) * (0.25*invh2);
-    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, term.i3x2, 2, term.i3x2, 1, hval);
+    KernelHessOffDiagAcc( PositionSize, hessian, dvec, hdvec, i3x2, 2, i3x2, 1, hval);
   }
 }
 
