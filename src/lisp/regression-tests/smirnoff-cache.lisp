@@ -24,9 +24,19 @@
 ;;;; SMIRNOFF to force it: the HIT path still needs it for the nonbond merge, whose
 ;;;; force-fields-as-list delegates to that slot.)
 
-;; real SMIRNOFF, registered under :smirnoff
-(leap:load-smirnoff-params
- (probe-file "sys:extensions;cando;src;lisp;regression-tests;data;force-field.offxml"))
+;; Keep this deliberately small test force field out of the process-wide
+;; :SMIRNOFF registry.  Later regressions require the canonical OpenFF data.
+(defparameter *cc-force-fields*
+  (let ((leap.core:*force-fields* (make-hash-table)))
+    ;; Preserve the empty aggregate-level :DEFAULT force field installed by
+    ;; LEaP in a fresh image; the molecule itself uses :SMIRNOFF-CACHE-TEST.
+    (leap.core:add-force-field-or-modification
+     (chem:force-field/make)
+     :force-field-name :default
+     :combined-force-field-class-name 'chem:combined-force-field)
+    (leap:load-smirnoff-params
+     (probe-file "sys:extensions;cando;src;lisp;regression-tests;data;force-field.offxml"))
+    leap.core:*force-fields*))
 (core:set-simd-width 1)
 
 ;; a molecule with residues; give every atom a synthetic
@@ -50,10 +60,12 @@
 
 ;; wrap real :smirnoff in a cached FF, register it, point the molecule at it
 (defparameter *cc-ff*
-  (make-instance 'smirnoff:cached-smirnoff-force-field
-                 :smirnoff (chem:find-force-field :smirnoff)
-                 :smirnoff-name :smirnoff))
-(leap.core:add-combined-force-field *cc-ff* :smirnoff-cache-test)
+  (let ((leap.core:*force-fields* *cc-force-fields*))
+    (make-instance 'smirnoff:cached-smirnoff-force-field
+                   :smirnoff (chem:find-force-field :smirnoff)
+                   :smirnoff-name :smirnoff)))
+(let ((leap.core:*force-fields* *cc-force-fields*))
+  (leap.core:add-combined-force-field *cc-ff* :smirnoff-cache-test))
 (chem:setf-force-field-name *cc-mol* :smirnoff-cache-test)
 
 ;; Hand-sum the dihedral component's terms, bucketed by the PROPER flag.
@@ -78,16 +90,17 @@
 ;; Parameterize + evaluate.  Returns four values:
 ;;   total-energy, component-ht (class-name -> energy), proper-dih, improper-dih
 (defun cc-energy ()
-  (let* ((ef  (chem:make-energy-function :matter *cc-agg*))
-         (pos (chem:make-nvector (chem:get-nvector-size ef)))
-         (ht  (make-hash-table)))
-    (chem:load-coordinates-into-vector ef pos)
-    (let ((total (chem:evaluate-energy ef pos)))
-      (loop for comp in (chem:all-components ef)
-            for e = (chem:energy-component-evaluate-energy ef comp pos)
-            do (setf (gethash (class-name (class-of comp)) ht) e))
-      (multiple-value-bind (proper improper) (dihedral-bucket-energies ef pos)
-        (values total ht proper improper)))))
+  (let ((leap.core:*force-fields* *cc-force-fields*))
+    (let* ((ef  (chem:make-energy-function :matter *cc-agg*))
+           (pos (chem:make-nvector (chem:get-nvector-size ef)))
+           (ht  (make-hash-table)))
+      (chem:load-coordinates-into-vector ef pos)
+      (let ((total (chem:evaluate-energy ef pos)))
+        (loop for comp in (chem:all-components ef)
+              for e = (chem:energy-component-evaluate-energy ef comp pos)
+              do (setf (gethash (class-name (class-of comp)) ht) e))
+        (multiple-value-bind (proper improper) (dihedral-bucket-energies ef pos)
+          (values total ht proper improper))))))
 
 ;; --- PASS 1: MISS + harvest ---
 (multiple-value-bind (total ht proper improper) (cc-energy)

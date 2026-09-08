@@ -8,6 +8,11 @@
 (defmethod gray:stream-interactive-p ((stream swank/gray::slime-output-stream)) t)
 
 (load (compile-file "sys:src;lisp;regression-tests;framework.lisp"))
+(let ((fasl (compile-file
+             "sys:extensions;cando;src;lisp;regression-tests;suite.lisp")))
+  (unless fasl
+    (error "Could not compile the Cando regression-suite runner"))
+  (load fasl))
 
 (in-package :clasp-tests)
 
@@ -26,3 +31,6 @@
 
 #-swank(ext:quit (if (show-test-summary) 0 1))
 #+swank(show-test-summary)
+(let ((success (run-cando-regression-tests)))
+  #-swank(ext:quit (if success 0 1))
+  #+swank success)

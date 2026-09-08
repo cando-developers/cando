@@ -39,6 +39,15 @@
 (defparameter *lk-test-lk-lambda* 3.5d0)    ; Angstroms
 (defparameter *lk-test-lk-volume* 14.7d0)   ; Angstroms^3
 
+(defmacro lksolvation--with-isolated-force-fields (&body body)
+  "Run BODY with a private force-field registry.
+
+The fixture temporarily owns the global :ROSETTA name required by the LK
+component.  Dynamically binding the registry prevents it from replacing the
+canonical Rosetta parameter database in the surrounding Lisp image."
+  `(let ((leap.core:*force-fields* (make-hash-table)))
+     ,@body))
+
 ;;; ============================================================================
 ;;; Force field and aggregate setup (same pattern as rosetta-nonbond.lisp)
 ;;; ============================================================================
@@ -344,64 +353,8 @@ Returns a list of (distance energy) pairs."
   "Generate x,y pairs comparing C++ vs model. ENERGY-SOURCE is :actual (C++) or :expected (Lisp model)."
   (unless pathname
     (error "You must provide a pathname"))
-  (lksolvation--ensure-force-field)
-  (multiple-value-bind (agg a1 a2)
-      (lksolvation--make-two-atom-aggregate *lk-test-type*)
-    (let* ((setup (list :rosetta (list 'chem:energy-rosetta-lksolvation)))
-           (energy-function (chem:make-energy-function :matter agg
-                                                       :use-excluded-atoms nil
-                                                       :assign-types nil
-                                                       :setup setup))
-           (component (lksolvation--component energy-function))
-           (pos (chem:make-nvector (chem:get-nvector-size energy-function)))
-           (pairs nil))
-      (with-open-file (stream pathname :direction :output :if-exists :supersede)
-        (format stream "# lksolvation energy~%")
-        (loop for dist from start to end by step
-              do (chem:set-position a1 (geom:vec 0.0d0 0.0d0 0.0d0))
-                 (chem:set-position a2 (geom:vec dist 0.0d0 0.0d0))
-                 (chem:load-coordinates-into-vector energy-function pos)
-                 (let* ((energy (ecase energy-source
-                                  (:actual (chem:energy-component-evaluate-energy
-                                            energy-function component pos))
-                                  (:expected (lksolvation--expected-energy
-                                              dist
-                                              *lk-test-lj-radius* *lk-test-lk-dgfree*
-                                              *lk-test-lk-lambda* *lk-test-lk-volume*
-                                              *lk-test-lj-radius* *lk-test-lk-dgfree*
-                                              *lk-test-lk-lambda* *lk-test-lk-volume*)))))
-                   (push (list dist energy) pairs)
-                   (when stream
-                     (format stream "~,6f ~,12,,,,,'eE~%" dist energy)))))
-      (nreverse pairs))))
-
-;;; ============================================================================
-;;; Main test
-;;; ============================================================================
-
-(core:set-simd-width 1)
-
-(defun test-lksolvation ()
-  (let* ((sigma-ij (+ *lk-test-lj-radius* *lk-test-lj-radius*))
-         (r0-low (- sigma-ij *lk-c0*))
-         (r1-low (+ sigma-ij *lk-c1*))
-         (r2-high *lk-r-solv-low*)
-         (r3-high *lk-r-solv-high*)
-         ;; Test distances covering all 5 regions
-         (distances (list (* 0.5d0 r0-low) ; well inside contact region
-                          (* 0.99d0 r0-low) ; just inside contact region
-                          (* 0.5d0 (+ r0-low r1-low)) ; middle of low spline
-                          (* 0.5d0 (+ r1-low r2-high)) ; middle of Gaussian region
-                          4.3d0         ; another Gaussian point
-                          (* 0.5d0 (+ r2-high r3-high)) ; middle of high spline
-                          5.8d0             ; near end of high spline
-                          (+ r3-high 0.5d0))) ; beyond cutoff (zero)
-         (tol 1.0d-8)
-         (all-ok t))
+  (lksolvation--with-isolated-force-fields
     (lksolvation--ensure-force-field)
-    (format t "LK solvation test (Lazaridis-Karplus 1999 / Alford 2017)~%")
-    (format t "  sigma_ij=~,4f r0_low=~,4f r1_low=~,4f r2_high=~,4f r3_high=~,4f~%"
-            sigma-ij r0-low r1-low r2-high r3-high)
     (multiple-value-bind (agg a1 a2)
         (lksolvation--make-two-atom-aggregate *lk-test-type*)
       (let* ((setup (list :rosetta (list 'chem:energy-rosetta-lksolvation)))
@@ -410,103 +363,162 @@ Returns a list of (distance energy) pairs."
                                                          :assign-types nil
                                                          :setup setup))
              (component (lksolvation--component energy-function))
-             (pos (chem:make-nvector (chem:get-nvector-size energy-function))))
-        (loop for dist in distances
-              for region in '("contact" "contact-edge" "low-spline" "gaussian"
-                              "gaussian" "high-spline" "high-spline-edge" "zero")
-              do (chem:set-position a1 (geom:vec 0.0d0 0.0d0 0.0d0))
-                 (chem:set-position a2 (geom:vec dist 0.0d0 0.0d0))
-                 (chem:load-coordinates-into-vector energy-function pos)
-                 (let* ((actual (chem:energy-component-evaluate-energy
-                                 energy-function component pos))
-                        (expected (lksolvation--expected-energy
-                                   dist
-                                   *lk-test-lj-radius* *lk-test-lk-dgfree*
-                                   *lk-test-lk-lambda* *lk-test-lk-volume*
-                                   *lk-test-lj-radius* *lk-test-lk-dgfree*
-                                   *lk-test-lk-lambda* *lk-test-lk-volume*))
-                        (delta (abs (- actual expected))))
-                   (format t "  ~12a dist=~,4f actual=~,12e expected=~,12e delta=~,4e ~a~%"
-                           region dist actual expected delta
-                           (if (< delta tol) "OK" "FAIL"))
-                   (when (>= delta tol)
-                     (setf all-ok nil))))))
-    #+tests
-    (test-true lksolvation-energy-scan all-ok)))
+             (pos (chem:make-nvector (chem:get-nvector-size energy-function)))
+             (pairs nil))
+        (with-open-file (stream pathname :direction :output :if-exists :supersede)
+          (format stream "# lksolvation energy~%")
+          (loop for dist from start to end by step
+                do (chem:set-position a1 (geom:vec 0.0d0 0.0d0 0.0d0))
+                   (chem:set-position a2 (geom:vec dist 0.0d0 0.0d0))
+                   (chem:load-coordinates-into-vector energy-function pos)
+                   (let* ((energy (ecase energy-source
+                                    (:actual (chem:energy-component-evaluate-energy
+                                              energy-function component pos))
+                                    (:expected (lksolvation--expected-energy
+                                                dist
+                                                *lk-test-lj-radius* *lk-test-lk-dgfree*
+                                                *lk-test-lk-lambda* *lk-test-lk-volume*
+                                                *lk-test-lj-radius* *lk-test-lk-dgfree*
+                                                *lk-test-lk-lambda* *lk-test-lk-volume*)))))
+                     (push (list dist energy) pairs)
+                     (when stream
+                       (format stream "~,6f ~,12,,,,,'eE~%" dist energy)))))
+        (nreverse pairs)))))
+
+;;; ============================================================================
+;;; Main test
+;;; ============================================================================
+
+(core:set-simd-width 1)
+
+(defun test-lksolvation ()
+  (lksolvation--with-isolated-force-fields
+    (let* ((sigma-ij (+ *lk-test-lj-radius* *lk-test-lj-radius*))
+           (r0-low (- sigma-ij *lk-c0*))
+           (r1-low (+ sigma-ij *lk-c1*))
+           (r2-high *lk-r-solv-low*)
+           (r3-high *lk-r-solv-high*)
+           ;; Test distances covering all 5 regions
+           (distances (list (* 0.5d0 r0-low) ; well inside contact region
+                            (* 0.99d0 r0-low) ; just inside contact region
+                            (* 0.5d0 (+ r0-low r1-low)) ; middle of low spline
+                            (* 0.5d0 (+ r1-low r2-high)) ; middle of Gaussian region
+                            4.3d0         ; another Gaussian point
+                            (* 0.5d0 (+ r2-high r3-high)) ; middle of high spline
+                            5.8d0             ; near end of high spline
+                            (+ r3-high 0.5d0))) ; beyond cutoff (zero)
+           (tol 1.0d-8)
+           (all-ok t))
+      (lksolvation--ensure-force-field)
+      (format t "LK solvation test (Lazaridis-Karplus 1999 / Alford 2017)~%")
+      (format t "  sigma_ij=~,4f r0_low=~,4f r1_low=~,4f r2_high=~,4f r3_high=~,4f~%"
+              sigma-ij r0-low r1-low r2-high r3-high)
+      (multiple-value-bind (agg a1 a2)
+          (lksolvation--make-two-atom-aggregate *lk-test-type*)
+        (let* ((setup (list :rosetta (list 'chem:energy-rosetta-lksolvation)))
+               (energy-function (chem:make-energy-function :matter agg
+                                                           :use-excluded-atoms nil
+                                                           :assign-types nil
+                                                           :setup setup))
+               (component (lksolvation--component energy-function))
+               (pos (chem:make-nvector (chem:get-nvector-size energy-function))))
+          (loop for dist in distances
+                for region in '("contact" "contact-edge" "low-spline" "gaussian"
+                                "gaussian" "high-spline" "high-spline-edge" "zero")
+                do (chem:set-position a1 (geom:vec 0.0d0 0.0d0 0.0d0))
+                   (chem:set-position a2 (geom:vec dist 0.0d0 0.0d0))
+                   (chem:load-coordinates-into-vector energy-function pos)
+                   (let* ((actual (chem:energy-component-evaluate-energy
+                                   energy-function component pos))
+                          (expected (lksolvation--expected-energy
+                                     dist
+                                     *lk-test-lj-radius* *lk-test-lk-dgfree*
+                                     *lk-test-lk-lambda* *lk-test-lk-volume*
+                                     *lk-test-lj-radius* *lk-test-lk-dgfree*
+                                     *lk-test-lk-lambda* *lk-test-lk-volume*))
+                          (delta (abs (- actual expected))))
+                     (format t "  ~12a dist=~,4f actual=~,12e expected=~,12e delta=~,4e ~a~%"
+                             region dist actual expected delta
+                             (if (< delta tol) "OK" "FAIL"))
+                     (when (>= delta tol)
+                       (setf all-ok nil))))))
+      #+tests
+      (test-true lksolvation-energy-scan all-ok))))
 
 (defun test-lksolvation-derivatives ()
   "Check LK force, every Hessian entry, and a dense Hessian-vector product."
-  (let ((distances (lksolvation--interior-distances))
-        (energy-ok t)
-        (force-ok t)
-        (hessian-ok t)
-        (hdvec-ok t))
-    (lksolvation--ensure-force-field)
-    (multiple-value-bind (aggregate atom1 atom2)
-        (lksolvation--make-two-atom-aggregate *lk-test-type*)
-      ;; Give pair-list construction a valid initial geometry.
-      (pairwise-derivatives--set-oblique-separation
-       atom1 atom2 (first distances))
-      (let* ((setup
-               (list :rosetta
-                     (list 'chem:energy-rosetta-lksolvation)))
-             (energy-function
-               (chem:make-energy-function
-                :matter aggregate
-                :use-excluded-atoms nil
-                :assign-types nil
-                :setup setup))
-             (component (lksolvation--component energy-function))
-             (position
-               (chem:make-nvector
-                (chem:get-nvector-size energy-function))))
-        ;; The scoring-function derivative API evaluates every enabled
-        ;; component, so isolate the component under test.
-        (dolist (other (chem:all-components energy-function))
-          (unless (eq other component)
-            (chem:disable other)))
-        (dolist (distance distances)
-          (pairwise-derivatives--set-oblique-separation
-           atom1 atom2 distance)
-          (chem:load-coordinates-into-vector energy-function position)
-          (multiple-value-bind
-                (actual-energy force-error hessian-error hdvec-error)
-              (pairwise-derivatives--finite-difference-errors
-               energy-function position)
-            (let* ((expected-energy
-                     (lksolvation--expected-energy
-                      distance
-                      *lk-test-lj-radius* *lk-test-lk-dgfree*
-                      *lk-test-lk-lambda* *lk-test-lk-volume*
-                      *lk-test-lj-radius* *lk-test-lk-dgfree*
-                      *lk-test-lk-lambda* *lk-test-lk-volume*))
-                   (energy-error
-                     (pairwise-derivatives--error-ratio
-                      actual-energy expected-energy 1.0d-8 1.0d-11)))
-              (unless (<= energy-error 1.0d0)
-                (setf energy-ok nil))
-              (unless (<= force-error 1.0d0)
-                (setf force-ok nil))
-              (unless (<= hessian-error 1.0d0)
-                (setf hessian-ok nil))
-              (unless (<= hdvec-error 1.0d0)
-                (setf hdvec-ok nil))
-              (when (or (> energy-error 1.0d0)
-                        (> force-error 1.0d0)
-                        (> hessian-error 1.0d0)
-                        (> hdvec-error 1.0d0))
-                (format t
-                        "LK solvation mismatch for distance ~s: energy ratio ~s, force ratio ~s, Hessian ratio ~s, H*d ratio ~s~%"
-                        distance energy-error force-error
-                        hessian-error hdvec-error)))))))
-    #+tests
-    (test-true lksolvation-derivative-energy-scan energy-ok)
-    #+tests
-    (test-true lksolvation-force-finite-difference force-ok)
-    #+tests
-    (test-true lksolvation-hessian-columns-finite-difference hessian-ok)
-    #+tests
-    (test-true lksolvation-hessian-vector-finite-difference hdvec-ok)))
+  (lksolvation--with-isolated-force-fields
+    (let ((distances (lksolvation--interior-distances))
+          (energy-ok t)
+          (force-ok t)
+          (hessian-ok t)
+          (hdvec-ok t))
+      (lksolvation--ensure-force-field)
+      (multiple-value-bind (aggregate atom1 atom2)
+          (lksolvation--make-two-atom-aggregate *lk-test-type*)
+        ;; Give pair-list construction a valid initial geometry.
+        (pairwise-derivatives--set-oblique-separation
+         atom1 atom2 (first distances))
+        (let* ((setup
+                 (list :rosetta
+                       (list 'chem:energy-rosetta-lksolvation)))
+               (energy-function
+                 (chem:make-energy-function
+                  :matter aggregate
+                  :use-excluded-atoms nil
+                  :assign-types nil
+                  :setup setup))
+               (component (lksolvation--component energy-function))
+               (position
+                 (chem:make-nvector
+                  (chem:get-nvector-size energy-function))))
+          ;; The scoring-function derivative API evaluates every enabled
+          ;; component, so isolate the component under test.
+          (dolist (other (chem:all-components energy-function))
+            (unless (eq other component)
+              (chem:disable other)))
+          (dolist (distance distances)
+            (pairwise-derivatives--set-oblique-separation
+             atom1 atom2 distance)
+            (chem:load-coordinates-into-vector energy-function position)
+            (multiple-value-bind
+                  (actual-energy force-error hessian-error hdvec-error)
+                (pairwise-derivatives--finite-difference-errors
+                 energy-function position)
+              (let* ((expected-energy
+                       (lksolvation--expected-energy
+                        distance
+                        *lk-test-lj-radius* *lk-test-lk-dgfree*
+                        *lk-test-lk-lambda* *lk-test-lk-volume*
+                        *lk-test-lj-radius* *lk-test-lk-dgfree*
+                        *lk-test-lk-lambda* *lk-test-lk-volume*))
+                     (energy-error
+                       (pairwise-derivatives--error-ratio
+                        actual-energy expected-energy 1.0d-8 1.0d-11)))
+                (unless (<= energy-error 1.0d0)
+                  (setf energy-ok nil))
+                (unless (<= force-error 1.0d0)
+                  (setf force-ok nil))
+                (unless (<= hessian-error 1.0d0)
+                  (setf hessian-ok nil))
+                (unless (<= hdvec-error 1.0d0)
+                  (setf hdvec-ok nil))
+                (when (or (> energy-error 1.0d0)
+                          (> force-error 1.0d0)
+                          (> hessian-error 1.0d0)
+                          (> hdvec-error 1.0d0))
+                  (format t
+                          "LK solvation mismatch for distance ~s: energy ratio ~s, force ratio ~s, Hessian ratio ~s, H*d ratio ~s~%"
+                          distance energy-error force-error
+                          hessian-error hdvec-error)))))))
+      #+tests
+      (test-true lksolvation-derivative-energy-scan energy-ok)
+      #+tests
+      (test-true lksolvation-force-finite-difference force-ok)
+      #+tests
+      (test-true lksolvation-hessian-columns-finite-difference hessian-ok)
+      #+tests
+      (test-true lksolvation-hessian-vector-finite-difference hdvec-ok))))
 
 (test-lksolvation)
 (test-lksolvation-derivatives)

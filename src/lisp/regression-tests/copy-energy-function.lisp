@@ -5,6 +5,16 @@
 ;;; and chem:make-energy-function :spec — comparing old API vs new API.
 ;;; ---------------------------------------------------------------------------
 
+(defmacro cef--with-isolated-force-fields (&body body)
+  "Run BODY with a private force-field registry.
+
+The Rosetta LK component obtains its parameters from the force field registered
+globally as :ROSETTA rather than from the aggregate's force-field name.  A
+dynamic registry lets the synthetic fixture install that name without changing
+the surrounding Lisp image."
+  `(let ((leap.core:*force-fields* (make-hash-table)))
+     ,@body))
+
 ;;; --- Helper: compare per-component energies between two energy functions ---
 
 (defun cef--compare-component-energies (ef1 ef2 coords &key (tolerance 0.0001))
@@ -53,15 +63,23 @@ with the same energy (within tolerance). Also checks total energy."
 ;;; =========================================================================
 
 (defun cef--ensure-rosetta-force-field ()
-  "Set up a minimal rosetta force field for testing."
-  (let* ((ff-name :cef-rosetta-test)
+  "Set up a minimal Rosetta force field for full default-component testing."
+  (let* ((ff-name :rosetta)
          (atom-type :cef-rnb)
          (force-field (chem:force-field/make))
          (nonbond-db (chem:get-nonbond-db force-field))
-         (ffnonbond (chem:make-ffnonbond atom-type)))
+         (ffnonbond (chem:make-ffnonbond atom-type))
+         (lksolvation-db (chem:get-lksolvation-db force-field))
+         (fflksolvation (chem:make-fflksolvation
+                         atom-type
+                         :lj-radius 1.5d0
+                         :lk-dgfree -1.7d0
+                         :lk-lambda 3.5d0
+                         :lk-volume 14.7d0)))
     (chem:ffnonbond/set-radius-angstroms ffnonbond 1.5d0)
     (chem:ffnonbond/set-epsilon-kcal ffnonbond 0.2d0)
     (chem:ffnonbond-db-add nonbond-db ffnonbond)
+    (chem:fflksolvation-db-add lksolvation-db fflksolvation)
     (when (chem:find-force-field ff-name nil)
       (leap:clear-force-field ff-name))
     (leap.core:add-force-field-or-modification
@@ -71,7 +89,7 @@ with the same energy (within tolerance). Also checks total energy."
     (values ff-name atom-type)))
 
 (defun cef--make-two-atom-aggregate (ff-name atom-type)
-  "Create a two-atom aggregate in separate molecules for rosetta nonbond testing."
+  "Create a typed two-atom aggregate in separate molecules for Rosetta testing."
   (let* ((agg (chem:make-aggregate))
          (mol1 (chem:make-molecule :m1))
          (mol2 (chem:make-molecule :m2))
@@ -90,73 +108,77 @@ with the same energy (within tolerance). Also checks total energy."
     (chem:setf-force-field-name mol2 ff-name)
     (chem:set-property a1 :given-atom-type atom-type)
     (chem:set-property a2 :given-atom-type atom-type)
+    (chem:set-property a1 :lk-solvation-atom-type atom-type)
+    (chem:set-property a2 :lk-solvation-atom-type atom-type)
     (chem:set-position a1 (geom:vec 0.0d0 0.0d0 0.0d0))
     (chem:set-position a2 (geom:vec 3.0d0 0.0d0 0.0d0))
     (values agg a1 a2)))
 
-(multiple-value-bind (ff-name atom-type)
-    (cef--ensure-rosetta-force-field)
-  (multiple-value-bind (agg a1 a2)
-      (cef--make-two-atom-aggregate ff-name atom-type)
-    (declare (ignore a1 a2))
-    (let* ((coords (chem:matter/extract-coordinates agg))
-           ;; Old way: :setup + :keep-interaction-factory
-           (old-ef (chem:%make-energy-function :matter agg
-                                               :use-excluded-atoms nil
-                                               :assign-types nil
-                                               :setup (list :rosetta
-                                                            (list 'chem:energy-rosetta-nonbond
-                                                                  :rep-weight 0.5))))
-           ;; New way: :spec
-           (new-ef (chem:make-energy-function :matter agg
-                                              :use-excluded-atoms nil
-                                              :assign-types nil
-                                              :spec '(:rosetta
-                                                      (chem:energy-rosetta-nonbond
-                                                       :rep-weight 0.5)))))
-      #+tests(test-true make-ef-rosetta-old-vs-spec
-                        (cef--compare-component-energies old-ef new-ef coords)))))
+(cef--with-isolated-force-fields
+  (multiple-value-bind (ff-name atom-type)
+      (cef--ensure-rosetta-force-field)
+    (multiple-value-bind (agg a1 a2)
+        (cef--make-two-atom-aggregate ff-name atom-type)
+      (declare (ignore a1 a2))
+      (let* ((coords (chem:matter/extract-coordinates agg))
+             ;; Old way: :setup + :keep-interaction-factory
+             (old-ef (chem:%make-energy-function :matter agg
+                                                 :use-excluded-atoms nil
+                                                 :assign-types nil
+                                                 :setup (list :rosetta
+                                                              (list 'chem:energy-rosetta-nonbond
+                                                                    :rep-weight 0.5))))
+             ;; New way: :spec
+             (new-ef (chem:make-energy-function :matter agg
+                                                :use-excluded-atoms nil
+                                                :assign-types nil
+                                                :spec '(:rosetta
+                                                        (chem:energy-rosetta-nonbond
+                                                         :rep-weight 0.5)))))
+        #+tests(test-true make-ef-rosetta-old-vs-spec
+                          (cef--compare-component-energies old-ef new-ef coords))))))
 
 ;;; =========================================================================
 ;;; Test 3: make-energy-function — Rosetta with :only (component selection)
 ;;;         Old way uses keep-interaction-factory, new way uses :only.
 ;;; =========================================================================
 
-(multiple-value-bind (ff-name atom-type)
-    (cef--ensure-rosetta-force-field)
-  (multiple-value-bind (agg a1 a2)
-      (cef--make-two-atom-aggregate ff-name atom-type)
-    (declare (ignore a1 a2))
-    (let* ((coords (chem:matter/extract-coordinates agg))
-           ;; Old way: keep-interaction-factory that only keeps rosetta-nonbond
-           (old-ef (chem:%make-energy-function
-                    :matter agg
-                    :use-excluded-atoms nil
-                    :assign-types nil
-                    :keep-interaction-factory
-                    (lambda (aclass)
-                      (if (eq aclass (find-class 'chem:energy-rosetta-nonbond))
-                          t
-                          nil))
-                    :setup '(:rosetta)))
-           ;; New way: :spec with :default nil and explicit component
-           (new-ef (chem:make-energy-function
-                    :matter agg
-                    :use-excluded-atoms nil
-                    :assign-types nil
-                    :spec '(:rosetta
-                            :default nil
-                            (chem:energy-rosetta-nonbond t))))
-           (old-energy (chem:evaluate-energy old-ef coords))
-           (new-energy (chem:evaluate-energy new-ef coords)))
-      ;; Both should have only rosetta-nonbond component with terms
-      #+tests(test-true make-ef-only-same-energy
-                        (< (abs (- old-energy new-energy)) 0.0001))
-      ;; New ef should not have rosetta-elec or lksolvation
-      #+tests(test-true make-ef-only-no-elec
-                        (null (chem:find-component-or-nil new-ef 'chem:energy-rosetta-elec)))
-      #+tests(test-true make-ef-only-no-lk
-                        (null (chem:find-component-or-nil new-ef 'chem:energy-rosetta-lksolvation))))))
+(cef--with-isolated-force-fields
+  (multiple-value-bind (ff-name atom-type)
+      (cef--ensure-rosetta-force-field)
+    (multiple-value-bind (agg a1 a2)
+        (cef--make-two-atom-aggregate ff-name atom-type)
+      (declare (ignore a1 a2))
+      (let* ((coords (chem:matter/extract-coordinates agg))
+             ;; Old way: keep-interaction-factory that only keeps rosetta-nonbond
+             (old-ef (chem:%make-energy-function
+                      :matter agg
+                      :use-excluded-atoms nil
+                      :assign-types nil
+                      :keep-interaction-factory
+                      (lambda (aclass)
+                        (if (eq aclass (find-class 'chem:energy-rosetta-nonbond))
+                            t
+                            nil))
+                      :setup '(:rosetta)))
+             ;; New way: :spec with :default nil and explicit component
+             (new-ef (chem:make-energy-function
+                      :matter agg
+                      :use-excluded-atoms nil
+                      :assign-types nil
+                      :spec '(:rosetta
+                              :default nil
+                              (chem:energy-rosetta-nonbond t))))
+             (old-energy (chem:evaluate-energy old-ef coords))
+             (new-energy (chem:evaluate-energy new-ef coords)))
+        ;; Both should have only rosetta-nonbond component with terms
+        #+tests(test-true make-ef-only-same-energy
+                          (< (abs (- old-energy new-energy)) 0.0001))
+        ;; New ef should not have rosetta-elec or lksolvation
+        #+tests(test-true make-ef-only-no-elec
+                          (null (chem:find-component-or-nil new-ef 'chem:energy-rosetta-elec)))
+        #+tests(test-true make-ef-only-no-lk
+                          (null (chem:find-component-or-nil new-ef 'chem:energy-rosetta-lksolvation)))))))
 
 ;;; =========================================================================
 ;;; Test 4: copy-energy-function — full copy, old way vs new way
@@ -177,28 +199,29 @@ with the same energy (within tolerance). Also checks total energy."
 ;;;         old 3-arg copy-filter vs new spec
 ;;; =========================================================================
 
-(multiple-value-bind (ff-name atom-type)
-    (cef--ensure-rosetta-force-field)
-  (multiple-value-bind (agg a1 a2)
-      (cef--make-two-atom-aggregate ff-name atom-type)
-    (declare (ignore a1 a2))
-    (let* ((coords (chem:matter/extract-coordinates agg))
-           (base-ef (chem:%make-energy-function :matter agg
-                                                :use-excluded-atoms nil
-                                                :assign-types nil
-                                                :setup '(:rosetta)))
-           ;; Old way: copy-filter with keep=T and setup list
-           (old-copy (chem:copy-filter base-ef t
-                                       (list :rosetta
-                                             (list 'chem:energy-rosetta-nonbond
-                                                   :rep-weight 0.3))))
-           ;; New way: copy-energy-function with spec
-           (new-copy (chem:copy-energy-function
-                      base-ef
-                      '(:rosetta
-                        (chem:energy-rosetta-nonbond :rep-weight 0.3)))))
-      #+tests(test-true copy-ef-rep-weight-old-vs-new
-                        (cef--compare-component-energies old-copy new-copy coords)))))
+(cef--with-isolated-force-fields
+  (multiple-value-bind (ff-name atom-type)
+      (cef--ensure-rosetta-force-field)
+    (multiple-value-bind (agg a1 a2)
+        (cef--make-two-atom-aggregate ff-name atom-type)
+      (declare (ignore a1 a2))
+      (let* ((coords (chem:matter/extract-coordinates agg))
+             (base-ef (chem:%make-energy-function :matter agg
+                                                  :use-excluded-atoms nil
+                                                  :assign-types nil
+                                                  :setup '(:rosetta)))
+             ;; Old way: copy-filter with keep=T and setup list
+             (old-copy (chem:copy-filter base-ef t
+                                         (list :rosetta
+                                               (list 'chem:energy-rosetta-nonbond
+                                                     :rep-weight 0.3))))
+             ;; New way: copy-energy-function with spec
+             (new-copy (chem:copy-energy-function
+                        base-ef
+                        '(:rosetta
+                          (chem:energy-rosetta-nonbond :rep-weight 0.3)))))
+        #+tests(test-true copy-ef-rep-weight-old-vs-new
+                          (cef--compare-component-energies old-copy new-copy coords))))))
 
 ;;; =========================================================================
 ;;; Test 6: copy-energy-function — with keep-interaction-factory filtering,
