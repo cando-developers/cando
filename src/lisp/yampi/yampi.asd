@@ -6,7 +6,9 @@
   :author "Tarn W. Burton"
   :licence "LGPL-3.0"
   :depends-on ("bordeaux-threads"
-               "pzmq")
+               "pzmq"
+               "uiop")
   :serial t
   :components ((:file "packages")
+               (:file "connection")
                (:file "message")))

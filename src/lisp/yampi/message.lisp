@@ -105,7 +105,7 @@
         (pzmq:ctx-destroy (context channel))))))
 
 (defmethod start ((channel server) connection-path &rest initargs
-                  &key threaded control-endpoint broadcast-endpoint
+                  &key (backend t) threaded control-endpoint broadcast-endpoint
                     heartbeat-ivl heartbeat-ttl heartbeat-timeout
                     disconnect-msg hello-msg)
   (declare (ignore initargs))
@@ -126,15 +126,10 @@
     (finish-output)
     (pzmq:bind control control-endpoint)
     (pzmq:bind broadcast broadcast-endpoint)
-    (when (probe-file connection-path)
-      (error "The connection file ~s already exists - remove it and restart the server~%" connection-path))
-    (with-open-file (stream connection-path :direction :output
-                                            :if-does-not-exist :create
-                                            :if-exists :supersede)
-      (with-standard-io-syntax
-        (write `(:control ,(pzmq:getsockopt control :last-endpoint)
-                 :broadcast ,(pzmq:getsockopt broadcast :last-endpoint))
-               :stream stream)))
+    (write-connection-file connection-path
+                           (pzmq:getsockopt control :last-endpoint)
+                           (pzmq:getsockopt broadcast :last-endpoint)
+                           backend)
     (initialize channel)
     (if threaded
         (setf thread
@@ -145,10 +140,10 @@
                           (server-message-loop channel)
                         (error (condition)
                           (format t "~a" condition)))
-                   (delete-file connection-path)))))
+                   (delete-connection-file connection-path backend)))))
         (unwind-protect
              (server-message-loop channel)
-          (delete-file connection-path)))))
+          (delete-connection-file connection-path backend)))))
 
 (defmethod send ((channel server) (identity null) code &rest parts)
   (bordeaux-threads:with-lock-held ((broadcast-send-lock channel))
@@ -201,7 +196,7 @@
         (pzmq:ctx-destroy (context channel))))))
 
 (defmethod start ((channel client) connection-path &rest initargs
-                  &key threaded
+                  &key (backend t) threaded
                     heartbeat-ivl heartbeat-ttl heartbeat-timeout
                     disconnect-msg hello-msg)
   (declare (ignore initargs))
@@ -220,14 +215,10 @@
     (when heartbeat-timeout
       (pzmq:setsockopt control :heartbeat-timeout heartbeat-timeout))
 ;;; Wait for file to be created
-    (loop until (probe-file connection-path)
-          do (format t "Waiting for ~s to appear~%" connection-path)
-          do (sleep 10))
-    (format t "Found ~s~%" connection-path)
-    (with-open-file (stream connection-path)
-      (let ((data (with-standard-io-syntax (read stream nil nil))))
-        (pzmq:connect control (getf data :control))
-        (pzmq:connect broadcast (getf data :broadcast))))
+    (multiple-value-bind (control-endpoint broadcast-endpoint)
+        (wait-for-connection-file connection-path backend)
+      (pzmq:connect control control-endpoint)
+      (pzmq:connect broadcast broadcast-endpoint))
     (initialize channel)
     (if threaded
         (setf thread
@@ -300,7 +291,7 @@
         (pzmq:ctx-destroy (context channel))))))
 
 (defmethod start ((channel inspector) connection-path &rest initargs
-                  &key threaded
+                  &key (backend t) threaded
                        heartbeat-ivl heartbeat-ttl heartbeat-timeout
                        disconnect-msg hello-msg)
   (declare (ignore initargs))
@@ -319,14 +310,10 @@
     (when heartbeat-timeout
       (pzmq:setsockopt control :heartbeat-timeout heartbeat-timeout))
     ;;; Wait for file to be created
-    (loop until (probe-file connection-path)
-          do (format t "Waiting for ~s to appear~%" connection-path)
-          do (sleep 10))
-    (format t "Found ~s~%" connection-path)
-    (with-open-file (stream connection-path)
-      (let ((data (with-standard-io-syntax (read stream nil nil))))
-        (pzmq:connect control (getf data :control))
-        (pzmq:connect broadcast (getf data :broadcast))))
+    (multiple-value-bind (control-endpoint broadcast-endpoint)
+        (wait-for-connection-file connection-path backend)
+      (pzmq:connect control control-endpoint)
+      (pzmq:connect broadcast broadcast-endpoint))
     (initialize channel)
     (inspector-message-loop channel)))
 

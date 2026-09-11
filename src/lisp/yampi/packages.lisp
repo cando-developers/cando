@@ -1,6 +1,10 @@
 (defpackage #:yampi
   (:use :cl)
-  (:export #:client
+  (:export #:write-connection-file
+           #:wait-for-connection-file
+           #:delete-connection-file
+           #:call-with-connection-wait
+           #:client
            #:deserialize
            #:idle
            #:initialize
