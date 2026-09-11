@@ -284,7 +284,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
           for vi = (aref v-vec i)
           for ini = (aref in-vec i)
           for phasei = (aref phase-vec i)
-          for key = (list vi ini phasei)
+          for key = (list vi ini phasei proper)
           ;;          for key = (intern (format nil "~15f-~d-~f" vi ini phasei) :keyword)
  ;;;         do (format t "atom1: ~a atom2: ~a atom3: ~a atom4 ~a key: ~a vi: ~a ini ~a phase ~a~% " atom1 atom2 atom3 atom4 key vi ini phasei)
           do (if (setf jtemp (gethash key uniques))
@@ -391,10 +391,7 @@ then don't calculate 1,4 interactions"
       (format t "i3-vector ~s~%" i3-vector)
       (format t "i4-vector ~s~%" i4-vector)
       (format t "proper-vector ~s~%" proper-vector))
-    (let ((indices (if (check-if-dihedrals-are-ordered proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)
-                       (make-indices (length v-vector))
-                       (sort-dihedrals proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)))))
-    (let (proper-prev i1prev i2prev i3prev i4prev)
+    (let ((excluded-or-used-pairs (make-hash-table :test #'equal)))
       ;; If i3x or i4x are zero - then they can not be negated
       ;; we have to flip the dihedral order to ensure this does not happen
       (format t "Ordering i1,i2,i3,i4 prepare-amber-energy-dihedral~%")
@@ -415,65 +412,35 @@ then don't calculate 1,4 interactions"
       ;; whether the dihedral is improper or not  (i4-vector value is negated)
       (format t "1-4 interactions prepare-amber-energy-dihedral~%")
       (finish-output)
-      (let ((in-bond-or-angle (make-hash-table :test #'equal)))
-        (progn
-          (loop for bond-index below (length ib)
-                for ib-index = (aref ib bond-index)
-                for jb-index = (aref jb bond-index)
-                do (setf (gethash (cons ib-index jb-index) in-bond-or-angle) t)
-                   (setf (gethash (cons jb-index ib-index) in-bond-or-angle) t))
-          (loop for angle-index below (length it)
-                for it-index = (aref it angle-index)
-                for kt-index = (aref kt angle-index)
-                do (setf (gethash (cons it-index kt-index) in-bond-or-angle) t)
-                   (setf (gethash (cons kt-index it-index) in-bond-or-angle) t)))
-        (flet ((in-same-bond-or-angle (i1x i4x ib jb it kt)
-                 ;; Return T if i1x,i4x are in a bond
-                 ;; Use hash table
-                 (let ((fast-result (gethash (cons i1x i4x) in-bond-or-angle))
-                       #+(or) (slow-result (block slow-path
-                                      (loop for bond-index below (length ib)
-                                            for ib-index = (aref ib bond-index)
-                                            for jb-index = (aref jb bond-index)
-                                            when (or (and (= ib-index i1x) (= jb-index i4x))
-                                                     (and (= ib-index i4x) (= jb-index i1x)))
-                                              do (return-from slow-path t))
-                                      ;; Return T if i1x,i4x are in an angle
-                                      (loop for angle-index below (length it)
-                                            for it-index = (aref it angle-index)
-                                            for kt-index = (aref kt angle-index)
-                                            when (or (and (= it-index i1x) (= kt-index i4x))
-                                                     (and (= it-index i4x) (= kt-index i1x)))
-                                              do (return-from slow-path t))
-                                      nil)))
-                   #+(or)  (unless (eq fast-result slow-result)
-                     (error "The fast result and the slow result don't match"))
-                   fast-result)))
-          (loop for x below (length v-vector)
-                for properx = (aref proper-vector x)
-                for i1x = (aref i1-vector x)
-                for i2x = (aref i2-vector x)
-                for i3x = (aref i3-vector x)
-                for i4x = (aref i4-vector x)
-                do (cond
-                     ((and properx
-                           proper-prev
-                           (eq i1x i1prev)
-                           (eq i2x i2prev)
-                           (eq i3x i3prev)
-                           (eq i4x i4prev))
-                      (setf (aref i3-vector x) (- i3x)))
-                     (properx
-                      (when (in-same-bond-or-angle i1x i4x ib jb it kt)
-                        (setf (aref i3-vector x) (- i3x))))
-                     (t                 ; It's an improper
-                      (setf (aref i3-vector x) (- i3x)
-                            (aref i4-vector x) (- i4x))))
-                   (setf proper-prev properx
-                         i1prev i1x
-                         i2prev i2x
-                         i3prev i3x
-                         i4prev i4x))))
+      (flet ((pair-key (i j)
+               (cons (min i j) (max i j))))
+        ;; Track unordered endpoint pairs, as in unitio.c's Calc14 index.
+        ;; Bonds and angle endpoints may never acquire a 1-4 interaction.
+        (loop for bond-index below (length ib)
+              for i = (aref ib bond-index)
+              for j = (aref jb bond-index)
+              do (setf (gethash (pair-key i j) excluded-or-used-pairs) t))
+        (loop for angle-index below (length it)
+              for i = (aref it angle-index)
+              for k = (aref kt angle-index)
+              do (setf (gethash (pair-key i k) excluded-or-used-pairs) t))
+        (loop for x below (length v-vector)
+              for properx = (aref proper-vector x)
+              for i1x = (aref i1-vector x)
+              for i3x = (aref i3-vector x)
+              for i4x = (aref i4-vector x)
+              for key = (pair-key i1x i4x)
+              do (cond
+                   ((not properx)
+                    ;; Impropers neither calculate nor claim a 1-4 pair.
+                    (setf (aref i3-vector x) (- i3x)
+                          (aref i4-vector x) (- i4x)))
+                   ((gethash key excluded-or-used-pairs)
+                    (setf (aref i3-vector x) (- i3x)))
+                   (t
+                    ;; Keep every torsion term, but enable each pair once,
+                    ;; regardless of path, orientation, or term ordering.
+                    (setf (gethash key excluded-or-used-pairs) t)))))
       (multiple-value-bind (j-vec vj-vec inj-vec phasej-vec properj-vec)
           (collapse-dihedral-parameters (chem:atom-types energy-function) v-vector in-vector phase-vector proper-vector atom1-vector atom2-vector atom3-vector atom4-vector)
         (let ((with-h 0)
@@ -726,70 +693,152 @@ index leads.  A name with no dot (an ordinary AMBER/GAFF type) is returned uncha
             (setf prev-molv molv)))
     (values nresidue nmxrs residue-pointer-vector residue-name-vector atoms-per-molecule residue-vector)))
 
-(defun water-hydrogen-p (atm atom-types)
-  "Return T if the atm is a hydrogen in a water"
-  (let ((type (chem:get-type atm atom-types)))
-    (eq type :HW)))
+(defun gb-radius-set-description (igbparm)
+  "Describe the complete named radius sets in LEaP unitio.c.
+Legacy iGBparm 4/5 have no defined RADII assignment and are not supported."
+  (ecase igbparm
+    (:bondi "Bondi radii (bondi)")
+    (:amber6 "amber6 modified Bondi radii (amber6)")
+    (:mbondi "modified Bondi radii (mbondi)")
+    (:mbondi2 "H(N)-modified Bondi radii (mbondi2)")
+    (:parse "Parse radii (parse)")
+    (:mbondi3 "ArgH and AspGluO modified Bondi2 radii (mbondi3)")))
 
-(defun arg-hh/he-p (atm atoms-to-residues)
-  (break "TODO: What do we check here - we need to match unitio.c:6534-6539"))
+(defun gb-name-prefix-p (prefix name)
+  (let ((name (string name)))
+    (and (<= (length prefix) (length name))
+         (string= prefix name :end2 (length prefix)))))
+
+(defun gb-original-residue-name (atom atoms-to-residues)
+  (let ((residue (gethash atom atoms-to-residues)))
+    (unless residue
+      (error "No residue is mapped for GB atom ~s" atom))
+    (string (chem:get-name residue))))
+
+(defun gb-residue-name-suffix (atom atoms-to-residues)
+  ;; Use original names: NARG/CARG must match ARG, not truncated output labels.
+  (let ((name (gb-original-residue-name atom atoms-to-residues)))
+    (subseq name (max 0 (- (length name) 3)))))
+
+(defun water-hydrogen-p (atom atom-types)
+  "Recognize LEaP's case-insensitive HW type prefix."
+  (let ((name (string (chem:get-type atom atom-types))))
+    (and (>= (length name) 2)
+         (string-equal "HW" name :end2 2))))
+
+(defun arg-hh/he-p (atom atoms-to-residues)
+  (and (string= "ARG" (gb-residue-name-suffix atom atoms-to-residues))
+       (let ((name (string (chem:get-name atom))))
+         (or (gb-name-prefix-p "HH" name)
+             (string= "HE" name)))))
+
+(defun carboxylate-or-oxt-oxygen-p (atom next-atom atoms-to-residues)
+  (let ((name (string (chem:get-name atom)))
+        (residue-name (gb-residue-name-suffix atom atoms-to-residues)))
+    (or (and (member residue-name '("ASP" "AS4") :test #'string=)
+             (gb-name-prefix-p "OD" name))
+        (and (member residue-name '("GLU" "GL4") :test #'string=)
+             (gb-name-prefix-p "OE" name))
+        (string= "OXT" name)
+        ;; Match unitio.c's global look-ahead, without a same-residue check.
+        (and next-atom
+             (string= "OXT" (string (chem:get-name next-atom)))))))
 
 (defun gb-hydrogen-radius (atom igbparm atom-types atoms-to-residues)
-  ;; tleap unitio.c:6479-6549.  Base Bondi H = 1.2.
+  ;; unitio.c:6479-6549: use the first neighbor, even for multiply bonded H.
   (if (zerop (chem:number-of-bonds atom))
-      1.2                            ; unbonded H: unmodified (+ warn)
-      (let* ((nbr (chem:bonded-neighbor atom 0)) ; "first bond" rule
-             (zn  (chem:get-element nbr)))
+      (progn
+        (warn "Unbonded Hydrogen atom ~a in ~a.~%~
+               Cannot determine the requested GB radius for this atom.~%~
+               Writing the unmodified Bondi GB radius."
+              (chem:get-name atom)
+              (gb-original-residue-name atom atoms-to-residues))
+        1.2d0)
+      (let* ((neighbor (chem:bonded-neighbor atom 0))
+             (element (chem:get-element neighbor)))
         (ecase igbparm
-          (:bondi 1.2)                ; no modification
-          (:mbondi (case zn
-                       ((:C :N) 1.3)
-                       ((:O :S) 0.8)
-                       (:H (if (water-hydrogen-p nbr atom-types) 0.8 1.2))
-                       (otherwise 1.2)))
-          ((:mbondi2 :mbondi3)      ; Alexey's scheme
-           (let ((r (if (eq zn :N) 1.3 1.2)))
-             (if (and (eq igbparm :mbondi3) (arg-hh/he-p atom atoms-to-residues))
-                 1.17 r)))))))
+          (:bondi 1.2d0)
+          ((:amber6 :mbondi)
+           (case element
+             (:C 1.3d0)
+             ((:O :S) 0.8d0)
+             (:N (if (eq igbparm :mbondi) 1.3d0 1.2d0))
+             (:H (if (water-hydrogen-p neighbor atom-types) 0.8d0 1.2d0))
+             (otherwise 1.2d0)))
+          ((:mbondi2 :mbondi3)
+           (if (eq element :N)
+               (if (and (eq igbparm :mbondi3)
+                        (arg-hh/he-p atom atoms-to-residues))
+                   1.17d0
+                   1.3d0)
+               1.2d0))))))
 
-(defun gb-oxygen-radius (atom igbparm atoms-to-residues)
-  ;; tleap unitio.c:6580-6605.  Base 1.5; mbondi3 carboxylate/OXT -> 1.4.
-  (if (and (eq igbparm :mbondi3-8) (carboxylate-or-oxt-oxygen-p atom atoms-to-residues))
-      1.4
-      1.5))
+(defun gb-carbon-radius (full-type parameter-mass)
+  ;; unitio.c:6551-6575: parameter type/mass identify united-atom carbons.
+  (cond
+    ((gb-name-prefix-p "C1" full-type)
+     (if (< parameter-mass 13.0d0) 1.7d0 2.2d0))
+    ((gb-name-prefix-p "C2" full-type)
+     (if (< parameter-mass 14.0d0) 1.7d0 2.2d0))
+    ((gb-name-prefix-p "C3" full-type)
+     (if (< parameter-mass 15.0d0) 1.7d0 2.2d0))
+    (t 1.7d0)))
 
-(defun gb-radius (atom igbparm atom-types atoms-to-residues)
-  ;; Heavy-atom table shared by all four sets (tleap unitio.c:6478-6624).
-  (case (chem:get-element atom)
-    (:H  (gb-hydrogen-radius atom igbparm atom-types atoms-to-residues))
-    (:C  1.7) 
-    (:N  1.55)
-    (:O  (gb-oxygen-radius atom igbparm atoms-to-residues))
-    (:F  1.5)
-    (:|Si| 2.1)
-    (:P  1.85)
-    (:S  1.8)
-    (:|Cl| 1.7)
-    (otherwise 1.5)))
+(defun gb-oxygen-radius (atom next-atom igbparm atoms-to-residues)
+  (if (and (eq igbparm :mbondi3)
+           (carboxylate-or-oxt-oxygen-p atom next-atom atoms-to-residues))
+      1.4d0
+      1.5d0))
 
-(defun gb-screen (atom)
-  ;; Identical for all four sets (tleap unitio.c:6710-6735).
-  (case (chem:get-element atom)
-    (:H 0.85) (:C 0.72) (:N 0.79) (:O 0.85)
-    (:F 0.88) (:P 0.86) (:S 0.96)
-    (otherwise 0.8)))
+(defun gb-radius (atom igbparm atom-types atoms-to-residues
+                  parameter-mass next-atom)
+  (ecase igbparm
+    (:parse
+     ;; unitio.c:6665-6689: PARSE has a separate elemental radius table.
+     (case (chem:get-element atom)
+       (:H 1.0d0) (:C 1.7d0) (:N 1.5d0) (:O 1.4d0) (:S 1.85d0)
+       (otherwise 1.5d0)))
+    ((:bondi :amber6 :mbondi :mbondi2 :mbondi3)
+     (case (chem:get-element atom)
+       (:H (gb-hydrogen-radius atom igbparm atom-types atoms-to-residues))
+       (:C (gb-carbon-radius (chem:get-type atom atom-types) parameter-mass))
+       (:N 1.55d0)
+       (:O (gb-oxygen-radius atom next-atom igbparm atoms-to-residues))
+       (:F 1.5d0)
+       (:|Si| 2.1d0)
+       (:P 1.85d0)
+       (:S 1.8d0)
+       (:|Cl| 1.7d0)
+       (otherwise 1.5d0)))))
 
+(defun gb-screen (atom igbparm)
+  (ecase igbparm
+    ;; unitio.c initializes screening to zero and has no PARSE branch.
+    (:parse 0.0d0)
+    ((:bondi :amber6 :mbondi :mbondi2 :mbondi3)
+     (case (chem:get-element atom)
+       (:H 0.85d0) (:C 0.72d0) (:N 0.79d0) (:O 0.85d0)
+       (:F 0.88d0) (:P 0.86d0) (:S 0.96d0)
+       (otherwise 0.8d0)))))
 
-;; for now, hardwire the Bondi radii
-(defun prepare-generalized-born (atom-table atom-types atoms-to-residues
-                                 &optional (igbparm *gdefaults.igbparm-symbol*))
-  (let* ((natom  (chem:get-number-of-atoms atom-table))
-         (radius (make-array natom))
-         (screen (make-array natom)))
+(defun prepare-generalized-born (atom-table atom-types atoms-to-residues masses
+                                 &optional (igbparm leap.core:*gbdefaults.igbparm-symbol*))
+  "Return RADII and SCREEN in atom-table order, using force-field parameter MASSES."
+  ;; Validate even for an empty atom table.
+  (gb-radius-set-description igbparm)
+  (let* ((natom (chem:get-number-of-atoms atom-table))
+         (radius (make-array natom :element-type 'double-float))
+         (screen (make-array natom :element-type 'double-float)))
+    (unless (= (length masses) natom)
+      (error "GB mass vector has ~d entries for ~d atoms" (length masses) natom))
     (loop for i from 0 below natom
           for atom = (chem:elt-atom atom-table i)
-          do (setf (aref radius i) (gb-radius atom igbparm atom-types atoms-to-residues)
-                   (aref screen i) (gb-screen atom)))
+          for next-atom = (when (< (1+ i) natom)
+                            (chem:elt-atom atom-table (1+ i)))
+          do (setf (aref radius i)
+                   (gb-radius atom igbparm atom-types atoms-to-residues
+                              (aref masses i) next-atom)
+                   (aref screen i) (gb-screen atom igbparm)))
     (values radius screen)))
 
 (defmacro outline-progn (&body body)
@@ -807,7 +856,9 @@ topology-pathname : Where to write the topology file.
 coordinate-pathname : Where to write the coordinate file (ascii).
 residue-name-to-pdb-alist : An alist of long residue names to short PDB residue names.
 cando-extensions               : T if you want cando-extensions written to the topology file."
-  (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
+  (let* ((igbparm leap.core:*gbdefaults.igbparm-symbol*)
+         (radius-set-description (gb-radius-set-description igbparm))
+         (bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
          (bar-counter 0)
          (nonbonds (chem:get-nonbond-component energy-function))
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
@@ -880,7 +931,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (setf cn2-vec (cdr (assoc :cn2-vec atom-vectors)))
         (multiple-value-setq (generalized-born-radius generalized-born-screen)
           (let ((atom-types (chem:atom-types energy-function)))
-            (prepare-generalized-born atomic-number atom-types atoms-to-residues)))
+            (prepare-generalized-born atom-table atom-types atoms-to-residues mass igbparm)))
         (setf nhparm 0)
         (setf nparm 0)
         (setf nnb (length excluded-atom-list))
@@ -1511,12 +1562,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:fwrite "%FORMAT(1a80)")
          (fortran:debug "-41-")
          (fortran:fformat 1 "{:<80s}")
-         (fortran:fwrite
-          (ecase *gdefaults.igbparm-symbol*
-            (:bondi   "Bondi radii (bondi)")
-            (:mbondi  "modified Bondi radii (mbondi)")
-            (:mbondi2 "H(N)-modified Bondi radii (mbondi2)")
-            (:mbondi3 "ArgH and AspGluO modified Bondi2 radii (mbondi3)")))
+         (fortran:fwrite radius-set-description)
          (fortran:end-line))
 
         ;;next
@@ -1632,20 +1678,21 @@ cando-extensions               : T if you want cando-extensions written to the t
   (let* ((energy-function (chem:make-energy-function :matter aggregate
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types))
-         (atom-to-residue (make-hash-table)))
-    (let ((atoms-to-residues (make-hash-table)))
-    (break "I need to map atoms-to residues")
-    ;;; We need to:
-    ;;;  (1) make sure energy function copies bounding-box property from aggregate
-    ;;;  (2) Copy the name of the aggregate into the energy function
-    ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
-    ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
+         (atoms-to-residues (make-hash-table :test #'eq)))
+    (chem:do-residues (res aggregate)
+      (chem:do-atoms (atm res)
+        (setf (gethash atm atoms-to-residues) res)))
+;;; We need to:
+;;;  (1) make sure energy function copies bounding-box property from aggregate
+;;;  (2) Copy the name of the aggregate into the energy function
+;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
+;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
     (save-amber-parm-format-using-energy-function energy-function
                                                   topology-pathname
                                                   coordinate-pathname
                                                   residue-name-to-pdb-alist
                                                   atoms-to-residues
-                                                  :cando-extensions cando-extensions))))
+                                                  :cando-extensions cando-extensions)))
 
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")
@@ -2793,4 +2840,3 @@ If it's a restart file then return NIL"
                                          (current-coordinates amber-topology-pair))))
       (write-coordinates-into-energy-function-atom-table (energy-function amber-topology-pair) (current-coordinates amber-topology-pair))
       (aggregate amber-topology-pair))))
-

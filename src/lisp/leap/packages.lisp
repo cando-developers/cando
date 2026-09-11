@@ -148,7 +148,7 @@
 (defpackage #:leap.core
   (:use #:common-lisp)
   (:export
-   #:*gbdefaults-igbparm-symbol*
+   #:*gbdefaults.igbparm-symbol*
    #:+igbparm-symbol-alist+
    #:+igbparm-symbol-names+
    #:*variable-package*

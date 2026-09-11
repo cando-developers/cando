@@ -288,7 +288,7 @@ is written to the log file as if the verbosity level were set to 2."
 (defmethod set-default ((object (eql :pbradii)) value)
   (unless (member value leap.core:+igbparm-symbol-names+)
     (error "Unknown PBRadii option ~s" value))
-  (setf *gdefaults.igbparm-symbol* value))
+  (setf leap.core:*gbdefaults.igbparm-symbol* value))
 
 (defmethod set-property ((object (eql :default)) (property symbol) value)
   (set-default property value))

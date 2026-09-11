@@ -313,13 +313,17 @@ given in 'combined-force-field-class-name'.  I'm not sure what 'force-field-info
 ;;;
 ;;;
 
-(defvar *gdefaults.igbparm-symbol* :mbondi
-  "Readable GB radius-set selector. One of
-     :bondi :mbondi :mbondi2 :mbondi3.
-     The trailing integer is the tleap iGBparm value.")
+(defvar *gbdefaults.igbparm-symbol* :mbondi
+  "GB radius-set selector: :bondi, :amber6, :mbondi, :mbondi2, :parse, or :mbondi3.
+The numeric codes below are LEaP iGBparm codes, not simulation igb values.")
 
 (defparameter +igbparm-symbol-alist+
-  '((:bondi 0) (:mbondi 2) (:mbondi2 6) (:mbondi3 8) (:amber6 10)))
+  '((:bondi 0) (:amber6 1) (:mbondi 2) (:mbondi2 6) (:parse 7) (:mbondi3 8)))
+
+(defun gbparmsymbol-to-integer (symbol)
+  (let ((cons (assoc symbol +igbparm-symbol-alist+)))
+    (unless cons (error "Could not find gbparm symbol ~s - allowed (~s)" symbol (mapcar #'car +igbparm-symbol-alist+)))
+    (second cons)))
 
 (defparameter +igbparm-symbol-names+
   (mapcar #'car +igbparm-symbol-alist+))
