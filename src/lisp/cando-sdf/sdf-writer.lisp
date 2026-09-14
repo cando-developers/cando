@@ -11,24 +11,25 @@
 
 (defun write-sdf-stream (aggregate stream &key name data-items)
   "Write the aggregate to the sdf stream.
+AGGREGATE may be NIL to write a zero-atom record containing only metadata.
 - data-items : an a-list with names and data to write into the sdf file."
   #+(or)(warn "write-sdf-stream doesn't handle charges properly yet")
   (format stream "~a~%~a~%Source - Cando.~%"
           (if name
               name
-              (string (chem:get-name aggregate)))
+              (if aggregate (string (chem:get-name aggregate)) ""))
           (if name
               name
-              (string (chem:get-name aggregate))))
+              (if aggregate (string (chem:get-name aggregate)) "")))
   (let ((atom-to-index (make-hash-table)))
-    (let* ((atoms (chem:map-atoms 'vector
+    (let* ((atoms (if aggregate (chem:map-atoms 'vector
                                   (lambda (atm) atm)
-                                  aggregate))
-           (bonds (chem:map-bonds 'vector
+                                  aggregate) #()))
+           (bonds (if aggregate (chem:map-bonds 'vector
                                   (lambda (atm1 atm2 bond-order bond)
                                     (declare (ignore bond))
                                     (list atm1 atm2 bond-order))
-                                  aggregate))
+                                  aggregate) #()))
            (coordinates (make-array (* 3 (length atoms)) :element-type (geom:vecreal-type))))
       (format stream "~3d~3d~3d~3d~3d~3d            999 V2000~%"
               (length atoms)
@@ -50,7 +51,8 @@
                        (elt coordinates (+ 1 coord-index)) 
                        (elt coordinates (+ 2 coord-index))
                        (string (chem:get-element atm))))
-      (chem:map-bonds nil
+      (when aggregate
+        (chem:map-bonds nil
                       (lambda (a1 a2 order bond)
                         (declare (ignore bond))
                         (let* ((order-num (case order
@@ -71,7 +73,7 @@
                                   0
                                   0
                                   0)))
-                      aggregate)
+                      aggregate))
       (format stream "M  END~%")
       (loop for data-item in data-items
             do (format stream "> <~a>~%" (car data-item))
@@ -81,4 +83,3 @@
             do (format stream "~%"))
       (format stream "$$$$~%")
       atoms)))
-
