@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyComponent.h>
 #include <cando/chem/energyFunction.h>
+#include <cando/chem/energyNonbond.h>
 #include <cando/chem/forceField.h>
 #include <cando/chem/pairList.h>   // CellGrid, for ensureNeighborList
 #include <cando/units/unitsPackage.h>
@@ -869,11 +870,13 @@ SYMBOL_EXPORT_SC_(ClPkg,copy_seq);
 excluded atoms for each atom and the second containing the sorted excluded atom list */
 CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list(core::T_sp keepInteractionFactory)
 {
-  if (keepInteractionFactory.nilp()) {
-    SIMPLE_ERROR("keepInteractionFactory in calculate_excluded_atom_list is nil - it shoudn't be");
-  }
-  if (gc::IsA<core::Function_sp>(keepInteractionFactory)) {
-    SIMPLE_ERROR("keepInteractionFactory in calculate_excluded_atom_list is a function - add support for this or switch to nonbond terms");
+  // A component-selecting factory is fine if it keeps every nonbond pair.
+  // Connectivity exclusions cannot represent arbitrary per-pair filtering.
+  core::T_sp keepInteraction = specializeKeepInteractionFactory(
+      keepInteractionFactory, EnergyNonbond_O::staticClass());
+  if (keepInteraction != _lisp->_true()) {
+    SIMPLE_ERROR("Excluded-atom lists require the EnergyNonbond interaction factory to return T; "
+                 "component exclusion and per-pair predicates are unsupported. Use nonbond terms instead.");
   }
 
 //  printf("%s:%d In calculate_excludec_atom_list\n", __FILE__, __LINE__ );
@@ -927,6 +930,8 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
     this->_Atoms[i]._Charge       =  charge;
     atom->setCharge(charge);
     this->_Atoms[i]._SharedAtom     =  atom;
+    // Imported coordinates follow PRMTOP atom order: x, y, z for each atom.
+    this->_Atoms[i]._IndexTimes3 = 3 * i;
     this->_Atoms[i]._AtomName     =  gc::As<core::Symbol_sp>(atom_name_vec->rowMajorAref(i));  // atom-name-vector
     //    The _TypeIndex is going to go away once we have ensured that the new Common Lisp code
     // that calculates nonbond terms works.

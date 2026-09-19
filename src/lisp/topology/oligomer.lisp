@@ -224,6 +224,8 @@
                          (topology:foldamer-monomer-context-info-atom-info context-info)))
          (stereoisomer-name (current-stereoisomer-name next-monomer oligomer))
          (residue (build-residue-for-monomer-name topology stereoisomer-name :atom-info atom-info)))
+    (when (source-file-sequence-number next-monomer)
+      (chem:set-file-sequence-number residue (source-file-sequence-number next-monomer)))
     (setf (gethash next-monomer monomers-to-residues) residue
           (gethash next-monomer monomers-to-topologys) topology)
     (let ((residue-index (chem:content-size molecule)))
@@ -232,7 +234,9 @@
                            :molecule-index molecule-index
                            :residue-index residue-index)))
     (chem:add-matter molecule residue)
-    (when prev-residue
+    ;; A fixed protein can have disconnected fragments in one construction tree.
+    ;; Traversal-only couplings must not turn those gaps into peptide bonds.
+    (when (and prev-residue (chemical-bond-p out-coupling))
       (connect-residues prev-topology
                         prev-residue
                         (source-plug-name out-coupling)

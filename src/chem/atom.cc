@@ -957,7 +957,10 @@ void	Atom_O::fields(core::Record_sp node)
   node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
   node->/*pod_*/field_if_not_default( INTERN_(kw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
   node->/*pod_*/field_if_not_default( INTERN_(kw,pos), this->_Position, Vector3());
-  node->field_if_not_empty(INTERN_(kw,bonds),this->_Bonds);
+  // DON'T SERIALIZE BONDS HERE!!!
+  // Residues handle bonds within a residue
+  // Molecules handle bonds between residues
+  //  node->field_if_not_empty(INTERN_(kw,bonds),this->_Bonds);
   this->Base::fields(node);
 }
 

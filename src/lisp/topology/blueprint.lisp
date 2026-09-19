@@ -1638,6 +1638,7 @@ energies with no error, which is the failure mode this entry point exists to pre
                                                     (monomer-name blueprint-monomer)))
            (sidechain-atom (chem:atom-with-name residue sidechain-atom-name))
            (backbone-atom (chem:atom-with-name backbone-residue backbone-atom-name)))
+      (chem:set-file-sequence-number residue (chem:get-file-sequence-number backbone-residue))
       (chem:add-matter molecule residue)
       ;; BOND-TO returns the bond (atom.cc:564-566), so no second lookup.
       (let ((bond (chem:bond-to sidechain-atom backbone-atom :single-bond :error-if-exceed-valence nil)))

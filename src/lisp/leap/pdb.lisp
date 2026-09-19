@@ -12,9 +12,18 @@
   "Map (residue name . terminus) from pdb files to form names")
 
 (defun lookup-topology-using-pdb-name-and-context (name context)
-  "context is one of :head, :tail or nil?"
+  "Honor explicit gap mappings, otherwise retain the ordinary residue chemistry.
+Gap marks alone do not imply charged termini or caps. A context may be a list
+when a residue has more than one boundary (e.g. :GAP-BEGIN and :END-GAP)."
   (multiple-value-bind (topology-name foundp)
       (gethash (cons name context) *map-pdb-names-to-topology-names*)
+    (let ((marks (if (listp context) context (list context))))
+      (when (and (not foundp) (intersection marks '(:end-gap :gap-begin)))
+        (multiple-value-setq (topology-name foundp)
+          (gethash (cons name (cond ((member :head marks) :head)
+                                   ((member :tail marks) :tail)
+                                   (t :main)))
+                   *map-pdb-names-to-topology-names*))))
     (if foundp
         (cando:lookup-topology topology-name t)
         (let ((topology (cando:lookup-topology (intern (string name) leap.core:*variable-package*) nil)))
@@ -35,7 +44,10 @@ residues (N-terminal for proteins, 5' for nucleic acids) and 1 or :tail for endi
 residues (C-terminal for proteins, 3' for nucleic acids).  If the
 terminalflag is given, the PDBName->LEaPVar name map will only be applied
 for the appropriate terminal residue.  The `leaprc' file included with
-the distribution contains default mappings."
+the distribution contains default mappings.
+:END-GAP and :GAP-BEGIN select residues before and after missing coordinates.
+Lists of boundary keywords may select combined contexts. Without an explicit
+gap mapping, ordinary :MAIN (or an actual :HEAD/:TAIL) chemistry is retained."
   (unless (core:proper-list-p mappings)
     (error "You must provide a list of lists of mappings"))
   (labels ((ensure-symbol (name &optional (package :keyword))
@@ -59,7 +71,17 @@ the distribution contains default mappings."
                              (1 :tail)
                              (:head :head)
                              (:tail :tail)
-                             (otherwise (error "Illegal terminalflag ~a" terminus)))))
+                             (:end-gap :end-gap)
+                             (:gap-begin :gap-begin)
+                             ;; Exact mappings for residues with multiple boundaries.
+                             (otherwise
+                              (if (and (consp terminus)
+                                       (core:proper-list-p terminus)
+                                       (every (lambda (mark)
+                                                (member mark '(:head :tail :end-gap :gap-begin)))
+                                              terminus))
+                                  terminus
+                                  (error "Illegal terminalflag ~a" terminus))))))
              (do-add-map res-name term-sym var-name))))
         ((= (length mapping) 2)
          (destructuring-bind (res-name var-name)
@@ -122,10 +144,59 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (residue-name :initarg :residue-name :accessor residue-name)
    (atom-names :initarg :atom-names :accessor atom-names)
    (context :initform nil :initarg :context :accessor context)
+   (gap-before :initform nil :accessor gap-before)
+   (gap-after :initform nil :accessor gap-after)
    (atom-serial-first :initform nil :initarg :atom-serial-first :accessor atom-serial-first)
    (atom-serial-last :initform nil :accessor atom-serial-last))
   (:documentation
-     "Keep track of residue and context (:head :main :tail)"))
+     "Observed residue and boundary contexts, including :END-GAP/:GAP-BEGIN.
+Gaps retain endpoint identifiers, not fabricated residues or coordinates."))
+
+(defun add-pdb-context-mark (residue mark)
+  (let* ((old (context residue))
+         (marks (remove :main (if (listp old) old (list old))))
+         (new (if (member mark marks) marks (append marks (list mark)))))
+    (setf (context residue) (if (cdr new) new (car new)))))
+
+(defun pdb-insertion-code-rank (code)
+  ;; PARSE-LINE represents blank as NIL, letters as keywords, digits as integers.
+  (cond ((null code) 0)
+        ((integerp code) (1+ code))
+        (t (let ((text (string code)))
+             (and (= (length text) 1)
+                  (alpha-char-p (char text 0))
+                  (1+ (- (char-code (char-upcase (char text 0)))
+                         (char-code #\A))))))))
+
+(defun pdb-numbering-gap-p (previous current)
+  "Recognize forward numbering gaps within an ATOM chain.
+Consecutive insertion codes and a following residue number remain connected.
+Numbering resets/chain changes are not interpreted as missing residue ranges."
+  (and previous current
+       (not (hetatmp previous)) (not (hetatmp current))
+       (eql (chain-id previous) (chain-id current))
+       (or (> (res-seq current) (1+ (res-seq previous)))
+           (and (= (res-seq current) (res-seq previous))
+                (let ((a (pdb-insertion-code-rank (i-code previous)))
+                      (b (pdb-insertion-code-rank (i-code current))))
+                  (and a b (> b (1+ a))))))))
+
+(defun mark-pdb-numbering-gap (previous current)
+  (when (pdb-numbering-gap-p previous current)
+    (let ((gap (list :chain-id (chain-id current)
+                     :before (list (res-seq previous) (i-code previous))
+                     :after (list (res-seq current) (i-code current)))))
+      (setf (gap-after previous) gap (gap-before current) gap)
+      (add-pdb-context-mark previous :end-gap)
+      (add-pdb-context-mark current :gap-begin))))
+
+(defun annotate-pdb-residue (residue pdb-residue)
+  "Preserve gap boundaries on the constructed chemical residue."
+  (chem:set-property residue :pdb-context (context pdb-residue))
+  (when (gap-before pdb-residue)
+    (chem:set-property residue :pdb-gap-before (gap-before pdb-residue)))
+  (when (gap-after pdb-residue)
+    (chem:set-property residue :pdb-gap-after (gap-after pdb-residue))))
 
 
 (defmethod print-object ((obj pdb-residue) stream)
@@ -474,7 +545,9 @@ create more problems."
   (when (current-reverse-sequence pdb-scanner)
     (when assign-tail
       (let ((tail-residue (car (current-reverse-sequence pdb-scanner))))
-        (setf (context tail-residue) :tail)
+        (if (or (gap-before tail-residue) (gap-after tail-residue))
+            (add-pdb-context-mark tail-residue :tail)
+            (setf (context tail-residue) :tail))
         (try-to-assign-topology tail-residue pdb-scanner)))
     (let ((seq (nreverse (current-reverse-sequence pdb-scanner))))
       (push seq (reversed-sequences pdb-scanner)))
@@ -684,6 +757,7 @@ MTRIX- Used to build a list of matrices."
                                                             :atom-names nil
                                                             :context context-guess
                                                             :atom-serial-first atom-serial)))
+                           (mark-pdb-numbering-gap (previous-residue pdb-scanner) new-residue)
                            (setf (current-residue pdb-scanner) new-residue)
                            (unless (gethash residue-name (seen-residues pdb-scanner))
                              ;;(format t "Creating hash-table for ~a~%" residue-name)
@@ -1205,10 +1279,12 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            (chem:set-pdb-name cur-res (residue-name pdb-residue))
                            #+(or)(format *debug-io* "built residue with name ~a using topology ~a~%" cur-res cur-top)
                            (chem:set-id cur-res (calculate-residue-sequence-number residue-sequence-number i-code))
+                           (chem:set-file-sequence-number cur-res residue-sequence-number)
+                           (annotate-pdb-residue cur-res pdb-residue)
                            (setf (current-residue reader) cur-res)
                            (let ((prev-res (previous-residue reader)))
                              (chem:add-matter (ensure-molecule reader chain-id sequences-index) cur-res)
-                             (when prev-res
+                             (when (and prev-res (not (gap-before pdb-residue)))
                                (unless prev-top
                                  (error "Could not find topology for ~a" prev-res))
                                (unless cur-top
@@ -1222,6 +1298,9 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                          ;; There is no topology, create an empty residue
                          (let ((cur-res (chem:make-residue residue-name)))
                            (chem:set-pdb-name cur-res (residue-name pdb-residue))
+                           (chem:set-id cur-res (calculate-residue-sequence-number residue-sequence-number i-code))
+                           (chem:set-file-sequence-number cur-res residue-sequence-number)
+                           (annotate-pdb-residue cur-res pdb-residue)
                            (setf (current-residue reader) cur-res)
                            (chem:add-matter (ensure-molecule reader chain-id sequences-index) cur-res) cur-res))))
                  (let ((atom (or (chem:content-with-name-or-nil (current-residue reader) atom-name)

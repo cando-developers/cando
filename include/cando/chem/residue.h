@@ -163,7 +163,8 @@ namespace chem {
     CL_LISPIFY_NAME("setPdbName");
     CL_DEFMETHOD 	void	setPdbName(MatterName p) { this->_PdbName = p;};
 
-    void	setFileSequenceNumber(uint seq) { this->_FileSequenceNumber = seq;};
+    CL_LISPIFY_NAME("setFileSequenceNumber");
+    CL_DEFMETHOD void	setFileSequenceNumber(uint seq) { this->_FileSequenceNumber = seq;};
     CL_LISPIFY_NAME("getFileSequenceNumber");
     CL_DEFMETHOD 	uint	getFileSequenceNumber() { return this->_FileSequenceNumber;};
 

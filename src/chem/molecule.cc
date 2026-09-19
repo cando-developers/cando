@@ -72,7 +72,6 @@ void Molecule_O::fields(core::Record_sp node)
   switch (node->stage()) {
   case core::Record_O::saving: {
 	    // Accumulate intraresidue bonds into a vector
-#if 1
     core::HashTable_sp atomToResidue = this->atomToResidueMap();
     BondList_sp bondList = BondList_O::create();
     { 
@@ -84,13 +83,10 @@ void Molecule_O::fields(core::Record_sp node)
     }
     node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
-#endif    
   }
       break;
   case core::Record_O::initializing:
   case core::Record_O::loading: {
-#if 1
-    
     LOG("Creating the intraResidue bonds" );
 	    // create the intraResidue bonds
     LOG("About to load bondList" );
@@ -99,7 +95,6 @@ void Molecule_O::fields(core::Record_sp node)
     ASSERTNOTNULL(bondList);
     RECORD_LOG("residue bondList = {}" , _rep_(bondList));
     bondList->imposeYourself();
-#endif
   }
   case core::Record_O::patching: {
     // Nothing should need to be done

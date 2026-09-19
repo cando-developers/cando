@@ -2185,20 +2185,20 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
       nonbond->initialize();
     }
     collectComponent(this->asSmartPtr(),nonbond,group);
+    nonbond->constructNonbondTermsFromAtomTable(
+        this->_AtomTable, nonbondForceField, atomTypes, keepInteractionFactory );
     if (useExcludedAtoms) {
-      SIMPLE_ERROR(":use-excluded-atoms is T - Don't use excluded atoms for the time being");
       // The nonbond parameters are calculated in Common Lisp
 
       core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),nonbondForceField);
       nonbond->constructNonbondTermsFromAList(parts);
       nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, nonbondForceField,keepInteractionFactory);
-      nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
-    } else {
-      nonbond->constructNonbondTermsFromAtomTable(this->_AtomTable, nonbondForceField,atomTypes, keepInteractionFactory );
-      // BONDED14 - see the header.  The 1-4 set comes off the bond graph, not the atom table.
-      if (bonded14) {
-        nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,keepInteractionFactory,atomTypes);
-      }
+    }
+    // BONDED14 - the 1-4 set comes from molecular connectivity.
+    if (bonded14) {
+      nonbond->construct14InteractionTerms(
+          this->_AtomTable, matter, nonbondForceField,
+          keepInteractionFactory, atomTypes);
     }
   } else if (oCar(setup)==kw::_sym_rosetta) {
     {

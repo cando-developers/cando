@@ -285,6 +285,21 @@ void	RestraintAngle_O::serialize(serialize::SNode node)
 #endif
 
 
+void RestraintDihedral_O::fields(core::Record_sp node)
+{
+  // Restraint_O has no fields implementation; preserve its private state
+  // through the public accessors instead of invoking the parent fields.
+  bool active = this->isActive();
+  node->field_if_not_default(INTERN_(kw,active), active, true);
+  this->setActive(active);
+  node->field(INTERN_(kw,a), this->_A);
+  node->field(INTERN_(kw,b), this->_B);
+  node->field(INTERN_(kw,c), this->_C);
+  node->field(INTERN_(kw,d), this->_D);
+  node->field(INTERN_(kw,degrees), this->_Degrees);
+  node->field(INTERN_(kw,weight), this->_Weight);
+}
+
 CL_DEFUN RestraintDihedral_sp make_RestraintDihedral(Atom_sp atom1, Atom_sp atom2, Atom_sp atom3, Atom_sp atom4,
                                                      double degrees, double weight)
 {

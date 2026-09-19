@@ -25,6 +25,7 @@
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-nonbond.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-elec.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;energy.lisp")
+(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;amber-excluded-atoms.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;smirnoff-cache.lisp")
 ;; This test installs a minimal :ROSETTA force field; keep it last.
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;lksolvation.lisp")

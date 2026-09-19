@@ -248,6 +248,9 @@ class RestraintDihedral_O : public Restraint_O
     LISP_CLASS(chem,ChemPkg,RestraintDihedral_O,"RestraintDihedral",Restraint_O);
 
 public:
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
+
 	Atom_sp		_A;
 	Atom_sp		_B;
 	Atom_sp		_C;

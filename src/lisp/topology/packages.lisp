@@ -126,7 +126,9 @@
    #:oligomer-space
    #:oligomers
    #:monomer
+   #:source-file-sequence-number
    #:directional-coupling
+   #:chemical-bond-p
    #:out-plug-name
    #:in-plug-name
    #:monomers

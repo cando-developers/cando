@@ -59,19 +59,17 @@ Return (values compressed-atom-name-map max-atom-name-length). "
     (chem:get-order-from-atom-as-int bond atom1)))
 
 (defun collapse-stretch-parameters (atom-types kb-vec r0-vec atom1-vec atom2-vec)
+  (declare (ignore atom-types atom1-vec atom2-vec))
   (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (jnext 0)
         jtemp
-        (uniques (make-hash-table :test #'eq))
+        (uniques (make-hash-table :test #'equal))
         (kbj-vec (make-array 256 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t))
         (r0j-vec (make-array 256 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t)))
     (loop for i from 0 below (length kb-vec)
-          for atom1 = (aref atom1-vec i)
-          for atom2 = (aref atom2-vec i)
-          for key = (chem:canonical-stretch-key (chem:get-type atom1 atom-types)
-                                                (chem:get-type atom2 atom-types))
           for kbi = (aref kb-vec i)
           for r0i = (aref r0-vec i)
+          for key = (list kbi r0i)
           do (if (setf jtemp (gethash key uniques))
                  (vector-push-extend jtemp j-vec)
                  (progn
@@ -152,22 +150,17 @@ Return (values compressed-atom-name-map max-atom-name-length). "
    :keyword))
 
 (defun collapse-angle-parameters (atom-types kt-vec t0-vec atom1-vec atom2-vec atom3-vec)
+  (declare (ignore atom-types atom1-vec atom2-vec atom3-vec))
   (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (jnext 0)
         jtemp
-        (uniques (make-hash-table :test #'eq))
+        (uniques (make-hash-table :test #'equal))
         (ktj-vec (make-array 256 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t))
         (t0j-vec (make-array 256 :element-type (geom:vecreal-type) :fill-pointer 0 :adjustable t)))
     (loop for i from 0 below (length kt-vec)
-       for atom1 = (aref atom1-vec i)
-       for atom2 = (aref atom2-vec i)
-       for atom3 = (aref atom3-vec i)
-          for key = (canonical-angle-key (chem:get-type atom1 atom-types)
-                                         (chem:get-type atom2 atom-types)
-                                         (chem:get-type atom3 atom-types))
        for kti = (aref kt-vec i)
        for t0i = (aref t0-vec i)
-;;;       do (format t "atom1: ~a atom2: ~a atom3: ~a  key: ~a~% " atom1 atom2 atom3 key)
+       for key = (list kti t0i)
        do (if (setf jtemp (gethash key uniques))
               (vector-push-extend jtemp j-vec)
               (progn
@@ -853,7 +846,7 @@ Legacy iGBparm 4/5 have no defined RADII assignment and are not supported."
 Arguments:
 energy-function : The energy-function to generate the topology from.
 topology-pathname : Where to write the topology file.
-coordinate-pathname : Where to write the coordinate file (ascii).
+coordinate-pathname : Where to write the coordinate file (ascii) or NIL if no coordinates should be written.
 residue-name-to-pdb-alist : An alist of long residue names to short PDB residue names.
 cando-extensions               : T if you want cando-extensions written to the topology file."
   (let* ((igbparm leap.core:*gbdefaults.igbparm-symbol*)
@@ -864,7 +857,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
          (topology-pathname (merge-pathnames topology-pathname))
-         (coordinate-pathname (merge-pathnames coordinate-pathname))
+         (coordinate-pathname (and coordinate-pathname (merge-pathnames coordinate-pathname)))
          (atom-table (chem:atom-table energy-function))
          (natom (chem:get-number-of-atoms atom-table))
          residue-vec)
@@ -873,7 +866,7 @@ cando-extensions               : T if you want cando-extensions written to the t
     (format t "Writing to ~a~%" topology-pathname)
     (finish-output)
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
-      (fortran:debug "-1-")             ;
+      (fortran:debugprint"-1-")             ;
       (fortran:fformat 1 "{:<80s}")
       ;;                  (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
 ;;; temporary!!!
@@ -963,7 +956,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG POINTERS")
         (fortran:fwrite "%FORMAT(10I8)")
-        (fortran:debug "-2-")
+        (fortran:debugprint"-2-")
         (fortran:fformat 10 "{:8d}")
         ;; NATOM
         (fortran:fwrite natom)
@@ -1006,7 +999,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ATOM_NAME")
          (fortran:fwrite "%FORMAT(20a4)")
-         (fortran:debug "-3-")
+         (fortran:debugprint"-3-")
          (fortran:fformat 20 "{:<4s}")
          (multiple-value-bind (compressed-atom-names max-name-length)
              (compress-atom-names atom-name)
@@ -1024,7 +1017,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG CHARGE")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-4-")
+         (fortran:debugprint"-4-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for ch across charge
                do (fortran:fwrite (* ch chem:*amber-charge-conversion-18.2223*)))
@@ -1037,7 +1030,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ATOMIC_NUMBER")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-5-")
+         (fortran:debugprint"-5-")
          (fortran:fformat 10 "{:8d}")
          (loop for number across atomic-number
                do (fortran:fwrite number))
@@ -1050,7 +1043,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG MASS")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-6-")
+         (fortran:debugprint"-6-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for ma across mass
                do (fortran:fwrite ma))
@@ -1063,7 +1056,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ATOM_TYPE_INDEX")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-7-")
+         (fortran:debugprint"-7-")
          (fortran:fformat 10 "{:8d}")
          (loop for ia across iac
                do (fortran:fwrite ia))
@@ -1077,7 +1070,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:fwrite "%FLAG NUMBER_EXCLUDED_ATOMS")
          (fortran:end-line)
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-8-")
+         (fortran:debugprint"-8-")
          (fortran:fformat 10 "{:8d}")
          (loop for na across number-excluded-atoms
                do (fortran:fwrite na))
@@ -1090,7 +1083,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG NONBONDED_PARM_INDEX")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-9-")
+         (fortran:debugprint"-9-")
          (fortran:fformat 10 "{:8d}")
          (loop for ic across ico
                do (fortran:fwrite ic))
@@ -1103,7 +1096,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RESIDUE_LABEL")
          (fortran:fwrite "%FORMAT(20A4)")
-         (fortran:debug "-10-")
+         (fortran:debugprint"-10-")
          (fortran:fformat 20 "{:<4s}")
          (loop for ren across residue-name-vec
                do (fortran:fwrite (string ren)))
@@ -1116,7 +1109,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RESIDUE_POINTER")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-11-")
+         (fortran:debugprint"-11-")
          (fortran:fformat 10 "{:8d}")
          (loop for re from 0 below (- (length residue-pointer-vec) 1)
                do (fortran:fwrite (aref residue-pointer-vec re)))
@@ -1129,7 +1122,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BOND_FORCE_CONSTANT")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-12-")
+         (fortran:debugprint"-12-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for kb across kbj-vec
                do (fortran:fwrite kb))
@@ -1143,7 +1136,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BOND_EQUIL_VALUE")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-13-")
+         (fortran:debugprint"-13-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for r0 across r0j-vec
                do (fortran:fwrite r0))
@@ -1156,7 +1149,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLE_FORCE_CONSTANT")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-14-")
+         (fortran:debugprint"-14-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for kt across ktj-vec
                do (fortran:fwrite kt))
@@ -1169,7 +1162,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLE_EQUIL_VALUE")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-15-")
+         (fortran:debugprint"-15-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for t0 across t0j-vec
                do (fortran:fwrite t0))
@@ -1182,7 +1175,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRAL_FORCE_CONSTANT")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-16-")
+         (fortran:debugprint"-16-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for v0 across vj-vec
                do (fortran:fwrite v0))
@@ -1195,7 +1188,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRAL_PERIODICITY")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-17-")
+         (fortran:debugprint"-17-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for in0 across inj-vec
                do (fortran:fwrite (float in0)))
@@ -1208,7 +1201,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRAL_PHASE")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-18-")
+         (fortran:debugprint"-18-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for p0 across phasej-vec
                do (fortran:fwrite p0))
@@ -1221,7 +1214,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SCEE_SCALE_FACTOR")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-19-")
+         (fortran:debugprint"-19-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for pr0 across properj-vec
                do (if pr0
@@ -1236,7 +1229,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SCNB_SCALE_FACTOR")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-20-")
+         (fortran:debugprint"-20-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for pr0 across properj-vec
                do (if pr0
@@ -1251,7 +1244,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SOLTY")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-21-")
+         (fortran:debugprint"-21-")
          (fortran:fformat 5 "{:16.8e}")
          (loop repeat natyp
                do (fortran:fwrite 0.0))
@@ -1264,7 +1257,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG LENNARD_JONES_ACOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-22-")
+         (fortran:debugprint"-22-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for cn1 across cn1-vec
                do (fortran:fwrite cn1))
@@ -1277,7 +1270,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG LENNARD_JONES_BCOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-23-")
+         (fortran:debugprint"-23-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for cn2 across cn2-vec
                do (fortran:fwrite cn2))
@@ -1290,7 +1283,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BONDS_INC_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-24-")
+         (fortran:debugprint"-24-")
          (fortran:fformat 10 "{:8d}")
          (loop for i below (length ibh)
                for ibhi = (aref ibh i)
@@ -1309,7 +1302,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG BONDS_WITHOUT_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-25-")
+         (fortran:debugprint"-25-")
          (fortran:fformat 10 "{:8d}")
          (loop for i below (length ib)
                for ibi = (aref ib i)
@@ -1327,7 +1320,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLES_INC_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-26-")
+         (fortran:debugprint"-26-")
          (fortran:fformat 10 "{:8d}")
          (loop for i below (length ith)
                for ithi = (aref ith i)
@@ -1347,7 +1340,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG ANGLES_WITHOUT_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-27-")
+         (fortran:debugprint"-27-")
          (fortran:fformat 10 "{:8d}")
          (loop for i below (length it)
                for iti = (aref it i)
@@ -1367,7 +1360,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRALS_INC_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-28-")
+         (fortran:debugprint"-28-")
          (fortran:fformat 10 "{:8d}")
          (loop for i below (length iph)
                for iphi = (aref iph i)
@@ -1389,7 +1382,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG DIHEDRALS_WITHOUT_HYDROGEN")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-29-")
+         (fortran:debugprint"-29-")
          (fortran:fformat 10 "{:8d}")
          (loop for i below (length ip)
                for ipi = (aref ip i)
@@ -1411,7 +1404,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG EXCLUDED_ATOMS_LIST")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-30-")
+         (fortran:debugprint"-30-")
          (fortran:fformat 10 "{:8d}")
          (loop for atom across excluded-atom-list
                do (fortran:fwrite (+ atom 1)))
@@ -1424,9 +1417,9 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG HBOND_ACOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-31-")
+         (fortran:debugprint"-31-")
          (fortran:fformat 5 "{:16.8e}")
-         (fortran:fwrite 0.0)
+         ;; NPHB is zero: retain the section, but write no coefficients.
          (fortran:end-line))
         ;;This term has been dropped from most modern force fields.
 
@@ -1436,9 +1429,9 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG HBOND_BCOEF")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-32-")
+         (fortran:debugprint"-32-")
          (fortran:fformat 5 "{:16.8e}")
-         (fortran:fwrite 0.0)
+         ;; Like HBOND_ACOEF, this array must have exactly NPHB entries.
          (fortran:end-line))
         ;;This term has been dropped from most modern force fields.
 
@@ -1447,9 +1440,9 @@ cando-extensions               : T if you want cando-extensions written to the t
         (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG HBCUT")
         (fortran:fwrite "%FORMAT(5E16.8)")
-        (fortran:debug "-33-")
+        (fortran:debugprint"-33-")
         (fortran:fformat 5 "{:16.8e}")
-        (fortran:fwrite 0.0)
+        ;; HBCUT also has NPHB entries, even though it is no longer used.
         (fortran:end-line)
         ;;no longer used for anything.
 
@@ -1459,7 +1452,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
          (fortran:fwrite "%FORMAT(20A4)")
-         (fortran:debug "-34-")
+         (fortran:debugprint"-34-")
          (fortran:fformat 20 "{:<4s}")
          (loop for type across atom-type
                do (fortran:fwrite (string type)))
@@ -1471,7 +1464,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG TREE_CHAIN_CLASSIFICATION")
          (fortran:fwrite "%FORMAT(20A4)")
-         (fortran:debug "-35-")
+         (fortran:debugprint"-35-")
          (fortran:fformat 20 "{:<4s}")
          (loop repeat natom
                do (fortran:fwrite "M"))
@@ -1484,7 +1477,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG JOIN_ARRAY")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-36-")
+         (fortran:debugprint"-36-")
          (fortran:fformat 10 "{:8d}")
          (loop repeat natom
                do (fortran:fwrite 0))
@@ -1497,7 +1490,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG IROTAT")
          (fortran:fwrite "%FORMAT(10I8)")
-         (fortran:debug "-37-")
+         (fortran:debugprint"-37-")
          (fortran:fformat 10 "{:8d}")
          (loop repeat natom
                do (fortran:fwrite 0))
@@ -1523,7 +1516,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                        (first-solvent-molecule-nspsol (chem:first-solvent-molecule-nspsol atom-table)))
                    (fortran:fwrite "%FLAG SOLVENT_POINTERS")
                    (fortran:fwrite "%FORMAT(3I8)")
-                   (fortran:debug "-38-")
+                   (fortran:debugprint"-38-")
                    (fortran:fformat 3 "{:8d}")
                    (fortran:fwrite final-solute-residue-iptres)
                    (fortran:fwrite total-number-of-molecules-nspm)
@@ -1533,7 +1526,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                (cando:progress-advance bar (incf bar-counter))
                (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
                (fortran:fwrite "%FORMAT(10I8)")
-               (fortran:debug "-39-")
+               (fortran:debugprint"-39-")
                (fortran:fformat 10 "{:8d}")
                (loop for natom across atoms-per-molecule
                      do (fortran:fwrite natom))
@@ -1545,7 +1538,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                (cando:progress-advance bar (incf bar-counter))
                (fortran:fwrite "%FLAG BOX_DIMENSIONS")
                (fortran:fwrite "%FORMAT(5E16.8)")
-               (fortran:debug "-40-")
+               (fortran:debugprint"-40-")
                (fortran:fformat 5 "{:16.8e}")
                (let ((solvent-box (chem:bounding-box atom-table)))
                  (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
@@ -1560,7 +1553,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RADIUS_SET")
          (fortran:fwrite "%FORMAT(1a80)")
-         (fortran:debug "-41-")
+         (fortran:debugprint"-41-")
          (fortran:fformat 1 "{:<80s}")
          (fortran:fwrite radius-set-description)
          (fortran:end-line))
@@ -1571,7 +1564,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG RADII")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-42-")
+         (fortran:debugprint"-42-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for radius across generalized-born-radius
                do (fortran:fwrite radius))
@@ -1584,7 +1577,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (cando:progress-advance bar (incf bar-counter))
          (fortran:fwrite "%FLAG SCREEN")
          (fortran:fwrite "%FORMAT(5E16.8)")
-         (fortran:debug "-43-")
+         (fortran:debugprint"-43-")
          (fortran:fformat 5 "{:16.8e}")
          (loop for screen across generalized-born-screen
                do (fortran:fwrite screen))
@@ -1595,7 +1588,7 @@ cando-extensions               : T if you want cando-extensions written to the t
            (cando:progress-advance bar (incf bar-counter))
            (fortran:fwrite "%FLAG BOND_ORDERS")
            (fortran:fwrite "%FORMAT(40I2)")
-           (fortran:debug "-44-")
+           (fortran:debugprint"-44-")
            (fortran:fformat 40 "{:2d}")
            (loop for orderi across non-h-bond-orders
                  do (fortran:fwrite orderi))
@@ -1613,7 +1606,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                (cando:progress-advance bar (incf bar-counter))
                (fortran:fwrite "%FLAG FORCE_FIELD_NAMES")
                (fortran:fwrite (format nil "%FORMAT(1a~d)" (1+ max-force-field-name-len)))
-               (fortran:debug "-45-")
+               (fortran:debugprint"-45-")
                (fortran:fformat 1 (format nil "{:<~ds}" (1+ max-force-field-name-len)))
                (loop for name across force-field-names-vec
                      do (fortran:fwrite (string name)))
@@ -1623,52 +1616,53 @@ cando-extensions               : T if you want cando-extensions written to the t
              (cando:progress-advance bar (incf bar-counter))
              (fortran:fwrite "%FLAG MOLECULE_FORCE_FIELD_INDEX")
              (fortran:fwrite (format nil "%FORMAT(20I3)"))
-             (fortran:debug "-46-")
+             (fortran:debugprint"-46-")
              (fortran:fformat 20 "{:3d}")
              (loop for index across molecule-force-field-name-indices
                    do (fortran:fwrite (1+ index)))
              (fortran:end-line))))
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
-    (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
-      (fortran:fformat 20 "{:<4s}")
-      (fortran:fwrite (string (chem:aggregate-name atom-table)))
-      (fortran:end-line)
+    (when coordinate-pathname
+      (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
+        (fortran:fformat 20 "{:<4s}")
+        (fortran:fwrite (string (chem:aggregate-name atom-table)))
+        (fortran:end-line)
                                         ;      (fortran:fformat 1 "{:5d}")
                                         ;      (fortran:fwrite natom)
                                         ;      (fortran:fformat 5 "%15.7lf")
                                         ;      (fortran:fwrite 0.0)
                                         ;      (fortran:fwrite 0.0)
-      (fortran:fwrite (format nil  " ~5d~%" natom))
-      (fortran:fformat 6 "{:12.7f}")
-      (let ((ox 0.0)
-            (oy 0.0)
-            (oz 0.0))
-        (when (chem:bounding-box-bound-p atom-table)
-          (let ((solvent-box (chem:bounding-box atom-table)))
-            (setf ox (/ (float (chem:get-x-width solvent-box)) 2.0)
-                  oy (/ (float (chem:get-y-width solvent-box)) 2.0)
-                  oz (/ (float (chem:get-z-width solvent-box)) 2.0))))
-        (loop for i from 0 below natom
-              for atom = (chem:elt-atom atom-table i)
-              for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
-              for pos = (chem:get-position atom)
+        (fortran:fwrite (format nil  " ~5d~%" natom))
+        (fortran:fformat 6 "{:12.7f}")
+        (let ((ox 0.0)
+              (oy 0.0)
+              (oz 0.0))
+          (when (chem:bounding-box-bound-p atom-table)
+            (let ((solvent-box (chem:bounding-box atom-table)))
+              (setf ox (/ (float (chem:get-x-width solvent-box)) 2.0)
+                    oy (/ (float (chem:get-y-width solvent-box)) 2.0)
+                    oz (/ (float (chem:get-z-width solvent-box)) 2.0))))
+          (loop for i from 0 below natom
+                for atom = (chem:elt-atom atom-table i)
+                for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
+                for pos = (chem:get-position atom)
 ;;;           do (format t "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
-              do (progn
-                   (fortran:fwrite (+ (geom:get-x pos) ox))
-                   (fortran:fwrite (+ (geom:get-y pos) oy))
-                   (fortran:fwrite (+ (geom:get-z pos) oz))))
-        (fortran:end-line))
-      ;; write out the solvent box
-      (if (chem:bounding-box-bound-p atom-table)
-          (let ((solvent-box (chem:bounding-box atom-table)))
-            (fortran:fwrite (float (chem:get-x-width solvent-box)))
-            (fortran:fwrite (float (chem:get-y-width solvent-box)))
-            (fortran:fwrite (float (chem:get-z-width solvent-box)))
-            (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
-            (fortran:fwrite (float (chem:get-y-angle-degrees solvent-box)))
-            (fortran:fwrite (float (chem:get-z-angle-degrees solvent-box)))))
-      (fortran:end-line))
+                do (progn
+                     (fortran:fwrite (+ (geom:get-x pos) ox))
+                     (fortran:fwrite (+ (geom:get-y pos) oy))
+                     (fortran:fwrite (+ (geom:get-z pos) oz))))
+          (fortran:end-line))
+        ;; write out the solvent box
+        (if (chem:bounding-box-bound-p atom-table)
+            (let ((solvent-box (chem:bounding-box atom-table)))
+              (fortran:fwrite (float (chem:get-x-width solvent-box)))
+              (fortran:fwrite (float (chem:get-y-width solvent-box)))
+              (fortran:fwrite (float (chem:get-z-width solvent-box)))
+              (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
+              (fortran:fwrite (float (chem:get-y-angle-degrees solvent-box)))
+              (fortran:fwrite (float (chem:get-z-angle-degrees solvent-box)))))
+        (fortran:end-line)))
     (cando:progress-done bar)
     (values energy-function topology-pathname coordinate-pathname)))
 
@@ -1753,8 +1747,165 @@ cando-extensions               : T if you want cando-extensions written to the t
           do (chem:add-matter aggregate mol))
     aggregate))
 
+(defun infer-amber-atoms-per-molecule (atoms residues)
+  "Infer contiguous molecule sizes from connectivity without reordering atoms."
+  (let* ((n (length atoms))
+         (indices (make-hash-table :test #'eq))
+         (parents (make-array n))
+         (sizes (make-array n :initial-element 1)))
+    (dotimes (i n)
+      (when (nth-value 1 (gethash (aref atoms i) indices))
+        (error "Duplicate atom in Amber atom table at index ~d" i))
+      (setf (gethash (aref atoms i) indices) i (aref parents i) i))
+    (labels ((root (i)
+               (loop while (/= i (aref parents i))
+                     do (setf (aref parents i) (aref parents (aref parents i))
+                              i (aref parents i))
+                     finally (return i))))
+      ;; Use the bond-loop facility, including bonds between residues.
+      (loop for residue across residues do
+        (chem:map-bonds
+         nil (lambda (a b order bond)
+               (declare (ignore order bond))
+               (multiple-value-bind (ia present-a) (gethash a indices)
+                 (multiple-value-bind (ib present-b) (gethash b indices)
+                   (unless (and present-a present-b)
+                     (error "Amber bond references an atom outside the atom table"))
+                   (let ((ra (root ia)) (rb (root ib)))
+                     (unless (= ra rb)
+                       (when (< (aref sizes ra) (aref sizes rb)) (rotatef ra rb))
+                       (setf (aref parents rb) ra)
+                       (incf (aref sizes ra) (aref sizes rb)))))))
+         residue))
+      (let ((seen (make-hash-table))
+            (counts (make-array 0 :element-type '(signed-byte 32)
+                                   :adjustable t :fill-pointer 0))
+            (previous nil))
+        (dotimes (i n)
+          (let ((component (root i)))
+            (unless (eql previous component)
+              (when (gethash component seen)
+                (error "Disconnected molecules have interleaved Amber atom indices; cannot represent ATOMS_PER_MOLECULE without reordering"))
+              (setf (gethash component seen) t previous component)
+              (vector-push-extend 0 counts))
+            (incf (aref counts (1- (length counts))))))
+        counts))))
+
+(defun group-amber-residues-into-molecules (residues residue-pointers counts natom solvent-pointers)
+  "Group existing residues by validated molecule sizes, preserving input order."
+  (unless (and (plusp (length counts))
+               (every (lambda (n) (typep n '(integer 1))) counts)
+               (= (reduce #'+ counts) natom))
+    (error "Invalid ATOMS_PER_MOLECULE: ~s for ~d atoms" counts natom))
+  (when solvent-pointers
+    (unless (and (= (length solvent-pointers) 3)
+                 (= (elt solvent-pointers 1) (length counts))
+                 (<= 1 (elt solvent-pointers 2) (1+ (length counts))))
+      (error "SOLVENT_POINTERS disagrees with molecule counts")))
+  (let ((molecules (make-array (length counts)))
+        (residue-index 0) (end 0))
+    (dotimes (i (length counts))
+      (let ((molecule (chem:make-molecule)))
+        (incf end (elt counts i))
+        (loop while (and (< residue-index (length residues))
+                         (< (1- (aref residue-pointers residue-index)) end))
+              do (when (> (1- (aref residue-pointers (1+ residue-index))) end)
+                   (error "Amber molecule boundary splits residue ~d" (1+ residue-index)))
+                 (chem:add-matter molecule (aref residues residue-index))
+                 (incf residue-index))
+        (unless (= (1- (aref residue-pointers residue-index)) end)
+          (error "Amber molecule boundary does not match a residue boundary"))
+        (when solvent-pointers
+          (chem:setf-molecule-type molecule
+            (if (>= (1+ i) (elt solvent-pointers 2)) :solvent :solute)))
+        (setf (aref molecules i) molecule)))
+    (unless (= residue-index (length residues))
+      (error "Some Amber residues were not assigned to a molecule"))
+    molecules))
+
 ;(defun read-amber-parm-format (stream)
 ;  (let ((fif (fortran:make-fortran-input-file :stream stream))
+(defun restore-amber-14-terms
+    (component atom-table records-with-h records-without-h
+     nptra scee scnb ntypes atom-types charges ico acoef bcoef)
+  "Restore explicit Amber 1-4 terms from the original signed dihedral records.
+Call once on the reader's new nonbond component. Charges are in electron units;
+the resulting coefficients include charge conversion and SCEE/SCNB scaling."
+  (let ((seen (make-hash-table :test #'equal))
+        (natom (chem:get-number-of-atoms atom-table)))
+    (labels
+        ((atom-index (offset)
+           (unless (and (integerp offset)
+                        (zerop (mod offset 3))
+                        (< -1 (/ (abs offset) 3) natom))
+             (error "Invalid PRMTOP dihedral atom offset: ~s" offset))
+           (/ (abs offset) 3))
+         (scale (values parameter default label)
+           (let ((value (if values (aref values parameter) default)))
+             (unless (and (realp value)
+                          (< 0 value most-positive-double-float))
+               (error "Invalid ~a for dihedral parameter ~d: ~s"
+                      label (1+ parameter) value))
+             value)))
+      (dolist (values (list scee scnb))
+        (when (and values (/= (length values) nptra))
+          (error "PRMTOP 1-4 scaling table has incorrect length")))
+      (unless (and (= (length atom-types) natom)
+                   (= (length charges) natom)
+                   (= (length ico) (* ntypes ntypes)))
+        (error "PRMTOP 1-4 nonbond parameter array dimensions disagree"))
+      (dolist (records (list records-with-h records-without-h))
+        (unless (zerop (mod (length records) 5))
+          (error "Malformed PRMTOP dihedral records"))
+        (loop for offset from 0 below (length records) by 5
+              for i1 = (aref records offset)
+              for i2 = (aref records (+ offset 1))
+              for i3 = (aref records (+ offset 2))
+              for i4 = (aref records (+ offset 3))
+              for parameter = (1- (aref records (+ offset 4)))
+              do
+                 (mapc #'atom-index (list i1 i2 i3 i4))
+                 (unless (<= 0 parameter (1- nptra))
+                   (error "Invalid PRMTOP dihedral parameter index"))
+                 ;; Negative third index suppresses 1-4 evaluation.
+                 ;; Negative fourth index marks an improper.
+                 (when (and (>= i3 0) (>= i4 0))
+                   (let* ((a (atom-index i1))
+                          (b (atom-index i4))
+                          (key (cons (min a b) (max a b)))
+                          (ta (aref atom-types a))
+                          (tb (aref atom-types b)))
+                     (when (= a b)
+                       (error "Self-pair in PRMTOP 1-4 records: ~s" key))
+                     ;; Repeated Fourier terms must have suppression flags.
+                     (when (gethash key seen)
+                       (error "Duplicate enabled PRMTOP 1-4 pair: ~s" key))
+                     (unless (and (<= 1 ta ntypes) (<= 1 tb ntypes))
+                       (error "Invalid PRMTOP nonbond atom types"))
+                     (let* ((lj-index
+                              (1- (aref ico
+                                        (+ (* (1- ta) ntypes) (1- tb)))))
+                            (eel-divisor
+                              (scale scee parameter 1.2d0 "SCEE"))
+                            (vdw-divisor
+                              (scale scnb parameter 2.0d0 "SCNB")))
+                       ;; Only Amber 12-6 LJ entries are supported here.
+                       (unless (and (<= 0 lj-index)
+                                    (< lj-index (length acoef))
+                                    (< lj-index (length bcoef)))
+                         (error "Unsupported PRMTOP LJ index for pair ~s" key))
+                       (chem:add-imported-14-term
+                        component atom-table a b
+                        (/ (aref acoef lj-index) vdw-divisor)
+                        (/ (aref bcoef lj-index) vdw-divisor)
+                        ;; The reader already divided CHARGE by 18.2223.
+                        (/ (* chem:*amber-charge-conversion-18.2223*
+                              chem:*amber-charge-conversion-18.2223*
+                              (aref charges a)
+                              (aref charges b))
+                           eel-divisor))
+                       (setf (gethash key seen) t)))))))))
+
 (defun read-amber-parm-format (topology-pathname)
   "Return (values energy-function) - use generate-aggregate-for-energy-function to get an aggregate"
   (fortran:with-fortran-input-file (fif topology-pathname :direction :input)
@@ -2168,50 +2319,17 @@ cando-extensions               : T if you want cando-extensions written to the t
         (setf (aref residue-pointer (length residue-pointer)) (+ 1 natom))
         ;;(format t "residue-pointer ~s~%" residue-pointer)
 	(setf residues-vec (make-array (length residue-label) :element-type t :adjustable nil))
-        (setf molecules-vec (make-array 256 :element-type t :fill-pointer 0 :adjustable t))
-        (let (residue-accumulate
-              (atoms-in-molecule 0)
-              (molecule-index 0))
-          ;; Figure out the residues and molecules for the resulting aggregate
-          (loop for i from 0 below (length residue-label)
-                for name = (aref residue-label i)
-                for begin-atom-index = (1- (aref residue-pointer i))
-                for end-atom-index = (1- (aref residue-pointer (1+ i)))
-                do (let ((residue (chem:make-residue name)))
-                     (loop for atomi from begin-atom-index below end-atom-index
-                           for atom = (aref atoms atomi)
-                           do (chem:add-matter residue atom))
-		     (setf (aref residues-vec i) residue)
-                     (push residue residue-accumulate)
-                     (incf atoms-in-molecule (- end-atom-index begin-atom-index))
-                     (when (= atoms-in-molecule (elt atoms-per-molecule molecule-index))
-                       (let ((molecule (chem:make-molecule)))
-                         (when solvent-pointers
-                           (if (>= (1+ molecule-index) (elt solvent-pointers 2))
-                               (chem:setf-molecule-type molecule :solvent)
-                               (chem:setf-molecule-type molecule :solute)))
-                         (mapc (lambda (res) (chem:add-matter molecule res)) (nreverse residue-accumulate))
-                         (vector-push-extend molecule molecules-vec)
-                         (setf atoms-in-molecule 0)
-                         (setf residue-accumulate nil)
-                         (incf molecule-index))))))
-        (when molecule-force-field-index
-          (loop for moli from 0 below (length molecules-vec)
-                for molecule = (elt molecules-vec moli)
-                for force-field-index = (1- (elt molecule-force-field-index moli))
-                for force-field-name = (elt force-field-names force-field-index)
-                do (chem:setf-force-field-name molecule force-field-name)))
-        ;; Identify the force-field types
-        ;; (warn "This is where I set the force-field name for each molecule")
-        #+(or)(let ((force-field-index 0))
-          (setf force-field-names (make-hash-table))
-          (loop for molecule across molecules-vec
-                for force-field-name = (chem:get-force-field molecule)
-                do (if (gethash force-field-name force-field-names)
-                       nil
-                       (setf (gethash force-field-name force-field-names) (prog1 force-field-index
-                                                                            (incf force-field-index))))))
-        ;;(rlog "atoms -> ~s~%" atoms)
+        ;; Build residues first. Molecule membership is determined after bonds exist.
+        (loop for i below (length residue-label)
+              for begin = (1- (aref residue-pointer i))
+              for end = (1- (aref residue-pointer (1+ i)))
+              do (unless (and (<= 0 begin) (< begin end) (<= end natom)
+                              (or (plusp i) (zerop begin)))
+                   (error "Invalid Amber residue boundaries for residue ~d" (1+ i)))
+                 (let ((residue (chem:make-residue (aref residue-label i))))
+                   (loop for j from begin below end
+                         do (chem:add-matter residue (aref atoms j)))
+                   (setf (aref residues-vec i) residue)))
         (rlog "Create stretch vectors~%")
         (loop for i from 0 below numbnd
               do (loop for j from 0 below nbonh
@@ -2256,6 +2374,19 @@ cando-extensions               : T if you want cando-extensions written to the t
               for atom2 = (aref atoms (/ (aref bonds-without-hydrogen (+ (* bondi 3) 1)) 3))
                   do (chem:bond-to atom1 atom2 :unknown-order-bond)))
         ;; (format t "read-amber-parm done creating bonds~%")
+        (unless atoms-per-molecule
+          (setf atoms-per-molecule (infer-amber-atoms-per-molecule atoms residues-vec)))
+        (setf molecules-vec
+              (group-amber-residues-into-molecules
+               residues-vec residue-pointer atoms-per-molecule natom solvent-pointers))
+        (when molecule-force-field-index
+          (unless (= (length molecule-force-field-index) (length molecules-vec))
+            (error "MOLECULE_FORCE_FIELD_INDEX disagrees with molecule count"))
+          (loop for molecule across molecules-vec
+                for index across molecule-force-field-index
+                do (unless (and (integerp index) (<= 1 index (length force-field-names)))
+                     (error "Invalid molecule force-field index ~s" index))
+                   (chem:setf-force-field-name molecule (elt force-field-names (1- index)))))
         (setf stretch-vectors (acons :kb kbs-vec stretch-vectors))
         (setf stretch-vectors (acons :r0 r0s-vec stretch-vectors))
         (setf stretch-vectors (acons :i1 i1s-vec stretch-vectors))
@@ -2401,6 +2532,12 @@ cando-extensions               : T if you want cando-extensions written to the t
               for atom = (- (aref excluded-atoms-list i) 1)
               do (setf (aref excluded-atoms-list i) atom))
         (chem:set-nonbond-excluded-atom-info energy-nonbond atom-table (copy-seq excluded-atoms-list) (copy-seq number-excluded-atoms))
+        (restore-amber-14-terms
+         energy-nonbond atom-table
+         dihedrals-inc-hydrogen dihedrals-without-hydrogen
+         nptra scee-scale-factor scnb-scale-factor
+         ntypes atom-type-index charge
+         nonbonded-parm-index lennard-jones-acoef lennard-jones-bcoef)
 
         ;; for energy nonbond test
         #+(or)(chem:expand-excluded-atoms-to-terms energy-nonbond)
@@ -2438,7 +2575,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                            (cons :angle energy-angle)
                            (cons :dihedral energy-dihedral)
                            (cons :nonbond energy-nonbond)))
-              (energy-function (chem:make-energy-function)))
+              (energy-function (core:make-cxx-object 'chem:energy-function)))
           (chem:fill-energy-function-from-alist energy-function alist)
           (rlog "Returning results~%")
           (values energy-function (generate-aggregate-for-energy-function energy-function )))))))

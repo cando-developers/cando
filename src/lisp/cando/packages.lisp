@@ -74,7 +74,7 @@
            #:fwrite
            #:end-line
            #:debug-on
-           #:debug
+           #:debugprint
            #:fortran-input-file-look-ahead
            #:fread-line
            #:fread-line-or-error
@@ -115,7 +115,8 @@
   (:use #:common-lisp)
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
-  (:export #:assign
+  (:export #:report-long-bonds #:report-vdw-clashes #:report-geometry
+           #:assign
            #:nfx
            #:agg
            #:mol
@@ -282,4 +283,3 @@
   (:use #:common-lisp)
   (:export #:load-cif
            #:load-cifs))
-

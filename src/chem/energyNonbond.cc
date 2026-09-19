@@ -26,6 +26,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 /* -^- */
 #define DEBUG_LEVEL_FULL
 
+#include <cmath>
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyNonbond.h>
@@ -498,6 +499,10 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
   double vdwScale = energyScaleVdwScale(energyScale);
   double eelScale = energyScaleElectrostaticScale(energyScale);
   double DIELECTRIC = energyScaleDielectricConstant(energyScale);
+  if (!std::isfinite(DIELECTRIC) || DIELECTRIC <= 0.0) {
+    SIMPLE_ERROR("Excluded-atoms dielectric must be finite and positive, got {}", DIELECTRIC);
+  }
+  const double electrostaticScale = eelScale / DIELECTRIC;
   int i3x1, i3x2;
   int i = 0;
   int endIndex = pos->length() / 3;
@@ -539,7 +544,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
         dA = (*mthis->_cn1_vec)[(*mthis->_ico_vec)[nlocaltype * (localindex1 - 1) + localindex2 - 1] - 1];
         dC = (*mthis->_cn2_vec)[(*mthis->_ico_vec)[nlocaltype * (localindex1 - 1) + localindex2 - 1] - 1];
         num_real charge22 = (*mthis->_charge_vector)[index2];
-        dQ1Q2 = calculate_dQ1Q2(1.0, dQ1Q2Scale, charge11, charge22);
+        dA *= vdwScale;
+        dC *= vdwScale;
+        dQ1Q2 = calculate_dQ1Q2(electrostaticScale, dQ1Q2Scale, charge11, charge22);
         i3x1 = index1 * 3;
         i3x2 = index2 * 3;
         KERNEL_EXCLUDED_NONBOND_APPLY_ATOM_MASK(i3x1,i3x2);
@@ -579,7 +586,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
         dA = (*mthis->_cn1_vec)[(*mthis->_ico_vec)[nlocaltype * (localindex1 - 1) + localindex2 - 1] - 1];
         dC = (*mthis->_cn2_vec)[(*mthis->_ico_vec)[nlocaltype * (localindex1 - 1) + localindex2 - 1] - 1];
         num_real charge22 = (*mthis->_charge_vector)[index2];
-        dQ1Q2 = calculate_dQ1Q2(1.0, dQ1Q2Scale, charge11, charge22);
+        dA *= vdwScale;
+        dC *= vdwScale;
+        dQ1Q2 = calculate_dQ1Q2(electrostaticScale, dQ1Q2Scale, charge11, charge22);
         i3x1 = index1 * 3;
         i3x2 = index2 * 3;
 
@@ -622,7 +631,9 @@ double template_evaluateUsingExcludedAtoms(EnergyNonbond_O *mthis, ScoringFuncti
         dA = (*mthis->_cn1_vec)[(*mthis->_ico_vec)[nlocaltype * (localindex1 - 1) + localindex2 - 1] - 1];
         dC = (*mthis->_cn2_vec)[(*mthis->_ico_vec)[nlocaltype * (localindex1 - 1) + localindex2 - 1] - 1];
         num_real charge22 = (*mthis->_charge_vector)[index2];
-        dQ1Q2 = calculate_dQ1Q2(1.0, dQ1Q2Scale, charge11, charge22);
+        dA *= vdwScale;
+        dC *= vdwScale;
+        dQ1Q2 = calculate_dQ1Q2(electrostaticScale, dQ1Q2Scale, charge11, charge22);
         i3x1 = index1 * 3;
         i3x2 = index2 * 3;
 
@@ -664,7 +675,9 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
   double dielectricConstant;
   double dQ1Q2Scale;
   double cutoff;
-  mthis->maybeRebuildPairList(nvposition);
+  if (!interactionsAre14 && !mthis->_UsesExcludedAtoms) {
+    mthis->maybeRebuildPairList(nvposition);
+  }
   EnergyFunction_sp energyFunction = energyFunctionNonbondParameters(score, energyScale, dielectricConstant, dQ1Q2Scale, cutoff);
   double nonbondCutoffSquared = cutoff * cutoff;
 #define CUTOFF_SQUARED nonbondCutoffSquared
@@ -691,9 +704,17 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
   // If you are going to use openmp here, you need to control access to the force and hessian
   // arrays so that only one thread updates each element at a time.
   {
+    // Excluded-atoms 1-4 terms use the same plain kernel as ordinary excluded
+    // pairs. Their coefficients already include the 1-4 scaling factors.
+    const bool usePlainNonbond = interactionsAre14 && mthis->_UsesExcludedAtoms;
+    if (usePlainNonbond && (!std::isfinite(DIELECTRIC) || DIELECTRIC <= 0.0)) {
+      SIMPLE_ERROR("Excluded-atoms dielectric must be finite and positive, got {}", DIELECTRIC);
+    }
+    const double plainElectrostaticScale = usePlainNonbond ? eelScale / DIELECTRIC : 1.0;
+    Nonbond<NoHessian> plainNonbond;
     double r_switch2 = mthis->_Nonbond_r_switch*mthis->_Nonbond_r_switch;
     double r_cut2 = mthis->_Nonbond_r_cut*mthis->_Nonbond_r_cut;
-    double inv_range = 1.0/(mthis->_Nonbond_r_cut-mthis->_Nonbond_r_switch); // 1.0/(r_cut - r_switch)
+    double inv_range = usePlainNonbond ? 0.0 : 1.0/(mthis->_Nonbond_r_cut-mthis->_Nonbond_r_switch);
 
 #define KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(I1, I2)                                                              \
   if (hasActiveAtomMask && !activeAtomMaskAnyAtomIsActive(bitvectorActiveAtomMask, I1, I2)) continue;
@@ -701,7 +722,13 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
     if (evalType==energyEval) {
       for (auto si = terms.begin(); si != terms.end(); si++ ) {
         KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.I1,si->term.I2);
-        Energy = nonbond_dd_cutoff.energy(
+        Energy = usePlainNonbond
+          ? plainNonbond.energy(
+              si->term.dA * vdwScale, si->term.dC * vdwScale,
+              si->term.dQ1Q2 * plainElectrostaticScale,
+              si->term.I1, si->term.I2, position, &totalNonbondEnergy,
+              NULL, NoHessian(), NULL, NULL)
+          : nonbond_dd_cutoff.energy(
             si->term.dA,
             si->term.dC,
             si->term.dQ1Q2,
@@ -728,7 +755,13 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
       rforce = &(*force)[0];
       for (auto si = terms.begin(); si != terms.end(); si++ ) {
         KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.I1,si->term.I2);
-        Energy = nonbond_dd_cutoff.gradient(
+        Energy = usePlainNonbond
+          ? plainNonbond.gradient(
+              si->term.dA * vdwScale, si->term.dC * vdwScale,
+              si->term.dQ1Q2 * plainElectrostaticScale,
+              si->term.I1, si->term.I2, position, &totalNonbondEnergy,
+              rforce, NoHessian(), NULL, NULL)
+          : nonbond_dd_cutoff.gradient(
             si->term.dA,
             si->term.dC,
             si->term.dQ1Q2,
@@ -757,7 +790,13 @@ double template_evaluateUsingTerms(EnergyNonbond_O *mthis,
       rhdvec = &(*hdvec)[0];
       for (auto si = terms.begin(); si != terms.end(); si++ ) {
         KERNEL_TERM_NONBOND_APPLY_ATOM_MASK(si->term.I1,si->term.I2);
-        Energy = nonbond_dd_cutoff.hessian(
+        Energy = usePlainNonbond
+          ? plainNonbond.hessian(
+              si->term.dA * vdwScale, si->term.dC * vdwScale,
+              si->term.dQ1Q2 * plainElectrostaticScale,
+              si->term.I1, si->term.I2, position, &totalNonbondEnergy,
+              rforce, NoHessian(), rdvec, rhdvec)
+          : nonbond_dd_cutoff.hessian(
             si->term.dA,
             si->term.dC,
             si->term.dQ1Q2,
@@ -1193,6 +1232,27 @@ void EnergyNonbond_O::initialize() {
 void EnergyNonbond_O::addTerm(const EnergyNonbond &term) { this->_Terms.push_back(term); }
 void EnergyNonbond_O::addTerm14(const EnergyNonbond &term) { this->_Terms14.push_back(term); }
 
+// Coefficients already include the PRMTOP's SCNB/SCEE divisors.
+void EnergyNonbond_O::addImported14Term(AtomTable_sp atomTable, size_t atom1, size_t atom2,
+                                      double dA, double dC, double dQ1Q2) {
+  if (atom1 >= atomTable->getNumberOfAtoms() ||
+      atom2 >= atomTable->getNumberOfAtoms() || atom1 == atom2)
+    SIMPLE_ERROR("Invalid imported 1-4 atom pair {},{}", atom1, atom2);
+  if (!std::isfinite(dA) || !std::isfinite(dC) || !std::isfinite(dQ1Q2))
+    SIMPLE_ERROR("Nonfinite imported 1-4 coefficients");
+  EnergyNonbond term;
+  term._Atom1_enb = atomTable->elt_atom(atom1);
+  term._Atom2_enb = atomTable->elt_atom(atom2);
+  term.term.I1 = atomTable->elt_atom_coordinate_index_times3(atom1);
+  term.term.I2 = atomTable->elt_atom_coordinate_index_times3(atom2);
+  if (term.term.I1 < 0 || term.term.I2 < 0 || term.term.I1 % 3 || term.term.I2 % 3)
+    SIMPLE_ERROR("Invalid coordinate offsets for imported 1-4 pair {},{}", atom1, atom2);
+  term.term.dA = dA;
+  term.term.dC = dC;
+  term.term.dQ1Q2 = dQ1Q2;
+  this->addTerm14(term);
+}
+
 void EnergyNonbond_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, terms), this->_Terms);
   node->field(INTERN_(kw, terms14), this->_Terms14);
@@ -1236,6 +1296,11 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
     Atom_sp a4 = loop.getAtom4();
     auto ea1 = atomTable->getEnergyAtomPointer(a1);
     auto ea4 = atomTable->getEnergyAtomPointer(a4);
+    // A proper torsion supplies a three-bond path, but small rings may
+    // also connect its endpoints through a shorter path. Those pairs
+    // remain excluded; they must not receive a 1-4 nonbond interaction.
+    if (a1 == a4 || ea1->inBondOrAngle(a4)) continue;
+
     size_t ia1 = ea1->_IndexTimes3;
     size_t ia4 = ea4->_IndexTimes3;
     if (skipInteraction_EnergyNonbond(keepInteraction, a1, a4, core::make_fixnum(ia1), core::make_fixnum(ia4))) continue;
@@ -1248,13 +1313,18 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
     if (!duplicates.contains(ia1ia4)) {
       duplicates.insert(ia1ia4);
       LOG("About to addTerm");
-      energyNonbond.defineForAtomPair(forceField, true,
+      if (!energyNonbond.defineForAtomPair(forceField, true,
                                       ea1->atom(), ea4->atom(),
                                       ea1->coordinateIndexTimes3(),
                                       ea4->coordinateIndexTimes3(),
                                       this->asSmartPtr(),
                                       atomTypes,
-                                      keepInteraction );
+                                      keepInteraction)) {
+        SIMPLE_ERROR(
+            "Missing nonbond parameters for 1-4 pair: {} (type {}) and {} (type {})",
+            _rep_(a1), _rep_(a1->getType(atomTypes)),
+            _rep_(a4), _rep_(a4->getType(atomTypes)));
+      }
       this->addTerm14(energyNonbond);
       ++terms;
     }
@@ -1620,6 +1690,8 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
   this->_AtomTable = atom_table;
   this->_ExcludedAtomIndexes = excluded_atoms_list;
   this->_NumberOfExcludedAtomIndexes = number_excluded_atoms;
+  // Imported PRMTOP exclusions select the excluded-atoms evaluation path.
+  this->_UsesExcludedAtoms = true;
 }
 
 

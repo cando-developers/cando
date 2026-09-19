@@ -256,6 +256,10 @@ public:
 //  core::List_sp termAtIndex(size_t index) const;
   CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size(); };
   CL_DEFMETHOD virtual size_t numberOfTerms14() { return this->_Terms14.size(); };
+  CL_LISPIFY_NAME("nonbond-uses-excluded-atoms-p");
+  CL_DEFMETHOD bool usesExcludedAtomsP() const { return this->_UsesExcludedAtoms; }
+  CL_LISPIFY_NAME("nonbond-pair-list-epoch");
+  CL_DEFMETHOD size_t nonbondPairListEpoch() const { return this->pairListEpoch(); }
   void callForEachTerm(core::Function_sp callback);
   void callForEachTerm14(core::Function_sp callback);
  public:
@@ -291,6 +295,9 @@ public:
  public:
   void constructNonbondTermsBetweenResidues(Residue_sp res1, Residue_sp res2, core::T_sp nbForceField, core::HashTable_sp atomTypes );
   void addTerm14(const TermType& term);
+  CL_LISPIFY_NAME("add-imported-14-term");
+  CL_DEFMETHOD void addImported14Term(AtomTable_sp atomTable, size_t atom1, size_t atom2,
+                                    double dA, double dC, double dQ1Q2);
   void addTerm(const TermType& term);
   virtual void dumpTerms(core::HashTable_sp atomTypes);
   virtual void atomsForEachTerm(core::Function_sp callback);
@@ -344,7 +351,8 @@ public:
   core::T_mv rebuildPairListBetweenMatters(core::T_sp tcoordinates);
   void constructNonbondTermsFromAtomTable( AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes, core::T_sp keepInteractionFactory );
   void constructNonbondTermsBetweenMatters( Matter_sp matter1, Matter_sp matter2, EnergyFunction_sp energyFunction, core::T_sp keepInteractionFactory );
-  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
+  CL_LISPIFY_NAME("construct-14-interaction-terms");
+  CL_DEFMETHOD void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp keepInteractionFactory, core::HashTable_sp atomTypes );
   void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField, core::T_sp keepInteractionFactory );
 
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,

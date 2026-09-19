@@ -306,6 +306,10 @@
   ((id :initform nil
        :initarg :id
        :accessor id)
+   (source-file-sequence-number :initform nil
+                                :initarg :source-file-sequence-number
+                                :accessor source-file-sequence-number
+                                :documentation "Original residue file number, or NIL when no source is known.")
    (couplings :type hash-table
               :initform (make-hash-table)
               :accessor couplings) ; no :initarg :couplings - so we don't serialize this
@@ -412,7 +416,9 @@ that is not avoid-out-coupling-plug-name.  Otherwise signal an error"
   ((name :initarg :name :accessor name)))
 
 (defclass directional-coupling (coupling)
-  ((source-plug-name :initarg :source-plug-name :accessor source-plug-name)
+  ((chemical-bond-p :initarg :chemical-bond-p :initform t :accessor chemical-bond-p
+                    :documentation "NIL for traversal-only links between fixed protein fragments; do not create chemical bonds.")
+   (source-plug-name :initarg :source-plug-name :accessor source-plug-name)
    (target-plug-name :initarg :target-plug-name :accessor target-plug-name)
    (source-monomer :initarg :source-monomer :accessor source-monomer)
    (target-monomer :initarg :target-monomer :accessor target-monomer)))

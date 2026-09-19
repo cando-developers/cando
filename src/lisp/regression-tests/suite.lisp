@@ -18,6 +18,7 @@
     "rosetta-nonbond.lisp"
     "rosetta-elec.lisp"
     "energy.lisp"
+    "amber-excluded-atoms.lisp"
     "copy-energy-function.lisp"
     "smirnoff-cache.lisp"
     ;; This cross-repository cache regression loads OPEN-FORCE-FIELD and SPIROS.

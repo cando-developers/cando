@@ -1,0 +1,10 @@
+Single-point energies for each frame
+&cntrl
+  imin=5, maxcyc=1,
+  ntx=1, irest=0,
+  ntb=0, ntp=0,
+  ntc=1, ntf=1,
+  igb=1, gbsa=1,
+  cut=9999.0,
+  ntpr=1, ioutfm=1,
+/

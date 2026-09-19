@@ -15,6 +15,7 @@
                (:file "select")
                (:file "convenience")
                (:file "geom")
+               (:file "diagnostics")
                (:file "build")
                (:file "progress")
                (:file "anchor")

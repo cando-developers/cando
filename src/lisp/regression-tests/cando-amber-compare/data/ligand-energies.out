@@ -1,0 +1,349 @@
+
+          -------------------------------------------------------
+          Amber 26 SANDER                              2026
+          -------------------------------------------------------
+
+| Run on 09/16/2026 at 13:54:25
+
+|   Executable path: /home/drmeister/.local/opt/amber//bin/sander
+| Working directory: /home/drmeister/work/cd40l-mmgbsa-small-fs/output/frame=0001/seed=0009/mmgbsa
+|          Hostname: magilla
+
+  [-O]verwriting output
+
+File Assignments:
+|  MDIN: energy.in                                                             
+| MDOUT: ligand-energies.out                                                   
+|INPCRD: ligand.rst7                                                           
+|  PARM: ligand.prmtop                                                         
+|RESTRT: ligand-last.rst7                                                      
+|  REFC: refc                                                                  
+| MDVEL: mdvel                                                                 
+| MDFRC: mdfrc                                                                 
+|  MDEN: mden                                                                  
+| MDCRD: mdcrd                                                                 
+|MDINFO: mdinfo                                                                
+|  MTMD: mtmd                                                                  
+|INPDIP: inpdip                                                                
+|RSTDIP: rstdip                                                                
+|INPTRA: ligand.nc                                                             
+
+
+ Here is the input file:
+
+Single-point energies for each frame                                           
+&cntrl                                                                         
+  imin=5, maxcyc=1,                                                            
+  ntx=1, irest=0,                                                              
+  ntb=0, ntp=0,                                                                
+  ntc=1, ntf=1,                                                                
+  igb=1, gbsa=1,                                                               
+  cut=9999.0,                                                                  
+  ntpr=1, ioutfm=1,                                                            
+/                                                                              
+
+--------------------------------------------------------------------------------
+   1.  RESOURCE   USE: 
+--------------------------------------------------------------------------------
+
+| Flags:                                                                        
+| New format PARM file being parsed.
+| Version =    1.000 Date = 09/16/26 Time = 13:36:14
+ NATOM  =     161 NTYPES =       8 NBONH =      71 MBONA  =     103
+ NTHETH =     166 MTHETA =     164 NPHIH =     470 MPHIA  =     610
+ NHPARM =       0 NPARM  =       0 NNB   =     998 NRES   =      10
+ NBONA  =     103 NTHETA =     164 NPHIA =     610 NUMBND =      11
+ NUMANG =       9 NPTRA  =      36 NATYP =       8 NPHB   =       0
+ IFBOX  =       0 NMXRS  =      21 IFCAP =       0 NEXTRA =       0
+ NCOPY  =       0
+
+ Implicit solvent radii are modified Bondi radii (mbondi)                                                   
+
+|     Memory Use     Allocated
+|     Real              717079
+|     Hollerith            495
+|     Integer            38047
+|     Max Pairs              1
+|     nblistReal             0
+|     nblist Int             0
+|       Total             5752 kbytes
+
+| Note: 1-4 EEL scale factors are being read from the topology file.
+
+| Note: 1-4 VDW scale factors are being read from the topology file.
+| Duplicated    0 dihedrals
+| Duplicated    0 dihedrals
+
+--------------------------------------------------------------------------------
+   2.  CONTROL  DATA  FOR  THE  RUN
+--------------------------------------------------------------------------------
+
+ALL                                                                             
+
+General flags:
+     imin    =       5, nmropt  =       0
+
+Nature and format of input:
+     ntx     =       1, irest   =       0, ntrx    =       1
+
+Nature and format of output:
+     ntxo    =       2, ntpr    =       1, ntrx    =       1, ntwr    =       1
+     iwrap   =       0, ntwx    =       0, ntwv    =       0, ntwe    =       0
+     ioutfm  =       1, ntwprt  =       0, idecomp =       0, rbornstat=      0
+
+Potential function:
+     ntf     =       1, ntb     =       0, igb     =       1, nsnb    =      25
+     ipol    =       0, gbsa    =       1, iesp    =       0
+     dielc   =   1.00000, cut     =9999.00000, intdiel =   1.00000
+     saltcon =   0.00000, offset  =   0.09000, gbalpha=    1.00000
+     gbbeta  =   0.00000, gbgamma =   0.00000, surften =   0.00500
+     rdt     =   0.00000, rgbmax  =  25.00000  extdiel =  78.50000
+     alpb  =        0
+
+Frozen or restrained atoms:
+     ibelly  =       0, ntr     =       0
+
+Energy minimization:
+     maxcyc  =       1, ncyc    =      10, ntmin   =       1
+     dx0     =   0.01000, drms    =   0.00010
+|  INFO: Old style inpcrd file read
+
+
+--------------------------------------------------------------------------------
+   3.  ATOMIC COORDINATES AND VELOCITIES
+--------------------------------------------------------------------------------
+
+First saved MC production frame; no velocities or box                           
+ begin time read from input coords =     0.000 ps
+
+ Number of triangulated 3-point waters found:        0
+
+--------------------------------------------------------------------------------
+   4.  RESULTS
+--------------------------------------------------------------------------------
+
+ POST-PROCESSING OF TRAJECTORY ENERGIES
+Warning: NetCDF trajectory has no time values.
+TRAJENE: Frames in trajectory=    10
+TRAJENE: Atoms in trajectory=   161
+Rosetta Monte Carlo; independent ensemble                                       
+minimizing coord set #     1
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3655E+02     2.2661E+01     1.7140E+02     CGC        72
+
+ BOND    =       77.1513  ANGLE   =       61.6304  DIHED      =      338.3087
+ VDWAALS =       -3.2029  EEL     =     -422.0833  EGB        =      -95.1551
+ 1-4 VDW =       50.3082  1-4 EEL =      422.9395  RESTRAINT  =        0.0000
+ ESURF   =        6.6574
+minimization completed, ENE= 0.43655441E+03 RMS= 0.226609E+02
+minimizing coord set #     2
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3655E+02     2.2661E+01     1.7140E+02     CGC        72
+
+ BOND    =       77.1513  ANGLE   =       61.6304  DIHED      =      338.3087
+ VDWAALS =       -3.2029  EEL     =     -422.0833  EGB        =      -95.1551
+ 1-4 VDW =       50.3082  1-4 EEL =      422.9395  RESTRAINT  =        0.0000
+ ESURF   =        6.6574
+minimization completed, ENE= 0.43655441E+03 RMS= 0.226609E+02
+minimizing coord set #     3
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3345E+02     2.2636E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1639  ANGLE   =       61.4008  DIHED      =      338.1079
+ VDWAALS =       -5.4852  EEL     =     -424.4855  EGB        =      -93.4204
+ 1-4 VDW =       50.1487  1-4 EEL =      423.3926  RESTRAINT  =        0.0000
+ ESURF   =        6.6253
+minimization completed, ENE= 0.43344822E+03 RMS= 0.226364E+02
+minimizing coord set #     4
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3345E+02     2.2636E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1639  ANGLE   =       61.4008  DIHED      =      338.1079
+ VDWAALS =       -5.4852  EEL     =     -424.4855  EGB        =      -93.4204
+ 1-4 VDW =       50.1487  1-4 EEL =      423.3926  RESTRAINT  =        0.0000
+ ESURF   =        6.6253
+minimization completed, ENE= 0.43344822E+03 RMS= 0.226364E+02
+minimizing coord set #     5
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3298E+02     2.2637E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1850  ANGLE   =       61.4745  DIHED      =      338.1111
+ VDWAALS =       -5.7110  EEL     =     -425.7772  EGB        =      -92.5751
+ 1-4 VDW =       50.1352  1-4 EEL =      423.5134  RESTRAINT  =        0.0000
+ ESURF   =        6.6240
+minimization completed, ENE= 0.43297986E+03 RMS= 0.226369E+02
+minimizing coord set #     6
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3298E+02     2.2637E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1850  ANGLE   =       61.4745  DIHED      =      338.1111
+ VDWAALS =       -5.7110  EEL     =     -425.7772  EGB        =      -92.5751
+ 1-4 VDW =       50.1352  1-4 EEL =      423.5134  RESTRAINT  =        0.0000
+ ESURF   =        6.6240
+minimization completed, ENE= 0.43297986E+03 RMS= 0.226369E+02
+minimizing coord set #     7
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3345E+02     2.2636E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1639  ANGLE   =       61.4008  DIHED      =      338.1079
+ VDWAALS =       -5.4852  EEL     =     -424.4855  EGB        =      -93.4204
+ 1-4 VDW =       50.1487  1-4 EEL =      423.3926  RESTRAINT  =        0.0000
+ ESURF   =        6.6253
+minimization completed, ENE= 0.43344822E+03 RMS= 0.226364E+02
+minimizing coord set #     8
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3298E+02     2.2637E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1850  ANGLE   =       61.4745  DIHED      =      338.1111
+ VDWAALS =       -5.7110  EEL     =     -425.7772  EGB        =      -92.5751
+ 1-4 VDW =       50.1352  1-4 EEL =      423.5134  RESTRAINT  =        0.0000
+ ESURF   =        6.6240
+minimization completed, ENE= 0.43297986E+03 RMS= 0.226369E+02
+minimizing coord set #     9
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3298E+02     2.2637E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1850  ANGLE   =       61.4745  DIHED      =      338.1111
+ VDWAALS =       -5.7110  EEL     =     -425.7772  EGB        =      -92.5751
+ 1-4 VDW =       50.1352  1-4 EEL =      423.5134  RESTRAINT  =        0.0000
+ ESURF   =        6.6240
+minimization completed, ENE= 0.43297986E+03 RMS= 0.226369E+02
+minimizing coord set #    10
+
+
+  Maximum number of minimization cycles reached.
+
+
+                    FINAL RESULTS
+
+
+
+   NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
+      1       4.3331E+02     2.2637E+01     1.7178E+02     CGC        72
+
+ BOND    =       77.1870  ANGLE   =       61.5476  DIHED      =      338.0101
+ VDWAALS =       -5.6303  EEL     =     -425.2416  EGB        =      -92.3884
+ 1-4 VDW =       50.2407  1-4 EEL =      422.9537  RESTRAINT  =        0.0000
+ ESURF   =        6.6324
+minimization completed, ENE= 0.43331121E+03 RMS= 0.226366E+02
+TRAJENE: Trajectory file ended
+TRAJENE: Trajene complete.
+
+--------------------------------------------------------------------------------
+   5.  TIMINGS
+--------------------------------------------------------------------------------
+
+|    Read coords time           0.00 ( 0.76% of Total)
+|    Fast Water setup           0.00 ( 0.01% of Total)
+|                Calc gb radii              0.00 ( 9.36% of Gen B)
+|                Calc gb diag               0.01 (21.03% of Gen B)
+|                Calc gb off-diag           0.00 (14.15% of Gen B)
+|                Surface area energy        0.02 (55.43% of Gen B)
+|                Other                      0.00 ( 0.03% of Gen B)
+|             Gen Born time              0.03 (100.0% of Nonbo)
+|          Nonbond force              0.03 (92.99% of Force)
+|          Bond/Angle/Dihedral        0.00 ( 6.95% of Force)
+|          Other                      0.00 ( 0.05% of Force)
+|       Force time                 0.03 (100.0% of Runmd)
+|    Runmd Time                 0.03 (86.04% of Total)
+|    Other                      0.00 (13.19% of Total)
+| Total time                 0.04 (99.36% of ALL  )
+
+| Number of list builds   :          0
+
+| Highest rstack allocated:          0
+| Highest istack allocated:          0
+|           Job began  at 13:54:25.640  on 09/16/2026
+|           Setup done at 13:54:25.644  on 09/16/2026
+|           Run   done at 13:54:25.677  on 09/16/2026
+|     wallclock() was called     410 times
+
+|3D-RISM memory allocation summary
+|Type          Maximum        Current   
+|Integer       0.00000 GB     0.00000 GB
+|Real          0.00000 GB     0.00000 GB
+|Logical       0.00000 GB     0.00000 GB
+|Character     0.00000 GB     0.00000 GB
+|---------------------------------------
+|Total         0.00000 GB     0.00000 GB
