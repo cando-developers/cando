@@ -40,6 +40,8 @@ __END_DOC
  *
  */
 
+#include <algorithm>
+#include <cmath>
 #include <clasp/core/common.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyFunction.h>
@@ -1024,68 +1026,38 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
   ForceMatchReport_sp report;
   NVector_sp	numForce, tempForce;
   stringstream	result;
-  double	analyticalMag, numericalMag, dot;
-  double	avg;
+
+  if (analyticalForce->size() != pos->size())
+    SIMPLE_ERROR("Analytical force and position vectors must have the same size");
 
   report = ForceMatchReport_O::create();
 
   numForce = NVector_O::create(pos->size());
   this->evaluateNumericalForce(pos,energyScale,numForce,DELTA,activeAtomMask);
-  dot = dotProductWithActiveAtomMask(numForce,analyticalForce,nil<core::T_O>());
-  numericalMag = magnitudeWithActiveAtomMask(numForce,nil<core::T_O>());
-  analyticalMag = magnitudeWithActiveAtomMask(analyticalForce,nil<core::T_O>());
   tempForce = NVector_O::create(pos->size());
   // Evaluate the force at pos again
   this->evaluateEnergyForce(pos,energyScale,true,tempForce,activeAtomMask);
-  avg = (analyticalMag+numericalMag)/2.0;
-  if ( analyticalMag < VERYSMALL && numericalMag < VERYSMALL ) {
-    result.str("");
-    result << "analyticalForce and numericalForces are both < VERYSMALL"<<std::endl;
-    report->_Message = result.str();
-    goto DONE;
-  }
-  if ( analyticalMag < VERYSMALL ) {
-    result.str("");
-    result << "analyticalForce < VERYSMALL and numericalForces is not"<<std::endl;
-    report->_Message = result.str();
-    goto DONE;
-  }
-  if ( numericalMag < VERYSMALL ) {
-    result.str("");
-    result << "numericalForce < VERYSMALL and analyticalForce is not"<<std::endl;
-    report->_Message = result.str();
-    goto DONE;
-  }
-  if ( avg < VERYSMALL ) {
-    report->_Message = "average of Analytical & Numerical Forces is VERY small";
-    goto DONE;
-  }
-  dot /= ( analyticalMag*numericalMag );
-
-  // Dump the analytical and the numerical force vectors to the log
-  //
   report->_AnalyticalForce = analyticalForce;
   report->_NumericalForce = numForce;
-  if ( fabs(analyticalMag-numericalMag)/avg >0.1 ) {
-    result.str("");
-    result << "Lengths of Analytical and Numerical forces differ by more than 10%" << std::endl;
-    result << "|analyticalForce| == " << analyticalMag << "  |numericalForce| == "<< numericalMag << std::endl;
-    result << "(analyticalForce/|analyticalForce|).(numericalForce/|numericalForce|) = "<< dot << std::endl;
-    report->_Message = result.str();
-    this->saveCoordinatesAndForcesFromVectors(pos,analyticalForce);
-    goto DONE;
+  // Match the force regression tolerances in energyComponent.cc. Check each
+  // component so a large force cannot hide an error in a smaller component.
+  constexpr double absoluteTolerance = 1.0e-4;
+  constexpr double relativeTolerance = 1.0e-4;
+  for (size_t i = 0; i < pos->size(); ++i) {
+    double analytical = analyticalForce->element(i);
+    double numerical = numForce->element(i);
+    double tolerance = absoluteTolerance + relativeTolerance *
+        std::max(std::abs(analytical), std::abs(numerical));
+    if (!std::isfinite(analytical) || !std::isfinite(numerical) ||
+        std::abs(analytical - numerical) > tolerance) {
+      result << "Force component " << i << " differs: analytical=" << analytical
+             << ", numerical=" << numerical << ", tolerance=" << tolerance;
+      report->_Message = result.str();
+      this->saveCoordinatesAndForcesFromVectors(pos,analyticalForce);
+      return report;
+    }
   }
-  if ( dot < 0.98 ) {
-    result.str("");
-    result << "The Lengths of Analytical and Numerical forces are very similar but they are not parallel%" << std::endl;
-    result << "|analyticalForce| == " << analyticalMag << "  |numericalForce| == "<< numericalMag << std::endl;
-    result << "(analyticalForce/|analyticalForce|).(numericalForce/|numericalForce|) = "<< dot << std::endl;
-    report->_Message = result.str();
-    this->saveCoordinatesAndForcesFromVectors(pos,analyticalForce);
-    goto DONE;
-  }
-  report->_Message = "Analytical and Numerical forces are virtually identical";
- DONE:
+  report->_Message = "Analytical and Numerical forces agree component-wise (absolute and relative tolerances 1e-4)";
   return report;
 }
 
