@@ -17,21 +17,23 @@
 (in-package :clasp-tests)
 
 (reset-clasp-tests)
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;cremer-pople.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;geometry.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;leap.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;spanning-tree.lisp")
-#+(or)(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;pairwise-derivatives.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-nonbond.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-elec.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;energy.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;amber-excluded-atoms.lisp")
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;smirnoff-cache.lisp")
-;; This test installs a minimal :ROSETTA force field; keep it last.
-(load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;lksolvation.lisp")
+(let ((rosetta-host-p (ext:logical-host-p "ROSETTA")))
+  (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;cremer-pople.lisp")
+  (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;geometry.lisp")
+  (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;leap.lisp")
+  (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;spanning-tree.lisp")
+  (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;pairwise-derivatives.lisp")
+  (when rosetta-host-p
+    (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-nonbond.lisp")
+    (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;rosetta-elec.lisp")
+    (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;energy.lisp")
+    (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;amber-excluded-atoms.lisp")
+    (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;smirnoff-cache.lisp"))
+  (unless rosetta-host-p
+    (message :warn
+             "Skipping rosetta-nonbond.lisp, rosetta-elec.lisp, energy.lisp, amber-excluded-atoms.lisp, and smirnoff-cache.lisp because the ROSETTA logical host is not configured"))
+  ;; This test installs a minimal :ROSETTA force field; keep it last.
+  (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;lksolvation.lisp"))
 
 #-swank(ext:quit (if (show-test-summary) 0 1))
 #+swank(show-test-summary)
-(let ((success (run-cando-regression-tests)))
-  #-swank(ext:quit (if success 0 1))
-  #+swank success)
