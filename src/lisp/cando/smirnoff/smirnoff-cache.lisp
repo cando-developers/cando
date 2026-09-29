@@ -397,17 +397,23 @@ Provide an existing cache or NIL if you don't have one yet."
    (molecule :initarg :molecule :reader cache-miss-molecule)
    (kind :initarg :kind :reader cache-miss-kind)
    (key :initarg :key :reader cache-miss-key)
-   (atom :initarg :atom :reader cache-miss-atom))
+   (atom :initarg :atom :reader cache-miss-atom)
+   (atoms :initarg :atoms :initform nil :reader cache-miss-atoms))
   (:report
    (lambda (condition stream)
      (format stream
-             "Grouped SMIRNOFF generation requires a parameter that is not cached.~%~
+             "SMIRNOFF cache lookup requires a parameter that is not cached.~%~
               Molecule: ~a~%Reason: ~a~@[~%Missing key: ~s~]~@[~%First atom: ~a~]"
              (chem:get-name (cache-miss-molecule condition))
              (cache-miss-kind condition)
              (cache-miss-key condition)
              (let ((atom (cache-miss-atom condition)))
                (and atom (chem:get-name atom)))))))
+
+(defmethod chem:force-field-cache-miss-atoms ((condition grouped-parameter-cache-miss))
+  (or (cache-miss-atoms condition)
+      (let ((atom (cache-miss-atom condition)))
+        (when atom (list atom)))))
 
 (defun grouped-parameter-cache-miss-resolved-p (condition)
   "True when CONDITION's exact atom or bond key is now in its SMIRNOFF cache."
@@ -428,6 +434,10 @@ Provide an existing cache or NIL if you don't have one yet."
     (error "The force-field cache-miss handler returned success, but uncached SMIRNOFF did not ~
             produce the requested ~s entry ~s"
            (cache-miss-kind condition) (cache-miss-key condition)))
+  (format *error-output*
+          "~&[FORCE-FIELD-CACHE-MISS] recovered; retrying: reason=~s key=~s~%"
+          (cache-miss-kind condition) (cache-miss-key condition))
+  (finish-output *error-output*)
   (invoke-restart 'retry-grouped-cache-lookup))
 
 (defmethod chem:force-fields-as-list ((ff cached-smirnoff-force-field))
@@ -459,11 +469,10 @@ Provide an existing cache or NIL if you don't have one yet."
 
 (defun bonded-cache-covers-molecule-p (molecule cache)
   "T iff every per-atom nonbond key and every bond key of MOLECULE is already cached.
-  Bonds and nonbonds are the reliable coverage signal - SMIRNOFF parameterizes every
-  bond and every atom (no skips), unlike angles/dihedrals which are legitimately absent
-  for linear groups (e.g. -CN).  All bonds present => every atom's constitution-context
-  has been harvested => every angle/dihedral SMIRNOFF would assign is present too, and
-  any absent angle/dihedral is a genuine SMIRNOFF skip (safe to skip in commit)."
+  This is the existing atom/bond coverage check, not proof of higher-order coverage.
+  Some angle/dihedral terms are legitimately absent (e.g. linear groups). The cache
+  does not yet distinguish those intentional omissions from untrained higher-order
+  keys; COMMIT-BONDED-FROM-CACHE retains its existing skip-if-absent behavior."
   (block covered 
     ;; ATOM-CACHE-KEY with ERRORP NIL - an atom with no :given-atom-type is not covered, which
     ;; is an answer this predicate is entitled to give.  Signalling made an untyped atom fatal
@@ -487,7 +496,8 @@ Provide an existing cache or NIL if you don't have one yet."
     t))
 
 (defun uncovered-cache-reason (molecule cache)
-  "Why BONDED-CACHE-COVERS-MOLECULE-P said no: (values KIND KEY ATOM), or NIL when it said yes.
+  "Why BONDED-CACHE-COVERS-MOLECULE-P said no: (values KIND KEY ATOM ATOMS), or NIL when covered.
+ATOMS contains the missing atom or both atoms of the missing bond; ATOM is its first element.
 
   The predicate answers T or NIL and a NIL is expensive - it drops the whole molecule onto real
   SMIRKS, which is vf2 over every atom for every term in every force field.  On a blueprint's
@@ -499,9 +509,9 @@ Provide an existing cache or NIL if you don't have one yet."
                     (lambda (atom)
                       (let ((key (atom-cache-key atom nil)))
                         (cond ((null key)
-                               (return-from reason (values :no-given-atom-type nil atom)))
+                               (return-from reason (values :no-given-atom-type nil atom (list atom))))
                               ((not (nth-value 1 (gethash key (nonbond-table cache))))
-                               (return-from reason (values :atom-not-in-cache key atom))))))
+                               (return-from reason (values :atom-not-in-cache key atom (list atom)))))))
                     molecule)
     (chem:map-bonds nil
                     (lambda (a1 a2 o b) (declare (ignore o b))
@@ -511,33 +521,35 @@ Provide an existing cache or NIL if you don't have one yet."
                                    (not (nth-value 1 (gethash (canonicalize-key (list k1 k2))
                                                               (bond-table cache)))))
                           (return-from reason
-                            (values :bond-not-in-cache (canonicalize-key (list k1 k2)) a1)))))
+                            (values :bond-not-in-cache (canonicalize-key (list k1 k2))
+                                    a1 (list a1 a2))))))
                     molecule)
     nil))
 
-(defvar *reported-coverage-failures* (make-hash-table :test #'equal)
-  "Coverage failures already reported, keyed by (molecule-name kind key).
+(defmethod chem:ensure-force-field-cache-for-molecule
+    ((ff cached-smirnoff-force-field) molecule)
+  "Require actual atom and bond keys, allowing recovery without running SMIRNOFF on MOLECULE."
+  (with-parameter-cache-locked ((cache ff))
+    (loop
+      (when (bonded-cache-covers-molecule-p molecule (cache ff))
+        (return t))
+      (multiple-value-bind (kind key atom atoms)
+          (uncovered-cache-reason molecule (cache ff))
+        (restart-case
+            (error 'grouped-parameter-cache-miss
+                   :force-field ff :molecule molecule
+                   :kind kind :key key :atom atom :atoms atoms)
+          (retry-grouped-cache-lookup ()
+            :report "Retry the SMIRNOFF cache lookup after filling the cache."))))))
 
-  Throttling, not memoization.  A blueprint detach scan re-parameterizes the same molecule once per
-  rotamer slot, so an unthrottled report would print the same line ~2000 times and bury the run.")
-
-(defun report-coverage-failure (molecule cache)
-  "Warn once about why MOLECULE misses the cache.  Called only on the slow branch."
+(defun report-coverage-failure (molecule cache &optional (phase :bonded-generation))
+  "Report every actual fallback, including after restoring a warmed snapshot."
   (multiple-value-bind (kind key atom) (uncovered-cache-reason molecule cache)
     (when kind
-      (let ((id (list (chem:get-name molecule) kind key)))
-        (unless (gethash id *reported-coverage-failures*)
-          (setf (gethash id *reported-coverage-failures*) t)
-          #+(or)(format *error-output*
-                  "~&;;; SMIRNOFF CACHE MISS on molecule ~a - falling back to real SMIRKS.~%~
-                   ;;;   reason: ~a~@[  key: ~s~]~@[  first atom: ~a~]~%~
-                   ;;;   Real SMIRKS is vf2 over the WHOLE molecule per force-field term.  On a~%~
-                   ;;;   blueprint's fanned-out molecule that dominates everything else, and the~%~
-                   ;;;   result is not harvested (a scoped pass must never teach the cache), so~%~
-                   ;;;   it is paid again for every later pass.  Train this context first.~%"
-                  (chem:get-name molecule) kind key
-                  (and atom (chem:get-name atom)))
-          )))))
+      (format *error-output*
+              "~&[SMIRNOFF-CACHE-MISS] phase=~s molecule=~a reason=~s key=~s atom=~a; using real SMIRNOFF~%"
+              phase (chem:get-name molecule) kind key (and atom (chem:get-name atom)))
+      (finish-output *error-output*))))
 
   ;;; --- atom typing on a HIT: memoized vdw $types, no SMIRKS re-run ----------
 (defmethod chem:assign-force-field-types ((ff cached-smirnoff-force-field) molecule atom-types)
@@ -570,7 +582,9 @@ Provide an existing cache or NIL if you don't have one yet."
   (with-parameter-cache-locked ((cache ff))
     (if (bonded-cache-covers-molecule-p molecule (cache ff))
         (chem:assign-force-field-types ff molecule atom-types) ; memoized vdw types
-        (chem:assign-force-field-types (smirnoff-force-field ff) molecule atom-types)) ; real SMIRKS
+        (progn
+          (report-coverage-failure molecule (cache ff) :atom-typing)
+          (chem:assign-force-field-types (smirnoff-force-field ff) molecule atom-types))) ; real SMIRKS
     )
   (chem:construct-from-molecule (chem:atom-table ef) molecule nonbond-force-field keep atom-types))
 
@@ -580,28 +594,14 @@ Provide an existing cache or NIL if you don't have one yet."
   (with-parameter-cache-locked ((cache ff))
     (cond
       (group
-       ;; A grouped pass is deliberately forbidden from teaching the cache from its scoped/fanned
-       ;; molecule.  Signal a structured miss instead.  A caller that knows how to construct a
-       ;; chemically real trainer can fill the cache and invoke RETRY-GROUPED-CACHE-LOOKUP; callers
-       ;; without that knowledge get the condition as an ordinary error.
-     (loop
-       (when (bonded-cache-covers-molecule-p molecule (cache ff))
-         (return (commit-bonded-from-cache ef molecule (cache ff) keep group)))
-       (multiple-value-bind (kind key atom)
-           (uncovered-cache-reason molecule (cache ff))
-         (restart-case
-             (error 'grouped-parameter-cache-miss
-                    :force-field ff :molecule molecule
-                    :kind kind :key key :atom atom)
-           (retry-grouped-cache-lookup ()
-             :report "Retry the grouped SMIRNOFF cache lookup after filling the cache.")))))
+       ;; Never teach the cache from a scoped/fanned molecule.  Its caller must supply a real trainer.
+       (chem:ensure-force-field-cache-for-molecule ff molecule)
+       (commit-bonded-from-cache ef molecule (cache ff) keep group))
       ((bonded-cache-covers-molecule-p molecule (cache ff))
        (commit-bonded-from-cache ef molecule (cache ff) keep group))
       (t
        (progn
-         ;; Say WHY, once.  This branch is orders of magnitude slower than the other and there is
-         ;; nothing in the output to distinguish "the run is big" from "the cache is missing one
-         ;; atom's context and every molecule is being re-matched from scratch".
+         ;; Report each fallback so a snapshot cannot hide repeated real-SMIRNOFF work.
          (report-coverage-failure molecule (cache ff))
          (chem:generate-molecule-energy-function-tables
           ef molecule (smirnoff-force-field ff) keep group)

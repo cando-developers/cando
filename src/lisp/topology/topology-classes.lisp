@@ -532,6 +532,12 @@ resulting parameters to its cache.  Return true when handled; signal if paramete
 (defun add-monomer (oligomer-space monomer)
   (vector-push-extend monomer (monomers oligomer-space)))
 
+(defgeneric foldamer-lk-solvation-atom-type
+    (foldamer constitution-context atom-name)
+  (:documentation
+   "Return the LK solvation atom type for ATOM-NAME in CONSTITUTION-CONTEXT.
+Signal an error if no assignment exists."))
+  
 (defgeneric calculate-number-of-sequences (obj))
 
 (defmethod calculate-number-of-sequences (oligomer-space)

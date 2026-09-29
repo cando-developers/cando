@@ -1839,19 +1839,19 @@ this function.")
                                                 :rep-weight rep-weight))))
 
 (defun materialize-blueprint (blueprint &key (energy-function-factory #'blueprint-bare-energy-function)
-                                                  (ensure-trained t) (verbose nil))
+                                                  (ensure-trained nil) (verbose nil))
   "PASS 2, STAGE 1.  Build the base structure and bind the inherited ASSEMBLER-BASE slots.
 
   Returns BLUEPRINT.  AGGREGATE, ENERGY-FUNCTION, ATAGGREGATE, JOINT-TREE, ADJUSTMENTS and
   MONOMER-POSITIONS are bound afterwards - they are deliberately unbound before, so reaching for
   them early signals rather than returning a stale answer.
 
-  ENSURE-TRAINED T (the default) trains the SMIRNOFF parameter cache on the concrete oligomer
-  before materialization.  It has to happen here rather than being left to the caller:
-  MAKE-ASSEMBLER builds the energy function, and an untrained cache would be taught by the
-  fanned-out aggregate - a CA with 58-79 substituents - poisoning every later build silently.
-  Selectable alternatives are parameterized on demand when their grouped energy pass reports
-  a structured cache miss."
+  Proactive training belongs in WARM-BLUEPRINT-PARAMETER-CACHE before saving the snapshot.
+  ENSURE-TRAINED T explicitly requests that warmup here; the default is NIL.
+  Before creating the energy function, check actual atom/bond cache keys in the constructed
+  graph. Only missing parameters trigger a reported recovery using a chemically real trainer;
+  never run SMIRNOFF matching on the fanned-out aggregate. Grouped passes retain their own
+  cache-miss recovery. These checks preserve the cache's existing coverage semantics."
   (unless (cdr (oligomer-shapes blueprint))
     (error "MAKE-ASSEMBLER wants :RECEPTOR-ONLY when there is a single oligomer-shape - decide ~
               what that means for a blueprint before calling this."))
@@ -1870,7 +1870,11 @@ this function.")
                  (declare (ignore aggregate monomer-positions))
                  (let ((n (build-blueprint-fan-out blueprint oligomer-shapes-molecules
                                                    monomers-to-residues)))
-                   (format t "~&fan-out: built ~d slot residues~%" n)))
+                   (format t "~&fan-out: built ~d slot residues~%" n))
+                 ;; Even a bare energy function types atoms. Do not let an
+                 ;; uncovered fan-out molecule fall back to real SMIRNOFF there.
+                 (ensure-blueprint-materialization-cache
+                  blueprint oligomer-shapes-molecules :verbose verbose))
                :monomer-contexts (monomer-contexts blueprint)
                :ligand-oligomer-shape (%ligand-oligomer-shape blueprint)
                :receptor-oligomer-shape (%receptor-oligomer-shape blueprint)
@@ -4135,8 +4139,10 @@ out, including on a non-local exit."
 
 (defgeneric train-foldamer-oligomers (foldamer oligomers &key verbose)
   (:documentation
-   "Train the concrete chemically real OLIGOMERS needed to materialize a blueprint baseline.
-Selectable alternatives are parameterized later by grouped cache-miss recovery."))
+   "Train FOLDAMER's parameter cache on the chemically real OLIGOMERS.
+These may be blueprint source oligomers or copies containing a single selectable alternative.
+Methods deduplicate trainers and skip completed training signatures, returning the number of
+newly trained oligomers.  Foldamers using residue-template parameters return zero."))
 
 (defun blueprint-cache-miss-oligomer (blueprint-locus blueprint-monomer)
   "Build the chemically real oligomer for BLUEPRINT-MONOMER's grouped energy pass.
@@ -4163,17 +4169,75 @@ ordinary oligomer contains the slot's sidechain in its real backbone environment
 (defun call-with-blueprint-cache-miss-recovery
     (blueprint-locus blueprint-monomer thunk &key verbose)
   "Call THUNK and let the locus's foldamer fill its force-field cache if CHEM reports a miss."
-  (let* ((trainer (blueprint-cache-miss-oligomer blueprint-locus blueprint-monomer))
-         (foldamer (foldamer (oligomer-space trainer))))
-    (chem:call-with-force-field-cache-miss-handler
-     (lambda ()
-       (when verbose
-         (format t "~&Force-field cache miss at locus ~d monomer ~s; parameterizing ~s~%"
-                 (locus blueprint-locus) (monomer-name blueprint-monomer)
-                 (oligomer-to-sexp trainer))
-         (finish-output))
-       (fill-force-field-cache foldamer trainer :verbose verbose))
-     thunk)))
+  (chem:call-with-force-field-cache-miss-handler
+   (lambda ()
+     ;; A hot cache must not even construct a trainer description.
+     (let* ((trainer (blueprint-cache-miss-oligomer blueprint-locus blueprint-monomer))
+            (foldamer (foldamer (oligomer-space trainer))))
+       (format t "~&[BLUEPRINT-CACHE-RECOVERY] locus ~d monomer ~s; training real oligomer~%"
+               (locus blueprint-locus) (monomer-name blueprint-monomer))
+       (finish-output)
+       (fill-force-field-cache foldamer trainer :verbose verbose)))
+   thunk))
+
+(defun blueprint-materialization-cache-miss-trainer
+    (blueprint atoms oligomer-shapes-molecules)
+  "Select a real trainer for missing ATOMS, preferring an implicated sidechain alternative.
+Called only on an actual parameter miss, after fan-out residues exist but before the atom table.
+Returns the trainer, and its locus/monomer when the miss involves a sidechain slot."
+  (labels ((contains-missing-atom-p (matter)
+             (block found
+               (chem:map-atoms nil
+                               (lambda (atom)
+                                 (when (member atom atoms :test #'eq)
+                                   (return-from found t)))
+                               matter)
+               nil)))
+    ;; A missing attachment bond can report its backbone atom first. Search
+    ;; ALL implicated atoms for a slot before choosing the source oligomer.
+    (loop for bp-locus across (loci blueprint)
+          when (owns-slots-p bp-locus)
+            do (loop for bp-monomer across (monomers bp-locus)
+                     do (loop for slot below (rotamer-slot-count bp-monomer)
+                              for scan = (aref (rotamer-scans blueprint)
+                                               (blueprint-mrkindex bp-locus bp-monomer slot))
+                              when (and scan (contains-missing-atom-p (slot-residue-of scan)))
+                                do (return-from blueprint-materialization-cache-miss-trainer
+                                     (values (blueprint-cache-miss-oligomer bp-locus bp-monomer)
+                                             bp-locus bp-monomer)))))
+    ;; Missing backbone/fixed parameters belong to the original real molecule.
+    (loop for (shape . molecule) in oligomer-shapes-molecules
+          when (contains-missing-atom-p molecule)
+            do (return-from blueprint-materialization-cache-miss-trainer
+                 (values (copy-oligomer (oligomer shape)) nil nil)))
+    (error "Cannot locate a chemically real blueprint trainer for missing atoms ~s" atoms)))
+
+(defun ensure-blueprint-materialization-cache
+    (blueprint oligomer-shapes-molecules &key verbose)
+  "Check actual cached atom/bond keys before typing a fan-out aggregate.
+No trainer enumeration, molecule building or SMIRKS occurs on a hit. A miss is
+reported and filled from one chemically real source/alternative oligomer."
+  (loop for (nil . molecule) in oligomer-shapes-molecules
+        ;; Match energy-function construction, including cons-form names such
+        ;; as (:DEFAULT . :USE-GIVEN-TYPES), normalized by the molecule accessor.
+        for force-field = (chem:find-force-field (chem:force-field-name molecule))
+        do (chem:call-with-force-field-cache-miss-handler
+            (lambda (condition)
+              (multiple-value-bind (trainer bp-locus bp-monomer)
+                  (blueprint-materialization-cache-miss-trainer
+                   blueprint (chem:force-field-cache-miss-atoms condition)
+                   oligomer-shapes-molecules)
+                (if bp-locus
+                    (format t "~&[BLUEPRINT-CACHE-RECOVERY] materialization locus ~d monomer ~s~%"
+                            (locus bp-locus) (monomer-name bp-monomer))
+                    (format t "~&[BLUEPRINT-CACHE-RECOVERY] materialization source molecule ~s~%"
+                            (chem:get-name molecule)))
+                (finish-output)
+                (fill-force-field-cache (foldamer (oligomer-space trainer)) trainer :verbose verbose)))
+            (lambda ()
+              (chem:ensure-force-field-cache-for-molecule force-field molecule))
+            :pass-condition t))
+  t)
   
 
 (defun blueprint-required-constitution-contexts (blueprint)
@@ -4212,34 +4276,54 @@ BLUEPRINT-REQUIRED-CONTEXTS-BY-FOLDAMER.
   parameterizations you actually need get paid for."))
 
 
-(defun ensure-blueprint-trained (blueprint &key verbose)
-  "Ensure each cached-SMIRNOFF foldamer is trained on the blueprint's concrete oligomer.
+(defun warm-blueprint-parameter-cache (blueprint &key verbose)
+  "Warm parameter caches on BLUEPRINT's source oligomers and single-locus alternatives.
 
-  CALL THIS BEFORE MATERIALIZE-BLUEPRINT-BASE.  An untrained cache learns from whatever is built
-  first, and for a blueprint that is the fanned-out aggregate - see the commentary above.
+Call before materialization or grouped energy generation.  Train each source oligomer, then a
+copy with each slot-owning locus's selectable monomer installed in its source environment.
+Monomers with no rotamer slots are skipped.  Rotamers share chemical parameters, so there is no
+per-rotamer training.  Neither the source oligomers nor the fanned-out aggregate is modified.
 
-  Selectable alternatives are deliberately not prefetched.  Grouped energy construction catches a
-  structured cache miss, builds the exact real ligand containing that interaction, parameterizes
-  it with uncached SMIRNOFF, and retries the lookup.
+Trainers are grouped by foldamer and passed to TRAIN-FOLDAMER-OLIGOMERS, which skips previously
+completed trainers.  AMBER residue-template foldamers need no cache training.  Only ordinary,
+chemically real oligomers are parameterized; never a detached or fanned-out blueprint molecule.
 
-  Returns (values TRAINED-COUNT REQUIRED-COUNT)."
-  (let ((by-foldamer (blueprint-required-contexts-by-foldamer blueprint))
+This prepares the source sequence and its single-locus substitutions, not every combination of
+simultaneous substitutions or a different backbone sequence. Run proactive warmup during setup;
+runtime blueprint construction and grouped generation recover only actual cache misses.
+
+Returns (values NEWLY-TRAINED REQUIRED-CONTEXT-COUNT).  The second value is a diagnostic count
+of requested constitution contexts, not proof of complete interaction-parameter coverage."
+  (let ((by-foldamer (make-hash-table :test 'eq))
         (trained 0)
         (required 0))
-    (maphash (lambda (foldamer contexts)
-               (incf required (length contexts))
-               ;; Only the concrete sequence is required before materialization.  Alternative
-               ;; monomers are trained on demand from the slot group that exposes the miss.
+    (flet ((add-trainer (oligomer)
+             (let ((foldamer (foldamer (oligomer-space oligomer))))
+               (push oligomer (gethash foldamer by-foldamer)))))
+      ;; Include fixed/background source oligomers too: they need not have a moveable locus.
+      (dolist (shape (oligomer-shapes blueprint))
+        (add-trainer (oligomer shape)))
+      (loop for bp-locus across (loci blueprint)
+            when (owns-slots-p bp-locus)
+              do (loop for bp-monomer across (monomers bp-locus)
+                       when (plusp (rotamer-slot-count bp-monomer))
+                         do (add-trainer
+                             (blueprint-cache-miss-oligomer bp-locus bp-monomer)))))
+    (maphash (lambda (foldamer oligomers)
                (incf trained
                      (train-foldamer-oligomers
-                      foldamer
-                      (loop for oligomer-shape in (oligomer-shapes blueprint)
-                            for oligomer = (oligomer oligomer-shape)
-                            when (eq foldamer (foldamer (oligomer-space oligomer)))
-                              collect oligomer)
-                      :verbose verbose)))
+                      foldamer (nreverse oligomers) :verbose verbose)))
              by-foldamer)
-    (format t "~&ensure-blueprint-trained: ~d contexts expected across ~d foldamer~:p, ~
-               ~d concrete oligomer~:p newly trained; alternatives are demand-driven~%"
+    (maphash (lambda (foldamer contexts)
+               (declare (ignore foldamer))
+               (incf required (length contexts)))
+             (blueprint-required-contexts-by-foldamer blueprint))
+    (format t "~&warm-blueprint-parameter-cache: ~d contexts expected across ~d foldamer~:p, ~
+               ~d source/alternative oligomer~:p newly trained~%"
             required (hash-table-count by-foldamer) trained)
     (values trained required)))
+
+(defun ensure-blueprint-trained (blueprint &key verbose)
+  "Compatibility entry point for warming source and alternative oligomer parameters.
+Returns the same two values as WARM-BLUEPRINT-PARAMETER-CACHE."
+  (warm-blueprint-parameter-cache blueprint :verbose verbose))

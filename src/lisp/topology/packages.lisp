@@ -633,6 +633,7 @@
    #:place-all-pieces
    #:train-foldamer-contexts
    #:train-foldamer-oligomers
+   #:warm-blueprint-parameter-cache
    #:fill-force-field-cache
    #:best-monomer-context-matcher
    #:foldamer-trainer-index
@@ -648,7 +649,9 @@
    #:make-blueprint-and-materialize
    #:owns-slots-p
    #:loci
-   #:locus))
+   #:locus
+   #:foldamer-lk-solvation-atom-type
+   ))
 
 (defpackage #:topology.dag
   (:use #:common-lisp)

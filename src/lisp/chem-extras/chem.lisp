@@ -3,6 +3,8 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (export 'chem::coordinates :chem)
   (export '(chem::force-field-cache-miss
+            chem::force-field-cache-miss-atoms
+            chem::ensure-force-field-cache-for-molecule
             chem::call-with-force-field-cache-miss-handler
             chem::retry-force-field-cache-miss)
           :chem))
@@ -36,24 +38,53 @@
 
 (define-condition chem:force-field-cache-miss (error) ()
   (:documentation
-   "Base condition for a force field that cannot complete a grouped parameterization from its
+   "Base condition for a force field that cannot complete a parameterization from its
 cache.  Concrete force fields retain their own missing-key details below this neutral API."))
+
+(defgeneric chem:force-field-cache-miss-atoms (condition)
+  (:documentation "Return the actual atoms implicated in CONDITION, or NIL when unavailable."))
+
+(defmethod chem:force-field-cache-miss-atoms (condition)
+  (declare (ignore condition))
+  nil)
+
+(defgeneric chem:ensure-force-field-cache-for-molecule (force-field molecule)
+  (:documentation
+   "Ensure FORCE-FIELD can use its cache for MOLECULE without parameterizing MOLECULE.
+Cached force fields signal recoverable misses so callers can train a chemically real molecule.
+Force fields without a cache return T."))
+
+(defmethod chem:ensure-force-field-cache-for-molecule (force-field molecule)
+  (declare (ignore force-field molecule))
+  t)
 
 (defgeneric chem:retry-force-field-cache-miss (condition)
   (:documentation
    "Verify that CONDITION's concrete cache miss has been filled and retry its lookup.
 Implemented by the force field that signalled CONDITION."))
 
-(defun chem:call-with-force-field-cache-miss-handler (handler thunk)
-  "Call THUNK and invoke zero-argument HANDLER when a force-field cache miss is signalled.
+(defun chem:call-with-force-field-cache-miss-handler (handler thunk &key pass-condition)
+  "Call THUNK and invoke HANDLER when a force-field cache miss is signalled.
 
+HANDLER takes no arguments unless PASS-CONDITION is true, when it receives the condition.
 When HANDLER returns true, ask the concrete force field to verify its exact missing entry and
 retry.  Returning NIL declines recovery and lets the original condition propagate."
   (handler-bind
       ((chem:force-field-cache-miss
          (lambda (condition)
-           (when (funcall handler)
-             (chem:retry-force-field-cache-miss condition)))))
+           (format *error-output* "~&[FORCE-FIELD-CACHE-MISS] caught: ~a~%" condition)
+           (finish-output *error-output*)
+           (handler-case
+               (if (if pass-condition (funcall handler condition) (funcall handler))
+                   (chem:retry-force-field-cache-miss condition)
+                   (progn
+                     (format *error-output*
+                             "~&[FORCE-FIELD-CACHE-MISS] recovery declined: ~a~%" condition)
+                     (finish-output *error-output*)))
+             (error (failure)
+               (format *error-output* "~&[FORCE-FIELD-CACHE-MISS] recovery failed: ~a~%" failure)
+               (finish-output *error-output*)
+               (error failure))))))
     (funcall thunk)))
 
 (defgeneric chem:find-atom-type-position (nonbond-force-field type))
