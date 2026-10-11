@@ -1020,14 +1020,15 @@ CL_DEFUN core::T_mv chem__voelz_optimize_monomer_corrections_single_temperature(
 
 CL_DOCSTRING(R"doc(Perform a constant temperature Hamiltonian replica exchange monte carlo on the
 ENERGIES object using the LAMBDA-WINDOWS at TEMPERATURE taking LAMBDA-STEPS with each set of lambdas
-before attempting to swap windows.
+before attempting to swap windows. SEED optionally supplies a 32-bit random
+seed; NIL preserves the historical seed 12345.
 When COLLECT-EXCHANGE-STATISTICS is true, return a tenth value after KK: a
 five-element vector containing per-boundary sample counts, forward sums, forward
 sums of squares, reverse sums, and reverse sums of squares.  These moments cover
 the same post-warm-up exchange attempts reported to EXCHANGE-CALLBACK, but are
 accumulated without allocating Lisp numbers.  Otherwise preserve the legacy nine
 return values.)doc");
-CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (kk-start 0) (max-iterations 1000) (warm-up-iterations 100) (collect-exchange-statistics nil) step-callback (step-callback-period 1000) exchange-callback physical-state-callback (physical-state-callback-period 100) initial-state seen-states debug energy-trace (rep-weight 1.0));
+CL_LAMBDA(energies lambdaWindows &key (temperature 300.0) (lambda-steps 10) (kk-start 0) (max-iterations 1000) (warm-up-iterations 100) (collect-exchange-statistics nil) step-callback (step-callback-period 1000) exchange-callback physical-state-callback (physical-state-callback-period 100) initial-state seen-states debug energy-trace (rep-weight 1.0) seed);
 CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarlo(core::T_sp tenergies,
                                                                                   core::T_sp tlambdaWindows,
                                                                                   double temperature,
@@ -1045,7 +1046,8 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
                                                                                   core::T_sp tSeenStates,
                                                                                   core::T_sp debug,
                                                                                   core::T_sp tEnergyTrace,
-                                                                                  double repWeight) {
+                                                                                  double repWeight,
+                                                                                  core::T_sp seed) {
 
   size_t accepts = 0;
 
@@ -1065,6 +1067,9 @@ CL_DEFUN core::T_mv chem__constantTemperatureHamiltonianReplicaExchangeMonteCarl
   }
 
   Energies energies(tenergies);
+  if (seed.notnilp()) {
+    energies._Rng.seed(core::clasp_to_uint32_t(seed));
+  }
   energies._RepWeight = repWeight;
   core::SimpleVector_byte32_t_sp saveState;
   bool useStepCallback = stepCallback.notnilp();

@@ -40,6 +40,7 @@
 
 (defpackage #:leap.parser
   (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
+  (:shadow #:whitespace)
   (:export
    #:*function-names/alist*
    #:parse-sub-matter
