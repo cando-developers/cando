@@ -30,15 +30,11 @@
   #+debug-mover
   (let ((*print-pretty* nil))
     (format t "calculate-allowed-rotamers monomer-shape-index ~a~%" monomer-shape-index))
-  (let* ((foldamer (foldamer (oligomer-space oligomer-shape)))
-         (monomer-context (monomer-context sidechain-monomer-shape-info))
+  (let* ((monomer-context (monomer-context sidechain-monomer-shape-info))
          (monomer (monomer sidechain-monomer-shape-info))
          )
     (multiple-value-bind (shape-key rotamers monomer-contexts)
-        (shape-key-for-sidechain-monomer foldamer
-                                         monomer-context
-                                         oligomer-shape
-                                         monomer)
+        (catalogue-shape-key oligomer-shape monomer monomer-context)
       (let ((result (gethash shape-key shape-key-to-allowed-rotamers)))
         (unless result
           (let* ((*print-pretty* nil))
@@ -49,7 +45,10 @@
         #+debug-mover
         (let ((*print-pretty* nil))
           (format t "   calculate-allowed-rotamers  phi-deg ~d  psi-deg ~d    allowed-rotamers -> ~s~%" phi-deg psi-deg result))
-        result
+        (if (and (optimized-rotamers oligomer-shape)
+                 (gethash monomer (optimized-rotamers oligomer-shape)))
+            (concatenate 'vector result (vector +optimized-rotamer-index+))
+            result)
         ))))
 
 (defclass permissible-rotamer ()
@@ -176,7 +175,7 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
       permissible-rotamer)))
 
 (defun make-permissible-backbone-rotamers (oligomer-shape)
-  "All backbone rotamers are allowed since we enforced that every backbone rotamer has side-chain rotamers"
+  "Allow catalogue backbones, or keep an embedded optimized backbone fixed."
   (let ((rotamers-db (topology:rotamers-database oligomer-shape))
         (permissible-rotamer-vector (make-array 16 :adjustable t :fill-pointer 0)))
     (with-slots (topology:monomer-shape-vector
@@ -189,17 +188,21 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
             do (when (typep monomer-shape 'rotamer-shape)
                  (let* ((monomer-shape-info (aref topology:monomer-shape-info-vector index))
                         (monomer-shape-kind (topology:monomer-shape-kind monomer-shape-info))
-                        (monomer-context (topology:monomer-context monomer-shape-info))
-                        (orotamers (gethash monomer-context (topology:context-to-rotamers rotamers-db)))
-                        (rotamers (rotamer-vector orotamers)))
+                        (monomer-context (topology:monomer-context monomer-shape-info)))
                    (cond
                      ((backbone-shape-kind-p monomer-shape-kind)
                       ;; We have a backbone that doesn't influence any sidechain
                       ;; - so all backbone rotamers are accessible
                       (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))
-                        (loop :with backbone-rotamers = rotamers
-                              :for ii :below (length backbone-rotamers)
-                              :do (vector-push-extend ii allowed-rotamer-indexes))
+                        (if (and (optimized-rotamers oligomer-shape)
+                                 (gethash (monomer monomer-shape-info)
+                                          (optimized-rotamers oligomer-shape)))
+                            ;; Captured optimized shapes are fixed-backbone sampling seeds.
+                            (vector-push-extend +optimized-rotamer-index+ allowed-rotamer-indexes)
+                            (loop :with backbone-rotamers =
+                                  (rotamer-vector (lookup-rotamers-for-context rotamers-db monomer-context))
+                                  :for ii :below (length backbone-rotamers)
+                                  :do (vector-push-extend ii allowed-rotamer-indexes)))
                         (let ((permissible-rotamer (make-instance 'permissible-rotamer
                                                                   :allowed-rotamer-indexes allowed-rotamer-indexes
                                                                   :monomer-shape-locus index)))
@@ -706,5 +709,3 @@ Return that aggregate."
                     mols)
               (unless (increment-permissible-rotamers sidechain-stepper)
                 (return-from build-all-sidechains (chem:make-aggregate :agg mols)))))))
-
-

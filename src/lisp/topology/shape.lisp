@@ -94,17 +94,11 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
     (let ((*print-pretty* nil))
       (format t "apply-monomer-shape-to-atresidue-internals ~%   oligomer-shape ~s~%   rotamer-shape ~s~%  monomer-context ~s~%"
               oligomer-shape rotamer-shape monomer-context)))
-  (let* ((rotamers-database (rotamers-database oligomer-shape))
-         (context-rotamers (let ((rots (gethash monomer-context (monomer-context-to-context-rotamers rotamers-database))))
-                             (unless rots (error "Could not find monomer-context ~a in rotamers-database" monomer-context))
-                             rots))
+  (let* ((index (or (gethash rotamer-shape (monomer-shape-to-index oligomer-shape))
+                    (error "Monomer-shape ~s does not belong to ~s" rotamer-shape oligomer-shape)))
+         (monomer (monomer (aref (monomer-shape-info-vector oligomer-shape) index)))
          (rotamer-index (rotamer-index rotamer-shape))
-         (rotamers (let ((rots (rotamer-vector context-rotamers)))
-                     (unless (> (length rots) 0)
-                       (error "rots is empty for context ~a" monomer-context))
-                     (unless (< rotamer-index (length rots))
-                       (error "Check rots ~a because rotamer-index ~a is out of bounds" rots rotamer-index))
-                     (elt rots rotamer-index))))
+         (rotamers (lookup-rotamer oligomer-shape monomer rotamer-index)))
     (setf (rotamer-index atresidue) rotamer-index)
     (apply-fragment-internals-to-atresidue assembler assembler-internals rotamers rotamer-index atresidue)))
 
@@ -178,7 +172,19 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
    (monomer-shape-to-index :initarg :monomer-shape-to-index :reader monomer-shape-to-index)
    (monomer-shape-info-vector :initarg :monomer-shape-info-vector :reader monomer-shape-info-vector)
    (monomer-shape-map :initarg :monomer-shape-map :reader monomer-shape-map)
+   (optimized-rotamers :initarg :optimized-rotamers :initform nil
+                      :reader optimized-rotamers :type (or null hash-table)
+                      :documentation "Per-monomer optimized ROTAMER objects; catalogue data is shared.")
+   (catalogue-shape-keys :initarg :catalogue-shape-keys :initform nil
+                         :reader catalogue-shape-keys :type (or null hash-table)
+                         :documentation "Inherited sidechain lookup keys for optimized backbones.")
    ))
+
+(defmethod cando.serialize:skip-slot-names ((shape oligomer-shape))
+  ;; Ordinary shapes keep their existing serialization format.
+  (append (call-next-method)
+          (unless (optimized-rotamers shape) '(optimized-rotamers))
+          (unless (catalogue-shape-keys shape) '(catalogue-shape-keys))))
 
 (defmacro do-oligomer-shape ((monomer-shape monomer monomer-context monomer-shape-kind) oligomer-shape &body body)
   "Walk the components of the OLIGOMER-SHAPE.  Successively bind MONOMER-SHAPE, MONOMER, MONOMER-CONTEXT, MONOMER-SHAPE-KIND
@@ -231,7 +237,7 @@ to the components and evaluate the BODY in that scope."
           for new-monomer-shape = (copy-monomer-shape monomer-shape)
           do (setf (aref monomer-shape-vector index) new-monomer-shape
                    (gethash monomer monomer-shape-map) new-monomer-shape
-                   (gethash monomer-shape monomer-shape-to-index) index))
+                   (gethash new-monomer-shape monomer-shape-to-index) index))
     (make-instance 'oligomer-shape
                    :name (name oligomer-shape)
                    :rotamers-state (rotamers-state oligomer-shape)
@@ -242,7 +248,13 @@ to the components and evaluate the BODY in that scope."
                    :in-monomers  (in-monomers oligomer-shape)
                    :out-monomers (out-monomers oligomer-shape)
                    :monomer-shape-vector monomer-shape-vector
-                   :monomer-shape-map monomer-shape-map)))
+                   :monomer-shape-map monomer-shape-map
+                   :optimized-rotamers
+                   (when (optimized-rotamers oligomer-shape)
+                     (alexandria:copy-hash-table (optimized-rotamers oligomer-shape)))
+                   :catalogue-shape-keys
+                   (when (catalogue-shape-keys oligomer-shape)
+                     (alexandria:copy-hash-table (catalogue-shape-keys oligomer-shape))))))
 
 (defmethod oligomer-space ((oligomer-shape oligomer-shape))
   "Return the oligomer-space for the oligomer of the OLIGOMER-SHAPE"
@@ -252,6 +264,126 @@ to the components and evaluate the BODY in that scope."
   "Derived, not stored: look up the rotamers-database through the
 oligomer-space's foldamer instead of caching it in a slot."
   (foldamer-rotamers-database (foldamer (oligomer-space oligomer-shape))))
+
+(defconstant +optimized-rotamer-index+ #xffffffff
+  "The final unsigned 32-bit rotamer index selects embedded optimized geometry.
+Ordinary indexes address the catalogue directly; blueprint slots use their own numbering.")
+
+(defun monomer-shape-info-for-monomer (shape monomer)
+  (let* ((ms (or (gethash monomer (monomer-shape-map shape))
+                 (error "Monomer ~s does not belong to ~s" monomer shape)))
+         (index (or (gethash ms (monomer-shape-to-index shape))
+                    (error "Monomer-shape ~s has no index in ~s" ms shape))))
+    (aref (monomer-shape-info-vector shape) index)))
+
+(defun lookup-rotamer (oligomer-shape monomer &optional
+                       (rotamer-index
+                         (rotamer-index
+                          (or (gethash monomer (monomer-shape-map oligomer-shape))
+                              (error "Monomer ~s does not belong to ~s"
+                                     monomer oligomer-shape)))))
+  "Return one rotamer, defaulting to the monomer-shape's selected index.
+Catalogue indexes are resolved through the monomer's context. The reserved
++OPTIMIZED-ROTAMER-INDEX+ resolves through the shape's private geometry map.
+Missing geometry and invalid indexes signal errors; no catalogue is modified."
+  (check-type rotamer-index (unsigned-byte 32))
+  (let ((info (monomer-shape-info-for-monomer oligomer-shape monomer)))
+    (if (= rotamer-index +optimized-rotamer-index+)
+        (or (and (optimized-rotamers oligomer-shape)
+                 (gethash monomer (optimized-rotamers oligomer-shape)))
+            (error "No optimized rotamer for monomer ~s in ~s" monomer oligomer-shape))
+        (let* ((container (lookup-rotamers-for-context
+                           (rotamers-database oligomer-shape) (monomer-context info)))
+               (vector (rotamer-vector container)))
+          (unless (< rotamer-index (length vector))
+            (error "Rotamer index ~d is outside the ~d catalogue entries for ~s"
+                   rotamer-index (length vector) (monomer-context info)))
+          (aref vector rotamer-index)))))
+
+(defun catalogue-shape-key (oligomer-shape monomer &optional
+                            (context (monomer-context
+                                      (monomer-shape-info-for-monomer oligomer-shape monomer))))
+  "Return the inherited sidechain lookup key, or derive it for an ordinary shape.
+NIL is a valid saved key, so the hash table's presence flag is authoritative."
+  (when (catalogue-shape-keys oligomer-shape)
+    (multiple-value-bind (key present-p)
+        (gethash monomer (catalogue-shape-keys oligomer-shape))
+      (when present-p (return-from catalogue-shape-key key))))
+  (shape-key-for-sidechain-monomer
+   (foldamer (oligomer-space oligomer-shape)) context oligomer-shape monomer))
+
+(defmethod adjust-internals :after ((assembler assembler) internals
+                                    (shape oligomer-shape))
+  ;; The geometry optimizer's internals already contain the adjustments.
+  ;; Restore its selected rotamers after the catalogue adjustment pass.
+  (when (optimized-rotamers shape)
+    (loop for ms across (monomer-shape-vector shape)
+          for info across (monomer-shape-info-vector shape)
+          when (and (typep ms 'rotamer-shape)
+                    (in-monomer-subset (monomer-subset assembler) (monomer info))
+                    (= (rotamer-index ms) +optimized-rotamer-index+))
+            do (apply-fragment-internals-to-atresidue
+                assembler internals (lookup-rotamer shape (monomer info))
+                +optimized-rotamer-index+
+                (assembler-atresidue assembler (monomer info))))))
+
+(defun oligomer-shape-from-coordinates
+    (source assembler coordinates &key internals catalogue-shape-keys)
+  "Capture complete optimized rotamers in a private copy of SOURCE.
+COORDINATES is the final Cartesian geometry of ASSEMBLER. An optional INTERNALS
+vector must already have been extracted from those coordinates. Catalogue
+alternatives stay in the shared libraries. Fixed residue-shapes are preserved.
+CATALOGUE-SHAPE-KEYS optionally supplies the design persona's inherited keys."
+  (let* ((provided-internals-p (not (null internals)))
+        (internals (or internals (make-internals-for-assembler assembler)))
+        (copy (copy-oligomer-shape source))
+        (rotamers (make-hash-table :test #'eq))
+        (keys (make-hash-table :test #'eq)))
+    (unless provided-internals-p
+      (update-internals-from-externals assembler internals coordinates))
+    ;; Capture classification before selecting the reserved geometry index.
+    (loop for ms across (monomer-shape-vector source)
+          for info across (monomer-shape-info-vector source)
+          for monomer = (monomer info)
+          when (and (typep ms 'rotamer-shape)
+                    (eq (monomer-shape-kind info) :sidechain))
+            do (multiple-value-bind (key supplied-p)
+                   (when catalogue-shape-keys (gethash monomer catalogue-shape-keys))
+                 (setf (gethash monomer keys)
+                       (if supplied-p key (catalogue-shape-key source monomer)))))
+    (loop for ms across (monomer-shape-vector copy)
+          for info across (monomer-shape-info-vector copy)
+          for monomer = (monomer info)
+          when (typep ms 'rotamer-shape)
+            do (let ((atresidue (assembler-atresidue assembler monomer)))
+                 (multiple-value-bind (values mask heavy-mask)
+                     (extract-internals assembler internals atresidue)
+                   (declare (ignore heavy-mask))
+                   (loop for joint across (joints atresidue)
+                         for i from 0
+                         when (typep joint 'kin:bonded-joint)
+                           do (unless (= 1 (aref mask i))
+                                (error "Cannot capture undefined bonded-joint internals at ~s/~s"
+                                       monomer (kin:joint/name joint)))
+                              (dotimes (axis 3)
+                                (let ((value (aref values (+ (* i 3) axis))))
+                                  (unless (and (realp value)
+                                               (<= (- most-positive-double-float) value
+                                                   most-positive-double-float))
+                                    (error "Cannot capture nonfinite internals at ~s/~s"
+                                           monomer (kin:joint/name joint)))))
+                         ;; Jump/XYZ entries are ignored by rotamer application.
+                         else do (dotimes (axis 3)
+                                   (setf (aref values (+ (* i 3) axis)) 0.0d0)))
+                   (setf (gethash monomer rotamers)
+                         (make-instance 'rotamer :internals-values values)
+                         (rotamer-index ms) +optimized-rotamer-index+))))
+    (setf (slot-value copy 'optimized-rotamers)
+          (when (plusp (hash-table-count rotamers)) rotamers)
+          (slot-value copy 'catalogue-shape-keys)
+          (when (plusp (hash-table-count keys)) keys))
+    (set-rotamers-state copy :complete-sidechain-and-backbone-rotamers)
+    copy))
 
 
 (defmethod print-object ((obj oligomer-shape) stream)

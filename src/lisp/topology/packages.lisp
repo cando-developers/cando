@@ -301,6 +301,12 @@
    #:oligomer-containing-monomer
    #:free-energy
    #:lookup-rotamers-for-context
+   #:lookup-rotamer
+   #:+optimized-rotamer-index+
+   #:optimized-rotamers
+   #:catalogue-shape-keys
+   #:catalogue-shape-key
+   #:oligomer-shape-from-coordinates
    #:monomer-shape-kind
    #:only-other-out-coupling-plug-name
    #:sorted-build-order
