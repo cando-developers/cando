@@ -7,6 +7,7 @@
   :licence "LGPL-3.0"
   :depends-on (:kinematics-extras :chem-extras :cando-serialize :cl-conspack :netcdf :named-readtables)
   :serial t
+  :in-order-to ((test-op (test-op "topology/tests")))
   :components ((:file "packages")
                (:file "readtable")
                (:file "serial")
@@ -19,6 +20,7 @@
                (:file "fold")
                (:file "assembler")
                (:file "internals")
+               (:file "derive-topology-group")
                (:file "design")
                (:file "oligomer-space-dag")
                (:file "oligomer-to-sexp")
@@ -33,6 +35,15 @@
                ))
 
 
+
+(defsystem "topology/tests"
+  :description "Regression tests for topology derivation"
+  :depends-on ("topology")
+  :serial t
+  :components ((:file "tests/derive-topology-group"))
+  :perform (test-op (operation component)
+             (declare (ignore operation component))
+             (uiop:symbol-call :topology-derivation-tests :run-tests)))
 
 (defsystem "topology/documentation"
   :description "Documentation for topology system"

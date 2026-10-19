@@ -122,4 +122,5 @@
            #~"conformationExplorer.cc"
            #~"conformationCollection.cc"
            #~"monteCarlo.cc"
+           #~"deadEndElimination.cc"
            #~"octree.cc")

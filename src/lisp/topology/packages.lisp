@@ -54,6 +54,7 @@
    #:plug-named
    #:has-in-coupling-p
    #:define-topology
+   #:derive-topology-group
    #:constitution
    #:constitution-atoms
    #:stereoisomer-name

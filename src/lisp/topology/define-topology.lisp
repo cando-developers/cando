@@ -652,6 +652,9 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         (t (when (and residue-net-charge (not (= residue-net-charge total-atom-charge)))
              (error ":residue-net-charge was specified as ~d and it must match total-atom-charge ~d" residue-net-charge total-atom-charge)))))))
 
+(defvar *register-defined-topologies* t
+  "Bind to NIL to build definitions without publishing topologies or groups.")
+
 (defun topologies-from-graph (graph group-names restraints constitution plugs stereoisomers
                               xyz-joints rotamer-limits residue-properties)
   "Create multiple topology objects and one constitution object from the graph and the arguments"
@@ -667,16 +670,18 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                       :stereoisomer stereoisomer
                                       :restraints (parse-restraints restraints)
                                       :rotamer-limits (parse-rotamer-limits rotamer-limits))
-        do (loop for group-name in (list* name group-names)
-                 unless (symbolp group-name)
-                   do (error "name ~s must be a symbol" group-name)
-                 do (pushnew name (gethash group-name *topology-groups* nil)))
+        do (when *register-defined-topologies*
+             (loop for group-name in (list* name group-names)
+                   unless (symbolp group-name)
+                     do (error "name ~s must be a symbol" group-name)
+                   do (pushnew name (gethash group-name *topology-groups* nil))))
         do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
         do (if residue-properties
                (setf (topology:property-list topology)
                      (append (topology:property-list topology)
                              residue-properties)))
-        do (chem:register-topology topology name)
+        do (when *register-defined-topologies*
+             (chem:register-topology topology name))
         collect topology))
 
 (defun validate-properties (properties name)
@@ -721,7 +726,16 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
   "code represents the short code used for synthesis"
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
-  (let ((graph (interpret (if (consp name)
+  (let ((definition
+          (copy-tree
+           (list :name name :sexp sexp :%no-dihedrals nil
+                 :options
+                 (list :restraints restraints :types types :xyz-joints xyz-joints
+                       :residue-properties residue-properties :plug-names plug-names
+                       :dihedrals dihedrals :cluster-dihedrals cluster-dihedrals
+                       :rings rings :rotamer-limits rotamer-limits
+                       :code (or code (if (consp name) (first name) name))))))
+        (graph (interpret (if (consp name)
                               (first name)
                               name)
                           sexp))
@@ -779,6 +793,12 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
             (error ":code must be a symbol, got ~s" code-value))
           (setf (residue-properties constitution)
                 (list* :code code-value (residue-properties constitution))))
+        ;; Keep the source data, shared by this definition's stereoisomers.
+        ;; Derivation rebuilds from it rather than mutating compiled templates.
+        (loop for topology in tops
+              for isomer-index from 0
+              do (setf (getf (property-list topology) :%topology-definition) definition
+                       (getf (property-list topology) :%definition-isomer-index) isomer-index))
         tops))))
 
 

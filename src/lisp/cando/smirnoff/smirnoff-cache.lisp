@@ -546,10 +546,11 @@ ATOMS contains the missing atom or both atoms of the missing bond; ATOM is its f
   "Report every actual fallback, including after restoring a warmed snapshot."
   (multiple-value-bind (kind key atom) (uncovered-cache-reason molecule cache)
     (when kind
-      (format *error-output*
-              "~&[SMIRNOFF-CACHE-MISS] phase=~s molecule=~a reason=~s key=~s atom=~a; using real SMIRNOFF~%"
-              phase (chem:get-name molecule) kind key (and atom (chem:get-name atom)))
-      (finish-output *error-output*))))
+      (let ((*print-pretty* nil))
+        (format *error-output*
+                "~&[SMIRNOFF-CACHE-MISS] phase=~s molecule=~a reason=~s key=~s atom=~a; using real SMIRNOFF~%"
+                phase (chem:get-name molecule) kind key (and atom (chem:get-name atom)))
+        (finish-output *error-output*)))))
 
   ;;; --- atom typing on a HIT: memoized vdw $types, no SMIRKS re-run ----------
 (defmethod chem:assign-force-field-types ((ff cached-smirnoff-force-field) molecule atom-types)
