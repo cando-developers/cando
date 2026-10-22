@@ -658,6 +658,7 @@
    #:loci
    #:locus
    #:foldamer-lk-solvation-atom-type
+   #:validate-rotamer-database-use
    ))
 
 (defpackage #:topology.dag

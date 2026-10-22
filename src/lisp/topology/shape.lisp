@@ -44,14 +44,30 @@
       (make-instance 'rotamer-shape :rotamer-index (rotamer-index monomer-shape))
       (make-instance 'rotamer-shape)))
 
+(defgeneric validate-rotamer-database-use (database ignore-sidechains))
+
+(defmethod validate-rotamer-database-use
+    ((database rotamers-database) ignore-sidechains)
+  ;; A complete database supports backbone-only and full sampling.
+  (declare (ignore ignore-sidechains))
+  t)
+
+(defmethod validate-rotamer-database-use
+    ((database conformers-database) ignore-sidechains)
+  (unless ignore-sidechains
+    (error "A conformers-database requires backbone-only shape construction."))
+  t)
+
 (defun make-rotamer-shape (monomer oligomer &key (ignore-sidechains *ignore-sidechains*))
   "Convenience function to make a rotamer-shape for a MONOMER in an OLIGOMER.
 If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy its ROTAMER-INDEX."
   (let* ((foldamer (foldamer (oligomer-space oligomer)))
          (monomer-context (let ((mc (foldamer-monomer-context monomer oligomer foldamer)))
                             mc))
-         (rotamers-database (foldamer-rotamers-database foldamer))
-         (context-rotamers (topology:lookup-rotamers-for-context rotamers-database monomer-context :ignore-sidechains ignore-sidechains :errorp nil :error-value :no-context-rotamers)))
+         (rotamers-database (let ((db (foldamer-rotamers-database foldamer)))
+                              (validate-rotamer-database-use db ignore-sidechains)
+                              db))
+         (context-rotamers (topology:lookup-rotamers-for-context rotamers-database monomer-context :errorp nil :error-value :no-context-rotamers)))
     (if (eq context-rotamers :no-context-rotamers)
         :no-rotamer-shape
         (make-instance 'rotamer-shape))))
@@ -637,7 +653,7 @@ CATALOGUE-SHAPE-KEYS optionally supplies the design persona's inherited keys."
                                   extra-arguments
                                   position-fn
                                   name
-                                  ignore-sidechains
+                                  (ignore-sidechains *ignore-sidechains*)
                                   uninitialized)
   "Make an oligomer-shape for the OLIGOMER.  Use the MONOMER-TO-MONOMER-SHAPE-MAP to lookup monomer-shapes for each monomer.
 Use the CALLBACK-BACKBONE-ROTAMER-INDEXES and CALLBACK-SIDECHAIN-ROTAMER-INDEXES to set rotamer-indexes of any rotamer-shapes."
