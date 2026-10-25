@@ -498,13 +498,18 @@ changing the SHAPE-KEY-CACHE."
     (format t "There were ~d empty indexes and ~d filled ones~%" empty-indexes filled-indexes)))
 
 
-(defgeneric apply-fragment-internals-to-atresidue (assembler assembler-internals fragment-internals rotamer-index atresidue))
+(defgeneric apply-rotamer-to-atresidue-internals
+    (assembler rotamer rotamer-index atresidue internals)
+  (:documentation
+   "Write ROTAMER's joint values into INTERNALS for ATRESIDUE, and record
+ROTAMER-INDEX on ATRESIDUE. ASSEMBLER supplies the joint layout."))
 
-(defmethod apply-fragment-internals-to-atresidue (assembler assembler-internals (rotamer rotamer) rotamer-index atresidue)
+(defmethod apply-rotamer-to-atresidue-internals
+    (assembler (rotamer rotamer) rotamer-index atresidue internals)
   (setf (rotamer-index atresidue) rotamer-index)
   (loop for joint across (topology:joints atresidue)
         for index3 from 0 by 3
-        do (fill-joint-internals-from-vector assembler assembler-internals joint (internals-values rotamer) index3)))
+        do (fill-joint-internals-from-vector assembler internals joint (internals-values rotamer) index3)))
 
 (defmethod monomer-context-to-context-rotamers ((obj rotamers-database))
   (context-to-rotamers obj))
@@ -1004,12 +1009,6 @@ INDEX counts by 1 and _not_ by 3."
             (aref (internals-values rotamer) (+ 1 index3))
             (aref (internals-values rotamer) (+ 2 index3)))))
 
-
-(defmethod apply-fragment-internals-to-atresidue (assembler assembler-internals (fragment-internals fragment-internals) rotamer-index atresidue)
-  (setf (rotamer-index atresidue) rotamer-index)
-  (loop for joint across (joints atresidue)
-        for index3 from 0 by 3
-        do (fill-joint-internals-from-vector assembler assembler-internals joint (internals-values fragment-internals) index3)))
 
 (defun analyze-atresidue (assembler assembler-internals atresidue)
   (let ((internals-count 0)

@@ -116,7 +116,7 @@ If ORIGINAL-ROTAMER-SHAPE is defined then it must be a ROTAMER-SHAPE and we copy
          (rotamer-index (rotamer-index rotamer-shape))
          (rotamers (lookup-rotamer oligomer-shape monomer rotamer-index)))
     (setf (rotamer-index atresidue) rotamer-index)
-    (apply-fragment-internals-to-atresidue assembler assembler-internals rotamers rotamer-index atresidue)))
+    (apply-rotamer-to-atresidue-internals assembler rotamers rotamer-index atresidue assembler-internals)))
 
 (defmethod apply-monomer-shape-to-atresidue-internals (assembler assembler-internals oligomer-shape (no-rotamer-shape symbol) monomer-context atresidue &key verbose)
   ;;(format t "Entered apply-monomer-shape-to-atresidue-internals with the no-rotamer-shape symbol~%")
@@ -308,8 +308,7 @@ Missing geometry and invalid indexes signal errors; no catalogue is modified."
         (or (and (optimized-rotamers oligomer-shape)
                  (gethash monomer (optimized-rotamers oligomer-shape)))
             (error "No optimized rotamer for monomer ~s in ~s" monomer oligomer-shape))
-        (let* ((container (lookup-rotamers-for-context
-                           (rotamers-database oligomer-shape) (monomer-context info)))
+        (let* ((container (lookup-rotamers-for-context (rotamers-database oligomer-shape) (monomer-context info)))
                (vector (rotamer-vector container)))
           (unless (< rotamer-index (length vector))
             (error "Rotamer index ~d is outside the ~d catalogue entries for ~s"
@@ -338,10 +337,10 @@ NIL is a valid saved key, so the hash table's presence flag is authoritative."
           when (and (typep ms 'rotamer-shape)
                     (in-monomer-subset (monomer-subset assembler) (monomer info))
                     (= (rotamer-index ms) +optimized-rotamer-index+))
-            do (apply-fragment-internals-to-atresidue
-                assembler internals (lookup-rotamer shape (monomer info))
+            do (apply-rotamer-to-atresidue-internals
+                assembler (lookup-rotamer shape (monomer info))
                 +optimized-rotamer-index+
-                (assembler-atresidue assembler (monomer info))))))
+                (assembler-atresidue assembler (monomer info)) internals))))
 
 (defun oligomer-shape-from-coordinates
     (source assembler coordinates &key internals catalogue-shape-keys)

@@ -314,7 +314,7 @@
    #:adjustment
    #:external-adjustment
    #:internal-adjustment
-   #:apply-fragment-internals-to-atresidue
+   #:apply-rotamer-to-atresidue-internals
    #:extract-bond-angle-rad-dihedral-rad
    #:fill-joint-internals
    #:make-coordinates-for-assembler
@@ -572,12 +572,20 @@
    #:rings
    #:dihedral-joint
    #:dihedral-driver
+   #:binned-shape-key-cache
    #:binned-shape-key
+   #:make-binned-shape-key
+   #:make-binned-shape-key-cache
+   #:binned-shape-key-entries
+   #:binned-shape-key-components
+   #:binned-shape-key-names
+   #:binned-shape-key-component
    #:identify-and-order-rings
    #:calculate-rotatable-dihedrals
    #:identify-build-joints
    #:rings-and-exocyclic-atoms
    #:build-rest-of-manipulator
+   #:initialize-manipulator-drivers
    #:manipulator-build-internals-from-cpinternals
    #:aggregate-from-cpinternals
    #:externals-from-cpinternals

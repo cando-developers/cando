@@ -1213,11 +1213,11 @@ OLIGOMER-SHAPE - An oligomer-shape (or permissible-rotamers - I think this is wr
 #|
 ;;;Idea to make monomer-shape subclasses control how internal coordinates get generated.
 
-(defmethod apply-monomer-shape-to-atresidue ((monomer-shape monomer-shape) atresidue context-rotamers)
+(defmethod apply-monomer-shape-to-atresidue ((monomer-shape monomer-shape) atresidue context-rotamers assembler internals)
   (let* ((fragments (rotamers context-rotamers))
          (rotamer-index (rotamer-index monomer-shape))
          (fragment-internals (elt fragments rotamer-index)))
-    (apply-fragment-internals-to-atresidue fragment-internals atresidue)))
+    (apply-rotamer-to-atresidue-internals assembler fragment-internals rotamer-index atresidue internals)))
 |#
 
 

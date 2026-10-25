@@ -258,7 +258,8 @@ while nesting several WITH-CPRING5 forms."
   (kin:joint/position-index-x3 (first (ring-joints (ring2 (rings fused-ring-driver))))))
 
 (defclass dihedral-driver ()
-  ((monomer :initarg :monomer :reader monomer)
+  ((name :initarg :name :initform nil :reader name)
+   (monomer :initarg :monomer :reader monomer)
    (internal-range :initarg :internal-range :reader internal-range)
    (dihedral-joint :initarg :dihedral-joint :reader dihedral-joint)))
 
@@ -523,11 +524,24 @@ while nesting several WITH-CPRING5 forms."
         (t (push dihedral-driver (other-drivers driver))))
       dihedral-defun)))
 
+(defun dihedral-component-name (manipulator monomer joint)
+  "Prefer the constitution's dihedral label, falling back to the atom name."
+  (let* ((atom-name (kin:joint/name joint))
+         (oligomer (oligomer-containing-monomer (assembler manipulator) monomer t))
+         (topology (chem:find-topology (oligomer-monomer-name oligomer monomer)))
+         (dihedrals (getf (residue-properties (constitution topology)) :dihedrals))
+         (info (find-if (lambda (info)
+                          (and (typep info 'dihedral-info-atom)
+                               (eq (atom-name info) atom-name)))
+                        dihedrals)))
+    (if info (name info) atom-name)))
+
 (defun make-dihedral-driver (manipulator dihedral-joint joints-to-monomers)
   (let* ((internal-range (new-range manipulator 3))
          (monomer (gethash dihedral-joint joints-to-monomers)))
     (values (make-instance 'dihedral-driver
                            :monomer monomer
+                           :name (dihedral-component-name manipulator monomer dihedral-joint)
                            :internal-range internal-range
                            :dihedral-joint dihedral-joint)
             monomer)))
@@ -559,6 +573,14 @@ while nesting several WITH-CPRING5 forms."
           do (setf (gethash rotatable-dihedral build-joints) t))
     build-joints
     ))
+
+(defun static-dihedral-joint-p (joint)
+  "A static dihedral needs a non-complex bonded joint and three bound ancestors."
+  (and (typep joint 'kin:bonded-joint)
+       (not (typep joint 'kin:complex-bonded-joint))
+       (loop for ancestor = joint then (kin:joint/parent ancestor)
+             repeat 3
+             always (kin:joint/parent-bound-p ancestor))))
 
 (defun calculate-rotatable-dihedrals (assembler)
   (let ((rotatable-dihedrals nil)
@@ -611,80 +633,55 @@ while nesting several WITH-CPRING5 forms."
 (defgeneric make-manipulator (assembler))
 
 
+(defun initialize-manipulator-drivers (manipulator oligomer &key focus-monomer)
+  "Populate a fresh MANIPULATOR with drivers for OLIGOMER and return it.
+The caller chooses the manipulator class and supplies its assembler. Reuse
+ring discovery bindings when available, and classify static joints here so
+all callers apply the same joint-type and ancestry requirements."
+  (let* ((assembler (assembler manipulator))
+         (atmolecule (aref (atmolecules (ataggregate assembler)) 0))
+         (joints-to-monomers (make-hash-table)))
+    (loop for monomer across (monomers (oligomer-space oligomer))
+          for monomer-pos = (gethash monomer (monomer-positions assembler))
+          for atmol = (aref (atmolecules (ataggregate assembler))
+                           (molecule-index monomer-pos))
+          for atres = (aref (atresidues atmol) (residue-index monomer-pos))
+          do (loop for joint across (joints atres)
+                   do (setf (gethash joint joints-to-monomers) monomer)))
+    (with-identified-and-ordered-rings (rings aromatic-rings atom-joint-map assembler)
+      (declare (ignore aromatic-rings))
+      (let* ((rotatable-dihedrals (calculate-rotatable-dihedrals assembler))
+             (rings-and-exo-atoms (rings-and-exocyclic-atoms rings))
+             (build-joints (identify-build-joints rings-and-exo-atoms
+                                                 rotatable-dihedrals atom-joint-map))
+             (static-dihedrals nil))
+        (walk-atmolecule-joints
+         atmolecule
+         (lambda (joint pos)
+           (declare (ignore pos))
+           (when (and (static-dihedral-joint-p joint)
+                      (null (gethash joint build-joints)))
+             (push joint static-dihedrals))))
+        (build-rest-of-manipulator manipulator rings-and-exo-atoms
+                                   rotatable-dihedrals static-dihedrals
+                                   joints-to-monomers atom-joint-map
+                                   :focus-monomer focus-monomer)))))
+
 (defmethod make-manipulator ((assembler topology:assembler))
-  (let* ((oligomer-shape (first (topology:oligomer-shapes assembler)))
-         (oligomer (topology:oligomer oligomer-shape))
-         (atmolecule (aref (topology:atmolecules (topology:ataggregate assembler)) 0))
-         (atom-joint-map (let ((ht (make-hash-table)))
-                           (topology:do-joint-atom (joint atm assembler)
-                             (setf (gethash joint ht) atm)
-                             (setf (gethash atm ht) joint))
-                           ht))
-         (joints-to-monomers (let ((ht (make-hash-table)))
-                               (loop for monomer across (topology:monomers (topology:oligomer-space oligomer))
-                                     for monomer-pos = (gethash monomer (topology:monomer-positions assembler))
-                                     for atmol = (aref (topology:atmolecules (topology:ataggregate assembler)) (topology:molecule-index monomer-pos))
-                                     for atres = (aref (topology:atresidues atmol) (topology:residue-index monomer-pos))
-                                     do (loop for joint across (topology:joints atres)
-                                              do (setf (gethash joint ht) monomer)))
-                               ht)))
-    (multiple-value-bind (rings)
-        (identify-and-order-rings assembler atom-joint-map)
-      ;; Identify rotatable dihedrals
-      (let ((rotatable-dihedrals (calculate-rotatable-dihedrals assembler)))
-        ;; Now build ring-drivers
-        (let* ((rings-and-exo-atoms (rings-and-exocyclic-atoms rings))
-               (build-joints (identify-build-joints rings-and-exo-atoms rotatable-dihedrals atom-joint-map))
-               (static-dihedrals (let (static-dihedral-list)
-                                   (topology:walk-atmolecule-joints atmolecule
-                                                                    (lambda (joint pos)
-                                                                      (declare (ignore pos))
-                                                                      (when (null (gethash joint build-joints))
-                                                                        (push joint static-dihedral-list))))
-                                   static-dihedral-list))
-               (manipulator (let ((man (make-instance 'manipulator :assembler assembler)))
-                              (build-rest-of-manipulator man rings-and-exo-atoms rotatable-dihedrals static-dihedrals joints-to-monomers atom-joint-map)
-                              man)))
-          manipulator)))))
+  (let* ((oligomer-shape (first (oligomer-shapes assembler)))
+         (oligomer (oligomer oligomer-shape)))
+    (initialize-manipulator-drivers
+     (make-instance 'manipulator :assembler assembler) oligomer)))
 
 (defmethod make-manipulator ((assembler topology:training-assembler))
-  (let* ((oligomer (first (topology:oligomers assembler)))
-         (focus-monomer (topology:focus-monomer assembler))
-         (atmolecule (aref (topology:atmolecules (topology:ataggregate assembler)) 0))
-         (atom-joint-map (let ((ht (make-hash-table)))
-                           (topology:do-joint-atom (joint atm assembler)
-                             (setf (gethash joint ht) atm)
-                             (setf (gethash atm ht) joint))
-                           ht))
-         (joints-to-monomers (let ((ht (make-hash-table)))
-                               (loop for monomer across (topology:monomers (topology:oligomer-space oligomer))
-                                     for monomer-pos = (gethash monomer (topology:monomer-positions assembler))
-                                     for atmol = (aref (topology:atmolecules (topology:ataggregate assembler)) (topology:molecule-index monomer-pos))
-                                     for atres = (aref (topology:atresidues atmol) (topology:residue-index monomer-pos))
-                                     do (loop for joint across (topology:joints atres)
-                                              do (setf (gethash joint ht) monomer)))
-                               ht)))
-    (multiple-value-bind (rings)
-        (identify-and-order-rings assembler atom-joint-map)
-      ;; Identify rotatable dihedrals
-      (let ((rotatable-dihedrals (calculate-rotatable-dihedrals assembler)))
-        ;; Now build ring-drivers
-        (let* ((rings-and-exo-atoms (rings-and-exocyclic-atoms rings))
-               (build-joints (identify-build-joints rings-and-exo-atoms rotatable-dihedrals atom-joint-map))
-               (static-dihedrals (let (static-dihedral-list)
-                                   (topology:walk-atmolecule-joints atmolecule
-                                                                    (lambda (joint pos)
-                                                                      (declare (ignore pos))
-                                                                      (when (null (gethash joint build-joints))
-                                                                        (push joint static-dihedral-list))))
-                                   static-dihedral-list))
-               (manipulator (let ((man (make-instance 'focused-manipulator
-                                                      :focus-monomer focus-monomer
-                                                      :assembler assembler)))
-                              (build-rest-of-manipulator man rings-and-exo-atoms rotatable-dihedrals static-dihedrals joints-to-monomers atom-joint-map :focus-monomer focus-monomer)
-                              man))
-               )
-          (values manipulator oligomer focus-monomer))))))
+  (let* ((oligomer (first (oligomers assembler)))
+         (focus-monomer (focus-monomer assembler))
+         (manipulator (make-instance 'focused-manipulator
+                                     :focus-monomer focus-monomer
+                                     :assembler assembler)))
+    (initialize-manipulator-drivers manipulator oligomer
+                                    :focus-monomer focus-monomer)
+    (values manipulator oligomer focus-monomer)))
 
 (defun get-indexes3 (ring-joints)
   (let ((indexes3 (loop with indexes3 = (make-array (length ring-joints) :element-type 'ext:byte32)
@@ -777,9 +774,15 @@ while nesting several WITH-CPRING5 forms."
 (defmethod driver-extract-cpinternals-from-coordinates ((driver dihedral-driver) cpinternals externals)
   (let* ((joint (dihedral-joint driver))
          (jd joint)
-         (jc (kin:joint/parent jd))
-         (jb (kin:joint/parent jc))
-         (ja (kin:joint/parent jb))
+         (jc (progn
+               (assert (kin:joint/parent-bound-p jd))
+               (kin:joint/parent jd)))
+         (jb (progn
+               (assert (kin:joint/parent-bound-p jc))
+               (kin:joint/parent jc)))
+         (ja (progn
+               (assert (kin:joint/parent-bound-p jb))
+               (kin:joint/parent jb)))
          (ivd (kin:joint/position-index-x3 jd))
          (ivc (kin:joint/position-index-x3 jc))
          (ivb (kin:joint/position-index-x3 jb))
@@ -944,14 +947,88 @@ while nesting several WITH-CPRING5 forms."
   (topology:deg-to-rad (* int bin-size)))
 
 
-(defgeneric binned-shape-key (driver cpinternals))
+(defclass binned-shape-key-cache (cando.serialize:serializable)
+  ((entries :initarg :entries :initform nil :reader binned-shape-key-entries))
+  (:documentation "An alist mapping symbolic names to nonempty integer-bin lists.
+A dihedral has one bin; five- and six-membered rings have two and three bins.
+Treat the entries as read-only. Ring labels count rings; dihedrals retain their names."))
+
+(defclass binned-shape-key (binned-shape-key-cache) ()
+  (:documentation "A selected shape key, distinct from the complete driver cache.
+Shares the cache's labeled components, validation, and lookup protocol."))
+
+(defun make-binned-shape-key (entries)
+  "Construct a selected key from an alist of names and bin lists."
+  (make-instance 'binned-shape-key :entries entries))
+
+(defun make-binned-shape-key-cache (entries)
+  "Construct a cache from an alist of names and bin lists."
+  (make-instance 'binned-shape-key-cache :entries entries))
+
+(defun binned-shape-key-proper-list-p (value)
+  (and (listp value)
+       (handler-case (integerp (list-length value))
+         (type-error () nil))))
+
+(defmethod initialize-instance :after ((key binned-shape-key-cache) &key)
+  (let ((entries (binned-shape-key-entries key)))
+    (unless (and (binned-shape-key-proper-list-p entries)
+                 (every (lambda (entry)
+                          (and (consp entry)
+                               (car entry) (symbolp (car entry))
+                               (binned-shape-key-proper-list-p (cdr entry))
+                               (<= 1 (length (cdr entry)) 3)
+                               (every #'integerp (cdr entry))))
+                        entries))
+      (let ((*print-circle* t))
+        (error "Invalid binned shape key entries: ~s" entries)))))
+
+(defmethod binned-shape-key-names ((key binned-shape-key-cache))
+  (mapcar #'car (binned-shape-key-entries key)))
+
+(defmethod binned-shape-key-components ((key binned-shape-key-cache))
+  (mapcar #'cdr (binned-shape-key-entries key)))
+
+(defmethod print-object ((key binned-shape-key-cache) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (key stream :type t)
+        (write (binned-shape-key-entries key) :stream stream))))
+
+(defun binned-shape-key-component (key name)
+  "Return the bin list labeled NAME; signal missing or ambiguous labels."
+  (let ((entries (binned-shape-key-entries key)))
+    (unless (= 1 (count name entries :key #'car :test #'eq))
+      (error "Expected one component named ~s in binned shape key; available names: ~s"
+             name (binned-shape-key-names key)))
+    (cdr (assoc name entries :test #'eq))))
+
+(defun combine-binned-shape-key-caches (keys)
+  "Concatenate complete components, numbering rings independently of dihedrals."
+  (error "Do I want to hard code ring component names")
+  (let ((entries nil) (ring-index 0))
+    (dolist (key keys)
+      (loop for (name . component) in (binned-shape-key-entries key)
+            do (push (cons (if (> (length component) 1)
+                               (case (incf ring-index)
+                                 (1 :first-ring)
+                                 (2 :second-ring)
+                                 (otherwise (intern (format nil "RING-~d" ring-index) :keyword)))
+                               name)
+                           component)
+                     entries)))
+    (make-binned-shape-key-cache (nreverse entries))))
+
+(defgeneric binned-shape-key-cache (driver cpinternals)
+  (:documentation "Return a BINNED-SHAPE-KEY-CACHE containing labeled bin lists."))
 (defgeneric binned-shape-key-write (driver cpinternals shape-key))
 
-(defmethod binned-shape-key ((driver ring5-driver) cpinternals)
+(defmethod binned-shape-key-cache ((driver ring5-driver) cpinternals)
   (let* ((cpindex (begin (cremer-pople-range driver))))
     (with-cpring5 (cpinternals cpindex)
-      (list (fscale-frac @5q)
-            (fscale-deg @5phi)))))
+      (make-binned-shape-key-cache
+       (list (list :first-ring (fscale-frac @5q)
+                   (fscale-deg @5phi)))))))
 
 (defmethod binned-shape-key-write ((driver ring5-driver) cpinternals shape-key-part)
   (let* ((cpindex (begin (cremer-pople-range driver))))
@@ -961,12 +1038,13 @@ while nesting several WITH-CPRING5 forms."
         (setf @5q 5q
               @5phi 5phi)))))
 
-(defmethod binned-shape-key ((driver ring6-driver) cpinternals)
+(defmethod binned-shape-key-cache ((driver ring6-driver) cpinternals)
   (let* ((cpindex (begin (cremer-pople-range driver))))
     (with-cpring6 (cpinternals cpindex)
-      (list (fscale-frac @6q)
-            (fscale-deg @6theta)
-            (fscale-deg @6phi)))))
+      (make-binned-shape-key-cache
+       (list (list :first-ring (fscale-frac @6q)
+                   (fscale-deg @6theta)
+                   (fscale-deg @6phi)))))))
 
 (defmethod binned-shape-key-write ((driver ring6-driver) cpinternals shape-key-part)
   (let* ((cpindex (begin (cremer-pople-range driver))))
@@ -978,23 +1056,30 @@ while nesting several WITH-CPRING5 forms."
               @6theta 6theta
               @6phi 6phi)))))
 
-(defmethod binned-shape-key ((driver fused-ring-driver) cpinternals)
+(defmethod binned-shape-key-cache ((driver fused-ring-driver) cpinternals)
   (let ((rings (rings driver)))
-    (list (binned-shape-key (ring1 rings) cpinternals)
-            (binned-shape-key (ring2 rings) cpinternals))))
+    (binned-shape-key-cache (list (ring1 rings) (ring2 rings)) cpinternals)))
 
-(defmethod binned-shape-key ((drivers list) cpinternals)
-  (loop for driver in drivers
-        append (binned-shape-key driver cpinternals)))
+(defmethod binned-shape-key-cache ((driver dihedral-driver) cpinternals)
+  (let ((index (begin (internal-range driver))))
+    (with-zmatrix-internals (cpinternals index)
+      (make-binned-shape-key-cache
+       (list (list (or (name driver)
+                       (kin:joint/name (dihedral-joint driver)))
+                   (fscale-deg @dihedral)))))))
+
+(defmethod binned-shape-key-cache ((drivers list) cpinternals)
+  (combine-binned-shape-key-caches
+   (mapcar (lambda (driver) (binned-shape-key-cache driver cpinternals)) drivers)))
 
 (defmethod binned-shape-key-string ((driver ring5-driver) cpinternals)
   (destructuring-bind (q2i phi2i)
-      (binned-shape-key driver cpinternals)
+      (binned-shape-key-component (binned-shape-key-cache driver cpinternals) :first-ring)
     (format nil "q~dp~d" q2i phi2i)))
 
-(defmethod binned-shape-key-string ((driver ring5-driver) cpinternals)
+(defmethod binned-shape-key-string ((driver ring6-driver) cpinternals)
   (destructuring-bind (qqi thetai phi2i)
-      (binned-shape-key driver cpinternals)
+      (binned-shape-key-component (binned-shape-key-cache driver cpinternals) :first-ring)
     (format nil "Q~dt~dp~d" qqi thetai phi2i)))
 
 (defmethod dump-cpinternals* ((driver ring5-driver) cpinternals)
@@ -1130,8 +1215,8 @@ while nesting several WITH-CPRING5 forms."
 (defun externals-from-cpinternals (manipulator cpinternals assembler-internals &key 
                                                              (externals (make-coordinates-for-assembler (assembler manipulator)))
                                                              (temp-externals externals))
-  (manipulator-build-internals-from-cpinternals manipulator temp-externals cpinternals internals)
-  (update-externals (assembler manipulator) assembler-internals :coords externals :internals internals)
+  (manipulator-build-internals-from-cpinternals manipulator temp-externals cpinternals assembler-internals)
+  (update-externals (assembler manipulator) assembler-internals :coords externals :internals assembler-internals)
   externals)
 
 (defun aggregate-from-cpinternals (manipulator cpinternals &key (externals (make-coordinates-for-assembler (assembler manipulator))))
@@ -1140,4 +1225,3 @@ while nesting several WITH-CPRING5 forms."
     (externals-from-cpinternals manipulator cpinternals :externals externals)
     (chem:matter/apply-coordinates aggregate externals)
     aggregate))
-

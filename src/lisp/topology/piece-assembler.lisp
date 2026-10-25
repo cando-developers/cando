@@ -436,7 +436,7 @@ Returns the number of pieces collected."
   (let ((rotamer       (rotamer-internals piece-shape))
         (rotamer-index (rotamer-index piece-shape)))
     (setf (rotamer-index atresidue) rotamer-index)
-    (apply-fragment-internals-to-atresidue assembler assembler-internals rotamer rotamer-index atresidue)))
+    (apply-rotamer-to-atresidue-internals assembler rotamer rotamer-index atresidue assembler-internals)))
 
 (defmethod adjust-internals ((assembler piece-assembler) internals oligomer-shape)
     (declare (ignore internals oligomer-shape))
@@ -797,4 +797,3 @@ the chem:energy-rosetta-nonbond default and the previous behaviour."
             finally (format t "~%~d cells, ~d mismatch (tol ~g), max-diff ~,3e at cell ~a~%"
                             (length ma) mism tolerance maxd worst)
                     (return (values mism maxd)))))
-

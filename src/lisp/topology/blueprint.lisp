@@ -2248,12 +2248,11 @@ cached against SOURCE-PERSONA are not refreshed here and must not be used with t
                                 for scan = (aref scans mrkindex)
                                 for rotamer = (slot-rotamer-internals persona mrkindex)
                                 do (unless rotamer (incf fallbacks))
-                                   ;; SLOT is the bookkeeping rotamer-index: which of this monomer's
-                                   ;; rotamers sits here.  APPLY-FRAGMENT-INTERNALS-TO-ATRESIDUE only
-                                   ;; stamps it on the atresidue - the geometry comes from the
-                                   ;; rotamer's INTERNALS-VALUES.
-                                   (apply-fragment-internals-to-atresidue
-                                    blueprint internals (or rotamer fallback) slot (atresidue scan))
+                                   ;; SLOT is the bookkeeping rotamer-index stamped on the
+                                   ;; atresidue. The geometry written to INTERNALS comes from
+                                   ;; the rotamer's INTERNALS-VALUES.
+                                   (apply-rotamer-to-atresidue-internals
+                                    blueprint (or rotamer fallback) slot (atresidue scan) internals)
                                    ;; Recorded HERE because this is where the fold commits to a
                                    ;; rotamer, and it records what was ACTUALLY applied - so an
                                    ;; unloaded slot reads :UNUSED rather than reporting the stand-in
@@ -2321,9 +2320,9 @@ Normal adjustments remain authoritative for catalogue rotamers.  Refined backbon
                             (unless rotamer
                               (error "Refined slot ~d at locus ~d monomer ~a has no rotamer"
                                      slot (locus bp-locus) (monomer-name bp-monomer)))
-                            (apply-fragment-internals-to-atresidue
-                             blueprint internals rotamer slot
-                             (atresidue (aref scans mrkindex)))
+                            (apply-rotamer-to-atresidue-internals
+                             blueprint rotamer slot
+                             (atresidue (aref scans mrkindex)) internals)
                             (incf restored-sidechains))))
     (values (length refined-backbones) restored-sidechains)))
 

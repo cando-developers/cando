@@ -37,13 +37,15 @@
 
 
 (defsystem "topology/tests"
-  :description "Regression tests for topology derivation"
+  :description "Regression tests for topology"
   :depends-on ("topology")
   :serial t
-  :components ((:file "tests/derive-topology-group"))
+  :components ((:file "tests/derive-topology-group")
+               (:file "tests/manipulator"))
   :perform (test-op (operation component)
              (declare (ignore operation component))
-             (uiop:symbol-call :topology-derivation-tests :run-tests)))
+             (uiop:symbol-call :topology-derivation-tests :run-tests)
+             (uiop:symbol-call :topology-manipulator-tests :run-tests)))
 
 (defsystem "topology/documentation"
   :description "Documentation for topology system"
