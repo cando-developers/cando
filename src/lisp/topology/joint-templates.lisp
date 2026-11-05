@@ -48,6 +48,174 @@
 
 (defgeneric internal-adjust (adjustment assembler internals))
 
+(defun validate-new-adjustment (spec)
+  "Validate the declarative interface independently of assembled atom lookup."
+  (unless (and (consp spec) (eq (car spec) :tetrahedral-hydrogens)
+               (listp (cdr spec)) (evenp (length (cdr spec))))
+    (error "Invalid :new-adjustment declaration: ~s" spec))
+  (let ((options (cdr spec)) (seen nil))
+    (loop for (key value) on options by #'cddr
+          do (unless (member key '(:other-hydrogen :references :orientation))
+               (error "Unknown :new-adjustment option ~s" key))
+             (when (member key seen) (error "Duplicate adjustment option ~s" key))
+             (push key seen))
+    (unless (and (getf options :other-hydrogen)
+                 (symbolp (getf options :other-hydrogen)))
+      (error "Specify :other-hydrogen as an atom name: ~s" spec))
+    (let ((references (getf options :references)))
+      (unless (and (listp references) (= (length references) 2)
+                   (every (lambda (ref)
+                            (or (and ref (symbolp ref))
+                                (and (listp ref) (= (length ref) 2)
+                                     (eq (first ref) :plug)
+                                     (keywordp (second ref))))) references))
+        (error "Specify two ordered atom names or (:plug keyword) references: ~s" spec)))
+    (unless (member (getf options :orientation) '(:positive :negative))
+      (error "Specify :orientation :positive or :negative: ~s" spec)))
+  spec)
+
+(defclass named-adjustment-definition ()
+  ((specification :initarg :specification :reader specification)))
+
+(defvar *named-adjustment-definitions* (make-hash-table :test #'eq))
+
+(defun register-adjustment-definition (name specification)
+  (unless (and name (symbolp name) (not (keywordp name)) (not (eq name t)))
+    (error "Adjustment name must be a non-keyword, non-NIL symbol: ~s" name))
+  (setf (gethash name *named-adjustment-definitions*)
+        (make-instance 'named-adjustment-definition
+                       :specification (copy-tree (validate-new-adjustment specification))))
+  name)
+
+(defmacro define-adjustment (name specification)
+  "Define a reusable, quoted declaration for :NEW-ADJUSTMENT NAME.
+Names are package-qualified symbols, independent of legacy adjustment classes.
+Define before DEFINE-TOPOLOGY. Redefinition affects subsequently built topology
+templates; reload dependent topology definitions to update existing templates."
+  `(register-adjustment-definition ',name ',specification))
+
+(defun resolve-new-adjustment (specification)
+  "Resolve a named or inline declaration to a fresh validated specification."
+  (copy-tree
+   (validate-new-adjustment
+    (if (and specification (symbolp specification))
+        (let ((definition (gethash specification *named-adjustment-definitions*)))
+          (unless definition
+            (error "Unknown :new-adjustment name ~s; define it with topology:define-adjustment first"
+                   specification))
+          (specification definition))
+        specification))))
+
+(defun atom-adjustment-specification (properties)
+  "Keep legacy class names and new declarations on the same template path."
+  (let ((keys (loop for (key value) on properties by #'cddr collect key)))
+    (when (and (member :adjust keys) (member :new-adjustment keys))
+      (error "An atom cannot specify both :adjust and :new-adjustment: ~s" properties))
+    (if (member :new-adjustment keys)
+        (resolve-new-adjustment (getf properties :new-adjustment))
+        (getf properties :adjust))))
+
+(defclass tetrahedral-hydrogens-adjustment (internal-adjustment)
+  ((specification :initarg :specification :reader specification)
+   (hydrogen-pair :accessor hydrogen-pair)
+   (reference-joints :accessor reference-joints)))
+
+(defun instantiate-joint-adjustment (spec joint)
+  (if (consp spec)
+      (make-instance 'tetrahedral-hydrogens-adjustment
+                     :specification (validate-new-adjustment spec) :joint joint)
+      (make-instance spec :joint joint)))
+
+(defmethod initialize-adjustment ((adjustment tetrahedral-hydrogens-adjustment) assembler)
+  (let* ((hydrogen (joint adjustment))
+         (center (kin:parent hydrogen))
+         (neighbors (mapcar (lambda (atom) (find-joint-for-atom assembler atom))
+                           (chem:atom/bonded-atoms-as-list
+                            (find-atom-for-joint assembler center))))
+         (options (cdr (specification adjustment))))
+    (labels ((resolve (ref)
+               (let ((matches
+                       (remove-if-not
+                        (lambda (neighbor)
+                          (if (symbolp ref)
+                              (string= (symbol-name ref) (symbol-name (kin:joint/name neighbor)))
+                              (eq (kin:get-property-or-default neighbor :out-plug-name nil)
+                                  (second ref)))) neighbors)))
+                 (unless (= (length matches) 1)
+                   (error "Adjustment on ~s: reference ~s resolves to ~s" hydrogen ref matches))
+                 (first matches))))
+      (let* ((other (resolve (getf options :other-hydrogen)))
+             (references (mapcar #'resolve (getf options :references)))
+             (all (list* hydrogen other references)))
+        (unless (and (= (length neighbors) 4)
+                     (= (length (remove-duplicates all :test #'eq)) 4)
+                     (every (lambda (h)
+                              (and (typep h 'kin:bonded-joint)
+                                   (eq (kin:parent h) center)
+                                   (eq (chem:get-element (find-atom-for-joint assembler h)) :H)))
+                            (list hydrogen other)))
+          (error "Tetrahedral adjustment requires two bonded hydrogen children and two distinct references: ~s" all))
+        (setf (hydrogen-pair adjustment) (list hydrogen other)
+              (reference-joints adjustment) references)))))
+
+(defun tetrahedral-hydrogen-directions (first-bond second-bond orientation)
+  "Return unit vectors. Positive means (FIRST-BOND x SECOND-BOND) dot H1 > 0."
+  (labels ((unit (v)
+             (let ((norm (sqrt (reduce #'+ (map 'vector (lambda (x) (* x x)) v)))))
+               (when (< norm 1.0d-10)
+                 (error "Degenerate heavy-atom geometry in tetrahedral adjustment"))
+               (map 'vector (lambda (x) (/ x norm)) v)))
+           (cross (a b)
+             (vector (- (* (aref a 1) (aref b 2)) (* (aref a 2) (aref b 1)))
+                     (- (* (aref a 2) (aref b 0)) (* (aref a 0) (aref b 2)))
+                     (- (* (aref a 0) (aref b 1)) (* (aref a 1) (aref b 0))))))
+    (unless (member orientation '(:positive :negative))
+      (error "Invalid tetrahedral orientation ~s" orientation))
+    (let* ((a (unit first-bond)) (b (unit second-bond))
+           (bisector (unit (map 'vector #'+ a b)))
+           (normal (unit (cross a b)))
+           (sign (if (eq orientation :positive) 1.0d0 -1.0d0)))
+      (values (map 'vector (lambda (x n) (+ (- (/ x (sqrt 3.0d0)))
+                                           (* sign (sqrt (/ 2.0d0 3.0d0)) n))) bisector normal)
+              (map 'vector (lambda (x n) (- (- (/ x (sqrt 3.0d0)))
+                                           (* sign (sqrt (/ 2.0d0 3.0d0)) n))) bisector normal)))))
+
+(defmethod internal-adjust ((adjustment tetrahedral-hydrogens-adjustment) assembler internals)
+  (let* ((hydrogen (joint adjustment))
+         (center (kin:parent hydrogen))
+         (grandparent (kin:parent center))
+         (great-grandparent (kin:parent grandparent))
+         (root (loop for ancestor = center then (kin:parent ancestor)
+                     unless (kin:joint/parent-bound-p ancestor) return ancestor))
+         (coords (make-coordinates-for-assembler assembler))
+         (ic (kin:joint/position-index-x3 center)))
+    ;; Use current internals, never stale atom positions. Do not recurse into adjustments.
+    (kin:update-xyz-coords root internals coords)
+    (flet ((bond (reference)
+             (let ((index (kin:joint/position-index-x3 reference)))
+               (map 'vector #'- (subseq coords index (+ index 3))
+                               (subseq coords ic (+ ic 3))))))
+      (multiple-value-bind (h1 h2)
+          (tetrahedral-hydrogen-directions
+           (bond (first (reference-joints adjustment)))
+           (bond (second (reference-joints adjustment)))
+           (getf (cdr (specification adjustment)) :orientation))
+        (loop for h in (hydrogen-pair adjustment) for direction in (list h1 h2)
+              for ih = (kin:joint/position-index-x3 h)
+              for distance = (kin:bonded-joint/get-distance h internals)
+              do (unless (> distance 0.0d0) (error "Invalid hydrogen bond length ~s" distance))
+                 (dotimes (axis 3)
+                   (setf (aref coords (+ ih axis))
+                         (+ (aref coords (+ ic axis)) (* distance (aref direction axis)))))
+        ;; Both positions are set before either internal coordinate is changed.
+        (dolist (h (hydrogen-pair adjustment))
+          (let ((ih (kin:joint/position-index-x3 h)))
+            (kin:bonded-joint/set-theta h internals
+              (geom:calculate-angle-array (kin:joint/position-index-x3 grandparent) ic ih coords))
+            (kin:bonded-joint/set-phi h internals
+              (geom:calculate-dihedral-array (kin:joint/position-index-x3 great-grandparent)
+                                            (kin:joint/position-index-x3 grandparent) ic ih coords)))))))))
+
 (defmethod internal-adjust ((adjustment external-adjustment) assembler internals)
   "default - don't do anything"
   nil)
@@ -65,7 +233,8 @@ OTHER and is gated on nothing - as though it were disabled."
 
 (defclass internal-planar-adjustment (internal-adjustment)
   ((other :initarg :other :accessor other))
-  (:documentation "Adjust joint to be rotated 180 degrees from other"))
+  (:documentation "Rotate the joint 180 degrees from a sibling or ring-closure
+reference, measured in the adjusted joint's internal-coordinate frame."))
 
 (defmethod print-object ((obj internal-planar-adjustment) stream)
   "OTHER is included because INTERNAL-ADJUST is a no-op unless it is bound, so it is the difference
@@ -85,7 +254,33 @@ between an adjustment that fires and one that silently does nothing."
   sidechain root from the backbone continuation without relying on atom names - which vary."
   (kin:get-property-or-default joint :out-plug-name nil))
 
+(defun planar-adjustment-bonded-reference (joint assembler)
+  "Find the chemical neighbor that supplies a missing sibling reference.
+Exclude the adjusted atom, its grandparent, and alternate sidechains on the
+same outgoing plug. The remaining bond can be an incoming ring closure."
+  (let* ((parent (kin:parent joint))
+         (grandparent (kin:parent parent))
+         (plug (joint-plug-name joint))
+         (candidates
+           (loop for atom in (chem:atom/bonded-atoms-as-list
+                              (find-atom-for-joint assembler parent))
+                 for neighbor = (find-joint-for-atom assembler atom)
+                 unless (or (eq neighbor joint)
+                            (eq neighbor grandparent)
+                            (and (kin:joint/parent-bound-p neighbor)
+                                 (eq (kin:parent neighbor) parent)
+                                 (eql (joint-plug-name neighbor) plug)))
+                   collect neighbor)))
+    (unless (= (length candidates) 1)
+      (error "Planar adjustment on ~s: expected one bonded reference beyond its parent's tree parent and sidechain children, found ~s"
+             joint candidates))
+    (first candidates)))
+
 (defmethod initialize-adjustment ((adjustment internal-planar-adjustment) assembler)
+  ;; Cartesian/root joints do not run INTERNAL-ADJUST. In trainers these can
+  ;; have several children; there is no internal dihedral or sibling to resolve.
+  (unless (typep (joint adjustment) 'kin:bonded-joint)
+    (return-from initialize-adjustment adjustment))
   (let* ((joint (joint adjustment))
          (jparent (kin:parent joint))
          (my-plug-name (joint-plug-name joint))
@@ -100,28 +295,104 @@ between an adjustment that fires and one that silently does nothing."
                                                     (or (eq child joint)
                                                         (eql (joint-plug-name child) my-plug-name)))
                                                   (kin:joint/joint-children jparent))))
-                       (if (= (length candidates) 1)
-                           (first candidates)
-                           (error "~s on joint ~a: expected exactly one sibling arriving through a plug other than ~s, ~
+                       (cond
+                         ((= (length candidates) 1) (first candidates))
+                         ((null candidates)
+                          (planar-adjustment-bonded-reference joint assembler))
+                         (t (error "~s on joint ~a: expected exactly one sibling arriving through a plug other than ~s, ~
           found ~d among ~d children.  Under a fan-out every alternate shares this joint's plug ~
           and is excluded, so ~:[none remained~;the parent has more than one continuation~]."
                                   (class-name (class-of adjustment)) (kin:joint/name joint) my-plug-name
-                                  (length candidates) (kin:number-of-children jparent) (plusp (length candidates))))))))
+                                  (length candidates) (kin:number-of-children jparent) (plusp (length candidates)))))))))
     (setf (other adjustment) jother)))
 
 (defmethod print-object ((adjustment internal-planar-adjustment) stream)
   (print-unreadable-object (adjustment stream :type t)
     (format stream "other ~s" (other adjustment))))
 
+(defparameter *internal-planar-minimum-separation* 1.0d0
+  "Minimum distance in Angstroms from an adjusted atom to either other neighbor of its parent.")
+
+(defun planar-adjustment-neighbor-distances (distance theta phi
+                                            other-distance other-theta other-phi
+                                            parent-distance)
+  "Return distances to the sibling and grandparent from current internal coordinates."
+  (let* ((cos-separation (+ (* (cos theta) (cos other-theta))
+                            (* (sin theta) (sin other-theta)
+                               (cos (- phi other-phi)))))
+         (sibling-squared (- (+ (* distance distance)
+                                (* other-distance other-distance))
+                             (* 2 distance other-distance cos-separation)))
+         (grandparent-squared (- (+ (* distance distance)
+                                    (* parent-distance parent-distance))
+                                 (* 2 distance parent-distance (cos theta)))))
+    (values (sqrt (max 0.0d0 sibling-squared))
+            (sqrt (max 0.0d0 grandparent-squared)))))
+
+(defun planar-adjustment-reference-internals (adjustment internals assembler)
+  "Return reference distance, angle and dihedral in the adjusted joint's frame.
+Siblings already use this frame. Ring-closure references must be measured from
+current coordinates rather than using their own, unrelated internal frame."
+  (let* ((joint (joint adjustment))
+         (reference (other adjustment))
+         (parent (kin:parent joint)))
+    (if (and (kin:joint/parent-bound-p reference)
+             (eq (kin:parent reference) parent)
+             (typep reference 'kin:bonded-joint))
+        (values (kin:bonded-joint/get-distance reference internals)
+                (kin:bonded-joint/get-theta reference internals)
+                (kin:bonded-joint/get-phi reference internals))
+        (let* ((grandparent (kin:parent parent))
+               (great-grandparent (kin:parent grandparent))
+               (root (loop for ancestor = joint then (kin:parent ancestor)
+                           unless (kin:joint/parent-bound-p ancestor)
+                             return ancestor))
+               (coords (make-coordinates-for-assembler assembler))
+               (ia (kin:joint/position-index-x3 great-grandparent))
+               (ib (kin:joint/position-index-x3 grandparent))
+               (ic (kin:joint/position-index-x3 parent))
+               (id (kin:joint/position-index-x3 reference)))
+          ;; This primitive rebuilds coordinates without invoking adjustments.
+          (kin:update-xyz-coords root internals coords)
+          (values (geom:calculate-distance-array ic id coords)
+                  (geom:calculate-angle-array ib ic id coords)
+                  (geom:calculate-dihedral-array ia ib ic id coords))))))
+
+(defun assert-planar-adjustment-separation (adjustment internals &optional assembler)
+  (let* ((joint (joint adjustment))
+         (other (other adjustment))
+         (parent (kin:parent joint))
+         (grandparent (kin:parent parent))
+         (parent-distance
+           (etypecase parent
+             (kin:bonded-joint (kin:bonded-joint/get-distance parent internals))
+             (kin:xyz-joint
+              (geom:calculate-distance (kin:xyz-joint/transformed-pos parent)
+                                       (kin:xyz-joint/transformed-pos grandparent))))))
+    (multiple-value-bind (other-distance other-theta other-phi)
+        (planar-adjustment-reference-internals adjustment internals assembler)
+      (multiple-value-bind (sibling-distance grandparent-distance)
+          (planar-adjustment-neighbor-distances
+           (kin:bonded-joint/get-distance joint internals)
+           (kin:bonded-joint/get-theta joint internals)
+           (kin:bonded-joint/get-phi joint internals)
+           other-distance other-theta other-phi
+           parent-distance)
+        (loop for neighbor in (list other grandparent)
+              for distance in (list sibling-distance grandparent-distance)
+              do (assert (>= distance *internal-planar-minimum-separation*) ()
+                         "Internal planar adjustment of ~s bonded to ~s puts it only ~,4f A from ~s (minimum ~,4f A)."
+                         joint parent distance neighbor *internal-planar-minimum-separation*))))))
+
 (defmethod internal-adjust ((adjustment internal-planar-adjustment) assembler internals)
   ;; Only when the "other" slot is bound do we make adjustment
   (when (and (slot-boundp adjustment 'other)
              (typep (joint adjustment) 'kin:bonded-joint)
-             (typep (other adjustment) 'kin:bonded-joint))
+             (other adjustment))
     (let* ((joint (joint adjustment))
-           (other (other adjustment))
            (phi-original (kin:bonded-joint/get-phi joint internals))
-           (phi-other (kin:bonded-joint/get-phi other internals))
+           (phi-other (nth-value 2
+                       (planar-adjustment-reference-internals adjustment internals assembler)))
            (phi-adjust (radians-add phi-other PI)))
       #+(or)(format t "internal-adjust ~s phi-original ~8,3f  phi-adjust ~8,3f~%"
                     joint
@@ -129,6 +400,7 @@ between an adjustment that fires and one that silently does nothing."
       #+(or)(kin:bonded-joint/set-distance joint 1.47)
       #+(or)(kin:bonded-joint/set-theta joint (topology:deg-to-rad 120.0))
       (fill-joint-phi joint phi-adjust assembler internals)
+      (assert-planar-adjustment-separation adjustment internals assembler)
       )))
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
@@ -252,7 +524,7 @@ between an adjustment that fires and one that silently does nothing."
                                 :atom-name atom-name
                                 :parent parent-template))
       ((and (null parent-template) (typep in-plug 'topology:in-plug))
-       (let ((adjust (getf (property-list node) :adjust)))
+       (let ((adjust (atom-adjustment-specification (property-list node))))
          (if adjust
              (make-adjustable-in-plug-bonded-joint-template
               constitution-atoms-index
@@ -265,7 +537,7 @@ between an adjustment that fires and one that silently does nothing."
                                                  :parent nil
                                                  :in-plug in-plug))))
       ((typep in-plug 'topology:in-plug)
-       (let ((adjust (getf (property-list node) :adjust)))
+       (let ((adjust (atom-adjustment-specification (property-list node))))
          (if adjust
              (make-adjustable-bonded-joint-template
               constitution-atoms-index
@@ -315,7 +587,7 @@ between an adjustment that fires and one that silently does nothing."
                                              :atom-name atom-name
                                              :stub-joints stub-joints)))
       (t
-       (let ((adjust (getf (property-list node) :adjust)))
+       (let ((adjust (atom-adjustment-specification (property-list node))))
          (if adjust
              (make-adjustable-bonded-joint-template
               constitution-atoms-index
@@ -586,7 +858,7 @@ between an adjustment that fires and one that silently does nothing."
   (let ((joint (call-next-method)))
     (when adjustments
       (add-to-adjustments adjustments
-                          (make-instance (adjustment joint-template) :joint joint)
+                          (instantiate-joint-adjustment (adjustment joint-template) joint)
                           atresidue))
     joint))
 
@@ -630,7 +902,7 @@ between an adjustment that fires and one that silently does nothing."
       (let ((joint (call-next-method)))
         (when adjustments
           (add-to-adjustments adjustments
-                              (make-instance (adjustment joint-template) :joint joint)
+                              (instantiate-joint-adjustment (adjustment joint-template) joint)
                               atresidue))
         joint)))
 
@@ -728,6 +1000,3 @@ between an adjustment that fires and one that silently does nothing."
 (defmethod topology.graphviz:undirected-edge-label (edge (graph topology-graph))
   (declare (ignore graph))
   (label edge))
-
-
-

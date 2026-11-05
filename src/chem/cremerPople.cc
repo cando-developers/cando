@@ -16,6 +16,7 @@
  */
 
 #include <stdio.h>
+#include <cmath>
 #include <clasp/core/foundation.h>
 #include <clasp/core/lispStream.h>
 #include <cando/chem/loop.h>
@@ -186,6 +187,8 @@ NVector_sp chem__cpring_coordinates_to_zjs( NVector_sp coordinates, core::Simple
   return zjs;
 }
 
+// SHAPE-KEY-LEGACY: unstable near phase +/-pi; replaced by hypot below.
+#if 0
 inline void robust_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2sinphi2, double& q2, double& phi2)
 {
   // better version
@@ -198,6 +201,15 @@ inline void robust_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2s
   } else {
     q2 = q2sinphi2/sin(phi2);
   }
+}
+#endif
+
+inline void robust_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2sinphi2, double& q2, double& phi2)
+{
+  phi2 = atan2(q2sinphi2,q2cosphi2);
+  // These are orthogonal components of the amplitude. Dividing by sin(phi2)
+  // is ill-conditioned near both zero and +/-pi, including canonical bin 18.
+  q2 = std::hypot(q2cosphi2,q2sinphi2);
 }
 
 inline void dirty_q2_phi2_from_q2cosphi2_q2sinphi2(double q2cosphi2, double q2sinphi2, double& q2, double& phi2)

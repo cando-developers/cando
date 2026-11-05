@@ -180,6 +180,36 @@
       (assert (= 1 (getf (topology:properties
                           (topology:constitution-atom-named constitution :N))
                          :charge))))
+    ;; Destructive atom callbacks affect only copied declarations. Nested
+    ;; properties (including plug lists) must not be passed to the callback.
+    (let* ((source (chem:find-topology 'dgt-simple))
+           (definition (copy-tree (getf (topology:property-list source) :%topology-definition)))
+           (visited nil)
+           (copy (first
+                  (topology:derive-topology-group
+                   'dgt-no-adjust :from 'dgt-simple :name-prefix "NOADJ-"
+                   :rename-plugs '((:-side . :-eside))
+                   :atom-transform
+                   (lambda (atom)
+                     (push (if (consp atom) (first atom) atom) visited)
+                     (when (consp atom)
+                       (assert (eq (first (getf (cddr atom) :plugs)) :-eside))
+                       (remf (cddr atom) :adjust))
+                     atom)))))
+      (assert (= 4 (length visited)))
+      (assert (equal (atom-graph source) (atom-graph copy)))
+      (assert (equal definition (getf (topology:property-list source) :%topology-definition)))
+      (assert (eq (getf (cddr (first (getf definition :sexp))) :adjust)
+                  'topology:internal-planar-adjustment))
+      (assert (null (getf (cddr (first (getf (getf (topology:property-list copy)
+                                                  :%topology-definition) :sexp)))
+                         :adjust)))
+      (assert (expect-error
+               (lambda ()
+                 (topology:derive-topology-group
+                  'dgt-bad-atom :from 'dgt-simple :name-prefix "BADATOM-"
+                  :atom-transform (lambda (atom) (declare (ignore atom)) nil)))))
+      (assert (null (gethash 'dgt-bad-atom topology:*topology-groups*))))
     ;; Indexed two-bond incoming plugs keep both attachment atoms.
     (topology:define-topology (dgt-dual dgt-dual-source)
         ((C C :plugs (:-side.0)) (= O)

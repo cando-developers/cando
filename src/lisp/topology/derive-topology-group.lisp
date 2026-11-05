@@ -1,5 +1,14 @@
 (in-package #:topology)
 
+(defun remove-atom-adjustments (atom)
+  "Remove adjustment annotations from a copied atom declaration and return it.
+Suitable as DERIVE-TOPOLOGY-GROUP's :ATOM-TRANSFORM. Include the planned final
+:ADJUSTMENT spelling so derivations survive the declarative API migration."
+  (when (consp atom)
+    (dolist (key '(:adjust :new-adjustment :adjustment))
+      (loop while (remf (cddr atom) key))))
+  atom)
+
 (defun %derivation-function (value option)
   (unless (or (functionp value)
               (and (symbolp value) (fboundp value) (not (macro-function value))))
@@ -44,12 +53,22 @@
               replacement))))))
 
 (defun %derivation-graph (tree plug-function)
-  "Copy a definition graph, transforming only :PLUGS property values."
+  "Copy a graph, transforming plugs and declarative adjustment plug references."
   (cond
     ((atom tree) tree)
     ((eq (car tree) :plugs)
      (list* :plugs (mapcar plug-function (second tree))
             (%derivation-graph (cddr tree) plug-function)))
+    ((eq (car tree) :new-adjustment)
+     (let ((spec (resolve-new-adjustment (second tree))))
+       (setf (getf (cdr spec) :references)
+             (mapcar (lambda (reference)
+                       (if (consp reference)
+                           (list :plug (funcall plug-function (second reference)))
+                           reference))
+                     (getf (cdr spec) :references)))
+       (list* :new-adjustment spec
+              (%derivation-graph (cddr tree) plug-function))))
     (t (cons (%derivation-graph (car tree) plug-function)
              (%derivation-graph (cdr tree) plug-function)))))
 
@@ -63,6 +82,23 @@
           (find (char (symbol-name tree) 0) "+-"))
      (funcall plug-function tree))
     (t tree)))
+
+(defun %derivation-atoms (graph function)
+  "Transform atom declarations, without descending into their property values."
+  (mapcar (lambda (entry)
+            (cond
+              ((bond-symbol entry) entry)
+              ((and (consp entry) (bond-symbol (first entry)))
+               (%derivation-atoms entry function))
+              (t
+               (let* ((original-name (if (consp entry) (first entry) entry))
+                      (result (funcall function (copy-tree entry)))
+                      (name (if (consp result) (first result) result)))
+                 (unless (and name (symbolp name) (eq name original-name))
+                   (error "Atom transformation must preserve atom name ~s, got ~s"
+                          original-name result))
+                 (copy-tree result)))))
+          graph))
 
 (defun %derivation-options (definition plug-function omit-dihedrals)
   (let* ((options (copy-tree (getf definition :options)))
@@ -114,7 +150,8 @@
                             (plug-name-transform nil plug-name-transform-p)
                             (name-prefix nil name-prefix-p)
                             (rename-plugs nil rename-plugs-p)
-                            omit-dihedrals)
+                            omit-dihedrals
+                            (atom-transform nil atom-transform-p))
   "Derive registered topologies in DESTINATION-GROUP from the group FROM.
 
 NAME-TRANSFORM maps a constitution's base name and each concrete topology name
@@ -126,6 +163,13 @@ NAME-PREFIX is a string convenience alternative to NAME-TRANSFORM. RENAME-PLUGS
 is an alist convenience alternative to PLUG-NAME-TRANSFORM; unlisted plugs keep
 their names. Supplying both alternatives for either transformation is an error.
 OMIT-DIHEDRALS names annotations to omit only from the derived definitions.
+
+ATOM-TRANSFORM receives a fresh copy of each atom declaration after plug
+renaming: either a shorthand symbol or (NAME ELEMENT &REST PROPERTIES).
+Return the modified declaration with the same atom name. It may destructively
+edit its copy, for example removing :ADJUST from the properties. Bond tokens
+and property values are not visited; ring-reference occurrences are visited.
+The callback runs during derivation and is not stored.
 
 The original objects and groups are unchanged. Atom graphs, stereochemistry,
 restraints, local dihedrals, ring information, synthesis codes, and rotamer
@@ -164,6 +208,8 @@ recording was installed must have their DEFINE-TOPOLOGY forms reloaded first."
                 (%derivation-function plug-name-transform :plug-name-transform)
                 (lambda (name) (or (cdr (assoc name rename-plugs :test #'eq))
                                   name)))))
+         (atom-function (when atom-transform-p
+                          (%derivation-function atom-transform :atom-transform)))
          (names (copy-list
                  (multiple-value-bind (members presentp)
                      (gethash from *topology-groups*)
@@ -210,7 +256,8 @@ recording was installed must have their DEFINE-TOPOLOGY forms reloaded first."
           (let* ((*register-defined-topologies* nil)
                  (variants
                    (apply #'do-define-topology (list derived-base destination-group)
-                          (%derivation-graph (getf definition :sexp) plug-function)
+                          (let ((graph (%derivation-graph (getf definition :sexp) plug-function)))
+                            (if atom-function (%derivation-atoms graph atom-function) graph))
                           options)))
             ;; An explicit omission of all annotations must not turn into the
             ;; builder's default automatically generated dihedrals.

@@ -405,7 +405,9 @@ while nesting several WITH-CPRING5 forms."
          (build-joints (let (bj)
                          (flet ((in-ring-system-p (jnt)
                                   (etypecase jnt
-                                    (kin:jump-joint t)
+                                    ;; Cartesian joints store their reconstructed position
+                                    ;; directly; they need no internal-coordinate ancestry.
+                                    ((or kin:jump-joint kin:xyz-joint) t)
                                     (kin:complex-bonded-joint
                                      (let* ((jp (kin:joint/parent jnt))
                                             (jgp (when (typep jp 'kin:complex-bonded-joint) (kin:joint/parent jp)))
@@ -947,29 +949,41 @@ all callers apply the same joint-type and ancestry requirements."
   (topology:deg-to-rad (* int bin-size)))
 
 
+;;; SHAPE-KEY-LEGACY: moved to shape-key.lisp; regression: tests/shape-key.lisp.
+#+(or)
 (defclass binned-shape-key-cache (cando.serialize:serializable)
   ((entries :initarg :entries :initform nil :reader binned-shape-key-entries))
   (:documentation "An alist mapping symbolic names to nonempty integer-bin lists.
 A dihedral has one bin; five- and six-membered rings have two and three bins.
 Treat the entries as read-only. Ring labels count rings; dihedrals retain their names."))
 
+;;; SHAPE-KEY-LEGACY: moved to shape-key.lisp.
+#+(or)
 (defclass binned-shape-key (binned-shape-key-cache) ()
   (:documentation "A selected shape key, distinct from the complete driver cache.
 Shares the cache's labeled components, validation, and lookup protocol."))
 
+;;; SHAPE-KEY-LEGACY: replaced by canonical construction in shape-key.lisp.
+#+(or)
 (defun make-binned-shape-key (entries)
   "Construct a selected key from an alist of names and bin lists."
   (make-instance 'binned-shape-key :entries entries))
 
+;;; SHAPE-KEY-LEGACY: replaced by canonical construction in shape-key.lisp.
+#+(or)
 (defun make-binned-shape-key-cache (entries)
   "Construct a cache from an alist of names and bin lists."
   (make-instance 'binned-shape-key-cache :entries entries))
 
+;;; SHAPE-KEY-LEGACY: moved to shape-key.lisp.
+#+(or)
 (defun binned-shape-key-proper-list-p (value)
   (and (listp value)
        (handler-case (integerp (list-length value))
          (type-error () nil))))
 
+;;; SHAPE-KEY-LEGACY: validation and duplicate rejection now in shape-key.lisp.
+#+(or)
 (defmethod initialize-instance :after ((key binned-shape-key-cache) &key)
   (let ((entries (binned-shape-key-entries key)))
     (unless (and (binned-shape-key-proper-list-p entries)
@@ -983,18 +997,26 @@ Shares the cache's labeled components, validation, and lookup protocol."))
       (let ((*print-circle* t))
         (error "Invalid binned shape key entries: ~s" entries)))))
 
+;;; SHAPE-KEY-LEGACY: moved to shape-key.lisp.
+#+(or)
 (defmethod binned-shape-key-names ((key binned-shape-key-cache))
   (mapcar #'car (binned-shape-key-entries key)))
 
+;;; SHAPE-KEY-LEGACY: defensive reader now in shape-key.lisp.
+#+(or)
 (defmethod binned-shape-key-components ((key binned-shape-key-cache))
   (mapcar #'cdr (binned-shape-key-entries key)))
 
+;;; SHAPE-KEY-LEGACY: moved to shape-key.lisp.
+#+(or)
 (defmethod print-object ((key binned-shape-key-cache) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (key stream :type t)
         (write (binned-shape-key-entries key) :stream stream))))
 
+;;; SHAPE-KEY-LEGACY: duplicates now rejected at construction/insertion.
+#+(or)
 (defun binned-shape-key-component (key name)
   "Return the bin list labeled NAME; signal missing or ambiguous labels."
   (let ((entries (binned-shape-key-entries key)))
@@ -1003,6 +1025,8 @@ Shares the cache's labeled components, validation, and lookup protocol."))
              name (binned-shape-key-names key)))
     (cdr (assoc name entries :test #'eq))))
 
+;;; SHAPE-KEY-LEGACY: positional ring labels; use declared geometry and validated cache insertion.
+#+(or)
 (defun combine-binned-shape-key-caches (keys)
   "Concatenate complete components, numbering rings independently of dihedrals."
   (error "Do I want to hard code ring component names")
@@ -1019,10 +1043,16 @@ Shares the cache's labeled components, validation, and lookup protocol."))
                      entries)))
     (make-binned-shape-key-cache (nreverse entries))))
 
+;;; SHAPE-KEY-LEGACY: use measure-binned-shape-key-cache with a foldamer policy.
+#+(or)
 (defgeneric binned-shape-key-cache (driver cpinternals)
   (:documentation "Return a BINNED-SHAPE-KEY-CACHE containing labeled bin lists."))
+;;; SHAPE-KEY-LEGACY: use write-ring-cache-component with a foldamer policy.
+#+(or)
 (defgeneric binned-shape-key-write (driver cpinternals shape-key))
 
+;;; SHAPE-KEY-LEGACY: declared names and foldamer binning replace this method.
+#+(or)
 (defmethod binned-shape-key-cache ((driver ring5-driver) cpinternals)
   (let* ((cpindex (begin (cremer-pople-range driver))))
     (with-cpring5 (cpinternals cpindex)
@@ -1030,6 +1060,8 @@ Shares the cache's labeled components, validation, and lookup protocol."))
        (list (list :first-ring (fscale-frac @5q)
                    (fscale-deg @5phi)))))))
 
+;;; SHAPE-KEY-LEGACY: replaced by write-ring-cache-component; tests/cache-geometry.
+#+(or)
 (defmethod binned-shape-key-write ((driver ring5-driver) cpinternals shape-key-part)
   (let* ((cpindex (begin (cremer-pople-range driver))))
     (with-cpring5 (cpinternals cpindex)
@@ -1038,6 +1070,8 @@ Shares the cache's labeled components, validation, and lookup protocol."))
         (setf @5q 5q
               @5phi 5phi)))))
 
+;;; SHAPE-KEY-LEGACY: declared names and foldamer binning replace this method.
+#+(or)
 (defmethod binned-shape-key-cache ((driver ring6-driver) cpinternals)
   (let* ((cpindex (begin (cremer-pople-range driver))))
     (with-cpring6 (cpinternals cpindex)
@@ -1046,6 +1080,8 @@ Shares the cache's labeled components, validation, and lookup protocol."))
                    (fscale-deg @6theta)
                    (fscale-deg @6phi)))))))
 
+;;; SHAPE-KEY-LEGACY: replaced by write-ring-cache-component; tests/cache-geometry.
+#+(or)
 (defmethod binned-shape-key-write ((driver ring6-driver) cpinternals shape-key-part)
   (let* ((cpindex (begin (cremer-pople-range driver))))
     (with-cpring6 (cpinternals cpindex)
@@ -1056,10 +1092,14 @@ Shares the cache's labeled components, validation, and lookup protocol."))
               @6theta 6theta
               @6phi 6phi)))))
 
+;;; SHAPE-KEY-LEGACY: cache declarations select individual rings; coupling is deferred.
+#+(or)
 (defmethod binned-shape-key-cache ((driver fused-ring-driver) cpinternals)
   (let ((rings (rings driver)))
     (binned-shape-key-cache (list (ring1 rings) (ring2 rings)) cpinternals)))
 
+;;; SHAPE-KEY-LEGACY: declared names and foldamer binning replace this method.
+#+(or)
 (defmethod binned-shape-key-cache ((driver dihedral-driver) cpinternals)
   (let ((index (begin (internal-range driver))))
     (with-zmatrix-internals (cpinternals index)
@@ -1068,15 +1108,21 @@ Shares the cache's labeled components, validation, and lookup protocol."))
                        (kin:joint/name (dihedral-joint driver)))
                    (fscale-deg @dihedral)))))))
 
+;;; SHAPE-KEY-LEGACY: replaced by measure-binned-shape-key-cache; tests/cache-geometry.
+#+(or)
 (defmethod binned-shape-key-cache ((drivers list) cpinternals)
   (combine-binned-shape-key-caches
    (mapcar (lambda (driver) (binned-shape-key-cache driver cpinternals)) drivers)))
 
+;;; SHAPE-KEY-LEGACY: use binned-shape-key-pathname-part for complete selected keys.
+#+(or)
 (defmethod binned-shape-key-string ((driver ring5-driver) cpinternals)
   (destructuring-bind (q2i phi2i)
       (binned-shape-key-component (binned-shape-key-cache driver cpinternals) :first-ring)
     (format nil "q~dp~d" q2i phi2i)))
 
+;;; SHAPE-KEY-LEGACY: use binned-shape-key-pathname-part for complete selected keys.
+#+(or)
 (defmethod binned-shape-key-string ((driver ring6-driver) cpinternals)
   (destructuring-bind (qqi thetai phi2i)
       (binned-shape-key-component (binned-shape-key-cache driver cpinternals) :first-ring)

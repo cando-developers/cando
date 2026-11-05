@@ -894,6 +894,9 @@ If UNINITIALIZED then leave them unbound."
   (lookup-dihedral-joint-impl assembler oligomer monomer dihedral-name))
 
 
+;;; SHAPE-KEY-LEGACY: unused monomer-shape degree cache path (already signaled an error).
+;;; Replacement: backbone-shape-key-cache and decode-cache-component.
+#+(or)
 (defun lookup-dihedral-cache-impl (oligomer-shape monomer-shape dihedral-name &key ignore-degrees)
   (error "Don't use this - lookup the dihedral cache in the rotamer database")
   (let* ((monomer-shape-index (position monomer-shape (monomer-shape-vector oligomer-shape)))
@@ -935,6 +938,8 @@ If UNINITIALIZED then leave them unbound."
                        (values deg monomer-shape))))))))))
       (t (error "there was no :dihedrals property in ~s" topology)))))
 
+;;; SHAPE-KEY-LEGACY: wrapper for the retired monomer-shape cache path.
+#+(or)
 (defun lookup-dihedral-cache (oligomer-shape monomer-shape dihedral-name &key ignore-degrees)
   (lookup-dihedral-cache-impl oligomer-shape monomer-shape dihedral-name :ignore-degrees ignore-degrees))
 

@@ -14,6 +14,8 @@
   (cons (topology:bin-dihedral-deg phi-deg)
         (topology:bin-dihedral-deg psi-deg)))
 
+;;; SHAPE-KEY-LEGACY: unused wrapper for retired monomer-shape caches.
+#+(or)
 (defun lookup-phi-psi-monomer-shape (oligomer-shape monomer-shape)
   "Lookup the phi,psi values in the dihedral cache and return them as a (phi . psi) pair"
   (let ((phi (lookup-dihedral-cache oligomer-shape monomer-shape :phi))
@@ -35,13 +37,13 @@
          )
     (multiple-value-bind (shape-key rotamers monomer-contexts)
         (catalogue-shape-key oligomer-shape monomer monomer-context)
-      (let ((result (gethash shape-key shape-key-to-allowed-rotamers)))
+      (let ((result (binned-shape-key-map-value shape-key shape-key-to-allowed-rotamers)))
         (unless result
           (let* ((*print-pretty* nil))
             (error 'no-rotamers :message (format nil "Found no allowed-rotamers for ~s~%- monomer-context: ~s~%- shape-key ~s -  ~s in ~s~%- this shouldn't be possible if a backbone-stepper was created and applied to the oligomer-shape~%- backbone rotamers: ~{bb ~s~%~}- monomer-contexts: ~s" monomer monomer-context
                                                  shape-key sidechain-monomer-shape oligomer-shape rotamers monomer-contexts))))
         (when (= 0 (length result))
-          (error 'no-rotamers :message (format nil "The resulting rotamers vector is empty for shape-key ~s - available keys ~s" shape-key (alexandria:hash-table-keys shape-key-to-allowed-rotamers))))
+          (error 'no-rotamers :message (format nil "The resulting rotamers vector is empty for shape-key ~s - available keys ~s" shape-key (binned-shape-key-map-keys shape-key-to-allowed-rotamers))))
         #+debug-mover
         (let ((*print-pretty* nil))
           (format t "   calculate-allowed-rotamers  phi-deg ~d  psi-deg ~d    allowed-rotamers -> ~s~%" phi-deg psi-deg result))
@@ -136,6 +138,9 @@ to reflect the backbone rotamer-indexes" required-rotamer-index read-rotamer-ind
     (error "Illegal shape-kind argument ~s - must be one of :sidechain :backbone" shape-kind))
   (eq :backbone shape-kind))
 
+;;; SHAPE-KEY-LEGACY: only called by the disabled make-permissible-backbone-rotamers below.
+;;; The active stepper uses catalogue-shape-key and calculate-allowed-rotamers.
+#+(or)
 (defun one-backbone-permissible-rotamer (monomer-context rotamers-db rotamers index sidechain sidechain-monomer-context)
   (declare (ignore sidechain))
   (let ((allowed-rotamer-indexes (make-array 16 :adjustable t :fill-pointer 0)))

@@ -458,16 +458,13 @@ difference is structural: SIDECHAIN rotamers are backbone-DEPENDENT, so they are
 shape-key and the count varies per key.  BACKBONE rotamers are not keyed by anything - they ARE
 the backbone - so the count is just the list length.
 
-Nothing here interprets a shape-key, and nothing should.  MAKE-SHAPE-KEY is (&rest pparts) ->
-pparts (internals.lisp:26-27) - a shape-key is whatever list of parts the FOLDAMER decides on.
-Amino acids use backbone dihedrals; spiroligomers use combinations of Cremer-Pople ring pucker
-parameters.  The count below is a MAPHASH over however many keys exist, which stays correct for
-any foldamer.  (Note SIDECHAIN-ROTAMERS' own slot documentation at internals.lisp:453-454 says
-\"This is a cons of (phi.psi)\" - that is the amino-acid case, not the general one.)"))
+Nothing here interprets a shape-key. Each key is a BINNED-SHAPE-KEY containing the
+named bins selected by its foldamer. MAP-BINNED-SHAPE-KEYS visits each distinct
+key by contents, regardless of which rings or dihedrals supplied its fields."))
 
 (defmethod max-rotamer-count ((rotamers sidechain-rotamers))
   (let ((most 0))
-    (maphash (lambda (shape-key allowed)
+    (map-binned-shape-keys (lambda (shape-key allowed)
                (declare (ignore shape-key))
                (setf most (max most (length allowed))))
              (shape-key-to-index rotamers))
@@ -1068,7 +1065,7 @@ happens to fall below the slot count.  BLUEPRINT-SLOT-FOR-ROTAMER-INDEX inverts 
      (let* ((shape-key (shape-key-for-sidechain-monomer
                         foldamer monomer-context oligomer-shape
                         (original-monomer blueprint-locus)))
-            (indexes (gethash shape-key (shape-key-to-index container)))
+            (indexes (binned-shape-key-map-value shape-key (shape-key-to-index container)))
             (vector (rotamer-vector container)))
        (values (if indexes
                    (map 'vector (lambda (i) (aref vector i)) indexes)
@@ -1288,7 +1285,7 @@ GENERATION because the slot conformations have been rewritten."
                                             (gethash context
                                                      (context-to-rotamers database)))
                        for indexes = (and container
-                                          (gethash shape-key
+                                          (binned-shape-key-map-value shape-key
                                                    (shape-key-to-index container)))
                        for rotamer-vector = (and container (rotamer-vector container))
                        for found = (length indexes)

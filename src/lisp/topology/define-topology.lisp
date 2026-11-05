@@ -199,7 +199,7 @@ Keep the heavy atoms and hydrogens in the order they were found."
   (intern (symbol-name name) :keyword))
 
 (defparameter *legal-constitution-atom-properties*
-  '(:plugs :ring :stereochemistry-type :adjust :charge :build-order
+  '(:plugs :ring :stereochemistry-type :adjust :new-adjustment :charge :build-order
     :aromatic))
 
 (defun validate-constitution-atom-properties (properties atom-name)
@@ -212,6 +212,7 @@ Keep the heavy atoms and hydrogens in the order they were found."
            (unless (member property *legal-constitution-atom-properties* :test #'eq)
              (error "Illegal property ~s (~s) for atom ~s. Allowed properties: ~s"
                     property value atom-name *legal-constitution-atom-properties*)))
+  (atom-adjustment-specification properties)
   properties)
 
 
@@ -689,9 +690,10 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         for property = (car cur)
         for value = (cadr cur)
         until (null cur)
-        unless (and property (member property '(:plugs :ring :stereochemistry-type :adjust :charge :build-order)))
+        unless (and property (member property '(:plugs :ring :stereochemistry-type :adjust :new-adjustment :charge :build-order)))
           do (error "Invalid property ~s ~s defining ~s  properties: ~s" property value name properties)
-        ))
+        )
+  (atom-adjustment-specification properties))
 
 (defun validate-residue-properties (properties name)
   (loop for cur = properties then (cddr cur)
@@ -712,6 +714,35 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         do (setf counter (recursively-order-children-atom-nodes child counter)))
   counter)
 
+(defun validate-out-plug-ancestry (graph)
+  "Require three reference atoms at each outgoing plug's primary bond.
+An incoming plug supplies ancestry from the preceding residue, whose outgoing
+plug must satisfy this same rule. Additional plug bonds close rings and do
+not start new joint-tree branches."
+  (let ((paths (make-hash-table :test #'eq))
+        (plugs (make-hash-table :test #'eq)))
+    (labels ((walk (node ancestors)
+               (let ((path (cons (name node) ancestors)))
+                 (setf (gethash (name node) paths) path)
+                 (dolist (plug-name (getf (property-list node) :plugs))
+                   (parse-plug-name plug-name (name node) plugs graph))
+                 (dolist (child (children node)) (walk child path)))))
+      (walk (root-node graph) nil))
+    (maphash
+     (lambda (plug-name plug)
+       (when (typep plug 'out-plug)
+         (let* ((bond (aref (plug-bonds plug) 0))
+                (atom-name (atom-name bond))
+                (path (gethash atom-name paths)))
+           (unless path
+             (error "Topology ~s: outgoing plug ~s atom ~s is not in the atom tree"
+                    (name graph) plug-name atom-name))
+           (unless (or (in-plug graph) (>= (length path) 3))
+             (error "Topology ~s: outgoing plug ~s on atom ~s needs three reference atoms (attachment atom, parent, grandparent); found ~d: ~s. Reorder the atom tree to provide enough ancestry."
+                    (name graph) plug-name atom-name (length path) path)))))
+     plugs))
+  graph)
+
 (defun do-define-topology (name sexp &key
                                        restraints
                                        types
@@ -720,6 +751,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                        plug-names
                                        dihedrals
                                        cluster-dihedrals
+                                       cache
                                        rings
                                        rotamer-limits
                                        code)
@@ -733,7 +765,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                  (list :restraints restraints :types types :xyz-joints xyz-joints
                        :residue-properties residue-properties :plug-names plug-names
                        :dihedrals dihedrals :cluster-dihedrals cluster-dihedrals
-                       :rings rings :rotamer-limits rotamer-limits
+                       :rings rings :cache cache :rotamer-limits rotamer-limits
                        :code (or code (if (consp name) (first name) name))))))
         (graph (interpret (if (consp name)
                               (first name)
@@ -742,6 +774,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         (group-names (if (consp name)
                          name
                          (list name))))
+    (validate-out-plug-ancestry graph)
     ;;Change class of all atom-nodes to ordered-atom-nodes and set their constitution-atom-index
     ;; to their order as they appear in a depth first search
     (change-class (root-node graph) 'ordered-atom-node
@@ -753,6 +786,9 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
     (multiple-value-bind (constitution plugs stereoisomers)
         (parse-graph graph plug-names residue-properties)
       (validate-constitution-vs-residue-properties constitution residue-properties)
+      (setf (getf (residue-properties constitution) :cache)
+            (parse-cache-declarations
+             cache :atom-exists-p (lambda (atom-name) (gethash atom-name (nodes graph)))))
       (when (listp xyz-joints)
         (loop for name in xyz-joints
               unless (gethash name (nodes graph))
@@ -802,7 +838,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         tops))))
 
 
-(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings residue-properties plugs rotamer-limits code)
+(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings cache residue-properties plugs rotamer-limits code)
   `(do-define-topology ',name ',sexp
      :restraints ',restraints
      :dihedrals ',dihedrals
@@ -810,6 +846,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
      :cluster-dihedrals ',cluster-dihedrals
      :plug-names ',plugs
      :rings ',rings
+     :cache ',cache
      :xyz-joints ',xyz-joints
      :rotamer-limits ',rotamer-limits
      :code ',code

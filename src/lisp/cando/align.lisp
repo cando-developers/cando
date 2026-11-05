@@ -74,8 +74,8 @@ If KEY is passed then use KEY to get the coordinates from COORDINATES"
                 when (different-p unique-coords one-coords key)
                   do (push coords-struct unique-coords))
           (loop for maybe-one-coords in coordinates
-                when (different-p unique-coords one-coords)
-                  do (push one-coords unique-coords)))
+                when (different-p unique-coords maybe-one-coords)
+                  do (push maybe-one-coords unique-coords)))
       unique-coords)))
 
 (defun aggregates-with-rms-differences (aggregates &key (rms-threshold 0.2))

@@ -1,0 +1,38 @@
+(in-package #:topology-shape-key-tests)
+
+(defun test-cache-declarations ()
+  (let ((entries (topology:parse-cache-declarations
+                  '((:ring :first-ring CAC) (:dihedral :bb1 N))
+                  :atom-exists-p (lambda (name) (member name '(:CAC :N))))))
+    (assert (every (lambda (entry) (typep entry 'topology:cache-component-declaration)) entries))
+    (assert (equal '(:ring :dihedral) (mapcar #'topology:cache-component-kind entries)))
+    (assert (equal '(:CAC :N) (mapcar #'topology:cache-component-atom-name entries))))
+  (dolist (bad '(((:unknown :bb1 N)) ((:dihedral :bb1))
+                 ((:dihedral :bb1 N) (:ring :bb1 CAC))
+                 ((:dihedral nil N)) ((:dihedral :bb1 3))))
+    (assert (signals-error-p (lambda () (topology:parse-cache-declarations bad)))))
+  (assert (signals-error-p
+           (lambda () (topology:parse-cache-declarations
+                       '((:dihedral :bb1 missing)) :atom-exists-p (constantly nil)))))
+  ;; Exercise the actual DEFINE-TOPOLOGY macro and source-based derivation.
+  (let ((topology:*topology-groups* (make-hash-table :test #'eq)))
+    (topology:define-topology (skt-cache-source skt-cache-group)
+        ((CM C :plugs (:-side)) (- H1) (- H2) - H3)
+      :dihedrals ((:CM :chi0))
+      :cache ((:dihedral :bb1 CM)))
+    (let* ((source-name (first (gethash 'skt-cache-group topology:*topology-groups*)))
+           (source (chem:find-topology source-name))
+           (entry (first (topology:topology-cache-declarations source))))
+      (assert (eq :bb1 (topology:cache-component-name entry)))
+      (assert (eq :CM (topology:cache-component-atom-name entry)))
+      (assert (equal '((:dihedral :bb1 CM))
+                     (getf (getf (getf (topology:property-list source)
+                                      :%topology-definition) :options) :cache))))
+    (topology:derive-topology-group 'skt-derived-cache-group
+                                    :from 'skt-cache-group :name-prefix "DERIVED-")
+    (dolist (name (gethash 'skt-derived-cache-group topology:*topology-groups*))
+      (let ((entries (topology:topology-cache-declarations (chem:find-topology name))))
+        (assert (= 1 (length entries)))
+        (assert (eq :bb1 (topology:cache-component-name (first entries)))))))
+  (format t "~&CACHE-DECLARATION-TESTS-PASSED~%")
+  t)

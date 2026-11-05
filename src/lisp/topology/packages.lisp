@@ -17,6 +17,24 @@
   ;; source.  One local variable name is not worth losing DECLARE TYPE across the package.
   (:shadow #:debug)
   (:export
+   #:training-context #:parse-training-context #:training-context-parse-error
+   #:training-context-error-expression #:training-context-expression
+   #:training-context-name #:training-context-focus #:training-context-nodes
+   #:training-context-connections #:training-context-caps
+   #:training-context-selectors #:training-context-paired-with
+   #:training-context-shape-kind #:training-context-paired-with-sidechains
+   #:training-context-shape-kind-properties #:shape-kind-properties
+   #:backbone-shape-kind-properties #:sidechain-shape-kind-properties
+   #:parse-training-shape-kind #:validate-shape-kind-options
+   #:parse-legacy-training-context #:shape-kind-backbone-shape-key-selector
+   #:shape-kind-paired-with-sidechains #:shape-kind-paired-with #:shape-kind-selectors
+   #:training-context-node #:training-context-node-monomer #:training-context-node-label
+   #:training-context-connection #:training-context-connection-source
+   #:training-context-connection-plug #:training-context-connection-target
+   #:training-context-cap #:training-context-cap-label #:training-context-cap-node #:training-context-cap-plug
+   #:training-context-cap-monomer #:training-context-selector
+   #:training-context-selector-node #:training-context-selector-cache-field
+   #:training-context-selector-output-name
    #:monomer-shape-locus
    #:assembler-check-joints
    #:make-topology-from-residue
@@ -312,6 +330,8 @@
    #:only-other-out-coupling-plug-name
    #:sorted-build-order
    #:adjustment
+   #:define-adjustment
+   #:remove-atom-adjustments
    #:external-adjustment
    #:internal-adjustment
    #:apply-rotamer-to-atresidue-internals
@@ -342,6 +362,11 @@
    #:sidechain-rotamers
    #:shape-key-to-index
    #:backbone-rotamers-base
+   #:backbone-rotamers
+   #:backbone-with-cache-rotamer
+   #:backbone-without-cache-rotamer
+   #:make-backbone-rotamer
+   #:make-backbone-rotamer-from-fragment-internals
    #:backbone-without-sidechain-rotamers
    #:backbone-with-sidechain-rotamers
    #:rotamers-database
@@ -575,11 +600,44 @@
    #:binned-shape-key-cache
    #:binned-shape-key
    #:make-binned-shape-key
+   #:bin-shape-component
+   #:unbin-shape-component
+   #:bin-shape-component-with-widths
+   #:unbin-shape-component-with-widths
    #:make-binned-shape-key-cache
    #:binned-shape-key-entries
    #:binned-shape-key-components
    #:binned-shape-key-names
    #:binned-shape-key-component
+   #:add-binned-shape-key-entry
+   #:binned-shape-key=
+   #:binned-shape-key-pathname-part
+   #:binned-shape-key-map
+   #:make-binned-shape-key-map
+   #:binned-shape-key-map-value
+   #:binned-shape-key-map-count
+   #:binned-shape-key-map-keys
+   #:map-binned-shape-keys
+   #:cache-component-declaration
+   #:cache-component-kind
+   #:cache-component-name
+   #:cache-component-atom-name
+   #:parse-cache-declarations
+   #:topology-cache-declarations
+   #:resolved-cache-component
+   #:resolved-ring-cache-component
+   #:resolved-dihedral-cache-component
+   #:resolved-cache-declaration
+   #:resolved-cache-monomer
+   #:resolved-cache-kind
+   #:resolved-cache-driver
+   #:resolved-cache-joint
+   #:resolve-topology-cache-components
+   #:measure-cache-component
+   #:measure-binned-shape-key-cache
+   #:backbone-shape-key-cache
+   #:decode-cache-component
+   #:write-ring-cache-component
    #:identify-and-order-rings
    #:calculate-rotatable-dihedrals
    #:identify-build-joints

@@ -12,7 +12,13 @@
                (:file "readtable")
                (:file "serial")
                (:file "topology-classes")
+               (:file "training-context")
+               (:file "shape-key-api")
+               (:file "shape-key")
+               (:file "shape-key-map")
+               (:file "shape-key-binning")
                (:file "constitution")
+               (:file "cache-declarations")
                (:file "joint-templates")
                (:file "define-topology")
                (:file "oligomer")
@@ -31,6 +37,7 @@
                (:file "steppers")
                (:file "rotamers-api")
                (:file "manipulator")
+               (:file "cache-geometry")
                (:file "blueprint")
                ))
 
@@ -39,6 +46,8 @@
 (defsystem "topology/tests"
   :description "Regression tests for topology"
   :depends-on ("topology")
+  :in-order-to ((test-op (test-op "topology/shape-key-tests")
+                        (test-op "topology/training-context-tests")))
   :serial t
   :components ((:file "tests/derive-topology-group")
                (:file "tests/manipulator"))
@@ -46,6 +55,36 @@
              (declare (ignore operation component))
              (uiop:symbol-call :topology-derivation-tests :run-tests)
              (uiop:symbol-call :topology-manipulator-tests :run-tests)))
+
+(defsystem "topology/shape-key-tests"
+  :description "Regression checks for the new shape-key foundation"
+  :depends-on ("topology")
+  :serial t
+  :components ((:file "tests/shape-key")
+               (:file "tests/cache-declarations")
+               (:file "tests/shape-key-binning")
+               (:file "tests/shape-key-map")
+               (:file "tests/cache-geometry")
+               (:file "tests/cache-storage")
+               (:file "tests/shape-key-consumers"))
+  :perform (test-op (operation component)
+             (declare (ignore operation component))
+             (uiop:symbol-call :topology-shape-key-tests :run-tests)
+             (uiop:symbol-call :topology-shape-key-tests :test-cache-declarations)
+             (uiop:symbol-call :topology-shape-key-tests :test-shape-key-binning)
+             (uiop:symbol-call :topology-shape-key-tests :test-shape-key-map)
+             (uiop:symbol-call :topology-shape-key-tests :test-cache-geometry)
+             (uiop:symbol-call :topology-shape-key-tests :test-cache-storage)
+             (uiop:symbol-call :topology-shape-key-tests :test-shape-key-consumers)
+             (uiop:symbol-call :topology-shape-key-tests :test-cp-amplitude-boundaries)))
+
+(defsystem "topology/training-context-tests"
+  :description "Grammar and reference checks for training-context declarations"
+  :depends-on ("topology")
+  :components ((:file "tests/training-context"))
+  :perform (test-op (operation component)
+             (declare (ignore operation component))
+             (uiop:symbol-call :cl-user :test-training-context-parser)))
 
 (defsystem "topology/documentation"
   :description "Documentation for topology system"

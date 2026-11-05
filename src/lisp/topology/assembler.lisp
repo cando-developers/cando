@@ -324,7 +324,8 @@ molecule in the global frame."
    (aggregate :initarg :aggregate :accessor aggregate)
    (energy-function :initarg :energy-function :accessor energy-function)
    (ataggregate :initarg :ataggregate :accessor ataggregate)
-   (joint-tree :initarg :joint-tree :accessor joint-tree)))
+   (joint-tree :initarg :joint-tree :accessor joint-tree)
+   (adjustments :initarg :adjustments :accessor adjustments)))
 
 (defun get-monomer-context (monomer assembler-base)
   "Lookup a monomer-context using the MONOMER and ASSEMBLER-BASE"
@@ -337,8 +338,7 @@ molecule in the global frame."
                            :documentation "The oligomer-shape designated as the ligand (moving/designed), stored by IDENTITY so the ligand/receptor role does not   depend on list position. NIL unless this is a ligand+receptor complex.")
    (%receptor-oligomer-shape :initform nil :initarg :receptor-oligomer-shape :reader %receptor-oligomer-shape
                              :documentation "The oligomer-shape designated as the receptor (fixed reference frame), by identity. NIL unless a complex.")
-   (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset)
-   (adjustments :initarg :adjustments :accessor adjustments))
+   (monomer-subset :initform nil :initarg :monomer-subset :accessor monomer-subset))
   (:documentation "Te assembler class maintains a list of OLIGOMER-SHAPEs
 
 The most important functions are UPDATE-INTERNALS and UPDATE-EXTERNALS."
@@ -595,6 +595,9 @@ Specialize the foldamer argument to provide methods"))
      (gethash monomer (monomers monomer-subset)))
     (t (error "Illegal value for monomer-subset ~s - must be NIL or a hash-table"))))
 
+;;; SHAPE-KEY-LEGACY: unused monomer-shape cache path (already signaled an error).
+;;; Replacement: declared caches stored on backbone fragments.
+#+(or)
 (defun maybe-update-shape-key-cache (assembler internals)
   (error "Don't use the shape-key-cache in the monomer-shape")
   #+(or)
@@ -779,18 +782,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
         (funcall tune-energy-function energy-function assembler))
       (setf (energy-function assembler) energy-function)|#
       ;; The assembler is built - initialize the adjustments
-      (loop for atmol across (atmolecules ataggregate)
-            for atmol-index from 0
-            do (loop for atres across (atresidues atmol)
-                     for atres-index from 0
-                     for internal-adjusts = (gethash atres (internal-adjustments adjustments))
-                     for external-adjusts = (gethash atres (external-adjustments adjustments))
-                     when internal-adjusts
-                       do (loop for adjust in internal-adjusts
-                                do (initialize-adjustment adjust assembler))
-                     when external-adjusts
-                       do (loop for adjust in external-adjusts
-                                do (initialize-adjustment adjust assembler))))
+      (initialize-assembler-adjustments assembler)
       #+(or)
       (unless monomer-subset
         (error "I don't think I want to update the internals now that there isn't built in internals")
@@ -813,6 +805,17 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                   ))
 #|                  :tune-energy-function tune-energy-function
                   :keep-interaction-factory-factory keep-interaction-factory-factory))|#
+
+(defun initialize-assembler-adjustments (assembler)
+  "Resolve adjustment references after all joints have been constructed."
+  (let ((adjustments (adjustments assembler)))
+    (loop for atmol across (atmolecules (ataggregate assembler))
+          do (loop for atres across (atresidues atmol)
+                   do (dolist (adjustment (gethash atres (internal-adjustments adjustments)))
+                        (initialize-adjustment adjustment assembler))
+                      (dolist (adjustment (gethash atres (external-adjustments adjustments)))
+                        (initialize-adjustment adjustment assembler)))))
+  assembler)
 
 (defun make-training-assembler (oligomers &key focus-monomer incomplete-monomer-contexts energy-function-factory)
   "Build a assembler for the oligomers. This is used for building training molecules."
@@ -841,6 +844,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                         (resize-atmolecules atagg (length oligomers))
                         atagg))
          (joint-tree (make-joint-tree))
+         (adjustments (make-instance 'adjustments))
          (energy-function (if energy-function-factory
                               (funcall energy-function-factory aggregate)
                               (chem:make-energy-function :matter aggregate :use-excluded-atoms nil)))
@@ -872,7 +876,7 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                                                  monomer-positions
                                                                                  joint-tree
                                                                                  (chem:atom-table energy-function)
-                                                                                 nil)))
+                                                                                 adjustments)))
                                (put-atmolecule ataggregate atmolecule molecule-index))
                           finally (return (make-instance 'training-assembler
                                                          :focus-monomer focus-monomer
@@ -882,8 +886,9 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
                                                          :aggregate aggregate
                                                          :energy-function energy-function
                                                          :ataggregate ataggregate
+                                                         :adjustments adjustments
                                                          :joint-tree joint-tree)))))
-    assembler))
+    (initialize-assembler-adjustments assembler)))
 
 (defun walk-atoms-joints (assembler molecule-index callback)
   (let* ((aggregate (aggregate assembler))
@@ -1074,10 +1079,10 @@ ENERGY-FUNCTION-FACTORY - If defined, call this with the aggregate to make the e
   (let* ((oligomer (topology:oligomer oligomer-shape))
          (pos (position oligomer (oligomers assembler)))
          (atmol (aref (atmolecules (ataggregate assembler)) pos)))
-    #+(or)(loop for atres across (atresidues atmol)
-                for adjustments = (gethash atres (internal-adjustments (adjustments assembler)))
-                do (loop for adjustment in adjustments
-                         do (internal-adjust adjustment assembler)))))
+    (loop for atres across (atresidues atmol)
+          for adjustments = (gethash atres (internal-adjustments (adjustments assembler)))
+          do (loop for adjustment in adjustments
+                   do (internal-adjust adjustment assembler internals)))))
 
 (defun adjust-all-internals (assembler internals)
   "Do the adjustment of internal coordinates"

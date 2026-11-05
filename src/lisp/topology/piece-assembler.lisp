@@ -110,7 +110,7 @@ in backtraces and in the LOCUS-TO-OLIGOMER-SHAPE map."
   The car is the index INTO the context's rotamer-vector - the mrkeys that
   ADD-PAIR-SCAN-ENERGY builds must use that same index space."
   (let* ((rotamers        (gethash monomer-context (context-to-rotamers rotamers-db)))
-         (allowed-indexes (and rotamers (gethash shape-key (shape-key-to-index rotamers))))
+         (allowed-indexes (and rotamers (binned-shape-key-map-value shape-key (shape-key-to-index rotamers))))
          (rotamer-vector  (and rotamers (rotamer-vector rotamers))))
     (cond               
       ((null rotamers)

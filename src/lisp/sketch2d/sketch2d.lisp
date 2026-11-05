@@ -470,7 +470,7 @@ I'll use an angle term instead of a bond term.
      molecule)
     (values double-bond-restraint-bonds)))
 
-(defun system-preparation (molecule &key verbose)
+(defun system-preparation (molecule &key verbose &aux (owner-map (make-hash-table)))
   (labels ((find-groups (chem-info-graph molecule-graph)
              (loop for match in (chem:boost-graph-vf2 chem-info-graph molecule-graph)
                    collect (elt match 0)))
@@ -487,21 +487,27 @@ I'll use an angle term instead of a bond term.
                              when (eq (chem:get-element natm) :H)
                                do (progn
                                     (incf number-removed)
-                                    (push (cons natm res) connected-hydrogens)))))))
+                                    (pushnew natm connected-hydrogens :test #'eq)))))))
                (if connected-hydrogens
                    (progn
-                     (loop for (hatom . res) in connected-hydrogens
+                     (loop for hatom in connected-hydrogens
+                           for res = (gethash hatom owner-map)
                            do (remhash hatom sketch-atoms-to-original)
-                           do (chem:remove-atom-delete-bonds res hatom))))))
-           (add-lone-pair (mol atoms idx atom-to-residue-map)
+                              (chem:remove-atom-delete-bonds res hatom)
+                              (remhash hatom owner-map)
+                              (when (zerop (chem:content-size res))
+                                (chem:remove-residue (gethash res owner-map) res)
+                                (remhash res owner-map)))))))
+           (add-lone-pair (mol atoms idx owner-map)
              (declare (ignore mol))
              (loop for atom in atoms
                    for lp-idx from idx
                    for lp-name = (intern (format nil "lp~a" lp-idx) :keyword)
                    for lp = (chem:make-atom lp-name :lp)
-                   for res = (gethash atom atom-to-residue-map)
+                   for res = (gethash atom owner-map)
                    do (incf idx)
                       (chem:add-matter res lp)
+                      (setf (gethash lp owner-map) res)
                       (chem:bond-to atom lp :single-bond t nil)
                    )
              idx)
@@ -524,6 +530,13 @@ I'll use an angle term instead of a bond term.
       ;; Set names here
       #+(or)(when *show-names* (debug-set-unique-atom-names mol-copy t))
       (add-atom-annotations mol-copy)
+      ;; Ownership may cross a bond: EH's hydrogen belongs to a different
+      ;; residue than PRE4's nitrogen. Only the sketch copy is mapped/edited.
+      ;; Use this map for lookups, never for traversing atoms or residues.
+      (chem:do-residues (res mol-copy)
+        (setf (gethash res owner-map) mol-copy)
+        (chem:do-atoms (atm res)
+          (setf (gethash atm owner-map) res)))
       (let ((mol-graph (chem:make-molecule-graph-from-molecule mol-copy)))
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *methyl* mol-graph) 3)
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *hydroxyl* mol-graph) 1)
@@ -534,20 +547,15 @@ I'll use an angle term instead of a bond term.
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *tertiary-carbon* mol-graph) 1 t)
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *tertiary-amine-with-h* mol-graph) 1)
         (let ((idx 0)
-              (atom-to-residue-map (make-hash-table))
               (atoms-need-lps nil))
-          ;; Map atoms to residues
-          (chem:do-residues (res mol-copy)
-            (chem:do-atoms (atm res)
-              (setf (gethash atm atom-to-residue-map) res)))
           ;; Collect all atoms that need lone-pairs.
           (chem:do-atoms (atm mol-copy)
             (when (and (member (chem:get-element atm) '(:O :N :S)) (= (chem:number-of-bonds atm) 2))
               (push atm atoms-need-lps)))
           ;; Add lone pairs to atoms that need them
           (let ((missing-h (unique-secondary-carbon-missing-h mol-graph)))
-            (setf idx (add-lone-pair mol-copy missing-h idx atom-to-residue-map)))
-          (setf idx (add-lone-pair mol-copy atoms-need-lps idx atom-to-residue-map)))
+            (setf idx (add-lone-pair mol-copy missing-h idx owner-map)))
+          (setf idx (add-lone-pair mol-copy atoms-need-lps idx owner-map)))
         ;; Add extra bonds for angles
         (let ((double-bond-restraints (calculate-extra-bonds-for-angles-and-double-bonds mol-copy)))
           (chem:setf-force-field-name mol-copy :.hidden.sketch2d-1)

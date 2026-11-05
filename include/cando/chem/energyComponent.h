@@ -46,6 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/adapt/quickDom.h>
 #include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyPeriodic.h>
 #include <cando/chem/nVector.h>
 #include <cando/chem/scoringFunction.h>
 #include <cando/chem/residue.h>
@@ -211,7 +212,7 @@ inline string	atomLabel(Atom_sp a)
 #define	TWOPI		(3.14159265*2.0)
 #define	reciprocal(x)	(1.0/(x))
 #define	mysqrt(x)	sqrt(x)
-#define	mymod(x,y)	fmod(x,y)
+#define mymod(x,y) chem::energy_mod((x),(y))
 #define	power1(x)	(x)
 #define	power2(x)	((x)*(x))
 #define	powern2(x)	(1.0/(x)*(x))

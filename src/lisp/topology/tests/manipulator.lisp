@@ -8,6 +8,8 @@
   (handler-case (progn (funcall thunk) nil)
     (error () t)))
 
+;;; SHAPE-KEY-LEGACY: positional driver cache tests; replaced by topology/shape-key-tests.
+#+(or)
 (defun test-binned-shape-keys ()
   (let* ((driver (make-instance 'topology:dihedral-driver
                                 :name :bb1 :dihedral-joint nil
@@ -78,6 +80,8 @@
                        (topology:make-binned-shape-key-cache '((:bb1 1) (:bb1 2))) :bb1))))
   t)
 
+;;; SHAPE-KEY-LEGACY: old bin ranges; replaced by tests/shape-key and cache-storage.
+#+(or)
 (defun test-binned-shape-key-serialization ()
   (dolist (constructor (list #'topology:make-binned-shape-key-cache
                             #'topology:make-binned-shape-key))
@@ -100,9 +104,7 @@
                 (assert (equal '(2 13) (topology:binned-shape-key-component restored :first-ring)))))))))) )
 
 (defun run-tests ()
-  "Check labeled binned keys and static dihedral joint eligibility."
-  (test-binned-shape-keys)
-  (test-binned-shape-key-serialization)
+  "Check static dihedral joint eligibility. Cache checks live in topology/shape-key-tests."
   (let* ((filename (asdf:system-relative-pathname
                     "topology" #p"../regression-tests/data/hexapeptide.mol2"))
          (aggregate (chem:load-mol2 filename))

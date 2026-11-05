@@ -1237,17 +1237,8 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   if (keepInteractionFactory.nilp()) return;
   core::T_sp keepInteraction = specializeKeepInteractionFactory( keepInteractionFactory, RestraintDihedral_O::staticClass());
   gctools::Vec0<Atom_sp>::iterator ni;
-#if 0
-  // right
-  core::clasp_write_string("%s:%d:%s Generating correct dihedral restraint for amide.\n", __FILE__, __LINE__, __FUNCTION__);
   double trans  = -180.0;
   double cis    = 0.0;
-#else
-  // wrong/testing
-  core::clasp_write_string(fmt::format("%s:%d:%s Generating WRONG dihedral restraint for amide.\n", __FILE__, __LINE__, __FUNCTION__));
-  double trans  = 90.0;
-  double cis    = -90.0;
-#endif
 
   auto dihedralRestraintComponent = ensureComponent<EnergyDihedralRestraint_O>(this->asSmartPtr());
   double weight = 1.0;
@@ -2445,7 +2436,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   //
   // Define secondary amide restraints
   //
-#if 0
   if ( this->_RestrainSecondaryAmides )
     {
       gctools::Vec0<Atom_sp>	nitrogens;
@@ -2456,14 +2446,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             nitrogens.push_back(a);
           }
         }
-      //int startTerms = this->getDihedralRestraintComponent()->numberOfTerms();
-      // this->__createSecondaryAmideRestraints(nitrogens,keepInteraction);
-      //if (chem__verbose(0)) core::clasp_write_string(fmt::format("Built secondary amide restraints including {} terms\n" , (this->getDihedralRestraintComponent()->numberOfTerms() - startTerms)));
+      this->__createSecondaryAmideRestraints(nitrogens,keepInteractionFactory);
     } else
     {
       LOG("Skipping Secondary amide restraints because _RestrainSecondaryAmides = {}" , this->_RestrainSecondaryAmides );
     }
-#endif
   //
   // Set up force-field restraints
   //

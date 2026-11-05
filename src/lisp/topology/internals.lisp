@@ -17,23 +17,50 @@
           else
             do (write-char ch out))))
 
+;;; SHAPE-KEY-LEGACY: printer-dependent path; replaced by canonical object encoding.
+#+(or)
 (defun shape-key-as-pathname-part (shape-key)
   (format nil "shape-key-~a" (transform-string (format nil "~a" shape-key))))
 
+;;; SHAPE-KEY-LEGACY: list-valued key; replaced by object entry reader.
+#+(or)
 (defun shape-key-parts (shape-key)
   shape-key)
 
+;;; SHAPE-KEY-LEGACY: list-valued key; replaced by validated object construction.
+#+(or)
 (defun make-shape-key (&rest pparts)
   pparts)
 
+;;; SHAPE-KEY-LEGACY: list-valued key; replaced by selected-key type check.
+#+(or)
 (defun ensure-shape-key (shape-key)
   (unless (consp shape-key)
     (error "The shape-key ~s must be a shape-key" shape-key))
   shape-key)
 
 
+;;; SHAPE-KEY-LEGACY: EQUAL does not compare key objects by contents.
+#+(or)
 (defmethod make-shape-key-map ()
   (make-hash-table :test 'equal))
+
+(defun shape-key-as-pathname-part (shape-key)
+  (binned-shape-key-pathname-part shape-key))
+
+(defun shape-key-parts (shape-key)
+  (check-type shape-key binned-shape-key)
+  (binned-shape-key-entries shape-key))
+
+(defun make-shape-key (&rest entries)
+  (make-binned-shape-key entries))
+
+(defun ensure-shape-key (shape-key)
+  (check-type shape-key binned-shape-key)
+  shape-key)
+
+(defmethod make-shape-key-map ()
+  (make-binned-shape-key-map))
 
 
 (defclass dihedral-range (cando.serialize:serializable)
@@ -268,10 +295,14 @@
    (coordinates :initarg :coordinates :accessor coordinates)
    ))
 
+;;; SHAPE-KEY-LEGACY: replaced by binned-shape-key-cache; tests/shape-key and cache-storage.
+#+(or)
 (defclass shape-key-cache (cando.serialize:serializable)
   ((cache :initform nil :type list :initarg :cache :accessor cache))
   (:documentation "Maintain cache as a map of shape-key names to shape-keys"))
 
+;;; SHAPE-KEY-LEGACY: printer for the retired cache class.
+#+(or)
 (defmethod print-object ((obj shape-key-cache) stream)
   (if *print-readably*
       (call-next-method)
@@ -287,10 +318,14 @@
   nil)
 
 
+;;; SHAPE-KEY-LEGACY: use make-binned-shape-key-cache.
+#+(or)
 (defun make-shape-key-cache ()
   "Create an empty SHAPE-KEY-CACHE"
   (make-instance 'shape-key-cache))
 
+;;; SHAPE-KEY-LEGACY: use add-binned-shape-key-entry, which rejects duplicates.
+#+(or)
 (defun add-to-cache (shape-key-cache name shape-key)
   "Add a NAME SHAPE-KEY pair to the SHAPE-KEY-CACHE"
   (unless (or (integerp shape-key)
@@ -299,21 +334,29 @@
     (error "shape-key ~s must be an integer or a list of integers" shape-key))
   (push (cons name shape-key) (cache shape-key-cache)))
 
+;;; SHAPE-KEY-LEGACY: use binned-shape-key-component, returning a bin list.
+#+(or)
 (defun find-in-cache (shape-key-cache name)
   "Return the dihedral-angle associated with the NAME in SHAPE-KEY-CACHE"
   (let ((entry (assoc name (cache shape-key-cache))))
     (cdr entry)))
 
+;;; SHAPE-KEY-LEGACY: use binned-shape-key-entries, which returns a defensive copy.
+#+(or)
 (defun cache-alist-copy (shape-key-cache)
   "Return an alist version of the SHAPE-KEY-CACHE that can be altered without
 changing the SHAPE-KEY-CACHE."
   (copy-seq (cache shape-key-cache)))
 
+;;; SHAPE-KEY-LEGACY: degree cache storage; replaced by backbone-cache-owner.
+#+(or)
 (defclass fragment-internals-with-shape-key-cache (fragment-internals)
   ((shape-key-cache-deg :initarg :shape-key-cache-deg
                                 :type shape-key-cache
                                 :accessor shape-key-cache-deg)))
 
+;;; SHAPE-KEY-LEGACY: old cache initarg; replacement below; regression: cache-storage.
+#+(or)
 (defun make-fragment-internals-with-shape-key-cache-from-fragment-internals (fragment-internals shape-key-cache-deg)
   "Shallow copy of fragment-internals"
   (make-instance 'fragment-internals-with-shape-key-cache
@@ -325,6 +368,39 @@ changing the SHAPE-KEY-CACHE."
                  :internals-values (copy-seq (internals-values fragment-internals))
                  :coordinates (copy-seq (coordinates fragment-internals))
                  :shape-key-cache-deg shape-key-cache-deg))
+
+(defclass backbone-cache-owner ()
+  ((backbone-shape-key-cache :initarg :backbone-shape-key-cache
+                             :type binned-shape-key-cache
+                             :accessor backbone-shape-key-cache)))
+
+(defun check-backbone-shape-key-cache (cache)
+  (unless (and (typep cache 'binned-shape-key-cache)
+               (not (typep cache 'binned-shape-key)))
+    (error "Backbone storage requires a binned-shape-key-cache, got ~s" cache))
+  cache)
+
+(defmethod initialize-instance :after ((owner backbone-cache-owner) &key)
+  (check-backbone-shape-key-cache (backbone-shape-key-cache owner)))
+
+(defmethod (setf backbone-shape-key-cache) :before (value (owner backbone-cache-owner))
+  (check-backbone-shape-key-cache value))
+
+(defclass fragment-internals-with-shape-key-cache (fragment-internals backbone-cache-owner) ())
+
+(defun make-fragment-internals-with-shape-key-cache-from-fragment-internals (fragment cache)
+  "Copy a fragment and attach an independent snapshot of its measured backbone cache."
+  (check-backbone-shape-key-cache cache)
+  (make-instance 'fragment-internals-with-shape-key-cache
+                 :monomer-context (monomer-context fragment)
+                 :trainer-index (trainer-index fragment)
+                 :probability (probability fragment)
+                 :energy (energy fragment)
+                 :free-energy (free-energy fragment)
+                 :internals-values (copy-seq (internals-values fragment))
+                 :coordinates (copy-seq (coordinates fragment))
+                 :backbone-shape-key-cache
+                 (make-binned-shape-key-cache (binned-shape-key-entries cache))))
 
 (defmethod print-object ((obj fragment-internals) stream)
   (if *print-readably*
@@ -375,18 +451,24 @@ changing the SHAPE-KEY-CACHE."
 (defclass backbone-rotamer-base (rotamer)
   ())
 
+;;; SHAPE-KEY-LEGACY: degree cache storage; replaced by backbone-cache-owner.
+#+(or)
 (defclass backbone-with-sidechain-rotamer (backbone-rotamer-base)
   ((shape-key-cache-deg :initform (make-shape-key-cache)
                                 :initarg :shape-key-cache-deg
                                 :type shape-key-cache
                                 :accessor shape-key-cache-deg)))
 
+;;; SHAPE-KEY-LEGACY: old cache accessor; replacement below.
+#+(or)
 (defmethod print-object ((obj backbone-with-sidechain-rotamer) stream)
   (if *print-readably*
       (call-next-method)
       (print-unreadable-object (obj stream :type t)
         (format stream ":shape-key-cache-deg ~s" (shape-key-cache-deg obj)))))
 
+;;; SHAPE-KEY-LEGACY: old cache initarg; replacement below; regression: cache-storage.
+#+(or)
 (defun make-backbone-with-sidechain-rotamer (&key internals-values free-energy probability shape-key-cache-deg)
   (make-instance 'backbone-with-sidechain-rotamer
                  :internals-values internals-values
@@ -394,6 +476,8 @@ changing the SHAPE-KEY-CACHE."
                  :probability probability
                  :shape-key-cache-deg shape-key-cache-deg))
 
+;;; SHAPE-KEY-LEGACY: old cache accessor; replacement below; regression: cache-storage.
+#+(or)
 (defun make-backbone-with-sidechain-rotamer-from-fragment-internals (fragment-internals)
   (check-type fragment-internals fragment-internals-with-shape-key-cache)
   (make-backbone-with-sidechain-rotamer
@@ -402,16 +486,48 @@ changing the SHAPE-KEY-CACHE."
    :probability (probability fragment-internals)
    :shape-key-cache-deg (shape-key-cache-deg fragment-internals)))
 
+;;; SHAPE-KEY-LEGACY: cache ownership replaces sidechain-based class names.
+#+(or)
+(defclass backbone-with-sidechain-rotamer (backbone-rotamer-base backbone-cache-owner) ())
 
-(defclass backbone-without-sidechain-rotamer (backbone-rotamer-base)
+#+(or)
+(defmethod print-object ((obj backbone-with-sidechain-rotamer) stream)
+  (if *print-readably*
+      (call-next-method)
+      (print-unreadable-object (obj stream :type t)
+        (format stream ":backbone-shape-key-cache ~s" (backbone-shape-key-cache obj)))))
+
+#+(or)
+(defun make-backbone-with-sidechain-rotamer
+    (&key internals-values free-energy probability backbone-shape-key-cache)
+  (check-backbone-shape-key-cache backbone-shape-key-cache)
+  (make-instance 'backbone-with-sidechain-rotamer
+                 :internals-values internals-values :free-energy free-energy
+                 :probability probability :backbone-shape-key-cache backbone-shape-key-cache))
+
+#+(or)
+(defun make-backbone-with-sidechain-rotamer-from-fragment-internals (fragment)
+  (check-type fragment fragment-internals-with-shape-key-cache)
+  (make-backbone-with-sidechain-rotamer
+   :internals-values (copy-seq (internals-values fragment))
+   :free-energy (free-energy fragment) :probability (probability fragment)
+   :backbone-shape-key-cache
+   (make-binned-shape-key-cache (binned-shape-key-entries (backbone-shape-key-cache fragment)))))
+
+
+;;; SHAPE-KEY-LEGACY: this class name does not determine cache ownership.
+#+(or)
+(defclass backbone-without-sidechain-rotamer (backbone-rotamer-base backbone-cache-owner)
   ())
 
+#+(or)
 (defun make-backbone-without-sidechain-rotamer (&key internals-values free-energy probability)
   (make-instance 'backbone-without-sidechain-rotamer
                  :internals-values internals-values
                  :free-energy free-energy
                  :probability probability))
 
+#+(or)
 (defun make-backbone-without-sidechain-rotamer-from-fragment-internals (fragment-internals)
   (check-type fragment-internals fragment-internals)
   (make-backbone-without-sidechain-rotamer
@@ -419,6 +535,42 @@ changing the SHAPE-KEY-CACHE."
    :free-energy (free-energy fragment-internals)
    :probability (probability fragment-internals)))
 
+
+(defclass backbone-with-cache-rotamer (backbone-rotamer-base backbone-cache-owner) ())
+(defclass backbone-without-cache-rotamer (backbone-rotamer-base) ())
+
+(defun make-backbone-rotamer (topology &key internals-values free-energy probability cache)
+  "Choose cache ownership from TOPOLOGY's declarations, validating stored fields."
+  (let* ((declarations (topology-cache-declarations topology))
+         (names (mapcar #'cache-component-name declarations)))
+    (when declarations
+      (check-backbone-shape-key-cache cache)
+      (unless (and (= (length names) (length (binned-shape-key-names cache)))
+                   (every (lambda (name) (member name (binned-shape-key-names cache))) names))
+        (error "Backbone cache fields ~s do not match topology declarations ~s"
+               (binned-shape-key-names cache) names))
+      (dolist (declaration declarations)
+        (let ((bins (binned-shape-key-component cache (cache-component-name declaration))))
+          (unless (ecase (cache-component-kind declaration)
+                    (:dihedral (= 1 (length bins)))
+                    (:ring (member (length bins) '(2 3))))
+            (error "Invalid bins ~s for cache field ~s" bins (cache-component-name declaration))))))
+    (when (and (null declarations) cache (binned-shape-key-names cache))
+      (error "Topology without :cache declarations received a nonempty cache"))
+    (apply #'make-instance
+           (if declarations 'backbone-with-cache-rotamer 'backbone-without-cache-rotamer)
+           :internals-values (copy-seq internals-values)
+           :free-energy free-energy :probability probability
+           (when declarations
+             (list :backbone-shape-key-cache
+                   (make-binned-shape-key-cache (binned-shape-key-entries cache)))))))
+
+(defun make-backbone-rotamer-from-fragment-internals (fragment topology)
+  (make-backbone-rotamer topology
+                         :internals-values (internals-values fragment)
+                         :free-energy (free-energy fragment) :probability (probability fragment)
+                         :cache (when (typep fragment 'backbone-cache-owner)
+                                  (backbone-shape-key-cache fragment))))
 
 (defun copy-fragment-internals (fragment-internals)
   "Shallow copy of fragment-internals"
@@ -451,15 +603,21 @@ changing the SHAPE-KEY-CACHE."
 
 (defclass sidechain-rotamers (rotamers)
   ((shape-key-to-index :initarg :shape-key-to-index :initform (make-shape-key-map) :accessor shape-key-to-index
-                       :documentation "This is a cons of (phi.psi)")))
+                       :type binned-shape-key-map
+                       :documentation "Content-indexed binned shape keys mapped to rotamer index vectors.")))
 
 (defclass backbone-rotamers-base (rotamers) ())
 
+;;; SHAPE-KEY-LEGACY: all backbone contexts use one collection class.
+#+(or)
 (defclass backbone-without-sidechain-rotamers (backbone-rotamers-base)
   ())
 
+#+(or)
 (defclass backbone-with-sidechain-rotamers (backbone-rotamers-base)
   ())
+
+(defclass backbone-rotamers (backbone-rotamers-base) ())
 
 
 (defclass rotamers-conformers-database (cando.serialize:serializable)
@@ -487,7 +645,7 @@ changing the SHAPE-KEY-CACHE."
   (maphash (lambda (monomer-context rotamers)
              (when (typep rotamers 'sidechain-rotamers)
                (let ((shape-key-to-index (shape-key-to-index rotamers)))
-                 (maphash (lambda (shape-key indexes)
+                 (map-binned-shape-keys (lambda (shape-key indexes)
                             (if (= (length indexes) 0)
                                 (progn
                                   (incf empty-indexes)
