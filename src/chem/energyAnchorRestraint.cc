@@ -231,9 +231,7 @@ void	EnergyAnchorRestraint_O::setupHessianPreconditioner(NVector_sp nvPosition,
     for (size_t r = 0; r < PS; ++r) {
       for (size_t c = 0; c <= r; ++c) {
         double v = localHess[r*PS + c];
-        if (v != 0.0) {
-          m->addToElement(globalIdx[r], globalIdx[c], v);
-        }
+        m->addToElement(globalIdx[r], globalIdx[c], v);
       }
     }
   }

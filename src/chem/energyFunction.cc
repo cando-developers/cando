@@ -2661,10 +2661,18 @@ void EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
                                                   AbstractLargeSquareMatrix_sp m,
                                                   core::T_sp activeAtomMask )
 {
-  m->fill(0.0);
-  for ( auto cur : this->_EnergyComponents ) {
-    EnergyComponent_sp comp = gc::As<EnergyComponent_sp>(oCar(cur));
-    comp->setupHessianPreconditioner(nvPosition,m,activeAtomMask);
+  auto sparse = m.asOrNull<SparseLargeSquareMatrix_O>();
+  if (sparse) sparse->beginPreconditionerAssembly();
+  else m->fill(0.0);
+  try {
+    for ( auto cur : this->_EnergyComponents ) {
+      EnergyComponent_sp comp = gc::As<EnergyComponent_sp>(oCar(cur));
+      comp->setupHessianPreconditioner(nvPosition,m,activeAtomMask);
+    }
+    if (sparse) sparse->endPreconditionerAssembly();
+  } catch (...) {
+    if (sparse) sparse->abortPreconditionerAssembly();
+    throw;
   }
 }
 

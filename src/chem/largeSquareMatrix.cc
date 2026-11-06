@@ -430,33 +430,40 @@ vecreal	SparseLargeSquareMatrix_O::mostNegativeValue()
 }
 
 
-SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::optimized() 
+SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::optimized()
 {
-  auto  res  = gctools::GC<SparseLargeSquareMatrix_O>::allocate();
-  res->setup(this->_Columns,this->_Triangle);
-  uint		x,y;
-  for ( y = 0; y<this->dimension(); y++ ) {
-    for ( x = 0; x<=y; x++ ) {
-      uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
-      if (idx != UndefinedUnsignedInt) {
-        vecreal val = this->element(x,y);
-        if (val!=0.0) {
-          res->insertElement(x,y);
-        }
-      }
+  auto res = gctools::GC<SparseLargeSquareMatrix_O>::allocate();
+  res->setup(this->_Columns, this->_Triangle);
+
+  // Copy the already sorted row storage directly. Coordinate lookups and
+  // insertElement() would repeatedly search rows and update later row offsets.
+  const uint reserved = std::max(res->_ReservedElements, this->_ActiveElements);
+  res->_ColumnForValue.reserve(reserved);
+  res->_Values.reserve(reserved);
+  res->_ReservedElements = reserved;
+
+  uint written = 0;
+  for (uint row = 0; row < this->_Rows; ++row) {
+    res->_RowStarts[row] = written;
+    const uint begin = this->_RowStarts[row];
+    const uint end = this->_RowStarts[row + 1];
+    for (uint i = begin; i < end; ++i) {
+      const uint col = this->_ColumnForValue[i];
+      const vecreal value = this->_Values[i];
+      // Preserve the old logical lower-triangle scan, including when its
+      // entries are physically stored in the symmetric upper triangle.
+      if (col > row && this->_Triangle != SymmetricUpperDiagonal)
+        continue;
+      if (value == 0.0)
+        continue;
+      res->_ColumnForValue.push_back(col);
+      res->_Values.push_back(value);
+      ++written;
     }
   }
-  for ( y = 0; y<this->dimension(); y++ ) {
-    for ( x = 0; x<=y; x++ ) {
-      uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
-      if (idx != UndefinedUnsignedInt) {
-        vecreal val = this->element(x,y);
-        if (val!=0.0) {
-          res->setElement(x,y,val);
-        }
-      }
-    }
-  }
+  res->_RowStarts[this->_Rows] = written;
+  res->_ActiveElements = written;
+  // setup() leaves insertion enabled and the column cache unbuilt, as before.
   return res;
 }
 
@@ -527,6 +534,9 @@ SparseLargeSquareMatrix_O::SparseLargeSquareMatrix_O(const SparseLargeSquareMatr
 
 void	SparseLargeSquareMatrix_O::initializeStorage()
 {
+  this->abortPreconditionerAssembly();
+  this->_AssemblyKeys.clear();
+  this->_AssemblyDestinations.clear();
   uint	rows = this->_Rows;
   this->_InsertionIsComplete = false;
   this->_RowStartEntries = rows+1;
@@ -602,6 +612,7 @@ CL_DEFUN core::T_sp chem__sparse_large_square_matrix_layout(SparseLargeSquareMat
 
 void	SparseLargeSquareMatrix_O::insertElement(uint x, uint y)
 {
+  this->_AssemblyDestinationsValid = false;
   uint	ib,ie,i,t;
 #ifdef	DEBUG_VIA_PRINTF
   printf("insert at %d,%d\n",x,y);
@@ -678,6 +689,7 @@ void	SparseLargeSquareMatrix_O::insertElement(uint x, uint y)
 // via its early return when _ColumnForValue[i] == x.  The matrix must be empty.
 void	SparseLargeSquareMatrix_O::buildPatternFromKeys(std::vector<uint64_t>& keys)
 {
+  this->_AssemblyDestinationsValid = false;
   if ( this->_InsertionIsComplete ) {
     SIMPLE_ERROR("SparseMatrix InsertionIsComplete so no more entries may be inserted");
   }
@@ -1091,6 +1103,10 @@ CL_DEFUN void chem__sparse_large_square_matrix_insertion_is_complete(SparseLarge
 
 void	SparseLargeSquareMatrix_O::addToElement(uint x, uint y, vecreal d)
 {
+  if (this->_AssemblyActive) {
+    this->addAssemblyElement(x, y, d);
+    return;
+  }
   uint	dp, idp;
   bool	inserted = false;
   dp = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
@@ -1120,6 +1136,97 @@ void	SparseLargeSquareMatrix_O::addToElement(uint x, uint y, vecreal d)
   ASSERTP(dp!=UndefinedUnsignedInt,"Illegal index for SparseLargeSquareMatrix");
   ASSERT_lessThan(dp,this->_Values.size());
   this->_Values[dp] += d;
+}
+
+void SparseLargeSquareMatrix_O::beginPreconditionerAssembly()
+{
+  if (this->_AssemblyActive) SIMPLE_ERROR("Preconditioner assembly already active");
+  this->_AssemblyActive = true;
+  this->_AssemblyCursor = 0;
+  this->_AssemblyCollecting = (this->_ActiveElements == 0);
+  this->_AssemblyInitialValues.clear();
+  if (this->_AssemblyCollecting) {
+    this->_AssemblyKeys.clear();
+    this->_AssemblyDestinations.clear();
+    this->_AssemblyDestinationsValid = false;
+  }
+  std::fill(this->_Values.begin(), this->_Values.end(), 0.0);
+  this->_col_OptimizationDone = false;
+}
+
+void SparseLargeSquareMatrix_O::addAssemblyElement(uint x, uint y, vecreal value)
+{
+  if (x >= this->_Columns || y >= this->_Rows)
+    SIMPLE_ERROR("Overflow in preconditioner assembly");
+  const uint64_t key = this->patternKey(x, y);
+  const size_t cursor = this->_AssemblyCursor++;
+  if (this->_AssemblyCollecting) {
+    this->_AssemblyKeys.push_back(key);
+    this->_AssemblyInitialValues.push_back(value);
+    return;
+  }
+  if (this->_AssemblyDestinationsValid && cursor < this->_AssemblyKeys.size()
+      && this->_AssemblyKeys[cursor] == key) {
+    this->_Values[this->_AssemblyDestinations[cursor]] += value;
+    return;
+  }
+  // A mask or conditional term can change the order of contributions.
+  // Check the coordinate before using a previously recorded destination.
+  uint index = this->indexFromCoordinatesOrUndefinedUnsignedInt(x, y);
+  if (index == UndefinedUnsignedInt) {
+    this->_InsertionIsComplete = false;
+    this->insertElement(x, y); // invalidates ALL offsets if storage shifts
+    index = this->indexFromCoordinatesOrUndefinedUnsignedInt(x, y);
+  }
+  if (cursor >= this->_AssemblyKeys.size()) {
+    this->_AssemblyKeys.resize(cursor + 1);
+    this->_AssemblyDestinations.resize(cursor + 1);
+  }
+  this->_AssemblyKeys[cursor] = key;
+  this->_AssemblyDestinations[cursor] = index;
+  this->_Values[index] += value;
+}
+
+void SparseLargeSquareMatrix_O::endPreconditionerAssembly()
+{
+  if (!this->_AssemblyActive) SIMPLE_ERROR("No preconditioner assembly active");
+  if (this->_AssemblyCollecting) {
+    // One bulk pattern build, including zero-valued contributions. This local
+    // scratch vector is not a member of the GC-managed matrix.
+    std::vector<uint64_t> keys(this->_AssemblyKeys.begin(), this->_AssemblyKeys.end());
+    // Active-coordinate projection can require identity diagonal entries.
+    for (uint i = 0; i < this->_Rows; ++i) keys.push_back(this->patternKey(i, i));
+    this->buildPatternFromKeys(keys);
+  }
+  this->_AssemblyKeys.resize(this->_AssemblyCursor);
+  this->_AssemblyDestinations.resize(this->_AssemblyCursor);
+  if (!this->_AssemblyDestinationsValid) {
+    for (size_t i = 0; i < this->_AssemblyCursor; ++i) {
+      const uint64_t key = this->_AssemblyKeys[i];
+      this->_AssemblyDestinations[i] =
+          this->indexFromCoordinatesOrUndefinedUnsignedInt(
+              static_cast<uint>(key), static_cast<uint>(key >> 32));
+      ASSERT(this->_AssemblyDestinations[i] != UndefinedUnsignedInt);
+    }
+  }
+  if (this->_AssemblyCollecting) {
+    // Preserve summation order, including repeated destinations.
+    for (size_t i = 0; i < this->_AssemblyCursor; ++i)
+      this->_Values[this->_AssemblyDestinations[i]] += this->_AssemblyInitialValues[i];
+  }
+  this->_AssemblyInitialValues.clear();
+  this->_AssemblyDestinationsValid = true;
+  this->_InsertionIsComplete = true;
+  this->_AssemblyCollecting = false;
+  this->_AssemblyActive = false;
+}
+
+void SparseLargeSquareMatrix_O::abortPreconditionerAssembly()
+{
+  this->_AssemblyActive = false;
+  this->_AssemblyCollecting = false;
+  this->_AssemblyDestinationsValid = false;
+  this->_AssemblyInitialValues.clear();
 }
 
 

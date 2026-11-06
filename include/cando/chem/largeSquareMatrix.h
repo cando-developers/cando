@@ -218,7 +218,21 @@ class SparseLargeSquareMatrix_O : public AbstractLargeSquareMatrix_O
 {
   LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix",AbstractLargeSquareMatrix_O);
 
+private:
+  // Structural assembly plan owned by this matrix, not by the energy terms.
+  gctools::Vec0<uint64_t> _AssemblyKeys;
+  gctools::Vec0<uint> _AssemblyDestinations;
+  gctools::Vec0<vecreal> _AssemblyInitialValues;
+  size_t _AssemblyCursor = 0;
+  bool _AssemblyActive = false;
+  bool _AssemblyCollecting = false;
+  bool _AssemblyDestinationsValid = false;
+  void addAssemblyElement(uint x, uint y, vecreal value);
+
 public:
+  void beginPreconditionerAssembly();
+  void endPreconditionerAssembly();
+  void abortPreconditionerAssembly();
   bool                          _InsertionIsComplete;
   uint		                _RowStartEntries;
   uint		                _ActiveElements;
