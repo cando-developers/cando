@@ -421,6 +421,7 @@
    #:assembler
    #:assembler-base
    #:oligomer-shapes
+   #:walk-ataggregate-joints
    #:walk-atmolecule-joints
    #:aggregate*
    #:make-monomer-subset

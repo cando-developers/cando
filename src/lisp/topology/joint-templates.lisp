@@ -50,18 +50,24 @@
 
 (defun validate-new-adjustment (spec)
   "Validate the declarative interface independently of assembled atom lookup."
-  (unless (and (consp spec) (eq (car spec) :tetrahedral-hydrogens)
+  (unless (and (consp spec) (member (car spec) '(:tetrahedral-hydrogens :planar))
                (listp (cdr spec)) (evenp (length (cdr spec))))
     (error "Invalid :new-adjustment declaration: ~s" spec))
-  (let ((options (cdr spec)) (seen nil))
+  (let ((options (cdr spec)) (seen nil)
+        (allowed (if (eq (car spec) :planar)
+                     '(:references)
+                     '(:other-hydrogen :references :orientation))))
     (loop for (key value) on options by #'cddr
-          do (unless (member key '(:other-hydrogen :references :orientation))
+          do (unless (member key allowed)
                (error "Unknown :new-adjustment option ~s" key))
              (when (member key seen) (error "Duplicate adjustment option ~s" key))
              (push key seen))
-    (unless (and (getf options :other-hydrogen)
-                 (symbolp (getf options :other-hydrogen)))
-      (error "Specify :other-hydrogen as an atom name: ~s" spec))
+    (when (eq (car spec) :tetrahedral-hydrogens)
+      (unless (and (getf options :other-hydrogen)
+                   (symbolp (getf options :other-hydrogen)))
+        (error "Specify :other-hydrogen as an atom name: ~s" spec))
+      (unless (member (getf options :orientation) '(:positive :negative))
+        (error "Specify :orientation :positive or :negative: ~s" spec)))
     (let ((references (getf options :references)))
       (unless (and (listp references) (= (length references) 2)
                    (every (lambda (ref)
@@ -69,9 +75,9 @@
                                 (and (listp ref) (= (length ref) 2)
                                      (eq (first ref) :plug)
                                      (keywordp (second ref))))) references))
-        (error "Specify two ordered atom names or (:plug keyword) references: ~s" spec)))
-    (unless (member (getf options :orientation) '(:positive :negative))
-      (error "Specify :orientation :positive or :negative: ~s" spec)))
+        (error "Specify two atom names or (:plug keyword) references: ~s" spec))
+      (when (equal (first references) (second references))
+        (error "Adjustment references must be distinct: ~s" spec))))
   spec)
 
 (defclass named-adjustment-definition ()
@@ -120,11 +126,75 @@ templates; reload dependent topology definitions to update existing templates."
    (hydrogen-pair :accessor hydrogen-pair)
    (reference-joints :accessor reference-joints)))
 
+(defclass planar-adjustment (internal-adjustment)
+  ((specification :initarg :specification :reader specification)
+   (reference-joints :accessor reference-joints))
+  (:documentation "Place the adjusted atom opposite the bisector of two bonded
+references, preserving its bond length. Reference order does not matter."))
+
 (defun instantiate-joint-adjustment (spec joint)
   (if (consp spec)
-      (make-instance 'tetrahedral-hydrogens-adjustment
-                     :specification (validate-new-adjustment spec) :joint joint)
+      (progn
+        (validate-new-adjustment spec)
+        (make-instance (ecase (car spec)
+                         (:tetrahedral-hydrogens 'tetrahedral-hydrogens-adjustment)
+                         (:planar 'planar-adjustment))
+                       :specification spec :joint joint))
       (make-instance spec :joint joint)))
+
+(defun adjustment-plug-reference (assembler center plug-name)
+  "Resolve the bond through PLUG-NAME at CENTER, including incoming and ring
+couplings. Match plug-bond indices just as CONNECT-RESIDUES does; joint-tree
+children and :OUT-PLUG-NAME alone do not describe ring-closing bonds."
+  (destructuring-bind (mol-index res-index atom-index) (kin:id center)
+    (declare (ignore atom-index))
+    (let* ((monomer
+             (or (loop for monomer being the hash-keys of (monomer-positions assembler)
+                         using (hash-value position)
+                       when (and (= mol-index (molecule-index position))
+                                 (= res-index (residue-index position)))
+                         return monomer)
+                 (error "No monomer owns adjustment center ~s" center)))
+           (coupling (or (monomer-plug-named monomer plug-name)
+                         (error "Adjustment center ~s has no coupling at ~s" center plug-name)))
+           (other (other-monomer coupling monomer))
+           (other-plug-name
+             (etypecase coupling
+               (directional-coupling
+                (if (eq monomer (source-monomer coupling))
+                    (target-plug-name coupling) (source-plug-name coupling)))
+               (ring-coupling
+                (if (eq monomer (monomer1 coupling)) (plug2 coupling) (plug1 coupling)))))
+           (atres (assembler-atresidue assembler monomer))
+           (other-atres (assembler-atresidue assembler other))
+           (plug (plug-named (topology atres) plug-name))
+           (other-plug (plug-named (topology other-atres) other-plug-name)))
+      (unless (and plug other-plug
+                   (= (length (plug-bonds plug)) (length (plug-bonds other-plug))))
+        (error "Invalid adjustment coupling from ~s through ~s" center plug-name))
+      (let ((matches
+              (loop for bond across (plug-bonds plug)
+                    for other-bond across (plug-bonds other-plug)
+                    when (eq (atom-name bond) (kin:joint/name center))
+                      collect (joint-with-name other-atres (atom-name other-bond)))))
+        (unless (= (length matches) 1)
+          (error "Adjustment center ~s: plug ~s resolves to ~s" center plug-name matches))
+        (first matches)))))
+
+(defun resolve-adjustment-reference (assembler center neighbors reference)
+  "Resolve exactly one chemical neighbor by atom name or coupling endpoint."
+  (let ((matches
+          (if (symbolp reference)
+              (remove-if-not (lambda (neighbor)
+                               (string= (symbol-name reference)
+                                        (symbol-name (kin:joint/name neighbor))))
+                             neighbors)
+              (let ((neighbor (adjustment-plug-reference assembler center (second reference))))
+                (when (member neighbor neighbors :test #'eq) (list neighbor))))))
+    (unless (= (length matches) 1)
+      (error "Adjustment center ~s: reference ~s must identify one bonded atom, found ~s"
+             center reference matches))
+    (first matches)))
 
 (defmethod initialize-adjustment ((adjustment tetrahedral-hydrogens-adjustment) assembler)
   (let* ((hydrogen (joint adjustment))
@@ -134,16 +204,7 @@ templates; reload dependent topology definitions to update existing templates."
                             (find-atom-for-joint assembler center))))
          (options (cdr (specification adjustment))))
     (labels ((resolve (ref)
-               (let ((matches
-                       (remove-if-not
-                        (lambda (neighbor)
-                          (if (symbolp ref)
-                              (string= (symbol-name ref) (symbol-name (kin:joint/name neighbor)))
-                              (eq (kin:get-property-or-default neighbor :out-plug-name nil)
-                                  (second ref)))) neighbors)))
-                 (unless (= (length matches) 1)
-                   (error "Adjustment on ~s: reference ~s resolves to ~s" hydrogen ref matches))
-                 (first matches))))
+               (resolve-adjustment-reference assembler center neighbors ref)))
       (let* ((other (resolve (getf options :other-hydrogen)))
              (references (mapcar #'resolve (getf options :references)))
              (all (list* hydrogen other references)))
@@ -157,6 +218,71 @@ templates; reload dependent topology definitions to update existing templates."
           (error "Tetrahedral adjustment requires two bonded hydrogen children and two distinct references: ~s" all))
         (setf (hydrogen-pair adjustment) (list hydrogen other)
               (reference-joints adjustment) references)))))
+
+(defmethod initialize-adjustment ((adjustment planar-adjustment) assembler)
+  (let ((target (joint adjustment)))
+    (unless (and (typep target 'kin:bonded-joint)
+                 (kin:joint/parent-bound-p target)
+                 (kin:joint/parent-bound-p (kin:parent target))
+                 (kin:joint/parent-bound-p (kin:parent (kin:parent target))))
+      (error "Planar adjustment needs a bonded joint with three ancestors: ~s" target))
+    (let* ((center (kin:parent target))
+           (neighbors (mapcar (lambda (atom) (find-joint-for-atom assembler atom))
+                              (chem:atom/bonded-atoms-as-list
+                               (find-atom-for-joint assembler center))))
+           (references
+             (mapcar (lambda (ref) (resolve-adjustment-reference assembler center neighbors ref))
+                     (getf (cdr (specification adjustment)) :references))))
+      (unless (and (= (length neighbors) 3)
+                   (member target neighbors :test #'eq)
+                   (= (length (remove-duplicates (cons target references) :test #'eq)) 3))
+        (error "Planar adjustment on ~s requires a three-coordinate center and two other distinct bonded references"
+               target))
+      (setf (reference-joints adjustment) references))))
+
+(defun planar-adjustment-direction (first-bond second-bond)
+  "Unit vector opposite the two normalized reference bonds' bisector."
+  (flet ((unit (v)
+           (let ((norm (sqrt (reduce #'+ (map 'vector (lambda (x) (* x x)) v)))))
+             (when (< norm 1.0d-10)
+               (error "Degenerate reference geometry in planar adjustment"))
+             (map 'vector (lambda (x) (/ x norm)) v))))
+    (let* ((a (unit first-bond)) (b (unit second-bond))
+           (dot (reduce #'+ (map 'vector #'* a b))))
+      (when (> (abs dot) (- 1.0d0 1.0d-10))
+        (error "Collinear references cannot define a planar adjustment"))
+      (map 'vector #'- (unit (map 'vector #'+ a b))))))
+
+(defmethod internal-adjust ((adjustment planar-adjustment) assembler internals)
+  (let* ((target (joint adjustment))
+         (center (kin:parent target))
+         (grandparent (kin:parent center))
+         (great-grandparent (kin:parent grandparent))
+         (root (loop for ancestor = center then (kin:parent ancestor)
+                     unless (kin:joint/parent-bound-p ancestor) return ancestor))
+         (coords (make-coordinates-for-assembler assembler))
+         (ic (kin:joint/position-index-x3 center))
+         (itarget (kin:joint/position-index-x3 target))
+         (distance (kin:bonded-joint/get-distance target internals)))
+    ;; Reconstruct current coordinates so a ring-closure reference uses its
+    ;; actual geometry, regardless of where it occurs in the atom tree.
+    (kin:update-xyz-coords root internals coords)
+    (flet ((bond (reference)
+             (let ((index (kin:joint/position-index-x3 reference)))
+               (map 'vector #'- (subseq coords index (+ index 3))
+                               (subseq coords ic (+ ic 3))))))
+      (let ((direction (planar-adjustment-direction
+                        (bond (first (reference-joints adjustment)))
+                        (bond (second (reference-joints adjustment))))))
+        (unless (> distance 0.0d0) (error "Invalid planar-adjustment bond length ~s" distance))
+        (dotimes (axis 3)
+          (setf (aref coords (+ itarget axis))
+                (+ (aref coords (+ ic axis)) (* distance (aref direction axis)))))
+        (kin:bonded-joint/set-theta target internals
+          (geom:calculate-angle-array (kin:joint/position-index-x3 grandparent) ic itarget coords))
+        (kin:bonded-joint/set-phi target internals
+          (geom:calculate-dihedral-array (kin:joint/position-index-x3 great-grandparent)
+                                        (kin:joint/position-index-x3 grandparent) ic itarget coords))))))
 
 (defun tetrahedral-hydrogen-directions (first-bond second-bond orientation)
   "Return unit vectors. Positive means (FIRST-BOND x SECOND-BOND) dot H1 > 0."

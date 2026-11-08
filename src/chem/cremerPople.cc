@@ -422,7 +422,8 @@ core::T_mv chem__cpring_generate_coordinates( NVector_sp zjs, core::ComplexVecto
     double zc = (*zjs)[kk];
     double rabprime = fabs(sqrt(rab*rab-(za-zb)*(za-zb)));
     double rbc = (*r_values)[jj];
-    double beta = (*beta_rad_values)[ii];
+    // The angle between bonds (ii,jj) and (jj,kk) is centered on jj.
+    double beta = (*beta_rad_values)[jj];
     double cosbeta_prime = (rab*rbc*cos(beta)-(za-zb)*(zc-zb))/(sqrt(rab*rab-(za-zb)*(za-zb))*sqrt(rbc*rbc-(zc-zb)*(zc-zb)));
     double beta_prime = acos(cosbeta_prime);
     (*r_prime_values)[ii] = rabprime;
@@ -436,7 +437,8 @@ core::T_mv chem__cpring_generate_coordinates( NVector_sp zjs, core::ComplexVecto
       (*coordinates)[index3+2] = (*zjs)[ii]+vdisplace.getZ();
     } else if (ii==1) {
       size_t index3m1 = (*indexes3)[0];
-      Vector3 posm1((*coordinates)[index3m1],(*coordinates)[index3m1+1],(*coordinates)[index3m1+2]);
+      // The bond length is projected into the xy plane; assign puckering z separately.
+      Vector3 posm1((*coordinates)[index3m1],(*coordinates)[index3m1+1],0.0);
       Vector3 pos = geom::geom__build_using_bond( (*r_prime_values)[ii-1], posm1 );
       (*coordinates)[index3]   = pos.getX()+vdisplace.getX();
       (*coordinates)[index3+1] = pos.getY()+vdisplace.getY();
@@ -444,9 +446,13 @@ core::T_mv chem__cpring_generate_coordinates( NVector_sp zjs, core::ComplexVecto
     } else {
       size_t index3m2 = (*indexes3)[ii-2];
       size_t index3m1 = (*indexes3)[ii-1];
-      Vector3 posm2((*coordinates)[index3m2+0],(*coordinates)[index3m2+1],(*coordinates)[index3m2+2]);
-      Vector3 posm1((*coordinates)[index3m1+0],(*coordinates)[index3m1+1],(*coordinates)[index3m1+2]);
-      Vector3 pos = geom::geom__build_using_bond_angle( (*r_prime_values)[ii-1], posm1, -(*beta_prime_values)[ii-1], posm2 );
+      // The helper normalizes its input vector in 3D. Project both reference
+      // atoms first, or their puckering z values shorten the rebuilt xy bond.
+      Vector3 posm2((*coordinates)[index3m2+0],(*coordinates)[index3m2+1],0.0);
+      Vector3 posm1((*coordinates)[index3m1+0],(*coordinates)[index3m1+1],0.0);
+      // beta_prime_values[k] is centered on k+1; placing ii uses the
+      // angle centered on ii-1, which was stored at ii-2.
+      Vector3 pos = geom::geom__build_using_bond_angle( (*r_prime_values)[ii-1], posm1, -(*beta_prime_values)[ii-2], posm2 );
       (*coordinates)[index3]   = pos.getX()+vdisplace.getX();
       (*coordinates)[index3+1] = pos.getY()+vdisplace.getY();
       (*coordinates)[index3+2] = (*zjs)[ii]+vdisplace.getZ();

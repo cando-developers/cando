@@ -21,7 +21,7 @@
   (time (dotimes (i 1) (defparameter energy (chem:evaluate-energy-force ef pos :calc-force t :force force)))))
 (format t "About to calculate energy~%")
 (defparameter energy (chem:evaluate-energy-force ef pos :calc-force t :force force))
-(defparameter expected-energy 139.19010958782783)
+(defparameter expected-energy 110.45436709880707d0)
 (format t "         energy = ~f~%" energy)
 (format t "expected-energy = ~f~%" expected-energy)
 
@@ -34,7 +34,7 @@
 (defparameter correct-energy-stretch 12.748283740690873)
 (defparameter correct-energy-angle 83.66812723256757)
 (defparameter correct-energy-dihedral 19.549603494795992)
-(defparameter correct-energy-nonbond 23.22409511977336)
+(defparameter correct-energy-nonbond -5.538841840435541d0)
 (let ((components (chem:all-components ef))
       (ht (make-hash-table)))
   (format t "Components ~s~%" components)
@@ -69,95 +69,94 @@
 
 
 (defparameter expected-force (coerce
-                              #(0.7313171276817805d0 -0.7843348305291686d0 0.11427955752899521d0
-                                -0.34291189131523137d0 0.32767111035158614d0 -0.329898621538927d0
-                                -0.7110813349877194d0 0.6592901977086865d0 0.40345197621544937d0
-                                0.5958436385481027d0 -0.36974475109952865d0 0.22683190298909575d0
-                                -0.02608690452320951d0 -0.10101071950616987d0 -0.27466990849422857d0
-                                0.4059398239080221d0 -0.29611364308005766d0 0.053853321991587766d0
-                                -0.9567350337481149d0 -0.2651452754995948d0 -0.3125462936797983d0
-                                -0.7838353791805783d0 -0.001188066110304753d0 -0.3468349828308428d0
-                                0.8560832116725887d0 0.25810948286855284d0 0.24231035726673777d0
-                                0.08704551359396495d0 -0.01489532459401488d0 0.06373333173923168d0
-                                -0.6619338583739367d0 0.5200787907848752d0 -0.01751758434139772d0
-                                0.5572494778978427d0 -0.2887878545113747d0 -0.9971431435318183d0
-                                -0.7134183316743781d0 -0.31687361483390586d0 0.2662245049959058d0
-                                -0.42609949776674316d0 0.1473001334921655d0 0.8397458799088238d0
-                                -0.0851301692400035d0 0.17836762683763108d0 0.5507189290162904d0
-                                0.1508205092200554d0 -0.31224499508772d0 -0.26063269658910304d0
-                                0.3837636815014146d0 0.04853288160440612d0 -0.7603916842904349d0
-                                0.40341799450256005d0 0.06440963776615817d0 -0.8098487139920628d0
-                                0.13554602444991937d0 0.0741531836024043d0 0.039724939010686494d0
-                                0.2250559175061433d0 0.21453684571564402d0 -0.18484691095396943d0
-                                -0.6014612054263633d0 0.3302179102796425d0 0.21774632388300733d0
-                                -0.15576340271953715d0 -0.4844408871171204d0 0.5252047425535622d0
-                                -0.15881088066755766d0 -0.0124820262534866d0 0.17047269957603595d0
-                                0.5070872187825861d0 -0.08970283832050097d0 0.053805298489363995d0
-                                -0.43587877394338637d0 0.5481798160351463d0 -0.4708105444474042d0
-                                0.17238162070775465d0 -0.07364334574026277d0 0.2110748929049946d0
-                                -0.14217419589912067d0 -0.5071504723222242d0 -0.44076152739477326d0
-                                0.3608549117225661d0 -0.11667874691653068d0 0.31550070382046647d0
-                                0.5275563298311408d0 -0.09186511521918428d0 0.6075663873662613d0
-                                0.1424379446213615d0 0.4088061071938096d0 -0.14201181334305657d0
-                                -0.6331397908596035d0 0.1496485335185535d0 0.2506524281706096d0
-                                0.2504963760788428d0 0.07019198850761299d0 -0.6283227129638327d0
-                                -0.32043306062701093d0 -0.1035489471308324d0 0.03403104244164412d0
-                                -0.04884599387645083d0 -0.015339768549434085d0 -0.05744109483936655d0
-                                0.6657605357639325d0 -0.5069685049874448d0 0.06573464887100013d0
-                                -0.4450359713863392d0 0.5887977304697216d0 0.22290669141573005d0
-                                -0.22686701665077785d0 0.24173765039854267d0 0.7899293970321287d0
-                                -1.1414566602568645d0 0.4468707774898886d0 0.0013093140883791918d0
-                                0.5080045058681834d0 -0.05874462991310331d0 0.33174498242333195d0
-                                -0.6563096918464684d0 -0.14610519496961683d0 0.5935185788234367d0
-                                -0.0502686170994977d0 0.18617207078016484d0 -0.35677913379656445d0
-                                0.4323801513140918d0 0.19870809901519593d0 -0.4002428899969046d0
-                                0.2393771702882026d0 0.15674951622349198d0 -0.18467553044190277d0
-                                0.6574545866099177d0 0.2400292498426446d0 -0.1948554767048679d0
-                                -1.082652377496741d0 1.2320935292290391d0 0.6776695871761318d0
-                                -0.4459890357266924d0 0.49947343607922257d0 -0.11665935178288446d0
-                                0.15543277584683501d0 -0.3333508637648541d0 -0.14006399498760158d0
-                                0.42925868751453444d0 -0.8788722936089499d0 -0.3453398368883223d0
-                                -0.3074580630955875d0 0.1777114285441745d0 -0.28774291559983217d0
-                                -0.05263084647925689d0 0.2668489930742355d0 0.01129247528010928d0
-                                0.08866258256034756d0 -0.08340867240350669d0 0.049402651552455296d0
-                                0.09466864960240234d0 -0.07770068544353366d0 0.28644900184729316d0
-                                -0.016376001413197186d0 0.2579989413458277d0 0.04081736845851545d0
-                                0.06964084139575319d0 -0.02535980491846033d0 0.003323295530815281d0
-                                0.6143207721370927d0 0.13749581519015297d0 0.02086052384864925d0
-                                0.13068898083289324d0 0.24114593249385063d0 0.0476634290045307d0
-                                -0.18843662217998827d0 -0.2715781220967061d0 0.11847303780779955d0
-                                0.1301423985308981d0 -0.2133322754956743d0 0.15489066257151524d0
-                                0.44917452882255415d0 0.13519913212069146d0 0.07763488520914295d0
-                                0.04267596372233849d0 -0.006247423037644584d0 -0.07511326694259103d0
-                                -0.04181377766016559d0 -0.05643393879432436d0 -0.0794177342880086d0
-                                0.009290871603157544d0 -0.06634417898926885d0 0.11346825149737383d0
-                                -0.490670811466446d0 0.07430752450837315d0 0.703457656958072d0
-                                0.02632675384807072d0 -0.009845572941264879d0 -0.045556889974364106d0
-                                0.2200452265525705d0 -0.07543788110483846d0 -0.04057350436283838d0
-                                0.27763534074811125d0 -0.002120745795000864d0 -0.4282120885318866d0
-                                -0.016201402432955647d0 -0.10027562121319199d0 0.013785737197281211d0
-                                -0.10995075825945021d0 -0.15986616137916063d0 -0.14031830452822452d0
-                                -0.0010338755682908762d0 -0.005371982272776257d0 0.0603318368103499d0
-                                -0.09821281213364358d0 -0.009664499684758784d0 -0.0758899162024357d0
-                                -0.10066285191199234d0 0.15230982162722417d0 -0.2834567024664232d0
-                                -0.3328404161778856d0 -0.04316271118537286d0 0.01712805021302084d0
-                                0.15239046441430742d0 0.1572295314735211d0 -0.049776593042651064d0
-                                -0.0035999737457596197d0 0.012949062418218386d0
-                                0.015365143016109398d0 0.13172054285951615d0 -0.24687796165802234d0
-                                -0.3959246494710529d0 -0.05262314730230066d0 -0.2256414311684376d0
-                                -0.14004416593892738d0 0.14197497317821767d0 -0.12167749344027445d0
-                                -0.10307980597089633d0 0.9451103081654494d0 -0.0877091500409527d0
-                                0.047525662918696095d0 -0.2570463075850139d0 -0.1673566289395625d0
-                                -0.06364745416212297d0 0.07081478937904818d0 -0.1368704497725733d0
-                                -0.08506897423100508d0 0.04607314630595363d0 -0.06185249804907123d0
-                                0.04921110221501829d0 -0.06260666124976895d0 -0.0035112792610380306d0
-                                0.1343661886199076d0 -0.11472477335513814d0 -0.2783525240287381d0
-                                0.05029049623816573d0 -0.09674900114474458d0 -0.21743801964598883d0
-                                0.16885194867960285d0 0.22395754867653464d0 -0.08002570033951538d0
-                                -0.09524000494826691d0 0.03303298646681578d0 -0.12703144043226425d0
-                                0.21144176083782085d0 0.008788048584329586d0 -0.35921942450833283d0
-                                -0.07373817768435319d0 0.10825572463529572d0 0.08562449911460364d0
-                                -0.030677989835232178d0)
+                              #(0.731319310655266d0 -0.7843311796634809d0 0.11428318967122131d0
+                                -0.34291397274597024d0 0.3276675700150138d0 -0.32990218672574967d0
+                                -0.7110660751472764d0 0.6592797769984873d0 0.4034257747458261d0
+                                0.6315708875902306d0 -0.454396848652765d0 0.1278687132577171d0
+                                -0.026085905116969857d0 -0.10100959824016205d0 -0.2746502892395881d0
+                                0.4059262114094644d0 -0.29610550184605605d0 0.053861437311081506d0
+                                -0.9567373033867423d0 -0.2651436300796668d0 -0.31254257619849257d0
+                                -0.7439880744349008d0 -0.08287205229295314d0 -0.4481724660319921d0
+                                0.8060150098147107d0 0.3450456953402482d0 0.3584798419169815d0
+                                0.03948980746933861d0 0.09860133198526544d0 0.19604315201816114d0
+                                -0.5634399839851341d0 0.28022883026556d0 -0.12994819225705068d0
+                                0.6409832024283713d0 -0.5687773607303566d0 -0.8980260426520714d0
+                                -0.713421211564184d0 -0.31687749710773194d0 0.2662266623983198d0
+                                -0.49290197442539885d0 0.36761951422076233d0 0.7816662277554582d0
+                                -0.16073989446191095d0 0.4319870599231008d0 0.45570497932117293d0
+                                0.15083685578018446d0 -0.3122485004991003d0 -0.2606601022344863d0
+                                0.4365321693331242d0 -0.1947140325176802d0 -0.7115330294162182d0
+                                0.4034004799020559d0 0.06441437196574963d0 -0.8098411084063514d0
+                                0.13554466607241777d0 0.07415253106130781d0 0.039742702094795884d0
+                                0.19653687533440367d0 0.2123236479738253d0 -0.20829397089059842d0
+                                -0.6014614483076015d0 0.3302195146639502d0 0.21775149852190426d0
+                                -0.07361895416343245d0 -0.4782162555468972d0 0.5924793130095125d0
+                                -0.13751781686270625d0 -0.011136987795237863d0 0.1874776898688073d0
+                                0.5070870617260752d0 -0.08970240106698535d0 0.05380567478744182d0
+                                -0.4823071620960435d0 0.5445806740856343d0 -0.5089601029182287d0
+                                0.17238158892887556d0 -0.0736436775136875d0 0.21107475625716465d0
+                                -0.1421739674939752d0 -0.5071506944268407d0 -0.4407616141530343d0
+                                0.3608545814821641d0 -0.11667894492417563d0 0.3155008000155455d0
+                                0.5275612133491934d0 -0.09186762069473964d0 0.607566785409247d0
+                                0.14243774611747095d0 0.4088063065731248d0 -0.14201175711974917d0
+                                -0.6331397502489926d0 0.14964879158389288d0 0.25065251789692444d0
+                                53.70074041697893d0 -12.828397087479281d0 35.65679140245699d0
+                                -0.32043306127042337d0 -0.10354896052204143d0 0.034031022109602294d0
+                                -0.04884730245004373d0 -0.015337940554351105d0 -0.05743713248965603d0
+                                0.665762856999269d0 -0.5069683295534729d0 0.06573491856447754d0
+                                -16.407326997387656d0 -30.21932276734742d0 40.15748108104006d0
+                                40.98949135347185d0 24.699676017303148d0 -22.633620198781188d0
+                                -1.1414589829763677d0 0.4468671535394476d0 0.0013078143954289162d0
+                                -57.484854753494865d0 -5.237974044187037d0 -4.969474443276542d0
+                                -0.6813647555169753d0 -0.14114596461455697d0 0.5702190768990647d0
+                                -20.73064096756879d0 24.60883055707393d0 -47.82323867742666d0
+                                0.3838071300554763d0 0.20526511215917154d0 -0.4437636225168631d0
+                                0.2397514445786697d0 0.1566922921365812d0 -0.18433642437022746d0
+                                0.6950221241816816d0 0.23467537676404593d0 -0.1610399407006362d0
+                                -1.0826245915482442d0 1.2320855251416125d0 0.677655993177801d0
+                                -0.44599734505265926d0 0.49947063883085896d0 -0.11666577108309496d0
+                                0.15542240961679799d0 -0.3333357932517944d0 -0.14005714027631766d0
+                                0.42924257844381d0 -0.8788763352914799d0 -0.3453331520575605d0
+                                -0.30745835648659287d0 0.17770784094393183d0 -0.2877437237684371d0
+                                -0.052632810379684064d0 0.26684871804379573d0 0.011289360405689328d0
+                                0.08866446654085117d0 -0.08340840235338687d0 0.04940569151470878d0
+                                0.09466895626189925d0 -0.07769712408212211d0 0.2864498098820425d0
+                                -0.01637603851325932d0 0.257998936686512d0 0.040817281957742736d0
+                                0.06963829126401855d0 -0.025358537018870503d0 0.0033217749176716847d0
+                                0.6143212050329835d0 0.13749490619807736d0 0.020859028382874203d0
+                                0.1306899393464552d0 0.24114585593997515d0 0.0476619044113666d0
+                                -0.22894175410104325d0 -0.18573900637826207d0 0.2234762138723116d0
+                                0.1301423550157204d0 -0.21333232397931096d0 0.15489064502339583d0
+                                0.4491742896745319d0 0.13520188728200389d0 0.07763242576119632d0
+                                0.042679163208733426d0 -0.006245875974112192d0 -0.07511336248090159d0
+                                -0.09237613965744684d0 0.11150346510564789d0 -0.13141177547696062d0
+                                0.009290860042796875d0 -0.06634418348260611d0 0.11346828489428795d0
+                                -0.49066840692151137d0 0.07430670361705963d0 0.7034596448634842d0
+                                0.026328745598186168d0 -0.009845742577265237d0 -0.04555989368471433d0
+                                0.22004318595871433d0 -0.07543966126180118d0 -0.04057604028891251d0
+                                0.2696796654587654d0 -0.002604136535056298d0 -0.4345343184142471d0
+                                -0.016201423428105932d0 -0.10027583360144697d0 0.013785688700951038d0
+                                -0.10995079895003d0 -0.15986613169716155d0 -0.14031827801100233d0
+                                -0.0010338700485759689d0 -0.005371956767050726d0 0.06033185786703074d0
+                                -0.09821368246926804d0 -0.009662144937015768d0 -0.07589270949798878d0
+                                -0.10066657368825285d0 0.15231063421847313d0 -0.28345644468713627d0
+                                -0.33284042132474767d0 -0.04316273427569363d0 0.017128041705433316d0
+                                0.1523904805406699d0 0.1572295157854951d0 -0.0497765941358859d0
+                                -0.003598988368529852d0 0.012946571099886749d0 0.0153633453387422d0
+                                0.13172046021317615d0 -0.2468776550411409d0 -0.395924736868541d0
+                                -0.05262651137484208d0 -0.22564132542377371d0 -0.1400416610756559d0
+                                0.14197302815520346d0 -0.12168117058297656d0 -0.10307993393558534d0
+                                0.9451104540789164d0 -0.08770612184211582d0 0.047526759076065905d0
+                                -0.25704342780207834d0 -0.16735891923718188d0 -0.06364899328428969d0
+                                0.07081856316434666d0 -0.13686871821804997d0 -0.0850680088378832d0
+                                0.046073543873994344d0 -0.06185109700046438d0 0.049214921101621456d0
+                                -0.06260520634426621d0 -0.003514409099446031d0 0.13436866936254913d0
+                                -0.11012121498133326d0 -0.2791097404847669d0 0.0544878559042824d0
+                                -0.09674906900236632d0 -0.2174380282624657d0 0.1688519379584673d0
+                                0.22395943143249356d0 -0.08002437339734723d0 -0.09523690223317229d0
+                                0.03303621398728089d0 -0.12702968596135703d0 0.2114429784359123d0
+                                0.008791197383839608d0 -0.3592198046880002d0 -0.07373597393385999d0
+                                0.10825446755820213d0 0.08562152603138089d0 -0.030677854442546174d0)
                               (list 'vector (geom:vecreal-type))))
 (format t "force = ~s~%" force)
 
@@ -288,15 +287,15 @@
        (coords (chem:matter/extract-coordinates agg))
        (components (chem:make-energy-components))
        (energy (chem:scoring-function/evaluate-all ef coords :energy-components components))
-       (expected-energy 810.093569671)
+       (expected-energy 669.7740554130356d0)
        (expected-components '((CHEM::ENERGY-STRETCH . 95.7978)
                               (CHEM::ENERGY-ANGLE . 301.018)
                               (CHEM::ENERGY-DIHEDRAL . 230.37)
                               (CHEM::ENERGY-NONBOND-TOTAL . -55.4358)
-                              (CHEM::ENERGY-NONBOND14 . 238.344)
+                              (CHEM::ENERGY-NONBOND14 . 75.18347128717448d0)
                               (CHEM::ENERGY-CHIRAL-RESTRAINT . 0)
                               (CHEM::ENERGY-ANCHOR-RESTRAINT . 0)
-                              (CHEM::ENERGY-DIHEDRAL-RESTRAINT . 0)
+                              (CHEM::ENERGY-DIHEDRAL-RESTRAINT . 22.840712650543228d0)
                               (CHEM::MONOMER-CORRECTIONS . 0)))
        (nonbond-component (chem:get-nonbond-component ef))
        (dihedral-component (chem:get-dihedral-component ef))
@@ -634,56 +633,34 @@
 ;;; ======================================================================
 ;;; Truncated-Newton convergence test.
 ;;;
-;;; "Fast convergence" for a Newton method means it reaches a tight gradient
-;;; tolerance in far fewer OUTER iterations than a first-order method
-;;; (super-linear vs linear convergence).  From a small displacement off the
-;;; minimum we run (a) truncated Newton only and (b) conjugate gradient only,
-;;; both to the same tight RMS-force tolerance, and require that truncated
-;;; Newton converges and does so in fewer iterations than CG.  This also
-;;; exercises the Hessian preconditioner (truncated Newton's default).
+;;; Starting near a relaxed minimum, verify that truncated Newton reaches
+;;; a tight gradient tolerance. Explicitly disable the default L-BFGS path.
 ;;; ======================================================================
 
 (multiple-value-bind (ef butane) (%fresh-butane-ef)
   (declare (ignore butane))
   (let ((n (chem:get-nvector-size ef))
         (tol 1d-4))
-    ;; 1. Relax to the minimum to get a clean basin to start from.
     (let* ((m0 (chem:make-minimizer ef))
            (refpos (progn
                      (chem:disable-print-intermediate-results m0)
                      (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
-                       (chem:minimize m0)))))   ; primary value = minimized coordinates
-      ;; 2. Displace a few atoms ~0.15 A off the minimum (still in the basin).
+                       (chem:minimize m0)))))
       (dotimes (k (min 9 n))
         (%nv-set! refpos k (+ (%nv-ref refpos k) 0.15d0)))
-      ;; 3. Truncated Newton only, from the displaced start.
       (let ((mtn (chem:make-minimizer ef)))
+        (chem:set-use-lbfgs mtn nil)
         (chem:set-maximum-number-of-steepest-descent-steps mtn 0)
         (chem:set-maximum-number-of-conjugate-gradient-steps mtn 0)
         (chem:set-maximum-number-of-truncated-newton-steps mtn 10000)
         (chem:set-truncated-newton-tolerance mtn tol)
         (chem:disable-print-intermediate-results mtn)
         (let* ((tn-final (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
-                           (chem:minimize mtn :coords refpos)))  ; refpos is copied, not mutated; primary value = final coords
-               (tn-steps (chem:get-iteration mtn))
-               (tn-rms   (%rms-force ef tn-final)))
-          ;; 4. Conjugate gradient only, same start, same tolerance.
-          (let ((mcg (chem:make-minimizer ef)))
-            (chem:set-maximum-number-of-steepest-descent-steps mcg 0)
-            (chem:set-maximum-number-of-conjugate-gradient-steps mcg 10000)
-            (chem:set-maximum-number-of-truncated-newton-steps mcg 0)
-            (chem:set-conjugate-gradient-tolerance mcg tol)
-            (chem:disable-print-intermediate-results mcg)
-            (let* ((cg-final (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
-                               (chem:minimize mcg :coords refpos)))
-                   (cg-steps (chem:get-iteration mcg))
-                   (cg-rms   (%rms-force ef cg-final)))
-              (format t "truncated-Newton  : ~d steps, rms-force = ~e~%" tn-steps tn-rms)
-              (format t "conjugate-gradient: ~d steps, rms-force = ~e~%" cg-steps cg-rms)
-              ;; truncated Newton must reach the tight tolerance ...
-              #+tests(test-true truncated-newton-converged (< tn-rms (* 10d0 tol)))
-              ;; ... and in fewer outer iterations than CG (fast convergence)
-              #+tests(test-true truncated-newton-faster-than-cg (< tn-steps cg-steps)))))))))
+                           (chem:minimize mtn :coords refpos)))
+               (tn-rms (%rms-force ef tn-final)))
+          (format t "truncated-Newton: ~d steps, rms-force = ~e~%"
+                  (chem:get-iteration mtn) tn-rms)
+          #+tests(test-true truncated-newton-converged (< tn-rms (* 10d0 tol))))))))
 
 
 ;;; ======================================================================
@@ -744,6 +721,354 @@
                           (and (not (ext:float-nan-p energy))
                                (not (ext:float-infinity-p energy))))))))
 
+
+;;; BEGIN L-BFGS REGRESSION TESTS
+;;;
+;;; Known harmonic minima provide an independent numerical reference.  The
+;;; coupled stretch test additionally leaves a nonzero force on a fixed atom;
+;;; merely masking the initial force cannot preserve that constrained minimum.
+
+(defun %lbfgs-harmonic-fixture (&key negative)
+  (multiple-value-bind (ef butane) (%fresh-butane-ef)
+    (let* ((size (chem:get-nvector-size ef))
+           (coords (chem:make-nvector size))
+           (weights (make-array size :initial-element 0d0))
+           (indices (make-hash-table :test 'eq))
+           (anchor (chem:make-energy-anchor-restraint ef)))
+      (chem:walk-stretch-terms
+       (chem:get-stretch-component ef)
+       (lambda (index atom1 atom2 i1 i2 kb r0)
+         (declare (ignore index kb r0))
+         (setf (gethash atom1 indices) i1 (gethash atom2 indices) i2)))
+      (dolist (component (chem:all-components ef)) (chem:disable component))
+      (chem:enable anchor)
+      (chem:load-coordinates-into-vector ef coords)
+      (let ((target (copy-seq coords)))
+        (chem:matter/walk-atoms
+         butane
+         (lambda (index atom residue molecule)
+           (declare (ignore residue molecule))
+           (let ((weight (if negative -1d0 (float (1+ (mod index 7)) 1d0)))
+                 (base (gethash atom indices)))
+             (assert base)
+             (chem:add-anchor-restraint-term anchor ef atom (chem:get-position atom) weight)
+             (dotimes (axis 3)
+               (let ((ii (+ base axis)))
+                 (setf (aref weights ii) weight)
+                 (%nv-set! coords ii (+ (%nv-ref coords ii)
+                                       (nth axis '(0.7d0 -0.4d0 0.25d0)))))))))
+        (values ef coords target weights)))))
+
+(defun %lbfgs-analytic-anchor-rms (coords target weights)
+  (sqrt (/ (loop for ii below (length coords)
+                 sum (expt (* 2d0 (aref weights ii)
+                              (- (%nv-ref coords ii) (%nv-ref target ii))) 2))
+           (length coords))))
+
+(defun %lbfgs-analytic-anchor-energy (coords target weights)
+  (loop for ii below (length coords)
+        sum (* (aref weights ii)
+               (expt (- (%nv-ref coords ii) (%nv-ref target ii)) 2))))
+
+(defun %lbfgs-analytic-anchor-slope (coords target weights direction)
+  (loop for ii below (length coords)
+        sum (* 2d0 (aref weights ii)
+               (- (%nv-ref coords ii) (%nv-ref target ii))
+               (%nv-ref direction ii))))
+
+(defun %lbfgs-test-minimizer (ef &key (enabled t) (sd-steps 0) (limit 10000)
+                                    (tolerance 1d-7))
+  (let ((minimizer (chem:make-minimizer ef)))
+    (chem:set-use-lbfgs minimizer enabled)
+    (chem:set-maximum-number-of-lbfgs-steps minimizer limit)
+    (chem:set-maximum-number-of-steepest-descent-steps minimizer sd-steps)
+    (chem:set-truncated-newton-tolerance minimizer tolerance)
+    (chem:set-conjugate-gradient-tolerance minimizer tolerance)
+    (chem:disable-print-intermediate-results minimizer)
+    minimizer))
+
+(defun %lbfgs-test-run (minimizer coords &key mask callback)
+  (ext:with-float-traps-masked (:underflow :overflow :invalid :inexact :divide-by-zero)
+    (chem:minimize minimizer :coords coords :active-atom-mask mask :callback callback)))
+
+(defun %lbfgs-test-constructed-minimizer (ef steps)
+  ;; Ordinary record fields require a complete initializer. Supply those
+  ;; from a prototype, but pass each tested L-BFGS keyword exactly once.
+  (let* ((prototype (%lbfgs-test-minimizer ef :enabled nil :tolerance 1d-12))
+         (arguments (loop for (key . value) in (core:encode prototype)
+                          unless (member key '(:use-lbfgs :number-of-lbfgs-steps))
+                            append (list key value))))
+    (apply #'core:make-cxx-object 'chem:minimizer
+           :use-lbfgs t :number-of-lbfgs-steps steps arguments)))
+
+(defun run-lbfgs-regression-tests ()
+  (multiple-value-bind (ef start target weights) (%lbfgs-harmonic-fixture)
+    (let ((default (chem:make-minimizer ef)))
+      #+tests(test-true lbfgs-enabled-by-default (chem:get-use-lbfgs default))
+      #+tests(test-true lbfgs-default-step-limit
+                        (= 10000 (chem:get-maximum-number-of-lbfgs-steps default))))
+    (let* ((configured (%lbfgs-test-constructed-minimizer ef 7))
+           (fields (core:encode configured))
+           (restored (core:decode (chem:make-minimizer ef) fields)))
+      #+tests(test-true lbfgs-constructor-step-limit
+                        (and (chem:get-use-lbfgs configured)
+                             (= 7 (chem:get-maximum-number-of-lbfgs-steps configured))))
+      #+tests(test-true lbfgs-step-limit-record-roundtrip
+                        (and (equal (assoc :number-of-lbfgs-steps fields)
+                                    '(:number-of-lbfgs-steps . 7))
+                             (chem:get-use-lbfgs restored)
+                             (= 7 (chem:get-maximum-number-of-lbfgs-steps restored)))))
+    (let* ((minimizer (%lbfgs-test-constructed-minimizer ef 0))
+           (initial-iteration (chem:get-iteration minimizer))
+           (final (%lbfgs-test-run minimizer start)))
+      #+tests(test-true lbfgs-constructor-zero-skips
+                        (and (every #'= final start)
+                             (= initial-iteration (chem:get-iteration minimizer)))))
+    (let* ((minimizer (%lbfgs-test-constructed-minimizer ef 1))
+           (initial-iteration (chem:get-iteration minimizer))
+           (condition (handler-case (progn (%lbfgs-test-run minimizer start) nil)
+                        (chem:minimizer-exceeded-max-steps (condition) condition))))
+      #+tests(test-true lbfgs-constructor-limit-is-enforced
+                        (and condition (= (1+ initial-iteration) (chem:get-iteration minimizer)))))
+    (let* ((minimizer (%lbfgs-test-minimizer ef))
+           (stages nil)
+           (previous-energy nil) (previous-slope nil)
+           (previous-step nil) (previous-direction nil)
+           (wolfe-ok t) (checked-steps 0) (history-direction-seen nil))
+      ;; Observe the chosen step without changing any callback arguments.
+      ;; Both energies and directional derivatives below come from the known
+      ;; quadratic, independently of the energy function and line search.
+      (chem:set-step-callback
+       minimizer
+       (lambda (stage coords force step direction)
+         (assert (eq stage 'chem:lbfgs))
+         (setf previous-energy (%lbfgs-analytic-anchor-energy coords target weights)
+               previous-slope (%lbfgs-analytic-anchor-slope coords target weights direction)
+               previous-step step previous-direction (copy-seq direction))
+         (let ((dot (loop for ii below (length coords)
+                          sum (* (%nv-ref force ii) (%nv-ref direction ii))))
+               (force2 (loop for ii below (length coords) sum (expt (%nv-ref force ii) 2)))
+               (direction2 (loop for ii below (length coords) sum (expt (%nv-ref direction ii) 2))))
+           (when (and (> force2 1d-12) (> direction2 1d-12)
+                      (< (* dot dot) (* (- 1d0 1d-8) force2 direction2)))
+             (setf history-direction-seen t)))))
+      (let* ((final (%lbfgs-test-run
+                     minimizer start
+                     :callback
+                     (lambda (stage energy-function coords mask)
+                       (declare (ignore energy-function mask))
+                       (push stage stages)
+                       (let ((energy (%lbfgs-analytic-anchor-energy coords target weights))
+                             (slope (%lbfgs-analytic-anchor-slope coords target weights previous-direction)))
+                         (incf checked-steps)
+                         (setf wolfe-ok
+                               (and wolfe-ok (> previous-step 0d0) (< previous-slope 0d0)
+                                    (<= energy (+ previous-energy
+                                                  (* 1d-4 previous-step previous-slope)
+                                                  (* 1d-12 (max 1d0 (abs previous-energy)))))
+                                    (<= (abs slope)
+                                        (+ (* 0.9d0 (abs previous-slope))
+                                           (* 1d-12 (max 1d0 (abs previous-slope)))))))))))
+           (energy (chem:evaluate-energy ef final))
+           (rms (%lbfgs-analytic-anchor-rms final target weights)))
+        (format t "L-BFGS harmonic: energy=~e analytic-rms=~e steps=~d~%"
+                energy rms (chem:get-iteration minimizer))
+        #+tests(test-true lbfgs-opt-in-enabled (chem:get-use-lbfgs minimizer))
+        #+tests(test-true lbfgs-harmonic-energy (< (abs energy) 1d-12))
+        #+tests(test-true lbfgs-harmonic-analytic-force (< rms 1.01d-7))
+        #+tests(test-true lbfgs-accepted-steps-satisfy-strong-wolfe
+                          (and (> checked-steps 0) wolfe-ok))
+        #+tests(test-true lbfgs-observation-callbacks-preserve-history history-direction-seen)
+        #+tests(test-true lbfgs-bypasses-cg-and-tn
+                          (and stages (every (lambda (stage) (eq stage 'chem:lbfgs)) stages)))))
+    ;; Keeping the opt-in disabled must retain the legacy CG route.
+    (let* ((minimizer (%lbfgs-test-minimizer ef :enabled nil))
+           (stages nil))
+      (chem:set-maximum-number-of-truncated-newton-steps minimizer 0)
+      (let ((final (%lbfgs-test-run
+                    minimizer start
+                    :callback (lambda (stage energy-function coords mask)
+                                (declare (ignore energy-function coords mask))
+                                (push stage stages)))))
+        #+tests(test-true lbfgs-disabled-legacy-converges
+                          (< (%lbfgs-analytic-anchor-rms final target weights) 1.01d-7))
+        #+tests(test-true lbfgs-disabled-legacy-callbacks
+                          (and (member 'chem:conjugate-gradient stages)
+                               (not (member 'chem:lbfgs stages))))))
+    ;; At the exact minimum no curvature update or line search is necessary.
+    (let* ((minimizer (%lbfgs-test-minimizer ef))
+           (initial-iteration (chem:get-iteration minimizer))
+           (final (%lbfgs-test-run minimizer target)))
+      #+tests(test-true lbfgs-zero-force-start
+                        (and (= initial-iteration (chem:get-iteration minimizer))
+                             (every #'= final target)
+                             (zerop (chem:get-rmsforce minimizer)))))
+    (let* ((minimizer (%lbfgs-test-minimizer ef))
+           (initial-iteration (chem:get-iteration minimizer))
+           (mask (make-array (length start) :element-type 'bit :initial-element 0))
+           (final (%lbfgs-test-run minimizer start :mask mask)))
+      #+tests(test-true lbfgs-no-active-coordinates
+                        (and (every #'= final start)
+                             (= initial-iteration (chem:get-iteration minimizer))
+                             (zerop (chem:get-rmsforce minimizer)))))
+    ;; Unequal spring constants cannot all relax in one first-order step.
+    (let* ((minimizer (%lbfgs-test-minimizer ef :limit 1 :tolerance 1d-12))
+           (initial-iteration (chem:get-iteration minimizer))
+           (condition (handler-case (progn (%lbfgs-test-run minimizer start) nil)
+                        (chem:minimizer-exceeded-max-steps (condition) condition))))
+      #+tests(test-true lbfgs-set-step-limit
+                        (= 1 (chem:get-maximum-number-of-lbfgs-steps minimizer)))
+      #+tests(test-true lbfgs-reports-step-limit
+                        (and condition (= (1+ initial-iteration) (chem:get-iteration minimizer)))))
+    ;; The optional SD prelude still executes before L-BFGS.
+    (let ((minimizer (%lbfgs-test-minimizer ef :sd-steps 10000))
+          (stages nil))
+      (chem:set-steepest-descent-tolerance minimizer 1d0)
+      (let ((final (%lbfgs-test-run
+                    minimizer start
+                    :callback (lambda (stage energy-function coords mask)
+                                (declare (ignore energy-function coords mask))
+                                (push stage stages)))))
+        #+tests(test-true lbfgs-preserves-steepest-descent-prelude
+                          (and (member 'chem:steepest-descent stages)
+                               (member 'chem:lbfgs stages)
+                               (not (member 'chem:conjugate-gradient stages))
+                               (not (member 'chem:truncated-newton stages))
+                               (< (%lbfgs-analytic-anchor-rms final target weights) 1.01d-7))))))
+  ;; Changing the objective in a pre-step callback invalidates the selected
+  ;; trial even when the callback leaves every coordinate and force untouched.
+  (multiple-value-bind (ef start target weights) (%lbfgs-harmonic-fixture)
+    (declare (ignore target weights))
+    (let ((minimizer (%lbfgs-test-minimizer ef))
+          (anchor (chem:make-energy-anchor-restraint ef))
+          (changed nil))
+      (chem:set-step-callback
+       minimizer
+       (lambda (stage coords force step direction)
+         (declare (ignore stage coords force step direction))
+         (unless changed (chem:disable anchor) (setf changed t))))
+      (let ((final (%lbfgs-test-run minimizer start)))
+        #+tests(test-true lbfgs-callback-objective-change-discards-selected-trial
+                          (and changed (every #'= final start)
+                               (zerop (chem:evaluate-energy ef final))
+                               (zerop (%rms-force ef final)))))))
+  ;; E = 4 (x-1)^2 + (x-3)^2 for x>0, with the second atom fixed at x=0.
+  ;; The constrained minimum is x=7/5, E=16/5; the fixed atom's force is 16/5.
+  (multiple-value-bind (ef butane) (%fresh-butane-ef)
+    (let* ((c1 (chem:matter/first-atom-with-name butane :C1))
+           (c2 (chem:matter/first-atom-with-name butane :C2))
+           (stretch (chem:get-stretch-component ef))
+           (anchor (chem:make-energy-anchor-restraint ef))
+           (size (chem:get-nvector-size ef))
+           (start (chem:make-nvector size))
+           (mask (make-array size :element-type 'bit :initial-element 0))
+           (c1-index nil) (c2-index nil) (found nil))
+      (dolist (component (chem:all-components ef)) (chem:disable component))
+      (chem:enable stretch)
+      (chem:enable anchor)
+      (chem:walk-stretch-terms
+       stretch
+       (lambda (index atom1 atom2 i1 i2 kb r0)
+         (declare (ignore kb r0))
+         (chem:modify-stretch-term-kb stretch index 0.0)
+         (when (or (and (eq atom1 c1) (eq atom2 c2))
+                   (and (eq atom1 c2) (eq atom2 c1)))
+           (setf found t c1-index (if (eq atom1 c1) i1 i2)
+                 c2-index (if (eq atom1 c2) i1 i2))
+           (chem:modify-stretch-term-kb stretch index 4.0)
+           (chem:modify-stretch-term-r0 stretch index 1.0))))
+      (assert found)
+      (chem:add-anchor-restraint-term anchor ef c1 (geom:vec 3d0 0d0 0d0) 1d0)
+      (chem:load-coordinates-into-vector ef start)
+      (geom:vec-set (geom:vec 2d0 0d0 0d0) start c1-index)
+      (geom:vec-set (geom:vec 0d0 -0d0 0d0) start c2-index)
+      (setf (aref mask c1-index) 1)
+      (let* ((before (copy-seq start))
+             (minimizer (%lbfgs-test-minimizer ef))
+             (final (%lbfgs-test-run minimizer start :mask mask))
+             (force (chem:make-nvector size))
+             (energy (chem:evaluate-energy-force ef final :calc-force t :force force)))
+        (format t "L-BFGS coupled mask: x=~e energy=~e active-force=~e fixed-force=~e~%"
+                (%nv-ref final c1-index) energy (%nv-ref force c1-index) (%nv-ref force c2-index))
+        #+tests(test-true lbfgs-coupled-constrained-minimum
+                          (and (< (abs (- (%nv-ref final c1-index) 1.4d0)) 1d-7)
+                               (< (abs (- energy 3.2d0)) 1d-10)
+                               (< (abs (%nv-ref force c1-index)) 1.01d-7)))
+        #+tests(test-true lbfgs-coupled-fixed-force-is-nonzero
+                          (> (abs (%nv-ref force c2-index)) 3d0))
+        #+tests(test-true lbfgs-preserves-every-fixed-coordinate
+                          (loop for ii below size
+                                always (or (= ii c1-index)
+                                           (= (ext:double-float-to-bits (%nv-ref before ii))
+                                              (ext:double-float-to-bits (%nv-ref final ii)))))))))
+  ;; A negative harmonic potential has no strong-Wolfe step: its directional
+  ;; derivative becomes more negative forever.  The failed search must leave
+  ;; the last accepted coordinates recoverable, without accepting a trial.
+  (multiple-value-bind (ef start target weights) (%lbfgs-harmonic-fixture :negative t)
+    (declare (ignore target weights))
+    (let* ((minimizer (%lbfgs-test-minimizer ef))
+           (initial-iteration (chem:get-iteration minimizer))
+           (condition (handler-case (progn (%lbfgs-test-run minimizer start) nil)
+                        (chem:minimizer-stuck (condition) condition))))
+      #+tests(test-true lbfgs-line-search-failure-is-reported condition)
+      #+tests(test-true lbfgs-failed-search-retains-accepted-coordinates
+                        (and condition
+                             (every #'= start (chem:coordinates condition))
+                             (= initial-iteration (chem:get-iteration minimizer))))))
+  ;; At this translated origin, a unit displacement rounds back to the
+  ;; starting double.  The initial line search must expand to a representable
+  ;; step, rather than repeatedly shrinking an already unrepresentable one.
+  (multiple-value-bind (ef butane) (%fresh-butane-ef)
+    (let* ((atom (chem:matter/first-atom-with-name butane :C1))
+           (anchor (chem:make-energy-anchor-restraint ef))
+           (size (chem:get-nvector-size ef))
+           (start (chem:make-nvector size))
+           (mask (make-array size :element-type 'bit :initial-element 0))
+           (target-x 1d16)
+           (coordinate nil))
+      (chem:walk-stretch-terms
+       (chem:get-stretch-component ef)
+       (lambda (index atom1 atom2 i1 i2 kb r0)
+         (declare (ignore index kb r0))
+         (cond ((eq atom atom1) (setf coordinate i1))
+               ((eq atom atom2) (setf coordinate i2)))))
+      (assert coordinate)
+      (dolist (component (chem:all-components ef)) (chem:disable component))
+      (chem:enable anchor)
+      (chem:add-anchor-restraint-term anchor ef atom (geom:vec target-x 0d0 0d0) 1d0)
+      (chem:load-coordinates-into-vector ef start)
+      (geom:vec-set (geom:vec (+ target-x 8d0) 0d0 0d0) start coordinate)
+      (setf (aref mask coordinate) 1)
+      #+tests(test-true lbfgs-translated-fixture-has-unrepresentable-unit-step
+                        (and (= (%nv-ref start coordinate) (- (%nv-ref start coordinate) 1d0))
+                             (= (chem:evaluate-energy ef start) 64d0)))
+      (let* ((minimizer (%lbfgs-test-minimizer ef))
+             (final (%lbfgs-test-run minimizer start :mask mask)))
+        #+tests(test-true lbfgs-expands-unrepresentable-initial-step
+                          (and (= (%nv-ref final coordinate) target-x)
+                               (zerop (chem:evaluate-energy ef final))
+                               (zerop (%rms-force ef final)))))))
+  ;; Finally exercise the complete nonlinear molecular objective, rather than
+  ;; only a quadratic.  The force is reevaluated independently after minimize.
+  (multiple-value-bind (ef butane) (%fresh-butane-ef)
+    (declare (ignore butane))
+    (let* ((start (chem:make-nvector (chem:get-nvector-size ef)))
+           (minimizer (%lbfgs-test-minimizer ef :tolerance 1d-4)))
+      (chem:load-coordinates-into-vector ef start)
+      (dotimes (ii 9) (%nv-set! start ii (+ (%nv-ref start ii) 0.15d0)))
+      (let* ((initial-energy (chem:evaluate-energy ef start))
+             (final (%lbfgs-test-run minimizer start))
+             (energy (chem:evaluate-energy ef final))
+             (rms (%rms-force ef final)))
+        (format t "L-BFGS butane: energy ~e -> ~e rms-force=~e steps=~d~%"
+                initial-energy energy rms (chem:get-iteration minimizer))
+        #+tests(test-true lbfgs-physical-butane-lowers-energy (< energy initial-energy))
+        #+tests(test-true lbfgs-physical-butane-converges (< rms 1.01d-4)))))
+  (values))
+
+(run-lbfgs-regression-tests)
+
+;;; END L-BFGS REGRESSION TESTS
 
 ;;; ===========================================================================
 ;;; Dihedral kernel agreement: dihedral_fast vs dihedral_fast_floored

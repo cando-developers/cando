@@ -77,7 +77,8 @@ namespace       chem
 		       steepestDescentRunning,
 		       conjugateGradientRunning,
 		       truncatedNewtonRunning,
-		       minimizerSucceeded, minimizerError } MinimizerStatus;
+		       minimizerSucceeded, minimizerError,
+                       lbfgsRunning } MinimizerStatus;
 
 
   typedef	enum	{ unknownPreconditioner, noPreconditioner, hessianPreconditioner } PreconditionerType;
@@ -142,6 +143,9 @@ struct RestartMinimizer {};
     int			_NumberOfTruncatedNewtonSteps;
     double		_TruncatedNewtonTolerance;
     PreconditionerType	_TruncatedNewtonPreconditioner;
+
+    bool                _UseLBFGS;
+    int                 _NumberOfLBFGS_Steps;
 
 	// status
     bool		_DebugOn;
@@ -250,6 +254,10 @@ struct RestartMinimizer {};
                                   core::T_sp callback,
                                   bool verbose );
 
+    void _lbfgs(int numSteps, NVector_sp pos, core::T_sp energyScale,
+                double forceTolerance, core::T_sp activeAtomMask,
+                core::T_sp callback, bool verbose);
+
 
     void	_evaluateEnergyAndForceManyTimes( int numSteps,
                                                   NVector_sp nvPos,
@@ -336,6 +344,23 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
     CL_DEFMETHOD 	void	setMaximumNumberOfConjugateGradientSteps(int m) {this->_NumberOfConjugateGradientSteps= m;};
     CL_LISPIFY_NAME("setMaximumNumberOfTruncatedNewtonSteps");
     CL_DEFMETHOD 	void	setMaximumNumberOfTruncatedNewtonSteps(int m) {this->_NumberOfTruncatedNewtonSteps= m;};
+    CL_LISPIFY_NAME("set-use-lbfgs");
+    CL_DOCSTRING(R"dx(When enabled, run L-BFGS instead of both conjugate gradient and
+truncated Newton, after the optional steepest-descent stage. Disabled by default.
+L-BFGS uses the truncated-Newton RMS force tolerance. Floating-point trap settings
+remain under caller control, as with the other minimizers.)dx");
+    CL_DEFMETHOD void setUseLBFGS(bool enabled) { this->_UseLBFGS = enabled; };
+    CL_LISPIFY_NAME("get-use-lbfgs");
+    CL_DEFMETHOD bool getUseLBFGS() { return this->_UseLBFGS; };
+    CL_LISPIFY_NAME("set-maximum-number-of-lbfgs-steps");
+    CL_DOCSTRING(R"dx(Set the nonnegative L-BFGS iteration limit (default 10000).
+Zero skips L-BFGS; it does not re-enable conjugate gradient or truncated Newton.)dx");
+    CL_DEFMETHOD void setMaximumNumberOfLBFGS_Steps(int steps) {
+      if (steps < 0) SIMPLE_ERROR("Maximum number of L-BFGS steps must be nonnegative");
+      this->_NumberOfLBFGS_Steps = steps;
+    };
+    CL_LISPIFY_NAME("get-maximum-number-of-lbfgs-steps");
+    CL_DEFMETHOD int getMaximumNumberOfLBFGS_Steps() { return this->_NumberOfLBFGS_Steps; };
     CL_LISPIFY_NAME("setSteepestDescentTolerance");
     CL_DEFMETHOD 	void	setSteepestDescentTolerance(double m) {this->_SteepestDescentTolerance = m;};
     CL_LISPIFY_NAME("setConjugateGradientTolerance");
@@ -373,6 +398,8 @@ takes a single argument, the NVECTOR position of the atoms.)dx");
         _NumberOfSteepestDescentSteps(10000),
         _NumberOfConjugateGradientSteps(10000),
         _NumberOfTruncatedNewtonSteps(10000),
+        _UseLBFGS(true),
+        _NumberOfLBFGS_Steps(10000),
         _PrintIntermediateResults(1),
         _StepCallback(nil<core::T_O>()),
         _ReportEveryNSteps(100),

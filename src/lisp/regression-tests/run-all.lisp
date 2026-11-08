@@ -20,6 +20,7 @@
 (let ((rosetta-host-p (ext:logical-host-p "ROSETTA")))
   (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;cremer-pople.lisp")
   (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;geometry.lisp")
+  (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;manipulator.lisp")
   (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;leap.lisp")
   (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;spanning-tree.lisp")
   (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;pairwise-derivatives.lisp")

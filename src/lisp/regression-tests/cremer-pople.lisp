@@ -40,6 +40,13 @@
 
 #+tests(test-true cp5-first (< (abs (- (first *cp5-from-coords-zjs*) (first *cp5-from-cpzjs*))) 0.0001))
 #+tests(test-true cp5-second (< (abs (- (second *cp5-from-coords-zjs*) (second *cp5-from-cpzjs*))) 0.0001))
+#+tests(test-true cp5-reconstruction-preserves-bond-geometry
+        (and (loop for original across *5-dists*
+                   for rebuilt across *new-5-dists*
+                   always (< (abs (- original rebuilt)) 1d-6))
+             (loop for original across *5-angles*
+                   for rebuilt across *new-5-angles*
+                   always (< (abs (- original rebuilt)) 1d-6))))
 
 (defparameter *zjs6-from-coords* (multiple-value-call 'chem:cpring-coordinates-to-zjs (chem:cpring-6-sample)))
 (defparameter *cp6-from-coords* (multiple-value-list (multiple-value-call 'chem:cpring-6-coordinates-to-cremer-pople (chem:cpring-6-sample))))
@@ -65,6 +72,13 @@
 #+tests(test-true cp6-first (< *test-cp6-first* 0.0001))
 #+tests(test-true cp6-second (< *test-cp6-second* 0.0001))
 #+tests(test-true cp6-third (< *test-cp6-third* 0.0001))
+#+tests(test-true cp6-reconstruction-preserves-bond-geometry
+        (and (loop for original across *6-dists*
+                   for rebuilt across *new-6-dists*
+                   always (< (abs (- original rebuilt)) 1d-6))
+             (loop for original across *6-angles*
+                   for rebuilt across *new-6-angles*
+                   always (< (abs (- original rebuilt)) 1d-6))))
 (progn
   (format t "cpring-6-sample -> ~a~%" (multiple-value-call 'chem:cpring-mathematica (chem:cpring-6-sample)))
   (format t "cp6-from-coords*     -> ~10,7f~%" *cp6-from-coords*)
@@ -78,7 +92,6 @@
   (format t "*6-angles* = ~s~%" (mapcar (lambda (aa) (/ aa 0.0174633)) (coerce *6-angles* 'list)))
   (format t "*new-6-angles* = ~s~%" (mapcar (lambda (aa) (/ aa 0.0174633)) (coerce *new-6-angles* 'list)))
   )
-
 
 
 

@@ -49,10 +49,13 @@
   :in-order-to ((test-op (test-op "topology/shape-key-tests")
                         (test-op "topology/training-context-tests")))
   :serial t
-  :components ((:file "tests/derive-topology-group")
+  :components ((:file "new-adjustment-tests")
+               (:file "tests/adjustments")
+               (:file "tests/derive-topology-group")
                (:file "tests/manipulator"))
   :perform (test-op (operation component)
              (declare (ignore operation component))
+             (uiop:symbol-call :topology-adjustment-tests :run-tests)
              (uiop:symbol-call :topology-derivation-tests :run-tests)
              (uiop:symbol-call :topology-manipulator-tests :run-tests)))
 

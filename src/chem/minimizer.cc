@@ -43,6 +43,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/minimizer.h>
 #include <iostream>
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <limits>
 #include <cando/geom/vector3.fwd.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/atom.h>
@@ -87,6 +91,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,localSteps);
 SYMBOL_EXPORT_SC_(ChemPkg,steepest_descent);
 SYMBOL_EXPORT_SC_(ChemPkg,conjugate_gradient);
 SYMBOL_EXPORT_SC_(ChemPkg,truncated_newton);
+SYMBOL_EXPORT_SC_(ChemPkg,lbfgs);
 SYMBOL_EXPORT_SC_(ChemPkg,truncated_newton_debug);
 
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededSD_MaxSteps);
@@ -249,6 +254,9 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
   case truncatedNewtonRunning:
       status = "truncatedNewtonRunning";
       break;
+  case lbfgsRunning:
+      status = "lbfgsRunning";
+      break;
   default:
       return "unknownMinimizerStatus";
   }
@@ -267,6 +275,10 @@ void Minimizer_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,ConjugateGradientTolerance),this->_ConjugateGradientTolerance);
   node->field(INTERN_(kw,NumberOfTruncatedNewtonSteps),this->_NumberOfTruncatedNewtonSteps);
   node->field(INTERN_(kw,TruncatedNewtonTolerance),this->_TruncatedNewtonTolerance);
+  node->field_if_not_default(INTERN_(kw,UseLBFGS),this->_UseLBFGS,true);
+  node->field_if_not_default(INTERN_(kw,number_of_lbfgs_steps),this->_NumberOfLBFGS_Steps,10000);
+  if (this->_NumberOfLBFGS_Steps < 0)
+    SIMPLE_ERROR("Maximum number of L-BFGS steps must be nonnegative");
   node->field(INTERN_(kw,ScoringFunction),this->_ScoringFunction );
   node->field(INTERN_(kw,PrintIntermediateResults),this->_PrintIntermediateResults);
 }
@@ -289,6 +301,9 @@ string	Minimizer_O::statusAsShortString()
       break;
   case truncatedNewtonRunning:
       status = "TN";
+      break;
+  case lbfgsRunning:
+      status = "LB";
       break;
   default:
       return "?st?";
@@ -1536,6 +1551,340 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   }
 }
 
+// Limited-memory BFGS uses forces = -grad(E). History is local to this call,
+// so a restarted minimization cannot retain curvature from an old objective.
+void Minimizer_O::_lbfgs(int numSteps, NVector_sp pos,
+                         core::T_sp energyScale, double forceTolerance,
+                         core::T_sp activeAtomMask, core::T_sp callback,
+                         bool verbose)
+{
+  if (numSteps < 0) SIMPLE_ERROR("Maximum number of L-BFGS steps must be nonnegative");
+  if (numSteps == 0) return;
+  if (!std::isfinite(forceTolerance) || forceTolerance < 0.0)
+    SIMPLE_ERROR("L-BFGS force tolerance must be finite and nonnegative");
+  this->_Status = lbfgsRunning;
+  this->_CurrentPreconditioner = noPreconditioner;
+  if (verbose || this->_PrintIntermediateResults)
+    core::clasp_write_string(fmt::format(
+        "++++ L-BFGS ++++ max_steps = {}     tolerance = {}\n", numSteps, forceTolerance));
+
+  const size_t n = pos->length();
+  constexpr size_t historyLimit = 10;
+  constexpr int maxLineEvaluations = 64;
+  constexpr double c1 = 1.0e-4, c2 = 0.9, maxLineStep = 1.0e8;
+  gctools::Vec0<unsigned char> active;
+  active.resize(n, 0);
+  size_t activeCount = 0;
+  // Keep a snapshot to recognize a mask changed by a callback.
+  auto refreshMask = [&]() {
+    if (activeAtomMask.notnilp()) {
+      if (!gc::IsA<core::SimpleBitVector_sp>(activeAtomMask))
+        SIMPLE_ERROR("activeAtomMask must be a simple-bit-vector or NIL");
+      if (gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask)->length() != n)
+        SIMPLE_ERROR("Active coordinate mask has the wrong length for L-BFGS");
+    }
+    bool changed = false;
+    activeCount = 0;
+    for (size_t i = 0; i < n; ++i) {
+      bool enabled = activeAtomMask.nilp()
+          || gc::As_unsafe<core::SimpleBitVector_sp>(activeAtomMask)->testBit(i);
+      changed = changed || active[i] != enabled;
+      active[i] = enabled;
+      activeCount += enabled;
+    }
+    return changed;
+  };
+  refreshMask();
+
+  NVector_sp force = NVector_O::create(n);
+  NVector_sp direction = NVector_O::create(n);
+  NVector_sp q = NVector_O::create(n);
+  NVector_sp origin = NVector_O::create(n);
+  NVector_sp oldForce = NVector_O::create(n);
+  NVector_sp trialPos = NVector_O::create(n);
+  NVector_sp trialForce = NVector_O::create(n);
+  this->_Force = force;
+  // Use an already registered precise-GC container type. The entries remain
+  // NVectors; introducing Vec0<NVector_sp> here would require a new GC layout.
+  gctools::Vec0<core::T_sp> displacements, gradientChanges;
+  for (size_t j = 0; j < historyLimit; ++j) {
+    displacements.push_back(NVector_O::create(n));
+    gradientChanges.push_back(NVector_O::create(n));
+  }
+  std::array<double, historyLimit> rho{}, alpha{};
+  size_t historyCount = 0, nextHistory = 0;
+  int localSteps = 0;
+  auto resetHistory = [&]() { historyCount = nextHistory = 0; };
+  auto finiteVector = [&](NVector_sp vector) {
+    for (size_t i = 0; i < n; ++i)
+      if (!std::isfinite((*vector)[i])) return false;
+    return true;
+  };
+  auto equalVectors = [&](NVector_sp x, NVector_sp y) {
+    for (size_t i = 0; i < n; ++i)
+      if ((*x)[i] != (*y)[i]) return false;
+    return true;
+  };
+  // Accumulate more widely so a rejected direction cannot overflow a double
+  // merely while its norm or directional derivative is being checked.
+  auto dot = [&](NVector_sp x, NVector_sp y) {
+    long double sum = 0.0L;
+    for (size_t i = 0; i < n; ++i)
+      if (active[i]) sum += static_cast<long double>((*x)[i]) * (*y)[i];
+    if (!std::isfinite(sum) || std::abs(sum) > std::numeric_limits<double>::max())
+      return std::numeric_limits<double>::quiet_NaN();
+    return static_cast<double>(sum);
+  };
+  auto fail = [&](const char* message) {
+    if (finiteVector(pos) && finiteVector(force))
+      this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos, force);
+    this->_Status = minimizerError;
+    ERROR(_sym_MinimizerError, (ql::list()
+          << kw::_sym_message << core::SimpleBaseString_O::make(message)
+          << kw::_sym_minimizer << this->asSmartPtr()
+          << kw::_sym_coordinates << pos).result());
+  };
+  if (!finiteVector(pos)) fail("L-BFGS starting coordinates are not finite");
+  double energy = dTotalEnergyForce(pos, energyScale, force, activeAtomMask);
+  double step = 0.0, cosAngle = 1.0;
+  bool steepest = true;
+
+  while (true) {
+    if (!std::isfinite(energy) || !finiteVector(force))
+      fail("L-BFGS energy or active force is not finite");
+    double forceSquared = dot(force, force);
+    if (!std::isfinite(forceSquared)) fail("L-BFGS active force norm is not finite");
+    this->_RMSForce = activeCount ? std::sqrt(forceSquared / activeCount) : 0.0;
+    bool converged = this->_RMSForce == 0.0 || this->_RMSForce < forceTolerance;
+    if ((verbose || this->_PrintIntermediateResults) && n != 0)
+      this->_displayIntermediateMessage(pos, step, energy, this->_RMSForce,
+                                       cosAngle, steepest, converged, activeAtomMask);
+    if (converged) {
+      this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos, force);
+      this->_Status = minimizerSucceeded;
+      return;
+    }
+    if (localSteps >= numSteps) {
+      this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos, force);
+      this->_Status = minimizerError;
+      ERROR(_sym_MinimizerExceededMaxSteps, (ql::list()
+            << kw::_sym_minimizer << this->asSmartPtr()
+            << kw::_sym_number_of_steps << core::make_fixnum(localSteps)
+            << kw::_sym_coordinates << pos).result());
+    }
+    copyVector(origin, pos);
+    copyVector(oldForce, force);
+
+    // Apply H_k to -gradient directly, yielding the descent direction.
+    copyVector(q, force);
+    for (size_t j = 0; j < historyCount; ++j) {
+      size_t h = (nextHistory + historyLimit - 1 - j) % historyLimit;
+      NVector_sp s = gc::As<NVector_sp>(displacements[h]);
+      NVector_sp y = gc::As<NVector_sp>(gradientChanges[h]);
+      alpha[h] = rho[h] * dot(s, q);
+      for (size_t i = 0; i < n; ++i)
+        (*q)[i] -= alpha[h] * (*y)[i];
+    }
+    double scale = 1.0;
+    if (historyCount) {
+      size_t h = (nextHistory + historyLimit - 1) % historyLimit;
+      NVector_sp s = gc::As<NVector_sp>(displacements[h]);
+      NVector_sp y = gc::As<NVector_sp>(gradientChanges[h]);
+      scale = dot(s, y) / dot(y, y);
+      scale = std::max(1.0e-12, std::min(1.0e12, scale));
+    }
+    for (size_t i = 0; i < n; ++i) (*direction)[i] = scale * (*q)[i];
+    for (size_t j = historyCount; j > 0; --j) {
+      size_t h = (nextHistory + historyLimit - j) % historyLimit;
+      NVector_sp s = gc::As<NVector_sp>(displacements[h]);
+      NVector_sp y = gc::As<NVector_sp>(gradientChanges[h]);
+      double beta = rho[h] * dot(y, direction);
+      for (size_t i = 0; i < n; ++i)
+        (*direction)[i] += (*s)[i] * (alpha[h] - beta);
+    }
+    double descent = dot(force, direction);
+    double directionSquared = dot(direction, direction);
+    steepest = historyCount == 0;
+    if (!finiteVector(direction) || !std::isfinite(descent)
+        || !std::isfinite(directionSquared)
+        || descent <= 1.0e-12 * std::sqrt(forceSquared) * std::sqrt(directionSquared)) {
+      resetHistory();
+      copyVector(direction, force);
+      steepest = true;
+    }
+
+    double trialEnergy = energy, trialSlope = 0.0;
+    int lineEvaluations = 0;
+    // Bracket a strong-Wolfe step, then bisect the bracket. Bisection is the
+    // interpolation safeguard: no unbounded extrapolation or cubic poles.
+    // Rejected trials never overwrite the last accepted coordinates/forces.
+    // Nonfinite returned values are rejected. Evaluator conditions and the
+    // caller's floating-point trap policy are unchanged (as for CG and TN).
+    auto lineSearchWolfe = [&](double firstStep) {
+      const double slope0 = -dot(force, direction);
+      if (!std::isfinite(slope0) || slope0 >= 0.0) return false;
+      int evaluations = 0;
+      bool noMovement = false;
+      auto evaluate = [&](double a) {
+        gctools::handle_all_queued_interrupts();
+        ++evaluations;
+        noMovement = false;
+        bool moved = false;
+        for (size_t i = 0; i < n; ++i) {
+          long double value = (*pos)[i];
+          if (active[i]) value += static_cast<long double>(a) * (*direction)[i];
+          if (!std::isfinite(value) || std::abs(value) > std::numeric_limits<double>::max())
+            return false;
+          (*trialPos)[i] = static_cast<double>(value);
+          moved = moved || (*trialPos)[i] != (*pos)[i];
+        }
+        if (!moved) {
+          noMovement = true;
+          return false;
+        }
+        ++lineEvaluations;
+        trialEnergy = dTotalEnergyForce(trialPos, energyScale, trialForce, activeAtomMask);
+        if (!std::isfinite(trialEnergy) || !finiteVector(trialForce)) return false;
+        trialSlope = -dot(trialForce, direction);
+        return std::isfinite(trialSlope);
+      };
+      auto sufficientDecrease = [&](double a) {
+        return static_cast<long double>(trialEnergy)
+            <= static_cast<long double>(energy) + c1 * static_cast<long double>(a) * slope0;
+      };
+      auto zoom = [&](double lo, double hi, double lowEnergy) {
+        while (evaluations < maxLineEvaluations) {
+          double a = lo + 0.5 * (hi - lo);
+          if (a == lo || a == hi) return false;
+          bool finite = evaluate(a);
+          if (!finite || !sufficientDecrease(a) || trialEnergy >= lowEnergy) {
+            hi = a;
+          } else {
+            if (std::abs(trialSlope) <= -c2 * slope0) { step = a; return true; }
+            if ((trialSlope >= 0.0) == (hi > lo)) hi = lo;
+            lo = a;
+            lowEnergy = trialEnergy;
+          }
+        }
+        return false;
+      };
+      double previous = 0.0, previousEnergy = energy, a = firstStep;
+      while (evaluations < maxLineEvaluations) {
+        bool finite = evaluate(a);
+        if (noMovement) {
+          // At a translated origin, a small valid step can round back to the
+          // origin. Grow it while bracketing; shrinking would never move.
+          if (a >= maxLineStep) return false;
+          a = std::min(2.0 * a, maxLineStep);
+          continue;
+        }
+        if (!finite || !sufficientDecrease(a)
+            || (previous > 0.0 && trialEnergy >= previousEnergy))
+          return zoom(previous, a, previousEnergy);
+        if (std::abs(trialSlope) <= -c2 * slope0) { step = a; return true; }
+        if (trialSlope >= 0.0) return zoom(a, previous, trialEnergy);
+        previous = a;
+        previousEnergy = trialEnergy;
+        if (a >= maxLineStep) return false;
+        a = std::min(2.0 * a, maxLineStep);
+      }
+      return false;
+    };
+    double gradientStep = forceSquared > 1.0 ? 1.0 / std::sqrt(forceSquared) : 1.0;
+    bool accepted = lineSearchWolfe(steepest ? gradientStep : 1.0);
+    if (!accepted) {
+      resetHistory();
+      copyVector(direction, force);
+      steepest = true;
+      accepted = lineSearchWolfe(gradientStep);
+    }
+    if (!accepted) {
+      this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(pos, force);
+      this->_Status = minimizerError;
+      ERROR(_sym_MinimizerStuck, (ql::list()
+            << kw::_sym_message << core::SimpleBaseString_O::make("L-BFGS strong-Wolfe line search failed")
+            << kw::_sym_minimizer << this->asSmartPtr()
+            << kw::_sym_localSteps << core::make_fixnum(localSteps)
+            << kw::_sym_coordinates << pos).result());
+    }
+    cosAngle = dot(force, direction) / std::sqrt(forceSquared) / std::sqrt(dot(direction, direction));
+    if (this->_StepCallback.notnilp()) {
+      copyVector(q, direction);
+      core::eval::funcall(this->_StepCallback, _sym_lbfgs, pos, force,
+                          core::DoubleFloat_O::create(step), direction);
+      bool changedMask = refreshMask();
+      bool changedInputs = changedMask || !equalVectors(pos, origin)
+          || !equalVectors(force, oldForce) || !equalVectors(direction, q);
+      if (!finiteVector(pos)) fail("L-BFGS callback produced nonfinite coordinates");
+      double checkedEnergy = dTotalEnergyForce(pos, energyScale, force, activeAtomMask);
+      changedInputs = changedInputs || checkedEnergy != energy || !equalVectors(force, oldForce);
+      energy = checkedEnergy;
+      if (!changedInputs) {
+        // A callback can alter the objective without changing its value or
+        // gradient at the origin. Do not accept a cached trial from that old
+        // objective, even in this case.
+        copyVector(q, trialForce);
+        double checkedTrialEnergy = dTotalEnergyForce(trialPos, energyScale, trialForce, activeAtomMask);
+        changedInputs = checkedTrialEnergy != trialEnergy || !equalVectors(trialForce, q);
+        trialEnergy = checkedTrialEnergy;
+      }
+      if (changedInputs) {
+        // The selected step no longer belongs to these inputs. Restart the
+        // iteration and charge it to the step limit rather than accept it.
+        resetHistory();
+        ++localSteps;
+        ++this->_Iteration;
+        continue;
+      }
+    }
+    copyVector(pos, trialPos);
+    copyVector(force, trialForce);
+    energy = trialEnergy;
+    maybeSavePosition(pos);
+
+    NVector_sp s = gc::As<NVector_sp>(displacements[nextHistory]);
+    NVector_sp y = gc::As<NVector_sp>(gradientChanges[nextHistory]);
+    for (size_t i = 0; i < n; ++i) {
+      (*s)[i] = active[i] ? (*pos)[i] - (*origin)[i] : 0.0;
+      (*y)[i] = active[i] ? (*oldForce)[i] - (*force)[i] : 0.0;
+    }
+    double ys = dot(y, s), ss = dot(s, s), yy = dot(y, y);
+    if (std::isfinite(ys) && std::isfinite(ss) && std::isfinite(yy)
+        && ss > 0.0 && yy > 0.0
+        && ys > 1.0e-10 * std::sqrt(ss) * std::sqrt(yy)
+        && ys > 1.0 / std::numeric_limits<double>::max()) {
+      rho[nextHistory] = 1.0 / ys;
+      nextHistory = (nextHistory + 1) % historyLimit;
+      historyCount = std::min(historyCount + 1, historyLimit);
+    } else {
+      // This slot may have overwritten the oldest pair of a full history.
+      resetHistory();
+    }
+    if (callback.notnilp()) {
+      copyVector(origin, pos);
+      copyVector(oldForce, force);
+      core::eval::funcall(callback, _sym_lbfgs, this->_ScoringFunction, pos, activeAtomMask);
+      bool changedMask = refreshMask();
+      if (!finiteVector(pos)) fail("L-BFGS callback produced nonfinite coordinates");
+      double checkedEnergy = dTotalEnergyForce(pos, energyScale, force, activeAtomMask);
+      if (changedMask || checkedEnergy != energy || !equalVectors(pos, origin)
+          || !equalVectors(force, oldForce)) resetHistory();
+      energy = checkedEnergy;
+    }
+    if (this->_DebugOn) {
+      StepReport_sp report = StepReport_O::create();
+      report->_Iteration = this->_Iteration;
+      report->_MinimizerStatus = this->statusAsString();
+      this->lineSearchFinalReport(report, step, energy, lineEvaluations, lineEvaluations, 0);
+      this->stepReport(report, energy, force, activeAtomMask);
+      this->_Log->addReport(report);
+    }
+    ++localSteps;
+    ++this->_Iteration;
+    gctools::handle_all_queued_interrupts();
+  }
+}
+
 void	Minimizer_O::_truncatedNewtonInnerLoop(int				kk,
                                                NVector_sp			pos,
                                                core::T_sp                       energyScale,
@@ -2231,24 +2580,35 @@ CL_DEFMETHOD core::T_mv Minimizer_O::minimize(core::T_sp energyScale, core::T_sp
           core::clasp_writeln_string("======= Skipping Steepest Descent #steps = 0");
         }
       }
-      if ( this->_NumberOfConjugateGradientSteps > 0 ) {
-        this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
-                                  pos, energyScale, this->_ConjugateGradientTolerance, activeAtomMask, callback, verbose );
-      } else {
-        if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string("======= Skipping Conjugate Gradients #steps = 0");
+      if (this->_UseLBFGS) {
+        if (this->_NumberOfLBFGS_Steps > 0) {
+          this->_lbfgs(this->_NumberOfLBFGS_Steps, pos, energyScale,
+                        this->_TruncatedNewtonTolerance, activeAtomMask, callback, verbose);
+        } else if (this->_PrintIntermediateResults) {
+          core::clasp_writeln_string("======= Skipping L-BFGS #steps = 0");
         }
-      }
-      if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
-        this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
-                                pos, energyScale, this->_TruncatedNewtonTolerance, activeAtomMask, callback, verbose );
       } else {
-        if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string("======= Skipping Truncated Newton #steps = 0");
+        if ( this->_NumberOfConjugateGradientSteps > 0 ) {
+          this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
+                                    pos, energyScale, this->_ConjugateGradientTolerance, activeAtomMask, callback, verbose );
+        } else {
+          if ( this->_PrintIntermediateResults ) {
+            core::clasp_writeln_string("======= Skipping Conjugate Gradients #steps = 0");
+          }
+        }
+        if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
+          this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
+                                  pos, energyScale, this->_TruncatedNewtonTolerance, activeAtomMask, callback, verbose );
+        } else {
+          if ( this->_PrintIntermediateResults ) {
+            core::clasp_writeln_string("======= Skipping Truncated Newton #steps = 0");
+          }
         }
       }
       if ( this->_PrintIntermediateResults ) {
-        core::clasp_writeln_string("======= All three minimizers have completed or passed on minimization.");
+        core::clasp_writeln_string(this->_UseLBFGS
+            ? "======= Steepest descent and L-BFGS have completed or passed on minimization."
+            : "======= All three minimizers have completed or passed on minimization.");
       }
       goto DONE;
     } catch ( RestartMinimizer ld ) {
@@ -2311,6 +2671,9 @@ CL_DEFMETHOD     string	Minimizer_O::configurationAsString()
   ss << "MaximumNumberOfTruncatedNewtonSteps: "<<this->_NumberOfTruncatedNewtonSteps << std::endl;
   ss << "TruncatedNewtonTolerance:            "<<this->_TruncatedNewtonTolerance << std::endl;
   ss << "TruncatedNewtonPreconditioner:       "<<stringForPreconditionerType(this->_TruncatedNewtonPreconditioner)<<std::endl;
+  ss << "UseLBFGS:                            "<<this->_UseLBFGS<<std::endl;
+  ss << "MaximumNumberOfLBFGS_Steps:           "<<this->_NumberOfLBFGS_Steps<<std::endl;
+  ss << "LBFGSForceTolerance (TN tolerance): "<<this->_TruncatedNewtonTolerance<<std::endl;
   return ss.str();
 }
 
@@ -2342,6 +2705,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,truncatedNewtonRunning);
 SYMBOL_EXPORT_SC_(ChemPkg,conjugateGradientRunning);
 SYMBOL_EXPORT_SC_(ChemPkg,steepestDescentRunning);
 SYMBOL_EXPORT_SC_(ChemPkg,minimizerIdle);
+SYMBOL_EXPORT_SC_(ChemPkg,lbfgsRunning);
 CL_BEGIN_ENUM(chem::MinimizerStatus,_sym__PLUS_minimizerStatusConverter_PLUS_,"MinimizerStatus");
 CL_VALUE_ENUM(_sym_minimizerIdle,chem::minimizerIdle);
 CL_VALUE_ENUM(_sym_steepestDescentRunning,chem::steepestDescentRunning);
@@ -2349,6 +2713,7 @@ CL_VALUE_ENUM(_sym_conjugateGradientRunning,chem::conjugateGradientRunning);
 CL_VALUE_ENUM(_sym_truncatedNewtonRunning,chem::truncatedNewtonRunning);
 CL_VALUE_ENUM(_sym_minimizerSucceeded,chem::minimizerSucceeded);
 CL_VALUE_ENUM(_sym_minimizerError,chem::minimizerError);
+CL_VALUE_ENUM(_sym_lbfgsRunning,chem::lbfgsRunning);
 CL_END_ENUM(_sym__PLUS_minimizerStatusConverter_PLUS_);
 
 

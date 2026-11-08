@@ -10,7 +10,8 @@
   "Directory containing the Cando regression test source files.")
 
 (defparameter *cando-regression-test-files*
-  '("cremer-pople.lisp"
+  '("manipulator.lisp"
+    "cremer-pople.lisp"
     "geometry.lisp"
     "leap.lisp"
     "spanning-tree.lisp"

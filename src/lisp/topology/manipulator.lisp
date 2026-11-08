@@ -584,6 +584,14 @@ while nesting several WITH-CPRING5 forms."
              repeat 3
              always (kin:joint/parent-bound-p ancestor))))
 
+(defun inter-ring-dihedral-allowed-p (atmb atmc rings-ht)
+  "Allow a candidate torsion unless its central atoms share a ring."
+  ;; Being in rings is not enough to exclude a bond: the connecting bond of
+  ;; two separate rings must remain a rotation driver. Check every membership
+  ;; so bonds within fused rings are still excluded. Ring objects in this table
+  ;; are shared by identity, as populated by CALCULATE-ROTATABLE-DIHEDRALS.
+  (not (intersection (gethash atmb rings-ht) (gethash atmc rings-ht) :test #'eq)))
+
 (defun calculate-rotatable-dihedrals (assembler)
   (let ((rotatable-dihedrals nil)
         (aggregate (topology:aggregate assembler)))
@@ -610,22 +618,8 @@ while nesting several WITH-CPRING5 forms."
                                             #+(or)(great-grand-parent (kin:joint/parent grand-parent)))
                                        (flet ((rotatablep (jointb jointc)
                                                 (let* ((atmb (gethash jointb atom-joint-map))
-                                                       (atmc (gethash jointc atom-joint-map))
-                                                       (ringsb (gethash atmb rings-ht))
-                                                       (ringsc (gethash atmc rings-ht)))
-                                                  #+(or)
-                                                  (progn
-                                                    (format t "atmb = ~s  atmc = ~s~%" atmb atmc)
-                                                    (format t "ringsb = ~s  ringsc = ~s~%" ringsb ringsc))
-                                                  (cond
-                                                    ((or (null ringsb) (null ringsc)) t)
-                                                    ((loop named in-same-ring
-                                                           for r1 in ringsb
-                                                           when (member r1 ringsc)
-                                                             do (return-from in-same-ring t)
-                                                           finally (return-from in-same-ring nil))
-                                                     nil)
-                                                    (t nil)))))
+                                                       (atmc (gethash jointc atom-joint-map)))
+                                                  (inter-ring-dihedral-allowed-p atmb atmc rings-ht))))
                                          (when (rotatablep parent grand-parent)
                                            #+(or)(format t "rotatable joint = ~s  parent = ~s~%" joint parent)
                                            (push joint rotatable-dihedrals)))))))
