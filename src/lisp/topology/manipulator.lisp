@@ -285,8 +285,36 @@ while nesting several WITH-CPRING5 forms."
     (format stream "~s" (atm obj))))
 
 
+(defun order-ring-atoms-by-connectivity (ring build-order)
+  "Return a bonded cycle, anchored and oriented deterministically by BUILD-ORDER.
+Sorting the whole ring by tree traversal interleaves branches (for example
+CA-CAC-NA in PRE4), creating fictitious ring bonds and invalid CP parameters.
+Keep the earliest-built atom first, but follow bonds for every subsequent atom.
+This preserves the previous ordering wherever it already was a bonded cycle."
+  (unless (and (>= (length ring) 3)
+               (= (length ring) (length (remove-duplicates ring :test #'eq))))
+    (error "Ring must contain at least three distinct atoms: ~s" ring))
+  (dolist (atom ring)
+    (unless (nth-value 1 (gethash atom build-order))
+      (error "Ring atom has no joint build-order entry: ~s" atom)))
+  (let* ((ranked (sort (copy-list ring) #'<
+                       :key (lambda (atom) (gethash atom build-order))))
+         (start (first ranked)))
+    ;; Search in build-order preference. Backtracking also handles a ring atom
+    ;; set containing a chord, without assuming that every vertex has degree 2.
+    (labels ((walk-cycle (path remaining)
+               (if (null remaining)
+                   (when (chem:is-bonded-to (first path) start)
+                     (reverse path))
+                   (loop for next in remaining
+                         thereis (and (chem:is-bonded-to (first path) next)
+                                      (walk-cycle (cons next path)
+                                                  (remove next remaining :test #'eq)))))))
+      (or (walk-cycle (list start) (rest ranked))
+          (error "Ring atoms do not form a closed bonded cycle: ~s" ring)))))
+
 (defun identify-and-order-rings (assembler joint-to-atom)
-  "Identify the rings in the ASSEMBLER and sort the atoms in each ring in order of how atoms are built"
+  "Identify rings and order their atoms cyclically, anchored by joint build order."
   (let* ((aggregate (topology:aggregate assembler))
          (root-map (topology:root-map (topology:joint-tree assembler)))
          (root-joint (gethash (first (topology:always-oligomers assembler)) root-map))
@@ -312,12 +340,10 @@ while nesting several WITH-CPRING5 forms."
                     else
                       collect ring into non-aromatic-rings
                     finally (return (values non-aromatic-rings aromatic-rings)))
-            (flet ((order-atoms (xx yy)
-                     (< (gethash xx atoms) (gethash yy atoms))))
-              (let ((sorted-rings (loop for ring in non-aromatic-rings
-                                        for sorted = (sort (copy-seq ring) #'order-atoms)
-                                        collect sorted)))
-                (values sorted-rings aromatic-rings)))))))))
+            (let ((ordered-rings
+                    (loop for ring in non-aromatic-rings
+                          collect (order-ring-atoms-by-connectivity ring atoms))))
+              (values ordered-rings aromatic-rings))))))))
 
 
 (defparameter *manip-atom-joint-map* nil)

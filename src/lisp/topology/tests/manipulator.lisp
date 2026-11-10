@@ -103,8 +103,44 @@
                 (assert (equal '(12) (topology:binned-shape-key-component restored :bb1)))
                 (assert (equal '(2 13) (topology:binned-shape-key-component restored :first-ring)))))))))) )
 
+(defun test-bonded-ring-order ()
+  (let* ((atoms (loop for name in '(:CA :CAC :NG :CG :CGC :NA)
+                      collect (chem:make-atom name :C)))
+         (rank (make-hash-table :test #'eq)))
+    (loop for a in atoms for b in (append (rest atoms) (list (first atoms)))
+          do (chem:bond-to a b :single-bond))
+    (labels ((set-order (order)
+               (clrhash rank)
+               (loop for atom in order for i from 0 do (setf (gethash atom rank) i)))
+             (check-cycle (cycle)
+               (assert (= 6 (length (remove-duplicates cycle :test #'eq))))
+               (loop for a in cycle for b in (append (rest cycle) (list (first cycle)))
+                     do (assert (chem:is-bonded-to a b)))))
+      ;; PRE4 branch traversal visits CAC then NA, which are not bonded.
+      (set-order (mapcar (lambda (i) (nth i atoms)) '(0 1 5 4 3 2)))
+      (let ((ordered (topology::order-ring-atoms-by-connectivity (reverse atoms) rank)))
+        (assert (equal ordered atoms))
+        (check-cycle ordered))
+      ;; Already cyclic build order must retain its CP phase convention.
+      (set-order atoms)
+      (assert (equal atoms (topology::order-ring-atoms-by-connectivity atoms rank)))
+      (let ((reverse-cycle (cons (first atoms) (reverse (rest atoms)))))
+        (set-order reverse-cycle)
+        (assert (equal reverse-cycle
+                       (topology::order-ring-atoms-by-connectivity atoms rank))))
+      ;; A path is not a ring: the closing bond must also be checked.
+      (assert (signals-error-p
+               (lambda () (topology::order-ring-atoms-by-connectivity (subseq atoms 0 5) rank))))
+      (assert (signals-error-p
+               (lambda () (topology::order-ring-atoms-by-connectivity (cons (first atoms) atoms) rank))))
+      (remhash (first atoms) rank)
+      (assert (signals-error-p
+               (lambda () (topology::order-ring-atoms-by-connectivity atoms rank))))))
+  t)
+
 (defun run-tests ()
   "Check static dihedral joint eligibility. Cache checks live in topology/shape-key-tests."
+  (test-bonded-ring-order)
   (let* ((filename (asdf:system-relative-pathname
                     "topology" #p"../regression-tests/data/hexapeptide.mol2"))
          (aggregate (chem:load-mol2 filename))
