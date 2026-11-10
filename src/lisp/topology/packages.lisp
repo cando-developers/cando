@@ -270,6 +270,7 @@
    #:coordinates
    #:joint-with-name
    #:residue-properties
+   #:protection-caps
    #:merge-clusterable-context-rotamers
    #:foldamer-name
    #:monomer-on-other-side

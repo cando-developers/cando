@@ -31,6 +31,7 @@
       :dihedrals ((((:-side :+tail) :phi-1) :phi)
                   (:CM :chi0) (:C1 :chi1))
       :cluster-dihedrals (:chi1 :phi :chi0)
+      :protection-caps ((:-side amineh) (:+tail fmoc))
       :rotamer-limits (:grid-search ((C1 (-180.0 0.0))))
       :rings (:start (:+tail (:CM :C1)))
       ;; C1 is the central atom (third position) of this synthetic improper.
@@ -63,6 +64,12 @@
                 (case name (:-side :-eside) (:+tail :+etail) (otherwise name))))))
       (assert (= 3 (length sources) (length copies)
                  (length (gethash 'dgt-eside topology:*topology-groups*))))
+      (dolist (source sources)
+        (let ((copy (chem:find-topology (funcall name-function (topology:name source)))))
+          (when (topology:protection-caps source)
+            (assert (equal (topology:protection-caps source) '((:-side amineh) (:+tail fmoc))))
+            (assert (equal (topology:protection-caps copy) '((:-eside amineh) (:+etail fmoc))))
+            (assert (not (eq (topology:protection-caps source) (topology:protection-caps copy)))))))
       (dolist (group source-groups)
         (assert (equal (cdr group) (gethash (car group) topology:*topology-groups*))))
       (loop for source in sources

@@ -161,6 +161,8 @@
    (joint-template :initarg :joint-template :accessor joint-template)
    (restraints :initform nil :initarg :restraints :accessor restraints)
    (rotamer-limits :initform nil :initarg :rotamer-limits :reader rotamer-limits)
+   (protection-caps :initform nil :initarg :protection-caps :accessor protection-caps
+                    :documentation "Pairs of plug-atom names and formula-cap names; metadata only.")
    ))
 
 

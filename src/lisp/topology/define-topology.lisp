@@ -779,6 +779,7 @@ not start new joint-tree branches."
                                        plug-names
                                        dihedrals
                                        cluster-dihedrals
+                                       protection-caps
                                        cache
                                        rings
                                        rotamer-limits
@@ -794,6 +795,7 @@ not start new joint-tree branches."
                        :residue-properties residue-properties :plug-names plug-names
                        :dihedrals dihedrals :cluster-dihedrals cluster-dihedrals
                        :rings rings :cache cache :rotamer-limits rotamer-limits
+                       :protection-caps protection-caps
                        :code (or code (if (consp name) (first name) name))))))
         (graph (interpret (if (consp name)
                               (first name)
@@ -832,6 +834,16 @@ not start new joint-tree branches."
                                           xyz-joints
                                           rotamer-limits
                                           residue-properties)))
+        (let ((seen nil))
+          (dolist (entry protection-caps)
+            (unless (and (consp entry) (consp (cdr entry)) (null (cddr entry))
+                         (keywordp (first entry)) (second entry) (symbolp (second entry)))
+              (error "Invalid :protection-caps entry ~s; expected (plug-atom cap-name)" entry))
+            (when (member (first entry) seen)
+              (error "Duplicate protection cap for ~s" (first entry)))
+            (push (first entry) seen)))
+        (dolist (top tops)
+          (setf (protection-caps top) (copy-tree protection-caps)))
         (when types
           (loop for name-type in types
                 for name = (first name-type)
@@ -866,12 +878,13 @@ not start new joint-tree branches."
         tops))))
 
 
-(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings cache residue-properties plugs rotamer-limits code)
+(defmacro define-topology (name sexp &key restraints types xyz-joints dihedrals cluster-dihedrals rings cache residue-properties plugs rotamer-limits code protection-caps)
   `(do-define-topology ',name ',sexp
      :restraints ',restraints
      :dihedrals ',dihedrals
      :residue-properties ',residue-properties
      :cluster-dihedrals ',cluster-dihedrals
+     :protection-caps ',protection-caps
      :plug-names ',plugs
      :rings ',rings
      :cache ',cache
