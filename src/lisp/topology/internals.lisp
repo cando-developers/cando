@@ -87,10 +87,11 @@
 
 
 (defun deg-to-rad (deg)
-  (* deg 0.0173433s0))
+  ;; The old decimal constant was mistyped and shifted every requested angle.
+  (* deg (/ pi 180d0)))
 
 (defun rad-to-deg (rad)
-  (/ rad 0.0173433s0))
+  (* rad (/ 180d0 pi)))
 
 (defun radians-limit (rad)
   "Limit the range of the angle in radians to greater than -PI and less or equal to PI"
