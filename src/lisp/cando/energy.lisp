@@ -58,7 +58,7 @@
                                        (max-tn-steps *max-tn-steps*)
                                        (tn-tolerance *tn-tolerance*)
                                        (print-intermediate-results t)
-                                       (report-every-n-steps 1000)
+                                       (report-every-n-steps 5000)
                                        active-atoms-mask
                                        resignal-error
                                        coords
@@ -101,7 +101,7 @@
                                    resignal-error
                                    (save-trajectory nil)
                                    (print-intermediate-results t)
-                                   (report-every-n-steps 1000)
+                                   (report-every-n-steps 5000)
                                    verbose
                                    coords)
   "Minimize the conformational energy for an energy-function"
@@ -139,7 +139,7 @@
                           (assign-types t)
                           (resignal-error nil)
                           (print-intermediate-results t)
-                          (report-every-n-steps 1000)
+                          (report-every-n-steps 5000)
                           (save-trajectory nil))
   "Minimize the conformational energy for an aggregate"
   (let ((energy-func (chem:make-energy-function :matter agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
@@ -152,7 +152,7 @@
                                                                      (cg-tolerance *cg-tolerance*)
                                                                      (max-tn-steps *max-tn-steps*)
                                                                      (tn-tolerance *tn-tolerance*)
-                                                                     (report-every-n-steps 1000)
+                                                                     (report-every-n-steps 5000)
                                                                      )
   "Minimize the conformational energy for an energy-function"
   (let ((minimizer (chem:make-minimizer energy-function)))
@@ -215,4 +215,3 @@
 	       do (progn
                     (format t "  excluded-atom-list[~a] -> ~a name: ~a~%" excluded-atom-index-index eaindex (excluded-atom-name eaindex energy-function))
                     (incf excluded-atom-index-index)))))))
-
