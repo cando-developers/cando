@@ -561,6 +561,7 @@
    #:get-conformers
    #:aggregate-with-coordinates
    #:lookup-rotamer-limit-data
+   #:resolve-rotamer-limit-joint
    #:rotamer-limit-data
    #:driver-kind
    #:dihedrals-deg

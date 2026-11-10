@@ -606,7 +606,32 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                             :dihedrals-deg (ensure-dihedrals-deg dihedrals)))))
 
 (defun lookup-rotamer-limit-data (topology atom-name)
-  (find atom-name (rotamer-limits topology) :key #'atom-name))
+  (find atom-name (rotamer-limits topology) :key #'atom-name :test #'equal))
+
+(defun resolve-rotamer-limit-joint (assembler monomer selector)
+  "Resolve a local atom or (:PLUG outgoing-plug) to a torsion endpoint."
+  (let* ((atres (assembler-atresidue assembler monomer))
+         (joint
+           (if (symbolp selector)
+               (joint-with-name atres selector)
+               (progn
+                 (unless (and (listp selector) (= (length selector) 2)
+                              (eq (first selector) :plug) (symbolp (second selector)))
+                   (error "Invalid rotamer-limit selector ~s" selector))
+                 (let ((plug (plug-named (topology atres) (second selector))))
+                   (unless (and (typep plug 'out-plug) (= (length (plug-bonds plug)) 1))
+                     (error "Rotamer-limit selector ~s requires a single-bond outgoing plug" selector))
+                   (let* ((center (joint-with-name atres (atom-name (aref (plug-bonds plug) 0))))
+                          (endpoint (adjustment-plug-reference assembler center (second selector))))
+                     (unless (and (kin:joint/parent-bound-p endpoint)
+                                  (eq (kin:joint/parent endpoint) center))
+                       (error "Rotamer-limit selector ~s is not an outgoing atom-tree edge" selector))
+                     endpoint))))))
+    (unless (and joint (typep joint 'kin:bonded-joint)
+                 (loop for ancestor = joint then (kin:joint/parent ancestor)
+                       repeat 3 always (kin:joint/parent-bound-p ancestor)))
+      (error "Rotamer-limit selector ~s needs a bonded joint with three ancestors" selector))
+    joint))
 
 
 (defun validate-cluster-dihedrals (top cluster-dihedrals dihedrals constitution)
