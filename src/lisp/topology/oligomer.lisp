@@ -77,7 +77,7 @@
                                (atom4 (safe-atom-with-name residue (atom4-name restraint))))
                           (chem:make-restraint-dihedral atom1 atom2 atom3 atom4
                                                         (dihedral-degrees restraint)
-                                                        (weight restraint)))))
+                                                        (weight restraint) (dihedral-kind restraint)))))
             do (chem:add-restraint residue rr)))
     residue))
 

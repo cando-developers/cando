@@ -72,6 +72,7 @@ class	EnergyDihedralRestraint : public EnergyTerm {
   Atom_sp      _Atom2;
   Atom_sp      _Atom3;
   Atom_sp      _Atom4;
+  bool _Improper = false;
 		// Threshold
   bool		_AboveThreshold;
   REAL          _AboveThreshold_Phi;
@@ -88,6 +89,7 @@ class	EnergyDihedralRestraint : public EnergyTerm {
   Atom_sp	getAtom3() { return this->_Atom3; };
   Atom_sp	getAtom4() { return this->_Atom4; };
   double	getAngle();
+  void validateConnectivity() const;
  public:
   core::List_sp encode() const;
   void decode(core::List_sp alist);
@@ -166,7 +168,7 @@ public:
   size_t addDihedralRestraint(EnergyFunction_sp energyFunction,
                               double kdh,
                               double phi0,
-                              Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4
+                              Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::Symbol_sp kind
                               );
   void updateDihedralRestraint( size_t index, double kdh, double phi0_rad );
 

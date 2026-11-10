@@ -287,6 +287,7 @@ void	RestraintAngle_O::serialize(serialize::SNode node)
 
 void RestraintDihedral_O::fields(core::Record_sp node)
 {
+  node->field_if_not_default(INTERN_(kw,improper), this->_Improper, false);
   // Restraint_O has no fields implementation; preserve its private state
   // through the public accessors instead of invoking the parent fields.
   bool active = this->isActive();
@@ -301,9 +302,12 @@ void RestraintDihedral_O::fields(core::Record_sp node)
 }
 
 CL_DEFUN RestraintDihedral_sp make_RestraintDihedral(Atom_sp atom1, Atom_sp atom2, Atom_sp atom3, Atom_sp atom4,
-                                                     double degrees, double weight)
+                                                     double degrees, double weight, core::Symbol_sp kind)
 {
+  if (kind != INTERN_(kw,proper) && kind != INTERN_(kw,improper))
+    SIMPLE_ERROR("Dihedral restraint kind must be :proper or :improper, got {}", _rep_(kind));
   RestraintDihedral_sp rest  = gctools::GC<RestraintDihedral_O>::allocate();
+  rest->_Improper = kind == INTERN_(kw,improper);
   rest->_A = atom1;
   rest->_B = atom2;
   rest->_C = atom3;
@@ -315,6 +319,7 @@ CL_DEFUN RestraintDihedral_sp make_RestraintDihedral(Atom_sp atom1, Atom_sp atom
 
 RestraintDihedral_O::RestraintDihedral_O(const RestraintDihedral_O& old) : Restraint_O(old)
 {
+  this->_Improper = old._Improper;
   this->_A = old._A;
   this->_B = old._B;
   this->_C = old._C;

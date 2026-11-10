@@ -33,7 +33,8 @@
       :cluster-dihedrals (:chi1 :phi :chi0)
       :rotamer-limits (:grid-search ((C1 (-180.0 0.0))))
       :rings (:start (:+tail (:CM :C1)))
-      :restraints ((:dihedral-restraints (CM C1 H11 H12 0.0 1.0)))
+      ;; C1 is the central atom (third position) of this synthetic improper.
+      :restraints ((:dihedral-restraints (CM H11 C1 H12 0.0 1.0 :improper)))
       :code original-code)
     (topology:define-topology (dgt-simple dgt-side)
         ((CM C :plugs (:-side) :adjust topology:internal-planar-adjustment)

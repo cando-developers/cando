@@ -123,7 +123,8 @@
   ())
 
 (defclass dihedral-restraint ()
-  ((atom1-name :initarg :atom1-name :accessor atom1-name)
+  ((dihedral-kind :initarg :kind :initform :proper :accessor dihedral-kind)
+   (atom1-name :initarg :atom1-name :accessor atom1-name)
    (atom2-name :initarg :atom2-name :accessor atom2-name)
    (atom3-name :initarg :atom3-name :accessor atom3-name)
    (atom4-name :initarg :atom4-name :accessor atom4-name)

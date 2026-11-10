@@ -264,11 +264,44 @@
          (a4 (chem:matter/first-atom-with-name butane :C4))
          (ri (chem:add-dihedral-restraint dh butane-ef
                                           100000.0 (* -180.0 0.0174533)
-                                          a1 a2 a3 a4
+                                          a1 a2 a3 a4 :proper
                                           ))
          (minimizer (chem:make-minimizer butane-ef))
          )
     (format t "dh = ~s~%" dh)
+    #+tests
+    (flet ((rejected-p (atoms kind)
+             (let ((before (chem:energy-component/number-of-terms dh)))
+               (and (handler-case
+                        (progn
+                          (apply #'chem:add-dihedral-restraint dh butane-ef 1d0 0d0
+                                 (append atoms (list kind)))
+                          nil)
+                      (error () t))
+                    (= before (chem:energy-component/number-of-terms dh))))))
+      (test-true dihedral-restraint-proper-kind
+                 (eq :proper (nth-value 6 (chem:energy-dihedral-restraint/get-dihedral-restraint dh ri))))
+      (test-true dihedral-restraint-rejects-broken-chain
+                 (rejected-p (list a1 a3 a2 a4) :proper))
+      (test-true dihedral-restraint-rejects-wrong-improper-center
+                 (rejected-p (list a1 a2 a3 a4) :improper))
+      (test-true dihedral-restraint-rejects-unknown-kind
+                 (rejected-p (list a1 a2 a3 a4) :unknown))
+      (test-true dihedral-restraint-rejects-repeated-atoms
+                 (rejected-p (list a1 a2 a1 a2) :proper))
+      (let ((neighbor nil))
+        (chem:map-atoms nil
+                       (lambda (atom)
+                         (when (and (not (member atom (list a1 a2 a3)))
+                                    (chem:is-bonded-to a2 atom))
+                           (setf neighbor atom)))
+                       butane)
+        (assert neighbor)
+        ;; Atom 3 is central; weight zero avoids altering the following scan.
+        (let ((ii (chem:add-dihedral-restraint dh butane-ef 0d0 0d0 a1 a3 a2 neighbor :improper)))
+          (chem:energy-dihedral-restraint/update-dihedral-restraint dh ii 0d0 0.1d0)
+          (test-true dihedral-restraint-improper-kind-survives-update
+                     (eq :improper (nth-value 6 (chem:energy-dihedral-restraint/get-dihedral-restraint dh ii)))))))
     (with-open-file (sdf-stream "/tmp/butane.sdf" :direction :output :if-exists :supersede)
       (loop for angle from -180 by 20 below 180
             do (format t "angle = ~d~%" angle)

@@ -1150,6 +1150,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       {
         RestraintDihedral_sp dih = (restraint).as<RestraintDihedral_O>();
         EnergyDihedralRestraint energyTerm;
+        energyTerm._Improper = dih->_Improper;
         core::T_sp keepInteraction = specializeKeepInteractionFactory(keepInteractionFactory,RestraintDihedral_O::staticClass());
         if (skipInteraction(keepInteraction, dih->getAtomA(), dih->getAtomB(), dih->getAtomC(), dih->getAtomD() )) goto CONT;
         energyTerm._Atom1 = dih->getAtomA();
@@ -1228,7 +1229,7 @@ void EnergyFunction_O::_addDihedralRestraintDegrees(EnergyDihedralRestraint_sp d
   dihedralRestraintComponent->addDihedralRestraint(this->asSmartPtr(),
                                                    kdh,
                                                    phi0_degrees*0.0174533,
-                                                   a1,a2,a3,a4
+                                                   a1,a2,a3,a4,INTERN_(kw,proper)
                                                    );
 }
 

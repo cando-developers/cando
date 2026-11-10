@@ -175,6 +175,18 @@ if (hasActiveAtomMask \
     }
 
 
+void EnergyDihedralRestraint::validateConnectivity() const {
+  bool distinct = _Atom1 != _Atom2 && _Atom1 != _Atom3 && _Atom1 != _Atom4
+      && _Atom2 != _Atom3 && _Atom2 != _Atom4 && _Atom3 != _Atom4;
+  bool valid = distinct && (_Improper
+      ? (_Atom3->isBondedTo(_Atom1) && _Atom3->isBondedTo(_Atom2) && _Atom3->isBondedTo(_Atom4))
+      : (_Atom1->isBondedTo(_Atom2) && _Atom2->isBondedTo(_Atom3) && _Atom3->isBondedTo(_Atom4)));
+  if (!valid)
+    SIMPLE_ERROR("Invalid {} dihedral restraint connectivity: {} - {} - {} - {}. {}",
+                 _Improper ? "improper" : "proper", _rep_(_Atom1), _rep_(_Atom2), _rep_(_Atom3), _rep_(_Atom4),
+                 _Improper ? "Atom 3 must bond to atoms 1, 2, and 4." : "Expected bonds 1-2, 2-3, and 3-4.");
+}
+
 core::List_sp EnergyDihedralRestraint::encode() const {
   return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,kdh),core::clasp_make_double_float(this->term.kdh)),
                               core::Cons_O::create(core::Cons_O::create(INTERN_(kw,phi0),core::clasp_make_double_float(this->term.phi0)),
@@ -185,6 +197,7 @@ core::List_sp EnergyDihedralRestraint::encode() const {
                                                                             core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
                                                                             core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2),
                                                                             core::Cons_O::create(INTERN_(kw,atom3), this->_Atom3),
+                                                                            core::Cons_O::create(INTERN_(kw,kind), this->_Improper ? INTERN_(kw,improper) : INTERN_(kw,proper)),
                                                                             core::Cons_O::create(INTERN_(kw,atom4), this->_Atom4)
                                                                             )));
 }
@@ -245,6 +258,7 @@ bool	RestraintActive;
 
 void EnergyDihedralRestraint_O::addTerm(const EnergyDihedralRestraint& e)
 {
+  e.validateConnectivity();
   this->_Terms.push_back(e);
 }
 
@@ -259,9 +273,12 @@ double wrap_rad(double angle) {
 CL_DEFMETHOD size_t EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction,
                                                                     double kdh,
                                                                     double phi0,
-                                                                    Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4)
+                                                                    Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::Symbol_sp kind)
 {
+  if (kind != INTERN_(kw,proper) && kind != INTERN_(kw,improper))
+    SIMPLE_ERROR("Dihedral restraint kind must be :proper or :improper, got {}", _rep_(kind));
   EnergyDihedralRestraint energyTerm;
+  energyTerm._Improper = kind == INTERN_(kw,improper);
   energyTerm._Atom1 = a1;
   energyTerm._Atom2 = a2;
   energyTerm._Atom3 = a3;
@@ -292,7 +309,8 @@ core::T_mv EnergyDihedralRestraint_O::getDihedralRestraint( size_t index )
         energyTerm._Atom1,
         energyTerm._Atom2,
         energyTerm._Atom3,
-        energyTerm._Atom4 );
+        energyTerm._Atom4,
+        energyTerm._Improper ? INTERN_(kw,improper) : INTERN_(kw,proper) );
   }
   SIMPLE_ERROR("index {} is out of bounds - must be less than {}", index, this->_Terms.size() );
 }
