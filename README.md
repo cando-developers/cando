@@ -4,7 +4,7 @@
 Cando is an open-source, computational chemistry environment for
 building and designing functional molecules and materials.
 
-<div style="text-align: center"><img src="documentation/CANDO_map.png" width=600 height=350 align=center/></div>
+This software can be licensed from Temple University, Philadelphia, PA.
 
 ## Installation
 
